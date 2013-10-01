@@ -39,9 +39,6 @@
 						<g:cell>
 							<g:HTMLPanel ui:field="filterPanelContainer"/>		
 						</g:cell>
-                                                <g:cell>
-							<g:HTMLPanel ui:field="sourceLangListBoxContainer"/>		
-						</g:cell>
 						<g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
 							<g:HTMLPanel ui:field="transUnitNavigationContainer"/>
 						</g:cell>

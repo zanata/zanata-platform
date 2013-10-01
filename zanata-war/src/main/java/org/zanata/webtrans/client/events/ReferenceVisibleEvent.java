@@ -28,7 +28,7 @@ public class ReferenceVisibleEvent extends GwtEvent<ReferenceVisibleEventHandler
    private Locale selectedLocale;
    private boolean isVisible;
 
-   public ReferenceVisibleEvent(Locale selectedLocale, boolean isVisble)
+   public ReferenceVisibleEvent(Locale selectedLocale, boolean isVisible)
    {
        this.selectedLocale = selectedLocale;
        this.isVisible = isVisible;

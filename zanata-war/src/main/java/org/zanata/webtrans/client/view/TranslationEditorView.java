@@ -52,9 +52,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
 
    @UiField
    HTMLPanel transUnitNavigationContainer;
-   
-   @UiField
-   HTMLPanel sourceLangListBoxContainer;
 
    @UiField
    LayoutPanel editor;
@@ -153,13 +150,6 @@ public class TranslationEditorView extends Composite implements TranslationEdito
    {
       filterPanelContainer.clear();
       filterPanelContainer.add(filterView);
-   }
-   
-   @Override
-   public void setSourceLangView(IsWidget sourceLangView)
-   {
-      sourceLangListBoxContainer.clear();
-      sourceLangListBoxContainer.add(sourceLangView);
    }
 
    @Override

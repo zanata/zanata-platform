@@ -148,7 +148,6 @@ public class UserOptionsServiceTest
       assertThat(map.containsKey(UserOptions.RejectedMessageFilter), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.Navigation), Matchers.equalTo(true));
       assertThat(map.containsKey(UserOptions.ShowSaveApprovedWarning), Matchers.equalTo(true));
-      assertThat(map.containsKey(UserOptions.EnableReferenceLang), Matchers.equalTo(true));
    }
 
    @Test

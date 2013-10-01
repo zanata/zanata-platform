@@ -29,7 +29,7 @@ public enum UserOptions implements IsSerializable
    Navigation(editor()+ ".Navigation"),
    DocumentListPageSize(doc() + ".PageSize"),
    ShowSaveApprovedWarning(editor() + ".ShowSaveApprovedWarning"),
-   EnableReferenceLang(editor()+ ".enableReferenceLang");
+   SelectedReferenceLang(editor()+ ".selectedReferenceLang");
    // @formatter:on
 
    private String persistentName;

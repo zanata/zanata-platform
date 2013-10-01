@@ -141,9 +141,9 @@ public class LoadOptionsHandler extends AbstractActionHandler<LoadOptionsAction,
          configHolder.setShowGlossaryPanel(filteredOptions.get(UserOptions.DisplayGlossary.getPersistentName()).getValueAsBoolean());
       }
       
-      if (filteredOptions.containsKey(UserOptions.EnableReferenceLang.getPersistentName()))
+      if (filteredOptions.containsKey(UserOptions.SelectedReferenceLang.getPersistentName()))
       {
-         configHolder.setEnableReferenceForSourceLang(filteredOptions.get(UserOptions.EnableReferenceLang.getPersistentName()).getValueAsBoolean());
+         configHolder.setSelectedReferenceForSourceLang(filteredOptions.get(UserOptions.SelectedReferenceLang.getPersistentName()).getValue());
       }
 
       if (filteredOptions.containsKey(UserOptions.ShowOptionalTransUnitDetails.getPersistentName()))

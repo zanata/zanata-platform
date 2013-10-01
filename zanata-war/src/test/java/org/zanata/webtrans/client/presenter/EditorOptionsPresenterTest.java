@@ -40,6 +40,7 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest
@@ -55,6 +56,10 @@ public class EditorOptionsPresenterTest
    private WorkspaceContext workspaceContext;
    @Mock
    private ValidationOptionsPresenter validationDetailsPresenter;
+   @Mock
+   private TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
+   @Mock
+   private TransUnitChangeSourceLangDisplay transUnitSourceLangDisplay;
    @Mock
    private CachingDispatchAsync dispatcher;
    @Captor
@@ -72,7 +77,7 @@ public class EditorOptionsPresenterTest
       MockitoAnnotations.initMocks(this);
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, dispatcher, userOptionsService);
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, transUnitSourceLangPresenter, dispatcher, userOptionsService);
 
       workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 
@@ -87,6 +92,8 @@ public class EditorOptionsPresenterTest
    {
       // Given: user workspace context is not readonly
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
+      
+      when(transUnitSourceLangPresenter.getDisplay()).thenReturn(transUnitSourceLangDisplay);
 
       // When:
       presenter.onBind();
@@ -282,16 +289,5 @@ public class EditorOptionsPresenterTest
 
       callback.onFailure(null);
       verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
-   }
-   
-   @Test
-   public void onEnableReferenceForSourceLangOptionChanged()
-   {
-      configHolder.setEnableReferenceForSourceLang(false);
-
-      presenter.onEnableReferenceForSourceLangOptionChanged(true);
-
-      assertThat(configHolder.getState().isEnabledReferenceForSourceLang(), Matchers.equalTo(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
    }
 }

@@ -51,6 +51,7 @@ import com.google.inject.Inject;
 public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay> implements EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener, WorkspaceContextUpdateEventHandler, ReloadUserConfigUIHandler
 {
    private final ValidationOptionsPresenter validationOptionsPresenter;
+   private final TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
    private final UserWorkspaceContext userWorkspaceContext;
    private final CachingDispatchAsync dispatcher;
    private final UserOptionsService userOptionsService;
@@ -58,10 +59,12 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Inject
    public EditorOptionsPresenter(EditorOptionsDisplay display, EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
                                  ValidationOptionsPresenter validationDetailsPresenter,
+                                 TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter,
                                  CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
    {
       super(display, eventBus);
       this.validationOptionsPresenter = validationDetailsPresenter;
+      this.transUnitSourceLangPresenter = transUnitSourceLangPresenter;
       this.userWorkspaceContext = userWorkspaceContext;
       this.dispatcher = dispatcher;
       this.userOptionsService = userOptionsService;
@@ -72,6 +75,8 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    protected void onBind()
    {
       validationOptionsPresenter.bind();
+      transUnitSourceLangPresenter.bind();
+      display.setSourceLangListBox(transUnitSourceLangPresenter.getDisplay().asWidget());
       if(userWorkspaceContext.hasReadOnlyAccess())
       {
          setReadOnly(true);
@@ -188,16 +193,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
       eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
    }
    
-   @Override
-   public void onEnableReferenceForSourceLangOptionChanged(Boolean displayReference)
-   {
-      if (userOptionsService.getConfigHolder().getState().isEnabledReferenceForSourceLang() != displayReference)
-      {
-         userOptionsService.getConfigHolder().setEnableReferenceForSourceLang(displayReference);
-      }
-      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
-
+   
    @Override
    public void onDisplayTransUnitDetailsOptionChanged(Boolean showTransUnitDetailsChkValue)
    {
@@ -221,6 +217,7 @@ public class EditorOptionsPresenter extends WidgetPresenter<EditorOptionsDisplay
    @Override
    protected void onUnbind()
    {
+      transUnitSourceLangPresenter.unbind();
    }
 
    @Override

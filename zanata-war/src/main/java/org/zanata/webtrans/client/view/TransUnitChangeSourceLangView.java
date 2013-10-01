@@ -23,9 +23,11 @@ package org.zanata.webtrans.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -44,13 +46,15 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
 
    interface Styles extends CssResource
    {
+      String sourceLangListBox();
    }
+   
+   @UiField
+   Styles style;
    @UiField
    FlowPanel flowPanel;
    @UiField
    Label descriptionLabel;
-   @UiField
-   Styles style;
    LocaleListBox sourceLangListBox;
 
    @Inject
@@ -62,6 +66,7 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
       descriptionLabel.setText(messages.changeSourceLangDescription());
 
       sourceLangListBox = new LocaleListBox();
+      sourceLangListBox.setStyleName(style.sourceLangListBox());
       sourceLangListBox.addChangeHandler(this);
 
       flowPanel.add(sourceLangListBox);
@@ -78,6 +83,13 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
          sourceLangListBox.addItem(locale);
       }
       sourceLangListBox.setSelectedIndex(0);
+   }
+   
+   @Override
+   public void setSelectedLocale(Locale locale)
+   {
+      //Not implemented yet...
+      //Look through the list with locales and se if locale is present, otherwise, select index 0
    }
 
    @Override
@@ -98,10 +110,12 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
       if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale)
       {
          listener.onHideReference();
+         listener.onSourceLangListBoxOptionChanged(null);
       }
       else
       {
          listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
+         listener.onSourceLangListBoxOptionChanged(sourceLangListBox.getLocaleAtSelectedIndex().getDisplayName());
       }
    }
 
