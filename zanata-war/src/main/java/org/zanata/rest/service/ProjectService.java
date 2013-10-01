@@ -44,231 +44,211 @@ import com.google.common.base.Objects;
 @Name("projectService")
 @Path(ProjectService.SERVICE_PATH)
 @Transactional
-public class ProjectService implements ProjectResource
-{
-   /** Project Identifier. */
-   @PathParam("projectSlug")
-   String projectSlug;
+public class ProjectService implements ProjectResource {
+    /** Project Identifier. */
+    @PathParam("projectSlug")
+    String projectSlug;
 
-   @HeaderParam(HttpHeaderNames.ACCEPT)
-   @DefaultValue(MediaType.APPLICATION_XML)
-   @Context
-   private MediaType accept;
+    @HeaderParam(HttpHeaderNames.ACCEPT)
+    @DefaultValue(MediaType.APPLICATION_XML)
+    @Context
+    private MediaType accept;
 
-   @Context
-   private UriInfo uri;
-   @Context
-   private Request request;
+    @Context
+    private UriInfo uri;
+    @Context
+    private Request request;
 
-   Log log = Logging.getLog(ProjectService.class);
+    Log log = Logging.getLog(ProjectService.class);
 
-   @In
-   ProjectDAO projectDAO;
+    @In
+    ProjectDAO projectDAO;
 
-   @In
-   AccountDAO accountDAO;
+    @In
+    AccountDAO accountDAO;
 
-   @In
-   Identity identity;
+    @In
+    Identity identity;
 
-   @In
-   ETagUtils eTagUtils;
+    @In
+    ETagUtils eTagUtils;
 
-   @SuppressWarnings("null")
-   @Nonnull
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
+    @SuppressWarnings("null")
+    @Nonnull
+    public String getProjectSlug() {
+        return projectSlug;
+    }
 
-   @Override
-   public Response head()
-   {
-      EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
-      ResponseBuilder response = request.evaluatePreconditions(etag);
-      if (response != null)
-      {
-         return response.build();
-      }
-      return Response.ok().tag(etag).build();
-   }
-
-   @Override
-   public Response get()
-   {
-      try
-      {
-         EntityTag etag = eTagUtils.generateTagForProject(getProjectSlug());
-
-         ResponseBuilder response = request.evaluatePreconditions(etag);
-         if (response != null)
-         {
+    @Override
+    public Response head() {
+        EntityTag etag = eTagUtils.generateTagForProject(projectSlug);
+        ResponseBuilder response = request.evaluatePreconditions(etag);
+        if (response != null) {
             return response.build();
-         }
+        }
+        return Response.ok().tag(etag).build();
+    }
 
-         HProject hProject = projectDAO.getBySlug(getProjectSlug());
-         Project project = toResource(hProject, accept);
-         return Response.ok(project).tag(etag).build();
-      }
-      catch (NoSuchEntityException e)
-      {
-         return Response.status(Status.NOT_FOUND).build();
-      }
-   }
+    @Override
+    public Response get() {
+        try {
+            EntityTag etag = eTagUtils.generateTagForProject(getProjectSlug());
 
-   @Override
-   public Response put(Project project)
-   {
-      ResponseBuilder response;
-      EntityTag etag;
+            ResponseBuilder response = request.evaluatePreconditions(etag);
+            if (response != null) {
+                return response.build();
+            }
 
-      HProject hProject = projectDAO.getBySlug(getProjectSlug());
+            HProject hProject = projectDAO.getBySlug(getProjectSlug());
+            Project project = toResource(hProject, accept);
+            return Response.ok(project).tag(etag).build();
+        } catch (NoSuchEntityException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
 
-      if (hProject == null)
-      { // must be a create operation
-         response = request.evaluatePreconditions();
-         if (response != null)
-         {
-            return response.build();
-         }
-         hProject = new HProject();
-         hProject.setSlug(projectSlug);
-         // pre-emptive entity permission check
-         identity.checkPermission(hProject, "insert");
+    @Override
+    public Response put(Project project) {
+        ResponseBuilder response;
+        EntityTag etag;
 
-         response = Response.created(uri.getAbsolutePath());
-      }
-      // Project is obsolete
-      else if (Objects.equal(hProject.getStatus(), OBSOLETE))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is obsolete.").build();
-      }
-      // Project is ReadOnly
-      else if (Objects.equal(hProject.getStatus(), READONLY))
-      {
-         return Response.status(Status.FORBIDDEN).entity("Project '" + projectSlug + "' is read-only.").build();
-      }
-      else
-      {
-         // must be an update operation
-         // pre-emptive entity permission check
-         identity.checkPermission(hProject, "update");
-         etag = eTagUtils.generateTagForProject(projectSlug);
-         response = request.evaluatePreconditions(etag);
-         if (response != null)
-         {
-            return response.build();
-         }
+        HProject hProject = projectDAO.getBySlug(getProjectSlug());
 
-         response = Response.ok();
-      }
+        if (hProject == null) { // must be a create operation
+            response = request.evaluatePreconditions();
+            if (response != null) {
+                return response.build();
+            }
+            hProject = new HProject();
+            hProject.setSlug(projectSlug);
+            // pre-emptive entity permission check
+            identity.checkPermission(hProject, "insert");
 
-      // null project type accepted for compatibility with old clients
-      if (project.getDefaultType() != null)
-      {
-         if (project.getDefaultType().isEmpty())
-         {
-            return Response.status(Status.BAD_REQUEST)
-                  .entity("No valid default project type was specified.")
-                  .build();
-         }
+            response = Response.created(uri.getAbsolutePath());
+        }
+        // Project is obsolete
+        else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity("Project '" + projectSlug + "' is obsolete.")
+                    .build();
+        }
+        // Project is ReadOnly
+        else if (Objects.equal(hProject.getStatus(), READONLY)) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity("Project '" + projectSlug + "' is read-only.")
+                    .build();
+        } else {
+            // must be an update operation
+            // pre-emptive entity permission check
+            identity.checkPermission(hProject, "update");
+            etag = eTagUtils.generateTagForProject(projectSlug);
+            response = request.evaluatePreconditions(etag);
+            if (response != null) {
+                return response.build();
+            }
 
-         try
-         {
-            ProjectType.getValueOf(project.getDefaultType());
-         }
-         catch (Exception e)
-         {
-            String validTypes = StringUtils.join(ProjectType.values(), ", ");
-            return Response.status(Status.BAD_REQUEST)
-                  .entity("Project type \"" + project.getDefaultType() + "\" not valid for this server." +
-                        " Valid types: [" + validTypes + "]")
+            response = Response.ok();
+        }
+
+        // null project type accepted for compatibility with old clients
+        if (project.getDefaultType() != null) {
+            if (project.getDefaultType().isEmpty()) {
+                return Response.status(Status.BAD_REQUEST)
+                        .entity("No valid default project type was specified.")
                         .build();
-         }
-      }
+            }
 
-      transfer(project, hProject);
+            try {
+                ProjectType.getValueOf(project.getDefaultType());
+            } catch (Exception e) {
+                String validTypes =
+                        StringUtils.join(ProjectType.values(), ", ");
+                return Response
+                        .status(Status.BAD_REQUEST)
+                        .entity("Project type \"" + project.getDefaultType()
+                                + "\" not valid for this server."
+                                + " Valid types: [" + validTypes + "]").build();
+            }
+        }
 
-      hProject = projectDAO.makePersistent(hProject);
-      projectDAO.flush();
+        transfer(project, hProject);
 
-      if (identity != null && hProject.getMaintainers().isEmpty())
-      {
-         HAccount hAccount = accountDAO.getByUsername(identity.getCredentials().getUsername());
-         if (hAccount != null && hAccount.getPerson() != null)
-         {
-            hProject.getMaintainers().add(hAccount.getPerson());
-         }
-         projectDAO.flush();
-      }
+        hProject = projectDAO.makePersistent(hProject);
+        projectDAO.flush();
 
-      etag = eTagUtils.generateTagForProject(projectSlug);
-      return response.tag(etag).build();
+        if (identity != null && hProject.getMaintainers().isEmpty()) {
+            HAccount hAccount =
+                    accountDAO.getByUsername(identity.getCredentials()
+                            .getUsername());
+            if (hAccount != null && hAccount.getPerson() != null) {
+                hProject.getMaintainers().add(hAccount.getPerson());
+            }
+            projectDAO.flush();
+        }
 
-   }
+        etag = eTagUtils.generateTagForProject(projectSlug);
+        return response.tag(etag).build();
 
-   private static void transfer(Project from, HProject to)
-   {
-      to.setName(from.getName());
-      to.setDescription(from.getDescription());
-      if (from.getDefaultType() != null)
-      {
-         ProjectType projectType;
-         try
-         {
-            projectType = ProjectType.getValueOf(from.getDefaultType());
-         }
-         catch (Exception e)
-         {
-            projectType = null;
-         }
+    }
 
-         if (projectType != null)
-         {
-            to.setDefaultProjectType(projectType);
-         }
-      }
-      // TODO Currently all Projects are created as Current
-      // to.setStatus(from.getStatus());
+    private static void transfer(Project from, HProject to) {
+        to.setName(from.getName());
+        to.setDescription(from.getDescription());
+        if (from.getDefaultType() != null) {
+            ProjectType projectType;
+            try {
+                projectType = ProjectType.getValueOf(from.getDefaultType());
+            } catch (Exception e) {
+                projectType = null;
+            }
 
-      // keep source URLs unless they are specifically overwritten
-      if (from.getSourceViewURL() != null)
-      {
-         to.setSourceViewURL(from.getSourceViewURL());
-      }
-      if (from.getSourceCheckoutURL() != null)
-      {
-         to.setSourceCheckoutURL(from.getSourceCheckoutURL());
-      }
-   }
+            if (projectType != null) {
+                to.setDefaultProjectType(projectType);
+            }
+        }
+        // TODO Currently all Projects are created as Current
+        // to.setStatus(from.getStatus());
 
-   private static void transfer(HProject from, Project to)
-   {
-      to.setId(from.getSlug());
-      to.setName(from.getName());
-      to.setDescription(from.getDescription());
-      to.setStatus(from.getStatus());
-      if (from.getDefaultProjectType() != null)
-      {
-         to.setDefaultType(from.getDefaultProjectType().toString());
-      }
-      to.setSourceViewURL(from.getSourceViewURL());
-      to.setSourceCheckoutURL(from.getSourceCheckoutURL());
-   }
+        // keep source URLs unless they are specifically overwritten
+        if (from.getSourceViewURL() != null) {
+            to.setSourceViewURL(from.getSourceViewURL());
+        }
+        if (from.getSourceCheckoutURL() != null) {
+            to.setSourceCheckoutURL(from.getSourceCheckoutURL());
+        }
+    }
 
-   private static Project toResource(HProject hProject, MediaType mediaType)
-   {
-      Project project = new Project();
-      transfer(hProject, project);
-      for (HProjectIteration pIt : hProject.getProjectIterations())
-      {
-         ProjectIteration iteration = new ProjectIteration();
-         ProjectIterationService.transfer(pIt, iteration);
+    private static void transfer(HProject from, Project to) {
+        to.setId(from.getSlug());
+        to.setName(from.getName());
+        to.setDescription(from.getDescription());
+        to.setStatus(from.getStatus());
+        if (from.getDefaultProjectType() != null) {
+            to.setDefaultType(from.getDefaultProjectType().toString());
+        }
+        to.setSourceViewURL(from.getSourceViewURL());
+        to.setSourceCheckoutURL(from.getSourceCheckoutURL());
+    }
 
-         iteration.getLinks(true).add(new Link(URI.create("iterations/i/" + pIt.getSlug()), "self", MediaTypes.createFormatSpecificType(MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION, mediaType)));
-         project.getIterations(true).add(iteration);
-      }
-      return project;
-   }
+    private static Project toResource(HProject hProject, MediaType mediaType) {
+        Project project = new Project();
+        transfer(hProject, project);
+        for (HProjectIteration pIt : hProject.getProjectIterations()) {
+            ProjectIteration iteration = new ProjectIteration();
+            ProjectIterationService.transfer(pIt, iteration);
+
+            iteration
+                    .getLinks(true)
+                    .add(new Link(
+                            URI.create("iterations/i/" + pIt.getSlug()),
+                            "self",
+                            MediaTypes
+                                    .createFormatSpecificType(
+                                            MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION,
+                                            mediaType)));
+            project.getIterations(true).add(iteration);
+        }
+        return project;
+    }
 
 }

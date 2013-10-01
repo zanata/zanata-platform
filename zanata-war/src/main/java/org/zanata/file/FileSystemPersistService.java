@@ -47,109 +47,101 @@ import com.google.common.io.Files;
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 @Slf4j
-public class FileSystemPersistService implements FilePersistService
-{
+public class FileSystemPersistService implements FilePersistService {
 
-   private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
+    private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
-   @In("applicationConfiguration")
-   private ApplicationConfiguration appConfig;
-   @In
-   private DocumentDAO documentDAO;
-   @In
-   private VirusScanner virusScanner;
+    @In("applicationConfiguration")
+    private ApplicationConfiguration appConfig;
+    @In
+    private DocumentDAO documentDAO;
+    @In
+    private VirusScanner virusScanner;
 
-   @Override
-   public void persistRawDocumentContentFromFile(HRawDocument rawDocument, File fromFile)
-   {
-      String fileName = generateFileNameFor(rawDocument);
-      rawDocument.setFileId(fileName);
+    @Override
+    public void persistRawDocumentContentFromFile(HRawDocument rawDocument,
+            File fromFile) {
+        String fileName = generateFileNameFor(rawDocument);
+        rawDocument.setFileId(fileName);
 
-      File newFile = getFileForName(fileName);
-      try
-      {
-         Files.copy(fromFile, newFile);
-      }
-      catch (IOException e)
-      {
-         // FIXME damason: throw something more specific and handle at call sites
-         throw new RuntimeException(e);
-      }
+        File newFile = getFileForName(fileName);
+        try {
+            Files.copy(fromFile, newFile);
+        } catch (IOException e) {
+            // FIXME damason: throw something more specific and handle at call
+            // sites
+            throw new RuntimeException(e);
+        }
 
-      GlobalDocumentId globalId = getGlobalId(rawDocument);
-      log.info("Persisted raw document {} to file {}", globalId, newFile.getAbsolutePath());
-      virusScanner.scan(newFile, globalId.toString());
-   }
+        GlobalDocumentId globalId = getGlobalId(rawDocument);
+        log.info("Persisted raw document {} to file {}", globalId,
+                newFile.getAbsolutePath());
+        virusScanner.scan(newFile, globalId.toString());
+    }
 
-   private File getFileForName(String fileName)
-   {
-      File docsPath = ensureDocsDirectory();
-      File newFile = new File(docsPath, fileName);
-      return newFile;
-   }
+    private File getFileForName(String fileName) {
+        File docsPath = ensureDocsDirectory();
+        File newFile = new File(docsPath, fileName);
+        return newFile;
+    }
 
-   private File ensureDocsDirectory()
-   {
-      String basePathStringOrNull = appConfig.getDocumentFileStorageLocation();
-      if (basePathStringOrNull == null)
-      {
-         throw new RuntimeException("Document storage location is not configured in JNDI.");
-      }
-      File docsDirectory = new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
-      docsDirectory.mkdirs();
-      return docsDirectory;
-   }
+    private File ensureDocsDirectory() {
+        String basePathStringOrNull =
+                appConfig.getDocumentFileStorageLocation();
+        if (basePathStringOrNull == null) {
+            throw new RuntimeException(
+                    "Document storage location is not configured in JNDI.");
+        }
+        File docsDirectory =
+                new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
+        docsDirectory.mkdirs();
+        return docsDirectory;
+    }
 
-   private static String generateFileNameFor(HRawDocument rawDocument)
-   {
-      // Could change to use id of rawDocument, and throw if rawDocument has no id yet.
-      String idAsString = rawDocument.getDocument().getId().toString();
-      String extension = rawDocument.getType().getExtension();
-      return idAsString + "." + extension;
-   }
+    private static String generateFileNameFor(HRawDocument rawDocument) {
+        // Could change to use id of rawDocument, and throw if rawDocument has
+        // no id yet.
+        String idAsString = rawDocument.getDocument().getId().toString();
+        String extension = rawDocument.getType().getExtension();
+        return idAsString + "." + extension;
+    }
 
-   // TODO damason: put this in a more appropriate location
-   private static GlobalDocumentId getGlobalId(HRawDocument rawDocument)
-   {
-      HDocument document = rawDocument.getDocument();
-      HProjectIteration version = document.getProjectIteration();
-      HProject project = version.getProject();
+    // TODO damason: put this in a more appropriate location
+    private static GlobalDocumentId getGlobalId(HRawDocument rawDocument) {
+        HDocument document = rawDocument.getDocument();
+        HProjectIteration version = document.getProjectIteration();
+        HProject project = version.getProject();
 
-      GlobalDocumentId id = new GlobalDocumentId(
-            project.getSlug(),
-            version.getSlug(),
-            document.getDocId());
+        GlobalDocumentId id =
+                new GlobalDocumentId(project.getSlug(), version.getSlug(),
+                        document.getDocId());
 
-      return id;
-   }
+        return id;
+    }
 
-   @Override
-   public InputStream getRawDocumentContentAsStream(HRawDocument document) throws RawDocumentContentAccessException
-   {
-      File rawFile = getFileForRawDocument(document);
-      try
-      {
-         return new FileInputStream(rawFile);
-      }
-      catch (FileNotFoundException e)
-      {
-         // FIXME damason: throw more specific exception and handle at call sites
-         throw new RuntimeException(e);
-      }
-   }
+    @Override
+    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+            throws RawDocumentContentAccessException {
+        File rawFile = getFileForRawDocument(document);
+        try {
+            return new FileInputStream(rawFile);
+        } catch (FileNotFoundException e) {
+            // FIXME damason: throw more specific exception and handle at call
+            // sites
+            throw new RuntimeException(e);
+        }
+    }
 
-   @Override
-   public boolean hasPersistedDocument(GlobalDocumentId id)
-   {
-      HDocument doc = documentDAO.getByGlobalId(id);
-      HRawDocument rawDocument = doc.getRawDocument();
-      return rawDocument != null
-            && getFileForRawDocument(rawDocument).exists();
-   }
+    @Override
+    public boolean hasPersistedDocument(GlobalDocumentId id) {
+        HDocument doc = documentDAO.getByGlobalId(id);
+        HRawDocument rawDocument = doc.getRawDocument();
+        return rawDocument != null
+                && getFileForRawDocument(rawDocument).exists();
+    }
 
-   private File getFileForRawDocument(HRawDocument rawDocument)
-   {
-      return getFileForName(rawDocument.getFileId());
-   }
+    private File getFileForRawDocument(HRawDocument rawDocument) {
+        return getFileForName(rawDocument.getFileId());
+    }
 
 }

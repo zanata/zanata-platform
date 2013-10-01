@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -41,104 +41,96 @@ import org.zanata.model.HAccount;
 
 @Name("passwordChange")
 @Scope(ScopeType.PAGE)
-public class PasswordChangeAction implements Serializable
-{
+public class PasswordChangeAction implements Serializable {
 
-   /**
-    * 
+    /**
+    *
     */
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    HAccount authenticatedAccount;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private IdentityManager identityManager;
+    @In
+    private IdentityManager identityManager;
 
-   private String passwordOld;
-   private String passwordNew;
-   private String passwordConfirm;
+    private String passwordOld;
+    private String passwordNew;
+    private String passwordConfirm;
 
-   
-   public void setPasswordOld(String passwordOld)
-   {
-      this.passwordOld = passwordOld;
-   }
-   
-   @NotEmpty
-   @Size(min = 6, max = 20)
-   public String getPasswordOld()
-   {
-      return passwordOld;
-   }
+    public void setPasswordOld(String passwordOld) {
+        this.passwordOld = passwordOld;
+    }
 
-   @Begin(join = true)
-   public void setPasswordNew(String passwordNew)
-   {
-      this.passwordNew = passwordNew;
-   }
+    @NotEmpty
+    @Size(min = 6, max = 20)
+    public String getPasswordOld() {
+        return passwordOld;
+    }
 
-   @NotEmpty
-   @Size(min = 6, max = 20)
-   // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
-   // message="Password is not secure enough!")
-   public String getPasswordNew()
-   {
-      return passwordNew;
-   }
+    @Begin(join = true)
+    public void setPasswordNew(String passwordNew) {
+        this.passwordNew = passwordNew;
+    }
 
-   @Begin(join = true)
-   public void setPasswordConfirm(String passwordConfirm)
-   {
-      this.passwordConfirm = passwordConfirm;
-      validatePasswordsMatch();
-   }
+    @NotEmpty
+    @Size(min = 6, max = 20)
+    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+    // message="Password is not secure enough!")
+            public
+            String getPasswordNew() {
+        return passwordNew;
+    }
 
-   public String getPasswordConfirm()
-   {
-      return passwordConfirm;
-   }
+    @Begin(join = true)
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+        validatePasswordsMatch();
+    }
 
-   public boolean validatePasswordsMatch()
-   {
-      if (passwordNew == null || !passwordNew.equals(passwordConfirm))
-      {
-         FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
-         return false;
-      }
-      return true;
-   }
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
 
-   @End
-   public String change()
-   {
-      if (!validatePasswordsMatch())
-         return null;
+    public boolean validatePasswordsMatch() {
+        if (passwordNew == null || !passwordNew.equals(passwordConfirm)) {
+            FacesMessages.instance().addToControl("passwordConfirm",
+                    "Passwords do not match");
+            return false;
+        }
+        return true;
+    }
 
-      if (!isFirstPasswordChange() && !identityManager.authenticate(authenticatedAccount.getUsername(), passwordOld))
-      {
-         FacesMessages.instance().addToControl("passwordOld", "Old password is incorrect, please check and try again.");
-         return null;
-      }
+    @End
+    public String change() {
+        if (!validatePasswordsMatch())
+            return null;
 
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityManager.changePassword(authenticatedAccount.getUsername(), getPasswordNew());
-         }
-      }.addRole("admin").run();
+        if (!isFirstPasswordChange()
+                && !identityManager.authenticate(
+                        authenticatedAccount.getUsername(), passwordOld)) {
+            FacesMessages.instance().addToControl("passwordOld",
+                    "Old password is incorrect, please check and try again.");
+            return null;
+        }
 
-      FacesMessages.instance().add("Your password has been successfully changed.");
+        new RunAsOperation() {
+            public void execute() {
+                identityManager.changePassword(
+                        authenticatedAccount.getUsername(), getPasswordNew());
+            }
+        }.addRole("admin").run();
 
-      return "/profile/view.xhtml";
-   }
+        FacesMessages.instance().add(
+                "Your password has been successfully changed.");
 
-   public boolean isFirstPasswordChange()
-   {
-      return authenticatedAccount.getPasswordHash() == null;
-   }
+        return "/profile/view.xhtml";
+    }
+
+    public boolean isFirstPasswordChange() {
+        return authenticatedAccount.getPasswordHash() == null;
+    }
 }

@@ -1,49 +1,49 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:f="urn:import:org.zanata.webtrans.client">
-	<ui:style type="org.zanata.webtrans.client.view.GlossaryView.Styles">
-		.headerLabel {
-            padding-right:5px;
-            padding-top:5px;
-            font-weight:bold;
-            color: #416988;
-        }
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:f="urn:import:org.zanata.webtrans.client">
+  <ui:style type="org.zanata.webtrans.client.view.GlossaryView.Styles">
+    .headerLabel {
+      padding-right: 5px;
+      padding-top: 5px;
+      font-weight: bold;
+      color: #416988;
+    }
 
-        .rootContainer {
-			min-width:400px;
-			width:100%;
-		}
+    .rootContainer {
+      min-width: 400px;
+      width: 100%;
+    }
 
-		.searchBox
-		{
-			border:1px solid #A7A7A7;
-			border-radius:3px;
-			padding:2px;
-		}
+    .searchBox {
+      border: 1px solid #A7A7A7;
+      border-radius: 3px;
+      padding: 2px;
+    }
 
-		.topBar
-		{
-			padding-left:10px;
-		}
+    .topBar {
+      padding-left: 10px;
+    }
 
-	</ui:style>
+  </ui:style>
 
-	<g:ScrollPanel>
-		<g:VerticalPanel styleName="{style.rootContainer}">
-			<g:cell height="30px" verticalAlignment="ALIGN_MIDDLE">
-				<g:HTMLPanel styleName="{style.topBar}">
-					<g:HorizontalPanel>
-						<g:Label ui:field="headerLabel" styleName="{style.headerLabel}"/>
-						<g:TextBox ui:field="glossaryTextBox" styleName="{style.searchBox}" />
-						<g:ValueListBox ui:field="searchType" />
-						<g:Button ui:field="searchButton" />
-						<g:Button ui:field="clearButton" />
-					</g:HorizontalPanel>
-				</g:HTMLPanel>
-			</g:cell>
-			<g:cell>
-				<g:HTMLPanel ui:field="container" />
-			</g:cell>
-		</g:VerticalPanel>
-	</g:ScrollPanel>
+  <g:ScrollPanel>
+    <g:VerticalPanel styleName="{style.rootContainer}">
+      <g:cell height="30px" verticalAlignment="ALIGN_MIDDLE">
+        <g:HTMLPanel styleName="{style.topBar}">
+          <g:HorizontalPanel>
+            <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
+            <g:TextBox ui:field="glossaryTextBox"
+              styleName="{style.searchBox}" />
+            <g:ValueListBox ui:field="searchType" />
+            <g:Button ui:field="searchButton" />
+            <g:Button ui:field="clearButton" />
+          </g:HorizontalPanel>
+        </g:HTMLPanel>
+      </g:cell>
+      <g:cell>
+        <g:HTMLPanel ui:field="container" />
+      </g:cell>
+    </g:VerticalPanel>
+  </g:ScrollPanel>
 </ui:UiBinder>

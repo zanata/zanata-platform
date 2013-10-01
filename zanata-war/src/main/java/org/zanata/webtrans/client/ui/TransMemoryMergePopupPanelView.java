@@ -33,78 +33,73 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TransMemoryMergePopupPanelView implements TransMemoryMergePopupPanelDisplay
-{
+public class TransMemoryMergePopupPanelView implements
+        TransMemoryMergePopupPanelDisplay {
 
-   interface TMIMergeUiBinder extends UiBinder<DialogBox, TransMemoryMergePopupPanelView>
-   {
-   }
+    interface TMIMergeUiBinder extends
+            UiBinder<DialogBox, TransMemoryMergePopupPanelView> {
+    }
 
-   private final TMMergeForm TMMergeForm;
-   private final Label processingLabel;
+    private final TMMergeForm TMMergeForm;
+    private final Label processingLabel;
 
-   private DialogBox dialogBox;
+    private DialogBox dialogBox;
 
-   private static TMIMergeUiBinder uiBinder = GWT.create(TMIMergeUiBinder.class);
+    private static TMIMergeUiBinder uiBinder = GWT
+            .create(TMIMergeUiBinder.class);
 
+    @Inject
+    public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm,
+            UiMessages messages) {
+        // auto hide false, modal true
 
+        dialogBox = uiBinder.createAndBindUi(this);
+        dialogBox.setText(messages.mergeTMCaption());
+        dialogBox.setGlassEnabled(true);
+        dialogBox.ensureDebugId("TMMerge");
+        dialogBox.setAutoHideEnabled(false);
+        dialogBox.setModal(true);
 
-   @Inject
-   public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm, UiMessages messages)
-   {
-      //auto hide false, modal true
+        VerticalPanel main = new VerticalPanel();
+        main.add(TMMergeForm);
+        processingLabel = new Label(messages.processing());
+        main.add(processingLabel);
+        dialogBox.add(main);
+        this.TMMergeForm = TMMergeForm;
+        processingLabel.setVisible(false);
+        hide();
+    }
 
-      dialogBox = uiBinder.createAndBindUi(this);
-      dialogBox.setText(messages.mergeTMCaption());
-      dialogBox.setGlassEnabled(true);
-      dialogBox.ensureDebugId("TMMerge");
-      dialogBox.setAutoHideEnabled(false);
-      dialogBox.setModal(true);
+    @Override
+    public void setListener(Listener listener) {
+        TMMergeForm.setListener(listener);
+    }
 
-      VerticalPanel main = new VerticalPanel();
-      main.add(TMMergeForm);
-      processingLabel = new Label(messages.processing());
-      main.add(processingLabel);
-      dialogBox.add(main);
-      this.TMMergeForm = TMMergeForm;
-      processingLabel.setVisible(false);
-      hide();
-   }
+    @Override
+    public void showProcessing() {
+        TMMergeForm.setVisible(false);
+        processingLabel.setVisible(true);
+    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      TMMergeForm.setListener(listener);
-   }
+    @Override
+    public void showForm() {
+        processingLabel.setVisible(false);
+        TMMergeForm.setVisible(true);
+        dialogBox.center();
+    }
 
-   @Override
-   public void showProcessing()
-   {
-      TMMergeForm.setVisible(false);
-      processingLabel.setVisible(true);
-   }
+    @Override
+    public Widget asWidget() {
+        return dialogBox;
+    }
 
-   @Override
-   public void showForm()
-   {
-      processingLabel.setVisible(false);
-      TMMergeForm.setVisible(true);
-      dialogBox.center();
-   }
+    @Override
+    public void hide() {
+        dialogBox.hide();
 
-   @Override
-   public Widget asWidget()
-   {
-      return dialogBox;
-   }
-
-   @Override
-   public void hide()
-   {
-      dialogBox.hide();
-
-   }
+    }
 }

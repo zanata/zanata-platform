@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,239 +51,239 @@ import org.zanata.util.HashUtil;
 
 @Name("registerServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class RegisterServiceImpl implements RegisterService
-{
-   @In
-   EntityManager entityManager;
+public class RegisterServiceImpl implements RegisterService {
+    @In
+    EntityManager entityManager;
 
-   @In
-   IdentityStore identityStore;
-   
-   @In
-   AccountDAO accountDAO;
-   
-   @In
-   PersonDAO personDAO;
+    @In
+    IdentityStore identityStore;
 
-   @In
-   AccountRoleDAO accountRoleDAO;
-   
-   @In
-   AccountActivationKeyDAO accountActivationKeyDAO;
+    @In
+    AccountDAO accountDAO;
 
-   @In
-   ApplicationConfiguration applicationConfiguration;
+    @In
+    PersonDAO personDAO;
 
+    @In
+    AccountRoleDAO accountRoleDAO;
 
-   /**
-    * Performs post-processing logic after registering an account.
-    *
-    * @param account The account that has just been created.
-    */
-   private void postProcessRegisteredAccount( final HAccount account )
-   {
-      if( applicationConfiguration.getAdminUsers().contains( account.getUsername() ) )
-      {
-         HAccountRole adminRole = accountRoleDAO.findByName("admin");
-         if( adminRole != null )
-         {
-            account.getRoles().add( adminRole );
-         }
-      }
-   }
+    @In
+    AccountActivationKeyDAO accountActivationKeyDAO;
 
-   @Override
-   public String register(final String username, final String name, String email)
-   {
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityStore.createUser(username, null);
-            identityStore.disableUser(username);
-         }
-      }.addRole("admin").run();
+    @In
+    ApplicationConfiguration applicationConfiguration;
 
-      HAccount account = accountDAO.getByUsername(username);
-      HPerson person = new HPerson();
-      person.setAccount(account);
-      person.setEmail(email);
-      person.setName(name);
+    /**
+     * Performs post-processing logic after registering an account.
+     *
+     * @param account
+     *            The account that has just been created.
+     */
+    private void postProcessRegisteredAccount(final HAccount account) {
+        if (applicationConfiguration.getAdminUsers().contains(
+                account.getUsername())) {
+            HAccountRole adminRole = accountRoleDAO.findByName("admin");
+            if (adminRole != null) {
+                account.getRoles().add(adminRole);
+            }
+        }
+    }
 
-      this.postProcessRegisteredAccount(account);
-      personDAO.makePersistent(person);
+    @Override
+    public String register(final String username, final String name,
+            String email) {
+        new RunAsOperation() {
+            public void execute() {
+                identityStore.createUser(username, null);
+                identityStore.disableUser(username);
+            }
+        }.addRole("admin").run();
 
-      HAccountActivationKey key = new HAccountActivationKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(username + email + name + System.currentTimeMillis()));
-      accountActivationKeyDAO.makePersistent(key);
-      accountActivationKeyDAO.flush();
-      return key.getKeyHash();
-   }
+        HAccount account = accountDAO.getByUsername(username);
+        HPerson person = new HPerson();
+        person.setAccount(account);
+        person.setEmail(email);
+        person.setName(name);
 
-   public String register(final String username, final String password, String name, String email)
-   {
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityStore.createUser(username, password);
-            identityStore.disableUser(username);
-         }
-      }.addRole("admin").run();
+        this.postProcessRegisteredAccount(account);
+        personDAO.makePersistent(person);
 
-      HAccount account = accountDAO.getByUsername(username);
-      HPerson person = new HPerson();
-      person.setAccount(account);
-      person.setEmail(email);
-      person.setName(name);
+        HAccountActivationKey key = new HAccountActivationKey();
+        key.setAccount(account);
+        key.setKeyHash(HashUtil.generateHash(username + email + name
+                + System.currentTimeMillis()));
+        accountActivationKeyDAO.makePersistent(key);
+        accountActivationKeyDAO.flush();
+        return key.getKeyHash();
+    }
 
-      this.postProcessRegisteredAccount(account);
-      personDAO.makePersistent(person);
+    public String register(final String username, final String password,
+            String name, String email) {
+        new RunAsOperation() {
+            public void execute() {
+                identityStore.createUser(username, password);
+                identityStore.disableUser(username);
+            }
+        }.addRole("admin").run();
 
-      HAccountActivationKey key = new HAccountActivationKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(username + password + email + name + System.currentTimeMillis()));
-      accountActivationKeyDAO.makePersistent(key);
-      accountActivationKeyDAO.flush();
-      return key.getKeyHash();
-   }
+        HAccount account = accountDAO.getByUsername(username);
+        HPerson person = new HPerson();
+        person.setAccount(account);
+        person.setEmail(email);
+        person.setName(name);
 
-   @Override
-   public String register(final String username, final String externalId, AuthenticationType authType, String name, String email)
-   {
-      new RunAsOperation()
-      {
-         public void execute()
-         {
-            identityStore.createUser(username, null); // no password initially
-            identityStore.disableUser(username);
-         }
-      }.addRole("admin").run();
+        this.postProcessRegisteredAccount(account);
+        personDAO.makePersistent(person);
 
-      HAccount account = accountDAO.getByUsername(username);
-      account.getCredentials().add( new HOpenIdCredentials(account, externalId, email) );
-      HPerson person = new HPerson();
-      person.setAccount(account);
-      person.setEmail(email);
-      person.setName(name);
+        HAccountActivationKey key = new HAccountActivationKey();
+        key.setAccount(account);
+        key.setKeyHash(HashUtil.generateHash(username + password + email + name
+                + System.currentTimeMillis()));
+        accountActivationKeyDAO.makePersistent(key);
+        accountActivationKeyDAO.flush();
+        return key.getKeyHash();
+    }
 
-      this.postProcessRegisteredAccount(account);
-      personDAO.makePersistent(person);
+    @Override
+    public String register(final String username, final String externalId,
+            AuthenticationType authType, String name, String email) {
+        new RunAsOperation() {
+            public void execute() {
+                identityStore.createUser(username, null); // no password
+                                                          // initially
+                identityStore.disableUser(username);
+            }
+        }.addRole("admin").run();
 
-      HAccountActivationKey key = new HAccountActivationKey();
-      key.setAccount(account);
-      key.setKeyHash(HashUtil.generateHash(username + email + name + System.currentTimeMillis()));
-      accountActivationKeyDAO.makePersistent(key);
-      accountActivationKeyDAO.flush();
-      return key.getKeyHash();
-   }
+        HAccount account = accountDAO.getByUsername(username);
+        account.getCredentials().add(
+                new HOpenIdCredentials(account, externalId, email));
+        HPerson person = new HPerson();
+        person.setAccount(account);
+        person.setEmail(email);
+        person.setName(name);
 
-   @Override
-   public void mergeAccounts( final HAccount active, final HAccount obsolete )
-   {
-      if( active.getId().equals( obsolete.getId() ) )
-      {
-         throw new RuntimeException("Attempting to merge the same account");
-      }
+        this.postProcessRegisteredAccount(account);
+        personDAO.makePersistent(person);
 
-      // Have to run this as admin, as projects and iterations will be updated
-      new MergeAccountsOperation(active, obsolete).run();
-   }
+        HAccountActivationKey key = new HAccountActivationKey();
+        key.setAccount(account);
+        key.setKeyHash(HashUtil.generateHash(username + email + name
+                + System.currentTimeMillis()));
+        accountActivationKeyDAO.makePersistent(key);
+        accountActivationKeyDAO.flush();
+        return key.getKeyHash();
+    }
 
-   /**
-    * Implements the RunAsOperation to run as a system op.
-    */
-   private class MergeAccountsOperation extends RunAsOperation
-   {
-      private HAccount active;
-      private HAccount obsolete;
+    @Override
+    public void mergeAccounts(final HAccount active, final HAccount obsolete) {
+        if (active.getId().equals(obsolete.getId())) {
+            throw new RuntimeException("Attempting to merge the same account");
+        }
 
-      private MergeAccountsOperation(HAccount active, HAccount obsolete)
-      {
-         super(true); // system op
-         this.active = active;
-         this.obsolete = obsolete;
-      }
+        // Have to run this as admin, as projects and iterations will be updated
+        new MergeAccountsOperation(active, obsolete).run();
+    }
 
-      @Override
-      public void execute()
-      {
-         obsolete = entityManager.merge( obsolete );
-         active = entityManager.merge( active );
+    /**
+     * Implements the RunAsOperation to run as a system op.
+     */
+    private class MergeAccountsOperation extends RunAsOperation {
+        private HAccount active;
+        private HAccount obsolete;
 
-         HPerson activePerson = active.getPerson();
-         HPerson obsoletePerson = obsolete.getPerson();
+        private MergeAccountsOperation(HAccount active, HAccount obsolete) {
+            super(true); // system op
+            this.active = active;
+            this.obsolete = obsolete;
+        }
 
-         // Disable obsolete account and change the email address
-         obsolete.setEnabled(false);
-         obsolete.getPerson().setEmail( obsolete.getPerson().getEmail() + ".disabled" );
+        @Override
+        public void execute() {
+            obsolete = entityManager.merge(obsolete);
+            active = entityManager.merge(active);
 
-         // Merge all Roles
-         for( HAccountRole role: obsolete.getRoles() )
-         {
-            active.getRoles().add( role );
-         }
-         obsolete.getRoles().clear();
+            HPerson activePerson = active.getPerson();
+            HPerson obsoletePerson = obsolete.getPerson();
 
-         // Add Credentials
-         for( HCredentials credentials : obsolete.getCredentials() )
-         {
-            credentials.setAccount( active );
-            active.getCredentials().add( credentials );
-         }
+            // Disable obsolete account and change the email address
+            obsolete.setEnabled(false);
+            obsolete.getPerson().setEmail(
+                    obsolete.getPerson().getEmail() + ".disabled");
 
-         // Merge all Maintained Projects
-         List<HProject> maintainedProjects = new ArrayList<HProject>( obsoletePerson.getMaintainerProjects() );
-         for( HProject proj : maintainedProjects )
-         {
-            proj.getMaintainers().add( activePerson );
-            proj.getMaintainers().remove( obsoletePerson );
-         }
+            // Merge all Roles
+            for (HAccountRole role : obsolete.getRoles()) {
+                active.getRoles().add(role);
+            }
+            obsolete.getRoles().clear();
 
-         // Merge all maintained Version Groups
-         List<HIterationGroup> maintainedGroups = new ArrayList<HIterationGroup>( obsoletePerson.getMaintainerVersionGroups() );
-         for( HIterationGroup group : maintainedGroups )
-         {
-            group.getMaintainers().add( activePerson );
-            group.getMaintainers().remove( obsoletePerson );
-         }
-
-         // Merge all language teams
-         List<HLocaleMember> obsoleteMemberships = personDAO.getAllLanguageTeamMemberships(obsoletePerson);
-         List<HLocaleMember> activeMemberships = personDAO.getAllLanguageTeamMemberships(activePerson);
-
-         for( HLocaleMember obsoleteMembership : obsoleteMemberships )
-         {
-            HLocaleMember activeMembership = null;
-
-            for( HLocaleMember m : activeMemberships )
-            {
-               if( m.getPerson().getId().equals( obsoleteMembership.getPerson().getId() )
-                     && m.getSupportedLanguage().getLocaleId().equals(obsoleteMembership.getSupportedLanguage().getLocaleId()))
-               {
-                  activeMembership = m;
-                  break;
-               }
+            // Add Credentials
+            for (HCredentials credentials : obsolete.getCredentials()) {
+                credentials.setAccount(active);
+                active.getCredentials().add(credentials);
             }
 
-            if( activeMembership == null )
-            {
-               activeMembership = new HLocaleMember(activePerson, obsoleteMembership.getSupportedLanguage(), 
-                     obsoleteMembership.isTranslator(), obsoleteMembership.isReviewer(), obsoleteMembership.isCoordinator());
+            // Merge all Maintained Projects
+            List<HProject> maintainedProjects =
+                    new ArrayList<HProject>(
+                            obsoletePerson.getMaintainerProjects());
+            for (HProject proj : maintainedProjects) {
+                proj.getMaintainers().add(activePerson);
+                proj.getMaintainers().remove(obsoletePerson);
             }
 
-            activeMembership.setCoordinator(activeMembership.isCoordinator() || obsoleteMembership.isCoordinator());
-            entityManager.remove(obsoleteMembership);
-         }
+            // Merge all maintained Version Groups
+            List<HIterationGroup> maintainedGroups =
+                    new ArrayList<HIterationGroup>(
+                            obsoletePerson.getMaintainerVersionGroups());
+            for (HIterationGroup group : maintainedGroups) {
+                group.getMaintainers().add(activePerson);
+                group.getMaintainers().remove(obsoletePerson);
+            }
 
-         // Link all merged accounts
-         List<HAccount> previouslyMerged = accountDAO.getAllMergedAccounts( obsolete );
-         for( HAccount acc : previouslyMerged )
-         {
-            acc.setMergedInto( active );
-         }
-         obsolete.setMergedInto( active );
-      }
-   }
+            // Merge all language teams
+            List<HLocaleMember> obsoleteMemberships =
+                    personDAO.getAllLanguageTeamMemberships(obsoletePerson);
+            List<HLocaleMember> activeMemberships =
+                    personDAO.getAllLanguageTeamMemberships(activePerson);
+
+            for (HLocaleMember obsoleteMembership : obsoleteMemberships) {
+                HLocaleMember activeMembership = null;
+
+                for (HLocaleMember m : activeMemberships) {
+                    if (m.getPerson().getId()
+                            .equals(obsoleteMembership.getPerson().getId())
+                            && m.getSupportedLanguage()
+                                    .getLocaleId()
+                                    .equals(obsoleteMembership
+                                            .getSupportedLanguage()
+                                            .getLocaleId())) {
+                        activeMembership = m;
+                        break;
+                    }
+                }
+
+                if (activeMembership == null) {
+                    activeMembership =
+                            new HLocaleMember(activePerson,
+                                    obsoleteMembership.getSupportedLanguage(),
+                                    obsoleteMembership.isTranslator(),
+                                    obsoleteMembership.isReviewer(),
+                                    obsoleteMembership.isCoordinator());
+                }
+
+                activeMembership.setCoordinator(activeMembership
+                        .isCoordinator() || obsoleteMembership.isCoordinator());
+                entityManager.remove(obsoleteMembership);
+            }
+
+            // Link all merged accounts
+            List<HAccount> previouslyMerged =
+                    accountDAO.getAllMergedAccounts(obsolete);
+            for (HAccount acc : previouslyMerged) {
+                acc.setMergedInto(active);
+            }
+            obsolete.setMergedInto(active);
+        }
+    }
 }

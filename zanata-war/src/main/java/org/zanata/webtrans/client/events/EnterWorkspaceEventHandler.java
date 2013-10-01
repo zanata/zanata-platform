@@ -2,9 +2,8 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface EnterWorkspaceEventHandler extends EventHandler
-{
+public interface EnterWorkspaceEventHandler extends EventHandler {
 
-   void onEnterWorkspace(EnterWorkspaceEvent event);
+    void onEnterWorkspace(EnterWorkspaceEvent event);
 
 }

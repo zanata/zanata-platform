@@ -80,6 +80,3 @@ public class HGlossaryEntry extends ModelEntityBase
    @FieldBridge(impl = LocaleIdBridge.class)
    private HLocale srcLocale;
 }
-
-
- 

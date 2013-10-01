@@ -21,35 +21,32 @@
 package org.zanata.webtrans.client.keys;
 
 /**
- * Wraps a {{@link com.google.gwt.user.client.Timer} to allow testing
- * in a non-browser environment.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * Wraps a {{@link com.google.gwt.user.client.Timer} to allow testing in a
+ * non-browser environment.
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class Timer
-{
+public class Timer {
 
-   private com.google.gwt.user.client.Timer timer;
+    private com.google.gwt.user.client.Timer timer;
 
-   public Timer(com.google.gwt.user.client.Timer timer)
-   {
-      this.timer = timer;
-   }
+    public Timer(com.google.gwt.user.client.Timer timer) {
+        this.timer = timer;
+    }
 
-   /**
-    * @see {{@link com.google.gwt.user.client.Timer#cancel()}
-    */
-   public void cancel()
-   {
-      timer.cancel();
-   }
+    /**
+     * @see {{@link com.google.gwt.user.client.Timer#cancel()}
+     */
+    public void cancel() {
+        timer.cancel();
+    }
 
-   /**
-    * @see {@link com.google.gwt.user.client.Timer#schedule(int)}
-    */
-   public void schedule(int delayMillis)
-   {
-      timer.schedule(delayMillis);
-   }
+    /**
+     * @see {@link com.google.gwt.user.client.Timer#schedule(int)}
+     */
+    public void schedule(int delayMillis) {
+        timer.schedule(delayMillis);
+    }
 }

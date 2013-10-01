@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface ReviewCommentEventHandler extends EventHandler
-{
-   void onShowReviewComment(ReviewCommentEvent event);
+public interface ReviewCommentEventHandler extends EventHandler {
+    void onShowReviewComment(ReviewCommentEvent event);
 }

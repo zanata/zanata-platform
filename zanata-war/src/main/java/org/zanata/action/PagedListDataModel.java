@@ -20,7 +20,6 @@
  */
 package org.zanata.action;
 
-
 import java.io.Serializable;
 
 import javax.faces.model.DataModel;
@@ -29,44 +28,38 @@ import org.jboss.seam.log.LogProvider;
 import org.jboss.seam.log.Logging;
 import org.zanata.exception.ZanataServiceException;
 
+public abstract class PagedListDataModel<E> extends DataModel implements
+        Serializable {
+    private static final long serialVersionUID = 1L;
+    private int DEFAULT_PAGESIZE = 15;
+    private int pageSize = DEFAULT_PAGESIZE;
+    private int rowIndex;
+    private DataPage<E> page;
+    protected static final LogProvider log = Logging
+            .getLogProvider(PagedListDataModel.class);
 
-public abstract class PagedListDataModel<E> extends DataModel implements Serializable
-{
-   private static final long serialVersionUID = 1L;
-   private int DEFAULT_PAGESIZE = 15;
-   private int pageSize = DEFAULT_PAGESIZE;
-   private int rowIndex;
-   private DataPage<E> page;
-   protected static final LogProvider log = Logging.getLogProvider(PagedListDataModel.class);
-
-   public PagedListDataModel()
-   {
+    public PagedListDataModel() {
         super();
         this.rowIndex = -1;
         this.page = null;
     }
 
-   public void setPageSize(int pageSize)
-   {
-      this.pageSize = pageSize;
-   }
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
 
-   public int getPageSize()
-   {
-      return pageSize;
-   }
+    public int getPageSize() {
+        return pageSize;
+    }
 
-   @SuppressWarnings("unchecked")
-   public void setWrappedData(Object o)
-   {
-      if (o instanceof DataPage)
-      {
-         this.page = (DataPage<E>) o;
-      }
-      else
-      {
-         throw new ZanataServiceException("Wrapped data class cast exception");
-      }
+    @SuppressWarnings("unchecked")
+    public void setWrappedData(Object o) {
+        if (o instanceof DataPage) {
+            this.page = (DataPage<E>) o;
+        } else {
+            throw new ZanataServiceException(
+                    "Wrapped data class cast exception");
+        }
     }
 
     public int getRowIndex() {
@@ -77,92 +70,80 @@ public abstract class PagedListDataModel<E> extends DataModel implements Seriali
         rowIndex = index;
     }
 
-   public int getRowCount()
-   {
-       return getPage().getDatasetSize();
-   }
+    public int getRowCount() {
+        return getPage().getDatasetSize();
+    }
 
-   private DataPage<E> getPage()
-   {
-      if (page != null)
-      {
-         return page;
-       }
+    private DataPage<E> getPage() {
+        if (page != null) {
+            return page;
+        }
 
-      int rowIndex = getRowIndex();
-      int startRow;
-      if (rowIndex == -1)
-      {
-         startRow = 0;
-      }
-      else
-      {
-         startRow = rowIndex;
-      }
+        int rowIndex = getRowIndex();
+        int startRow;
+        if (rowIndex == -1) {
+            startRow = 0;
+        } else {
+            startRow = rowIndex;
+        }
 
-      log.debug("start to fetch page from :" + startRow);
-      page = fetchPage(startRow, pageSize);
-      return page;
-   }
+        log.debug("start to fetch page from :" + startRow);
+        page = fetchPage(startRow, pageSize);
+        return page;
+    }
 
-   public Object getRowData()
-   {
-      if (rowIndex < 0)
-      {
-         throw new ZanataServiceException("Invalid rowIndex" + rowIndex + "for PagedListDataModel");
-      }
-      if (page == null)
-      {
-         page = fetchPage(rowIndex, pageSize);
-      }
-      int datasetSize = page.getDatasetSize();
-      int startRow = page.getStartRow();
-      int count = page.getData().size();
-      int endRow = startRow + count;
-      if (rowIndex >= datasetSize)
-      {
-         throw new ZanataServiceException("Invalid rowIndex" + rowIndex + "for PagedListDataModel");
-       }
-      if (rowIndex < startRow)
-      {
-           page = fetchPage(rowIndex, pageSize);
-           startRow = page.getStartRow();
-      }
-      else if (rowIndex >= endRow)
-      {
-           page = fetchPage(rowIndex, pageSize);
-           startRow = page.getStartRow();
-      }
-      return page.getData().get(rowIndex - startRow);
-   }
+    public Object getRowData() {
+        if (rowIndex < 0) {
+            throw new ZanataServiceException("Invalid rowIndex" + rowIndex
+                    + "for PagedListDataModel");
+        }
+        if (page == null) {
+            page = fetchPage(rowIndex, pageSize);
+        }
+        int datasetSize = page.getDatasetSize();
+        int startRow = page.getStartRow();
+        int count = page.getData().size();
+        int endRow = startRow + count;
+        if (rowIndex >= datasetSize) {
+            throw new ZanataServiceException("Invalid rowIndex" + rowIndex
+                    + "for PagedListDataModel");
+        }
+        if (rowIndex < startRow) {
+            page = fetchPage(rowIndex, pageSize);
+            startRow = page.getStartRow();
+        } else if (rowIndex >= endRow) {
+            page = fetchPage(rowIndex, pageSize);
+            startRow = page.getStartRow();
+        }
+        return page.getData().get(rowIndex - startRow);
+    }
 
-   public Object getWrappedData() {
-       return page.getData();
-   }
+    public Object getWrappedData() {
+        return page.getData();
+    }
 
-   public boolean isRowAvailable() {
-      DataPage<E> page = getPage();
-       if (page == null) {
-           return false;
-       }
-       int rowIndex = getRowIndex();
-       if (rowIndex < 0) {
-           return false;
-       } else if (rowIndex >= page.getDatasetSize()) {
-           return false;
-       } else {
-           return true;
-       }
-   }
-   
-   public abstract DataPage<E> fetchPage(int startRow, int pageSize);
+    public boolean isRowAvailable() {
+        DataPage<E> page = getPage();
+        if (page == null) {
+            return false;
+        }
+        int rowIndex = getRowIndex();
+        if (rowIndex < 0) {
+            return false;
+        } else if (rowIndex >= page.getDatasetSize()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-   public void refresh()
-   {
-      if (this.page != null) {
-          this.page = null;
-          getPage();
-      }
-   }
+    public abstract DataPage<E> fetchPage(int startRow, int pageSize);
+
+    public void refresh() {
+        if (this.page != null) {
+            this.page = null;
+            getPage();
+        }
+    }
 
 }

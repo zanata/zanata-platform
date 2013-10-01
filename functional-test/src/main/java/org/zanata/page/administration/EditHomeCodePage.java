@@ -27,39 +27,36 @@ import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class EditHomeCodePage extends BasePage {
 
-   @FindBy(id = "homeContentForm:homeContent")
-   private WebElement textEdit;
+    @FindBy(id = "homeContentForm:homeContent")
+    private WebElement textEdit;
 
-   @FindBy(id = "homeContentForm:update")
-   private WebElement updateButton;
+    @FindBy(id = "homeContentForm:update")
+    private WebElement updateButton;
 
-   @FindBy(id = "homeContentForm:cancel")
-   private WebElement cancelButton;
+    @FindBy(id = "homeContentForm:cancel")
+    private WebElement cancelButton;
 
-   public EditHomeCodePage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public EditHomeCodePage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public EditHomeCodePage enterText(String text)
-   {
-      textEdit.sendKeys(text);
-      return new EditHomeCodePage(getDriver());
-   }
+    public EditHomeCodePage enterText(String text) {
+        textEdit.sendKeys(text);
+        return new EditHomeCodePage(getDriver());
+    }
 
-   public HomePage update()
-   {
-      updateButton.click();
-      return new HomePage(getDriver());
-   }
+    public HomePage update() {
+        updateButton.click();
+        return new HomePage(getDriver());
+    }
 
-   public HomePage cancelUpdate()
-   {
-      updateButton.click();
-      return new HomePage(getDriver());
-   }
+    public HomePage cancelUpdate() {
+        updateButton.click();
+        return new HomePage(getDriver());
+    }
 }

@@ -22,7 +22,6 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface RequestPageValidationHandler extends EventHandler
-{
-   void onRequestPageValidation(RequestPageValidationEvent event);
+public interface RequestPageValidationHandler extends EventHandler {
+    void onRequestPageValidation(RequestPageValidationEvent event);
 }

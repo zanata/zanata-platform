@@ -25,46 +25,40 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Fired to trigger a new validation event from an object that does not have
  * access to appropriate details to generate a {@link RunValidationEvent}.
- * 
+ *
  * @author David Mason <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
  **/
-public class RequestValidationEvent extends GwtEvent<RequestValidationEventHandler>
-{
-   public static final RequestValidationEvent EVENT = new RequestValidationEvent();
-   /**
-    * Handler type.
-    */
-   private static Type<RequestValidationEventHandler> TYPE;
+public class RequestValidationEvent extends
+        GwtEvent<RequestValidationEventHandler> {
+    public static final RequestValidationEvent EVENT =
+            new RequestValidationEvent();
+    /**
+     * Handler type.
+     */
+    private static Type<RequestValidationEventHandler> TYPE;
 
-   /**
-    * Gets the type associated with this event.
-    * 
-    * @return returns the handler type
-    */
-   public static Type<RequestValidationEventHandler> getType()
-   {
-      return TYPE != null ? TYPE : (TYPE = new Type<RequestValidationEventHandler>());
-   }
+    /**
+     * Gets the type associated with this event.
+     *
+     * @return returns the handler type
+     */
+    public static Type<RequestValidationEventHandler> getType() {
+        return TYPE != null ? TYPE : (TYPE =
+                new Type<RequestValidationEventHandler>());
+    }
 
-   private RequestValidationEvent()
-   {
-   }
+    private RequestValidationEvent() {
+    }
 
-   @Override
-   public Type<RequestValidationEventHandler> getAssociatedType()
-   {
-      return getType();
-   }
+    @Override
+    public Type<RequestValidationEventHandler> getAssociatedType() {
+        return getType();
+    }
 
-
-   @Override
-   protected void dispatch(RequestValidationEventHandler handler)
-   {
-      handler.onRequestValidation(this);
-   }
+    @Override
+    protected void dispatch(RequestValidationEventHandler handler) {
+        handler.onRequestValidation(this);
+    }
 }
-
-
- 

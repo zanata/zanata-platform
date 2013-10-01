@@ -29,58 +29,57 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 
-public class CreateVersionPage extends BasePage
-{
-   @FindBy(id = "iterationForm:slugField:slug")
-   private WebElement versionIdField;
+public class CreateVersionPage extends BasePage {
+    @FindBy(id = "iterationForm:slugField:slug")
+    private WebElement versionIdField;
 
-   @FindBy(id = "iterationForm:projectTypeField:projectType")
-   private WebElement projectTypeSelection;
+    @FindBy(id = "iterationForm:projectTypeField:projectType")
+    private WebElement projectTypeSelection;
 
-   @FindBy(id = "iterationForm:statusField:status")
-   private WebElement statusSelection;
+    @FindBy(id = "iterationForm:statusField:status")
+    private WebElement statusSelection;
 
-   @FindBy(id = "iterationForm:save")
-   private WebElement saveButton;
+    @FindBy(id = "iterationForm:save")
+    private WebElement saveButton;
 
-   private static final Map<String, String> projectTypeOptions = new HashMap<String, String>();
-   static
-   {
-      projectTypeOptions.put("File", "File. For plain text, LibreOffice, InDesign.");
-      projectTypeOptions.put("Gettext", "Gettext. For gettext software strings.");
-      projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
-      projectTypeOptions.put("Properties", "Properties. For Java properties files.");
-      projectTypeOptions.put("Utf8Properties", "Utf8Properties. For UTF8-encoded Java properties.");
-      projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
-      projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
-   }
+    private static final Map<String, String> projectTypeOptions =
+            new HashMap<String, String>();
+    static {
+        projectTypeOptions.put("File",
+                "File. For plain text, LibreOffice, InDesign.");
+        projectTypeOptions.put("Gettext",
+                "Gettext. For gettext software strings.");
+        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
+        projectTypeOptions.put("Properties",
+                "Properties. For Java properties files.");
+        projectTypeOptions.put("Utf8Properties",
+                "Utf8Properties. For UTF8-encoded Java properties.");
+        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
+        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
+    }
 
-   public CreateVersionPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public CreateVersionPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public CreateVersionPage inputVersionId(String versionId)
-   {
-      versionIdField.sendKeys(versionId);
-      return this;
-   }
+    public CreateVersionPage inputVersionId(String versionId) {
+        versionIdField.sendKeys(versionId);
+        return this;
+    }
 
-   public CreateVersionPage selectProjectType(String projectType)
-   {
-      new Select(projectTypeSelection).selectByVisibleText(projectTypeOptions.get(projectType));
-      return this;
-   }
+    public CreateVersionPage selectProjectType(String projectType) {
+        new Select(projectTypeSelection).selectByVisibleText(projectTypeOptions
+                .get(projectType));
+        return this;
+    }
 
-   public CreateVersionPage selectStatus(String status)
-   {
-      new Select(statusSelection).selectByVisibleText(status);
-      return this;
-   }
+    public CreateVersionPage selectStatus(String status) {
+        new Select(statusSelection).selectByVisibleText(status);
+        return this;
+    }
 
-   public ProjectVersionPage saveVersion()
-   {
-      clickAndCheckErrors(saveButton);
-      return new ProjectVersionPage(getDriver());
-   }
+    public ProjectVersionPage saveVersion() {
+        clickAndCheckErrors(saveButton);
+        return new ProjectVersionPage(getDriver());
+    }
 }

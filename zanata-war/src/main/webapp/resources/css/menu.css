@@ -1,242 +1,233 @@
-#contentDiv
-{
-	position:absolute;
-	left:0;
-	right:0;
-	top:37px;
-	bottom:0;
+#contentDiv {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 37px;
+  bottom: 0;
 }
 
 /* -----------------------  Top menu CSS  -------------------------*/
 
 #loading_top_right {
-	position: fixed;
-	right: 2px;
-	top: 2px;
+  position: fixed;
+  right: 2px;
+  top: 2px;
 }
 
-.downArrow
-{
-	padding-left:10px;
-	font-size:14px;
+.downArrow {
+  padding-left: 10px;
+  font-size: 14px;
 }
 
 .header {
-	width: 100%;
-	min-width:960px;
-	height: 36px;
-	margin: 0;
-	background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
-	background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
-	background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
-	background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
-	top:0px;
-	box-shadow:1px 1px 5px #778899;
+  width: 100%;
+  min-width: 960px;
+  height: 36px;
+  margin: 0;
+  background: -webkit-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+  background: -moz-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+  background: -o-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+  background: -ms-linear-gradient(top, #F1F1F1 0%, #D3D3D3 100%);
+  top: 0px;
+  box-shadow: 1px 1px 5px #778899;
 }
 
 .logo {
-	width: 200px;
+  width: 200px;
 }
 
 .navBar {
-	width:960px;
-	height: 100%;
-	margin: 0 auto;
+  width: 960px;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .navBar ul {
-	display: table;
-	width: 100%;
-	height:100%;
-	float: none;
-	vertical-align: middle;
-	margin: 0;
-	padding: 0px;
+  display: table;
+  width: 100%;
+  height: 100%;
+  float: none;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0px;
 }
 
 .navBar ul li {
-	display: table-cell;
-	float: none;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	text-align: center;
-	vertical-align: middle;
-	border-right: 1px solid #E5E5E5;
-	box-shadow: inset 1px 0 0 #959595;
+  display: table-cell;
+  float: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid #E5E5E5;
+  box-shadow: inset 1px 0 0 #959595;
 }
 
 .navBar ul li:hover {
-	background: #7E91A9;
-	border-right-color:#7E91A9;
+  background: #7E91A9;
+  border-right-color: #7E91A9;
 }
 
 .navBar ul li a {
-	display: block;
-	height: 36px;
-	line-height: 36px;
-	font-size: 13px;
-	color: #595959;
-	font-family: helvetica;
-	font-weight: bold;
-	text-decoration: none;
-	outline: none;
-	width: 120px;
-	margin: 0 auto;
+  display: block;
+  height: 36px;
+  line-height: 36px;
+  font-size: 13px;
+  color: #595959;
+  font-family: helvetica;
+  font-weight: bold;
+  text-decoration: none;
+  outline: none;
+  width: 120px;
+  margin: 0 auto;
 }
 
 .navBar ul li:hover a {
-	border-right: none;
-	box-shadow: none;
-	color:#FFFFFF;
+  border-right: none;
+  box-shadow: none;
+  color: #FFFFFF;
 }
 
 .navBar ul li img {
-	margin-right: 4px;
-	vertical-align: middle;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
 #logoCol, #logoCol:hover {
-	width: 750px;
-	border-left: none;
-	border-right: none;
-	box-shadow: none;
-	background: none;
-	padding-left:2px;
+  width: 750px;
+  border-left: none;
+  border-right: none;
+  box-shadow: none;
+  background: none;
+  padding-left: 2px;
 }
 
 #logoCol a {
-	margin-left: 0px;
+  margin-left: 0px;
 }
 
 #logoCol a:hover {
-	background: none;
+  background: none;
 }
 
 #logoCol img {
-	padding-top: 5px;
+  padding-top: 5px;
 }
 
-
 #projectCol {
-	box-shadow: none;
+  box-shadow: none;
 }
 
 #systemCol a {
-	cursor:pointer;
+  cursor: pointer;
 }
 
 #userCol, #userCol:hover {
-	border-right: none;
+  border-right: none;
 }
 
 #userCol a {
-	cursor:pointer;
+  cursor: pointer;
 }
 
 #userCol {
-	white-space:nowrap;
+  white-space: nowrap;
 }
 
-#userCol table
-{
-	color:#595959;
-	font-weight:bold;
-	height:100%;
+#userCol table {
+  color: #595959;
+  font-weight: bold;
+  height: 100%;
 }
 
-#userCol:hover table
-{
-	color:#FFFFFF;
+#userCol:hover table {
+  color: #FFFFFF;
 }
 
-#userCol div.submenu
-{
-	margin-left:-30px;
+#userCol div.submenu {
+  margin-left: -30px;
 }
 
-
-#userCol span.username
-{
-	text-overflow:ellipsis;
-	overflow:hidden;
-	min-width:0;
-	max-width:55px;
-	display:inline-block;
-	font-size:13px;
+#userCol span.username {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 55px;
+  display: inline-block;
+  font-size: 13px;
 }
 
 #userCol img.avatar {
-	padding: 0;
-	border: 1px solid grey;
-	background:#FFFFFF;
-	margin-left:5px;
+  padding: 0;
+  border: 1px solid grey;
+  background: #FFFFFF;
+  margin-left: 5px;
 }
 
 div.submenu {
-	height: 0px;
-	position: absolute;
-	width: 150px;
-	overflow: hidden;
-	z-index: 999;
-	margin-top:0px;
+  height: 0px;
+  position: absolute;
+  width: 150px;
+  overflow: hidden;
+  z-index: 999;
+  margin-top: 0px;
 }
 
 .navBar li:hover div.submenu {
-	height: auto;
-	position: absolute;
-	-webkit-transition: ease-in-out .1s;
-	-moz-transition: ease-in-out .1s;
-	-o-transition: ease-in-out .1s;
-	-ms-transition: ease-in-out .1s;
-	transition: ease-in-out .1s;
-	box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
+  height: auto;
+  position: absolute;
+  -webkit-transition: ease-in-out .1s;
+  -moz-transition: ease-in-out .1s;
+  -o-transition: ease-in-out .1s;
+  -ms-transition: ease-in-out .1s;
+  transition: ease-in-out .1s;
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, .3);
 }
 
 div.submenu ul {
-	border: 1px solid lightgrey;
+  border: 1px solid lightgrey;
 }
 
 div.submenu ul li {
-	display: block;
-	width: 100%;
-	float: left;
-	text-align: left;
-	height: auto;
-	color: black;
-	border-bottom: 1px solid #DDDDDD;
-	border-top: none;
-	border-left: none;
-	border-right: none;
-	box-shadow: none;
-	background:#FFFFFF;
+  display: block;
+  width: 100%;
+  float: left;
+  text-align: left;
+  height: auto;
+  color: black;
+  border-bottom: 1px solid #DDDDDD;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  box-shadow: none;
+  background: #FFFFFF;
 }
 
 div.submenu ul li:last-child {
-	border-bottom: none;
+  border-bottom: none;
 }
 
 div.submenu ul li:hover {
-	background: #BACDE5;
+  background: #BACDE5;
 }
 
-.navBar ul li:hover div.submenu ul li a
-{
-	color: #454545;
+.navBar ul li:hover div.submenu ul li a {
+  color: #454545;
 }
 
 div.submenu ul li a {
-	color: #454545;
-	font-size: 13px;
-	text-shadow: none;
-	line-height: 36px;
-	text-align: left;
-	margin-left: 5px;
-	margin-right: 5px;
+  color: #454545;
+  font-size: 13px;
+  text-shadow: none;
+  line-height: 36px;
+  text-align: left;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 div.submenu img {
-	border: none;
+  border: none;
 }
 
 /* -----------------------  End Top menu CSS  -------------------------*/

@@ -7,11 +7,12 @@ import net.customware.gwt.dispatch.shared.Result;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface HasQueueDispatch<A extends Action<R>, R extends Result>
-{
-   void executeQueue();
-   
-   boolean isQueueEmpty();
+public interface HasQueueDispatch<A extends Action<R>, R extends Result> {
+    void executeQueue();
 
-   void setQueueAndExecute(ArrayList<A> actionQueue, AsyncCallback<R> callback);
+    boolean isQueueEmpty();
+
+    void
+            setQueueAndExecute(ArrayList<A> actionQueue,
+                    AsyncCallback<R> callback);
 }

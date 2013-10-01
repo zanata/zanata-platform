@@ -1,22 +1,24 @@
 <h:form id="iterationForm"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:s="http://jboss.org/schema/seam/taglib"
-        xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:rich="http://richfaces.org/rich"
-        xmlns:a4j="http://richfaces.org/a4j"
-        xmlns:richext="http://java.sun.com/jsf/composite/richext">
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext">
 
   <s:token allowMultiplePosts="true"/>
   <rich:panel>
     <s:decorate id="slugField" template="edit.xhtml" enclose="true">
       <ui:define name="label">#{messages['jsf.ProjectVersionId']}</ui:define>
-      <h:outputText rendered="#{projectIterationHome.managed}" value="#{projectIterationHome.instance.slug}"/>
+      <h:outputText rendered="#{projectIterationHome.managed}"
+        value="#{projectIterationHome.instance.slug}"/>
 
-      <h:inputText rendered="#{not projectIterationHome.managed}" id="slug" required="true"
-                   value="#{projectIterationHome.instance.slug}"
-                   valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
+      <h:inputText rendered="#{not projectIterationHome.managed}" id="slug"
+        required="true"
+        value="#{projectIterationHome.instance.slug}"
+        valueChangeListener="#{projectIterationHome.verifySlugAvailable}">
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
       </h:inputText>
     </s:decorate>
@@ -24,11 +26,14 @@
     <s:decorate id="projectTypeField" template="edit.xhtml">
       <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
 
-      <h:selectOneMenu id="projectType" value="#{projectIterationHome.projectType}">
-        <f:selectItem itemValue="#{null}" itemLabel="#{messages['jsf.projectType.NoSelection']}"
-                      noSelectionOption="true"/>
-        <f:selectItems value="#{projectHome.projectTypeList}" var="projectType" itemValue="#{projectType}"
-                       itemLabel="#{messages['jsf.projectType.detail.'.concat(projectType)]}"/>
+      <h:selectOneMenu id="projectType"
+        value="#{projectIterationHome.projectType}">
+        <f:selectItem itemValue="#{null}"
+          itemLabel="#{messages['jsf.projectType.NoSelection']}"
+          noSelectionOption="true"/>
+        <f:selectItems value="#{projectHome.projectTypeList}" var="projectType"
+          itemValue="#{projectType}"
+          itemLabel="#{messages['jsf.projectType.detail.'.concat(projectType)]}"/>
       </h:selectOneMenu>
 
       <s:span styleClass="icon-info-circle-2 input_help" id="projectTypeHelp">
@@ -41,14 +46,16 @@
     </s:decorate>
 
     <s:decorate id="requireReviewField" template="edit.xhtml">
-      <ui:define name="label">#{messages['jsf.iteration.requireTranslationReview']}</ui:define>
+      <ui:define
+        name="label">#{messages['jsf.iteration.requireTranslationReview']}</ui:define>
       <h:selectBooleanCheckbox id="requireReviewChkbox"
-                               value="#{projectIterationHome.instance.requireTranslationReview}"/>
+        value="#{projectIterationHome.instance.requireTranslationReview}"/>
     </s:decorate>
 
     <s:decorate id="statusField" template="edit.xhtml">
       <ui:define name="label">#{messages['jsf.Status']}</ui:define>
-      <h:selectOneMenu id="status" value="#{projectIterationHome.instance.status}">
+      <h:selectOneMenu id="status"
+        value="#{projectIterationHome.instance.status}">
         <f:selectItems value="#{projectIterationHome.statusList}"/>
       </h:selectOneMenu>
     </s:decorate>
@@ -59,7 +66,8 @@
 
   <s:div>
     <a4j:region>
-      <h:selectBooleanCheckbox title="overrideLocales" value="#{projectIterationLocaleAction.setting}">
+      <h:selectBooleanCheckbox title="overrideLocales"
+        value="#{projectIterationLocaleAction.setting}">
         <a4j:ajax event="change" render="languagelist"/>
       </h:selectBooleanCheckbox>
     </a4j:region>
@@ -69,43 +77,50 @@
 
   <s:div id="languagelist">
     <a4j:region renderRegionOnly="true">
-      <h:panelGrid columns="3" id="languagePanel" rendered="#{projectIterationLocaleAction.setting}">
+      <h:panelGrid columns="3" id="languagePanel"
+        rendered="#{projectIterationLocaleAction.setting}">
         <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
         <h:outputText value=""/>
         <h:outputText value="#{messages['jsf.EnabledLocales']}"/>
 
-        <h:selectManyListbox id="languagelist2" value="#{projectIterationLocaleAction.availableList}"
-                             styleClass="language_list">
+        <h:selectManyListbox id="languagelist2"
+          value="#{projectIterationLocaleAction.availableList}"
+          styleClass="language_list">
           <f:selectItems value="#{iterationAvailableItems}"/>
           <a4j:ajax event="dblclick" render="languagePanel"
-                    listener="#{projectIterationLocaleAction.toCustomizedLocales}"/>
+            listener="#{projectIterationLocaleAction.toCustomizedLocales}"/>
         </h:selectManyListbox>
 
         <h:panelGroup id="buttons" styleClass="language_action_buttons">
           <a4j:commandButton value="#{messages['jsf.AddLocale']}"
-                             action="#{projectIterationLocaleAction.toCustomizedLocales}"
-                             styleClass="language_action_button" render="languagePanel"/>
+            action="#{projectIterationLocaleAction.toCustomizedLocales}"
+            styleClass="language_action_button" render="languagePanel"/>
           <a4j:commandButton value="#{messages['jsf.RemoveLocale']}"
-                             action="#{projectIterationLocaleAction.removeFromCustomizedLocales}"
-                             styleClass="language_action_button" render="languagePanel"/>
+            action="#{projectIterationLocaleAction.removeFromCustomizedLocales}"
+            styleClass="language_action_button" render="languagePanel"/>
         </h:panelGroup>
 
-        <h:selectManyListbox id="languagelist1" value="#{projectIterationLocaleAction.customizedLocales}"
-                             styleClass="language_list">
-          <f:selectItems value="#{projectIterationLocaleAction.iterationCustomizedItems}"/>
+        <h:selectManyListbox id="languagelist1"
+          value="#{projectIterationLocaleAction.customizedLocales}"
+          styleClass="language_list">
+          <f:selectItems
+            value="#{projectIterationLocaleAction.iterationCustomizedItems}"/>
           <a4j:ajax event="dblclick" render="languagePanel"
-                    listener="#{projectIterationLocaleAction.removeFromCustomizedLocales}"/>
+            listener="#{projectIterationLocaleAction.removeFromCustomizedLocales}"/>
         </h:selectManyListbox>
       </h:panelGrid>
     </a4j:region>
   </s:div>
 
   <div class="actionButtons">
-    <h:commandButton id="save" value="#{messages['jsf.Save']}" action="#{projectIterationHome.persist}"
-                     rendered="#{!projectIterationHome.managed}"/>
-    <h:commandButton id="update" value="#{messages['jsf.Update']}" action="#{projectIterationHome.update}"
-                     rendered="#{projectIterationHome.managed}"/>
-    <s:button id="cancel" value="#{messages['jsf.Cancel']}" action="#{projectIterationHome.cancel}"/>
+    <h:commandButton id="save" value="#{messages['jsf.Save']}"
+      action="#{projectIterationHome.persist}"
+      rendered="#{!projectIterationHome.managed}"/>
+    <h:commandButton id="update" value="#{messages['jsf.Update']}"
+      action="#{projectIterationHome.update}"
+      rendered="#{projectIterationHome.managed}"/>
+    <s:button id="cancel" value="#{messages['jsf.Cancel']}"
+      action="#{projectIterationHome.cancel}"/>
   </div>
 
 </h:form>

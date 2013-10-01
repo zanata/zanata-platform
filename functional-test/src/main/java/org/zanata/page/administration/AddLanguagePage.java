@@ -25,40 +25,35 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
-public class AddLanguagePage extends BasePage
-{
-   @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
-   private WebElement languageInput;
+public class AddLanguagePage extends BasePage {
+    @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
+    private WebElement languageInput;
 
-   @FindBy(xpath = "//input[@value='Save']")
-   private WebElement saveButton;
+    @FindBy(xpath = "//input[@value='Save']")
+    private WebElement saveButton;
 
-   @FindBy(xpath = "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
-   private WebElement enabledByDefaultInput;
+    @FindBy(
+            xpath = "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
+    private WebElement enabledByDefaultInput;
 
-   public AddLanguagePage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public AddLanguagePage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public AddLanguagePage inputLanguage(String language)
-   {
-      languageInput.sendKeys(language);
-      return this;
-   }
+    public AddLanguagePage inputLanguage(String language) {
+        languageInput.sendKeys(language);
+        return this;
+    }
 
-   public AddLanguagePage enableLanguageByDefault()
-   {
-      if (!enabledByDefaultInput.isSelected())
-      {
-         enabledByDefaultInput.click();
-      }
-      return this;
-   }
+    public AddLanguagePage enableLanguageByDefault() {
+        if (!enabledByDefaultInput.isSelected()) {
+            enabledByDefaultInput.click();
+        }
+        return this;
+    }
 
-   public ManageLanguagePage saveLanguage()
-   {
-      clickAndCheckErrors(saveButton);
-      return new ManageLanguagePage(getDriver());
-   }
+    public ManageLanguagePage saveLanguage() {
+        clickAndCheckErrors(saveButton);
+        return new ManageLanguagePage(getDriver());
+    }
 }

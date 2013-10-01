@@ -24,12 +24,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-      DashboardTest.class
-})
-public class DashboardTestSuite
-{
+@Suite.SuiteClasses({ DashboardTest.class })
+public class DashboardTestSuite {
 }

@@ -28,29 +28,27 @@ import lombok.Synchronized;
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class SequentialConnectionIdGenerator implements ConnectionIdGenerator
-{
-   private static long nextConnectionNum = 0;
+public class SequentialConnectionIdGenerator implements ConnectionIdGenerator {
+    private static long nextConnectionNum = 0;
 
-   @Synchronized
-   private static long generateConnectionNum()
-   {
-      return nextConnectionNum++;
-   }
+    @Synchronized
+    private static long generateConnectionNum() {
+        return nextConnectionNum++;
+    }
 
-   @Override
-   public String generateConnectionId(HttpServletRequest aRequest)
-   {
-      return String.valueOf(aRequest.getSession(true).getId() + "-" + generateConnectionNum());
-   }
+    @Override
+    public String generateConnectionId(HttpServletRequest aRequest) {
+        return String.valueOf(aRequest.getSession(true).getId() + "-"
+                + generateConnectionNum());
+    }
 
-   @Override
-   public String getConnectionId(HttpServletRequest aRequest)
-   {
-      return aRequest.getParameter("id");
-   }
+    @Override
+    public String getConnectionId(HttpServletRequest aRequest) {
+        return aRequest.getParameter("id");
+    }
 
 }

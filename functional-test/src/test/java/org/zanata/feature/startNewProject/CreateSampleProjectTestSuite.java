@@ -40,9 +40,8 @@ import lombok.extern.slf4j.Slf4j;
       DocumentListInWebTransTest.class
 })
 // @formatter:on
-public class CreateSampleProjectTestSuite
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class CreateSampleProjectTestSuite {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
 }

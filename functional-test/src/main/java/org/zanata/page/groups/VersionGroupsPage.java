@@ -12,71 +12,69 @@ import org.zanata.util.WebElementUtil;
 import java.util.List;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class VersionGroupsPage extends BasePage
-{
-   public static final int GROUP_NAME_COLUMN = 0;
-   public static final int GROUP_DESCRIPTION_COLUMN = 1;
-   public static final int GROUP_TIMESTAMP_COLUMN = 2;
-   public static final int GROUP_STATUS_COLUMN = 3;
+public class VersionGroupsPage extends BasePage {
+    public static final int GROUP_NAME_COLUMN = 0;
+    public static final int GROUP_DESCRIPTION_COLUMN = 1;
+    public static final int GROUP_TIMESTAMP_COLUMN = 2;
+    public static final int GROUP_STATUS_COLUMN = 3;
 
-   @FindBy(id = "groupForm:groupTable")
-   private WebElement groupTable;
+    @FindBy(id = "groupForm:groupTable")
+    private WebElement groupTable;
 
-   @FindBy(className = "infomsg.icon-info-circle-2")
-   private WebElement infomsg;
+    @FindBy(className = "infomsg.icon-info-circle-2")
+    private WebElement infomsg;
 
-   public VersionGroupsPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public VersionGroupsPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public List<String> getGroupNames()
-   {
-      By by = By.id("groupForm:groupTable");
-      return WebElementUtil.getColumnContents(getDriver(), by, GROUP_NAME_COLUMN);
-   }
+    public List<String> getGroupNames() {
+        By by = By.id("groupForm:groupTable");
+        return WebElementUtil.getColumnContents(getDriver(), by,
+                GROUP_NAME_COLUMN);
+    }
 
-   public CreateVersionGroupPage createNewGroup()
-   {
-      WebElement createLink = getDriver().findElement(By.linkText("Create New Group"));
-      createLink.click();
-      return new CreateVersionGroupPage(getDriver());
-   }
+    public CreateVersionGroupPage createNewGroup() {
+        WebElement createLink =
+                getDriver().findElement(By.linkText("Create New Group"));
+        createLink.click();
+        return new CreateVersionGroupPage(getDriver());
+    }
 
-   public VersionGroupPage goToGroup(String groupName)
-   {
-      WebElement groupLink = groupTable.findElement(By.linkText(groupName));
-      groupLink.click();
-      return new VersionGroupPage(getDriver());
-   }
+    public VersionGroupPage goToGroup(String groupName) {
+        WebElement groupLink = groupTable.findElement(By.linkText(groupName));
+        groupLink.click();
+        return new VersionGroupPage(getDriver());
+    }
 
-   public VersionGroupsPage toggleObsolete(final boolean show)
-   {
-      WebElement showObsolete = getDriver().findElement(By.id("groupForm:showObsolete"));
-      if (show != showObsolete.isSelected())
-      {
-         showObsolete.click();
-      }
-      waitForTenSec().until(new Predicate<WebDriver>()
-      {
-         @Override
-         public boolean apply(WebDriver input)
-         {
-            WebElement table = input.findElement(By.id("groupForm:groupTable"));
-            return table.findElements(By.className("obsolete_link")).isEmpty() == !show;
-         }
-      });
-      return new VersionGroupsPage(getDriver());
-   }
+    public VersionGroupsPage toggleObsolete(final boolean show) {
+        WebElement showObsolete =
+                getDriver().findElement(By.id("groupForm:showObsolete"));
+        if (show != showObsolete.isSelected()) {
+            showObsolete.click();
+        }
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                WebElement table =
+                        input.findElement(By.id("groupForm:groupTable"));
+                return table.findElements(By.className("obsolete_link"))
+                        .isEmpty() == !show;
+            }
+        });
+        return new VersionGroupsPage(getDriver());
+    }
 
-   public String getInfoMessage()
-   {
-      log.info("Test info msg");
-      log.info(getDriver().findElement(By.className("infomsg.icon-info-circle-2")).getText());
-      return getDriver().findElement(By.className("infomsg.icon-info-circle-2")).getText();
-   }
+    public String getInfoMessage() {
+        log.info("Test info msg");
+        log.info(getDriver().findElement(
+                By.className("infomsg.icon-info-circle-2")).getText());
+        return getDriver().findElement(
+                By.className("infomsg.icon-info-circle-2")).getText();
+    }
 
 }

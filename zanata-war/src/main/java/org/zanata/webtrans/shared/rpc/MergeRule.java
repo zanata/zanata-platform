@@ -21,18 +21,18 @@
 
 package org.zanata.webtrans.shared.rpc;
 
-public enum MergeRule
-{
-   /**
-    * Reject the match.
-    */
-   REJECT,
-   /**
-    * Use the match, but mark as fuzzy.
-    */
-   FUZZY,
-   /**
-    * Continue to the next rule, if any.  If there are no more rules, use the match.
-    */
-   IGNORE_CHECK
+public enum MergeRule {
+    /**
+     * Reject the match.
+     */
+    REJECT,
+    /**
+     * Use the match, but mark as fuzzy.
+     */
+    FUZZY,
+    /**
+     * Continue to the next rule, if any. If there are no more rules, use the
+     * match.
+     */
+    IGNORE_CHECK
 }

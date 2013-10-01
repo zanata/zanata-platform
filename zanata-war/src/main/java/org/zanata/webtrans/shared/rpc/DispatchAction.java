@@ -26,11 +26,13 @@ import net.customware.gwt.dispatch.shared.Action;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The DispatchAction class just makes it easier to ensure that all our Actions implement IsSerializable.
+ * The DispatchAction class just makes it easier to ensure that all our Actions
+ * implement IsSerializable.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public interface DispatchAction<R extends DispatchResult> extends Action<R>, IsSerializable
-{
+public interface DispatchAction<R extends DispatchResult> extends Action<R>,
+        IsSerializable {
 
 }

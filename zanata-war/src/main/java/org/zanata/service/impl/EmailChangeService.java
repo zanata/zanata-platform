@@ -34,78 +34,65 @@ import org.zanata.util.HashUtil;
 
 @Name("emailChangeService")
 @Scope(ScopeType.STATELESS)
-public class EmailChangeService
-{
-   @In
-   PersonEmailValidationKeyDAO personEmailValidationKeyDAO;
+public class EmailChangeService {
+    @In
+    PersonEmailValidationKeyDAO personEmailValidationKeyDAO;
 
-   public static class KeyParameter
-   {
-      private String id;
-      private String email;
-      private String creationDate;
+    public static class KeyParameter {
+        private String id;
+        private String email;
+        private String creationDate;
 
-      public KeyParameter(String id, String email, String creationDate)
-      {
-         this.id = id;
-         this.email = email;
-         this.creationDate = creationDate;
-      }
+        public KeyParameter(String id, String email, String creationDate) {
+            this.id = id;
+            this.email = email;
+            this.creationDate = creationDate;
+        }
 
-      public String getId()
-      {
-         return id;
-      }
+        public String getId() {
+            return id;
+        }
 
-      public String getEmail()
-      {
-         return email;
-      }
+        public String getEmail() {
+            return email;
+        }
 
-      public String getCreationDate()
-      {
-         return creationDate;
-      }
-   }
+        public String getCreationDate() {
+            return creationDate;
+        }
+    }
 
-   public String generateActivationKey(HPerson person, String email)
-   {
-      String var = person.getId() + email + System.currentTimeMillis();
-      String hash = HashUtil.generateHash(var);
+    public String generateActivationKey(HPerson person, String email) {
+        String var = person.getId() + email + System.currentTimeMillis();
+        String hash = HashUtil.generateHash(var);
 
-      HPersonEmailValidationKey entry = personEmailValidationKeyDAO.findByPersonId(person.getId());
-      if (entry == null)
-      {
-         entry = new HPersonEmailValidationKey(person, email, hash);
-      }
-      else
-      {
-         entry.setCreationDate(new Date());
-         entry.setEmail(email);
-         entry.setKeyHash(hash);
-      }
+        HPersonEmailValidationKey entry =
+                personEmailValidationKeyDAO.findByPersonId(person.getId());
+        if (entry == null) {
+            entry = new HPersonEmailValidationKey(person, email, hash);
+        } else {
+            entry.setCreationDate(new Date());
+            entry.setEmail(email);
+            entry.setKeyHash(hash);
+        }
 
-      personEmailValidationKeyDAO.makePersistent(entry);
-      personEmailValidationKeyDAO.flush();
+        personEmailValidationKeyDAO.makePersistent(entry);
+        personEmailValidationKeyDAO.flush();
 
-      return hash;
-   }
+        return hash;
+    }
 
-   public HPersonEmailValidationKey getActivationKey(String keyHash)
-   {
-      return personEmailValidationKeyDAO.findByKeyHash(keyHash);
-   }
+    public HPersonEmailValidationKey getActivationKey(String keyHash) {
+        return personEmailValidationKeyDAO.findByKeyHash(keyHash);
+    }
 
-   public boolean isExpired(Date creationDate, int activeDays)
-   {
-      Date expiryDate = DateUtils.addDays(creationDate, activeDays);
-      return expiryDate.before(new Date());
-   }
+    public boolean isExpired(Date creationDate, int activeDays) {
+        Date expiryDate = DateUtils.addDays(creationDate, activeDays);
+        return expiryDate.before(new Date());
+    }
 
-
-   public void removeEntry(HPersonEmailValidationKey entry)
-   {
-      personEmailValidationKeyDAO.makeTransient(entry);
-      personEmailValidationKeyDAO.flush();
-   }
+    public void removeEntry(HPersonEmailValidationKey entry) {
+        personEmailValidationKeyDAO.makeTransient(entry);
+        personEmailValidationKeyDAO.flush();
+    }
 }

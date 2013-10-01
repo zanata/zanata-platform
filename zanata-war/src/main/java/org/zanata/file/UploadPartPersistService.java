@@ -24,9 +24,9 @@ import java.io.InputStream;
 
 import org.zanata.model.HDocumentUploadPart;
 
-public interface UploadPartPersistService
-{
+public interface UploadPartPersistService {
 
-   public HDocumentUploadPart newUploadPartFromStream(InputStream partContentStream, int contentLength);
+    public HDocumentUploadPart newUploadPartFromStream(
+            InputStream partContentStream, int contentLength);
 
 }

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -129,109 +129,132 @@ import com.google.inject.name.Named;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
 
-public class WebTransClientModule extends AbstractPresenterModule
-{
+public class WebTransClientModule extends AbstractPresenterModule {
 
-   /**
-    * The Binding EDSL is described in {@link com.google.inject.Binder}
-    */
-   @Override
-   protected void configure()
-   {
-      bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
-      bind(EventProcessor.class).in(Singleton.class);
-      bind(Resources.class).in(Singleton.class);
-      bind(WebTransMessages.class).in(Singleton.class);
-      bind(ValidationService.class).in(Singleton.class);
+    /**
+     * The Binding EDSL is described in {@link com.google.inject.Binder}
+     */
+    @Override
+    protected void configure() {
+        bind(EventBus.class).to(DefaultEventBus.class).in(Singleton.class);
+        bind(EventProcessor.class).in(Singleton.class);
+        bind(Resources.class).in(Singleton.class);
+        bind(WebTransMessages.class).in(Singleton.class);
+        bind(ValidationService.class).in(Singleton.class);
 
-      bindPresenter(AppPresenter.class, AppDisplay.class, AppView.class);
-      bindPresenter(AttentionKeyShortcutPresenter.class, AttentionKeyShortcutDisplay.class, AttentionKeyShortcutView.class);
-      bindPresenter(KeyShortcutPresenter.class, KeyShortcutDisplay.class, KeyShortcutView.class);
-      bindPresenter(DocumentListPresenter.class, DocumentListDisplay.class, DocumentListView.class);
-      bindPresenter(SearchResultsPresenter.class, SearchResultsPresenter.Display.class, SearchResultsView.class);
-      bindPresenter(TranslationPresenter.class, TranslationPresenter.Display.class, TranslationView.class);
-      bindPresenter(TransFilterPresenter.class, TransFilterDisplay.class, TransFilterView.class);
-      bindPresenter(WorkspaceUsersPresenter.class, WorkspaceUsersDisplay.class, WorkspaceUsersView.class);
-      bindPresenter(TransMemoryPresenter.class, TranslationMemoryDisplay.class, TransMemoryView.class);
-      bindPresenter(GlossaryPresenter.class, GlossaryDisplay.class, GlossaryView.class);
-      bindPresenter(GlossaryDetailsPresenter.class, GlossaryDetailsDisplay.class, GlossaryDetailsView.class);
-      bindPresenter(TransMemoryDetailsPresenter.class, TransMemoryDetailsDisplay.class, TransMemoryDetailsView.class);
-      bindPresenter(TransUnitNavigationPresenter.class, TransUnitNavigationDisplay.class, TransUnitNavigationView.class);
-      bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class, EditorOptionsView.class);
-      bindPresenter(DocumentListOptionsPresenter.class, DocumentListOptionsDisplay.class, DocumentListOptionsView.class);
-      bindPresenter(OptionsPresenter.class, OptionsDisplay.class, OptionsView.class);
-      bindPresenter(TranslationEditorPresenter.class, TranslationEditorDisplay.class, TranslationEditorView.class);
-      bindPresenter(ValidationOptionsPresenter.class, ValidationOptionsDisplay.class, ValidationOptionsView.class);
-      bindPresenter(NotificationPresenter.class, NotificationDisplay.class, NotificationView.class);
-      bindPresenter(TransUnitsTablePresenter.class, TransUnitsTableDisplay.class, TransUnitsTableView.class);
-      bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class, SideMenuView.class);
-      bind(ForceReviewCommentPresenter.class).asEagerSingleton();
+        bindPresenter(AppPresenter.class, AppDisplay.class, AppView.class);
+        bindPresenter(AttentionKeyShortcutPresenter.class,
+                AttentionKeyShortcutDisplay.class,
+                AttentionKeyShortcutView.class);
+        bindPresenter(KeyShortcutPresenter.class, KeyShortcutDisplay.class,
+                KeyShortcutView.class);
+        bindPresenter(DocumentListPresenter.class, DocumentListDisplay.class,
+                DocumentListView.class);
+        bindPresenter(SearchResultsPresenter.class,
+                SearchResultsPresenter.Display.class, SearchResultsView.class);
+        bindPresenter(TranslationPresenter.class,
+                TranslationPresenter.Display.class, TranslationView.class);
+        bindPresenter(TransFilterPresenter.class, TransFilterDisplay.class,
+                TransFilterView.class);
+        bindPresenter(WorkspaceUsersPresenter.class,
+                WorkspaceUsersDisplay.class, WorkspaceUsersView.class);
+        bindPresenter(TransMemoryPresenter.class,
+                TranslationMemoryDisplay.class, TransMemoryView.class);
+        bindPresenter(GlossaryPresenter.class, GlossaryDisplay.class,
+                GlossaryView.class);
+        bindPresenter(GlossaryDetailsPresenter.class,
+                GlossaryDetailsDisplay.class, GlossaryDetailsView.class);
+        bindPresenter(TransMemoryDetailsPresenter.class,
+                TransMemoryDetailsDisplay.class, TransMemoryDetailsView.class);
+        bindPresenter(TransUnitNavigationPresenter.class,
+                TransUnitNavigationDisplay.class, TransUnitNavigationView.class);
+        bindPresenter(EditorOptionsPresenter.class, EditorOptionsDisplay.class,
+                EditorOptionsView.class);
+        bindPresenter(DocumentListOptionsPresenter.class,
+                DocumentListOptionsDisplay.class, DocumentListOptionsView.class);
+        bindPresenter(OptionsPresenter.class, OptionsDisplay.class,
+                OptionsView.class);
+        bindPresenter(TranslationEditorPresenter.class,
+                TranslationEditorDisplay.class, TranslationEditorView.class);
+        bindPresenter(ValidationOptionsPresenter.class,
+                ValidationOptionsDisplay.class, ValidationOptionsView.class);
+        bindPresenter(NotificationPresenter.class, NotificationDisplay.class,
+                NotificationView.class);
+        bindPresenter(TransUnitsTablePresenter.class,
+                TransUnitsTableDisplay.class, TransUnitsTableView.class);
+        bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class,
+                SideMenuView.class);
+        bind(ForceReviewCommentPresenter.class).asEagerSingleton();
 
-      bind(SourceContentsPresenter.class).in(Singleton.class);
-      bind(TargetContentsDisplay.class).to(TargetContentsView.class);
-      bind(SourceContentsDisplay.class).to(SourceContentsView.class);
-      bindPresenter(TransMemoryMergePresenter.class, TransMemoryMergePopupPanelDisplay.class, TransMemoryMergePopupPanelView.class);
+        bind(SourceContentsPresenter.class).in(Singleton.class);
+        bind(TargetContentsDisplay.class).to(TargetContentsView.class);
+        bind(SourceContentsDisplay.class).to(SourceContentsView.class);
+        bindPresenter(TransMemoryMergePresenter.class,
+                TransMemoryMergePopupPanelDisplay.class,
+                TransMemoryMergePopupPanelView.class);
 
-      bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
-      bind(TimerFactory.class).to(TimerFactoryImpl.class).in(Singleton.class);
-      bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
-      bind(History.class).to(HistoryImpl.class).in(Singleton.class);
-      bind(Window.class).to(WindowImpl.class).in(Singleton.class);
-      bind(Window.Location.class).to(WindowLocationImpl.class).in(Singleton.class);
+        bind(EventWrapper.class).to(EventWrapperImpl.class).in(Singleton.class);
+        bind(TimerFactory.class).to(TimerFactoryImpl.class).in(Singleton.class);
+        bind(NativeEvent.class).to(NativeEventImpl.class).in(Singleton.class);
+        bind(History.class).to(HistoryImpl.class).in(Singleton.class);
+        bind(Window.class).to(WindowImpl.class).in(Singleton.class);
+        bind(Window.Location.class).to(WindowLocationImpl.class).in(
+                Singleton.class);
 
-      // NB: if we bind directly to SeamDispatchAsync, we can't use
-      // replace-class in
-      // the module definition unless the replacement extends SeamDispatchAsync
-      bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(Singleton.class);
+        // NB: if we bind directly to SeamDispatchAsync, we can't use
+        // replace-class in
+        // the module definition unless the replacement extends
+        // SeamDispatchAsync
+        bind(CachingDispatchAsync.class).to(DelegatingDispatchAsync.class).in(
+                Singleton.class);
 
-      bind(Identity.class).toProvider(IdentityProvider.class).in(Singleton.class);
-      bind(UserWorkspaceContext.class).toProvider(UserWorkspaceContextProvider.class).in(Singleton.class);
-   }
+        bind(Identity.class).toProvider(IdentityProvider.class).in(
+                Singleton.class);
+        bind(UserWorkspaceContext.class).toProvider(
+                UserWorkspaceContextProvider.class).in(Singleton.class);
+    }
 
-   // default implementation doesn't use singleton display binding, adding here
-   // to allow displays to be injected into other displays
-   @Override
-   protected <D extends Display> void bindDisplay(Class<D> display, Class<? extends D> displayImpl)
-   {
-      bind(display).to(displayImpl).in(Singleton.class);
-   }
+    // default implementation doesn't use singleton display binding, adding here
+    // to allow displays to be injected into other displays
+    @Override
+    protected <D extends Display> void bindDisplay(Class<D> display,
+            Class<? extends D> displayImpl) {
+        bind(display).to(displayImpl).in(Singleton.class);
+    }
 
-   @Provides
-   public Scheduler provideScheduler()
-   {
-      return Scheduler.get();
-   }
+    @Provides
+    public Scheduler provideScheduler() {
+        return Scheduler.get();
+    }
 
-   static class UserWorkspaceContextProvider implements Provider<UserWorkspaceContext>
-   {
-      @Override
-      public UserWorkspaceContext get()
-      {
-         return Application.getUserWorkspaceContext();
-      }
-   }
-   
-   static class IdentityProvider implements Provider<Identity>
-   {
-      @Override
-      public Identity get()
-      {
-         return Application.getIdentity();
-      }
-   }
+    static class UserWorkspaceContextProvider implements
+            Provider<UserWorkspaceContext> {
+        @Override
+        public UserWorkspaceContext get() {
+            return Application.getUserWorkspaceContext();
+        }
+    }
 
-   /**
-    * Referencing from http://eleanormaclure.files.wordpress.com/2011/03/colour-coding.pdf.
-    * We store 22 visually distinct color and cycle through them.
-    * If we ever get more than 22 concurrent users on one row, we will have two users share same color.
-    *
-    * @see org.zanata.webtrans.client.service.DistinctColorListImpl
-    */
-   @Provides
-   @Named("distinctColor")
-   public List<String> distinctColorList()
-   {
-      // @formatter:off
+    static class IdentityProvider implements Provider<Identity> {
+        @Override
+        public Identity get() {
+            return Application.getIdentity();
+        }
+    }
+
+    /**
+     * Referencing from
+     * http://eleanormaclure.files.wordpress.com/2011/03/colour-coding.pdf. We
+     * store 22 visually distinct color and cycle through them. If we ever get
+     * more than 22 concurrent users on one row, we will have two users share
+     * same color.
+     *
+     * @see org.zanata.webtrans.client.service.DistinctColorListImpl
+     */
+    @Provides
+    @Named("distinctColor")
+    public List<String> distinctColorList() {
+        // @formatter:off
       return ImmutableList.<String>builder()
             .add(distinctColor(240, 163, 255))
             .add(distinctColor(0, 117, 220))
@@ -260,20 +283,19 @@ public class WebTransClientModule extends AbstractPresenterModule
             .add(distinctColor(255, 80, 5))
             .build();
       // @formatter:on
-   }
+    }
 
-   private static String distinctColor(int rndRedColor, int rndGreenColor, int rndBlueColor)
-   {
-      return CssColor.make(rndRedColor, rndGreenColor, rndBlueColor).value();
-   }
+    private static String distinctColor(int rndRedColor, int rndGreenColor,
+            int rndBlueColor) {
+        return CssColor.make(rndRedColor, rndGreenColor, rndBlueColor).value();
+    }
 
-   /**
-    * @see EventProcessor
-    * @return RemoteEventService
-    */
-   @Provides
-   public RemoteEventService removeEventService()
-   {
-      return RemoteEventServiceFactory.getInstance().getRemoteEventService();
-   }
+    /**
+     * @see EventProcessor
+     * @return RemoteEventService
+     */
+    @Provides
+    public RemoteEventService removeEventService() {
+        return RemoteEventServiceFactory.getInstance().getRemoteEventService();
+    }
 }

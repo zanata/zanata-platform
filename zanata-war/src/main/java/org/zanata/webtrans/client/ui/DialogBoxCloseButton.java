@@ -9,23 +9,21 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.PushButton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class DialogBoxCloseButton extends PushButton
-{
-   private static final WebTransMessages MESSAGES = GWT.create(WebTransMessages.class);
+public class DialogBoxCloseButton extends PushButton {
+    private static final WebTransMessages MESSAGES = GWT
+            .create(WebTransMessages.class);
 
-   public DialogBoxCloseButton(final DialogBox dialogBox)
-   {
-      super(MESSAGES.close());
-      addStyleName("gwt-DialogBox-CloseButton");
-      addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            dialogBox.hide();
-         }
-      });
-   }
+    public DialogBoxCloseButton(final DialogBox dialogBox) {
+        super(MESSAGES.close());
+        addStyleName("gwt-DialogBox-CloseButton");
+        addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                dialogBox.hide();
+            }
+        });
+    }
 }

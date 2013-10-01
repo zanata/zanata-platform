@@ -1,17 +1,14 @@
 package org.zanata.rest;
 
-public class NoSuchEntityException extends RuntimeException
-{
+public class NoSuchEntityException extends RuntimeException {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public NoSuchEntityException()
-   {
-   }
+    public NoSuchEntityException() {
+    }
 
-   public NoSuchEntityException(String message)
-   {
-      super(message);
-   }
+    public NoSuchEntityException(String message) {
+        super(message);
+    }
 
 }

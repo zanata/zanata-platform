@@ -43,62 +43,68 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(ReplaceText.class)
 @Slf4j
-public class ReplaceTextHandler extends AbstractActionHandler<ReplaceText, UpdateTransUnitResult>
-{
-   @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
-   UpdateTransUnitHandler updateTransUnitHandler;
+public class ReplaceTextHandler extends
+        AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
+    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
+    UpdateTransUnitHandler updateTransUnitHandler;
 
-   @In
-   SecurityService securityServiceImpl;
+    @In
+    SecurityService securityServiceImpl;
 
-   @Override
-   public UpdateTransUnitResult execute(ReplaceText action, ExecutionContext context) throws ActionException
-   {
-      securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
+    @Override
+    public UpdateTransUnitResult execute(ReplaceText action,
+            ExecutionContext context) throws ActionException {
+        securityServiceImpl.checkPermission(action,
+                SecurityService.TranslationAction.MODIFY);
 
-      replaceTextInUpdateRequests(action);
+        replaceTextInUpdateRequests(action);
 
-      return updateTransUnitHandler.execute(action, context);
-   }
+        return updateTransUnitHandler.execute(action, context);
+    }
 
-   /**
-    * Replaces occurrences of a search string with a replacement string in all
-    * content strings in action.getUpdateRequests()
-    * 
-    * @param action action containing update requests that will be modified
-    * @throws ActionException if searchText or replaceText in action are null or
-    *            empty
-    */
-   public static void replaceTextInUpdateRequests(ReplaceText action) throws ActionException
-   {
-      String searchText = action.getSearchText();
-      String replaceText = action.getReplaceText();
-      if (Strings.isNullOrEmpty(searchText) || Strings.isNullOrEmpty(replaceText))
-      {
-         throw new ActionException("search or replace text is empty");
-      }
+    /**
+     * Replaces occurrences of a search string with a replacement string in all
+     * content strings in action.getUpdateRequests()
+     *
+     * @param action
+     *            action containing update requests that will be modified
+     * @throws ActionException
+     *             if searchText or replaceText in action are null or empty
+     */
+    public static void replaceTextInUpdateRequests(ReplaceText action)
+            throws ActionException {
+        String searchText = action.getSearchText();
+        String replaceText = action.getReplaceText();
+        if (Strings.isNullOrEmpty(searchText)
+                || Strings.isNullOrEmpty(replaceText)) {
+            throw new ActionException("search or replace text is empty");
+        }
 
-      int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-      Pattern pattern = Pattern.compile(Pattern.quote(searchText), flags);
+        int flags =
+                action.isCaseSensitive() ? Pattern.UNICODE_CASE
+                        : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+        Pattern pattern = Pattern.compile(Pattern.quote(searchText), flags);
 
-      for (TransUnitUpdateRequest request : action.getUpdateRequests())
-      {
-         List<String> contents = request.getNewContents();
-         log.debug("transUnit {} before replace [{}]", request.getTransUnitId(), contents);
-         for (int i = 0; i < contents.size(); i++)
-         {
-            String content = contents.get(i);
-            Matcher matcher = pattern.matcher(content);
-            String newContent = matcher.replaceAll(Matcher.quoteReplacement(replaceText));
-            contents.set(i, newContent);
-         }
-         log.debug("transUnit {} after replace [{}]", request.getTransUnitId(), contents);
-      }
-   }
+        for (TransUnitUpdateRequest request : action.getUpdateRequests()) {
+            List<String> contents = request.getNewContents();
+            log.debug("transUnit {} before replace [{}]",
+                    request.getTransUnitId(), contents);
+            for (int i = 0; i < contents.size(); i++) {
+                String content = contents.get(i);
+                Matcher matcher = pattern.matcher(content);
+                String newContent =
+                        matcher.replaceAll(Matcher
+                                .quoteReplacement(replaceText));
+                contents.set(i, newContent);
+            }
+            log.debug("transUnit {} after replace [{}]",
+                    request.getTransUnitId(), contents);
+        }
+    }
 
-   @Override
-   public void rollback(ReplaceText action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
-   {
-      throw new ActionException("not supported");
-   }
+    @Override
+    public void rollback(ReplaceText action, UpdateTransUnitResult result,
+            ExecutionContext context) throws ActionException {
+        throw new ActionException("not supported");
+    }
 }

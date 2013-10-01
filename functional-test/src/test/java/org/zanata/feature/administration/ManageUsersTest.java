@@ -37,40 +37,39 @@ import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class ManageUsersTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
-   private DashboardPage dashboardPage;
+public class ManageUsersTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    private DashboardPage dashboardPage;
 
-   @Before
-   public void before()
-   {
-      dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void before() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   public ManageUserPage goToUserAdministration()
-   {
-      return dashboardPage.goToAdministration().goToManageUserPage();
-   }
+    public ManageUserPage goToUserAdministration() {
+        return dashboardPage.goToAdministration().goToManageUserPage();
+    }
 
-   public ManageUserAccountPage editUserAccount(ManageUserPage manageUserPage, String username)
-   {
-      return manageUserPage.editUserAccount(username);
-   }
+    public ManageUserAccountPage editUserAccount(ManageUserPage manageUserPage,
+            String username) {
+        return manageUserPage.editUserAccount(username);
+    }
 
-   public ManageUserPage changeUsernameAndPassword(ManageUserAccountPage manageUserAccount, String username,
-         String password)
-   {
-      return manageUserAccount.clearFields().enterUsername(username).enterPassword(password)
-            .enterConfirmPassword(password).saveUser();
-   }
+    public ManageUserPage changeUsernameAndPassword(
+            ManageUserAccountPage manageUserAccount, String username,
+            String password) {
+        return manageUserAccount.clearFields().enterUsername(username)
+                .enterPassword(password).enterConfirmPassword(password)
+                .saveUser();
+    }
 
-   public boolean userListContains(ManageUserPage manageUserPage, String username)
-   {
-      return manageUserPage.getUserList().contains(username);
-   }
+    public boolean userListContains(ManageUserPage manageUserPage,
+            String username) {
+        return manageUserPage.getUserList().contains(username);
+    }
 
 }

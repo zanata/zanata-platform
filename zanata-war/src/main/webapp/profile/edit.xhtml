@@ -1,74 +1,82 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.EditProfile']}</ui:define>
-    <ui:define name="center_content">
-            <div>
-	    	<h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}" rendered="#{authenticationManager.newUser}"/>
-		<br/>
-            </div>
+  <ui:define name="page_title">#{messages['jsf.EditProfile']}</ui:define>
+  <ui:define name="center_content">
+    <div>
+      <h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}"
+        rendered="#{authenticationManager.newUser}"/>
+      <br/>
+    </div>
 
-      <h1>#{messages['jsf.EditProfile']}</h1>
-        <h:form id="editProfileForm">
-          <s:token allowMultiplePosts="true" />
-          <rich:panel>
-            <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
+    <h1>#{messages['jsf.EditProfile']}</h1>
+    <h:form id="editProfileForm">
+      <s:token allowMultiplePosts="true"/>
+      <rich:panel>
+        <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
 
-            <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-              <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-              <h:inputText id="name" value="#{profileAction.name}" required="true" >
-                <a4j:ajax event="blur" render="nameField" execute="@this"/>
-              </h:inputText>
-               <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-            	 <rich:tooltip>
-                  #{messages['jsf.NameToolTip']}
-                </rich:tooltip>
-           	  </s:span>
-            </s:decorate>
-            <ui:remove>
-                <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
-            </ui:remove>
-            <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml" rendered="#{profileAction.newUser}" enclose="true">
-              <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-              <h:inputText id="username" value="#{profileAction.username}" required="true">
-                <a4j:ajax event="blur" render="usernameField" execute="@this"/>
-              </h:inputText>
+        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+          <h:inputText id="name" value="#{profileAction.name}" required="true">
+            <a4j:ajax event="blur" render="nameField" execute="@this"/>
+          </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
+            <rich:tooltip>
+              #{messages['jsf.NameToolTip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
+        <ui:remove>
+          <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
+        </ui:remove>
+        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
+          rendered="#{profileAction.newUser}" enclose="true">
+          <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+          <h:inputText id="username" value="#{profileAction.username}"
+            required="true">
+            <a4j:ajax event="blur" render="usernameField" execute="@this"/>
+          </h:inputText>
 
-              <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-            	 <rich:tooltip>
-                      #{messages['jsf.UsernameToolTip']}
-                  </rich:tooltip>
-           	  </s:span>
-            </s:decorate>
-            <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml" enclose="true">
-              <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-              <h:inputText id="email" value="#{profileAction.email}" required="true" >
-                  <a4j:ajax event="blur" render="emailField" />
-              </h:inputText>
+          <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
+            <rich:tooltip>
+              #{messages['jsf.UsernameToolTip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
+        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
+          enclose="true">
+          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <h:inputText id="email" value="#{profileAction.email}"
+            required="true">
+            <a4j:ajax event="blur" render="emailField"/>
+          </h:inputText>
 
-               <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-            	<rich:tooltip>
-                  #{messages['jsf.EmailToolTip']}
-                </rich:tooltip>
-           	  </s:span>
+          <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
+            <rich:tooltip>
+              #{messages['jsf.EmailToolTip']}
+            </rich:tooltip>
+          </s:span>
 
-            </s:decorate>
+        </s:decorate>
 
-            <div style="clear:both"></div>
+        <div style="clear:both"></div>
 
-            <div class="actionButtons">
-              <h:commandButton id="saveButton" value="#{messages['jsf.Save']}" action="#{profileAction.edit}" />
-              <s:button value="#{messages['jsf.Cancel']}" action="#{profileAction.cancel}"/>
-            </div>
-          </rich:panel>
-        </h:form>
+        <div class="actionButtons">
+          <h:commandButton id="saveButton" value="#{messages['jsf.Save']}"
+            action="#{profileAction.edit}"/>
+          <s:button value="#{messages['jsf.Cancel']}"
+            action="#{profileAction.cancel}"/>
+        </div>
+      </rich:panel>
+    </h:form>
 
-    </ui:define>
+  </ui:define>
 
-  </ui:composition>
+</ui:composition>

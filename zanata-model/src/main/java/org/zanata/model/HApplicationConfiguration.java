@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -42,22 +42,21 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Access(AccessType.FIELD)
 @NoArgsConstructor
 @AllArgsConstructor
-public class HApplicationConfiguration extends ModelEntityBase
-{
+public class HApplicationConfiguration extends ModelEntityBase {
 
-   public static String KEY_HOST                   = "host.url";
-   public static String KEY_REGISTER               = "register.url";
-   public static String KEY_DOMAIN                 = "email.domain";
-   public static String KEY_ADMIN_EMAIL            = "email.admin.addr";
-   public static String KEY_EMAIL_FROM_ADDRESS     = "email.from.addr";
-   public static String KEY_HOME_CONTENT           = "pages.home.content";
-   public static String KEY_HELP_CONTENT           = "pages.help.content";
-   public static String KEY_LOG_DESTINATION_EMAIL  = "log.destination.email";
-   public static String KEY_EMAIL_LOG_EVENTS       = "log.email.active";
-   public static String KEY_EMAIL_LOG_LEVEL        = "log.email.level";
-   public static String KEY_PIWIK_URL              = "piwik.url";
-   public static String KEY_PIWIK_IDSITE           = "piwik.idSite";
-   private static final long serialVersionUID = 8652817113098817448L;
+    public static String KEY_HOST = "host.url";
+    public static String KEY_REGISTER = "register.url";
+    public static String KEY_DOMAIN = "email.domain";
+    public static String KEY_ADMIN_EMAIL = "email.admin.addr";
+    public static String KEY_EMAIL_FROM_ADDRESS = "email.from.addr";
+    public static String KEY_HOME_CONTENT = "pages.home.content";
+    public static String KEY_HELP_CONTENT = "pages.help.content";
+    public static String KEY_LOG_DESTINATION_EMAIL = "log.destination.email";
+    public static String KEY_EMAIL_LOG_EVENTS = "log.email.active";
+    public static String KEY_EMAIL_LOG_LEVEL = "log.email.level";
+    public static String KEY_PIWIK_URL = "piwik.url";
+    public static String KEY_PIWIK_IDSITE = "piwik.idSite";
+    private static final long serialVersionUID = 8652817113098817448L;
 
    // TODO PERF @NaturalId(mutable=false) for better criteria caching
    @NaturalId

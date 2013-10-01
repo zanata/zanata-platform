@@ -22,72 +22,70 @@
 package org.zanata.webtrans.shared.rpc;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class MergeOptions
-{
-   private MergeOptions(MergeRule differentProject, MergeRule differentDocument,
-         MergeRule differentResId, MergeRule importedMatch)
-   {
-      this.setDifferentProject(differentProject);
-      this.setDifferentDocument(differentDocument);
-      this.setDifferentResId(differentResId);
-      this.setImportedMatch(importedMatch);
-   }
+public class MergeOptions {
+    private MergeOptions(MergeRule differentProject,
+            MergeRule differentDocument, MergeRule differentResId,
+            MergeRule importedMatch) {
+        this.setDifferentProject(differentProject);
+        this.setDifferentDocument(differentDocument);
+        this.setDifferentResId(differentResId);
+        this.setImportedMatch(importedMatch);
+    }
 
-   private MergeRule differentProject;
-   private MergeRule differentDocument;
-   private MergeRule differentResId;
-   private MergeRule importedMatch;
+    private MergeRule differentProject;
+    private MergeRule differentDocument;
+    private MergeRule differentResId;
+    private MergeRule importedMatch;
 
-   public static MergeOptions allReject()
-   {
-      return new MergeOptions(MergeRule.REJECT, MergeRule.REJECT,
-            MergeRule.REJECT, MergeRule.REJECT);
-   }
-   public static MergeOptions allIgnore()
-   {
-      return new MergeOptions(MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK,
-            MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK);
-   }
-   public static MergeOptions allFuzzy()
-   {
-      return new MergeOptions(MergeRule.FUZZY, MergeRule.FUZZY,
-            MergeRule.FUZZY, MergeRule.FUZZY);
-   }
+    public static MergeOptions allReject() {
+        return new MergeOptions(MergeRule.REJECT, MergeRule.REJECT,
+                MergeRule.REJECT, MergeRule.REJECT);
+    }
 
-   public MergeRule getDifferentProject()
-   {
-      return differentProject;
-   }
-   public void setDifferentProject(MergeRule differentProject)
-   {
-      this.differentProject = differentProject;
-   }
-   public MergeRule getDifferentDocument()
-   {
-      return differentDocument;
-   }
-   public void setDifferentDocument(MergeRule differentDocument)
-   {
-      this.differentDocument = differentDocument;
-   }
-   public MergeRule getDifferentResId()
-   {
-      return differentResId;
-   }
-   public void setDifferentResId(MergeRule differentResId)
-   {
-      this.differentResId = differentResId;
-   }
-   public MergeRule getImportedMatch()
-   {
-      return importedMatch;
-   }
-   public void setImportedMatch(MergeRule importedMatch)
-   {
-      this.importedMatch = importedMatch;
-   }
+    public static MergeOptions allIgnore() {
+        return new MergeOptions(MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK,
+                MergeRule.IGNORE_CHECK, MergeRule.IGNORE_CHECK);
+    }
+
+    public static MergeOptions allFuzzy() {
+        return new MergeOptions(MergeRule.FUZZY, MergeRule.FUZZY,
+                MergeRule.FUZZY, MergeRule.FUZZY);
+    }
+
+    public MergeRule getDifferentProject() {
+        return differentProject;
+    }
+
+    public void setDifferentProject(MergeRule differentProject) {
+        this.differentProject = differentProject;
+    }
+
+    public MergeRule getDifferentDocument() {
+        return differentDocument;
+    }
+
+    public void setDifferentDocument(MergeRule differentDocument) {
+        this.differentDocument = differentDocument;
+    }
+
+    public MergeRule getDifferentResId() {
+        return differentResId;
+    }
+
+    public void setDifferentResId(MergeRule differentResId) {
+        this.differentResId = differentResId;
+    }
+
+    public MergeRule getImportedMatch() {
+        return importedMatch;
+    }
+
+    public void setImportedMatch(MergeRule importedMatch) {
+        this.importedMatch = importedMatch;
+    }
 
 }

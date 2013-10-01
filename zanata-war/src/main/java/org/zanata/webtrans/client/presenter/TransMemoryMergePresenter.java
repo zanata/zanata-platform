@@ -55,145 +55,144 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergePresenter extends WidgetPresenter<TransMemoryMergePopupPanelDisplay> implements TransMemoryMergePopupPanelDisplay.Listener
-{
+public class TransMemoryMergePresenter extends
+        WidgetPresenter<TransMemoryMergePopupPanelDisplay> implements
+        TransMemoryMergePopupPanelDisplay.Listener {
 
-   private TransMemoryMergePopupPanelDisplay display;
-   private final EventBus eventBus;
-   private final CachingDispatchAsync dispatcher;
-   private final NavigationService navigationService;
-   private final UiMessages messages;
-   private final Provider<UndoLink> undoLinkProvider;
+    private TransMemoryMergePopupPanelDisplay display;
+    private final EventBus eventBus;
+    private final CachingDispatchAsync dispatcher;
+    private final NavigationService navigationService;
+    private final UiMessages messages;
+    private final Provider<UndoLink> undoLinkProvider;
 
-   @Inject
-   public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, NavigationService navigationService, UiMessages messages, Provider<UndoLink> undoLinkProvider)
-   {
-      super(display, eventBus);
-      this.display = display;
-      this.eventBus = eventBus;
-      this.dispatcher = dispatcher;
-      this.navigationService = navigationService;
-      this.messages = messages;
-      this.undoLinkProvider = undoLinkProvider;
-      display.setListener(this);
-   }
+    @Inject
+    public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display,
+            EventBus eventBus, CachingDispatchAsync dispatcher,
+            NavigationService navigationService, UiMessages messages,
+            Provider<UndoLink> undoLinkProvider) {
+        super(display, eventBus);
+        this.display = display;
+        this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
+        this.navigationService = navigationService;
+        this.messages = messages;
+        this.undoLinkProvider = undoLinkProvider;
+        display.setListener(this);
+    }
 
-   @Override
-   public void proceedToMergeTM(int percentage, MergeOptions mergeOptions)
-   {
-      Collection<TransUnit> items = getNotTranslatedItems();
+    @Override
+    public void proceedToMergeTM(int percentage, MergeOptions mergeOptions) {
+        Collection<TransUnit> items = getNotTranslatedItems();
 
-      if (items.isEmpty())
-      {
-         eventBus.fireEvent(new NotificationEvent(Info, messages.noTranslationToMerge()));
-         display.hide();
-         return;
-      }
-
-      display.showProcessing();
-      TransMemoryMerge action = prepareTMMergeAction(items, percentage, mergeOptions);
-      dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.warn("TM merge failed", caught);
-            eventBus.fireEvent(new NotificationEvent(Error, messages.mergeTMFailed()));
+        if (items.isEmpty()) {
+            eventBus.fireEvent(new NotificationEvent(Info, messages
+                    .noTranslationToMerge()));
             display.hide();
-         }
+            return;
+        }
 
-         @Override
-         public void onSuccess(final UpdateTransUnitResult result)
-         {
-            if (result.getUpdateInfoList().isEmpty())
-            {
-               eventBus.fireEvent(new NotificationEvent(Info, messages.noTranslationToMerge()));
+        display.showProcessing();
+        TransMemoryMerge action =
+                prepareTMMergeAction(items, percentage, mergeOptions);
+        dispatcher.execute(action, new AsyncCallback<UpdateTransUnitResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.warn("TM merge failed", caught);
+                eventBus.fireEvent(new NotificationEvent(Error, messages
+                        .mergeTMFailed()));
+                display.hide();
             }
-            else
-            {
-               final UndoLink undoLink = undoLinkProvider.get();
-               undoLink.prepareUndoFor(result);
 
-               List<String> rowIndicesOrNull = Lists.transform(result.getUpdateInfoList(), SuccessRowIndexOrNullFunction.FUNCTION);
-               Iterable<String> successRowIndices = Iterables.filter(rowIndicesOrNull, StringNotEmptyPredicate.INSTANCE);
+            @Override
+            public void onSuccess(final UpdateTransUnitResult result) {
+                if (result.getUpdateInfoList().isEmpty()) {
+                    eventBus.fireEvent(new NotificationEvent(Info, messages
+                            .noTranslationToMerge()));
+                } else {
+                    final UndoLink undoLink = undoLinkProvider.get();
+                    undoLink.prepareUndoFor(result);
 
-               Log.info("number of rows auto filled by TM merge: " + Iterables.size(successRowIndices));
-               NotificationEvent event = new NotificationEvent(Info, messages.mergeTMSuccess(Lists.newArrayList(successRowIndices)), undoLink);
-               eventBus.fireEvent(event);
+                    List<String> rowIndicesOrNull =
+                            Lists.transform(result.getUpdateInfoList(),
+                                    SuccessRowIndexOrNullFunction.FUNCTION);
+                    Iterable<String> successRowIndices =
+                            Iterables.filter(rowIndicesOrNull,
+                                    StringNotEmptyPredicate.INSTANCE);
+
+                    Log.info("number of rows auto filled by TM merge: "
+                            + Iterables.size(successRowIndices));
+                    NotificationEvent event =
+                            new NotificationEvent(Info, messages
+                                    .mergeTMSuccess(Lists
+                                            .newArrayList(successRowIndices)),
+                                    undoLink);
+                    eventBus.fireEvent(event);
+                }
+                display.hide();
             }
-            display.hide();
-         }
-      });
-   }
+        });
+    }
 
-   private Collection<TransUnit> getNotTranslatedItems()
-   {
-      // TODO rhbz953734 - need to review this
-      List<TransUnit> currentItems = navigationService.getCurrentPageValues();
-      return Collections2.filter(currentItems, new Predicate<TransUnit>()
-      {
-         @Override
-         public boolean apply(TransUnit input)
-         {
-            return !input.getStatus().isTranslated();
-         }
-      });
-   }
+    private Collection<TransUnit> getNotTranslatedItems() {
+        // TODO rhbz953734 - need to review this
+        List<TransUnit> currentItems = navigationService.getCurrentPageValues();
+        return Collections2.filter(currentItems, new Predicate<TransUnit>() {
+            @Override
+            public boolean apply(TransUnit input) {
+                return !input.getStatus().isTranslated();
+            }
+        });
+    }
 
-   private TransMemoryMerge prepareTMMergeAction(Collection<TransUnit> untranslatedTUs, int threshold,
-                                                 MergeOptions mergeOptions)
-   {
-      List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList(Collections2.transform(untranslatedTUs, new Function<TransUnit, TransUnitUpdateRequest>()
-      {
-         @Override
-         public TransUnitUpdateRequest apply(TransUnit from)
-         {
-            return new TransUnitUpdateRequest(from.getId(), null, null, from.getVerNum());
-         }
-      }));
-      return new TransMemoryMerge(threshold, updateRequests, mergeOptions);
-   }
+    private TransMemoryMerge prepareTMMergeAction(
+            Collection<TransUnit> untranslatedTUs, int threshold,
+            MergeOptions mergeOptions) {
+        List<TransUnitUpdateRequest> updateRequests =
+                Lists.newArrayList(Collections2.transform(untranslatedTUs,
+                        new Function<TransUnit, TransUnitUpdateRequest>() {
+                            @Override
+                            public TransUnitUpdateRequest apply(TransUnit from) {
+                                return new TransUnitUpdateRequest(from.getId(),
+                                        null, null, from.getVerNum());
+                            }
+                        }));
+        return new TransMemoryMerge(threshold, updateRequests, mergeOptions);
+    }
 
-   @Override
-   public void cancelMergeTM()
-   {
-      display.hide();
-   }
+    @Override
+    public void cancelMergeTM() {
+        display.hide();
+    }
 
-   public void prepareTMMerge()
-   {
-      display.showForm();
-   }
+    public void prepareTMMerge() {
+        display.showForm();
+    }
 
+    @Override
+    protected void onBind() {
+    }
 
-   @Override
-   protected void onBind()
-   {
-   }
+    @Override
+    protected void onUnbind() {
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+    @Override
+    protected void onRevealDisplay() {
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
-
-   private static enum SuccessRowIndexOrNullFunction implements Function<TransUnitUpdateInfo, String>
-   {
-      FUNCTION;
-      @Override
-      public String apply(TransUnitUpdateInfo input)
-      {
-         if (input.isSuccess())
-         {
-            return String.valueOf(input.getTransUnit().getRowIndex());
-         }
-         return "";
-      }
-   }
+    private static enum SuccessRowIndexOrNullFunction implements
+            Function<TransUnitUpdateInfo, String> {
+        FUNCTION;
+        @Override
+        public String apply(TransUnitUpdateInfo input) {
+            if (input.isSuccess()) {
+                return String.valueOf(input.getTransUnit().getRowIndex());
+            }
+            return "";
+        }
+    }
 }

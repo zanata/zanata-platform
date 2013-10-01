@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
@@ -20,138 +20,134 @@
  */
 package org.zanata.util;
 
+import org.apache.commons.io.FileUtils;
+import java.io.*;
 
- import org.apache.commons.io.FileUtils;
- import java.io.*;
+/**
+ * Create and manipulate basic text files for testing.
+ *
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+public class TestFileGenerator {
+    // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
+    // randomness)
+    private static String longFileName =
+            "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA1CAtGcaZq6xydHdOghbsy"
+                    + "Pu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHHYgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGS"
+                    + "P25eqzU1lDjejCsd26wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMUn9nFW";
 
- /**
-  * Create and manipulate basic text files for testing.
-  *
-  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
-  */
-public class TestFileGenerator
-{
-   // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file randomness)
-   private static String longFileName = "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA1CAtGcaZq6xydHdOghbsy"
-      +"Pu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHHYgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGS"
-      +"P25eqzU1lDjejCsd26wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMUn9nFW";
+    public TestFileGenerator() {
+    }
 
-   public TestFileGenerator()
-   {
-   }
+    /**
+     * Return a string with near maximum filename length
+     *
+     * @return String
+     */
+    public String longFileName() {
+        return longFileName;
+    }
 
-   /**
-    * Return a string with near maximum filename length
-    * @return String
-    */
-   public String longFileName()
-   {
-      return longFileName;
-   }
+    /**
+     * Create a test file in temporary storage with content. Note that the file
+     * will contain random characters from the temporary file creation process.
+     *
+     * @param fileName
+     *            Prefix of file eg. "myTest"
+     * @param suffix
+     *            Suffix of file, eg. ".txt"
+     * @param content
+     *            Contents of the file, eg. "This is a test file"
+     * @return File object for created file
+     */
+    public File generateTestFileWithContent(String fileName, String suffix,
+            String content) {
+        File tempFile = generateTestFile(fileName, suffix);
+        setTestFileContent(tempFile, content);
+        return tempFile;
+    }
 
-   /**
-    * Create a test file in temporary storage with content.
-    * Note that the file will contain random characters from the temporary file creation process.
-    *
-    * @param fileName Prefix of file eg. "myTest"
-    * @param suffix Suffix of file, eg. ".txt"
-    * @param content Contents of the file, eg. "This is a test file"
-    * @return File object for created file
-    */
-   public File generateTestFileWithContent(String fileName, String suffix, String content)
-   {
-      File tempFile = generateTestFile(fileName, suffix);
-      setTestFileContent(tempFile, content);
-      return tempFile;
-   }
+    private File generateTestFile(String fileName, String suffix) {
+        File testFile;
+        try {
+            testFile = File.createTempFile(fileName, suffix);
+        } catch (IOException ioException) {
+            throw new RuntimeException("Unable to create temporary file "
+                    + fileName);
+        }
+        testFile.deleteOnExit();
+        return testFile;
+    }
 
-   private File generateTestFile(String fileName, String suffix)
-   {
-      File testFile;
-      try
-      {
-         testFile = File.createTempFile(fileName, suffix);
-      } catch(IOException ioException)
-      {
-         throw new RuntimeException("Unable to create temporary file "+fileName);
-      }
-      testFile.deleteOnExit();
-      return testFile;
-   }
+    private void setTestFileContent(File testFile, String testContent) {
+        try {
+            FileWriter fileWriter = new FileWriter(testFile);
+            fileWriter.write(testContent);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException ioException) {
+            throw new RuntimeException("Could not open file for writing "
+                    + testFile.getName());
+        }
+    }
 
-   private void setTestFileContent(File testFile, String testContent)
-   {
-      try
-      {
-         FileWriter fileWriter = new FileWriter(testFile);
-         fileWriter.write(testContent);
-         fileWriter.flush();
-         fileWriter.close();
-      }
-      catch(IOException ioException)
-      {
-         throw new RuntimeException("Could not open file for writing "+testFile.getName());
-      }
-   }
+    /**
+     * Change the size of a file to fileSize. The target file will be truncated
+     * or extended as necessary.
+     *
+     * @param tempFile
+     *            File to alter
+     * @param fileSize
+     *            Intended file size of resulting file
+     * @throws RuntimeException
+     *             if the file cannot be altered
+     */
+    public void forceFileSize(File tempFile, long fileSize) {
+        try {
+            RandomAccessFile randomAccessFile =
+                    new RandomAccessFile(tempFile, "rw");
+            randomAccessFile.setLength(fileSize);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to set the test file length");
+        }
+    }
 
-   /**
-    * Change the size of a file to fileSize. The target file will be truncated or extended as
-    * necessary.
-    *
-    * @param tempFile File to alter
-    * @param fileSize Intended file size of resulting file
-    * @throws RuntimeException if the file cannot be altered
-    */
-   public void forceFileSize(File tempFile, long fileSize)
-   {
-      try
-      {
-         RandomAccessFile randomAccessFile = new RandomAccessFile(tempFile, "rw");
-         randomAccessFile.setLength(fileSize);
-      } catch(IOException e)
-      {
-         throw new RuntimeException("Unable to set the test file length");
-      }
-   }
+    /**
+     * Get the contents of the given file.
+     *
+     * @param testFile
+     *            File to read contents from
+     * @return contents of the target file
+     * @throws RuntimeException
+     *             if the file cannot be read
+     */
+    public String getTestFileContent(File testFile) {
+        String fileContents;
+        try {
+            fileContents = FileUtils.readFileToString(testFile);
+        } catch (IOException ioException) {
+            throw new RuntimeException("Could not read from test file.");
+        }
+        return fileContents;
+    }
 
-   /**
-    * Get the contents of the given file.
-    *
-    * @param testFile File to read contents from
-    * @return contents of the target file
-    * @throws RuntimeException if the file cannot be read
-    */
-   public String getTestFileContent(File testFile)
-   {
-      String fileContents;
-      try
-      {
-         fileContents = FileUtils.readFileToString(testFile);
-      }
-      catch(IOException ioException)
-      {
-         throw new RuntimeException("Could not read from test file.");
-      }
-      return fileContents;
-   }
-
-   /**
-    * Gives the name of the first listed file in a directory. Intended for validating testing
-    * upload of files to an empty directory.
-    *
-    * @param directory Storage directory of desired file.
-    * @return name of first listed file in target directory
-    * @throws RuntimeException if no files are found
-    */
-   public String getFirstFileNameInDirectory(String directory)
-   {
-      try
-      {
-         return new File(directory).list()[0];
-      }
-      catch(ArrayIndexOutOfBoundsException arrayException)
-      {
-         throw new RuntimeException("Expected files in dir "+directory+" but none found.");
-      }
-   }
+    /**
+     * Gives the name of the first listed file in a directory. Intended for
+     * validating testing upload of files to an empty directory.
+     *
+     * @param directory
+     *            Storage directory of desired file.
+     * @return name of first listed file in target directory
+     * @throws RuntimeException
+     *             if no files are found
+     */
+    public String getFirstFileNameInDirectory(String directory) {
+        try {
+            return new File(directory).list()[0];
+        } catch (ArrayIndexOutOfBoundsException arrayException) {
+            throw new RuntimeException("Expected files in dir " + directory
+                    + " but none found.");
+        }
+    }
 }

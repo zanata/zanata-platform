@@ -20,18 +20,15 @@
  */
 package org.zanata.exception;
 
-public class FileFormatAdapterException extends ZanataException
-{
+public class FileFormatAdapterException extends ZanataException {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public FileFormatAdapterException(String message)
-   {
-      super(message);
-   }
+    public FileFormatAdapterException(String message) {
+        super(message);
+    }
 
-   public FileFormatAdapterException(String message, Throwable e)
-   {
-      super(message, e);
-   }
+    public FileFormatAdapterException(String message, Throwable e) {
+        super(message, e);
+    }
 }

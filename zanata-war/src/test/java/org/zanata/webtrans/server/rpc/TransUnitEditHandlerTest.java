@@ -24,60 +24,62 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class TransUnitEditHandlerTest
-{
-   private TransUnitEditHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private TranslationWorkspaceManager translationWorkspaceManager;
-   @Mock
-   private TranslationWorkspace translationWorkspace;
-   @Captor
-   private ArgumentCaptor<TransUnitEdit> eventCaptor;
+public class TransUnitEditHandlerTest {
+    private TransUnitEditHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private TranslationWorkspaceManager translationWorkspaceManager;
+    @Mock
+    private TranslationWorkspace translationWorkspace;
+    @Captor
+    private ArgumentCaptor<TransUnitEdit> eventCaptor;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .ignoreNonResolvable()
             .autowire(TransUnitEditHandler.class);
       // @formatter:on
-   }
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      Person person = TestFixture.person();
-      TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-      WorkspaceId workspaceId = TestFixture.workspaceId();
-      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-      TransUnitEditAction action = new TransUnitEditAction(person, selectedTransUnit.getId());
-      action.setWorkspaceId(workspaceId);
-      action.setEditorClientId(editorClientId);
-      when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId)).thenReturn(translationWorkspace);
+    @Test
+    public void testExecute() throws Exception {
+        Person person = TestFixture.person();
+        TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+        WorkspaceId workspaceId = TestFixture.workspaceId();
+        EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+        TransUnitEditAction action =
+                new TransUnitEditAction(person, selectedTransUnit.getId());
+        action.setWorkspaceId(workspaceId);
+        action.setEditorClientId(editorClientId);
+        when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))
+                .thenReturn(translationWorkspace);
 
-      handler.execute(action, null);
+        handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      verify(translationWorkspace).updateUserSelection(editorClientId, selectedTransUnit.getId());
-      verify(translationWorkspace).publish(eventCaptor.capture());
-      TransUnitEdit transUnitEdit = eventCaptor.getValue();
-      assertThat(transUnitEdit.getEditorClientId(), Matchers.sameInstance(editorClientId));
-      assertThat(transUnitEdit.getPerson(), Matchers.sameInstance(person));
-      assertThat(transUnitEdit.getSelectedTransUnitId(), Matchers.sameInstance(selectedTransUnit.getId()));
-   }
+        verify(identity).checkLoggedIn();
+        verify(translationWorkspace).updateUserSelection(editorClientId,
+                selectedTransUnit.getId());
+        verify(translationWorkspace).publish(eventCaptor.capture());
+        TransUnitEdit transUnitEdit = eventCaptor.getValue();
+        assertThat(transUnitEdit.getEditorClientId(),
+                Matchers.sameInstance(editorClientId));
+        assertThat(transUnitEdit.getPerson(), Matchers.sameInstance(person));
+        assertThat(transUnitEdit.getSelectedTransUnitId(),
+                Matchers.sameInstance(selectedTransUnit.getId()));
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

@@ -23,88 +23,80 @@ import org.zanata.service.UserAccountService;
 
 @Name("passwordResetRequest")
 @Scope(ScopeType.EVENT)
-public class PasswordResetRequestAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class PasswordResetRequestAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private AccountDAO accountDAO;
+    @In
+    private AccountDAO accountDAO;
 
-   @In
-   private UserAccountService userAccountServiceImpl;
+    @In
+    private UserAccountService userAccountServiceImpl;
 
-   @In(create = true)
-   private Renderer renderer;
+    @In(create = true)
+    private Renderer renderer;
 
-   private String username;
-   private String email;
-   private String activationKey;
+    private String username;
+    private String email;
+    private String activationKey;
 
-   private HAccount account;
+    private HAccount account;
 
-   public HAccount getAccount()
-   {
-      return account;
-   }
+    public HAccount getAccount() {
+        return account;
+    }
 
-   public void setUsername(String username)
-   {
-      this.username = username;
-   }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-   @NotEmpty
-   @Size(min = 3, max = 20)
-   @Pattern(regexp = "^[a-z\\d_]{3,20}$")
-   public String getUsername()
-   {
-      return username;
-   }
+    @NotEmpty
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-z\\d_]{3,20}$")
+    public String getUsername() {
+        return username;
+    }
 
-   public void setEmail(String email)
-   {
-      this.email = email;
-   }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-   @Email
-   @NotEmpty
-   public String getEmail()
-   {
-      return email;
-   }
+    @Email
+    @NotEmpty
+    public String getEmail() {
+        return email;
+    }
 
-   @End
-   public String requestReset()
-   {
-      account = accountDAO.getByUsernameAndEmail( username, email );
-      HAccountResetPasswordKey key = userAccountServiceImpl.requestPasswordReset(account);
+    @End
+    public String requestReset() {
+        account = accountDAO.getByUsernameAndEmail(username, email);
+        HAccountResetPasswordKey key =
+                userAccountServiceImpl.requestPasswordReset(account);
 
-      if( key == null )
-      {
-         FacesMessages.instance().add("No such account found");
-         return null;
-      }
-      else
-      {
-         setActivationKey(key.getKeyHash());
-         renderer.render("/WEB-INF/facelets/email/password_reset.xhtml");
-         log.info("Sent password reset key to {0} ({1})", account.getPerson().getName(), account.getUsername());
-         FacesMessages.instance().add("You will soon receive an email with a link to reset your password.");
-         return "/home.xhtml";
-      }
+        if (key == null) {
+            FacesMessages.instance().add("No such account found");
+            return null;
+        } else {
+            setActivationKey(key.getKeyHash());
+            renderer.render("/WEB-INF/facelets/email/password_reset.xhtml");
+            log.info("Sent password reset key to {0} ({1})", account
+                    .getPerson().getName(), account.getUsername());
+            FacesMessages
+                    .instance()
+                    .add("You will soon receive an email with a link to reset your password.");
+            return "/home.xhtml";
+        }
 
-   }
+    }
 
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
+    public String getActivationKey() {
+        return activationKey;
+    }
 
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
-   }
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
 
 }

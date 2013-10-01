@@ -20,7 +20,6 @@
  */
 package org.zanata.page.account;
 
-
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.By;
@@ -34,144 +33,131 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterPage extends BasePage
-{
+public class RegisterPage extends BasePage {
 
-   @FindBy(id = "registerForm:nameField:name")
-   private WebElement nameField;
+    @FindBy(id = "registerForm:nameField:name")
+    private WebElement nameField;
 
-   @FindBy(id = "registerForm:emailField:email")
-   private WebElement emailField;
+    @FindBy(id = "registerForm:emailField:email")
+    private WebElement emailField;
 
-   @FindBy(id = "registerForm:usernameField:username")
-   private WebElement usernameField;
+    @FindBy(id = "registerForm:usernameField:username")
+    private WebElement usernameField;
 
-   @FindBy(id = "registerForm:passwordField:password")
-   private WebElement passwordField;
+    @FindBy(id = "registerForm:passwordField:password")
+    private WebElement passwordField;
 
-   @FindBy(id = "registerForm:passwordConfirmField:passwordConfirm")
-   private WebElement confirmPasswordField;
+    @FindBy(id = "registerForm:passwordConfirmField:passwordConfirm")
+    private WebElement confirmPasswordField;
 
-   @FindBy(id = "registerForm:captcha:verifyCaptcha")
-   private WebElement captchaField;
+    @FindBy(id = "registerForm:captcha:verifyCaptcha")
+    private WebElement captchaField;
 
-   @FindBy(id = "registerForm:agreedToTerms:agreedToTerms")
-   private WebElement termsCheckbox;
+    @FindBy(id = "registerForm:agreedToTerms:agreedToTerms")
+    private WebElement termsCheckbox;
 
-   @FindBy(id = "registerForm:registerButton")
-   private WebElement registerButton;
+    @FindBy(id = "registerForm:registerButton")
+    private WebElement registerButton;
 
-   public RegisterPage(WebDriver driver)
-   {
-      super(driver);
-      List<By> elementBys = ImmutableList.<By>builder()
-            .add(By.id("registerForm:nameField:name"))
-            .add(By.id("registerForm:emailField:email"))
-            .add(By.id("registerForm:usernameField:username"))
-            .add(By.id("registerForm:passwordField:password"))
-            .add(By.id("registerForm:passwordConfirmField:passwordConfirm"))
-            .add(By.id("registerForm:captcha:verifyCaptcha"))
-            .add(By.id("registerForm:agreedToTerms:agreedToTerms"))
-            .add(By.id("registerForm:registerButton"))
-            .build();
-      waitForPage(elementBys);
-   }
+    public RegisterPage(WebDriver driver) {
+        super(driver);
+        List<By> elementBys =
+                ImmutableList
+                        .<By> builder()
+                        .add(By.id("registerForm:nameField:name"))
+                        .add(By.id("registerForm:emailField:email"))
+                        .add(By.id("registerForm:usernameField:username"))
+                        .add(By.id("registerForm:passwordField:password"))
+                        .add(By.id("registerForm:passwordConfirmField:passwordConfirm"))
+                        .add(By.id("registerForm:captcha:verifyCaptcha"))
+                        .add(By.id("registerForm:agreedToTerms:agreedToTerms"))
+                        .add(By.id("registerForm:registerButton")).build();
+        waitForPage(elementBys);
+    }
 
-   public RegisterPage enterName(String name)
-   {
-      nameField.sendKeys(name);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterName(String name) {
+        nameField.sendKeys(name);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage enterUserName(String userName)
-   {
-      usernameField.sendKeys(userName);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterUserName(String userName) {
+        usernameField.sendKeys(userName);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage enterEmail(String email)
-   {
-      emailField.sendKeys(email);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterEmail(String email) {
+        emailField.sendKeys(email);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage enterPassword(String password)
-   {
-      passwordField.sendKeys(password);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterPassword(String password) {
+        passwordField.sendKeys(password);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage enterConfirmPassword(String confirmPassword)
-   {
-      confirmPasswordField.sendKeys(confirmPassword);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterConfirmPassword(String confirmPassword) {
+        confirmPasswordField.sendKeys(confirmPassword);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage enterCaptcha(String captcha)
-   {
-      captchaField.sendKeys(captcha);
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage enterCaptcha(String captcha) {
+        captchaField.sendKeys(captcha);
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage clickTerms()
-   {
-      termsCheckbox.click();
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage clickTerms() {
+        termsCheckbox.click();
+        return new RegisterPage(getDriver());
+    }
 
-   // TODO: Add a "signup success" page
-   public HomePage register()
-   {
-      registerButton.click();
-      return new HomePage(getDriver());
-   }
+    // TODO: Add a "signup success" page
+    public HomePage register() {
+        registerButton.click();
+        return new HomePage(getDriver());
+    }
 
-   public RegisterPage registerFailure()
-   {
-      registerButton.click();
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage registerFailure() {
+        registerButton.click();
+        return new RegisterPage(getDriver());
+    }
 
-   public RegisterPage clearFields()
-   {
-      nameField.clear();
-      emailField.clear();
-      usernameField.clear();
-      passwordField.clear();
-      confirmPasswordField.clear();
-      captchaField.clear();
-      return new RegisterPage(getDriver());
-   }
+    public RegisterPage clearFields() {
+        nameField.clear();
+        emailField.clear();
+        usernameField.clear();
+        passwordField.clear();
+        confirmPasswordField.clear();
+        captchaField.clear();
+        return new RegisterPage(getDriver());
+    }
 
-   /*
-      Pass in a map of strings, to be entered into the registration fields.
-      Fields: name, email, username, password, confirmpassword, captcha
-    */
-   public RegisterPage setFields(Map<String, String> fields)
-   {
-      clearFields();
-      enterName(fields.get("name"));
-      enterEmail(fields.get("email"));
-      enterUserName(fields.get("username"));
-      enterPassword(fields.get("password"));
-      enterConfirmPassword(fields.get("confirmpassword"));
-      enterCaptcha(fields.get("captcha"));
-      return new RegisterPage(getDriver());
-   }
+    /*
+     * Pass in a map of strings, to be entered into the registration fields.
+     * Fields: name, email, username, password, confirmpassword, captcha
+     */
+    public RegisterPage setFields(Map<String, String> fields) {
+        clearFields();
+        enterName(fields.get("name"));
+        enterEmail(fields.get("email"));
+        enterUserName(fields.get("username"));
+        enterPassword(fields.get("password"));
+        enterConfirmPassword(fields.get("confirmpassword"));
+        enterCaptcha(fields.get("captcha"));
+        return new RegisterPage(getDriver());
+    }
 
-   public List<String> waitForErrors()
-   {
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         @Override
-         public WebElement apply(WebDriver driver)
-         {
-            return getDriver().findElement(By.xpath("//span[@class='errors']"));
-         }
-      });
-      return getErrors();
-   }
+    public List<String> waitForErrors() {
+        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return getDriver().findElement(
+                        By.xpath("//span[@class='errors']"));
+            }
+        });
+        return getErrors();
+    }
 
 }

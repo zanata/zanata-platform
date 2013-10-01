@@ -1,334 +1,345 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
-                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <!--
-    This changelog file (despite the filename) is actually part 2 of the changes for Zanata 3.0.
-    Please start a new file (eg db.changelog-3.1a.xml) for the 3.1 dev cycle.
-     -->
-     
-    <changeSet id="1" author="camunoz@redhat.com">
-        <comment>Create the Translation Memory table.</comment>
+  <!--
+  This changelog file (despite the filename) is actually part 2 of the changes for Zanata 3.0.
+  Please start a new file (eg db.changelog-3.1a.xml) for the 3.1 dev cycle.
+   -->
 
-        <createTable tableName="TransMemory">
-            <column name="description" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="slug" type="varchar(40)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="source_language" type="varchar(255)">
-                <constraints nullable="true"/>
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet id="1" author="camunoz@redhat.com">
+    <comment>Create the Translation Memory table.</comment>
 
-    <changeSet id="2" author="camunoz@redhat.com">
-        <comment>Create Translation Memory metadata table.</comment>
-        
-        <createTable tableName="TransMemory_Metadata">
-            <column name="trans_memory_id" type="bigint">
-                <constraints  primaryKey="true" nullable="false"/>
-            </column>
-            <column name="metadata_type" type="varchar(75)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="metadata" type="longtext"/>
-        </createTable>
+    <createTable tableName="TransMemory">
+      <column name="description" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="slug" type="varchar(40)">
+        <constraints nullable="false" unique="true" />
+      </column>
+      <column name="source_language" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-        <addForeignKeyConstraint baseTableName="TransMemory_Metadata" baseColumnNames="trans_memory_id"
-                                 constraintName="FK_Metadata_TransMemory"
-                                 referencedTableName="TransMemory"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet id="2" author="camunoz@redhat.com">
+    <comment>Create Translation Memory metadata table.</comment>
 
-    <changeSet id="3" author="camunoz@redhat.com">
-        <comment>Create the TransMemoryUnit table.</comment>
-        <createTable tableName="TransMemoryUnit">
-            <column name="trans_unit_id" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="source_language" type="varchar(255)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="tm_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="unique_id" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="position" type="integer">
-                <constraints nullable="true"/>
-            </column>
-            <column name="metadata_type" type="varchar(75)"/>
-            <column name="metadata" type="longtext"/>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+    <createTable tableName="TransMemory_Metadata">
+      <column name="trans_memory_id" type="bigint">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="metadata_type" type="varchar(75)">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="metadata" type="longtext" />
+    </createTable>
 
-        <addUniqueConstraint constraintName="UK_natural_id"
-                             tableName="TransMemoryUnit" columnNames="tm_id,unique_id" />
-        <addForeignKeyConstraint baseTableName="TransMemoryUnit" baseColumnNames="tm_id"
-                                 constraintName="FK_tmunit_trans_memory"
-                                 referencedTableName="TransMemory"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="TransMemory_Metadata"
+      baseColumnNames="trans_memory_id"
+      constraintName="FK_Metadata_TransMemory"
+      referencedTableName="TransMemory"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="4" author="camunoz@redhat.com">
-        <comment>Create the TransMemoryUnitVariant table.</comment>
-        <createTable tableName="TransMemoryUnitVariant">
-            <column name="language" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="trans_unit_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="tagged_segment" type="longtext">
-                <constraints nullable="false"/>
-            </column>
-            <column name="plain_text_segment" type="longtext">
-                <constraints nullable="false"/>
-            </column>
-            <column name="plain_text_segment_hash" type="char(32)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="metadata_type" type="varchar(75)"/>
-            <column name="metadata" type="longtext"/>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+  <changeSet id="3" author="camunoz@redhat.com">
+    <comment>Create the TransMemoryUnit table.</comment>
+    <createTable tableName="TransMemoryUnit">
+      <column name="trans_unit_id" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="source_language" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+      <column name="tm_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="unique_id" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="position" type="integer">
+        <constraints nullable="true" />
+      </column>
+      <column name="metadata_type" type="varchar(75)" />
+      <column name="metadata" type="longtext" />
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
-                                 constraintName="FK_TransUnitVariant_TransUnit"
-                                 referencedTableName="TransMemoryUnit"
-                                 referencedColumnNames="id" />
-    </changeSet>
+    <addUniqueConstraint constraintName="UK_natural_id"
+      tableName="TransMemoryUnit" columnNames="tm_id,unique_id" />
+    <addForeignKeyConstraint baseTableName="TransMemoryUnit"
+      baseColumnNames="tm_id"
+      constraintName="FK_tmunit_trans_memory"
+      referencedTableName="TransMemory"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="5" author="camunoz@redhat.com">
-        <comment>Modify Trans Memory Foreign Keys to cascade delete.</comment>
-        <dropForeignKeyConstraint baseTableName="TransMemoryUnitVariant" constraintName="FK_TransUnitVariant_TransUnit"/>
-        <dropForeignKeyConstraint baseTableName="TransMemoryUnit" constraintName="FK_tmunit_trans_memory"/>
+  <changeSet id="4" author="camunoz@redhat.com">
+    <comment>Create the TransMemoryUnitVariant table.</comment>
+    <createTable tableName="TransMemoryUnitVariant">
+      <column name="language" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="trans_unit_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="tagged_segment" type="longtext">
+        <constraints nullable="false" />
+      </column>
+      <column name="plain_text_segment" type="longtext">
+        <constraints nullable="false" />
+      </column>
+      <column name="plain_text_segment_hash" type="char(32)">
+        <constraints nullable="false" />
+      </column>
+      <column name="metadata_type" type="varchar(75)" />
+      <column name="metadata" type="longtext" />
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
 
-        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
-                                 constraintName="FK_TransUnitVariant_TransUnit"
-                                 referencedTableName="TransMemoryUnit"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"/>
-        <addForeignKeyConstraint baseTableName="TransMemoryUnit" baseColumnNames="tm_id"
-                                 constraintName="FK_tmunit_trans_memory"
-                                 referencedTableName="TransMemory"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"/>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant"
+      baseColumnNames="trans_unit_id"
+      constraintName="FK_TransUnitVariant_TransUnit"
+      referencedTableName="TransMemoryUnit"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="1" author="pahuang@redhat.com">
-        <comment>Add HTextFlowTargetReviewComment table to support user comments.</comment>
-        <createTable tableName="HTextFlowTargetReviewComment">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="lastChanged" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="commenter_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="target_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="comment" type="longtext">
-                <constraints nullable="false"/>
-            </column>
-            <column name="targetVersion" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint constraintName="FKtarget_review_commenter"
-                                 referencedTableName="HPerson" referencedColumnNames="id"
-                                 baseTableName="HTextFlowTargetReviewComment" baseColumnNames="commenter_id"/>
-        <addForeignKeyConstraint constraintName="FKtarget_review_comment"
-                                 referencedTableName="HTextFlowTarget" referencedColumnNames="id"
-                                 baseTableName="HTextFlowTargetReviewComment" baseColumnNames="target_id"/>
-    </changeSet>
+  <changeSet id="5" author="camunoz@redhat.com">
+    <comment>Modify Trans Memory Foreign Keys to cascade delete.</comment>
+    <dropForeignKeyConstraint baseTableName="TransMemoryUnitVariant"
+      constraintName="FK_TransUnitVariant_TransUnit" />
+    <dropForeignKeyConstraint baseTableName="TransMemoryUnit"
+      constraintName="FK_tmunit_trans_memory" />
 
-    <changeSet author="aeng@redhat.com" id="2">
-        <comment>Add a flag indicating when a member of a Language team (locale) is a team reviewer.</comment>
-        <addColumn tableName="HLocale_Member">
-            <column name="isReviewer" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-    </changeSet>
+    <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant"
+      baseColumnNames="trans_unit_id"
+      constraintName="FK_TransUnitVariant_TransUnit"
+      referencedTableName="TransMemoryUnit"
+      referencedColumnNames="id"
+      onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="TransMemoryUnit"
+      baseColumnNames="tm_id"
+      constraintName="FK_tmunit_trans_memory"
+      referencedTableName="TransMemory"
+      referencedColumnNames="id"
+      onDelete="CASCADE" />
+  </changeSet>
 
-    <changeSet author="aeng@redhat.com" id="3">
-        <comment>Add a flag indicating when a member of a Language team (locale) is a team translator.</comment>
-        <addColumn tableName="HLocale_Member">
-            <column name="isTranslator" type="boolean" defaultValueBoolean="false">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet id="1" author="pahuang@redhat.com">
+    <comment>Add HTextFlowTargetReviewComment table to support user comments.</comment>
+    <createTable tableName="HTextFlowTargetReviewComment">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+      <column name="commenter_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="target_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="comment" type="longtext">
+        <constraints nullable="false" />
+      </column>
+      <column name="targetVersion" type="int">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="int">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="FKtarget_review_commenter"
+      referencedTableName="HPerson" referencedColumnNames="id"
+      baseTableName="HTextFlowTargetReviewComment"
+      baseColumnNames="commenter_id" />
+    <addForeignKeyConstraint constraintName="FKtarget_review_comment"
+      referencedTableName="HTextFlowTarget" referencedColumnNames="id"
+      baseTableName="HTextFlowTargetReviewComment"
+      baseColumnNames="target_id" />
+  </changeSet>
 
-    <changeSet author="aeng@redhat.com" id="4" >
-        <comment>Make current locale members and coordinator as translator</comment>
-        <sql>
-            update HLocale_Member set isTranslator = 1;
-        </sql>
-    </changeSet>
+  <changeSet author="aeng@redhat.com" id="2">
+    <comment>Add a flag indicating when a member of a Language team (locale) is a team reviewer.</comment>
+    <addColumn tableName="HLocale_Member">
+      <column name="isReviewer" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="1">
-        <comment>Add fileId to HRawDocument</comment>
-        <addColumn tableName="HRawDocument">
-            <column name="fileId" type="longtext" />
-        </addColumn>
-    </changeSet>
+  <changeSet author="aeng@redhat.com" id="3">
+    <comment>Add a flag indicating when a member of a Language team (locale) is a team translator.</comment>
+    <addColumn tableName="HLocale_Member">
+      <column name="isTranslator" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="2">
-        <comment>Initialise fileId with id, can guarantee uniqueness during migration</comment>
-        <sql>
-            update HRawDocument set fileId = id
-        </sql>
-        <addNotNullConstraint tableName="HRawDocument" columnName="fileId" columnDataType="longtext" />
-    </changeSet>
+  <changeSet author="aeng@redhat.com" id="4">
+    <comment>Make current locale members and coordinator as translator</comment>
+    <sql>
+      update HLocale_Member set isTranslator = 1;
+    </sql>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="3">
-        <comment>Add temporary table HRawDocumentContent for blobs during migration</comment>
-        <createTable tableName="HRawDocumentContent">
-            <column name="fileId" type="longtext">
-                <constraints nullable="false" />
-            </column>
-            <column name="content" type="longblob">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="1">
+    <comment>Add fileId to HRawDocument</comment>
+    <addColumn tableName="HRawDocument">
+      <column name="fileId" type="longtext" />
+    </addColumn>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="4">
-        <comment>Copy raw document content to HRawDocumentContent</comment>
-        <sql>
-            insert into HRawDocumentContent (fileId, content)
-                select fileId, content from HRawDocument
-        </sql>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="2">
+    <comment>Initialise fileId with id, can guarantee uniqueness during migration</comment>
+    <sql>
+      update HRawDocument set fileId = id
+    </sql>
+    <addNotNullConstraint tableName="HRawDocument" columnName="fileId"
+      columnDataType="longtext" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="5">
-        <comment>Remove obsolete HRawDocument.content column</comment>
-        <dropColumn tableName="HRawDocument" columnName="content" />
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="3">
+    <comment>Add temporary table HRawDocumentContent for blobs during migration</comment>
+    <createTable tableName="HRawDocumentContent">
+      <column name="fileId" type="longtext">
+        <constraints nullable="false" />
+      </column>
+      <column name="content" type="longblob">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="6">
-        <comment>Migrate existing raw document contents from database to file system</comment>
-        <customChange class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem">
-            <param name="basePathParam" value="${document.storage.directory}" />
-        </customChange>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="4">
+    <comment>Copy raw document content to HRawDocumentContent</comment>
+    <sql>
+      insert into HRawDocumentContent (fileId, content)
+      select fileId, content from HRawDocument
+    </sql>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="7">
-        <comment>Remove obsolete HRawDocumentContent table</comment>
-        <dropTable tableName="HRawDocumentContent" cascadeConstraints="false" />
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="5">
+    <comment>Remove obsolete HRawDocument.content column</comment>
+    <dropColumn tableName="HRawDocument" columnName="content" />
+  </changeSet>
 
-    <changeSet id="5" author="aeng@redhat.com">
-        <comment>Add Activity table to support log activities.</comment>
-        <createTable tableName="Activity">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="lastChanged" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="versionNum" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="actor_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="approxTime" type="DATETIME">
-                <constraints nullable="false" />
-            </column>
-            <column name="startOffsetMillis" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="endOffsetMillis" type="int">
-                <constraints nullable="false" />
-            </column>
-            <column name="contextType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="context_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastTargetType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="last_target_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="activityType" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-            <column name="eventCount" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="wordCount" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint constraintName="FKActivity_person"
-                                 referencedTableName="HPerson" referencedColumnNames="id"
-                                 baseTableName="Activity" baseColumnNames="actor_id"/>
-        
-        <addUniqueConstraint tableName="Activity"
-		    columnNames="actor_id,approxTime,activityType,contextType,context_id" 
-		    constraintName="UKactivity"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="6">
+    <comment>Migrate existing raw document contents from database to file system</comment>
+    <customChange
+      class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem">
+      <param name="basePathParam" value="${document.storage.directory}" />
+    </customChange>
+  </changeSet>
+
+  <changeSet author="damason@redhat.com" id="7">
+    <comment>Remove obsolete HRawDocumentContent table</comment>
+    <dropTable tableName="HRawDocumentContent" cascadeConstraints="false" />
+  </changeSet>
+
+  <changeSet id="5" author="aeng@redhat.com">
+    <comment>Add Activity table to support log activities.</comment>
+    <createTable tableName="Activity">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="int">
+        <constraints nullable="false" />
+      </column>
+      <column name="actor_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="approxTime" type="DATETIME">
+        <constraints nullable="false" />
+      </column>
+      <column name="startOffsetMillis" type="int">
+        <constraints nullable="false" />
+      </column>
+      <column name="endOffsetMillis" type="int">
+        <constraints nullable="false" />
+      </column>
+      <column name="contextType" type="varchar(150)">
+        <constraints nullable="false" />
+      </column>
+      <column name="context_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastTargetType" type="varchar(150)">
+        <constraints nullable="false" />
+      </column>
+      <column name="last_target_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="activityType" type="varchar(150)">
+        <constraints nullable="false" />
+      </column>
+      <column name="eventCount" type="int">
+        <constraints nullable="false" />
+      </column>
+      <column name="wordCount" type="int">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="FKActivity_person"
+      referencedTableName="HPerson" referencedColumnNames="id"
+      baseTableName="Activity" baseColumnNames="actor_id" />
+
+    <addUniqueConstraint tableName="Activity"
+      columnNames="actor_id,approxTime,activityType,contextType,context_id"
+      constraintName="UKactivity" />
+  </changeSet>
 
 </databaseChangeLog>

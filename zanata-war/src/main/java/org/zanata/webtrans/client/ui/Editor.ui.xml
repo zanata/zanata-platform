@@ -1,68 +1,73 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-        >
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+  >
 
-    <ui:with field="tableMessages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+  <ui:with field="tableMessages"
+    type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
-	<ui:style field="style" type="org.zanata.webtrans.client.ui.Editor.Styles">
-        .rootContainer {
-            outline: none;
-        }
+  <ui:style field="style" type="org.zanata.webtrans.client.ui.Editor.Styles">
+    .rootContainer {
+      outline: none;
+    }
 
-        .hasValidationError {
-            border: 1px solid #ff0000;
-        }
+    .hasValidationError {
+      border: 1px solid #ff0000;
+    }
 
-        .copyButton {
-            font-size: 18px;
-            cursor: pointer;
-        }
+    .copyButton {
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-		.textAreaWrapper
-		{
-		}
-		
-		.textAreaWrapper table
-		{
-			table-layout:fixed;
-		}
-        .textAreaWrapper textArea {
-            width: 100%;
-            min-height: 3em;
-        }
+    .textAreaWrapper {
+    }
 
-        .targetContainer {
-            width: 100%;
-            height: 100%;
-            table-layout: fixed;
-        }
+    .textAreaWrapper table {
+      table-layout: fixed;
+    }
 
-    </ui:style>
-	
-	<g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
-	<g:VerticalPanel width="100%" spacing="3">
-		<g:cell horizontalAlignment="ALIGN_LEFT">
-			<g:HorizontalPanel ui:field="topContainer" styleName="{style.targetContainer}">
-				<g:cell width="22px" verticalAlignment="middle">
-                    <g:InlineLabel ui:field="copyIcon" title="{tableMessages.copyFromSource}" styleName="icon-right-1 {style.copyButton} fadeElement" />
+    .textAreaWrapper textArea {
+      width: 100%;
+      min-height: 3em;
+    }
+
+    .targetContainer {
+      width: 100%;
+      height: 100%;
+      table-layout: fixed;
+    }
+
+  </ui:style>
+
+  <g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
+    <g:VerticalPanel width="100%" spacing="3">
+      <g:cell horizontalAlignment="ALIGN_LEFT">
+        <g:HorizontalPanel ui:field="topContainer"
+          styleName="{style.targetContainer}">
+          <g:cell width="22px" verticalAlignment="middle">
+            <g:InlineLabel ui:field="copyIcon"
+              title="{tableMessages.copyFromSource}"
+              styleName="icon-right-1 {style.copyButton} fadeElement" />
+          </g:cell>
+          <g:cell>
+            <!-- this extra wrapper is needed to make the validation error border around editor and remove (magically) a scrollbar from who-knows-what-->
+            <g:HTMLPanel ui:field="targetWrapper"
+              styleName="TableEditorCell-Target {style.textAreaWrapper}">
+              <g:HorizontalPanel width="100%" height="100%"
+                ui:field="textAreaTable">
+                <g:cell width="100%">
+                  <fui:TextAreaWrapper ui:field="textArea" />
                 </g:cell>
                 <g:cell>
-                    <!-- this extra wrapper is needed to make the validation error border around editor and remove (magically) a scrollbar from who-knows-what-->
-                	<g:HTMLPanel ui:field="targetWrapper" styleName="TableEditorCell-Target {style.textAreaWrapper}">
-	                	<g:HorizontalPanel width="100%" height="100%" ui:field="textAreaTable">
-                            <g:cell width="100%">
-                                <fui:TextAreaWrapper ui:field="textArea"/>
-                            </g:cell>
-                            <g:cell>
-                            	<fui:TranslatorListWidget ui:field="translatorList" />
-                            </g:cell>
-                        </g:HorizontalPanel>
-	                </g:HTMLPanel>
+                  <fui:TranslatorListWidget ui:field="translatorList" />
                 </g:cell>
-			</g:HorizontalPanel>
-		</g:cell>
-	</g:VerticalPanel>
-	</g:FocusPanel>
-</ui:UiBinder> 
+              </g:HorizontalPanel>
+            </g:HTMLPanel>
+          </g:cell>
+        </g:HorizontalPanel>
+      </g:cell>
+    </g:VerticalPanel>
+  </g:FocusPanel>
+</ui:UiBinder>

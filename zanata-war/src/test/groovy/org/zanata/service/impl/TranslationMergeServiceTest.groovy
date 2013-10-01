@@ -36,19 +36,16 @@ class TranslationMergeServiceTest {
         mergeService = null;
     }
 
-    def given(String mergeType)
-    {
+    def given(String mergeType) {
         def factory = new TranslationMergeServiceFactory(textFlowTargetHistoryDAO: historyDao)
         mergeService = factory.getMergeService(serverTargetNotNullMergeContext(mergeType))
     }
 
-    static TranslationMergeServiceFactory.MergeContext serverTargetNotNullMergeContext(String mergeType)
-    {
+    static TranslationMergeServiceFactory.MergeContext serverTargetNotNullMergeContext(String mergeType) {
         new TranslationMergeServiceFactory.MergeContext(MergeType.valueOf(mergeType), new HTextFlow(), new HLocale(), new HTextFlowTarget(), 1)
     }
 
-    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory = "false")
-    {
+    Result merge(String contentFromClient, String stateFromClient, String contentOnServer, String stateOnServer, String contentInHistory = "false") {
         BDDMockito.given(historyDao.findContentInHistory(any(HTextFlowTarget), anyListOf(String))).willReturn(Boolean.valueOf(contentInHistory));
 
         def client = new TextFlowTarget(contents: [contentFromClient], state: ContentState.valueOf(stateFromClient))
@@ -59,8 +56,7 @@ class TranslationMergeServiceTest {
         new Result(changed: changed, endContent: server.getContents()[0], endState: server.getState())
     }
 
-    class Result
-    {
+    class Result {
         boolean changed
         String endContent
         ContentState endState

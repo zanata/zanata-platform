@@ -35,47 +35,45 @@ import org.zanata.workflow.ClientPushWorkFlow;
 import com.google.common.base.Joiner;
 
 /**
- * @see <a href="https://tcms.engineering.redhat.com/case/170111/">TCMS test case 170111</a>
+ * @see <a href="https://tcms.engineering.redhat.com/case/170111/">TCMS test
+ *      case 170111</a>
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
-@Extensions({ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class})
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-public class GlossaryPushCSVTest
-{
-   private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
-   private File projectRootPath;
+public class GlossaryPushCSVTest {
+    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private File projectRootPath;
 
-   public String getUserConfigPath()
-   {
-      return ClientPushWorkFlow.getUserConfigPath("glossarist");
-   }
+    public String getUserConfigPath() {
+        return ClientPushWorkFlow.getUserConfigPath("glossarist");
+    }
 
-   public String getProjectLocation(String project)
-   {
-      projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
-      return projectRootPath.getAbsolutePath();
-   }
+    public String getProjectLocation(String project) {
+        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        return projectRootPath.getAbsolutePath();
+    }
 
-   public List<String> push(String command, String configPath) throws Exception
-   {
-      return clientPushWorkFlow.callWithTimeout(projectRootPath, command + configPath);
-   }
+    public List<String> push(String command, String configPath)
+            throws Exception {
+        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+                + configPath);
+    }
 
-   public boolean isPushSuccessful(List<String> output)
-   {
-      return clientPushWorkFlow.isPushSuccessful(output);
-   }
+    public boolean isPushSuccessful(List<String> output) {
+        return clientPushWorkFlow.isPushSuccessful(output);
+    }
 
-   public boolean isPushFailed(List<String> output)
-   {
-      return !isPushSuccessful(output);
-   }
+    public boolean isPushFailed(List<String> output) {
+        return !isPushSuccessful(output);
+    }
 
-   public String resultByLines(List<String> output)
-   {
-      return Joiner.on("\n").join(output);
-   }
+    public String resultByLines(List<String> output) {
+        return Joiner.on("\n").join(output);
+    }
 
 }

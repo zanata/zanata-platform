@@ -13,139 +13,119 @@ import org.jboss.seam.annotations.In;
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
  */
-public class AbstractDAOImpl<T, ID extends Serializable> implements GenericDAO<T, ID>, Serializable
-{
-   private static final long serialVersionUID = 1L;
-   
-   private Class<T> persistentClass;
-   private Session session;
+public class AbstractDAOImpl<T, ID extends Serializable> implements
+        GenericDAO<T, ID>, Serializable {
+    private static final long serialVersionUID = 1L;
 
-   public AbstractDAOImpl(Class<T> clz, Session session)
-   {
-      this(clz);
-      this.session = session;
-   }
+    private Class<T> persistentClass;
+    private Session session;
 
-   public AbstractDAOImpl(Class<T> clz)
-   {
-      this.persistentClass = clz;
-   }
+    public AbstractDAOImpl(Class<T> clz, Session session) {
+        this(clz);
+        this.session = session;
+    }
 
-   @In
-   public void setSession(Session s)
-   {
-      this.session = s;
-   }
+    public AbstractDAOImpl(Class<T> clz) {
+        this.persistentClass = clz;
+    }
 
-   protected Session getSession()
-   {
-      if (session == null)
-      {
-         throw new IllegalStateException("Session has not been set on DAO before usage");
-      }
-      return session;
-   }
+    @In
+    public void setSession(Session s) {
+        this.session = s;
+    }
 
-   public Class<T> getPersistentClass()
-   {
-      return persistentClass;
-   }
+    protected Session getSession() {
+        if (session == null) {
+            throw new IllegalStateException(
+                    "Session has not been set on DAO before usage");
+        }
+        return session;
+    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public T findById(ID id, boolean lock)
-   {
-      T entity;
-      if (lock)
-      {
-         entity = (T) getSession().load(getPersistentClass(), id, LockOptions.UPGRADE);
-      }
-      else
-      {
-         entity = (T) getSession().load(getPersistentClass(), id);
-      }
+    public Class<T> getPersistentClass() {
+        return persistentClass;
+    }
 
-      return entity;
-   }
+    @SuppressWarnings("unchecked")
+    @Override
+    public T findById(ID id, boolean lock) {
+        T entity;
+        if (lock) {
+            entity =
+                    (T) getSession().load(getPersistentClass(), id,
+                            LockOptions.UPGRADE);
+        } else {
+            entity = (T) getSession().load(getPersistentClass(), id);
+        }
 
-   public T findById(ID id)
-   {
-      return findById(id, false);
-   }
+        return entity;
+    }
 
-   @Override
-   public List<T> findAll()
-   {
-      return findByCriteria();
-   }
+    public T findById(ID id) {
+        return findById(id, false);
+    }
 
-   @Override
-   public void deleteAll()
-   {
-      for(T t : findAll())
-      {
-         getSession().delete(t);
-      }
-   }
+    @Override
+    public List<T> findAll() {
+        return findByCriteria();
+    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public List<T> findByExample(T exampleInstance, String[] excludeProperty)
-   {
-      Criteria crit = getSession().createCriteria(getPersistentClass());
-      Example example = Example.create(exampleInstance);
-      for (String exclude : excludeProperty)
-      {
-         example.excludeProperty(exclude);
-      }
-      crit.add(example);
-      return crit.list();
-   }
+    @Override
+    public void deleteAll() {
+        for (T t : findAll()) {
+            getSession().delete(t);
+        }
+    }
 
-   @Override
-   public T makePersistent(T entity)
-   {
-      getSession().saveOrUpdate(entity);
-      return entity;
-   }
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<T> findByExample(T exampleInstance, String[] excludeProperty) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        Example example = Example.create(exampleInstance);
+        for (String exclude : excludeProperty) {
+            example.excludeProperty(exclude);
+        }
+        crit.add(example);
+        return crit.list();
+    }
 
-   @Override
-   public void makeTransient(T entity)
-   {
-      getSession().delete(entity);
-   }
+    @Override
+    public T makePersistent(T entity) {
+        getSession().saveOrUpdate(entity);
+        return entity;
+    }
 
-   @Override
-   public void flush()
-   {
-      getSession().flush();
-   }
+    @Override
+    public void makeTransient(T entity) {
+        getSession().delete(entity);
+    }
 
-   @Override
-   public void clear()
-   {
-      getSession().clear();
-   }
+    @Override
+    public void flush() {
+        getSession().flush();
+    }
 
-   @Override
-   public boolean isPersistent(T entity)
-   {
-      return getSession().contains(entity);
+    @Override
+    public void clear() {
+        getSession().clear();
+    }
 
-   };
+    @Override
+    public boolean isPersistent(T entity) {
+        return getSession().contains(entity);
 
-   /**
-    * Use this inside subclasses as a convenience method.
-    */
-   @SuppressWarnings("unchecked")
-   protected List<T> findByCriteria(Criterion... criterion)
-   {
-      Criteria crit = getSession().createCriteria(getPersistentClass());
-      for (Criterion c : criterion)
-      {
-         crit.add(c);
-      }
-      return crit.list();
-   }
+    };
+
+    /**
+     * Use this inside subclasses as a convenience method.
+     */
+    @SuppressWarnings("unchecked")
+    protected List<T> findByCriteria(Criterion... criterion) {
+        Criteria crit = getSession().createCriteria(getPersistentClass());
+        for (Criterion c : criterion) {
+            crit.add(c);
+        }
+        return crit.list();
+    }
 
 }

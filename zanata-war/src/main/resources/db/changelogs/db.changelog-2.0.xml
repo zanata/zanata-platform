@@ -1,478 +1,492 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
-                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet author="camunoz@redhat.com" id="1">
-        <comment>Rename application configuration properties</comment>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="host.url"/>
-            <where>config_key = 'flies.host'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="register.url"/>
-            <where>config_key = 'flies.register'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="email.domain"/>
-            <where>config_key = 'flies.email.domain'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="pages.home.content"/>
-            <where>config_key = 'flies.home.content'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="pages.help.content"/>
-            <where>config_key = 'flies.help.content'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="log.destination.email"/>
-            <where>config_key = 'zanata.log.destination.email'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="log.email.active"/>
-            <where>config_key = 'zanata.log.email.active'</where>
-        </update>
-        <update tableName="HApplicationConfiguration" >
-            <column name="config_key" value="log.email.level"/>
-            <where>config_key = 'zanata.log.email.level'</where>
-        </update>
-    </changeSet>
+  <changeSet author="camunoz@redhat.com" id="1">
+    <comment>Rename application configuration properties</comment>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="host.url" />
+      <where>config_key = 'flies.host'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="register.url" />
+      <where>config_key = 'flies.register'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="email.domain" />
+      <where>config_key = 'flies.email.domain'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="pages.home.content" />
+      <where>config_key = 'flies.home.content'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="pages.help.content" />
+      <where>config_key = 'flies.help.content'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="log.destination.email" />
+      <where>config_key = 'zanata.log.destination.email'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="log.email.active" />
+      <where>config_key = 'zanata.log.email.active'</where>
+    </update>
+    <update tableName="HApplicationConfiguration">
+      <column name="config_key" value="log.email.level" />
+      <where>config_key = 'zanata.log.email.level'</where>
+    </update>
+  </changeSet>
 
-    <changeSet id="2" author="camunoz@redhat.com">
-        <comment>Create HCredentials table.</comment>
-        <createTable tableName="HCredentials">
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="type" type="varchar(10)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user" type="longtext"/>
-            <column name="email" type="varchar(100)"/>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseTableName="HCredentials" baseColumnNames="account_id" constraintName="FK_credentials_account"
-                                 referencedTableName="HAccount" referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet id="2" author="camunoz@redhat.com">
+    <comment>Create HCredentials table.</comment>
+    <createTable tableName="HCredentials">
+      <column name="account_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="type" type="varchar(10)">
+        <constraints nullable="false" />
+      </column>
+      <column name="user" type="longtext" />
+      <column name="email" type="varchar(100)" />
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseTableName="HCredentials"
+      baseColumnNames="account_id" constraintName="FK_credentials_account"
+      referencedTableName="HAccount" referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="3" author="camunoz@redhat.com">
-        <comment>Migrate data to HCredentials table.</comment>
-        <customChange class="org.zanata.liquibase.custom.MigrateDataToHCredentials"/>
-    </changeSet>
+  <changeSet id="3" author="camunoz@redhat.com">
+    <comment>Migrate data to HCredentials table.</comment>
+    <customChange
+      class="org.zanata.liquibase.custom.MigrateDataToHCredentials" />
+  </changeSet>
 
-    <changeSet id="4" author="camunoz@redhat.com">
-        <comment>Add role type column.</comment>
-        <addColumn tableName="HAccountRole">
-            <column name="roleType" type="char(1)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-        <update tableName="HAccountRole">
-            <column name="roleType" value="M"/>
-        </update>
-    </changeSet>
+  <changeSet id="4" author="camunoz@redhat.com">
+    <comment>Add role type column.</comment>
+    <addColumn tableName="HAccountRole">
+      <column name="roleType" type="char(1)">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+    <update tableName="HAccountRole">
+      <column name="roleType" value="M" />
+    </update>
+  </changeSet>
 
-    <changeSet id="5" author="camunoz@redhat.com">
-        <comment>Add HProject_AllowedRole table.</comment>
-        <createTable tableName="HProject_AllowedRole">
-            <column name="projectId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="roleId" type="int(11)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey tableName="HProject_AllowedRole" columnNames="projectId, roleId"/>
-        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Project"
-                                 baseTableName="HProject_AllowedRole"
-                                 baseColumnNames="projectId"
-                                 referencedTableName="HProject"
-                                 referencedColumnNames="id"/>
-        <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Role"
-                                 baseTableName="HProject_AllowedRole"
-                                 baseColumnNames="roleId"
-                                 referencedTableName="HAccountRole"
-                                 referencedColumnNames="id"/>
-    </changeSet>
-    
-    <changeSet id="6" author="camunoz@redhat.com">
-        <comment>Add 'Restricted by Roles' column to HProject table.</comment>
-        <addColumn tableName="HProject">
-            <column name="restrictedByRoles" type="boolean" valueBoolean="false" defaultValueBoolean="false"/>
-        </addColumn>
-    </changeSet>
+  <changeSet id="5" author="camunoz@redhat.com">
+    <comment>Add HProject_AllowedRole table.</comment>
+    <createTable tableName="HProject_AllowedRole">
+      <column name="projectId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="roleId" type="int(11)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="HProject_AllowedRole"
+      columnNames="projectId, roleId" />
+    <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Project"
+      baseTableName="HProject_AllowedRole"
+      baseColumnNames="projectId"
+      referencedTableName="HProject"
+      referencedColumnNames="id" />
+    <addForeignKeyConstraint constraintName="FK_HProjectAllowedRole_Role"
+      baseTableName="HProject_AllowedRole"
+      baseColumnNames="roleId"
+      referencedTableName="HAccountRole"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="7" author="camunoz@redhat.com">
-        <comment>Add 'merged_into' column to HAccount table.</comment>
-        <addColumn tableName="HAccount">
-            <column name="mergedInto" type="bigint">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-        <addForeignKeyConstraint constraintName="FK_HAccount_MergedIntoAccount"
-                                 baseTableName="HAccount"
-                                 baseColumnNames="mergedInto"
-                                 referencedTableName="HAccount"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet id="6" author="camunoz@redhat.com">
+    <comment>Add 'Restricted by Roles' column to HProject table.</comment>
+    <addColumn tableName="HProject">
+      <column name="restrictedByRoles" type="boolean" valueBoolean="false"
+        defaultValueBoolean="false" />
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="8" author="camunoz@redhat.com">
-        <comment>Add HRoleAssignmentRule table.</comment>
-        <createTable tableName="HRoleAssignmentRule">
-            <column name="policyName" type="varchar(100)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="identityRegExp" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="role_to_assign_id" type="int(11)">
-                <constraints nullable="false"/>
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint constraintName="FK_HRoleAssignmentRule_HAccountRole"
-                                 baseTableName="HRoleAssignmentRule"
-                                 baseColumnNames="role_to_assign_id"
-                                 referencedTableName="HAccountRole"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet id="7" author="camunoz@redhat.com">
+    <comment>Add 'merged_into' column to HAccount table.</comment>
+    <addColumn tableName="HAccount">
+      <column name="mergedInto" type="bigint">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addForeignKeyConstraint constraintName="FK_HAccount_MergedIntoAccount"
+      baseTableName="HAccount"
+      baseColumnNames="mergedInto"
+      referencedTableName="HAccount"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet id="9" author="camunoz@redhat.com">
-        <comment>Add Copy Trans Options table and project column.</comment>
-        <createTable tableName="HCopyTransOptions">
-            <column name="contextMismatchAction" type="char(1)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="docIdMismatchAction" type="char(1)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="projectMismatchAction" type="char(1)">
-                <constraints nullable="false"/>
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addColumn tableName="HProject">
-            <column name="default_copy_trans_opts_id" type="bigint">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-        <addForeignKeyConstraint constraintName="FK_HProject_HCopyTransOpts"
-                                 baseTableName="HProject" baseColumnNames="default_copy_trans_opts_id"
-                                 referencedTableName="HCopyTransOptions" referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet id="8" author="camunoz@redhat.com">
+    <comment>Add HRoleAssignmentRule table.</comment>
+    <createTable tableName="HRoleAssignmentRule">
+      <column name="policyName" type="varchar(100)">
+        <constraints nullable="true" />
+      </column>
+      <column name="identityRegExp" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="role_to_assign_id" type="int(11)">
+        <constraints nullable="false" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint
+      constraintName="FK_HRoleAssignmentRule_HAccountRole"
+      baseTableName="HRoleAssignmentRule"
+      baseColumnNames="role_to_assign_id"
+      referencedTableName="HAccountRole"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="1">
-        <comment>Add HRawDocument table.</comment>
-        <createTable tableName="HRawDocument">
-            <column name="type" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="contentHash" type="char(32)">
-                <constraints nullable="false" />
-            </column>
-            <column name="content" type="blob">
-                <constraints nullable="false" />
-            </column>
-            <column name="uploadedBy" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet id="9" author="camunoz@redhat.com">
+    <comment>Add Copy Trans Options table and project column.</comment>
+    <createTable tableName="HCopyTransOptions">
+      <column name="contextMismatchAction" type="char(1)">
+        <constraints nullable="false" />
+      </column>
+      <column name="docIdMismatchAction" type="char(1)">
+        <constraints nullable="false" />
+      </column>
+      <column name="projectMismatchAction" type="char(1)">
+        <constraints nullable="false" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addColumn tableName="HProject">
+      <column name="default_copy_trans_opts_id" type="bigint">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addForeignKeyConstraint constraintName="FK_HProject_HCopyTransOpts"
+      baseTableName="HProject" baseColumnNames="default_copy_trans_opts_id"
+      referencedTableName="HCopyTransOptions" referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="2">
-        <comment>Add HDocument_RawDocument table.</comment>
-        <createTable tableName="HDocument_RawDocument">
-            <column name="documentId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="rawDocumentId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey tableName="HDocument_RawDocument" columnNames="documentId, rawDocumentId"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="1">
+    <comment>Add HRawDocument table.</comment>
+    <createTable tableName="HRawDocument">
+      <column name="type" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="contentHash" type="char(32)">
+        <constraints nullable="false" />
+      </column>
+      <column name="content" type="blob">
+        <constraints nullable="false" />
+      </column>
+      <column name="uploadedBy" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="3">
-        <comment>Add HDocument foreign key for HDocument_RawDocument table.</comment>
-        <addForeignKeyConstraint constraintName="FK_HDocumentRawDocument_Document"
-                                 baseTableName="HDocument_RawDocument"
-                                 baseColumnNames="documentId"
-                                 referencedTableName="HDocument"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="2">
+    <comment>Add HDocument_RawDocument table.</comment>
+    <createTable tableName="HDocument_RawDocument">
+      <column name="documentId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="rawDocumentId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addPrimaryKey tableName="HDocument_RawDocument"
+      columnNames="documentId, rawDocumentId" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="4">
-        <comment>Add HRawDocument foreign key for HDocument_RawDocument table.</comment>
-        <addForeignKeyConstraint constraintName="FK_HDocumentRawDocument_RawDocument"
-                                 baseTableName="HDocument_RawDocument"
-                                 baseColumnNames="rawDocumentId"
-                                 referencedTableName="HRawDocument"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="3">
+    <comment>Add HDocument foreign key for HDocument_RawDocument table.</comment>
+    <addForeignKeyConstraint constraintName="FK_HDocumentRawDocument_Document"
+      baseTableName="HDocument_RawDocument"
+      baseColumnNames="documentId"
+      referencedTableName="HDocument"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="5">
-        <comment>Add HDocumentUpload table.</comment>
-        <createTable tableName="HDocumentUpload">
-            <column name="projectIterationId" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="docId" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="contentHash" type="char(32)">
-                <constraints nullable="false" />
-            </column>
-            <column name="type" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="localeId" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <!-- Base entity columns -->
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="creationDate" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lastChanged" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="versionNum" type="integer">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="4">
+    <comment>Add HRawDocument foreign key for HDocument_RawDocument table.</comment>
+    <addForeignKeyConstraint
+      constraintName="FK_HDocumentRawDocument_RawDocument"
+      baseTableName="HDocument_RawDocument"
+      baseColumnNames="rawDocumentId"
+      referencedTableName="HRawDocument"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="6">
-        <comment>Add HProjectIteration foreign key for HDocumentUpload table.</comment>
-        <addForeignKeyConstraint constraintName="FK_HDocumentUpload_ProjectIteration"
-                                 baseTableName="HDocumentUpload"
-                                 baseColumnNames="projectIterationId"
-                                 referencedTableName="HProjectIteration"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="5">
+    <comment>Add HDocumentUpload table.</comment>
+    <createTable tableName="HDocumentUpload">
+      <column name="projectIterationId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="docId" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="contentHash" type="char(32)">
+        <constraints nullable="false" />
+      </column>
+      <column name="type" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="localeId" type="bigint">
+        <constraints nullable="true" />
+      </column>
+      <!-- Base entity columns -->
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="7">
-        <comment>Add HLocale foreign key for HDocumentUpload table.</comment>
-        <addForeignKeyConstraint constraintName="FK_HDocumentUpload_Locale"
-                                 baseTableName="HDocumentUpload"
-                                 baseColumnNames="localeId"
-                                 referencedTableName="HLocale"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="6">
+    <comment>Add HProjectIteration foreign key for HDocumentUpload table.</comment>
+    <addForeignKeyConstraint
+      constraintName="FK_HDocumentUpload_ProjectIteration"
+      baseTableName="HDocumentUpload"
+      baseColumnNames="projectIterationId"
+      referencedTableName="HProjectIteration"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="8">
-        <comment>Add HDocumentUploadPart table.</comment>
-        <createTable tableName="HDocumentUploadPart">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="documentUploadId" type="bigint">
-                <constraints nullable="false" />
-            </column>
-            <column name="partIndex" type="integer">
-                <constraints nullable="false"/>
-            </column>
-            <column name="content" type="blob">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="7">
+    <comment>Add HLocale foreign key for HDocumentUpload table.</comment>
+    <addForeignKeyConstraint constraintName="FK_HDocumentUpload_Locale"
+      baseTableName="HDocumentUpload"
+      baseColumnNames="localeId"
+      referencedTableName="HLocale"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="9">
-        <comment>Add HDocumentUpload foreign key for HDocumentUploadPart table.</comment>
-        <addForeignKeyConstraint constraintName="FK_HDocumentUploadPart_DocumentUpload"
-                                 baseTableName="HDocumentUploadPart"
-                                 baseColumnNames="documentUploadId"
-                                 referencedTableName="HDocumentUpload"
-                                 referencedColumnNames="id"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="8">
+    <comment>Add HDocumentUploadPart table.</comment>
+    <createTable tableName="HDocumentUploadPart">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="documentUploadId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="partIndex" type="integer">
+        <constraints nullable="false" />
+      </column>
+      <column name="content" type="blob">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="10">
-        <comment>Change HRawDocument content to use larger blob field.</comment>
-        <modifyDataType tableName="HRawDocument" columnName="content" newDataType="longblob"/>
-        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
-        <addNotNullConstraint tableName="HRawDocument" columnName="content" columnDataType="longblob"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="9">
+    <comment>Add HDocumentUpload foreign key for HDocumentUploadPart table.</comment>
+    <addForeignKeyConstraint
+      constraintName="FK_HDocumentUploadPart_DocumentUpload"
+      baseTableName="HDocumentUploadPart"
+      baseColumnNames="documentUploadId"
+      referencedTableName="HDocumentUpload"
+      referencedColumnNames="id" />
+  </changeSet>
 
-    <changeSet author="damason@redhat.com" id="11">
-        <comment>Change HDocumentUploadPart content to use larger blob field.</comment>
-        <modifyDataType tableName="HDocumentUploadPart" columnName="content" newDataType="longblob"/>
-        <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
-        <addNotNullConstraint tableName="HDocumentUploadPart" columnName="content" columnDataType="longblob"/>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="10">
+    <comment>Change HRawDocument content to use larger blob field.</comment>
+    <modifyDataType tableName="HRawDocument" columnName="content"
+      newDataType="longblob" />
+    <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+    <addNotNullConstraint tableName="HRawDocument" columnName="content"
+      columnDataType="longblob" />
+  </changeSet>
 
-    <changeSet id="10" author="camunoz@redhat.com">
-        <comment>Create Content fields on HTextFlow table.</comment>
-        <addColumn tableName="HTextFlow">
-            <column name="content0" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content1" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content2" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content3" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content4" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content5" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet author="damason@redhat.com" id="11">
+    <comment>Change HDocumentUploadPart content to use larger blob field.</comment>
+    <modifyDataType tableName="HDocumentUploadPart" columnName="content"
+      newDataType="longblob" />
+    <!-- modifyDataType loses the not-null constraint, so it is reapplied -->
+    <addNotNullConstraint tableName="HDocumentUploadPart" columnName="content"
+      columnDataType="longblob" />
+  </changeSet>
 
-    <changeSet id="11" author="camunoz@redhat.com">
-        <comment>Migrate HTextFlowContent data to HTextFlow table.</comment>
-        <sql>
-            update HTextFlow tf set content0 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 0 )
-        </sql>
-        <sql>
-            update HTextFlow tf set content1 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 1 )
-        </sql>
-        <sql>
-            update HTextFlow tf set content2 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 2 )
-        </sql>
-        <sql>
-            update HTextFlow tf set content3 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 3 )
-        </sql>
-        <sql>
-            update HTextFlow tf set content4 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 4 )
-        </sql>
-        <sql>
-            update HTextFlow tf set content5 =
-            ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 5 )
-        </sql>
-    </changeSet>
+  <changeSet id="10" author="camunoz@redhat.com">
+    <comment>Create Content fields on HTextFlow table.</comment>
+    <addColumn tableName="HTextFlow">
+      <column name="content0" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content1" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content2" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content3" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content4" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content5" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="12" author="camunoz@redhat.com">
-        <comment>Remove HTextFlowContent table.</comment>
-        <dropTable tableName="HTextFlowContent" cascadeConstraints="false"/>
-    </changeSet>
+  <changeSet id="11" author="camunoz@redhat.com">
+    <comment>Migrate HTextFlowContent data to HTextFlow table.</comment>
+    <sql>
+      update HTextFlow tf set content0 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 0 )
+    </sql>
+    <sql>
+      update HTextFlow tf set content1 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 1 )
+    </sql>
+    <sql>
+      update HTextFlow tf set content2 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 2 )
+    </sql>
+    <sql>
+      update HTextFlow tf set content3 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 3 )
+    </sql>
+    <sql>
+      update HTextFlow tf set content4 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 4 )
+    </sql>
+    <sql>
+      update HTextFlow tf set content5 =
+      ( select content from HTextFlowContent tfc where tfc.text_flow_id = tf.id and pos = 5 )
+    </sql>
+  </changeSet>
 
-    <changeSet id="13" author="camunoz@redhat.com">
-        <comment>Create Content fields on HTextFlowTarget table.</comment>
-        <addColumn tableName="HTextFlowTarget">
-            <column name="content0" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content1" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content2" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content3" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content4" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-            <column name="content5" type="longtext">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
+  <changeSet id="12" author="camunoz@redhat.com">
+    <comment>Remove HTextFlowContent table.</comment>
+    <dropTable tableName="HTextFlowContent" cascadeConstraints="false" />
+  </changeSet>
 
-    <changeSet id="14" author="camunoz@redhat.com">
-        <comment>Migrate HTextFlowTargetContent data to HTextFlowTarget table.</comment>
-        <sql>
-            update HTextFlowTarget tft set content0 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 0 )
-        </sql>
-        <sql>
-            update HTextFlowTarget tft set content1 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 1 )
-        </sql>
-        <sql>
-            update HTextFlowTarget tft set content2 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 2 )
-        </sql>
-        <sql>
-            update HTextFlowTarget tft set content3 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 3 )
-        </sql>
-        <sql>
-            update HTextFlowTarget tft set content4 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 4 )
-        </sql>
-        <sql>
-            update HTextFlowTarget tft set content5 =
-            ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 5 )
-        </sql>
-    </changeSet>
+  <changeSet id="13" author="camunoz@redhat.com">
+    <comment>Create Content fields on HTextFlowTarget table.</comment>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="content0" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content1" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content2" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content3" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content4" type="longtext">
+        <constraints nullable="true" />
+      </column>
+      <column name="content5" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
 
-    <changeSet id="15" author="camunoz@redhat.com">
-        <comment>Remove HTextFlowTargetContent table.</comment>
-        <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false"/>
-    </changeSet>
+  <changeSet id="14" author="camunoz@redhat.com">
+    <comment>Migrate HTextFlowTargetContent data to HTextFlowTarget table.</comment>
+    <sql>
+      update HTextFlowTarget tft set content0 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 0 )
+    </sql>
+    <sql>
+      update HTextFlowTarget tft set content1 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 1 )
+    </sql>
+    <sql>
+      update HTextFlowTarget tft set content2 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 2 )
+    </sql>
+    <sql>
+      update HTextFlowTarget tft set content3 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 3 )
+    </sql>
+    <sql>
+      update HTextFlowTarget tft set content4 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 4 )
+    </sql>
+    <sql>
+      update HTextFlowTarget tft set content5 =
+      ( select content from HTextFlowTargetContent tftc where tftc.text_flow_target_id = tft.id and pos = 5 )
+    </sql>
+  </changeSet>
 
-    <changeSet id="16" author="camunoz@redhat.com">
-        <comment>Validate user account passwords.</comment>
-        <customChange class="org.zanata.liquibase.custom.ValidateAccountPasswords"/>
-    </changeSet>
+  <changeSet id="15" author="camunoz@redhat.com">
+    <comment>Remove HTextFlowTargetContent table.</comment>
+    <dropTable tableName="HTextFlowTargetContent" cascadeConstraints="false" />
+  </changeSet>
+
+  <changeSet id="16" author="camunoz@redhat.com">
+    <comment>Validate user account passwords.</comment>
+    <customChange
+      class="org.zanata.liquibase.custom.ValidateAccountPasswords" />
+  </changeSet>
 
 </databaseChangeLog>

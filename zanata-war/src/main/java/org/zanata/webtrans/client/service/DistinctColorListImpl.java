@@ -11,47 +11,41 @@ import com.google.inject.name.Named;
 
 /**
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class DistinctColorListImpl implements DistinctColor
-{
-   private final List<String> colorList;
-   private final Map<EditorClientId, String> colorMap = Maps.newHashMap();
-   private int index = 0;
+public class DistinctColorListImpl implements DistinctColor {
+    private final List<String> colorList;
+    private final Map<EditorClientId, String> colorMap = Maps.newHashMap();
+    private int index = 0;
 
-   @Inject
-   public DistinctColorListImpl(@Named("distinctColor") List<String> colorList)
-   {
-      this.colorList = colorList;
-   }
+    @Inject
+    public DistinctColorListImpl(@Named("distinctColor") List<String> colorList) {
+        this.colorList = colorList;
+    }
 
-   @Override
-   public String getOrCreateColor(EditorClientId editorClientId)
-   {
-      if (colorMap.containsKey(editorClientId))
-      {
-         return colorMap.get(editorClientId);
-      }
+    @Override
+    public String getOrCreateColor(EditorClientId editorClientId) {
+        if (colorMap.containsKey(editorClientId)) {
+            return colorMap.get(editorClientId);
+        }
 
-      String color = nextColor();
-      colorMap.put(editorClientId, color);
-      return color;
-   }
+        String color = nextColor();
+        colorMap.put(editorClientId, color);
+        return color;
+    }
 
-   @Override
-   public void releaseColor(EditorClientId editorClientId)
-   {
-      colorMap.remove(editorClientId);
-   }
+    @Override
+    public void releaseColor(EditorClientId editorClientId) {
+        colorMap.remove(editorClientId);
+    }
 
-   private String nextColor()
-   {
-      if (index == colorList.size())
-      {
-         index = 0;
-      }
-      return colorList.get(index++);
-   }
+    private String nextColor() {
+        if (index == colorList.size()) {
+            index = 0;
+        }
+        return colorList.get(index++);
+    }
 
 }

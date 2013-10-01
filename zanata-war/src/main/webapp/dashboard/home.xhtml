@@ -1,55 +1,57 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                template="../WEB-INF/template/template.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="../WEB-INF/template/template.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.PageTitle']}</ui:define>
-    <ui:define name="center_content">
-	    <s:fragment rendered="#{identity.loggedIn}">
-		<div class="g">
-			<div class="g__item w--1-2 l--push-v-1">
-			    <div class="l--float-left w--2-6-s l--push-right-1">
-				    <div class="media--circle">
-				    	<s:link view="/profile/view.xhtml" propagation="none">
-							<img src="#{dashboardAction.getUserImageUrl()}" alt="#{dashboardAction.getUsername()}"/>
-						</s:link>
-				    </div>
-			    </div>
-							
-			    <div class="txt--s-align-right">
-			    	<h1 class="delta">#{dashboardAction.getUserFullName()}</h1>
-			      	<ul class="list--no-bullets">
-			        	<li>#{dashboardAction.getUsername()}</li>
-			        	<li>
-			        		<s:link view="/profile/view.xhtml" propagation="none">
-			        			#{messages['jsf.Settings']} <i aria-hidden="true" class="i i--cog"></i>
-			        		</s:link>
-			        	</li>
-			      	</ul>
-			    </div>
-			</div>
-		</div>
-		
-		<div class="g">
-			<div class="g__item l--push-v-1 w--1-2 w--4-10-h loader__container">
-				<ui:include src="activity.xhtml"/>
-			</div>
-			
-			<div class="g__item w--1-2 w--6-10-h">
-				<div class="g">
-					<div class="g__item w--1-2-h l--push-v-1">
-						<div class="bg--pop-high">
-							<ui:include src="maintainedProject.xhtml"/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	    </s:fragment>
-    </ui:define>
+  <ui:define name="page_title">#{messages['jsf.PageTitle']}</ui:define>
+  <ui:define name="center_content">
+    <s:fragment rendered="#{identity.loggedIn}">
+      <div class="g">
+        <div class="g__item w--1-2 l--push-v-1">
+          <div class="l--float-left w--2-6-s l--push-right-1">
+            <div class="media--circle">
+              <s:link view="/profile/view.xhtml" propagation="none">
+                <img src="#{dashboardAction.getUserImageUrl()}"
+                  alt="#{dashboardAction.getUsername()}"/>
+              </s:link>
+            </div>
+          </div>
+
+          <div class="txt--s-align-right">
+            <h1 class="delta">#{dashboardAction.getUserFullName()}</h1>
+            <ul class="list--no-bullets">
+              <li>#{dashboardAction.getUsername()}</li>
+              <li>
+                <s:link view="/profile/view.xhtml" propagation="none">
+                  #{messages['jsf.Settings']} <i aria-hidden="true"
+                  class="i i--cog"></i>
+                </s:link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="g">
+        <div class="g__item l--push-v-1 w--1-2 w--4-10-h loader__container">
+          <ui:include src="activity.xhtml"/>
+        </div>
+
+        <div class="g__item w--1-2 w--6-10-h">
+          <div class="g">
+            <div class="g__item w--1-2-h l--push-v-1">
+              <div class="bg--pop-high">
+                <ui:include src="maintainedProject.xhtml"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </s:fragment>
+  </ui:define>
 </ui:composition>

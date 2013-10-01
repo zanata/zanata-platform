@@ -41,95 +41,109 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.service.LocaleService;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Name("restSlugValidator")
 @Slf4j
-public class RestSlugValidator
-{
-   @In
-   private LocaleService localeServiceImpl;
-   @In
-   private ProjectDAO projectDAO;
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+public class RestSlugValidator {
+    @In
+    private LocaleService localeServiceImpl;
+    @In
+    private ProjectDAO projectDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   public @Nonnull HProject retrieveAndCheckProject(@Nonnull String projectSlug, boolean requiresWriteAccess)
-   {
-      HProject hProject = projectDAO.getBySlug(projectSlug);
-      if (hProject == null || hProject.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project '" + projectSlug + "' not found.");
-      }
-      if (requiresWriteAccess &&
-          hProject.getStatus().equals(EntityStatus.READONLY))
-      {
-         throw new ReadOnlyEntityException("Project '" + projectSlug + "' is read-only.");
-      }
-      return hProject;
-   }
+    public @Nonnull
+    HProject retrieveAndCheckProject(@Nonnull String projectSlug,
+            boolean requiresWriteAccess) {
+        HProject hProject = projectDAO.getBySlug(projectSlug);
+        if (hProject == null
+                || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
+            throw new NoSuchEntityException("Project '" + projectSlug
+                    + "' not found.");
+        }
+        if (requiresWriteAccess
+                && hProject.getStatus().equals(EntityStatus.READONLY)) {
+            throw new ReadOnlyEntityException("Project '" + projectSlug
+                    + "' is read-only.");
+        }
+        return hProject;
+    }
 
-   /**
-    * 
-    * @param requiresWriteAccess
-    * @return
-    * @see ProjectService#retrieveAndCheckProject
-    */
-   public @Nonnull HProjectIteration retrieveAndCheckIteration(@Nonnull String projectSlug, @Nonnull String iterationSlug, boolean requiresWriteAccess)
-   {
-      HProject hProject = retrieveAndCheckProject(projectSlug, requiresWriteAccess);
-      HProjectIteration hProjectIteration = projectIterationDAO.getBySlug(hProject, iterationSlug);
-      if (hProjectIteration == null || hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE))
-      {
-         throw new NoSuchEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' not found.");
-      }
-      if (requiresWriteAccess && hProjectIteration.getStatus().equals(EntityStatus.READONLY))
-      {
-         throw new ReadOnlyEntityException("Project Iteration '" + projectSlug + ":" + iterationSlug + "' is read-only.");
-      }
-      return hProjectIteration;
-   }
+    /**
+     *
+     * @param requiresWriteAccess
+     * @return
+     * @see ProjectService#retrieveAndCheckProject
+     */
+    public @Nonnull
+    HProjectIteration retrieveAndCheckIteration(@Nonnull String projectSlug,
+            @Nonnull String iterationSlug, boolean requiresWriteAccess) {
+        HProject hProject =
+                retrieveAndCheckProject(projectSlug, requiresWriteAccess);
+        HProjectIteration hProjectIteration =
+                projectIterationDAO.getBySlug(hProject, iterationSlug);
+        if (hProjectIteration == null
+                || hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)) {
+            throw new NoSuchEntityException("Project Iteration '" + projectSlug
+                    + ":" + iterationSlug + "' not found.");
+        }
+        if (requiresWriteAccess
+                && hProjectIteration.getStatus().equals(EntityStatus.READONLY)) {
+            throw new ReadOnlyEntityException("Project Iteration '"
+                    + projectSlug + ":" + iterationSlug + "' is read-only.");
+        }
+        return hProjectIteration;
+    }
 
-   /**
-    * Returns the requested locale, but only if the locale is allowed for the server/project.
-    * @param locale
-    * @param projectSlug
-    * @return
-    * @throws WebApplicationException if locale is not allowed
-    */
-   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug)
-   {
-      try
-      {
-         return localeServiceImpl.validateLocaleByProject(locale, projectSlug);
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {} in proj {}", e, locale, projectSlug);
-         throw e;
-      }
-   }
+    /**
+     * Returns the requested locale, but only if the locale is allowed for the
+     * server/project.
+     *
+     * @param locale
+     * @param projectSlug
+     * @return
+     * @throws WebApplicationException
+     *             if locale is not allowed
+     */
+    public @Nonnull
+    HLocale validateTargetLocale(@Nonnull LocaleId locale,
+            @Nonnull String projectSlug) {
+        try {
+            return localeServiceImpl.validateLocaleByProject(locale,
+                    projectSlug);
+        } catch (ZanataServiceException e) {
+            log.warn("Exception validating target locale {} in proj {}", e,
+                    locale, projectSlug);
+            throw e;
+        }
+    }
 
-   /**
-    * Returns the requested locale, but only if the locale is allowed for the server/project/version.
-    * @param locale
-    * @param projectSlug
-    * @param iterationSlug
-    * @return
-    * @throws WebApplicationException if locale is not allowed
-    */
-   public @Nonnull HLocale validateTargetLocale(@Nonnull LocaleId locale, @Nonnull String projectSlug, @Nonnull String iterationSlug)
-   {
-      try
-      {
-         return localeServiceImpl.validateLocaleByProjectIteration(locale, projectSlug, iterationSlug);
-      }
-      catch (ZanataServiceException e)
-      {
-         log.warn("Exception validating target locale {} in proj {} iter {}", e, locale, projectSlug, iterationSlug);
-         throw e;
-      }
-   }
+    /**
+     * Returns the requested locale, but only if the locale is allowed for the
+     * server/project/version.
+     *
+     * @param locale
+     * @param projectSlug
+     * @param iterationSlug
+     * @return
+     * @throws WebApplicationException
+     *             if locale is not allowed
+     */
+    public @Nonnull
+    HLocale validateTargetLocale(@Nonnull LocaleId locale,
+            @Nonnull String projectSlug, @Nonnull String iterationSlug) {
+        try {
+            return localeServiceImpl.validateLocaleByProjectIteration(locale,
+                    projectSlug, iterationSlug);
+        } catch (ZanataServiceException e) {
+            log.warn(
+                    "Exception validating target locale {} in proj {} iter {}",
+                    e, locale, projectSlug, iterationSlug);
+            throw e;
+        }
+    }
 
 }

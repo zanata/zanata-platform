@@ -46,147 +46,132 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public enum WebDriverFactory
-{
-   INSTANCE;
+public enum WebDriverFactory {
+    INSTANCE;
 
-   private WebDriver driver;
-   private DriverService driverService;
+    private WebDriver driver;
+    private DriverService driverService;
 
-   public WebDriver getDriver()
-   {
-      if (driver == null)
-      {
-         synchronized (this)
-         {
-            if (driver == null)
-            {
-               driver = createDriver();
-               driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-               Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    public WebDriver getDriver() {
+        if (driver == null) {
+            synchronized (this) {
+                if (driver == null) {
+                    driver = createDriver();
+                    driver.manage().timeouts()
+                            .implicitlyWait(3, TimeUnit.SECONDS);
+                    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+                }
             }
-         }
-      }
-      return driver;
-   }
+        }
+        return driver;
+    }
 
-   public String getHostUrl()
-   {
-      if (driver == null)
-      {
-         getDriver();
-      }
-      return PropertiesHolder.getProperty(zanataInstance.value());
-   }
+    public String getHostUrl() {
+        if (driver == null) {
+            getDriver();
+        }
+        return PropertiesHolder.getProperty(zanataInstance.value());
+    }
 
-   private WebDriver createDriver()
-   {
-      String driverType = PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
-      if (driverType.equalsIgnoreCase(chrome.value()))
-      {
-         return configureChromeDriver();
-      }
-      else if (driverType.equalsIgnoreCase(firefox.value()))
-      {
-         return configureFirefoxDriver();
-      }
-      else
-      {
-         return configureHtmlDriver();
-      }
-   }
+    private WebDriver createDriver() {
+        String driverType =
+                PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
+        if (driverType.equalsIgnoreCase(chrome.value())) {
+            return configureChromeDriver();
+        } else if (driverType.equalsIgnoreCase(firefox.value())) {
+            return configureFirefoxDriver();
+        } else {
+            return configureHtmlDriver();
+        }
+    }
 
-   private WebDriver configureHtmlDriver()
-   {
-      return new HtmlUnitDriver(true);
-   }
+    private WebDriver configureHtmlDriver() {
+        return new HtmlUnitDriver(true);
+    }
 
-   private WebDriver configureChromeDriver()
-   {
-      driverService = new ChromeDriverService.Builder()
-            .usingDriverExecutable(new File(PropertiesHolder.properties.getProperty("webdriver.chrome.driver")))
-            .usingAnyFreePort()
-            .withEnvironment(ImmutableMap.of("DISPLAY", PropertiesHolder.properties.getProperty("webdriver.display")))
-            .withLogFile(new File(PropertiesHolder.properties.getProperty("webdriver.log")))
-            .build();
-      DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-      capabilities.setCapability("chrome.binary", PropertiesHolder.properties.getProperty("webdriver.chrome.bin"));
-      try
-      {
-         driverService.start();
-      }
-      catch (IOException e)
-      {
-         throw new RuntimeException("fail to start chrome driver service");
-      }
-      return new RemoteWebDriver(driverService.getUrl(), capabilities);
-   }
+    private WebDriver configureChromeDriver() {
+        driverService =
+                new ChromeDriverService.Builder()
+                        .usingDriverExecutable(
+                                new File(PropertiesHolder.properties
+                                        .getProperty("webdriver.chrome.driver")))
+                        .usingAnyFreePort()
+                        .withEnvironment(
+                                ImmutableMap
+                                        .of("DISPLAY",
+                                                PropertiesHolder.properties
+                                                        .getProperty("webdriver.display")))
+                        .withLogFile(
+                                new File(PropertiesHolder.properties
+                                        .getProperty("webdriver.log"))).build();
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities
+                .setCapability("chrome.binary", PropertiesHolder.properties
+                        .getProperty("webdriver.chrome.bin"));
+        try {
+            driverService.start();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to start chrome driver service");
+        }
+        return new RemoteWebDriver(driverService.getUrl(), capabilities);
+    }
 
-   private WebDriver configureFirefoxDriver()
-   {
-      final String pathToFirefox = Strings.emptyToNull(PropertiesHolder.properties.getProperty("firefox.path"));
+    private WebDriver configureFirefoxDriver() {
+        final String pathToFirefox =
+                Strings.emptyToNull(PropertiesHolder.properties
+                        .getProperty("firefox.path"));
 
-      FirefoxBinary firefoxBinary = null;
-      if (pathToFirefox != null)
-      {
-         firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
-      }
-      else
-      {
-         firefoxBinary = new FirefoxBinary();
-      }
-      /*
-       * TODO: Evaluate current timeout
-       * Timeout the connection in 30 seconds
-       * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
-       */
-      firefoxBinary.setEnvironmentProperty("DISPLAY", PropertiesHolder.properties.getProperty("webdriver.display"));
-      return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
-   }
+        FirefoxBinary firefoxBinary = null;
+        if (pathToFirefox != null) {
+            firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
+        } else {
+            firefoxBinary = new FirefoxBinary();
+        }
+        /*
+         * TODO: Evaluate current timeout Timeout the connection in 30 seconds
+         * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
+         */
+        firefoxBinary.setEnvironmentProperty("DISPLAY",
+                PropertiesHolder.properties.getProperty("webdriver.display"));
+        return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
+    }
 
-   private FirefoxProfile makeFirefoxProfile()
-   {
-      if (!Strings.isNullOrEmpty(System.getProperty("webdriver.firefox.profile")))
-      {
-         throw new RuntimeException("webdriver.firefox.profile is ignored");
-         // TODO - look at FirefoxDriver.getProfile().
-      }
-      final FirefoxProfile firefoxProfile = new FirefoxProfile();
+    private FirefoxProfile makeFirefoxProfile() {
+        if (!Strings.isNullOrEmpty(System
+                .getProperty("webdriver.firefox.profile"))) {
+            throw new RuntimeException("webdriver.firefox.profile is ignored");
+            // TODO - look at FirefoxDriver.getProfile().
+        }
+        final FirefoxProfile firefoxProfile = new FirefoxProfile();
 
-      /*
-       * TODO: Evaluate need for this
-       * Disable unnecessary connection to sb-ssl.google.com
-       * firefoxProfile.setPreference("browser.safebrowsing.malware.enabled", false);
-       */
+        /*
+         * TODO: Evaluate need for this Disable unnecessary connection to
+         * sb-ssl.google.com
+         * firefoxProfile.setPreference("browser.safebrowsing.malware.enabled",
+         * false);
+         */
 
-      firefoxProfile.setAlwaysLoadNoFocusLib(true);
-      firefoxProfile.setEnableNativeEvents(true);
-      firefoxProfile.setAcceptUntrustedCertificates(true);
-      return firefoxProfile;
-   }
+        firefoxProfile.setAlwaysLoadNoFocusLib(true);
+        firefoxProfile.setEnableNativeEvents(true);
+        firefoxProfile.setAcceptUntrustedCertificates(true);
+        return firefoxProfile;
+    }
 
-   private class ShutdownHook extends Thread
-   {
-      public void run()
-      {
-         // If webdriver is running quit.
-         WebDriver driver = getDriver();
-         if (driver != null)
-         {
-            try
-            {
-               log.info("Quitting webdriver.");
-               driver.quit();
+    private class ShutdownHook extends Thread {
+        public void run() {
+            // If webdriver is running quit.
+            WebDriver driver = getDriver();
+            if (driver != null) {
+                try {
+                    log.info("Quitting webdriver.");
+                    driver.quit();
+                } catch (Throwable e) {
+                    // Ignoring driver tear down errors.
+                }
             }
-            catch (Throwable e)
-            {
-               // Ignoring driver tear down errors.
+            if (driverService != null && driverService.isRunning()) {
+                driverService.stop();
             }
-         }
-         if (driverService != null && driverService.isRunning())
-         {
-            driverService.stop();
-         }
-      }
-   }
+        }
+    }
 }

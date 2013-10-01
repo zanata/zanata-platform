@@ -1,58 +1,61 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j">
 
-    <script type="text/javascript">
-        function submitSearchOnEnter(e)
-        {
-            if(e.keyCode == 13 )
-            {
-                return false;
-            }
-            else
-            {
-            	#{rich:element('nameLabel')}.innerHTML='';
-            	#{rich:element('emailLabel')}.innerHTML='';
-            }
-        }
-    </script>
+  <script type="text/javascript">
+    function submitSearchOnEnter(e) {
+      if (e.keyCode == 13) {
+        return false;
+      }
+      else {
+        #{rich:element('nameLabel')}
+      .
+        innerHTML = '';
+        #{rich:element('emailLabel')}
+      .
+        innerHTML = '';
+      }
+    }
+  </script>
 
-    <h:panelGrid>
-        <s:decorate id="userField"
-                    template="../layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-            <rich:autocomplete id="usernameAutocomplete"
-                               fetchValue="#{account.username}"
-                               value="#{accountSearch.maintainer}"
-                               mode="ajax"
-                               autocompleteMethod="#{accountSearch.search}"
-                               var="account">
-            	<a4j:ajax event="change" listener="#{accountSearch.update}" render="results" execute="@this"/>
-                <h:column>
-                    <h:outputText value="#{account.username}"/>
-                </h:column>
-            </rich:autocomplete>
+  <h:panelGrid>
+    <s:decorate id="userField"
+      template="../layout/edit.xhtml">
+      <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+      <rich:autocomplete id="usernameAutocomplete"
+        fetchValue="#{account.username}"
+        value="#{accountSearch.maintainer}"
+        mode="ajax"
+        autocompleteMethod="#{accountSearch.search}"
+        var="account">
+        <a4j:ajax event="change" listener="#{accountSearch.update}"
+          render="results" execute="@this"/>
+        <h:column>
+          <h:outputText value="#{account.username}"/>
+        </h:column>
+      </rich:autocomplete>
+    </s:decorate>
+  </h:panelGrid>
+  <a4j:outputPanel id="results">
+    <div>
+      <h:panelGrid id="output">
+        <s:decorate id="output1" template="../layout/display.xhtml">
+          <ui:define name="label">#{messages['jsf.Name']} </ui:define>
+          <h:outputText value="#{accountSearch.person.name}" id="nameLabel"/>
         </s:decorate>
-    </h:panelGrid>
-    <a4j:outputPanel id="results">
-        <div>
-            <h:panelGrid id="output" >
-                <s:decorate id="output1" template="../layout/display.xhtml">
-                    <ui:define name="label">#{messages['jsf.Name']} </ui:define>
-                    <h:outputText value="#{accountSearch.person.name}" id="nameLabel" />
-                </s:decorate>
-                <s:decorate id="output2" template="../layout/display.xhtml">
-                    <ui:define name="label">#{messages['jsf.Email']} </ui:define>
-                    <h:outputText value="#{accountSearch.person.email}" id="emailLabel" />
-                </s:decorate>
-            </h:panelGrid>
-        </div>
-    </a4j:outputPanel>
+        <s:decorate id="output2" template="../layout/display.xhtml">
+          <ui:define name="label">#{messages['jsf.Email']} </ui:define>
+          <h:outputText value="#{accountSearch.person.email}" id="emailLabel"/>
+        </s:decorate>
+      </h:panelGrid>
+    </div>
+  </a4j:outputPanel>
 
 </ui:composition>

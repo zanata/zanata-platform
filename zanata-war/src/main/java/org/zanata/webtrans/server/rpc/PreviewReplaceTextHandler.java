@@ -38,37 +38,41 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
- * Show the result of a {@link org.zanata.webtrans.shared.rpc.ReplaceText} action without making any persistent
- * changes.
- * 
+ * Show the result of a {@link org.zanata.webtrans.shared.rpc.ReplaceText}
+ * action without making any persistent changes.
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
 @Name("webtrans.gwt.PreviewReplaceTextHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(PreviewReplaceText.class)
-public class PreviewReplaceTextHandler extends AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class PreviewReplaceTextHandler extends
+        AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @Override
-   public PreviewReplaceTextResult execute(PreviewReplaceText previewAction, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @Override
+    public PreviewReplaceTextResult execute(PreviewReplaceText previewAction,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      ReplaceTextHandler.replaceTextInUpdateRequests(previewAction.getAction());
-      List<TransUnitUpdatePreview> previews = new ArrayList<TransUnitUpdatePreview>();
-      for (TransUnitUpdateRequest request : previewAction.getAction().getUpdateRequests())
-      {
-         previews.add(new TransUnitUpdatePreview(request.getTransUnitId(), request.getNewContents(), request.getNewContentState()));
-      }
-      return new PreviewReplaceTextResult(previews);
-   }
+        ReplaceTextHandler.replaceTextInUpdateRequests(previewAction
+                .getAction());
+        List<TransUnitUpdatePreview> previews =
+                new ArrayList<TransUnitUpdatePreview>();
+        for (TransUnitUpdateRequest request : previewAction.getAction()
+                .getUpdateRequests()) {
+            previews.add(new TransUnitUpdatePreview(request.getTransUnitId(),
+                    request.getNewContents(), request.getNewContentState()));
+        }
+        return new PreviewReplaceTextResult(previews);
+    }
 
-   @Override
-   public void rollback(PreviewReplaceText action, PreviewReplaceTextResult result, ExecutionContext context) throws ActionException
-   {
-      throw new ActionException("not supported");
-   }
+    @Override
+    public void rollback(PreviewReplaceText action,
+            PreviewReplaceTextResult result, ExecutionContext context)
+            throws ActionException {
+        throw new ActionException("not supported");
+    }
 }

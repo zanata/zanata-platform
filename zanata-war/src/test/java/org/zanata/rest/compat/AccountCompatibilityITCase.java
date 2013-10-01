@@ -34,66 +34,71 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
-public class AccountCompatibilityITCase extends RestTest
-{
+public class AccountCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }   
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @Test
-   @RunAsClient
-   public void getAccountXml() throws Exception
-   {
-      IAccountResource accountClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IAccountResource.class, "/accounts/u/demo");
-      ClientResponse<Account> accountResponse = accountClient.get();
-      Account account = accountResponse.getEntity();
-      
-      // Assert correct parsing of all properties
-      assertThat(account.getUsername(), is("demo"));
-      assertThat(account.getApiKey(), is("23456789012345678901234567890123"));
-      assertThat(account.getEmail(), is("user1@localhost"));
-      assertThat(account.getName(), is("Sample User"));
-      assertThat(account.getPasswordHash(), is("/9Se/pfHeUH8FJ4asBD6jQ=="));
-      assertThat(account.getRoles().size(), is(1));
-      //assertThat(account.getTribes().size(), is(1)); // Language teams are not being returned
-   }
-   
-   @Test
-   @RunAsClient
-   public void putAccountXml() throws Exception
-   {
-      // New Account
-      Account a = new Account("aacount2@localhost.com", "Sample Account", "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
-      
-      IAccountResource accountClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
-            IAccountResource.class, "/accounts/u/sampleaccount");
-      ClientResponse putResponse = accountClient.put( a );
-      
-      // Assert initial put
-      assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-      putResponse.releaseConnection();
-      
-      // Modified Account
-      a.setName("New Account Name");
-      putResponse = accountClient.put( a );
-      putResponse.releaseConnection();
-      
-      // Assert modification
-      assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
-      
-      // Retrieve again
-      Account a2 = accountClient.get().getEntity();
-      assertThat(a2.getUsername(), is(a.getUsername()));
-      assertThat(a2.getApiKey(), is(a.getApiKey()));
-      assertThat(a2.getEmail(), is(a.getEmail()));
-      assertThat(a2.getName(), is(a.getName()));
-      assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
-      assertThat(a2.getRoles().size(), is(0));
-      // assertThat(a2.getTribes().size(), is(1)); // Language teams are not being returned
-   }
-   
+    @Test
+    @RunAsClient
+    public void getAccountXml() throws Exception {
+        IAccountResource accountClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IAccountResource.class, "/accounts/u/demo");
+        ClientResponse<Account> accountResponse = accountClient.get();
+        Account account = accountResponse.getEntity();
+
+        // Assert correct parsing of all properties
+        assertThat(account.getUsername(), is("demo"));
+        assertThat(account.getApiKey(), is("23456789012345678901234567890123"));
+        assertThat(account.getEmail(), is("user1@localhost"));
+        assertThat(account.getName(), is("Sample User"));
+        assertThat(account.getPasswordHash(), is("/9Se/pfHeUH8FJ4asBD6jQ=="));
+        assertThat(account.getRoles().size(), is(1));
+        // assertThat(account.getTribes().size(), is(1)); // Language teams are
+        // not being returned
+    }
+
+    @Test
+    @RunAsClient
+    public void putAccountXml() throws Exception {
+        // New Account
+        Account a =
+                new Account("aacount2@localhost.com", "Sample Account",
+                        "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
+
+        IAccountResource accountClient =
+                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
+                        IAccountResource.class, "/accounts/u/sampleaccount");
+        ClientResponse putResponse = accountClient.put(a);
+
+        // Assert initial put
+        assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        putResponse.releaseConnection();
+
+        // Modified Account
+        a.setName("New Account Name");
+        putResponse = accountClient.put(a);
+        putResponse.releaseConnection();
+
+        // Assert modification
+        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
+
+        // Retrieve again
+        Account a2 = accountClient.get().getEntity();
+        assertThat(a2.getUsername(), is(a.getUsername()));
+        assertThat(a2.getApiKey(), is(a.getApiKey()));
+        assertThat(a2.getEmail(), is(a.getEmail()));
+        assertThat(a2.getName(), is(a.getName()));
+        assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
+        assertThat(a2.getRoles().size(), is(0));
+        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // being returned
+    }
+
 }

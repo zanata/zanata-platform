@@ -6,11 +6,10 @@ import org.zanata.common.ProjectType;
 import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
 
-public interface HasWorkspaceContextUpdateData
-{
-   boolean isProjectActive();
+public interface HasWorkspaceContextUpdateData {
+    boolean isProjectActive();
 
-   ProjectType getProjectType();
+    ProjectType getProjectType();
 
-   Map<ValidationId, State> getValidationStates();
+    Map<ValidationId, State> getValidationStates();
 }

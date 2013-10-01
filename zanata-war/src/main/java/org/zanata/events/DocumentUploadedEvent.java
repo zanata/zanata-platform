@@ -25,18 +25,17 @@ import org.zanata.common.LocaleId;
 
 import lombok.Data;
 
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 @Data
-public final class DocumentUploadedEvent
-{
-   public static final String EVENT_NAME = "org.zanata.event.HDocumentUploaded";
+public final class DocumentUploadedEvent {
+    public static final String EVENT_NAME =
+            "org.zanata.event.HDocumentUploaded";
 
-   private final Long documentId;
-   private final boolean isSourceDocument;
-   private final LocaleId localeId;
-   
+    private final Long documentId;
+    private final boolean isSourceDocument;
+    private final LocaleId localeId;
+
 }

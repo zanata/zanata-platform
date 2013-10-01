@@ -26,31 +26,26 @@ import org.zanata.webtrans.server.rpc.PreviewReplaceTextHandler;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
 /**
- * 
+ *
  * @author David Mason, damason@redhat.com
  * @see PreviewReplaceTextHandler
- * 
+ *
  */
-public class PreviewReplaceTextResult implements DispatchResult
-{
-   private static final long serialVersionUID = 1L;
+public class PreviewReplaceTextResult implements DispatchResult {
+    private static final long serialVersionUID = 1L;
 
-   private List<TransUnitUpdatePreview> previews;
+    private List<TransUnitUpdatePreview> previews;
 
-   @SuppressWarnings("unused")
-   private PreviewReplaceTextResult()
-   {
-   }
+    @SuppressWarnings("unused")
+    private PreviewReplaceTextResult() {
+    }
 
-   public PreviewReplaceTextResult(List<TransUnitUpdatePreview> previews)
-   {
-      this.previews = previews;
-   }
+    public PreviewReplaceTextResult(List<TransUnitUpdatePreview> previews) {
+        this.previews = previews;
+    }
 
-   public List<TransUnitUpdatePreview> getPreviews()
-   {
-      return previews;
-   }
-
+    public List<TransUnitUpdatePreview> getPreviews() {
+        return previews;
+    }
 
 }

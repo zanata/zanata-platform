@@ -22,55 +22,56 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class PublishWorkspaceChatHandlerTest
-{
-   private PublishWorkspaceChatHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private TranslationWorkspaceManager translationWorkspaceManager;
-   @Mock
-   private TranslationWorkspace translationWorkspace;
-   @Captor
-   private ArgumentCaptor<PublishWorkspaceChat> eventCaptor;
+public class PublishWorkspaceChatHandlerTest {
+    private PublishWorkspaceChatHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private TranslationWorkspaceManager translationWorkspaceManager;
+    @Mock
+    private TranslationWorkspace translationWorkspace;
+    @Captor
+    private ArgumentCaptor<PublishWorkspaceChat> eventCaptor;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .ignoreNonResolvable()
             .autowire(PublishWorkspaceChatHandler.class);
       // @formatter:on
-   }
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      WorkspaceId workspaceId = TestFixture.workspaceId();
-      PublishWorkspaceChatAction action = new PublishWorkspaceChatAction("admin", "hi", HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
-      action.setWorkspaceId(workspaceId);
-      when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId)).thenReturn(translationWorkspace);
+    @Test
+    public void testExecute() throws Exception {
+        WorkspaceId workspaceId = TestFixture.workspaceId();
+        PublishWorkspaceChatAction action =
+                new PublishWorkspaceChatAction("admin", "hi",
+                        HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);
+        action.setWorkspaceId(workspaceId);
+        when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))
+                .thenReturn(translationWorkspace);
 
-      handler.execute(action, null);
+        handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      verify(translationWorkspace).publish(eventCaptor.capture());
-      PublishWorkspaceChat chat = eventCaptor.getValue();
-      assertThat(chat.getPersonId(), Matchers.equalTo("admin"));
-      assertThat(chat.getMsg(), Matchers.equalTo("hi"));
-      assertThat(chat.getMessageType(), Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
-   }
+        verify(identity).checkLoggedIn();
+        verify(translationWorkspace).publish(eventCaptor.capture());
+        PublishWorkspaceChat chat = eventCaptor.getValue();
+        assertThat(chat.getPersonId(), Matchers.equalTo("admin"));
+        assertThat(chat.getMsg(), Matchers.equalTo("hi"));
+        assertThat(chat.getMessageType(),
+                Matchers.equalTo(HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG));
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

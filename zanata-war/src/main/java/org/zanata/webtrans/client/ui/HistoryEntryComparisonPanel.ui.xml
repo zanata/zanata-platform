@@ -1,70 +1,73 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages" />
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.ui.HistoryEntryComparisonPanel.Styles">
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.ui.HistoryEntryComparisonPanel.Styles">
 
-        .versionCell {
-            width: 15%;
-            padding-left: 10px;
-        }
+    .versionCell {
+      width: 15%;
+      padding-left: 10px;
+    }
 
-        .contentCell {
-            width: 85%;
-            padding-left: 10px;
-        }
+    .contentCell {
+      width: 85%;
+      padding-left: 10px;
+    }
 
-        .header {
-            /* copy from cell table header */
-            border-bottom: 2px solid #d9e1e7;
-            padding: 3px 15px;
-            text-align: left;
-            color: #416988;
-            overflow: hidden;
-            font-weight: bold;
-            height: 1em;
-        }
+    .header {
+      /* copy from cell table header */
+      border-bottom: 2px solid #d9e1e7;
+      padding: 3px 15px;
+      text-align: left;
+      color: #416988;
+      overflow: hidden;
+      font-weight: bold;
+      height: 1em;
+    }
 
-        .grid {
-            border-collapse: collapse;
-            width: 100%;
-            height: 100%;
-        }
+    .grid {
+      border-collapse: collapse;
+      width: 100%;
+      height: 100%;
+    }
 
-        .originRow {
-            background-color: transparent;
-        }
+    .originRow {
+      background-color: transparent;
+    }
 
-        .flipButton {
-            padding: 5px;
-            height: 1em;
-        }
-    </ui:style>
+    .flipButton {
+      padding: 5px;
+      height: 1em;
+    }
+  </ui:style>
 
-    <g:ScrollPanel>
-        <g:Grid ui:field="grid" styleName="{style.grid}">
-            <g:row>
-                <g:customCell styleName="{style.flipButton}">
-                    <g:PushButton ui:field="flipButton" text="{messages.flipComparingEntries}"/>
-                </g:customCell>
-                <g:cell/>
-            </g:row>
-            <g:row>
-                <g:cell styleName="{style.header}">Version</g:cell>
-                <g:cell styleName="{style.header}">Contents</g:cell>
-            </g:row>
-            <g:row styleName="{style.originRow}">
-                <g:cell styleName="{style.versionCell}"/>
-                <g:customCell styleName="{style.contentCell}">
-                    <g:SimplePanel ui:field="itemOnePanel" width="100%" />
-                </g:customCell>
-            </g:row>
-            <g:row>
-                <g:cell styleName="{style.versionCell}" />
-                <g:customCell styleName="{style.contentCell}">
-                    <g:SimplePanel ui:field="itemTwoPanel" width="100%" />
-                </g:customCell>
-            </g:row>
-        </g:Grid>
-    </g:ScrollPanel>
+  <g:ScrollPanel>
+    <g:Grid ui:field="grid" styleName="{style.grid}">
+      <g:row>
+        <g:customCell styleName="{style.flipButton}">
+          <g:PushButton ui:field="flipButton"
+            text="{messages.flipComparingEntries}" />
+        </g:customCell>
+        <g:cell />
+      </g:row>
+      <g:row>
+        <g:cell styleName="{style.header}">Version</g:cell>
+        <g:cell styleName="{style.header}">Contents</g:cell>
+      </g:row>
+      <g:row styleName="{style.originRow}">
+        <g:cell styleName="{style.versionCell}" />
+        <g:customCell styleName="{style.contentCell}">
+          <g:SimplePanel ui:field="itemOnePanel" width="100%" />
+        </g:customCell>
+      </g:row>
+      <g:row>
+        <g:cell styleName="{style.versionCell}" />
+        <g:customCell styleName="{style.contentCell}">
+          <g:SimplePanel ui:field="itemTwoPanel" width="100%" />
+        </g:customCell>
+      </g:row>
+    </g:Grid>
+  </g:ScrollPanel>
 </ui:UiBinder>

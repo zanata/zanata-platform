@@ -10,38 +10,34 @@ import org.zanata.ZanataRestTest;
 import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.dto.VersionInfo;
 
+public class VersionRestTest extends ZanataRestTest {
+    private final String RESOURCE_PATH = "/version";
+    String vVar = "1.0SNAPSHOT";
+    String vBuild = "20101009";
+    VersionInfo ver = new VersionInfo(vVar, vBuild);
+    private final Logger log = LoggerFactory.getLogger(VersionRestTest.class);
 
-public class VersionRestTest extends ZanataRestTest
-{
-   private final String RESOURCE_PATH = "/version";
-   String vVar = "1.0SNAPSHOT";
-   String vBuild = "20101009";
-   VersionInfo ver = new VersionInfo(vVar, vBuild);
-   private final Logger log = LoggerFactory.getLogger(VersionRestTest.class);
+    @Override
+    protected void prepareResources() {
+        VersionService service = new VersionService(ver);
+        resources.add(service);
+    }
 
-   @Override
-   protected void prepareResources()
-   {
-      VersionService service = new VersionService(ver);
-      resources.add(service);
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+    }
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-   }
+    @Test
+    public void retrieveVersionInfo() {
+        IVersionResource resource;
+        log.debug("setup test version service");
+        resource =
+                getClientRequestFactory().createProxy(IVersionResource.class,
+                        createBaseURI(RESOURCE_PATH));
 
-   @Test
-   public void retrieveVersionInfo()
-   {
-      IVersionResource resource;
-      log.debug("setup test version service");
-      resource = getClientRequestFactory().createProxy(IVersionResource.class, createBaseURI(RESOURCE_PATH));
-
-      VersionInfo entity = resource.get().getEntity();
-      assertThat(entity.getVersionNo(), is(vVar));
-      assertThat(entity.getBuildTimeStamp(), is(vBuild));
-   }
-
+        VersionInfo entity = resource.get().getEntity();
+        assertThat(entity.getVersionNo(), is(vVar));
+        assertThat(entity.getBuildTimeStamp(), is(vBuild));
+    }
 
 }

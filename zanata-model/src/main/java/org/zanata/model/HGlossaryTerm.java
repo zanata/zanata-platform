@@ -59,19 +59,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
-@FullTextFilterDef(name = "glossaryLocaleFilter", impl = LocaleFilterFactory.class, cache = FilterCacheModeType.INSTANCE_ONLY)
+@FullTextFilterDef(name = "glossaryLocaleFilter",
+        impl = LocaleFilterFactory.class,
+        cache = FilterCacheModeType.INSTANCE_ONLY)
 @Setter
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true, exclude = "glossaryEntry")
+@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
+        exclude = "glossaryEntry")
 @ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase
 {

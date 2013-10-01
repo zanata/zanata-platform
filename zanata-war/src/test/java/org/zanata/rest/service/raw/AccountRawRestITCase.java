@@ -43,158 +43,156 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class AccountRawRestITCase extends RestTest
-{
+public class AccountRawRestITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/AccountData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
-   
-   @Test
-   @RunAsClient
-   public void xmlGetUnavailable() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/NOT_AVAILABLE"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
-         }
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void xmlGet() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
-         }
+    @Test
+    @RunAsClient
+    public void xmlGetUnavailable() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/NOT_AVAILABLE"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+            }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(200));
-            assertJaxbUnmarshal(response, Account.class);
-            
-            Account account = jaxbUnmarshal(response, Account.class);
-            assertThat(account.getUsername(), is("admin"));
-            assertThat(account.getPasswordHash(), is("Eyox7xbNQ09MkIfRyH+rjg=="));
-            assertThat(account.getEmail(), is("root@localhost"));
-            assertThat(account.getApiKey(), is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-            assertThat(account.getRoles().size(), is(1)); // 1 roles
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void jsonGet() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-         }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.NOT_FOUND.getStatusCode()));
+            }
+        }.run();
+    }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(200));
-            assertJsonUnmarshal(response, Account.class);
-            
-            Account account = jsonUnmarshal(response, Account.class);
-            assertThat(account.getUsername(), is("admin"));
-            assertThat(account.getPasswordHash(), is("Eyox7xbNQ09MkIfRyH+rjg=="));
-            assertThat(account.getEmail(), is("root@localhost"));
-            assertThat(account.getApiKey(), is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-            assertThat(account.getRoles().size(), is(1)); // 1 role
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void xmlPut() throws Exception
-   {
-      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
-      account.setEnabled(false);
-      
-      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, jaxbMarhsal(account).getBytes());
-         }
+    @Test
+    @RunAsClient
+    public void xmlGet() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+            }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void jsonPut() throws Exception
-   {
-      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
-      account.setEnabled(false);
-      
-      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT", getAuthorizedEnvironment())
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON, jsonMarshal(account).getBytes());
-         }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200));
+                assertJaxbUnmarshal(response, Account.class);
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
-         }
-      }.run();
-   }
-   
-   @Test
-   @RunAsClient
-   public void unauthorizedPut() throws Exception
-   {
-      final Account account = new Account("test@testing.com", "Test Account", "testuser", "Eyox7xbNQ09MkIfRyH+rjg==");
-      account.setEnabled(false);
-      
-      new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON, jsonMarshal(account).getBytes());
-         }
+                Account account = jaxbUnmarshal(response, Account.class);
+                assertThat(account.getUsername(), is("admin"));
+                assertThat(account.getPasswordHash(),
+                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
+                assertThat(account.getEmail(), is("root@localhost"));
+                assertThat(account.getApiKey(),
+                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
+                assertThat(account.getRoles().size(), is(1)); // 1 roles
+            }
+        }.run();
+    }
 
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
-         }
-      }.run();
-   }
+    @Test
+    @RunAsClient
+    public void jsonGet() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200));
+                assertJsonUnmarshal(response, Account.class);
+
+                Account account = jsonUnmarshal(response, Account.class);
+                assertThat(account.getUsername(), is("admin"));
+                assertThat(account.getPasswordHash(),
+                        is("Eyox7xbNQ09MkIfRyH+rjg=="));
+                assertThat(account.getEmail(), is("root@localhost"));
+                assertThat(account.getApiKey(),
+                        is("b6d7044e9ee3b2447c28fb7c50d86d98"));
+                assertThat(account.getRoles().size(), is(1)); // 1 role
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void xmlPut() throws Exception {
+        final Account account =
+                new Account("test@testing.com", "Test Account", "testuser",
+                        "Eyox7xbNQ09MkIfRyH+rjg==");
+        account.setEnabled(false);
+
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
+                getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
+                        jaxbMarhsal(account).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.CREATED.getStatusCode()));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void jsonPut() throws Exception {
+        final Account account =
+                new Account("test@testing.com", "Test Account", "testuser",
+                        "Eyox7xbNQ09MkIfRyH+rjg==");
+        account.setEnabled(false);
+
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
+                getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
+                        jsonMarshal(account).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.CREATED.getStatusCode()));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void unauthorizedPut() throws Exception {
+        final Account account =
+                new Account("test@testing.com", "Test Account", "testuser",
+                        "Eyox7xbNQ09MkIfRyH+rjg==");
+        account.setEnabled(false);
+
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
+                        jsonMarshal(account).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.UNAUTHORIZED.getStatusCode()));
+            }
+        }.run();
+    }
 
 }

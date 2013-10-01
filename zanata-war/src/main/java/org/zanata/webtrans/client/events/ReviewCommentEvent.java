@@ -24,29 +24,25 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ReviewCommentEvent extends GwtEvent<ReviewCommentEventHandler>
-{
-   public static Type<ReviewCommentEventHandler> TYPE = new Type<ReviewCommentEventHandler>();
+public class ReviewCommentEvent extends GwtEvent<ReviewCommentEventHandler> {
+    public static Type<ReviewCommentEventHandler> TYPE =
+            new Type<ReviewCommentEventHandler>();
 
-   private TransUnitId transUnitId;
+    private TransUnitId transUnitId;
 
-   public ReviewCommentEvent(TransUnitId transUnitId)
-   {
-      this.transUnitId = transUnitId;
-   }
+    public ReviewCommentEvent(TransUnitId transUnitId) {
+        this.transUnitId = transUnitId;
+    }
 
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
+    public TransUnitId getTransUnitId() {
+        return transUnitId;
+    }
 
-   public Type<ReviewCommentEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    public Type<ReviewCommentEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   protected void dispatch(ReviewCommentEventHandler handler)
-   {
-      handler.onShowReviewComment(this);
-   }
+    protected void dispatch(ReviewCommentEventHandler handler) {
+        handler.onShowReviewComment(this);
+    }
 }

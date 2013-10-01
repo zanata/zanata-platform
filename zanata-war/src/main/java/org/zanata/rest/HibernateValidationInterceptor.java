@@ -31,25 +31,27 @@ import org.jboss.seam.Component;
 import org.zanata.rest.service.RestUtils;
 
 /**
- * Validates all objects being read from any of the REST endpoints with the 
- * Hibernate validator. If there is a validation failure it throws a WebApplicationException
- * with a BAD_REQUEST (400) code. 
- * 
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * Validates all objects being read from any of the REST endpoints with the
+ * Hibernate validator. If there is a validation failure it throws a
+ * WebApplicationException with a BAD_REQUEST (400) code.
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
 @ServerInterceptor
-public class HibernateValidationInterceptor implements MessageBodyReaderInterceptor
-{
-   @Override
-   public Object read(MessageBodyReaderContext context) throws IOException, WebApplicationException
-   {
-      Object unmarshalledMssgBody = context.proceed();
+public class HibernateValidationInterceptor implements
+        MessageBodyReaderInterceptor {
+    @Override
+    public Object read(MessageBodyReaderContext context) throws IOException,
+            WebApplicationException {
+        Object unmarshalledMssgBody = context.proceed();
 
-      RestUtils restUtils = (RestUtils)Component.getInstance(RestUtils.class);
-      restUtils.validateEntity(unmarshalledMssgBody);
-      
-      return unmarshalledMssgBody;
-   }
+        RestUtils restUtils =
+                (RestUtils) Component.getInstance(RestUtils.class);
+        restUtils.validateEntity(unmarshalledMssgBody);
+
+        return unmarshalledMssgBody;
+    }
 
 }

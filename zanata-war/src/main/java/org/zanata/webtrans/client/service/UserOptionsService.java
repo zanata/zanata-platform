@@ -41,131 +41,147 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 @Singleton
-public class UserOptionsService
-{
-   private final EventBus eventBus;
-   private final CachingDispatchAsync dispatcher;
-   private final UserConfigHolder configHolder;
+public class UserOptionsService {
+    private final EventBus eventBus;
+    private final CachingDispatchAsync dispatcher;
+    private final UserConfigHolder configHolder;
 
-   @Inject
-   public UserOptionsService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder)
-   {
-      this.eventBus = eventBus;
-      this.dispatcher = dispatcher;
-      this.configHolder = configHolder;
-   }
+    @Inject
+    public UserOptionsService(EventBus eventBus,
+            CachingDispatchAsync dispatcher, UserConfigHolder configHolder) {
+        this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
+        this.configHolder = configHolder;
+    }
 
-   public void persistOptionChange(Map<UserOptions, String> optsMap)
-   {
-      SaveOptionsAction action = new SaveOptionsAction(optsMap);
+    public void persistOptionChange(Map<UserOptions, String> optsMap) {
+        SaveOptionsAction action = new SaveOptionsAction(optsMap);
 
-      dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Warning, "Could not save user options"));
-         }
+        dispatcher.execute(action, new AsyncCallback<SaveOptionsResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                eventBus.fireEvent(new NotificationEvent(
+                        NotificationEvent.Severity.Warning,
+                        "Could not save user options"));
+            }
 
-         @Override
-         public void onSuccess(SaveOptionsResult result)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Info, "Saved user options"));
-         }
-      });
-   }
+            @Override
+            public void onSuccess(SaveOptionsResult result) {
+                eventBus.fireEvent(new NotificationEvent(
+                        NotificationEvent.Severity.Info, "Saved user options"));
+            }
+        });
+    }
 
-   public HashMap<UserOptions, String> getCommonOptions()
-   {
-      HashMap<UserOptions, String> configMap = new HashMap<UserOptions, String>();
-      configMap.put(UserOptions.ShowErrors, Boolean.toString(configHolder.getState().isShowError()));
-      configMap.put(UserOptions.Themes, configHolder.getState().getDisplayTheme().name());
+    public HashMap<UserOptions, String> getCommonOptions() {
+        HashMap<UserOptions, String> configMap =
+                new HashMap<UserOptions, String>();
+        configMap.put(UserOptions.ShowErrors,
+                Boolean.toString(configHolder.getState().isShowError()));
+        configMap.put(UserOptions.Themes, configHolder.getState()
+                .getDisplayTheme().name());
 
-      return configMap;
-   }
+        return configMap;
+    }
 
-   public HashMap<UserOptions, String> getDocumentListOptions()
-   {
-      HashMap<UserOptions, String> configMap;
-      configMap = getCommonOptions();
-      configMap.put(UserOptions.DocumentListPageSize, Integer.toString(configHolder.getState().getDocumentListPageSize()));
+    public HashMap<UserOptions, String> getDocumentListOptions() {
+        HashMap<UserOptions, String> configMap;
+        configMap = getCommonOptions();
+        configMap.put(UserOptions.DocumentListPageSize, Integer
+                .toString(configHolder.getState().getDocumentListPageSize()));
 
-      return configMap;
-   }
+        return configMap;
+    }
 
-   public HashMap<UserOptions, String> getEditorOptions()
-   {
-      HashMap<UserOptions, String> configMap;
-      configMap = getCommonOptions();
-      configMap.put(UserOptions.DisplayButtons, Boolean.toString(configHolder.getState().isDisplayButtons()));
-      configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(configHolder.getState().isEnterSavesApproved()));
-      configMap.put(UserOptions.EditorPageSize, Integer.toString(configHolder.getState().getEditorPageSize()));
-      configMap.put(UserOptions.UseCodeMirrorEditor, Boolean.toString(configHolder.getState().isUseCodeMirrorEditor()));
-      configMap.put(UserOptions.EnableSpellCheck, Boolean.toString(configHolder.getState().isSpellCheckEnabled()));
-      configMap.put(UserOptions.TransMemoryDisplayMode, configHolder.getState().getTransMemoryDisplayMode().name());
-      configMap.put(UserOptions.DisplayTransMemory, Boolean.toString(configHolder.getState().isShowTMPanel()));
-      configMap.put(UserOptions.DisplayGlossary, Boolean.toString(configHolder.getState().isShowGlossaryPanel()));
-      configMap.put(UserOptions.TranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByTranslated()));
-      configMap.put(UserOptions.FuzzyMessageFilter, Boolean.toString(configHolder.getState().isFilterByFuzzy()));
-      configMap.put(UserOptions.UntranslatedMessageFilter, Boolean.toString(configHolder.getState().isFilterByUntranslated()));
-      configMap.put(UserOptions.ApprovedMessageFilter, Boolean.toString(configHolder.getState().isFilterByApproved()));
-      configMap.put(UserOptions.RejectedMessageFilter, Boolean.toString(configHolder.getState().isFilterByRejected()));
-      configMap.put(UserOptions.Navigation, configHolder.getState().getNavOption().toString());
-      configMap.put(UserOptions.ShowSaveApprovedWarning, Boolean.toString(configHolder.getState().isShowSaveApprovedWarning()));
+    public HashMap<UserOptions, String> getEditorOptions() {
+        HashMap<UserOptions, String> configMap;
+        configMap = getCommonOptions();
+        configMap.put(UserOptions.DisplayButtons,
+                Boolean.toString(configHolder.getState().isDisplayButtons()));
+        configMap.put(UserOptions.EnterSavesApproved, Boolean
+                .toString(configHolder.getState().isEnterSavesApproved()));
+        configMap.put(UserOptions.EditorPageSize,
+                Integer.toString(configHolder.getState().getEditorPageSize()));
+        configMap.put(UserOptions.UseCodeMirrorEditor, Boolean
+                .toString(configHolder.getState().isUseCodeMirrorEditor()));
+        configMap
+                .put(UserOptions.EnableSpellCheck,
+                        Boolean.toString(configHolder.getState()
+                                .isSpellCheckEnabled()));
+        configMap.put(UserOptions.TransMemoryDisplayMode, configHolder
+                .getState().getTransMemoryDisplayMode().name());
+        configMap.put(UserOptions.DisplayTransMemory,
+                Boolean.toString(configHolder.getState().isShowTMPanel()));
+        configMap
+                .put(UserOptions.DisplayGlossary, Boolean.toString(configHolder
+                        .getState().isShowGlossaryPanel()));
+        configMap.put(UserOptions.TranslatedMessageFilter, Boolean
+                .toString(configHolder.getState().isFilterByTranslated()));
+        configMap.put(UserOptions.FuzzyMessageFilter,
+                Boolean.toString(configHolder.getState().isFilterByFuzzy()));
+        configMap.put(UserOptions.UntranslatedMessageFilter, Boolean
+                .toString(configHolder.getState().isFilterByUntranslated()));
+        configMap.put(UserOptions.ApprovedMessageFilter,
+                Boolean.toString(configHolder.getState().isFilterByApproved()));
+        configMap.put(UserOptions.RejectedMessageFilter,
+                Boolean.toString(configHolder.getState().isFilterByRejected()));
+        configMap.put(UserOptions.Navigation, configHolder.getState()
+                .getNavOption().toString());
+        configMap.put(UserOptions.ShowSaveApprovedWarning, Boolean
+                .toString(configHolder.getState().isShowSaveApprovedWarning()));
 
-      return configMap;
-   }
+        return configMap;
+    }
 
+    public void loadCommonOptions() {
+        configHolder.setShowError(UserConfigHolder.DEFAULT_SHOW_ERROR);
+        configHolder.setDisplayTheme(ThemesOption.THEMES_DEFAULT);
+    }
 
-   public void loadCommonOptions()
-   {
-      configHolder.setShowError(UserConfigHolder.DEFAULT_SHOW_ERROR);
-      configHolder.setDisplayTheme(ThemesOption.THEMES_DEFAULT);
-   }
+    public void loadDocumentListDefaultOptions() {
+        // default options
+        loadCommonOptions();
 
-   public void loadDocumentListDefaultOptions()
-   {
-      // default options
-      loadCommonOptions();
+        configHolder
+                .setDocumentListPageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
+    }
 
-      configHolder.setDocumentListPageSize(UserConfigHolder.DEFAULT_DOC_LIST_PAGE_SIZE);
-   }
+    public void loadEditorDefaultOptions() {
+        // default options
+        loadCommonOptions();
 
-   public void loadEditorDefaultOptions()
-   {
-      // default options
-      loadCommonOptions();
+        // default options
+        configHolder
+                .setDisplayButtons(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS);
+        configHolder
+                .setEnterSavesApproved(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED);
+        configHolder.setFilterByTranslated(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByFuzzy(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByUntranslated(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByApproved(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByRejected(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setFilterByHasError(UserConfigHolder.DEFAULT_FILTER);
+        configHolder.setEnabledValidationIds(new ArrayList<ValidationId>());
+        configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+        configHolder
+                .setEditorPageSize(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
+        configHolder
+                .setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
+        configHolder
+                .setUseCodeMirrorEditor(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
+        configHolder.setTMDisplayMode(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
+        configHolder.setShowTMPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
+        configHolder.setShowGlossaryPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
+    }
 
-      // default options
-      configHolder.setDisplayButtons(UserConfigHolder.DEFAULT_DISPLAY_BUTTONS);
-      configHolder.setEnterSavesApproved(UserConfigHolder.DEFAULT_ENTER_SAVES_APPROVED);
-      configHolder.setFilterByTranslated(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setFilterByFuzzy(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setFilterByUntranslated(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setFilterByApproved(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setFilterByRejected(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setFilterByHasError(UserConfigHolder.DEFAULT_FILTER);
-      configHolder.setEnabledValidationIds(new ArrayList<ValidationId>());
-      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
-      configHolder.setEditorPageSize(UserConfigHolder.DEFAULT_EDITOR_PAGE_SIZE);
-      configHolder.setShowSaveApprovedWarning(UserConfigHolder.DEFAULT_SHOW_SAVE_APPROVED_WARNING);
-      configHolder.setUseCodeMirrorEditor(UserConfigHolder.DEFAULT_USE_CODE_MIRROR);
-      configHolder.setTMDisplayMode(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
-      configHolder.setShowTMPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
-      configHolder.setShowGlossaryPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
-   }
-
-   public UserConfigHolder getConfigHolder()
-   {
-      return configHolder;
-   }
-
+    public UserConfigHolder getConfigHolder() {
+        return configHolder;
+    }
 
 }

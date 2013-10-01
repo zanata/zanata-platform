@@ -1,52 +1,55 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	
-	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources"/>
-	
-	<ui:style type="org.zanata.webtrans.client.ui.Pager.Styles">
-		 .nav-button {
-           font-size:1.1em;
-        }
-        
-        .rootContainer {
-	       text-align:center;
-        }
-        
-        .textBox {
-	       border:1px solid #CCC;
-	       border-radius:2px;
-	       width:40px;
-        }
-        
-        .enabled
-        {
-			opacity:1;
-			cursor:pointer;
-			transition:0.2s;
-		}
-		
-		.enabled:hover {
-			color:#0085cc;
-		}
-		
-		.disabled
-		{
-			opacity:0.3;
-			cursor:default;
-		}
-        
-	</ui:style>
-	
-	<g:HTMLPanel styleName="{style.rootContainer}">
-		<g:InlineLabel ui:field="firstPage" addStyleNames="{style.nav-button} icon-to-start"/>
-		<g:InlineLabel ui:field="prevPage" addStyleNames="{style.nav-button} icon-left-open"/>
-		  
-		<g:TextBox ui:field="gotoPage" maxLength="8" styleName="{style.textBox}" />
-		<g:InlineLabel ui:field="pageCountLabel"/>
-		
-		<g:InlineLabel ui:field="nextPage" addStyleNames="{style.nav-button} icon-right-open-1"/>
-        <g:InlineLabel ui:field="lastPage" addStyleNames="{style.nav-button} icon-to-end"/>
-		
-	</g:HTMLPanel>
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field="resources"
+    type="org.zanata.webtrans.client.resources.Resources" />
+
+  <ui:style type="org.zanata.webtrans.client.ui.Pager.Styles">
+    .nav-button {
+      font-size: 1.1em;
+    }
+
+    .rootContainer {
+      text-align: center;
+    }
+
+    .textBox {
+      border: 1px solid #CCC;
+      border-radius: 2px;
+      width: 40px;
+    }
+
+    .enabled {
+      opacity: 1;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .enabled:hover {
+      color: #0085cc;
+    }
+
+    .disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+  </ui:style>
+
+  <g:HTMLPanel styleName="{style.rootContainer}">
+    <g:InlineLabel ui:field="firstPage"
+      addStyleNames="{style.nav-button} icon-to-start" />
+    <g:InlineLabel ui:field="prevPage"
+      addStyleNames="{style.nav-button} icon-left-open" />
+
+    <g:TextBox ui:field="gotoPage" maxLength="8" styleName="{style.textBox}" />
+    <g:InlineLabel ui:field="pageCountLabel" />
+
+    <g:InlineLabel ui:field="nextPage"
+      addStyleNames="{style.nav-button} icon-right-open-1" />
+    <g:InlineLabel ui:field="lastPage"
+      addStyleNames="{style.nav-button} icon-to-end" />
+
+  </g:HTMLPanel>
 </ui:UiBinder>

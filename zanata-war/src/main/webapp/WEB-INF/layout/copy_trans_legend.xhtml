@@ -1,37 +1,37 @@
 <rich:panel xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:f="http://java.sun.com/jsf/core"
-            xmlns:rich="http://richfaces.org/rich">
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich">
 
-    <f:facet name="header">#{messages['jsf.Help']}</f:facet>
-    <table cellspacing="5px" class="copy_trans_options_table">
-        <tr>
-            <td class="reject_action" width="8px"></td>
-            <td>
-                <b>#{messages['jsf.iteration.CopyTrans.Action.reject']}</b><br/>
-                #{messages['jsf.iteration.CopyTrans.Help.reject']}
-            </td>
-        </tr>
-        <tr>
-            <td class="downgrade_action"></td>
-            <td>
-                <b>#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}</b><br/>
-                #{messages['jsf.iteration.CopyTrans.Help.downgradeToFuzzy']}
-            </td>
-        </tr>
-        <tr>
-            <td class="ignore_action"></td>
-            <td>
-                <b>#{messages['jsf.iteration.CopyTrans.Action.ignore']}</b><br/>
-                #{messages['jsf.iteration.CopyTrans.Help.ignore']}
-            </td>
-        </tr>
-        <tr>
-            <td class="translated_action"></td>
-            <td>
-                <b>#{messages['jsf.Translated']}</b><br/>
-                #{messages['jsf.iteration.CopyTrans.Help.translated']}
-            </td>
-        </tr>
-        <!-- TODO rhbz953734 - add explaination to Approved state in reviewable project -->
-    </table>
+  <f:facet name="header">#{messages['jsf.Help']}</f:facet>
+  <table cellspacing="5px" class="copy_trans_options_table">
+    <tr>
+      <td class="reject_action" width="8px"></td>
+      <td>
+        <b>#{messages['jsf.iteration.CopyTrans.Action.reject']}</b><br/>
+        #{messages['jsf.iteration.CopyTrans.Help.reject']}
+      </td>
+    </tr>
+    <tr>
+      <td class="downgrade_action"></td>
+      <td>
+        <b>#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}</b><br/>
+        #{messages['jsf.iteration.CopyTrans.Help.downgradeToFuzzy']}
+      </td>
+    </tr>
+    <tr>
+      <td class="ignore_action"></td>
+      <td>
+        <b>#{messages['jsf.iteration.CopyTrans.Action.ignore']}</b><br/>
+        #{messages['jsf.iteration.CopyTrans.Help.ignore']}
+      </td>
+    </tr>
+    <tr>
+      <td class="translated_action"></td>
+      <td>
+        <b>#{messages['jsf.Translated']}</b><br/>
+        #{messages['jsf.iteration.CopyTrans.Help.translated']}
+      </td>
+    </tr>
+    <!-- TODO rhbz953734 - add explaination to Approved state in reviewable project -->
+  </table>
 </rich:panel>

@@ -28,21 +28,24 @@ import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface TranslationMemoryQueryService
-{
+public interface TranslationMemoryQueryService {
 
-   /**
-    * Performs the specified TM query via Hibernate Search
-    * @param query
-    * @param sourceLocale
-    * @param maxResult number of results to return
-    * @return
-    * @throws ParseException
-    */
-   public List<Object[]> getSearchResult(TransMemoryQuery query, LocaleId sourceLocale,
-         LocaleId targetLocale, int maxResult) throws ParseException;
+    /**
+     * Performs the specified TM query via Hibernate Search
+     *
+     * @param query
+     * @param sourceLocale
+     * @param maxResult
+     *            number of results to return
+     * @return
+     * @throws ParseException
+     */
+    public List<Object[]> getSearchResult(TransMemoryQuery query,
+            LocaleId sourceLocale, LocaleId targetLocale, int maxResult)
+            throws ParseException;
 
 }

@@ -37,34 +37,27 @@ import com.google.common.base.Optional;
 @Name("documentDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
-{
-   public DocumentDAO()
-   {
-      super(HDocument.class);
-   }
+public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
+    public DocumentDAO() {
+        super(HDocument.class);
+    }
 
-   public DocumentDAO(Session session)
-   {
-      super(HDocument.class, session);
-   }
+    public DocumentDAO(Session session) {
+        super(HDocument.class, session);
+    }
 
-   public HDocument getByDocIdAndIteration(HProjectIteration iteration, String id)
-   {
-      return (HDocument)getSession().byNaturalId(HDocument.class)
-            .using("docId", id)
-            .using("projectIteration", iteration)
-            .load();
-   }
+    public HDocument getByDocIdAndIteration(HProjectIteration iteration,
+            String id) {
+        return (HDocument) getSession().byNaturalId(HDocument.class)
+                .using("docId", id).using("projectIteration", iteration).load();
+    }
 
-   public HDocument getById(Long id)
-   {
-      return (HDocument)getSession().get(HDocument.class, id);
-   }
+    public HDocument getById(Long id) {
+        return (HDocument) getSession().get(HDocument.class, id);
+    }
 
-   public Set<LocaleId> getTargetLocales(HDocument hDoc)
-   {
-      // @formatter:off
+    public Set<LocaleId> getTargetLocales(HDocument hDoc) {
+        // @formatter:off
       // TODO should this use UNIQUE?
       Query q = getSession().createQuery(
             "select tft.locale from HTextFlowTarget tft " +
@@ -75,132 +68,140 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       @SuppressWarnings("unchecked")
       List<LocaleId> locales = q.list();
       // @formatter:on
-      return new HashSet<LocaleId>(locales);
-   }
+        return new HashSet<LocaleId>(locales);
+    }
 
-   public int getTotalDocument()
-   {
-      Query q = getSession().createQuery("select count(*) from HDocument");
-      q.setCacheable(true);
-      q.setComment("DocumentDAO.getTotalDocument");
-      Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
+    public int getTotalDocument() {
+        Query q = getSession().createQuery("select count(*) from HDocument");
+        q.setCacheable(true);
+        q.setComment("DocumentDAO.getTotalDocument");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
 
-   public int getTotalActiveDocument()
-   {
-      Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = false");
-      q.setCacheable(true);
-      q.setComment("DocumentDAO.getTotalActiveDocument");
-      Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
+    public int getTotalActiveDocument() {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HDocument doc where doc.obsolete = false");
+        q.setCacheable(true);
+        q.setComment("DocumentDAO.getTotalActiveDocument");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
 
-   public int getTotalObsoleteDocument()
-   {
-      Query q = getSession().createQuery("select count(*) from HDocument doc where doc.obsolete = true");
-      q.setCacheable(true);
-      q.setComment("DocumentDAO.getTotalObsoleteDocument");
-      Long totalCount = (Long) q.uniqueResult();
-      if (totalCount == null)
-         return 0;
-      return totalCount.intValue();
-   }
+    public int getTotalObsoleteDocument() {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HDocument doc where doc.obsolete = true");
+        q.setCacheable(true);
+        q.setComment("DocumentDAO.getTotalObsoleteDocument");
+        Long totalCount = (Long) q.uniqueResult();
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
 
-   /**
-    * Returns the total message count for a document
-    */
-   public Long getTotalCountForDocument(HDocument document)
-   {
-      Session session = getSession();
-      Long totalCount = (Long) session.createQuery("select count(tf) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setComment("DocumentDAO.getTotalCountForDocument").setCacheable(true).uniqueResult();
+    /**
+     * Returns the total message count for a document
+     */
+    public Long getTotalCountForDocument(HDocument document) {
+        Session session = getSession();
+        Long totalCount =
+                (Long) session
+                        .createQuery(
+                                "select count(tf) from HTextFlow tf "
+                                        + "where tf.document = :doc and tf.obsolete = false")
+                        .setParameter("doc", document)
+                        .setComment("DocumentDAO.getTotalCountForDocument")
+                        .setCacheable(true).uniqueResult();
 
-      if (totalCount == null)
-      {
-         totalCount = 0L;
-      }
+        if (totalCount == null) {
+            totalCount = 0L;
+        }
 
-      return totalCount;
+        return totalCount;
 
-   }
+    }
 
-   public Long getTotalWordCountForDocument(HDocument document)
-   {
-      Session session = getSession();
+    public Long getTotalWordCountForDocument(HDocument document) {
+        Session session = getSession();
 
-      Long totalWordCount = (Long) session.createQuery("select sum(tf.wordCount) from HTextFlow tf " + "where tf.document = :doc and tf.obsolete = false").setParameter("doc", document).setCacheable(true).setComment("DocumentDAO.getTotalWordCountForDocument").uniqueResult();
+        Long totalWordCount =
+                (Long) session
+                        .createQuery(
+                                "select sum(tf.wordCount) from HTextFlow tf "
+                                        + "where tf.document = :doc and tf.obsolete = false")
+                        .setParameter("doc", document).setCacheable(true)
+                        .setComment("DocumentDAO.getTotalWordCountForDocument")
+                        .uniqueResult();
 
-      if (totalWordCount == null)
-      {
-         totalWordCount = 0L;
-      }
+        if (totalWordCount == null) {
+            totalWordCount = 0L;
+        }
 
-      return totalWordCount;
+        return totalWordCount;
 
-   }
+    }
 
-   public HTextFlowTarget getLastTranslatedTarget(Long documentId, LocaleId localeId)
-   {
-      Session session = getSession();
+    public HTextFlowTarget getLastTranslatedTarget(Long documentId,
+            LocaleId localeId) {
+        Session session = getSession();
 
-      StringBuilder query = new StringBuilder();
+        StringBuilder query = new StringBuilder();
 
-      query.append("from HTextFlowTarget tft ");
-      query.append("where tft.textFlow.document.id = :docId ");
-      query.append("and tft.locale.localeId = :localeId ");
-      query.append("order by tft.lastChanged DESC");
+        query.append("from HTextFlowTarget tft ");
+        query.append("where tft.textFlow.document.id = :docId ");
+        query.append("and tft.locale.localeId = :localeId ");
+        query.append("order by tft.lastChanged DESC");
 
-      return (HTextFlowTarget) session.createQuery(query.toString())
-            .setParameter("docId", documentId)
-            .setParameter("localeId", localeId)
-            .setCacheable(true)
-            .setMaxResults(1)
-            .setComment("DocumentDAO.getLastTranslated")
-            .uniqueResult();
-   }
-   
-   @Nullable
-   public HTextFlowTarget getLastTranslatedTargetOrNull(Long documentId)
-   {
-      Session session = getSession();
+        return (HTextFlowTarget) session.createQuery(query.toString())
+                .setParameter("docId", documentId)
+                .setParameter("localeId", localeId).setCacheable(true)
+                .setMaxResults(1).setComment("DocumentDAO.getLastTranslated")
+                .uniqueResult();
+    }
 
-      StringBuilder query = new StringBuilder();
+    @Nullable
+    public HTextFlowTarget getLastTranslatedTargetOrNull(Long documentId) {
+        Session session = getSession();
 
-      query.append("from HTextFlowTarget tft ");
-      query.append("where tft.textFlow.document.id = :docId ");
-      query.append("order by tft.lastChanged DESC");
+        StringBuilder query = new StringBuilder();
 
-      return (HTextFlowTarget) session.createQuery(query.toString())
-            .setParameter("docId", documentId)
-            .setCacheable(true)
-            .setMaxResults(1)
-            .setComment("DocumentDAO.getLastTranslated")
-            .uniqueResult();
-   }
+        query.append("from HTextFlowTarget tft ");
+        query.append("where tft.textFlow.document.id = :docId ");
+        query.append("order by tft.lastChanged DESC");
 
-   /**
-    * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
-    * @param docId
-    * @param localeId
-    * @return
-    */
-   public ContainerTranslationStatistics getStatistics(long docId, LocaleId localeId)
-   {
-      // @formatter:off
+        return (HTextFlowTarget) session.createQuery(query.toString())
+                .setParameter("docId", documentId).setCacheable(true)
+                .setMaxResults(1).setComment("DocumentDAO.getLastTranslated")
+                .uniqueResult();
+    }
+
+    /**
+     * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
+     * @param docId
+     * @param localeId
+     * @return
+     */
+    public ContainerTranslationStatistics getStatistics(long docId,
+            LocaleId localeId) {
+        // @formatter:off
       Session session = getSession();
 
       // calculate unit counts
       @SuppressWarnings("unchecked")
       List<StatusCount> stats = session.createQuery(
-         "select new org.zanata.model.StatusCount(tft.state, count(tft)) " + 
-         "from HTextFlowTarget tft " + 
-         "where tft.textFlow.document.id = :id " + 
-         "  and tft.locale.localeId = :locale " + 
-         "  and tft.textFlow.obsolete = false " + 
+         "select new org.zanata.model.StatusCount(tft.state, count(tft)) " +
+         "from HTextFlowTarget tft " +
+         "where tft.textFlow.document.id = :id " +
+         "  and tft.locale.localeId = :locale " +
+         "  and tft.textFlow.obsolete = false " +
          "group by tft.state")
             .setParameter("id", docId)
             .setParameter("locale", localeId)
@@ -218,10 +219,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       // calculate word counts
       @SuppressWarnings("unchecked")
       List<StatusCount> wordStats = session.createQuery(
-         "select new org.zanata.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " + 
-         "from HTextFlowTarget tft where tft.textFlow.document.id = :id " + 
-         "  and tft.locale.localeId = :locale " + 
-         "  and tft.textFlow.obsolete = false " + 
+         "select new org.zanata.model.StatusCount(tft.state, sum(tft.textFlow.wordCount)) " +
+         "from HTextFlowTarget tft where tft.textFlow.document.id = :id " +
+         "  and tft.locale.localeId = :locale " +
+         "  and tft.textFlow.obsolete = false " +
          "group by tft.state")
             .setParameter("id", docId)
             .setParameter("locale", localeId)
@@ -241,23 +242,24 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
       ContainerTranslationStatistics result = new ContainerTranslationStatistics();
       result.addStats(new TranslationStatistics(unitCount, localeId.toString()));
       result.addStats(new TranslationStatistics(wordCount, localeId.toString()));
-      
+
       return result;
       // @formatter:on
-   }
+    }
 
-   /**
-    * Returns document statistics for multiple locales.
-    * 
-    * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
-    * @param docId
-    * @param localeIds If empty or null, data for all locales will be returned.
-    * @return Map of document statistics indexed by locale. Some locales may not
-    *         have entries if there is no data stored for them.
-    */
-   public Map<LocaleId, ContainerTranslationStatistics> getStatistics(long docId, LocaleId... localeIds)
-   {
-      // @formatter:off
+    /**
+     * Returns document statistics for multiple locales.
+     *
+     * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
+     * @param docId
+     * @param localeIds
+     *            If empty or null, data for all locales will be returned.
+     * @return Map of document statistics indexed by locale. Some locales may
+     *         not have entries if there is no data stored for them.
+     */
+    public Map<LocaleId, ContainerTranslationStatistics> getStatistics(
+            long docId, LocaleId... localeIds) {
+        // @formatter:off
       Session session = getSession();
       Map<LocaleId, ContainerTranslationStatistics> returnStats = new HashMap<LocaleId, ContainerTranslationStatistics>();
       Map<String, TransUnitCount> transUnitCountMap = new HashMap<String, TransUnitCount>();
@@ -478,7 +480,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    /**
     * Do not use this method when adding a new raw document,
     * instead use {@link #addRawDocument(HDocument, HRawDocument)}
-    * 
+    *
     * @see AbstractDAOImpl#makePersistent(Object)
     */
    @Override
@@ -494,7 +496,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long>
    /**
     * Add a raw document to a document, cleanly removing any
     * existing raw document associated with the document.
-    * 
+    *
     * @param doc
     * @param rawDoc
     * @return

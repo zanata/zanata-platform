@@ -43,68 +43,69 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.inject.Inject;
 
+public class TranslationPresenter extends
+        WidgetPresenter<TranslationPresenter.Display> implements
+        WorkspaceContextUpdateEventHandler, DisplaySouthPanelEventHandler {
+    public interface Display extends WidgetDisplay {
+        void setSouthPanelExpanded(boolean expanded);
 
-public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.Display> implements WorkspaceContextUpdateEventHandler, DisplaySouthPanelEventHandler
-{
-   public interface Display extends WidgetDisplay
-   {
-      void setSouthPanelExpanded(boolean expanded);
+        void togglePanelDisplay(boolean showTMPanel, boolean showGlossaryPanel);
+    }
 
-      void togglePanelDisplay(boolean showTMPanel, boolean showGlossaryPanel);
-   }
+    private final TranslationEditorPresenter translationEditorPresenter;
+    private final TransMemoryPresenter transMemoryPresenter;
+    private final GlossaryPresenter glossaryPresenter;
+    private final TargetContentsPresenter targetContentsPresenter;
+    private final KeyShortcutPresenter keyShortcutPresenter;
 
-   private final TranslationEditorPresenter translationEditorPresenter;
-   private final TransMemoryPresenter transMemoryPresenter;
-   private final GlossaryPresenter glossaryPresenter;
-   private final TargetContentsPresenter targetContentsPresenter;
-   private final KeyShortcutPresenter keyShortcutPresenter;
+    private final UserWorkspaceContext userWorkspaceContext;
+    private final NavigationService navigationService;
+    private final UserConfigHolder configHolder;
 
-   private final UserWorkspaceContext userWorkspaceContext;
-   private final NavigationService navigationService;
-   private final UserConfigHolder configHolder;
+    private final WebTransMessages messages;
 
-   private final WebTransMessages messages;
+    @Inject
+    public TranslationPresenter(Display display, EventBus eventBus,
+            TargetContentsPresenter targetContentsPresenter,
+            TranslationEditorPresenter translationEditorPresenter,
+            TransMemoryPresenter transMemoryPresenter,
+            GlossaryPresenter glossaryPresenter, WebTransMessages messages,
+            UserWorkspaceContext userWorkspaceContext,
+            KeyShortcutPresenter keyShortcutPresenter,
+            NavigationService navigationService, UserConfigHolder configHolder) {
+        super(display, eventBus);
+        this.messages = messages;
+        this.translationEditorPresenter = translationEditorPresenter;
+        this.transMemoryPresenter = transMemoryPresenter;
+        this.glossaryPresenter = glossaryPresenter;
+        this.targetContentsPresenter = targetContentsPresenter;
+        this.keyShortcutPresenter = keyShortcutPresenter;
+        this.userWorkspaceContext = userWorkspaceContext;
+        this.navigationService = navigationService;
+        this.configHolder = configHolder;
+    }
 
-   @Inject
-   public TranslationPresenter(Display display, EventBus eventBus, TargetContentsPresenter targetContentsPresenter, TranslationEditorPresenter translationEditorPresenter, TransMemoryPresenter transMemoryPresenter, GlossaryPresenter glossaryPresenter, WebTransMessages messages, UserWorkspaceContext userWorkspaceContext, KeyShortcutPresenter keyShortcutPresenter, NavigationService navigationService, UserConfigHolder configHolder)
-   {
-      super(display, eventBus);
-      this.messages = messages;
-      this.translationEditorPresenter = translationEditorPresenter;
-      this.transMemoryPresenter = transMemoryPresenter;
-      this.glossaryPresenter = glossaryPresenter;
-      this.targetContentsPresenter = targetContentsPresenter;
-      this.keyShortcutPresenter = keyShortcutPresenter;
-      this.userWorkspaceContext = userWorkspaceContext;
-      this.navigationService = navigationService;
-      this.configHolder = configHolder;
-   }
+    @Override
+    public void onRevealDisplay() {
+        if (targetContentsPresenter.hasSelectedRow()) {
+            targetContentsPresenter.setFocus();
+            targetContentsPresenter.revealDisplay();
+        } else {
+            targetContentsPresenter.concealDisplay();
+        }
+    }
 
-   @Override
-   public void onRevealDisplay()
-   {
-      if (targetContentsPresenter.hasSelectedRow())
-      {
-         targetContentsPresenter.setFocus();
-         targetContentsPresenter.revealDisplay();
-      }
-      else
-      {
-         targetContentsPresenter.concealDisplay();
-      }
-   }
+    @Override
+    protected void onBind() {
+        bindSouthPanelPresenters();
+        translationEditorPresenter.bind();
 
-   @Override
-   protected void onBind()
-   {
-      bindSouthPanelPresenters();
-      translationEditorPresenter.bind();
+        registerHandler(eventBus.addHandler(
+                WorkspaceContextUpdateEvent.getType(), this));
+        registerHandler(eventBus.addHandler(DisplaySouthPanelEvent.TYPE, this));
+        setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
 
-      registerHandler(eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this));
-      registerHandler(eventBus.addHandler(DisplaySouthPanelEvent.TYPE, this));
-      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-
-      // @formatter:off
+        // @formatter:off
       // navigate to previous row shortcut
       KeyShortcutEventHandler gotoPreRowHandler = new KeyShortcutEventHandler()
       {
@@ -158,167 +159,142 @@ public class TranslationPresenter extends WidgetPresenter<TranslationPresenter.D
                }
             }).build();
       // @formatter:on
-      keyShortcutPresenter.register(startEditingShortcut);
-   }
+        keyShortcutPresenter.register(startEditingShortcut);
+    }
 
-   private boolean isOtherInputFieldFocused()
-   {
-      return translationEditorPresenter.isTransFilterFocused() || 
-            transMemoryPresenter.isFocused() || 
-            glossaryPresenter.isFocused() || 
-            translationEditorPresenter.getDisplay().isPagerFocused();
-   }
+    private boolean isOtherInputFieldFocused() {
+        return translationEditorPresenter.isTransFilterFocused()
+                || transMemoryPresenter.isFocused()
+                || glossaryPresenter.isFocused()
+                || translationEditorPresenter.getDisplay().isPagerFocused();
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-      unbindSouthPanelPresenters();
-      translationEditorPresenter.unbind();
-   }
+    @Override
+    protected void onUnbind() {
+        unbindSouthPanelPresenters();
+        translationEditorPresenter.unbind();
+    }
 
-   public void saveEditorPendingChange()
-   {
-      targetContentsPresenter.savePendingChangesIfApplicable();
-   }
+    public void saveEditorPendingChange() {
+        targetContentsPresenter.savePendingChangesIfApplicable();
+    }
 
-   /**
-    * Handle all changes required to completely hide and unbind the south panel
-    * for read-only mode, or to undo said changes.
-    * 
-    * @param readOnly read only
-    */
-   private void setSouthPanelReadOnly(boolean readOnly)
-   {
-      if (readOnly)
-      {
-         // includes unbinding
-         setSouthPanelExpanded(false);
-         translationEditorPresenter.setReadOnly(false);
-      }
-      else
-      {
-         setSouthPanelExpanded(true);
-         translationEditorPresenter.setReadOnly(true);
-      }
-   }
+    /**
+     * Handle all changes required to completely hide and unbind the south panel
+     * for read-only mode, or to undo said changes.
+     *
+     * @param readOnly
+     *            read only
+     */
+    private void setSouthPanelReadOnly(boolean readOnly) {
+        if (readOnly) {
+            // includes unbinding
+            setSouthPanelExpanded(false);
+            translationEditorPresenter.setReadOnly(false);
+        } else {
+            setSouthPanelExpanded(true);
+            translationEditorPresenter.setReadOnly(true);
+        }
+    }
 
-   /**
-    * Expand or collapse south panel, binding or unbinding presenters as
-    * appropriate. Will have no effect if the panel is already in the state of
-    * expansion or contraction that is specified.
-    * 
-    * @param expanded expand
-    */
-   public void setSouthPanelExpanded(boolean expanded)
-   {
-      checkPanelDisplayOption();
-      display.setSouthPanelExpanded(expanded);
-      if (expanded && !userWorkspaceContext.hasReadOnlyAccess())
-      {
-         bindSouthPanelPresenters();
+    /**
+     * Expand or collapse south panel, binding or unbinding presenters as
+     * appropriate. Will have no effect if the panel is already in the state of
+     * expansion or contraction that is specified.
+     *
+     * @param expanded
+     *            expand
+     */
+    public void setSouthPanelExpanded(boolean expanded) {
+        checkPanelDisplayOption();
+        display.setSouthPanelExpanded(expanded);
+        if (expanded && !userWorkspaceContext.hasReadOnlyAccess()) {
+            bindSouthPanelPresenters();
 
-         TransUnit tu = navigationService.getSelectedOrNull();
-         if (tu != null)
-         {
-            if (configHolder.getState().isShowTMPanel())
-            {
-               transMemoryPresenter.createTMRequestForTransUnit(tu);
+            TransUnit tu = navigationService.getSelectedOrNull();
+            if (tu != null) {
+                if (configHolder.getState().isShowTMPanel()) {
+                    transMemoryPresenter.createTMRequestForTransUnit(tu);
+                }
+                if (configHolder.getState().isShowGlossaryPanel()) {
+                    glossaryPresenter.createGlossaryRequestForTransUnit(tu);
+                }
             }
-            if (configHolder.getState().isShowGlossaryPanel())
-            {
-               glossaryPresenter.createGlossaryRequestForTransUnit(tu);
-            }
-         }
-      }
-      else
-      {
-         unbindSouthPanelPresenters();
-      }
-   }
+        } else {
+            unbindSouthPanelPresenters();
+        }
+    }
 
-   private void checkPanelDisplayOption()
-   {
-      if (configHolder.getState().isShowTMPanel())
-      {
-         bindTransMemoryPresenter();
-      }
-      else
-      {
-         unbindTransMemoryPresenter();
-      }
-      if (configHolder.getState().isShowGlossaryPanel())
-      {
-         bindGlossaryPresenter();
-      }
-      else
-      {
-         unbindGlossaryPresenter();
-      }
-      display.togglePanelDisplay(configHolder.getState().isShowTMPanel(), configHolder.getState().isShowGlossaryPanel());
-   }
+    private void checkPanelDisplayOption() {
+        if (configHolder.getState().isShowTMPanel()) {
+            bindTransMemoryPresenter();
+        } else {
+            unbindTransMemoryPresenter();
+        }
+        if (configHolder.getState().isShowGlossaryPanel()) {
+            bindGlossaryPresenter();
+        } else {
+            unbindGlossaryPresenter();
+        }
+        display.togglePanelDisplay(configHolder.getState().isShowTMPanel(),
+                configHolder.getState().isShowGlossaryPanel());
+    }
 
-   private void bindSouthPanelPresenters()
-   {
-      bindTransMemoryPresenter();
-      bindGlossaryPresenter();
-   }
+    private void bindSouthPanelPresenters() {
+        bindTransMemoryPresenter();
+        bindGlossaryPresenter();
+    }
 
-   private void bindGlossaryPresenter()
-   {
-      if (configHolder.getState().isShowGlossaryPanel() && !glossaryPresenter.isBound())
-      {
-         glossaryPresenter.bind();
-      }
-   }
+    private void bindGlossaryPresenter() {
+        if (configHolder.getState().isShowGlossaryPanel()
+                && !glossaryPresenter.isBound()) {
+            glossaryPresenter.bind();
+        }
+    }
 
-   private void bindTransMemoryPresenter()
-   {
-      if (configHolder.getState().isShowTMPanel() && !transMemoryPresenter.isBound())
-      {
-         transMemoryPresenter.bind();
-      }
-   }
+    private void bindTransMemoryPresenter() {
+        if (configHolder.getState().isShowTMPanel()
+                && !transMemoryPresenter.isBound()) {
+            transMemoryPresenter.bind();
+        }
+    }
 
-   private void unbindSouthPanelPresenters()
-   {
-      transMemoryPresenter.unbind();
-      glossaryPresenter.unbind();
-   }
+    private void unbindSouthPanelPresenters() {
+        transMemoryPresenter.unbind();
+        glossaryPresenter.unbind();
+    }
 
-   private void unbindGlossaryPresenter()
-   {
-      if (!configHolder.getState().isShowGlossaryPanel() && glossaryPresenter.isBound())
-      {
-         glossaryPresenter.unbind();
-      }
-   }
+    private void unbindGlossaryPresenter() {
+        if (!configHolder.getState().isShowGlossaryPanel()
+                && glossaryPresenter.isBound()) {
+            glossaryPresenter.unbind();
+        }
+    }
 
-   private void unbindTransMemoryPresenter()
-   {
-      if (!configHolder.getState().isShowTMPanel() && transMemoryPresenter.isBound())
-      {
-         transMemoryPresenter.unbind();
-      }
-   }
+    private void unbindTransMemoryPresenter() {
+        if (!configHolder.getState().isShowTMPanel()
+                && transMemoryPresenter.isBound()) {
+            transMemoryPresenter.unbind();
+        }
+    }
 
-   public void concealDisplay()
-   {
-      targetContentsPresenter.concealDisplay();
-      keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, false);
-   }
+    public void concealDisplay() {
+        targetContentsPresenter.concealDisplay();
+        keyShortcutPresenter
+                .setContextActive(ShortcutContext.Navigation, false);
+    }
 
-   @Override
-   public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event)
-   {
-      userWorkspaceContext.setProjectActive(event.isProjectActive());
-      userWorkspaceContext.getWorkspaceContext().getWorkspaceId().getProjectIterationId().setProjectType(event.getProjectType());
+    @Override
+    public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
+        userWorkspaceContext.setProjectActive(event.isProjectActive());
+        userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                .getProjectIterationId().setProjectType(event.getProjectType());
 
-      setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
-   }
+        setSouthPanelReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+    }
 
-   @Override
-   public void onDisplaySouthPanel(DisplaySouthPanelEvent event)
-   {
-      setSouthPanelExpanded(event.isDisplay());
-   }
+    @Override
+    public void onDisplaySouthPanel(DisplaySouthPanelEvent event) {
+        setSouthPanelExpanded(event.isDisplay());
+    }
 }

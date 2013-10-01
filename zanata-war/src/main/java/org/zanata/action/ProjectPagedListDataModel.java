@@ -28,52 +28,50 @@ import org.jboss.seam.ScopeType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
+public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
+        implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-public class ProjectPagedListDataModel extends PagedListDataModel<HProject> implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+    private boolean filterActive;
+    private boolean filterReadOnly;
+    private boolean filterObsolete;
 
-   private boolean filterActive;
-   private boolean filterReadOnly;
-   private boolean filterObsolete;
+    public ProjectPagedListDataModel(boolean filterActive,
+            boolean filterReadOnly, boolean filterObsolete) {
+        this.filterActive = filterActive;
+        this.filterReadOnly = filterReadOnly;
+        this.filterObsolete = filterObsolete;
+    }
 
-   public ProjectPagedListDataModel(boolean filterActive, boolean filterReadOnly, boolean filterObsolete)
-   {
-      this.filterActive = filterActive;
-      this.filterReadOnly = filterReadOnly;
-      this.filterObsolete = filterObsolete;
-   }
+    @Override
+    public DataPage<HProject> fetchPage(int startRow, int pageSize) {
+        ProjectDAO projectDAO =
+                (ProjectDAO) Component.getInstance(ProjectDAO.class,
+                        ScopeType.STATELESS);
+        List<HProject> proj =
+                projectDAO.getOffsetListOrderByName(startRow, pageSize,
+                        filterActive, filterReadOnly, filterObsolete);
 
-   @Override
-   public DataPage<HProject> fetchPage(int startRow, int pageSize)
-   {
-      ProjectDAO projectDAO = (ProjectDAO) Component.getInstance(ProjectDAO.class, ScopeType.STATELESS);
-      List<HProject> proj = projectDAO.getOffsetListOrderByName(startRow, pageSize, filterActive, filterReadOnly, filterObsolete);
+        int projectSize =
+                projectDAO.getFilterProjectSize(filterActive, filterReadOnly,
+                        filterObsolete);
 
-      int projectSize = projectDAO.getFilterProjectSize(filterActive, filterReadOnly, filterObsolete);
+        return new DataPage<HProject>(projectSize, startRow, proj);
+    }
 
-      return new DataPage<HProject>(projectSize, startRow, proj);
-   }
+    public void setFilterObsolete(boolean filterObsolete) {
+        this.filterObsolete = filterObsolete;
+        refresh();
+    }
 
+    public void setFilterActive(boolean filterActive) {
+        this.filterActive = filterActive;
+        refresh();
+    }
 
-   public void setFilterObsolete(boolean filterObsolete)
-   {
-      this.filterObsolete = filterObsolete;
-      refresh();
-   }
-
-
-   public void setFilterActive(boolean filterActive)
-   {
-      this.filterActive = filterActive;
-      refresh();
-   }
-
-
-   public void setFilterReadOnly(boolean filterReadOnly)
-   {
-      this.filterReadOnly = filterReadOnly;
-      refresh();
-   }
+    public void setFilterReadOnly(boolean filterReadOnly) {
+        this.filterReadOnly = filterReadOnly;
+        refresh();
+    }
 
 }

@@ -23,9 +23,8 @@ package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface InlineLink extends IsWidget
-{
-   void setLinkStyle(String styleName);
+public interface InlineLink extends IsWidget {
+    void setLinkStyle(String styleName);
 
-   void setDisabledStyle(String styleName);
+    void setDisabledStyle(String styleName);
 }

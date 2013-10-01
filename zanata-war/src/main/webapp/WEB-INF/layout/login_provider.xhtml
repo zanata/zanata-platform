@@ -1,12 +1,12 @@
 <s:div xmlns:rich="http://richfaces.org/rich"
-       xmlns:s="http://jboss.org/schema/seam/taglib"
-       xmlns:ui="http://java.sun.com/jsf/facelets"
-       xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:a4j="http://richfaces.org/a4j"
-       xmlns:richext="http://java.sun.com/jsf/composite/richext">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext">
 
-    <ui:remove>
+  <ui:remove>
     <!--
     This file renders a choice selector for the login type (Open Id) as well as a username field
     when needed.
@@ -24,100 +24,109 @@
     internalAuthOption - Indicates whether to show or not the internal authentication option.
     onProviderChange - Javascript code to be executed when the provider is changed.
     -->
-    </ui:remove>
+  </ui:remove>
 
-    <!-- Load jQuery -->
-    <rich:jQuery query="jquery"/>
+  <!-- Load jQuery -->
+  <rich:jQuery query="jquery"/>
 
-    <script type="text/javascript">
-        function updateLoginType(selectedElement, type, showUsername, usernameLabel, showPassword)
-        {
-            jQuery(".selected_login_option").each( function(){ jQuery(this).removeClass('selected_login_option') } );
-            jQuery(selectedElement).addClass('selected_login_option');
+  <script type="text/javascript">
+    function updateLoginType(selectedElement, type, showUsername, usernameLabel,
+                             showPassword) {
+      jQuery(".selected_login_option").each(function () {
+        jQuery(this).removeClass('selected_login_option')
+      });
+      jQuery(selectedElement).addClass('selected_login_option');
 
-            var fieldSelector = "[id='#{rich:clientId('login_provider')}']";
-            jQuery(fieldSelector).val(type);
+      var fieldSelector = "[id='#{rich:clientId('login_provider')}']";
+      jQuery(fieldSelector).val(type);
 
-            var usernamefieldSelector = "[id='#{rich:clientId('providerUsernameField')}']";
-            if( showUsername )
-            {
-                jQuery('#identityLabel').html( usernameLabel );
-                jQuery(usernamefieldSelector).show();
-            }
-            else
-            {
-                jQuery(usernamefieldSelector).hide();
-            }
+      var usernamefieldSelector = "[id='#{rich:clientId('providerUsernameField')}']";
+      if (showUsername) {
+        jQuery('#identityLabel').html(usernameLabel);
+        jQuery(usernamefieldSelector).show();
+      }
+      else {
+        jQuery(usernamefieldSelector).hide();
+      }
 
-            var passwordfieldSelector = "[id='#{rich:clientId('providerPasswordField')}']";
-            if( showPassword )
-            {
-                jQuery(passwordfieldSelector).show();
-            }
-            else
-            {
-                jQuery(passwordfieldSelector).hide();
-            }
+      var passwordfieldSelector = "[id='#{rich:clientId('providerPasswordField')}']";
+      if (showPassword) {
+        jQuery(passwordfieldSelector).show();
+      }
+      else {
+        jQuery(passwordfieldSelector).hide();
+      }
 
-            ${onProviderChange}
-        }
-    </script>
+      ${onProviderChange}
+    }
+  </script>
 
-    <h:outputText value="#{messages['jsf.login.openid.SelectProvider']}"/>
+  <h:outputText value="#{messages['jsf.login.openid.SelectProvider']}"/>
+  <br/>
+  <br/>
+  <richext:spacer height="10"/>
+  <ui:remove>
+    <!-- TODO use localizable strings for tooltips. -->
+  </ui:remove>
+  <h:graphicImage id="fedora_signin" value="../images/openid/fedora.png"
+    styleClass="login_option"
+    title="Fedora"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'Fedora', true, '#{messages['jsf.login.openid.fedora']}')"/>
+  <richext:spacer width="10"/>
+  <h:graphicImage id="google_signin" value="../images/openid/google.png"
+    styleClass="login_option"
+    title="Google"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'Google', false)"/>
+  <richext:spacer width="10"/>
+  <h:graphicImage id="myopenid_signin" value="../images/openid/myopenid.png"
+    styleClass="login_option"
+    title="MyOpenID"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'MyOpenId', true, '#{messages['jsf.login.openid.myopenid']}')"/>
+  <richext:spacer width="10"/>
+  <h:graphicImage id="yahoo_signin" value="../images/openid/yahoo.png"
+    styleClass="login_option"
+    title="Yahoo"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'Yahoo', true, '#{messages['jsf.login.openid.yahoo']}')"/>
+  <richext:spacer width="10"/>
+  <h:graphicImage id="openid_signin" value="../images/openid/openid.png"
+    styleClass="login_option"
+    title="Open ID"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'Generic', true, '#{messages['jsf.login.openid']}')"/>
+  <richext:spacer width="10"/>
+  <h:graphicImage id="internal_signin" value="../images/z-logo-50px.png"
+    styleClass="login_option"
+    title="Zanata"
+    height="40" width="40"
+    onclick="updateLoginType(this, 'INTERNAL', true, '#{messages['jsf.login.internal']}', true)"
+    rendered="${internalAuthOption}"/>
+  <richext:spacer width="10"/>
+
+  <h:inputHidden id="login_provider" value="${providerField}"/>
+
+  <s:decorate id="providerUsernameField" template="edit.xhtml"
+    style="display: none" enclose="true">
+    <ui:define name="label">
+      <span id="identityLabel"
+        class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
+    </ui:define>
+    <h:inputText styleClass="name" id="username" value="${usernameField}"/>
     <br/>
+  </s:decorate>
+
+  <s:decorate id="providerPasswordField" template="edit.xhtml"
+    style="display: none" enclose="true">
+    <ui:define name="label">
+      <span id="passwordLabel"
+        class="loginForm_label">#{messages['jsf.Password']}</span>
+    </ui:define>
+    <h:inputSecret styleClass="name" id="password"
+      value="#{loginAction.password}"/>
     <br/>
-    <richext:spacer height="10"/>
-    <ui:remove>
-      <!-- TODO use localizable strings for tooltips. -->
-    </ui:remove>
-    <h:graphicImage id="fedora_signin" value="../images/openid/fedora.png" styleClass="login_option"
-                    title="Fedora"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'Fedora', true, '#{messages['jsf.login.openid.fedora']}')"/>
-    <richext:spacer width="10"/>
-    <h:graphicImage id="google_signin" value="../images/openid/google.png" styleClass="login_option"
-                    title="Google"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'Google', false)"/>
-    <richext:spacer width="10"/>
-    <h:graphicImage id="myopenid_signin" value="../images/openid/myopenid.png" styleClass="login_option"
-                    title="MyOpenID"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'MyOpenId', true, '#{messages['jsf.login.openid.myopenid']}')"/>
-    <richext:spacer width="10"/>
-    <h:graphicImage id="yahoo_signin" value="../images/openid/yahoo.png" styleClass="login_option"
-                    title="Yahoo"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'Yahoo', true, '#{messages['jsf.login.openid.yahoo']}')"/>
-    <richext:spacer width="10"/>
-    <h:graphicImage id="openid_signin" value="../images/openid/openid.png" styleClass="login_option"
-                    title="Open ID"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'Generic', true, '#{messages['jsf.login.openid']}')"/>
-    <richext:spacer width="10"/>
-    <h:graphicImage id="internal_signin" value="../images/z-logo-50px.png" styleClass="login_option"
-                    title="Zanata"
-                    height="40" width="40"
-                    onclick="updateLoginType(this, 'INTERNAL', true, '#{messages['jsf.login.internal']}', true)"
-                    rendered="${internalAuthOption}"/>
-    <richext:spacer width="10"/>
-
-    <h:inputHidden id="login_provider" value="${providerField}"/>
-
-    <s:decorate id="providerUsernameField" template="edit.xhtml" style="display: none" enclose="true">
-        <ui:define name="label">
-            <span id="identityLabel" class="loginForm_label">#{messages['jsf.FedoraUsername']}</span>
-        </ui:define>
-        <h:inputText styleClass="name" id="username" value="${usernameField}"/>
-        <br/>
-    </s:decorate>
-
-    <s:decorate id="providerPasswordField" template="edit.xhtml" style="display: none" enclose="true">
-        <ui:define name="label">
-            <span id="passwordLabel" class="loginForm_label">#{messages['jsf.Password']}</span>
-        </ui:define>
-        <h:inputSecret styleClass="name" id="password" value="#{loginAction.password}"/>
-        <br/>
-    </s:decorate>
+  </s:decorate>
 
 </s:div>

@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface TransUnitSaveEventHandler extends EventHandler
-{
-   void onTransUnitSave(TransUnitSaveEvent event);
+public interface TransUnitSaveEventHandler extends EventHandler {
+    void onTransUnitSave(TransUnitSaveEvent event);
 }

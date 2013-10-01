@@ -19,80 +19,79 @@ import org.zanata.service.LanguageTeamService;
 
 @Name("languageTeamServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class LanguageTeamServiceImpl implements LanguageTeamService
-{
-   private PersonDAO personDAO;
+public class LanguageTeamServiceImpl implements LanguageTeamService {
+    private PersonDAO personDAO;
 
-   private LocaleDAO localeDAO;
+    private LocaleDAO localeDAO;
 
-   private LocaleMemberDAO localeMemberDAO;
+    private LocaleMemberDAO localeMemberDAO;
 
-   @In
-   public void setPersonDAO(PersonDAO personDAO)
-   {
-      this.personDAO = personDAO;
-   }
+    @In
+    public void setPersonDAO(PersonDAO personDAO) {
+        this.personDAO = personDAO;
+    }
 
-   @In
-   public void setLocaleDAO(LocaleDAO localeDAO)
-   {
-      this.localeDAO = localeDAO;
-   }
+    @In
+    public void setLocaleDAO(LocaleDAO localeDAO) {
+        this.localeDAO = localeDAO;
+    }
 
-   @In
-   public void setLocaleMemberDAO(LocaleMemberDAO localeMemberDAO)
-   {
-      this.localeMemberDAO = localeMemberDAO;
-   }
+    @In
+    public void setLocaleMemberDAO(LocaleMemberDAO localeMemberDAO) {
+        this.localeMemberDAO = localeMemberDAO;
+    }
 
-   public List<HLocale> getLanguageMemberships(String userName)
-   {
-      return personDAO.getLanguageMembershipByUsername(userName);
-   }
+    public List<HLocale> getLanguageMemberships(String userName) {
+        return personDAO.getLanguageMembershipByUsername(userName);
+    }
 
-   public void joinOrUpdateRoleInLanguageTeam(String locale, Long personId, boolean isTranslator, boolean isReviewer, boolean isCoordinator) throws ZanataServiceException
-   {
-      LocaleId localeId = new LocaleId(locale);
-      HPerson currentPerson = personDAO.findById(personId, false);
+    public void joinOrUpdateRoleInLanguageTeam(String locale, Long personId,
+            boolean isTranslator, boolean isReviewer, boolean isCoordinator)
+            throws ZanataServiceException {
+        LocaleId localeId = new LocaleId(locale);
+        HPerson currentPerson = personDAO.findById(personId, false);
 
-      boolean alreadyJoined = localeMemberDAO.isLocaleMember(personId, localeId);
-      HLocaleMember localeMember;
-      if (!alreadyJoined)
-      {
-         if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP)
-         {
-            throw new ZanataServiceException("You can only be a member of up to " + MAX_NUMBER_MEMBERSHIP + " languages at one time.");
-         }
-         HLocale lang = localeDAO.findByLocaleId(localeId);
-         localeMember = new HLocaleMember(currentPerson, lang, isTranslator, isReviewer, isCoordinator);
-         lang.getMembers().add(localeMember);
-      }
-      else
-      {
-         localeMember = localeMemberDAO.findByPersonAndLocale(personId, localeId);
-         localeMember.setTranslator(isTranslator);
-         localeMember.setReviewer(isReviewer);
-         localeMember.setCoordinator(isCoordinator);
-      }
-      localeMemberDAO.makePersistent(localeMember);
-      localeMemberDAO.flush();
-   }
+        boolean alreadyJoined =
+                localeMemberDAO.isLocaleMember(personId, localeId);
+        HLocaleMember localeMember;
+        if (!alreadyJoined) {
+            if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP) {
+                throw new ZanataServiceException(
+                        "You can only be a member of up to "
+                                + MAX_NUMBER_MEMBERSHIP
+                                + " languages at one time.");
+            }
+            HLocale lang = localeDAO.findByLocaleId(localeId);
+            localeMember =
+                    new HLocaleMember(currentPerson, lang, isTranslator,
+                            isReviewer, isCoordinator);
+            lang.getMembers().add(localeMember);
+        } else {
+            localeMember =
+                    localeMemberDAO.findByPersonAndLocale(personId, localeId);
+            localeMember.setTranslator(isTranslator);
+            localeMember.setReviewer(isReviewer);
+            localeMember.setCoordinator(isCoordinator);
+        }
+        localeMemberDAO.makePersistent(localeMember);
+        localeMemberDAO.flush();
+    }
 
-   public boolean leaveLanguageTeam(String locale, Long personId)
-   {
-      HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
-      HPerson currentPerson = personDAO.findById(personId, false);
-      final HLocaleMember membership = localeMemberDAO.findById(new HLocaleMemberPk(currentPerson, lang), true);
+    public boolean leaveLanguageTeam(String locale, Long personId) {
+        HLocale lang = localeDAO.findByLocaleId(new LocaleId(locale));
+        HPerson currentPerson = personDAO.findById(personId, false);
+        final HLocaleMember membership =
+                localeMemberDAO.findById(new HLocaleMemberPk(currentPerson,
+                        lang), true);
 
-      if (membership != null)
-      {
-         localeMemberDAO.makeTransient(membership);
-         lang.getMembers().remove(membership);
-         localeMemberDAO.flush();
-         return true;
-      }
+        if (membership != null) {
+            localeMemberDAO.makeTransient(membership);
+            lang.getMembers().remove(membership);
+            localeMemberDAO.flush();
+            return true;
+        }
 
-      return false;
+        return false;
 
-   }
+    }
 }

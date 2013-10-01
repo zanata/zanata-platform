@@ -2,27 +2,27 @@
 
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
 <jboss-deployment-structure>
-   <deployment>
-        <!-- If the Yaml provider is present, it will be used as the default for provider for 'Accept: */*'
-         requests -->
-        <exclusions>
-          <module name="org.jboss.resteasy.resteasy-yaml-provider"/>
-        </exclusions>
-        <dependencies>
-          <module name="javax.annotation.api" />
-          <module name="javax.el.api" />
-          <module name="javax.faces.api" />
-          <module name="javax.mail.api" />
-          <module name="javax.servlet.api" />
-          <module name="org.antlr" />
-          <module name="org.apache.commons.logging" />
-          <module name="org.apache.log4j" />
-          <module name="org.dom4j" />
-          <module name="org.hibernate" />
-          <module name="org.hibernate.validator" />
-          <module name="org.jboss.security.negotiation" />
-          <module name="org.slf4j" />
-          <module name="com.h2database.h2" />
-        </dependencies>
-    </deployment>
+  <deployment>
+    <!-- If the Yaml provider is present, it will be used as the default for provider for 'Accept: */*'
+     requests -->
+    <exclusions>
+      <module name="org.jboss.resteasy.resteasy-yaml-provider" />
+    </exclusions>
+    <dependencies>
+      <module name="javax.annotation.api" />
+      <module name="javax.el.api" />
+      <module name="javax.faces.api" />
+      <module name="javax.mail.api" />
+      <module name="javax.servlet.api" />
+      <module name="org.antlr" />
+      <module name="org.apache.commons.logging" />
+      <module name="org.apache.log4j" />
+      <module name="org.dom4j" />
+      <module name="org.hibernate" />
+      <module name="org.hibernate.validator" />
+      <module name="org.jboss.security.negotiation" />
+      <module name="org.slf4j" />
+      <module name="com.h2database.h2" />
+    </dependencies>
+  </deployment>
 </jboss-deployment-structure>

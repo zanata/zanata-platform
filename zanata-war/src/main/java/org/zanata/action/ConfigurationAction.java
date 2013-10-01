@@ -38,47 +38,45 @@ import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
 @Scope(ScopeType.EVENT)
-public class ConfigurationAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
-   @RequestParameter
-   private String iterationSlug;
-   @RequestParameter
-   private String projectSlug;
+public class ConfigurationAction implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @RequestParameter
+    private String iterationSlug;
+    @RequestParameter
+    private String projectSlug;
 
-   @Logger
-   private Log log;
-   @In
-   private ConfigurationService configurationServiceImpl;
+    @Logger
+    private Log log;
+    @In
+    private ConfigurationService configurationServiceImpl;
 
-   public void downloadGeneralConfig()
-   {
-      respondWithFile(configurationServiceImpl.getGeneralConfig(projectSlug, iterationSlug));
-   }
+    public void downloadGeneralConfig() {
+        respondWithFile(configurationServiceImpl.getGeneralConfig(projectSlug,
+                iterationSlug));
+    }
 
-   public void downloadOfflineTranslationConfig(HLocale locale)
-   {
-      respondWithFile(configurationServiceImpl.getConfigForOfflineTranslation(projectSlug, iterationSlug, locale));
-   }
+    public void downloadOfflineTranslationConfig(HLocale locale) {
+        respondWithFile(configurationServiceImpl
+                .getConfigForOfflineTranslation(projectSlug, iterationSlug,
+                        locale));
+    }
 
-   private void respondWithFile(String configFileContents)
-   {
-      HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-      response.setContentType("application/xml");
-      response.addHeader("Content-disposition", "attachment; filename=\"" 
-                                    + configurationServiceImpl.getConfigurationFileName() + "\"");
-      response.setCharacterEncoding("UTF-8");
-      try
-      {
-         ServletOutputStream os = response.getOutputStream();
-         os.write(configFileContents.getBytes());
-         os.flush();
-         os.close();
-         FacesContext.getCurrentInstance().responseComplete();
-      }
-      catch (Exception e)
-      {
-         log.error("Failure : " + e.toString() + "\n");
-      }
-   }
+    private void respondWithFile(String configFileContents) {
+        HttpServletResponse response =
+                (HttpServletResponse) FacesContext.getCurrentInstance()
+                        .getExternalContext().getResponse();
+        response.setContentType("application/xml");
+        response.addHeader("Content-disposition", "attachment; filename=\""
+                + configurationServiceImpl.getConfigurationFileName() + "\"");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            ServletOutputStream os = response.getOutputStream();
+            os.write(configFileContents.getBytes());
+            os.flush();
+            os.close();
+            FacesContext.getCurrentInstance().responseComplete();
+        } catch (Exception e) {
+            log.error("Failure : " + e.toString() + "\n");
+        }
+    }
 }

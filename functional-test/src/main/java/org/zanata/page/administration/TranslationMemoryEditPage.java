@@ -26,56 +26,50 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class TranslationMemoryEditPage extends BasePage
-{
+public class TranslationMemoryEditPage extends BasePage {
 
-   @FindBy(id = "tmForm:slugField:slug")
-   private WebElement idField;
+    @FindBy(id = "tmForm:slugField:slug")
+    private WebElement idField;
 
-   @FindBy(id = "tmForm:descriptionField:description")
-   private WebElement descriptionField;
+    @FindBy(id = "tmForm:descriptionField:description")
+    private WebElement descriptionField;
 
-   @FindBy(id = "tmForm:save")
-   private WebElement saveButton;
+    @FindBy(id = "tmForm:save")
+    private WebElement saveButton;
 
-   @FindBy(id = "tmForm:cancel")
-   private WebElement cancelButton;
+    @FindBy(id = "tmForm:cancel")
+    private WebElement cancelButton;
 
-   public TranslationMemoryEditPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public TranslationMemoryEditPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public TranslationMemoryEditPage enterMemoryID(String id)
-   {
-      idField.sendKeys(id);
-      return new TranslationMemoryEditPage(getDriver());
-   }
+    public TranslationMemoryEditPage enterMemoryID(String id) {
+        idField.sendKeys(id);
+        return new TranslationMemoryEditPage(getDriver());
+    }
 
-   public TranslationMemoryEditPage enterMemoryDescription(String description)
-   {
-      descriptionField.sendKeys(description);
-      return new TranslationMemoryEditPage(getDriver());
-   }
+    public TranslationMemoryEditPage enterMemoryDescription(String description) {
+        descriptionField.sendKeys(description);
+        return new TranslationMemoryEditPage(getDriver());
+    }
 
-   public TranslationMemoryPage saveTM()
-   {
-      saveButton.click();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage saveTM() {
+        saveButton.click();
+        return new TranslationMemoryPage(getDriver());
+    }
 
-   public TranslationMemoryEditPage clickSaveAndExpectFailure()
-   {
-      saveButton.click();
-      return new TranslationMemoryEditPage(getDriver());
-   }
+    public TranslationMemoryEditPage clickSaveAndExpectFailure() {
+        saveButton.click();
+        return new TranslationMemoryEditPage(getDriver());
+    }
 
-   public TranslationMemoryPage cancelTM()
-   {
-      cancelButton.click();
-      return new TranslationMemoryPage(getDriver());
-   }
+    public TranslationMemoryPage cancelTM() {
+        cancelButton.click();
+        return new TranslationMemoryPage(getDriver());
+    }
 
 }

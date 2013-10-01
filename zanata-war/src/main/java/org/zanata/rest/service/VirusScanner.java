@@ -41,161 +41,167 @@ import org.zanata.exception.VirusDetectedException;
 import com.google.common.base.Stopwatch;
 
 /**
- * <code>VirusScanner</code> scans files using ClamAV's <code>clamdscan</code> command if available,
- * or a different scanner if configured.
+ * <code>VirusScanner</code> scans files using ClamAV's <code>clamdscan</code>
+ * command if available, or a different scanner if configured.
  * <p>
- * By default, <code>VirusScanner</code> looks for <code>clamdscan</code> on the system path, but
- * this can be overridden with the system property <code>virusScanner</code>, either
- * with a full path such as <code>/usr/bin/clamdscan</code>, or the name of another scanner entirely.
- * <code>clamdscan</code> depends on the <code>clamd</code> service, so this class will throw a
- * <code>RuntimeException</code> if <code>clamdscan</code> is found but <code>clamd</code> is not running.
+ * By default, <code>VirusScanner</code> looks for <code>clamdscan</code> on the
+ * system path, but this can be overridden with the system property
+ * <code>virusScanner</code>, either with a full path such as
+ * <code>/usr/bin/clamdscan</code>, or the name of another scanner entirely.
+ * <code>clamdscan</code> depends on the <code>clamd</code> service, so this
+ * class will throw a <code>RuntimeException</code> if <code>clamdscan</code> is
+ * found but <code>clamd</code> is not running.
  * <p>
  * If the system property has been set, a failure to launch the scanner will
- * cause an exception.  (If it has not been set, an error will be logged
- * but that is all.)
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * cause an exception. (If it has not been set, an error will be logged but that
+ * is all.)
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Name("virusScanner")
 @Slf4j
-public class VirusScanner
-{
-   @Getter
-   private final boolean disabled;
-   @Getter
-   private final boolean scannerSet;
-   private final String scannerName;
-   private final boolean usingClam;
+public class VirusScanner {
+    @Getter
+    private final boolean disabled;
+    @Getter
+    private final boolean scannerSet;
+    private final String scannerName;
+    private final boolean usingClam;
 
-   public VirusScanner()
-   {
-      // If the system property is empty or null, we try to use
-      // clamdscan, but we don't throw an exception if we can't find it.
-      // clamscan would work too, but takes ~15 seconds
-      String scannerProperty = System.getProperty("virusScanner");
-      this.disabled = "DISABLED".equals(scannerProperty);
-      if (scannerProperty == null || scannerProperty.isEmpty())
-      {
-         this.scannerName = "clamdscan";
-         this.scannerSet = false;
-      }
-      else
-      {
-         this.scannerName = scannerProperty;
-         this.scannerSet = true;
-      }
-      this.usingClam = scannerName.endsWith("clamdscan");
-   }
+    public VirusScanner() {
+        // If the system property is empty or null, we try to use
+        // clamdscan, but we don't throw an exception if we can't find it.
+        // clamscan would work too, but takes ~15 seconds
+        String scannerProperty = System.getProperty("virusScanner");
+        this.disabled = "DISABLED".equals(scannerProperty);
+        if (scannerProperty == null || scannerProperty.isEmpty()) {
+            this.scannerName = "clamdscan";
+            this.scannerSet = false;
+        } else {
+            this.scannerName = scannerProperty;
+            this.scannerSet = true;
+        }
+        this.usingClam = scannerName.endsWith("clamdscan");
+    }
 
-   /**
-    * Scans the specified file by calling out to ClamAV,
-    * unless disabled by system property.
-    * <p>
-    * Note 1: the file will be made world readable, so that clamd can access it.
-    * <p>
-    * Note 2: the caller is responsible for deleting the file.
-    * @param file file to be scanned (probably a temp file)
-    * @param documentName human-friendly name for the file
-    * @throws VirusDetectedException if the scanner detects a virus
-    * @throws RuntimeException if something else goes wrong (eg can't execute virus scanner)
-    */
-   public void scan(File file, String documentName) throws VirusDetectedException
-   {
-      if (disabled)
-      {
-         log.debug("file not scanned: {}", documentName);
-      }
-      else
-      {
-         doScan(file, documentName);
-      }
-   }
+    /**
+     * Scans the specified file by calling out to ClamAV, unless disabled by
+     * system property.
+     * <p>
+     * Note 1: the file will be made world readable, so that clamd can access
+     * it.
+     * <p>
+     * Note 2: the caller is responsible for deleting the file.
+     *
+     * @param file
+     *            file to be scanned (probably a temp file)
+     * @param documentName
+     *            human-friendly name for the file
+     * @throws VirusDetectedException
+     *             if the scanner detects a virus
+     * @throws RuntimeException
+     *             if something else goes wrong (eg can't execute virus scanner)
+     */
+    public void scan(File file, String documentName)
+            throws VirusDetectedException {
+        if (disabled) {
+            log.debug("file not scanned: {}", documentName);
+        } else {
+            doScan(file, documentName);
+        }
+    }
 
-   private void doScan(File file, String documentName)
-   {
-      Stopwatch stop = new Stopwatch().start();
-      CommandLine cmdLine = buildCommandLine(file);
-      ByteArrayOutputStream scannerOutput = new ByteArrayOutputStream();
-      Executor executor = buildExecutor(scannerOutput);
-      try
-      {
-         int exitValue = executor.execute(cmdLine);
-         log.debug("{} to scan file: '{}'", stop, documentName);
-         handleResult(exitValue, documentName, scannerOutput);
-      }
-      catch (IOException e)
-      {
-         // perhaps the antivirus executable was not found...
-         // we omit the stack exception, because it tends to be uninteresting in this case
-         String msg = "error executing " + scannerName + ", unable to scan file '" +
-                     documentName + "' for viruses: " + e.getMessage();
-         if (scannerSet)
-         {
+    private void doScan(File file, String documentName) {
+        Stopwatch stop = new Stopwatch().start();
+        CommandLine cmdLine = buildCommandLine(file);
+        ByteArrayOutputStream scannerOutput = new ByteArrayOutputStream();
+        Executor executor = buildExecutor(scannerOutput);
+        try {
+            int exitValue = executor.execute(cmdLine);
+            log.debug("{} to scan file: '{}'", stop, documentName);
+            handleResult(exitValue, documentName, scannerOutput);
+        } catch (IOException e) {
+            // perhaps the antivirus executable was not found...
+            // we omit the stack exception, because it tends to be uninteresting
+            // in this case
+            String msg =
+                    "error executing " + scannerName
+                            + ", unable to scan file '" + documentName
+                            + "' for viruses: " + e.getMessage();
+            if (scannerSet) {
+                throw new RuntimeException(msg);
+            }
+            log.error(msg);
+        }
+    }
+
+    private void
+            handleResult(int exitValue, String documentName, Object output) {
+        // The following return codes are taken from the clamdscan manpage.
+        // If another scanner is used, we may not use the ideal
+        // exception when something goes wrong, but as long as zero
+        // still means "no virus" it should be okay.
+        final int noVirusFound = 0;
+        final int virusFound = 1;
+        final int someErrorOccurred = 2;
+        switch (exitValue) {
+        case noVirusFound:
+            log.info("{} says file '{}' is clean: {}", scannerName,
+                    documentName, output);
+            return;
+        case virusFound:
+            throw new VirusDetectedException(scannerName + " detected virus: "
+                    + output);
+        case someErrorOccurred:
+        default:
+            // This can happen if clamdscan is found, but the clamd service is
+            // not running.
+            String msg =
+                    scannerName
+                            + " returned error scanning file '"
+                            + documentName
+                            + "': "
+                            + output
+                            + (usingClam ? "\nPlease ensure clamd service is running."
+                                    : "");
             throw new RuntimeException(msg);
-         }
-         log.error(msg);
-      }
-   }
+        }
+    }
 
-   private void handleResult(int exitValue, String documentName, Object output)
-   {
-      // The following return codes are taken from the clamdscan manpage.
-      // If another scanner is used, we may not use the ideal
-      // exception when something goes wrong, but as long as zero
-      // still means "no virus" it should be okay.
-      final int noVirusFound = 0;
-      final int virusFound = 1;
-      final int someErrorOccurred = 2;
-      switch(exitValue)
-      {
-      case noVirusFound:
-         log.info("{} says file '{}' is clean: {}", scannerName, documentName, output);
-         return;
-      case virusFound:
-         throw new VirusDetectedException(scannerName + " detected virus: " + output);
-      case someErrorOccurred:
-      default:
-         // This can happen if clamdscan is found, but the clamd service is not running.
-         String msg = scannerName + " returned error scanning file '"+documentName+"': " + output +
-            (usingClam ? "\nPlease ensure clamd service is running." : "");
-         throw new RuntimeException(msg);
-      }
-   }
+    private CommandLine buildCommandLine(File file) {
+        CommandLine cmdLine = new CommandLine(scannerName);
+        if (usingClam) {
+            // clam-specific option; just makes the error messages less verbose
+            cmdLine.addArgument("--no-summary");
+            // This ensures that clamd can access the file regardless of
+            // permissions or security context (since clamdscan actually
+            // accesses the file):
+            cmdLine.addArgument("--stream");
+        }
+        cmdLine.addArgument(file.getPath());
+        return cmdLine;
+    }
 
-   private CommandLine buildCommandLine(File file)
-   {
-      CommandLine cmdLine = new CommandLine(scannerName);
-      if (usingClam)
-      {
-         // clam-specific option; just makes the error messages less verbose
-         cmdLine.addArgument("--no-summary");
-         // This ensures that clamd can access the file regardless of
-         // permissions or security context (since clamdscan actually
-         // accesses the file):
-         cmdLine.addArgument("--stream");
-      }
-      cmdLine.addArgument(file.getPath());
-      return cmdLine;
-   }
-
-   /**
-    * Builds an Executor which will output to the specified OutputStream.
-    * <p>
-    * The Executor will be configured to return exit values as int, rather
-    * than throwing ExecuteException.
-    * @param output
-    * @return a configured Executor
-    */
-   private Executor buildExecutor(OutputStream output)
-   {
-      DefaultExecutor executor = new DefaultExecutor();
-      ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
-      executor.setWatchdog(watchdog);
-      ExecuteStreamHandler psh = new PumpStreamHandler(output);
-      executor.setStreamHandler(psh);
-      // We want to handle all exit values directly (not as ExecuteException).
-      executor.setExitValues(null);
-      return executor;
-   }
+    /**
+     * Builds an Executor which will output to the specified OutputStream.
+     * <p>
+     * The Executor will be configured to return exit values as int, rather than
+     * throwing ExecuteException.
+     *
+     * @param output
+     * @return a configured Executor
+     */
+    private Executor buildExecutor(OutputStream output) {
+        DefaultExecutor executor = new DefaultExecutor();
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+        executor.setWatchdog(watchdog);
+        ExecuteStreamHandler psh = new PumpStreamHandler(output);
+        executor.setStreamHandler(psh);
+        // We want to handle all exit values directly (not as ExecuteException).
+        executor.setExitValues(null);
+        return executor;
+    }
 
 }

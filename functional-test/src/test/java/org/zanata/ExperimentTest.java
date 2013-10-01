@@ -27,44 +27,46 @@ import org.zanata.util.ResetDatabaseRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ExperimentTest
-{
-   @ClassRule
-   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
-//   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
+public class ExperimentTest {
+    @ClassRule
+    public static ResetDatabaseRule rule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.NoResetAfter,
+            ResetDatabaseRule.Config.WithData);
 
-   @Test
-   public void canFindText() {
-      String linkText = "master\n   Documents: 0";
-      System.out.println(linkText);
-      String stripNewLine = linkText.replaceAll("\\n", " ");
-      System.out.println(stripNewLine);
-      boolean matches = stripNewLine.matches("master\\s+Documents.+");
-      assertThat(matches, Matchers.equalTo(true));
-   }
-   
-//   @Test
-   public void canDoCampbell() {
-      //#. Tag: para
-      //#, no-c-format
-      //msgid "Describes Fedora, the Fedora Project, and how you can help."
-      //msgstr ""
-      String tag = "#. Tag: para";
-      String msgCtx = "#, no-c-format";
-      String msgId = "msgid \"This is string number %d. \"";
-      String msgStr = "msgstr \"%s %d\"";
-      String potMsgStr = "msgstr \"\"";
+    // public static ResetDatabaseRule rule = new
+    // ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
 
-      for (int i = 55; i > 0; i--)
-      {
-         System.out.println(tag);
-         System.out.println(msgCtx);
-         System.out.printf(msgId, i);
-         System.out.println();
-         System.out.printf(potMsgStr);
-//         System.out.printf(msgStr, "translated string number", i);
-         System.out.println();
-         System.out.println();
-      }
-   }
+    @Test
+    public void canFindText() {
+        String linkText = "master\n   Documents: 0";
+        System.out.println(linkText);
+        String stripNewLine = linkText.replaceAll("\\n", " ");
+        System.out.println(stripNewLine);
+        boolean matches = stripNewLine.matches("master\\s+Documents.+");
+        assertThat(matches, Matchers.equalTo(true));
+    }
+
+    // @Test
+    public void canDoCampbell() {
+        // #. Tag: para
+        // #, no-c-format
+        // msgid "Describes Fedora, the Fedora Project, and how you can help."
+        // msgstr ""
+        String tag = "#. Tag: para";
+        String msgCtx = "#, no-c-format";
+        String msgId = "msgid \"This is string number %d. \"";
+        String msgStr = "msgstr \"%s %d\"";
+        String potMsgStr = "msgstr \"\"";
+
+        for (int i = 55; i > 0; i--) {
+            System.out.println(tag);
+            System.out.println(msgCtx);
+            System.out.printf(msgId, i);
+            System.out.println();
+            System.out.printf(potMsgStr);
+            // System.out.printf(msgStr, "translated string number", i);
+            System.out.println();
+            System.out.println();
+        }
+    }
 }

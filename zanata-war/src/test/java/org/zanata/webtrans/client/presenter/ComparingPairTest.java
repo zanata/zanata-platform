@@ -34,70 +34,69 @@ import com.google.common.collect.Lists;
 import static org.hamcrest.MatcherAssert.*;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ComparingPairTest
-{
-   private ComparingPair pair;
+public class ComparingPairTest {
+    private ComparingPair pair;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      pair = ComparingPair.empty();
-   }
+    @BeforeMethod
+    public void setUp() throws Exception {
+        pair = ComparingPair.empty();
+    }
 
-   private static TransHistoryItem newItem(String versionNum)
-   {
-      return new TransHistoryItem(versionNum, Lists.newArrayList("a"), ContentState.Approved, "", new Date());
-   }
+    private static TransHistoryItem newItem(String versionNum) {
+        return new TransHistoryItem(versionNum, Lists.newArrayList("a"),
+                ContentState.Approved, "", new Date());
+    }
 
-   @Test
-   public void testAddWhenItsEmpty() throws Exception
-   {
-      TransHistoryItem newItem = newItem("1");
-      pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem);
+    @Test
+    public void testAddWhenItsEmpty() throws Exception {
+        TransHistoryItem newItem = newItem("1");
+        pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem);
 
-      assertThat(pair.one(), Matchers.sameInstance(newItem));
-      assertThat(pair.two(), Matchers.nullValue());
-   }
+        assertThat(pair.one(), Matchers.sameInstance(newItem));
+        assertThat(pair.two(), Matchers.nullValue());
+    }
 
-   @Test
-   public void addSameItemTwiceWillRemoveIt()
-   {
-      TransHistoryItem newItem = newItem("1");
-      pair = ComparingPair.empty().tryAddOrRemoveIfExists(newItem).tryAddOrRemoveIfExists(newItem);
+    @Test
+    public void addSameItemTwiceWillRemoveIt() {
+        TransHistoryItem newItem = newItem("1");
+        pair =
+                ComparingPair.empty().tryAddOrRemoveIfExists(newItem)
+                        .tryAddOrRemoveIfExists(newItem);
 
-      assertThat(pair.one(), Matchers.nullValue());
-      assertThat(pair.two(), Matchers.nullValue());
-   }
+        assertThat(pair.one(), Matchers.nullValue());
+        assertThat(pair.two(), Matchers.nullValue());
+    }
 
-   @Test
-   public void addSameItemToFullPairWillBeIgnored() throws Exception
-   {
-      TransHistoryItem one = newItem("1");
-      TransHistoryItem two = newItem("2");
-      TransHistoryItem three = newItem("3");
-      pair = ComparingPair.empty().tryAddOrRemoveIfExists(one).tryAddOrRemoveIfExists(two);
+    @Test
+    public void addSameItemToFullPairWillBeIgnored() throws Exception {
+        TransHistoryItem one = newItem("1");
+        TransHistoryItem two = newItem("2");
+        TransHistoryItem three = newItem("3");
+        pair =
+                ComparingPair.empty().tryAddOrRemoveIfExists(one)
+                        .tryAddOrRemoveIfExists(two);
 
-      assertThat(pair.isFull(), Matchers.is(true));
-      assertThat(pair.one(), Matchers.sameInstance(one));
-      assertThat(pair.two(), Matchers.sameInstance(two));
+        assertThat(pair.isFull(), Matchers.is(true));
+        assertThat(pair.one(), Matchers.sameInstance(one));
+        assertThat(pair.two(), Matchers.sameInstance(two));
 
-      pair = pair.tryAddOrRemoveIfExists(three);
+        pair = pair.tryAddOrRemoveIfExists(three);
 
-      assertThat(pair.isFull(), Matchers.is(true));
-      assertThat(pair.one(), Matchers.sameInstance(one));
-      assertThat(pair.two(), Matchers.sameInstance(two));
-   }
+        assertThat(pair.isFull(), Matchers.is(true));
+        assertThat(pair.one(), Matchers.sameInstance(one));
+        assertThat(pair.two(), Matchers.sameInstance(two));
+    }
 
-   @Test
-   public void testContains() throws Exception
-   {
-      TransHistoryItem one = newItem("1");
-      TransHistoryItem two = newItem("2");
-      pair = ComparingPair.empty().tryAddOrRemoveIfExists(one);
+    @Test
+    public void testContains() throws Exception {
+        TransHistoryItem one = newItem("1");
+        TransHistoryItem two = newItem("2");
+        pair = ComparingPair.empty().tryAddOrRemoveIfExists(one);
 
-      assertThat(pair.contains(one), Matchers.is(true));
-      assertThat(pair.contains(two), Matchers.is(false));
-   }
+        assertThat(pair.contains(one), Matchers.is(true));
+        assertThat(pair.contains(two), Matchers.is(false));
+    }
 }

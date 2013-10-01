@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -86,84 +86,84 @@ import com.google.common.collect.Sets;
 @Getter
 @NoArgsConstructor
 @ToString(callSuper = true, of = { "project" })
-public class HProjectIteration extends SlugEntityBase implements Iterable<DocumentWithId>, HasEntityStatus,
-      IsEntityWithType
-{
-   private static final long serialVersionUID = 182037127575991478L;
+public class HProjectIteration extends SlugEntityBase implements
+        Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType {
+    private static final long serialVersionUID = 182037127575991478L;
 
-   @ManyToOne
-   @NotNull
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   @NaturalId
-   @Field
-   @FieldBridge(impl = GroupSearchBridge.class)
-   private HProject project;
+    @ManyToOne
+    @NotNull
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @Field
+    @FieldBridge(impl = GroupSearchBridge.class)
+    private HProject project;
 
-   @ManyToOne
-   @JoinColumn(name = "parentId")
-   private HProjectIteration parent;
+    @ManyToOne
+    @JoinColumn(name = "parentId")
+    private HProjectIteration parent;
 
-   @OneToMany(mappedBy = "parent")
-   private List<HProjectIteration> children;
+    @OneToMany(mappedBy = "parent")
+    private List<HProjectIteration> children;
 
-   @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
-   @MapKey(name = "docId")
-   @Where(clause = "obsolete=0")
-   // TODO add an index for path, name
-   @OrderBy("path, name")
-   private Map<String, HDocument> documents = Maps.newHashMap();
+    @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
+    @MapKey(name = "docId")
+    @Where(clause = "obsolete=0")
+    // TODO add an index for path, name
+    @OrderBy("path, name")
+    private Map<String, HDocument> documents = Maps.newHashMap();
 
-   @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
-   @MapKey(name = "docId")
-   // even obsolete documents
-   private Map<String, HDocument> allDocuments = Maps.newHashMap();
+    @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
+    @MapKey(name = "docId")
+    // even obsolete documents
+    private Map<String, HDocument> allDocuments = Maps.newHashMap();
 
-   private boolean overrideLocales;
+    private boolean overrideLocales;
 
-   @ManyToMany
-   @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(name = "projectIterationId"),
-         inverseJoinColumns = @JoinColumn(name = "localeId"))
-   private Set<HLocale> customizedLocales = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HProjectIteration_Locale", joinColumns = @JoinColumn(
+            name = "projectIterationId"), inverseJoinColumns = @JoinColumn(
+            name = "localeId"))
+    private Set<HLocale> customizedLocales = Sets.newHashSet();
 
-   @ManyToMany
-   @JoinTable(name = "HIterationGroup_ProjectIteration", joinColumns = @JoinColumn(name = "projectIterationId"), inverseJoinColumns = @JoinColumn(name = "iterationGroupId"))
-   private Set<HIterationGroup> groups = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HIterationGroup_ProjectIteration",
+            joinColumns = @JoinColumn(name = "projectIterationId"),
+            inverseJoinColumns = @JoinColumn(name = "iterationGroupId"))
+    private Set<HIterationGroup> groups = Sets.newHashSet();
 
-   @ElementCollection
-   @JoinTable(name = "HProjectIteration_Validation", joinColumns = { @JoinColumn(name = "projectIterationId") })
-   @MapKeyColumn(name = "validation")
-   @Column(name = "state", nullable = false)
-   private Map<String, String> customizedValidations = Maps.newHashMap();
+    @ElementCollection
+    @JoinTable(name = "HProjectIteration_Validation",
+            joinColumns = { @JoinColumn(name = "projectIterationId") })
+    @MapKeyColumn(name = "validation")
+    @Column(name = "state", nullable = false)
+    private Map<String, String> customizedValidations = Maps.newHashMap();
 
-   @Enumerated(EnumType.STRING)
-   private ProjectType projectType;
+    @Enumerated(EnumType.STRING)
+    private ProjectType projectType;
 
-   @Type(type = "entityStatus")
-   @NotNull
-   private EntityStatus status = EntityStatus.ACTIVE;
+    @Type(type = "entityStatus")
+    @NotNull
+    private EntityStatus status = EntityStatus.ACTIVE;
 
-   @Column(nullable = true)
-   private Boolean requireTranslationReview = false;
+    @Column(nullable = true)
+    private Boolean requireTranslationReview = false;
 
-   @Override
-   public Iterator<DocumentWithId> iterator()
-   {
-      return ImmutableList.<DocumentWithId> copyOf(getDocuments().values()).iterator();
-   }
+    @Override
+    public Iterator<DocumentWithId> iterator() {
+        return ImmutableList.<DocumentWithId> copyOf(getDocuments().values())
+                .iterator();
+    }
 
-   @Override
-   @Transient
-   public EntityType getEntityType()
-   {
-      return EntityType.HProjectIteration;
-   }
+    @Override
+    @Transient
+    public EntityType getEntityType() {
+        return EntityType.HProjectIteration;
+    }
 
-   public Boolean getRequireTranslationReview()
-   {
-      if (requireTranslationReview == null)
-      {
-         return Boolean.FALSE;
-      }
-      return requireTranslationReview;
-   }
+    public Boolean getRequireTranslationReview() {
+        if (requireTranslationReview == null) {
+            return Boolean.FALSE;
+        }
+        return requireTranslationReview;
+    }
 }

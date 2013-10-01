@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -70,7 +70,7 @@ import com.google.common.collect.Sets;
 
 /**
  * @see Project
- * 
+ *
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -82,79 +82,81 @@ import com.google.common.collect.Sets;
 @Getter
 @Indexed
 @ToString(callSuper = true, of = "name")
-public class HProject extends SlugEntityBase implements Serializable, HasEntityStatus
-{
-   private static final long serialVersionUID = 1L;
+public class HProject extends SlugEntityBase implements Serializable,
+        HasEntityStatus {
+    private static final long serialVersionUID = 1L;
 
-   @Size(max = 80)
-   @NotEmpty
-   @Field()
-   private String name;
+    @Size(max = 80)
+    @NotEmpty
+    @Field()
+    private String name;
 
-   @Size(max = 100)
-   @Field()
-   private String description;
+    @Size(max = 100)
+    @Field()
+    private String description;
 
-   @Type(type = "text")
-   private String homeContent;
+    @Type(type = "text")
+    private String homeContent;
 
-   private String sourceViewURL;
+    private String sourceViewURL;
 
-   private String sourceCheckoutURL;
+    private String sourceCheckoutURL;
 
-   private boolean overrideLocales = false;
+    private boolean overrideLocales = false;
 
-   private boolean restrictedByRoles = false;
+    private boolean restrictedByRoles = false;
 
-   @OneToOne(fetch = FetchType.LAZY, optional = true)
-   @JoinColumn(name = "default_copy_trans_opts_id")
-   private HCopyTransOptions defaultCopyTransOpts;
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "default_copy_trans_opts_id")
+    private HCopyTransOptions defaultCopyTransOpts;
 
-   @ManyToMany
-   @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(name = "projectId"),
-         inverseJoinColumns = @JoinColumn(name = "localeId"))
-   private Set<HLocale> customizedLocales = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HProject_Locale", joinColumns = @JoinColumn(
+            name = "projectId"), inverseJoinColumns = @JoinColumn(
+            name = "localeId"))
+    private Set<HLocale> customizedLocales = Sets.newHashSet();
 
-   @Enumerated(EnumType.STRING)
-   private ProjectType defaultProjectType;
+    @Enumerated(EnumType.STRING)
+    private ProjectType defaultProjectType;
 
-   /**
-    * @see {@link #addMaintainer(HPerson)}
-    */
-   @ManyToMany
-   @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(name = "projectId"),
-         inverseJoinColumns = @JoinColumn(name = "personId"))
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   private Set<HPerson> maintainers = Sets.newHashSet();
+    /**
+     * @see {@link #addMaintainer(HPerson)}
+     */
+    @ManyToMany
+    @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(
+            name = "projectId"), inverseJoinColumns = @JoinColumn(
+            name = "personId"))
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<HPerson> maintainers = Sets.newHashSet();
 
-   @ManyToMany
-   @JoinTable(name = "HProject_AllowedRole", joinColumns = @JoinColumn(name = "projectId"),
-         inverseJoinColumns = @JoinColumn(name = "roleId"))
-   private Set<HAccountRole> allowedRoles = Sets.newHashSet();
+    @ManyToMany
+    @JoinTable(name = "HProject_AllowedRole", joinColumns = @JoinColumn(
+            name = "projectId"), inverseJoinColumns = @JoinColumn(
+            name = "roleId"))
+    private Set<HAccountRole> allowedRoles = Sets.newHashSet();
 
-   @ElementCollection
-   @JoinTable(name = "HProject_Validation", joinColumns = { @JoinColumn(name = "projectId") })
-   @MapKeyColumn(name = "validation")
-   @Column(name = "state", nullable = false)
-   private Map<String, String> customizedValidations = Maps.newHashMap();
+    @ElementCollection
+    @JoinTable(name = "HProject_Validation", joinColumns = { @JoinColumn(
+            name = "projectId") })
+    @MapKeyColumn(name = "validation")
+    @Column(name = "state", nullable = false)
+    private Map<String, String> customizedValidations = Maps.newHashMap();
 
-   @OneToMany(mappedBy = "project")
-   @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-   private List<HProjectIteration> projectIterations = Lists.newArrayList();
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private List<HProjectIteration> projectIterations = Lists.newArrayList();
 
-   @Type(type = "entityStatus")
-   @NotNull
-   private EntityStatus status = EntityStatus.ACTIVE;
+    @Type(type = "entityStatus")
+    @NotNull
+    private EntityStatus status = EntityStatus.ACTIVE;
 
-   public void addIteration(HProjectIteration iteration)
-   {
-      projectIterations.add(iteration);
-      iteration.setProject(this);
-   }
+    public void addIteration(HProjectIteration iteration) {
+        projectIterations.add(iteration);
+        iteration.setProject(this);
+    }
 
-   public void addMaintainer(HPerson maintainer)
-   {
-      this.getMaintainers().add(maintainer);
-      maintainer.getMaintainerProjects().add(this);
-   }
+    public void addMaintainer(HPerson maintainer) {
+        this.getMaintainers().add(maintainer);
+        maintainer.getMaintainerProjects().add(this);
+    }
 }

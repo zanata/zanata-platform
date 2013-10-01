@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -80,10 +80,10 @@ import com.google.common.collect.Maps;
 /**
  * Represents a flow of source text that should be processed as a stand-alone
  * structural unit.
- * 
+ *
  * @see org.zanata.rest.dto.resource.TextFlow
  * @author Asgeir Frimannsson <asgeirf@redhat.com>
- * 
+ *
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -275,55 +275,53 @@ public class HTextFlow extends HTextContainer implements Serializable, ITextFlow
          case 0:
             return content0;
 
-         case 1:
+        case 1:
             return content1;
 
-         case 2:
+        case 2:
             return content2;
 
-         case 3:
+        case 3:
             return content3;
 
-         case 4:
+        case 4:
             return content4;
 
-         case 5:
+        case 5:
             return content5;
 
-         default:
+        default:
             throw new RuntimeException("Invalid Content index: " + idx);
-      }
-   }
+        }
+    }
 
-   private void setContent(int idx, String content)
-   {
-      switch (idx)
-      {
-         case 0:
+    private void setContent(int idx, String content) {
+        switch (idx) {
+        case 0:
             content0 = content;
             break;
 
-         case 1:
+        case 1:
             content1 = content;
             break;
 
-         case 2:
+        case 2:
             content2 = content;
             break;
 
-         case 3:
+        case 3:
             content3 = content;
             break;
 
-         case 4:
+        case 4:
             content4 = content;
             break;
 
-         case 5:
+        case 5:
             content5 = content;
             break;
 
-         default:
+        default:
             throw new RuntimeException("Invalid Content index: " + idx);
       }
    }

@@ -35,18 +35,19 @@ import org.zanata.model.HDocumentUploadPart;
 @Name("blobPersistService")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
-public class BlobPersistService implements UploadPartPersistService
-{
+public class BlobPersistService implements UploadPartPersistService {
 
-   @In
-   private Session session;
+    @In
+    private Session session;
 
-   public HDocumentUploadPart newUploadPartFromStream(InputStream partContentStream, int contentLength)
-   {
-      HDocumentUploadPart newPart = new HDocumentUploadPart();
-      Blob partContent = session.getLobHelper().createBlob(partContentStream, contentLength);
-      newPart.setContent(partContent);
-      return newPart;
-   }
+    public HDocumentUploadPart newUploadPartFromStream(
+            InputStream partContentStream, int contentLength) {
+        HDocumentUploadPart newPart = new HDocumentUploadPart();
+        Blob partContent =
+                session.getLobHelper().createBlob(partContentStream,
+                        contentLength);
+        newPart.setContent(partContent);
+        return newPart;
+    }
 
 }

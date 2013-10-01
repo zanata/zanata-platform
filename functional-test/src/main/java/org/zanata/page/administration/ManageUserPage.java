@@ -35,58 +35,64 @@ import org.zanata.util.WebElementUtil;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class ManageUserPage extends BasePage
-{
-   public static final int USERNAME_COLUMN = 0;
-   @FindBy(id = "usermanagerForm:threads")
-   private WebElement userTable;
+public class ManageUserPage extends BasePage {
+    public static final int USERNAME_COLUMN = 0;
+    @FindBy(id = "usermanagerForm:threads")
+    private WebElement userTable;
 
-   private By userTableBy = By.id("usermanagerForm:threads");
+    private By userTableBy = By.id("usermanagerForm:threads");
 
-   public ManageUserPage(WebDriver driver)
-   {
-      super(driver);
-   }
+    public ManageUserPage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ManageUserAccountPage editUserAccount(String username) {
-      TableRow userRow = findRowByUserName(username);
-      List<WebElement> cells = userRow.getCells();
-      WebElement editCell = cells.get(cells.size() - 1);
-      WebElement editButton = editCell.findElement(By.xpath(".//input[@value='Edit']"));
-      editButton.click();
-      return new ManageUserAccountPage(getDriver());
-   }
+    public ManageUserAccountPage editUserAccount(String username) {
+        TableRow userRow = findRowByUserName(username);
+        List<WebElement> cells = userRow.getCells();
+        WebElement editCell = cells.get(cells.size() - 1);
+        WebElement editButton =
+                editCell.findElement(By.xpath(".//input[@value='Edit']"));
+        editButton.click();
+        return new ManageUserAccountPage(getDriver());
+    }
 
-   private TableRow findRowByUserName(final String username)
-   {
-      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
-      {
-         @Override
-         public TableRow apply(WebDriver driver)
-         {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), userTable);
-            Optional<TableRow> matchedRow = Iterables.tryFind(tableRows, new Predicate<TableRow>()
-            {
-               @Override
-               public boolean apply(TableRow input)
-               {
-                  List<String> cellContents = input.getCellContents();
-                  String localeCell = cellContents.get(USERNAME_COLUMN).trim();
-                  return localeCell.equalsIgnoreCase(username);
-               }
-            });
+    private TableRow findRowByUserName(final String username) {
+        TableRow matchedRow =
+                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                    @Override
+                    public TableRow apply(WebDriver driver) {
+                        List<TableRow> tableRows =
+                                WebElementUtil.getTableRows(getDriver(),
+                                        userTable);
+                        Optional<TableRow> matchedRow =
+                                Iterables.tryFind(tableRows,
+                                        new Predicate<TableRow>() {
+                                            @Override
+                                            public boolean
+                                                    apply(TableRow input) {
+                                                List<String> cellContents =
+                                                        input.getCellContents();
+                                                String localeCell =
+                                                        cellContents
+                                                                .get(USERNAME_COLUMN)
+                                                                .trim();
+                                                return localeCell
+                                                        .equalsIgnoreCase(username);
+                                            }
+                                        });
 
-            //we keep looking for the user until timeout
-            return matchedRow.isPresent() ? matchedRow.get() : null;
-         }
-      });
-      return matchedRow;
-   }
+                        // we keep looking for the user until timeout
+                        return matchedRow.isPresent() ? matchedRow.get() : null;
+                    }
+                });
+        return matchedRow;
+    }
 
-   public List<String> getUserList()
-   {
-      return WebElementUtil.getColumnContents(getDriver(), userTableBy, USERNAME_COLUMN);
-   }
+    public List<String> getUserList() {
+        return WebElementUtil.getColumnContents(getDriver(), userTableBy,
+                USERNAME_COLUMN);
+    }
 }

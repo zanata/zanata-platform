@@ -30,46 +30,44 @@ import org.hibernate.search.FullTextSession;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Slf4j
-public class ClassIndexer<T>
-{
+public class ClassIndexer<T> {
 
-   private final AbstractIndexingStrategy<T> indexingStrategy;
-   private FullTextSession session;
-   private AsyncTaskHandle handle;
-   private Class<?> entityType;
+    private final AbstractIndexingStrategy<T> indexingStrategy;
+    private FullTextSession session;
+    private AsyncTaskHandle handle;
+    private Class<?> entityType;
 
-   public ClassIndexer(FullTextSession session, AsyncTaskHandle handle,
-         Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy)
-   {
-      this.session = session;
-      this.handle = handle;
-      this.entityType = entityType;
-      this.indexingStrategy = indexingStrategy;
-   }
+    public ClassIndexer(FullTextSession session, AsyncTaskHandle handle,
+            Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy) {
+        this.session = session;
+        this.handle = handle;
+        this.entityType = entityType;
+        this.indexingStrategy = indexingStrategy;
+    }
 
-   public AbstractIndexingStrategy<T> getIndexingStrategy()
-   {
-      return indexingStrategy;
-   }
+    public AbstractIndexingStrategy<T> getIndexingStrategy() {
+        return indexingStrategy;
+    }
 
-   public int getEntityCount()
-   {
-      Long result = (Long) session.createCriteria(entityType).setProjection(Projections.rowCount()).list().get(0);
-      return result.intValue();
-   }
+    public int getEntityCount() {
+        Long result =
+                (Long) session.createCriteria(entityType)
+                        .setProjection(Projections.rowCount()).list().get(0);
+        return result.intValue();
+    }
 
-   public void index() throws Exception
-   {
-      log.info("Setting manual-flush and ignore-cache for {}", entityType);
-      session.setFlushMode(FlushMode.MANUAL);
-      session.setCacheMode(CacheMode.IGNORE);
-      indexingStrategy.invoke(handle);
-      session.flushToIndexes(); // apply changes to indexes
-      session.clear(); // clear since the queue is processed
-   }
+    public void index() throws Exception {
+        log.info("Setting manual-flush and ignore-cache for {}", entityType);
+        session.setFlushMode(FlushMode.MANUAL);
+        session.setCacheMode(CacheMode.IGNORE);
+        indexingStrategy.invoke(handle);
+        session.flushToIndexes(); // apply changes to indexes
+        session.clear(); // clear since the queue is processed
+    }
 
 }
