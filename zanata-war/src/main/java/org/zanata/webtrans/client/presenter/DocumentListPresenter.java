@@ -612,6 +612,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay> 
          {
             eventBus.fireEvent(new NotificationEvent(Severity.Info, "File uploaded.", event.getResults(), true, null));
          }
+         queryStats();
       }
       else
       {

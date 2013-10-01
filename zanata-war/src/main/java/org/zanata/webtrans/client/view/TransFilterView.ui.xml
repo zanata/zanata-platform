@@ -175,7 +175,7 @@
 			</li>
 
 			<li class="{style.drop-down}">
-				<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError} {style.checkbox}"><ui:msg>Has warning</ui:msg></g:CheckBox>
+				<g:CheckBox ui:field="hasErrorChk" styleName="{style.hasError} {style.checkbox}"><ui:msg>Invalid</ui:msg></g:CheckBox>
 			</li>
 		</ul>
 	</g:HTMLPanel>

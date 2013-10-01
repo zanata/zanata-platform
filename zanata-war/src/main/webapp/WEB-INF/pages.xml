@@ -147,6 +147,11 @@
   <page view-id="/account/register.xhtml">
     <action execute="#{breadcrumbs.clear}"/>
   	<action execute="#{breadcrumbs.addLocation('', messages['jsf.Register'])}"/>
+    <navigation>
+      <rule if="#{identity.loggedIn}">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
+    </navigation>
   </page>
   
   <page view-id="/account/inactive_account.xhtml">

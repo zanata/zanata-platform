@@ -364,7 +364,7 @@ public class TargetContentsPresenterTest
       presenter.saveAsApprovedAndMoveNext(selectedTU.getId());
 
       // Then:
-      verify(validationWarning).center(selectedTU.getId(), NEW_TARGETS, errorMessage);
+      verify(validationWarning).center(selectedTU.getId(), 0, NEW_TARGETS, errorMessage);
    }
 
    @Test
