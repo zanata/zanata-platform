@@ -1,5 +1,6 @@
 package org.zanata.client.commands;
 
+@edu.umd.cs.findbugs.annotations.SuppressWarnings({ "DM_EXIT" })
 public class SystemExitStrategy implements AppAbortStrategy {
     @Override
     public void abort(String msg) {

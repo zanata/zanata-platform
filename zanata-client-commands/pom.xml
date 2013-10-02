@@ -49,6 +49,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
       <version>${resteasy.version}</version>

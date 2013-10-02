@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.BasicOptions;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -191,7 +194,7 @@ public class BashCompletionGenerator {
         FUNCTION;
 
         @Override
-        public String apply(Option input) {
+        public String apply(@Nonnull Option input) {
             return input.name();
         }
     }
