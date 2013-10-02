@@ -18,30 +18,39 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.workflow;
+package org.zanata.page.googleaccount;
 
-import org.zanata.page.account.EditProfilePage;
-import org.zanata.page.googleaccount.GoogleAccountPage;
-import org.zanata.page.utility.HomePage;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.zanata.page.AbstractPage;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterWorkFlow extends AbstractWebWorkFlow {
+public class GoogleManagePermissionsPage extends AbstractPage {
 
-    public HomePage registerGoogleOpenID(String name, String username,
-            String password, String email) {
-        GoogleAccountPage googleAccountPage =
-                new BasicWorkFlow().goToHome().clickSignInLink()
-                        .selectGoogleOpenID();
+    public GoogleManagePermissionsPage(WebDriver driver) {
+        super(driver);
+    }
 
-        EditProfilePage editProfilePage =
-                googleAccountPage.enterGoogleEmail(email)
-                        .enterGooglePassword(password).clickSignIn()
-                        .acceptPermissions();
+    public GoogleManagePermissionsPage removePermission(String permissionName) {
+        if (pageContainsPermission(permissionName)) {
+            getDriver().findElement(By.name(permissionName))
+                    .findElement(By.cssSelector("input[type='submit']"))
+                    .click();
+        }
+        return new GoogleManagePermissionsPage(getDriver());
+    }
 
-        return editProfilePage.enterName(name).enterUserName(username)
-                .enterEmail(email).clickSave();
+    public boolean pageContainsPermission(String permissionName) {
+        try {
+            return getDriver().findElement(By.name(permissionName))
+                    .isDisplayed();
+        } catch (NoSuchElementException nsee) {
+            // Permission not listed
+            return false;
+        }
     }
 }
