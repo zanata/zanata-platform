@@ -22,6 +22,7 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -168,7 +169,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         return sorted_map;
     }
 
-   static class ValueComparator implements Comparator<Integer> {
+   static class ValueComparator implements Comparator<Integer>, Serializable {
 
       Map<Integer, String> base;
       public ValueComparator(Map<Integer, String> base) {
