@@ -20,36 +20,71 @@
  */
 package org.zanata.service.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.annotation.*;
-import javax.persistence.*;
+import javax.annotation.Nonnull;
+import javax.persistence.EntityManager;
 
-import lombok.extern.slf4j.*;
+import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang.*;
-import org.hibernate.*;
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.core.*;
-import org.jboss.seam.security.management.*;
-import org.jboss.seam.util.*;
-import org.zanata.async.*;
-import org.zanata.common.*;
-import org.zanata.common.util.*;
-import org.zanata.dao.*;
-import org.zanata.events.*;
-import org.zanata.exception.*;
-import org.zanata.lock.*;
-import org.zanata.model.*;
-import org.zanata.rest.dto.resource.*;
-import org.zanata.rest.service.*;
-import org.zanata.security.*;
-import org.zanata.service.*;
-import org.zanata.webtrans.shared.model.*;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.TransactionPropagationType;
+import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.core.Events;
+import org.jboss.seam.security.management.JpaIdentityStore;
+import org.jboss.seam.util.Work;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncUtils;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.MergeType;
+import org.zanata.common.util.ContentStateUtil;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentUploadedEvent;
+import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.exception.ZanataServiceException;
+import org.zanata.lock.Lock;
+import org.zanata.model.HAccount;
+import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HSimpleComment;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.ResourceUtils;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
+import org.zanata.service.TranslationMergeService;
+import org.zanata.service.TranslationService;
+import org.zanata.service.ValidationService;
+import org.zanata.util.ShortString;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.common.base.*;
-import com.google.common.collect.*;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 @Name("translationServiceImpl")
 @Scope(ScopeType.STATELESS)
@@ -488,7 +523,8 @@ public class TranslationServiceImpl implements TranslationService {
 
             if (!validationMessages.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
-                sb.append("Translation ").append(targetId)
+                sb.append("Translation ")
+                        .append(ShortString.shorten(translations.get(0)))
                         .append(" contains validation error - \n");
                 for (String validationMessage : validationMessages) {
                     sb.append(validationMessage).append("\n");

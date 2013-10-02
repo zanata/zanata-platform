@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.view;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.MainView;
 
 /**
@@ -28,6 +29,8 @@ public interface AppDisplay extends WidgetDisplay {
     void setVersionLinkLabel(String text);
 
     void setListener(Listener listener);
+
+    void showNotification(NotificationEvent event);
 
     interface Listener {
         void onSearchAndReplaceClicked();

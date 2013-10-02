@@ -22,9 +22,12 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.NotificationDetailsBox;
 import org.zanata.webtrans.client.util.DateUtil;
@@ -105,9 +108,9 @@ public class NotificationView extends Composite implements NotificationDisplay {
     private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
 
     @Inject
-    public NotificationView() {
+    public NotificationView(WebTransMessages messages, KeyShortcutPresenter keyShortcutPresenter) {
         initWidget(uiBinder.createAndBindUi(this));
-        detailBox = new NotificationDetailsBox();
+        detailBox = new NotificationDetailsBox(messages, keyShortcutPresenter);
     }
 
     @UiHandler("clearLink")
@@ -126,9 +129,7 @@ public class NotificationView extends Composite implements NotificationDisplay {
     }
 
     @Override
-    public void appendMessage(final Severity severity, final String summary,
-            final String msg, final boolean displayAsHtml,
-            final InlineLink inlineLink) {
+    public void appendMessage(final NotificationEvent notificationEvent) {
         HorizontalPanel panel = new HorizontalPanel();
         panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
@@ -136,7 +137,7 @@ public class NotificationView extends Composite implements NotificationDisplay {
 
         panel.setWidth("100%");
 
-        severityImg = createSeverityImage(severity);
+        severityImg = createSeverityImage(notificationEvent.getSeverity());
         panel.add(severityImg);
 
         final String time = "[" + DateUtil.formatTime(new Date()) + "]";
@@ -144,19 +145,18 @@ public class NotificationView extends Composite implements NotificationDisplay {
         timeLabel.setStyleName(style.timeLabel());
         panel.add(timeLabel);
 
-        Label msgLabel = new Label(summary);
+        Label msgLabel = new Label(notificationEvent.getSummary());
         msgLabel.setStyleName(style.msgLabel());
         msgLabel.addStyleName("pointer");
 
         msgLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                detailBox.setMessageDetails(severity, summary, time, msg,
-                        displayAsHtml);
+                detailBox.setMessageDetails(notificationEvent);
                 detailBox.center();
             }
         });
-
+        InlineLink inlineLink = notificationEvent.getInlineLink();
         panel.add(msgLabel);
         if (inlineLink != null) {
             inlineLink.setLinkStyle(style.inlineLink());

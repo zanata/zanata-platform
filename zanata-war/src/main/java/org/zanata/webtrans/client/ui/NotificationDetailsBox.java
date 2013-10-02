@@ -1,103 +1,96 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.inject.Inject;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public class NotificationDetailsBox extends DialogBox {
+public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
 
-    private final HTML messageWidget;
-    private final PushButton closeButton;
-    private final HorizontalPanel buttonPanel;
-    private final HorizontalPanel topPanel;
-    private final InlineLabel severityLabel;
-    private final InlineLabel timeLabel;
+    private static NotificationDetailsBoxUiBinder uiBinder = GWT
+            .create(NotificationDetailsBoxUiBinder.class);
 
-    public NotificationDetailsBox() {
-        super(true);
-        setStyleName("gwt-DialogBox-NoFixedSize");
+    @UiField(provided = true)
+    DialogBoxCloseButton closeButton;
 
-        topPanel = new HorizontalPanel();
-        severityLabel = new InlineLabel();
-        timeLabel = new InlineLabel();
-        timeLabel.setStyleName("time_label");
-        topPanel.add(severityLabel);
-        topPanel.add(timeLabel);
+    @UiField
+    HTMLPanel detailMessages;
 
-        buttonPanel = new HorizontalPanel();
-        buttonPanel.setStyleName("buttonPanel");
+    @UiField
+    HTMLPanel summary;
 
-        closeButton = new PushButton("Close");
-        closeButton.addStyleName("button");
+    private final WebTransMessages messages;
 
-        VerticalPanel panel = new VerticalPanel();
-        panel.setWidth("100%");
+    @Inject
+    public NotificationDetailsBox(WebTransMessages messages,
+            KeyShortcutPresenter keyShortcutPresenter) {
 
-        messageWidget = new HTML();
-        messageWidget.addStyleName("message");
+        super(true, false, ShortcutContext.TransHistoryPopup,
+                keyShortcutPresenter);
 
-        buttonPanel.add(closeButton);
+        this.messages = messages;
 
-        panel.add(topPanel);
-        panel.add(messageWidget);
-        panel.add(buttonPanel);
+        closeButton = new DialogBoxCloseButton(this);
+        HTMLPanel container = uiBinder.createAndBindUi(this);
 
-        panel.setCellHorizontalAlignment(buttonPanel,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+        setGlassEnabled(true);
+        getCaption().setText(messages.notification());
 
-        add(panel);
-
-        registerHandler();
+        setWidget(container);
     }
 
-    private void registerHandler() {
-        closeButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                hide();
+    public void setMessageDetails(NotificationEvent notificationEvent) {
+
+        Severity severity = notificationEvent.getSeverity();
+        String message = notificationEvent.getMessage();
+        String severityClass = getSeverityClass(severity);
+
+        getCaption().setText(
+                messages.notification()
+                        + " - "
+                        + DateUtil.formatShortDate(notificationEvent
+                                .getDate()));
+        this.summary.setStyleName(severityClass);
+        this.summary.getElement().setInnerHTML(notificationEvent.getSummary());
+
+        detailMessages.setStyleName(severityClass);
+        if (!Strings.isNullOrEmpty(message)) {
+            if (notificationEvent.isDisplayAsHtml()) {
+                SafeHtmlBuilder builder =
+                        new SafeHtmlBuilder().appendHtmlConstant(message);
+                detailMessages.getElement().setInnerHTML(
+                        builder.toSafeHtml().asString());
+            } else {
+                detailMessages.getElement().setInnerHTML(message);
             }
-        });
+        }
     }
 
-    public void setMessageDetails(Severity severity, String title, String time,
-            String message, boolean isSafeHtml) {
-        timeLabel.setText(time);
-        severityLabel.setStyleName("icon-info-circle-2");
-        severityLabel.addStyleName("severity_icon");
-        if (severity == Severity.Error) {
-            severityLabel.addStyleName("severity_error");
-        } else if (severity == Severity.Warning) {
-            severityLabel.addStyleName("severity_warning");
-        } else {
-            severityLabel.addStyleName("severity_info");
+    private String getSeverityClass(Severity severity) {
+        if (severity == Severity.Warning) {
+            return "message--warning";
+        } else if (severity == Severity.Error) {
+            return "message--danger";
         }
+        return "message--highlight";
+    }
 
-        messageWidget.setHTML("");
-        messageWidget.setText("");
-        setText(title);
-        if (isSafeHtml) {
-            SafeHtmlBuilder builder = new SafeHtmlBuilder();
-            builder.appendHtmlConstant(message);
-            messageWidget.setHTML(builder.toSafeHtml());
-        } else {
-            messageWidget.setText(message);
-        }
-
-        buttonPanel.clear();
-        buttonPanel.add(closeButton);
+    interface NotificationDetailsBoxUiBinder extends
+            UiBinder<HTMLPanel, NotificationDetailsBox> {
     }
 }

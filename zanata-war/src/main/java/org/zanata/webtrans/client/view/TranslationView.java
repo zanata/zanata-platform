@@ -37,7 +37,7 @@ public class TranslationView extends Composite implements
         TranslationPresenter.Display {
     private static TranslationViewUiBinder uiBinder = GWT
             .create(TranslationViewUiBinder.class);
-    private static final double MIN_SOUTH_PANEL_HEIGHT = 0;
+    private static final double MIN_SOUTH_PANEL_HEIGHT = 10;
     private static final double GLOSSARY_PANEL_WIDTH = 500;
     private static final int ANIMATE_DURATION = 200;
     private static double SOUTH_PANEL_HEIGHT = 150;

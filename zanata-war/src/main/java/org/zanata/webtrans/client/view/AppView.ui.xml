@@ -60,10 +60,15 @@
       opacity: 0.5;
     }
 
+    .content {
+      height: 100%;
+      margin: 0 2em 0 0.1em;
+    }
+
   </ui:style>
   <g:LayoutPanel stylePrimaryName="{style.rootContainer}"
     ui:field="rootContainer">
-    <g:layer top="0px" height="25px" left="15px" right="15px">
+    <g:layer top="0px" height="1.8em" left="0.5em" right="0.5em">
       <g:HTMLPanel styleName="new-zanata">
         <ul class="list--horizontal">
           <li class="{style.topPanel-Workspace}">
@@ -90,52 +95,17 @@
           </li>
         </ul>
       </g:HTMLPanel>
-
-
-      <!--<g:LayoutPanel>-->
-      <!--<g:layer left="5px" right="5px">-->
-      <!--<g:HorizontalPanel width="100%" height="100%"-->
-      <!--verticalAlignment="ALIGN_MIDDLE" styleName="{style.fixedLayout}">-->
-      <!--<g:cell>-->
-      <!--<g:HTMLPanel styleName="{style.topPanel-Workspace}">-->
-      <!--<nobr>-->
-      <!--<g:InlineLabel ui:field="readOnlyLabel"-->
-      <!--styleName="{style.readonly_label}" />-->
-      <!--<fui:Breadcrumb ui:field="projectLink" />-->
-      <!--<fui:Breadcrumb ui:field="versionLink" />-->
-      <!--<fui:Breadcrumb ui:field="filesLink" />-->
-      <!--<fui:Breadcrumb ui:field="selectedDocumentSpan" />-->
-      <!--</nobr>-->
-      <!--</g:HTMLPanel>-->
-      <!--</g:cell>-->
-      <!--<g:cell width="250px">-->
-      <!--<fui:TransUnitCountBar ui:field="translationStatsBar"-->
-      <!--styleName="{style.translationStats}" />-->
-      <!--</g:cell>-->
-      <!--<g:cell verticalAlignment="ALIGN_MIDDLE" width="112px"-->
-      <!--horizontalAlignment="ALIGN_RIGHT">-->
-      <!--<g:HTMLPanel>-->
-      <!--<g:InlineLabel styleName="icon-list {style.topMenuButton}"-->
-      <!--ui:field="documentListTab" />-->
-      <!--<g:InlineLabel styleName="icon-edit {style.topMenuButton}"-->
-      <!--ui:field="editorTab" />-->
-      <!--<g:InlineLabel styleName="icon-search {style.topMenuButton}"-->
-      <!--ui:field="searchAndReplaceTab" />-->
-      <!--<g:InlineLabel ui:field="keyShortcuts"-->
-      <!--styleName="icon-keyboard {style.topMenuButton}" />-->
-      <!--</g:HTMLPanel>-->
-      <!--</g:cell>-->
-      <!--</g:HorizontalPanel>-->
-      <!--</g:layer>-->
-      <!--</g:LayoutPanel>-->
     </g:layer>
 
-    <g:layer top="25px" bottom="0px" left='0px' right='0px'>
-      <g:LayoutPanel ui:field="contentContainer">
-        <g:layer top="0px" bottom="3px" left="5px" right="25px">
-          <g:TabLayoutPanel ui:field="content" barHeight="0" barUnit='PX' />
-        </g:layer>
-      </g:LayoutPanel>
+    <g:layer top="25px" bottom="0px" left='0.5em' right='0.5em'>
+      <g:HTMLPanel ui:field="contentContainer">
+        <div class="new-zanata">
+          <fui:UnorderedListWidget ui:field="notifications"
+            styleName="list--no-bullets l--push-right-1" />
+        </div>
+        <g:TabLayoutPanel ui:field="content" styleName="{style.content}"
+          barHeight="0" barUnit='PX' />
+      </g:HTMLPanel>
     </g:layer>
 
     <g:layer right="0" width="24px" top="25px" bottom="10px">

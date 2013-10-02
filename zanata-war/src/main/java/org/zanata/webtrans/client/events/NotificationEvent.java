@@ -1,6 +1,9 @@
 package org.zanata.webtrans.client.events;
 
+import java.util.Date;
+
 import org.zanata.webtrans.client.ui.InlineLink;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
@@ -31,6 +34,7 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     private final String summary;
     private boolean displayAsHtml;
     private InlineLink inlineLink;
+    private Date date;
 
     public NotificationEvent(Severity severity, String message) {
         this(severity, message, null);
@@ -38,7 +42,7 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
 
     public NotificationEvent(Severity severity, String message,
             InlineLink inlineLink) {
-        this(severity, message, message, false, inlineLink);
+        this(severity, message, null, false, inlineLink);
     }
 
     public NotificationEvent(Severity severity, String summary, String message,
@@ -48,6 +52,7 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
         this.inlineLink = inlineLink;
         this.summary = summary;
         this.displayAsHtml = displayAsHtml;
+        this.date = new Date();
     }
 
     public Severity getSeverity() {
@@ -78,5 +83,9 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     @Override
     public Type<NotificationEventHandler> getAssociatedType() {
         return getType();
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

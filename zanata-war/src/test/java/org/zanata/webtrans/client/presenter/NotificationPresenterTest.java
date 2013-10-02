@@ -94,8 +94,7 @@ public class NotificationPresenterTest {
         notificationPresenter.onNotification(mockEvent);
 
         verify(mockListener).setNotificationLabel(msgCount, severity);
-        verify(mockDisplay).appendMessage(severity, summary, msg, false,
-                mockInlineLink);
+        verify(mockDisplay).appendMessage(mockEvent);
     }
 
     @Test
@@ -117,8 +116,7 @@ public class NotificationPresenterTest {
         notificationPresenter.setNotificationListener(mockListener);
         notificationPresenter.onNotification(mockEvent);
 
-        verify(mockDisplay).appendMessage(severity, summary, msg, false,
-                mockInlineLink);
+        verify(mockDisplay).appendMessage(mockEvent);
         verify(mockListener).showNotification();
         verify(mockListener).setNotificationLabel(msgCount, severity);
     }
@@ -144,7 +142,6 @@ public class NotificationPresenterTest {
             notificationPresenter.onNotification(mockEvent);
         }
 
-        verify(mockDisplay, times(msgCount)).appendMessage(severity, summary,
-                msg, false, mockInlineLink);
+        verify(mockDisplay, times(msgCount)).appendMessage(mockEvent);
     }
 }

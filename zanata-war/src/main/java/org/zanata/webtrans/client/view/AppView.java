@@ -22,13 +22,19 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.Application;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.presenter.NotificationDetailListener;
 import org.zanata.webtrans.client.presenter.SearchResultsPresenter;
 import org.zanata.webtrans.client.presenter.TranslationPresenter;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.Breadcrumb;
 import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
+import org.zanata.webtrans.client.ui.NotificationDetailsBox;
+import org.zanata.webtrans.client.ui.NotificationItem;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
+import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
@@ -40,6 +46,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -47,7 +54,8 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class AppView extends Composite implements AppDisplay {
+public class AppView extends Composite implements AppDisplay,
+        NotificationDetailListener {
 
     interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView> {
     }
@@ -81,7 +89,10 @@ public class AppView extends Composite implements AppDisplay {
     Breadcrumb filesLink;
 
     @UiField
-    LayoutPanel sideMenuContainer, rootContainer, contentContainer;
+    LayoutPanel sideMenuContainer, rootContainer;
+
+    @UiField
+    HTMLPanel contentContainer;
 
     @UiField
     TabLayoutPanel content;
@@ -92,6 +103,11 @@ public class AppView extends Composite implements AppDisplay {
     @UiField
     Label editorTab, searchAndReplaceTab, documentListTab;
 
+    @UiField
+    UnorderedListWidget notifications;
+
+    private final NotificationDetailsBox notificationDetailsBox;
+
     private Listener listener;
 
     @Inject
@@ -100,6 +116,7 @@ public class AppView extends Composite implements AppDisplay {
             SearchResultsPresenter.Display searchResultsView,
             TranslationPresenter.Display translationView,
             SideMenuDisplay sideMenuView,
+            KeyShortcutPresenter keyShortcutPresenter,
             final UserWorkspaceContext userWorkspaceContext) {
         // this must be initialized before uiBinder.createAndBindUi(), or an
         // exception will be thrown at runtime
@@ -137,6 +154,9 @@ public class AppView extends Composite implements AppDisplay {
         content.add(documentListView.asWidget());
         content.add(translationView.asWidget());
         content.add(searchResultsView.asWidget());
+
+        notificationDetailsBox =
+                new NotificationDetailsBox(messages, keyShortcutPresenter);
 
         Window.enableScrolling(false);
     }
@@ -297,4 +317,20 @@ public class AppView extends Composite implements AppDisplay {
         }
     }
 
+    public void showNotification(NotificationEvent notification) {
+        notifications.clear();
+        notifications.add(new NotificationItem(notification, this));
+    }
+
+    @Override
+    public void showNotificationDetail(NotificationEvent notificationEvent) {
+        notificationDetailsBox.setMessageDetails(notificationEvent);
+
+        notificationDetailsBox.center();
+    }
+
+    @Override
+    public void closeMessage(NotificationEvent notificationEvent) {
+        notifications.clear();
+    }
 }

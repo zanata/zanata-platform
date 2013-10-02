@@ -139,8 +139,6 @@ public class TargetContentsPresenterTest {
     private SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
     @Mock
     private ValidationWarningDisplay validationWarning;
-    @Mock
-    private NavigationService navigationService;
 
     @BeforeMethod
     public void beforeMethod() {
@@ -155,8 +153,7 @@ public class TargetContentsPresenterTest {
                         eventBus, tableEditorMessages, sourceContentPresenter,
                         userWorkspaceContext, editorKeyShortcuts,
                         historyPresenter, userOptionsService,
-                        saveAsApprovedConfirmation, validationWarning,
-                        navigationService);
+                        saveAsApprovedConfirmation, validationWarning);
 
         verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
         verify(eventBus)

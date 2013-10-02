@@ -26,7 +26,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
-import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.view.NotificationDisplay;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -78,10 +77,9 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay>
         listener.setNotificationLabel(0, Severity.Info);
     }
 
-    private void appendNotification(Severity severity, String summary,
-            String msg, boolean displayAsHtml, InlineLink inlineLink) {
-        display.appendMessage(severity, summary, msg, displayAsHtml, inlineLink);
-        if (severity == Severity.Error) {
+    private void appendNotification(NotificationEvent event) {
+        display.appendMessage(event);
+        if (event.getSeverity() == Severity.Error) {
             listener.showNotification();
         }
     }
@@ -96,9 +94,7 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay>
 
     @Override
     public void onNotification(NotificationEvent event) {
-        appendNotification(event.getSeverity(), event.getSummary(),
-                event.getMessage(), event.isDisplayAsHtml(),
-                event.getInlineLink());
+        appendNotification(event);
         Log.info("Notification:" + event.getMessage());
         listener.setNotificationLabel(display.getMessageCount(),
                 event.getSeverity());

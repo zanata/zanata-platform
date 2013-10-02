@@ -86,6 +86,8 @@ import com.google.inject.Inject;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         implements DocumentListDisplay.Listener, DocumentSelectionHandler,
         UserConfigChangeHandler, TransUnitUpdatedEventHandler,
@@ -605,8 +607,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     @Override
     public void onFileUploadComplete(SubmitCompleteEvent event) {
         display.closeFileUpload();
-        if (event.getResults().contains("200")) {
-            if (event.getResults().contains("Warning")) {
+        if (event.getResults().contains(String.valueOf(HttpServletResponse.SC_OK))) {
+            if (event.getResults().contains("Warnings")) {
                 eventBus.fireEvent(new NotificationEvent(Severity.Warning,
                         "File uploaded.", event.getResults(), true, null));
             } else {
