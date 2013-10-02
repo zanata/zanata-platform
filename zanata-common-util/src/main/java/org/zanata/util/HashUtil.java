@@ -37,7 +37,7 @@ public class HashUtil {
      * @throws java.io.IOException
      *             On error reading from the file.
      */
-    public static final String getMD5Checksum(File f)
+    public static String getMD5Checksum(File f)
             throws FileNotFoundException, IOException {
         FileInputStream fis = new FileInputStream(f);
         try {
