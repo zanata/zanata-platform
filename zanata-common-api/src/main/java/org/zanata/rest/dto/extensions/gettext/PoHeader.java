@@ -33,8 +33,8 @@ public class PoHeader implements AbstractResourceMetaExtension {
     public PoHeader(String comment, HeaderEntry... entries) {
         this();
         setComment(comment);
-        for (int i = 0; i < entries.length; i++) {
-            getEntries().add(entries[i]);
+        for (HeaderEntry entry : entries) {
+            getEntries().add(entry);
         }
     }
 

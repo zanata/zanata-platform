@@ -40,7 +40,7 @@ import org.zanata.rest.enunciate.AbstractJAXRSTest;
 @Test(groups = { "unit-tests" })
 public class ClientJAXRSTest extends AbstractJAXRSTest {
     @DataProvider(name = "clientInterfaces", parallel = true)
-    private final Object[][] clientInterfaces() {
+    private Object[][] clientInterfaces() {
         return new Object[][] { { IAccountResource.class },
                 { IAsynchronousProcessResource.class },
                 { ICopyTransResource.class }, { IFileResource.class },

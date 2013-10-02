@@ -34,8 +34,8 @@ public class PoTargetHeader implements TranslationsResourceExtension {
 
     public PoTargetHeader(String comment, HeaderEntry... entries) {
         setComment(comment);
-        for (int i = 0; i < entries.length; i++) {
-            getEntries().add(entries[i]);
+        for (HeaderEntry entry : entries) {
+            getEntries().add(entry);
         }
     }
 
