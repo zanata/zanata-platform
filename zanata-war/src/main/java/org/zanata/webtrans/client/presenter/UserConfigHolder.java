@@ -33,6 +33,8 @@ import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.inject.Singleton;
 
+import javax.annotation.Nonnull;
+
 @Singleton
 public class UserConfigHolder {
     public static final Predicate<ContentState> INCOMPLETE_PREDICATE =
@@ -46,7 +48,7 @@ public class UserConfigHolder {
     public static final Predicate<ContentState> DRAFT_PREDICATE =
             new Predicate<ContentState>() {
                 @Override
-                public boolean apply(ContentState contentState) {
+                public boolean apply(@Nonnull ContentState contentState) {
                     return contentState.isRejectedOrFuzzy();
                 }
             };
