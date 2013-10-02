@@ -166,13 +166,13 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
                         .setParameter("language", language);
 
         if (isTranslator != null) {
-            q.setParameter("isTranslator", isTranslator.booleanValue());
+            q.setParameter("isTranslator", isTranslator);
         }
         if (isReviewer != null) {
-            q.setParameter("isReviewer", isReviewer.booleanValue());
+            q.setParameter("isReviewer", isReviewer);
         }
         if (isCoordinator != null) {
-            q.setParameter("isCoordinator", isCoordinator.booleanValue());
+            q.setParameter("isCoordinator", isCoordinator);
         }
 
         q.setCacheable(false).setComment(
@@ -188,7 +188,7 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
                         .setParameter("person", person);
         q.setCacheable(false).setComment(
                 "PersonDAO.getAllLanguageTeamMemberships");
-        return q.list();
+        return (List<HLocaleMember>) q.list();
     }
 
 }
