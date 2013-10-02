@@ -57,7 +57,7 @@ public class NotificationItem extends Composite {
         this.addStyleName(getSeverityClass(notificationEvent.getSeverity()));
 
         message.setText(DateUtil.formatShortDate(notificationEvent
-                .getDate()) + " " + notificationEvent.getSummary());
+                .getDate()) + " " + notificationEvent.getMessage());
 
         InlineLink inlineLink = notificationEvent.getInlineLink();
         if (inlineLink != null) {

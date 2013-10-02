@@ -145,7 +145,7 @@ public class NotificationView extends Composite implements NotificationDisplay {
         timeLabel.setStyleName(style.timeLabel());
         panel.add(timeLabel);
 
-        Label msgLabel = new Label(notificationEvent.getSummary());
+        Label msgLabel = new Label(notificationEvent.getMessage());
         msgLabel.setStyleName(style.msgLabel());
         msgLabel.addStyleName("pointer");
 

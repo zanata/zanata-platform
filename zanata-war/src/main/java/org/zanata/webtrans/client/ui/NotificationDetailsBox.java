@@ -57,7 +57,7 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
     public void setMessageDetails(NotificationEvent notificationEvent) {
 
         Severity severity = notificationEvent.getSeverity();
-        String message = notificationEvent.getMessage();
+        String details = notificationEvent.getDetails();
         String severityClass = getSeverityClass(severity);
 
         getCaption().setText(
@@ -66,17 +66,17 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
                         + DateUtil.formatShortDate(notificationEvent
                                 .getDate()));
         this.summary.setStyleName(severityClass);
-        this.summary.getElement().setInnerHTML(notificationEvent.getSummary());
+        this.summary.getElement().setInnerHTML(notificationEvent.getMessage());
 
         detailMessages.setStyleName(severityClass);
-        if (!Strings.isNullOrEmpty(message)) {
+        if (!Strings.isNullOrEmpty(details)) {
             if (notificationEvent.isDisplayAsHtml()) {
                 SafeHtmlBuilder builder =
-                        new SafeHtmlBuilder().appendHtmlConstant(message);
+                        new SafeHtmlBuilder().appendHtmlConstant(details);
                 detailMessages.getElement().setInnerHTML(
                         builder.toSafeHtml().asString());
             } else {
-                detailMessages.getElement().setInnerHTML(message);
+                detailMessages.getElement().setInnerHTML(details);
             }
         }
     }

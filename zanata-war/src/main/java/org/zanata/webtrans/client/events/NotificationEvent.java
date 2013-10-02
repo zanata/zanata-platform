@@ -31,7 +31,7 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
 
     private final Severity severity;
     private final String message;
-    private final String summary;
+    private final String details;
     private boolean displayAsHtml;
     private InlineLink inlineLink;
     private Date date;
@@ -45,12 +45,12 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
         this(severity, message, null, false, inlineLink);
     }
 
-    public NotificationEvent(Severity severity, String summary, String message,
+    public NotificationEvent(Severity severity, String message, String details,
             boolean displayAsHtml, InlineLink inlineLink) {
         this.severity = severity;
         this.message = message;
         this.inlineLink = inlineLink;
-        this.summary = summary;
+        this.details = details;
         this.displayAsHtml = displayAsHtml;
         this.date = new Date();
     }
@@ -67,8 +67,8 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
         return inlineLink;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getDetails() {
+        return details;
     }
 
     public boolean isDisplayAsHtml() {
