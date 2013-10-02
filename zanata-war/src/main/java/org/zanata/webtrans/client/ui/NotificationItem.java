@@ -56,7 +56,7 @@ public class NotificationItem extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         this.addStyleName(getSeverityClass(notificationEvent.getSeverity()));
 
-        message.setText(DateUtil.formatShortDate(notificationEvent
+        message.setText(DateUtil.formatLongDateTime(notificationEvent
                 .getDate()) + " " + notificationEvent.getMessage());
 
         InlineLink inlineLink = notificationEvent.getInlineLink();
@@ -66,7 +66,7 @@ public class NotificationItem extends Composite {
             link.setVisible(false);
         }
 
-        details.setText("Details");
+        details.setText("More details");
         details.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

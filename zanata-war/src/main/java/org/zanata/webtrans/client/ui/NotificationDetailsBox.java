@@ -29,10 +29,7 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
     DialogBoxCloseButton closeButton;
 
     @UiField
-    HTMLPanel detailMessages;
-
-    @UiField
-    HTMLPanel summary;
+    HTMLPanel messageWrapper, message, details;
 
     private final WebTransMessages messages;
 
@@ -40,7 +37,7 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
     public NotificationDetailsBox(WebTransMessages messages,
             KeyShortcutPresenter keyShortcutPresenter) {
 
-        super(true, false, ShortcutContext.TransHistoryPopup,
+        super(true, false, ShortcutContext.NotificationDetailsPopup,
                 keyShortcutPresenter);
 
         this.messages = messages;
@@ -54,40 +51,55 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
         setWidget(container);
     }
 
-    public void setMessageDetails(NotificationEvent notificationEvent) {
-
-        Severity severity = notificationEvent.getSeverity();
-        String details = notificationEvent.getDetails();
-        String severityClass = getSeverityClass(severity);
+    public void setMessage(NotificationEvent notificationEvent) {
+        String notificationMessage = notificationEvent.getMessage();
+        String notificationDetails = notificationEvent.getDetails();
 
         getCaption().setText(
                 messages.notification()
                         + " - "
-                        + DateUtil.formatShortDate(notificationEvent
+                        + DateUtil.formatLongDateTime(notificationEvent
                                 .getDate()));
-        this.summary.setStyleName(severityClass);
-        this.summary.getElement().setInnerHTML(notificationEvent.getMessage());
+        messageWrapper.setStyleName(getSeverityClass(notificationEvent
+                .getSeverity()));
 
-        detailMessages.setStyleName(severityClass);
-        if (!Strings.isNullOrEmpty(details)) {
-            if (notificationEvent.isDisplayAsHtml()) {
+        if (notificationEvent.isDisplayAsHtml()) {
+            SafeHtmlBuilder builder =
+                    new SafeHtmlBuilder()
+                            .appendHtmlConstant(notificationMessage);
+            message.getElement().setInnerHTML(builder.toSafeHtml().asString());
+        } else {
+            message.getElement().setInnerHTML(notificationMessage);
+        }
+
+        if (notificationEvent.isDisplayAsHtml()) {
+            if (!Strings.isNullOrEmpty(notificationDetails)) {
                 SafeHtmlBuilder builder =
-                        new SafeHtmlBuilder().appendHtmlConstant(details);
-                detailMessages.getElement().setInnerHTML(
+                        new SafeHtmlBuilder()
+                                .appendHtmlConstant(notificationDetails);
+                details.getElement().setInnerHTML(
                         builder.toSafeHtml().asString());
+                details.setVisible(true);
             } else {
-                detailMessages.getElement().setInnerHTML(details);
+                details.setVisible(false);
+            }
+        } else {
+            if (!Strings.isNullOrEmpty(notificationDetails)) {
+                details.getElement().setInnerHTML(notificationDetails);
+                details.setVisible(true);
+            } else {
+                details.setVisible(false);
             }
         }
     }
 
     private String getSeverityClass(Severity severity) {
         if (severity == Severity.Warning) {
-            return "message--warning";
+            return "message--warning l__wrapper l--pad-all-half";
         } else if (severity == Severity.Error) {
-            return "message--danger";
+            return "message--danger l__wrapper l--pad-all-half";
         }
-        return "message--highlight";
+        return "message--highlight l__wrapper l--pad-all-half";
     }
 
     interface NotificationDetailsBoxUiBinder extends

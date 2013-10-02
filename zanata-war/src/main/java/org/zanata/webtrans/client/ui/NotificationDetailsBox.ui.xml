@@ -24,10 +24,19 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:z='urn:import:org.zanata.webtrans.client.ui'>
 
+  <ui:style>
+    .container {
+      min-width: 20em;
+      max-height: 40em;
+      overflow: auto;
+    }
+  </ui:style>
 
-  <g:HTMLPanel styleName="new-zanata">
-    <g:HTMLPanel ui:field="summary"/>
+  <g:HTMLPanel styleName="new-zanata {style.container}">
     <z:DialogBoxCloseButton ui:field="closeButton" />
-    <g:HTMLPanel ui:field="detailMessages"/>
+    <g:HTMLPanel styleName="l__wrapper l--pad-all-half" ui:field="messageWrapper">
+      <g:HTMLPanel ui:field="message" styleName="l--push-bottom-half" />
+      <g:HTMLPanel ui:field="details"/>
+    </g:HTMLPanel>
   </g:HTMLPanel>
 </ui:UiBinder>

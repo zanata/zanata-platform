@@ -152,7 +152,7 @@ public class NotificationView extends Composite implements NotificationDisplay {
         msgLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                detailBox.setMessageDetails(notificationEvent);
+                detailBox.setMessage(notificationEvent);
                 detailBox.center();
             }
         });

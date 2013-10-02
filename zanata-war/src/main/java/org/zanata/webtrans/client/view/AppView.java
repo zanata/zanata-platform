@@ -324,7 +324,7 @@ public class AppView extends Composite implements AppDisplay,
 
     @Override
     public void showNotificationDetail(NotificationEvent notificationEvent) {
-        notificationDetailsBox.setMessageDetails(notificationEvent);
+        notificationDetailsBox.setMessage(notificationEvent);
 
         notificationDetailsBox.center();
     }

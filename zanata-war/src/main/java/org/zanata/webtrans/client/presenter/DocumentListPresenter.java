@@ -610,10 +610,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         if (event.getResults().contains(String.valueOf(HttpServletResponse.SC_OK))) {
             if (event.getResults().contains("Warnings")) {
                 eventBus.fireEvent(new NotificationEvent(Severity.Warning,
-                        "File uploaded.", event.getResults(), true, null));
+                        "File uploaded with warnings", event.getResults(), true, null));
             } else {
                 eventBus.fireEvent(new NotificationEvent(Severity.Info,
-                        "File uploaded.", event.getResults(), true, null));
+                        "File uploaded", event.getResults(), true, null));
             }
             queryStats();
         } else {

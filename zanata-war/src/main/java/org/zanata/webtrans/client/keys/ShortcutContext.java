@@ -86,6 +86,12 @@ public enum ShortcutContext {
      * Used by
      * {@link org.zanata.webtrans.client.presenter.TargetContentsPresenter}
      */
-    ValidationWarningPopup
+    ValidationWarningPopup,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.ui.NotificationDetailsBox}
+     */
+    NotificationDetailsPopup
 
 }
