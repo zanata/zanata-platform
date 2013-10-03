@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.NotificationDetailListener;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 
 import com.google.gwt.core.client.GWT;
@@ -50,7 +51,7 @@ public class NotificationItem extends Composite {
     private static NotificationItemLineUiBinder uiBinder = GWT
             .create(NotificationItemLineUiBinder.class);
 
-    public NotificationItem(final NotificationEvent notificationEvent,
+    public NotificationItem(final WebTransMessages messages, final NotificationEvent notificationEvent,
             final NotificationDetailListener listener) {
 
         initWidget(uiBinder.createAndBindUi(this));
@@ -66,7 +67,7 @@ public class NotificationItem extends Composite {
             link.setVisible(false);
         }
 
-        details.setText("More details");
+        details.setText(messages.moreDetais());
         details.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

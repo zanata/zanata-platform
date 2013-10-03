@@ -108,6 +108,8 @@ public class AppView extends Composite implements AppDisplay,
 
     private final NotificationDetailsBox notificationDetailsBox;
 
+    private final WebTransMessages messages;
+
     private Listener listener;
 
     @Inject
@@ -120,6 +122,7 @@ public class AppView extends Composite implements AppDisplay,
             final UserWorkspaceContext userWorkspaceContext) {
         // this must be initialized before uiBinder.createAndBindUi(), or an
         // exception will be thrown at runtime
+        this.messages = messages;
         translationStatsBar =
                 new TransUnitCountBar(userWorkspaceContext, messages,
                         LabelFormat.PERCENT_COMPLETE_HRS, true,
@@ -319,7 +322,7 @@ public class AppView extends Composite implements AppDisplay,
 
     public void showNotification(NotificationEvent notification) {
         notifications.clear();
-        notifications.add(new NotificationItem(notification, this));
+        notifications.add(new NotificationItem(messages, notification, this));
     }
 
     @Override
