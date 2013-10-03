@@ -23,6 +23,7 @@ package org.zanata.rest.dto.stats;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -59,7 +60,8 @@ public class TranslationStatistics implements Serializable {
     private double remainingHours;
     private String lastTranslated;
 
-    private Date lastTranslatedDate;
+    private @Nullable
+    Date lastTranslatedDate;
     private String lastTranslatedBy;
 
     /**
@@ -245,12 +247,14 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
-    public Date getLastTranslatedDate() {
-        return new Date(lastTranslatedDate.getTime());
+    public @Nullable Date getLastTranslatedDate() {
+        return lastTranslatedDate != null ?
+                new Date(lastTranslatedDate.getTime()): null;
     }
 
-    public void setLastTranslatedDate(Date lastTranslatedDate) {
-        this.lastTranslatedDate = new Date(lastTranslatedDate.getTime());
+    public void setLastTranslatedDate(@Nullable Date lastTranslatedDate) {
+        this.lastTranslatedDate = lastTranslatedDate != null ?
+                new Date(lastTranslatedDate.getTime()): null;
     }
 
     @XmlTransient
