@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -32,7 +34,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -46,14 +50,24 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Entity
 @Table(name = "HLocale_Member")
 @Setter
+@Getter
+@Access(AccessType.FIELD)
 @NoArgsConstructor
 public class HLocaleMember implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @EmbeddedId
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     private HLocaleMemberPk id = new HLocaleMemberPk();
 
+    @Column(name = "isCoordinator")
     private boolean isCoordinator;
+
+    @Column(name = "isReviewer")
     private boolean isReviewer;
+
+    @Column(name = "isTranslator")
     private boolean isTranslator;
 
     public HLocaleMember(HPerson person, HLocale supportedLanguage,
@@ -63,30 +77,6 @@ public class HLocaleMember implements Serializable {
         setTranslator(isTranslator);
         setReviewer(isReviewer);
         setCoordinator(isCoordinator);
-    }
-
-    @EmbeddedId
-    protected HLocaleMemberPk getId() {
-        return id;
-    }
-
-    protected void setId(HLocaleMemberPk id) {
-        this.id = id;
-    }
-
-    @Column(name = "isCoordinator")
-    public boolean isCoordinator() {
-        return isCoordinator;
-    }
-
-    @Column(name = "isReviewer")
-    public boolean isReviewer() {
-        return isReviewer;
-    }
-
-    @Column(name = "isTranslator")
-    public boolean isTranslator() {
-        return isTranslator;
     }
 
     @Transient
@@ -101,25 +91,20 @@ public class HLocaleMember implements Serializable {
 
     @Embeddable
     @Setter
+    @Getter
+    @Access(AccessType.FIELD)
     @AllArgsConstructor
     @NoArgsConstructor
     public static class HLocaleMemberPk implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        private HPerson person;
-        private HLocale supportedLanguage;
-
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "personId", nullable = false)
-        public HPerson getPerson() {
-            return person;
-        }
+        private HPerson person;
 
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "supportedLanguageId")
-        public HLocale getSupportedLanguage() {
-            return supportedLanguage;
-        }
+        private HLocale supportedLanguage;
 
         @Override
         public boolean equals(Object obj) {

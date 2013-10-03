@@ -18,30 +18,33 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.workflow;
+package org.zanata.page.googleaccount;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.zanata.page.AbstractPage;
 import org.zanata.page.account.EditProfilePage;
-import org.zanata.page.googleaccount.GoogleAccountPage;
-import org.zanata.page.utility.HomePage;
+
+import com.google.common.base.Function;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterWorkFlow extends AbstractWebWorkFlow {
+public class GooglePermissionsPage extends AbstractPage {
+    public GooglePermissionsPage(WebDriver driver) {
+        super(driver);
+    }
 
-    public HomePage registerGoogleOpenID(String name, String username,
-            String password, String email) {
-        GoogleAccountPage googleAccountPage =
-                new BasicWorkFlow().goToHome().clickSignInLink()
-                        .selectGoogleOpenID();
-
-        EditProfilePage editProfilePage =
-                googleAccountPage.enterGoogleEmail(email)
-                        .enterGooglePassword(password).clickSignIn()
-                        .acceptPermissions();
-
-        return editProfilePage.enterName(name).enterUserName(username)
-                .enterEmail(email).clickSave();
+    public EditProfilePage acceptPermissions() {
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return getDriver().findElement(By.id("submit_approve_access"))
+                        .isEnabled();
+            }
+        });
+        getDriver().findElement(By.id("submit_approve_access")).click();
+        return new EditProfilePage(getDriver());
     }
 }

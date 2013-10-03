@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -41,63 +42,37 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)
+@Getter
+@Setter
+@Access(javax.persistence.AccessType.FIELD)
+@NoArgsConstructor
 public class HTextFlowHistory extends HTextContainer implements Serializable,
         ITextFlowHistory {
-
     private static final long serialVersionUID = 1L;
-
-    private Long id;
-    private Integer revision;
-    private HTextFlow textFlow;
-    private List<String> contents;
-    private boolean obsolete;
-
-    private Integer pos;
-
-    public HTextFlowHistory() {
-    }
-
-    public HTextFlowHistory(HTextFlow textFlow) {
-        this.revision = textFlow.getRevision();
-        this.textFlow = textFlow;
-        this.setContents(textFlow.getContents());
-    }
 
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
-    @Override
-    public Integer getRevision() {
-        return revision;
-    }
-
-    public void setRevision(Integer revision) {
-        this.revision = revision;
-    }
+    private Integer revision;
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tf_id")
-    public HTextFlow getTextFlow() {
-        return textFlow;
-    }
-
-    public void setTextFlow(HTextFlow textFlow) {
-        this.textFlow = textFlow;
-    }
+    private HTextFlow textFlow;
 
     @NotEmpty
     @Type(type = "text")
@@ -107,31 +82,16 @@ public class HTextFlowHistory extends HTextContainer implements Serializable,
             name = "text_flow_history_id"))
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)
-    @Override
-    public List<String> getContents() {
-        return contents;
-    }
+    private List<String> contents = Lists.newArrayList();
 
-    public void setContents(List<String> contents) {
-        this.contents = new ArrayList<String>(contents);
-    }
+    private boolean obsolete;
 
-    @Override
-    public Integer getPos() {
-        return pos;
-    }
+    private Integer pos;
 
-    public void setPos(Integer pos) {
-        this.pos = pos;
-    }
-
-    @Override
-    public boolean isObsolete() {
-        return obsolete;
-    }
-
-    public void setObsolete(boolean obsolete) {
-        this.obsolete = obsolete;
+    public HTextFlowHistory(HTextFlow textFlow) {
+        this.revision = textFlow.getRevision();
+        this.textFlow = textFlow;
+        this.setContents(textFlow.getContents());
     }
 
     /**
@@ -147,5 +107,4 @@ public class HTextFlowHistory extends HTextContainer implements Serializable,
     public boolean hasChanged(HTextFlow current) {
         return !Objects.equal(current.getRevision(), this.getRevision());
     }
-
 }

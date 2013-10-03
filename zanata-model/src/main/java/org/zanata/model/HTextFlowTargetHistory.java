@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Access;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -45,6 +46,11 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
 import com.google.common.base.Objects;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Immutable
@@ -73,6 +79,10 @@ import com.google.common.base.Objects;
                 name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 6,
                 query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
                         + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5") })
+@NoArgsConstructor
+@Access(javax.persistence.AccessType.FIELD)
+@Getter
+@Setter
 public class HTextFlowTargetHistory extends HTextContainer implements
         Serializable, ITextFlowTargetHistory {
     static final String QUERY_MATCHING_HISTORY =
@@ -84,28 +94,50 @@ public class HTextFlowTargetHistory extends HTextContainer implements
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_id")
     private HTextFlowTarget textFlowTarget;
 
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
     private Integer versionNum;
 
+    @Type(type = "text")
+    @AccessType("field")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(name = "HTextFlowTargetContentHistory",
+            joinColumns = @JoinColumn(name = "text_flow_target_history_id"))
+    @IndexColumn(name = "pos", nullable = false)
+    @Column(name = "content", nullable = false)
     private List<String> contents;
 
     private Date lastChanged;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
     private HPerson lastModifiedBy;
 
     private ContentState state;
 
+    @Column(name = "tf_revision")
     private Integer textFlowRevision;
 
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "translated_by_id", nullable = true)
+    @Setter(AccessLevel.PROTECTED)
     private HPerson translator;
 
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by_id", nullable = true)
+    @Setter(AccessLevel.PROTECTED)
     private HPerson reviewer;
-
-    public HTextFlowTargetHistory() {
-    }
 
     public HTextFlowTargetHistory(HTextFlowTarget target) {
         this.lastChanged = target.getLastChanged();
@@ -117,116 +149,6 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         translator = target.getTranslator();
         reviewer = target.getReviewer();
         this.setContents(target.getContents());
-    }
-
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
-
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    @NaturalId
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_id")
-    public HTextFlowTarget getTextFlowTarget() {
-        return textFlowTarget;
-    }
-
-    public void setTextFlowTarget(HTextFlowTarget textFlowTarget) {
-        this.textFlowTarget = textFlowTarget;
-    }
-
-    @Override
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-            @NaturalId
-            public
-            Integer getVersionNum() {
-        return versionNum;
-    }
-
-    public void setVersionNum(Integer versionNum) {
-        this.versionNum = versionNum;
-    }
-
-    @Override
-    @Type(type = "text")
-    @AccessType("field")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @JoinTable(name = "HTextFlowTargetContentHistory",
-            joinColumns = @JoinColumn(name = "text_flow_target_history_id"))
-    @IndexColumn(name = "pos", nullable = false)
-    @Column(name = "content", nullable = false)
-    public List<String> getContents() {
-        return contents;
-    }
-
-    public void setContents(List<String> contents) {
-        this.contents = new ArrayList<String>(contents);
-    }
-
-    public Date getLastChanged() {
-        return lastChanged;
-    }
-
-    public void setLastChanged(Date lastChanged) {
-        this.lastChanged = lastChanged;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "last_modified_by_id", nullable = true)
-    @Override
-    public HPerson getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(HPerson lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    @Override
-    public ContentState getState() {
-        return state;
-    }
-
-    public void setState(ContentState state) {
-        this.state = state;
-    }
-
-    @Override
-    @Column(name = "tf_revision")
-    public Integer getTextFlowRevision() {
-        return textFlowRevision;
-    }
-
-    public void setTextFlowRevision(Integer textFlowRevision) {
-        this.textFlowRevision = textFlowRevision;
-    }
-
-    @Override
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "translated_by_id", nullable = true)
-    public HPerson getTranslator() {
-        return translator;
-    }
-
-    @Override
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewed_by_id", nullable = true)
-    public HPerson getReviewer() {
-        return reviewer;
-    }
-
-    protected void setTranslator(HPerson translator) {
-        this.translator = translator;
-    }
-
-    protected void setReviewer(HPerson reviewer) {
-        this.reviewer = reviewer;
     }
 
     /**
