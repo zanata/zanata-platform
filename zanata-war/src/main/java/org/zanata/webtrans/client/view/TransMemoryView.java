@@ -308,7 +308,7 @@ public class TransMemoryView extends Composite implements
             resultTable.getFlexCellFormatter().setStyleName(i + 1,
                     NUM_TRANS_COL, "centered");
 
-            if (i % 2 == 1) {
+            if (odd(i)) {
                 resultTable.getRowFormatter().setStyleName(i + 1, "oddRow");
             }
 
@@ -356,6 +356,10 @@ public class TransMemoryView extends Composite implements
                     "centered");
         }
         container.setWidget(resultTable);
+    }
+
+    private boolean odd(int n) {
+        return n % 2 != 0;
     }
 
     @Override
