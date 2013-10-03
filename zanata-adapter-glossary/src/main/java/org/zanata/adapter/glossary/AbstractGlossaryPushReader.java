@@ -32,8 +32,6 @@ import org.zanata.rest.dto.Glossary;
  *
  **/
 public abstract class AbstractGlossaryPushReader {
-    private String fileExtension;
-
     public abstract List<Glossary> extractGlossary(Reader reader)
             throws IOException;
 
@@ -52,9 +50,5 @@ public abstract class AbstractGlossaryPushReader {
     // }
     // return new LocaleId(localLocale);
     // }
-
-    public String getFileExtension() {
-        return fileExtension;
-    }
 
 }

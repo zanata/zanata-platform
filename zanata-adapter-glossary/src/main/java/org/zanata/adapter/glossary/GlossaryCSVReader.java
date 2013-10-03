@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
@@ -68,7 +70,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
             List<Glossary> glossaries = new ArrayList<Glossary>();
             List<String[]> entries = csvReader.readAll();
 
-            validateCVSEntries(entries);
+            validateCSVEntries(entries);
 
             Map<Integer, String> descriptionMap = setupDescMap(entries);
             Map<Integer, LocaleId> localeColMap =
@@ -114,8 +116,8 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * Basic validation of CVS file format - At least 2 rows in the CVS file -
      * Empty content validation - All row must have the same column count
      */
-    private void validateCVSEntries(List<String[]> entries) {
-        if (entries.isEmpty() || entries == null) {
+    private void validateCSVEntries(@Nonnull List<String[]> entries) {
+        if (entries.isEmpty()) {
             throw new RuntimeException("Invalid CSV file - empty file");
         }
         if (entries.size() < 2) {

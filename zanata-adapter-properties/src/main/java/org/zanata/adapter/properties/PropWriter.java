@@ -26,8 +26,12 @@ public class PropWriter {
 
     private static void makeParentDirs(File f) {
         File parentFile = f.getParentFile();
-        if (parentFile != null)
-            parentFile.mkdirs();
+        if (parentFile != null && !parentFile.exists()) {
+            if (!parentFile.mkdirs()) {
+                throw new RuntimeException("Unable to create dirs: "
+                        + parentFile);
+            }
+        }
     }
 
     /**

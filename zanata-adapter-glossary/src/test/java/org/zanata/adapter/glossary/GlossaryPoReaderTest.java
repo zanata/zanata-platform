@@ -51,10 +51,10 @@ public class GlossaryPoReaderTest {
                                                                 // glossary
                                                                 // entries
 
-    private final int sourceSize1 = 578;
-    private final int sourceSize2 = 2645;
+    private static final int sourceSize1 = 578;
+    private static final int sourceSize2 = 2645;
 
-    private final int BATCH_SIZE = 50;
+    private static final int BATCH_SIZE = 50;
 
     @Test
     public void extractGlossaryTest() throws IOException {
