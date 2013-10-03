@@ -162,15 +162,16 @@ public class ViewAllStatusAction implements Serializable {
 
         @Override
         public int compareTo(Status o) {
-            int per =
-                    getStats().getTotal() == 0 ? 0 : (int) Math.ceil(100.0
-                            * getStats().getApproved() / getStats().getTotal());
-            int comparePer =
-                    o.getStats().getTotal() == 0 ? 0 : (int) Math.ceil(100.0
-                            * o.getStats().getApproved()
-                            / o.getStats().getTotal());
+            // TODO compare by locale too?
+            // TODO if totals are the same, we only need to compare approved
+            return Double.compare(o.getPercentApproved(), getPercentApproved());
+        }
 
-            return Double.compare(comparePer, per);
+        private double getPercentApproved() {
+            // TODO move to TranslationStatistics.getPercentApproved() ?
+            long total = getStats().getTotal();
+            long approved = getStats().getApproved();
+            return total == 0 ? 0 : 100d * approved / total;
         }
     }
 
