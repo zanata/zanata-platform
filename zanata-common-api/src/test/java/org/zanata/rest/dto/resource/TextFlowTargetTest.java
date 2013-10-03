@@ -11,12 +11,10 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.testng.annotations.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.DTOUtil;
 
 public class TextFlowTargetTest {
     ObjectMapper om = new ObjectMapper();
-    LocaleId esES = new LocaleId("es-ES");
 
     @Test
     public void testReadJsonPlural() throws JsonParseException,

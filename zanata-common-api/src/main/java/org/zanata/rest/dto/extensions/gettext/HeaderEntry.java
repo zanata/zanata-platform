@@ -1,5 +1,7 @@
 package org.zanata.rest.dto.extensions.gettext;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -12,7 +14,8 @@ import org.zanata.rest.dto.DTOUtil;
 @XmlType(name = "headerEntryType")
 @XmlRootElement(name = "header-entry")
 @JsonPropertyOrder({ "key", "value" })
-public class HeaderEntry {
+public class HeaderEntry implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String key;
     private String value;
 

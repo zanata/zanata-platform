@@ -19,6 +19,7 @@
  */
 package org.zanata.rest.dto.resource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,7 +36,8 @@ import org.zanata.rest.dto.DTOUtil;
  *
  **/
 @XmlType(name = "localesType")
-public class LocaleList implements List<String> {
+public class LocaleList implements List<String>, Serializable {
+    private static final long serialVersionUID = 1L;
     private final List<String> locales = new ArrayList<String>();
 
     @Override

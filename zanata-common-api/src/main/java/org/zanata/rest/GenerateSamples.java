@@ -28,21 +28,21 @@ import org.zanata.rest.dto.ProjectList;
 import org.zanata.rest.dto.resource.ResourceMetaList;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 //import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
 
+@SuppressFBWarnings("DM_DEFAULT_ENCODING")
 public class GenerateSamples {
 
     private final ObjectMapper mapper;
     private final PrintStream out;
 
-    private final PrintStream noCloseOut;
-
     public GenerateSamples(PrintStream out) {
-        this.out = out;
         mapper = new ObjectMapper();
         mapper.getSerializationConfig().enable(Feature.INDENT_OUTPUT);
 
-        noCloseOut = new PrintStream(out) {
+        this.out = new PrintStream(out) {
             @Override
             public void close() {
             }
@@ -102,7 +102,7 @@ public class GenerateSamples {
         }
         out.println();
         out.println("{{{");
-        mapper.writeValue(noCloseOut, obj);
+        mapper.writeValue(out, obj);
         out.println();
         out.println("}}}");
         out.println();

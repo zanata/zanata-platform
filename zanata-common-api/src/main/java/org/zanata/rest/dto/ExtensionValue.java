@@ -1,5 +1,7 @@
 package org.zanata.rest.dto;
 
-public interface ExtensionValue {
+import java.io.Serializable;
+
+public interface ExtensionValue extends Serializable {
 
 }

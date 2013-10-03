@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
@@ -70,9 +71,11 @@ public class GenerateSchema {
 
         context.generateSchema(schemaOutputResolver);
         // System.out.println(outputMap);
-        for (String namespace : outputMap.keySet()) {
+        for (Map.Entry<String, String> entry : outputMap.entrySet()) {
+            String namespace = entry.getKey();
+            String schema = entry.getValue();
             System.out.println("schema for namespace: '" + namespace + "'");
-            System.out.println(outputMap.get(namespace));
+            System.out.println(schema);
         }
     }
 

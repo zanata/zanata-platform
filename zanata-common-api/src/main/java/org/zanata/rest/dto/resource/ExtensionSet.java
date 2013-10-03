@@ -1,5 +1,6 @@
 package org.zanata.rest.dto.resource;
 
+import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -11,8 +12,9 @@ import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.ExtensionValue;
 
 public class ExtensionSet<T extends ExtensionValue> extends
-        AbstractCollection<T> {
+        AbstractCollection<T> implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private Map<Class<?>, T> extensions = new LinkedHashMap<Class<?>, T>();
 
     @Override

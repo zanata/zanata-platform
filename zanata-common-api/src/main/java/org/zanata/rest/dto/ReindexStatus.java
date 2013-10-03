@@ -35,8 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 public class ReindexStatus {
     private boolean startedReindex;
 
-    private long percentageComplete;
-
     private long indexedElements;
 
     private long totalElements;

@@ -24,7 +24,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Path;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.Method;
@@ -76,8 +78,6 @@ public class AbstractJAXRSTest {
         Class<?> resourceInterface = getResourceInterfaceFor(clazz);
         Class<?> enunciateInterface =
                 getEnunciateInterfaceFor(resourceInterface);
-        assertThat("enunciate interface is needed for docs",
-                enunciateInterface != null);
 
         String name = clazz.getSimpleName();
         checkPath(name, clazz, resourceInterface, enunciateInterface,
@@ -167,7 +167,7 @@ public class AbstractJAXRSTest {
         return annotationsForResourceMethods;
     }
 
-    private Class<?> getEnunciateInterfaceFor(Class<?> resourceInterface)
+    private @Nonnull Class<?> getEnunciateInterfaceFor(Class<?> resourceInterface)
             throws ClassNotFoundException {
         String enunciateName =
                 ENUNCIATE_PACKAGE + "." + resourceInterface.getSimpleName();

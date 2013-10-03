@@ -20,6 +20,18 @@
     <url>https://github.com/zanata/zanata-api</url>
   </scm>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <failOnError>true</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <modules>
     <module>zanata-common-api</module>
   </modules>

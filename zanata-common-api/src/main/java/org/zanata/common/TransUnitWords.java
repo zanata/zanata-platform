@@ -29,7 +29,8 @@ public class TransUnitWords extends AbstractTranslationCount {
         if (total <= 0) {
             return 0;
         } else {
-            double per = 100 * getApproved() / total;
+            double per = 100d * getApproved() / total;
+            // TODO why are we using ceil?
             return (int) Math.ceil(per);
         }
     }
@@ -44,5 +45,10 @@ public class TransUnitWords extends AbstractTranslationCount {
             return super.equals(obj);
         }
         return false;
+    }
+
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42; // any arbitrary constant will do
     }
 }

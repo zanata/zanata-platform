@@ -49,7 +49,7 @@ public class DocumentFileUploadForm implements Serializable {
 
     @FormParam("file")
     @PartType("application/octet-stream")
-    private InputStream fileStream;
+    private transient InputStream fileStream;
 
     @FormParam("type")
     @PartType("text/plain")

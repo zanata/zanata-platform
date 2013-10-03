@@ -246,11 +246,11 @@ public class TranslationStatistics implements Serializable {
 
     @XmlTransient
     public Date getLastTranslatedDate() {
-        return lastTranslatedDate;
+        return new Date(lastTranslatedDate.getTime());
     }
 
     public void setLastTranslatedDate(Date lastTranslatedDate) {
-        this.lastTranslatedDate = lastTranslatedDate;
+        this.lastTranslatedDate = new Date(lastTranslatedDate.getTime());
     }
 
     @XmlTransient
@@ -268,7 +268,7 @@ public class TranslationStatistics implements Serializable {
         if (total <= 0) {
             return 0;
         } else {
-            return 100 * getTranslatedAndApproved() / total;
+            return 100d * getTranslatedAndApproved() / total;
         }
     }
 
@@ -278,7 +278,7 @@ public class TranslationStatistics implements Serializable {
         if (total <= 0) {
             return 0;
         } else {
-            return 100 * getDraft() / total;
+            return 100d * getDraft() / total;
         }
     }
 
@@ -288,7 +288,7 @@ public class TranslationStatistics implements Serializable {
         if (total <= 0) {
             return 0;
         } else {
-            return 100 * getUntranslated() / total;
+            return 100d * getUntranslated() / total;
         }
     }
 

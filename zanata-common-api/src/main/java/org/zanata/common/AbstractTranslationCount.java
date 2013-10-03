@@ -136,4 +136,9 @@ public abstract class AbstractTranslationCount implements Serializable {
         }
         return false;
     }
+
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42; // any arbitrary constant will do
+    }
 }
