@@ -1,5 +1,7 @@
 package com.google.gwt.core.client;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * After upgrade to GWT 2.5, some of the gwt related libraries start to break.
  * i.e. gwt-log see http://code.google.com/p/gwt-log/issues/detail?id=70
@@ -11,5 +13,6 @@ package com.google.gwt.core.client;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public abstract class GWTBridge extends com.google.gwt.core.shared.GWTBridge {
 }

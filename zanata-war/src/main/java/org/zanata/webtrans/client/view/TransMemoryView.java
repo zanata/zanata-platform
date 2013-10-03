@@ -358,7 +358,7 @@ public class TransMemoryView extends Composite implements
         container.setWidget(resultTable);
     }
 
-    private boolean odd(int n) {
+    private static boolean odd(int n) {
         return n % 2 != 0;
     }
 

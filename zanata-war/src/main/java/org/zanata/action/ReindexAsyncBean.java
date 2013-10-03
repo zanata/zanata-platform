@@ -193,7 +193,7 @@ public class ReindexAsyncBean implements Serializable {
             // look at updating isInProgress not to care about count
             if (getHandle().getMaxProgress() == 0) {
                 log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
-                return null;
+                return false;
             }
             for (Class<?> clazz : indexables) {
                 if (!getHandle().isCancelled()

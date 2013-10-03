@@ -108,7 +108,6 @@
             <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
-            <usedDependency>com.google.code.findbugs:annotations</usedDependency>
             <usedDependency>quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
