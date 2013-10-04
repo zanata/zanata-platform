@@ -1,6 +1,9 @@
 package org.zanata.webtrans.client.events;
 
+import java.util.Date;
+
 import org.zanata.webtrans.client.ui.InlineLink;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
@@ -28,9 +31,10 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
 
     private final Severity severity;
     private final String message;
-    private final String summary;
+    private final String details;
     private boolean displayAsHtml;
     private InlineLink inlineLink;
+    private Date date;
 
     public NotificationEvent(Severity severity, String message) {
         this(severity, message, null);
@@ -38,16 +42,17 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
 
     public NotificationEvent(Severity severity, String message,
             InlineLink inlineLink) {
-        this(severity, message, message, false, inlineLink);
+        this(severity, message, null, false, inlineLink);
     }
 
-    public NotificationEvent(Severity severity, String summary, String message,
+    public NotificationEvent(Severity severity, String message, String details,
             boolean displayAsHtml, InlineLink inlineLink) {
         this.severity = severity;
         this.message = message;
         this.inlineLink = inlineLink;
-        this.summary = summary;
+        this.details = details;
         this.displayAsHtml = displayAsHtml;
+        this.date = new Date();
     }
 
     public Severity getSeverity() {
@@ -62,8 +67,8 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
         return inlineLink;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getDetails() {
+        return details;
     }
 
     public boolean isDisplayAsHtml() {
@@ -78,5 +83,9 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     @Override
     public Type<NotificationEventHandler> getAssociatedType() {
         return getType();
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

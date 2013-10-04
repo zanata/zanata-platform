@@ -22,9 +22,8 @@ package org.zanata.webtrans.client.view;
 
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
-import org.zanata.webtrans.client.ui.InlineLink;
 
 /**
  *
@@ -34,8 +33,7 @@ import org.zanata.webtrans.client.ui.InlineLink;
 public interface NotificationDisplay extends WidgetDisplay {
     void clearMessages();
 
-    void appendMessage(Severity severity, String summary, String message,
-            boolean displayAsHtml, InlineLink inlineLink);
+    void appendMessage(NotificationEvent event);
 
     void setMessagesToKeep(int count);
 

@@ -21,7 +21,17 @@
 
 package org.zanata.webtrans.client.presenter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.model.TestFixture.makeTransUnit;
+
 import java.util.List;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
@@ -32,7 +42,6 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
-import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -41,26 +50,20 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
-import org.zanata.webtrans.shared.model.*;
-import org.zanata.webtrans.shared.rpc.MergeRule;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provider;
-
-import net.customware.gwt.presenter.client.EventBus;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.model.TestFixture.makeTransUnit;
 
 /**
  * @author Patrick Huang <a

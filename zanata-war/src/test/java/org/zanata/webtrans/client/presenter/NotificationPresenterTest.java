@@ -77,7 +77,7 @@ public class NotificationPresenterTest {
     public void onNotificationInfo() {
         int msgCount = 5;
         String msg = "Test message";
-        String summary = "Test summary";
+        String details = "Test details";
         Severity severity = Severity.Info;
 
         NotificationEvent mockEvent = mock(NotificationEvent.class);
@@ -86,7 +86,7 @@ public class NotificationPresenterTest {
         when(mockDisplay.getMessageCount()).thenReturn(msgCount);
         when(mockEvent.getSeverity()).thenReturn(severity);
         when(mockEvent.getMessage()).thenReturn(msg);
-        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getDetails()).thenReturn(details);
         when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
         notificationPresenter.bind();
@@ -94,15 +94,14 @@ public class NotificationPresenterTest {
         notificationPresenter.onNotification(mockEvent);
 
         verify(mockListener).setNotificationLabel(msgCount, severity);
-        verify(mockDisplay).appendMessage(severity, summary, msg, false,
-                mockInlineLink);
+        verify(mockDisplay).appendMessage(mockEvent);
     }
 
     @Test
     public void onNotificationError() {
         int msgCount = 5;
         String msg = "Test message";
-        String summary = "Test summary";
+        String details = "Test details";
         Severity severity = Severity.Error;
 
         NotificationEvent mockEvent = mock(NotificationEvent.class);
@@ -111,14 +110,13 @@ public class NotificationPresenterTest {
         when(mockDisplay.getMessageCount()).thenReturn(msgCount);
         when(mockEvent.getSeverity()).thenReturn(severity);
         when(mockEvent.getMessage()).thenReturn(msg);
-        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getDetails()).thenReturn(details);
         when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
         notificationPresenter.setNotificationListener(mockListener);
         notificationPresenter.onNotification(mockEvent);
 
-        verify(mockDisplay).appendMessage(severity, summary, msg, false,
-                mockInlineLink);
+        verify(mockDisplay).appendMessage(mockEvent);
         verify(mockListener).showNotification();
         verify(mockListener).setNotificationLabel(msgCount, severity);
     }
@@ -127,7 +125,7 @@ public class NotificationPresenterTest {
     public void onMsgCount() {
         int msgCount = 200;
         String msg = "Test message";
-        String summary = "Msg summary";
+        String details = "Msg details";
         Severity severity = Severity.Info;
 
         NotificationEvent mockEvent = mock(NotificationEvent.class);
@@ -136,7 +134,7 @@ public class NotificationPresenterTest {
         // when(mockDisplay.getMessageCount()).thenReturn(msgCount);
         when(mockEvent.getSeverity()).thenReturn(severity);
         when(mockEvent.getMessage()).thenReturn(msg);
-        when(mockEvent.getSummary()).thenReturn(summary);
+        when(mockEvent.getDetails()).thenReturn(details);
         when(mockEvent.getInlineLink()).thenReturn(mockInlineLink);
 
         notificationPresenter.setNotificationListener(mockListener);
@@ -144,7 +142,6 @@ public class NotificationPresenterTest {
             notificationPresenter.onNotification(mockEvent);
         }
 
-        verify(mockDisplay, times(msgCount)).appendMessage(severity, summary,
-                msg, false, mockInlineLink);
+        verify(mockDisplay, times(msgCount)).appendMessage(mockEvent);
     }
 }

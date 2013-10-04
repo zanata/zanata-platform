@@ -54,7 +54,6 @@ import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
-import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -96,7 +95,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
     private final UserOptionsService userOptionsService;
     private final SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation;
     private final ValidationWarningDisplay validationWarning;
-    private final NavigationService navigationService;
 
     private TargetContentsDisplay display;
     private List<TargetContentsDisplay> displayList = Collections.emptyList();
@@ -119,8 +117,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             TranslationHistoryPresenter historyPresenter,
             UserOptionsService userOptionsService,
             SaveAsApprovedConfirmationDisplay saveAsApprovedConfirmation,
-            ValidationWarningDisplay validationWarning,
-            NavigationService navigationService) {
+            ValidationWarningDisplay validationWarning) {
         this.displayProvider = displayProvider;
         this.editorTranslators = editorTranslators;
         this.userWorkspaceContext = userWorkspaceContext;
@@ -133,7 +130,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         this.userOptionsService = userOptionsService;
         this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
         this.validationWarning = validationWarning;
-        this.navigationService = navigationService;
         isDisplayButtons =
                 userOptionsService.getConfigHolder().getState()
                         .isDisplayButtons();
@@ -164,13 +160,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
     }
 
     public void gotoRow(DocumentInfo documentInfo, TransUnitId transUnitId) {
-        int index = navigationService.findRowIndexById(transUnitId);
-        if (index == NavigationService.UNDEFINED) {
-            eventBus.fireEvent(new RequestSelectTableRowEvent(documentInfo,
-                    transUnitId));
-        } else {
-            onEditorClicked(transUnitId, index);
-        }
+        eventBus.fireEvent(new RequestSelectTableRowEvent(documentInfo,
+                transUnitId));
     }
 
     /**

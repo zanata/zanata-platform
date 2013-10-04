@@ -1,103 +1,108 @@
 package org.zanata.webtrans.client.ui;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.keys.ShortcutContext;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
+import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.DateUtil;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.inject.Inject;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public class NotificationDetailsBox extends DialogBox {
+public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
 
-    private final HTML messageWidget;
-    private final PushButton closeButton;
-    private final HorizontalPanel buttonPanel;
-    private final HorizontalPanel topPanel;
-    private final InlineLabel severityLabel;
-    private final InlineLabel timeLabel;
+    private static NotificationDetailsBoxUiBinder uiBinder = GWT
+            .create(NotificationDetailsBoxUiBinder.class);
 
-    public NotificationDetailsBox() {
-        super(true);
-        setStyleName("gwt-DialogBox-NoFixedSize");
+    @UiField(provided = true)
+    DialogBoxCloseButton closeButton;
 
-        topPanel = new HorizontalPanel();
-        severityLabel = new InlineLabel();
-        timeLabel = new InlineLabel();
-        timeLabel.setStyleName("time_label");
-        topPanel.add(severityLabel);
-        topPanel.add(timeLabel);
+    @UiField
+    HTMLPanel messageWrapper, message, details;
 
-        buttonPanel = new HorizontalPanel();
-        buttonPanel.setStyleName("buttonPanel");
+    private final WebTransMessages messages;
 
-        closeButton = new PushButton("Close");
-        closeButton.addStyleName("button");
+    @Inject
+    public NotificationDetailsBox(WebTransMessages messages,
+            KeyShortcutPresenter keyShortcutPresenter) {
 
-        VerticalPanel panel = new VerticalPanel();
-        panel.setWidth("100%");
+        super(true, false, ShortcutContext.NotificationDetailsPopup,
+                keyShortcutPresenter);
 
-        messageWidget = new HTML();
-        messageWidget.addStyleName("message");
+        this.messages = messages;
 
-        buttonPanel.add(closeButton);
+        closeButton = new DialogBoxCloseButton(this);
+        HTMLPanel container = uiBinder.createAndBindUi(this);
 
-        panel.add(topPanel);
-        panel.add(messageWidget);
-        panel.add(buttonPanel);
+        setGlassEnabled(true);
+        getCaption().setText(messages.notification());
 
-        panel.setCellHorizontalAlignment(buttonPanel,
-                HasHorizontalAlignment.ALIGN_RIGHT);
-
-        add(panel);
-
-        registerHandler();
+        setWidget(container);
     }
 
-    private void registerHandler() {
-        closeButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                hide();
+    public void setMessage(NotificationEvent notificationEvent) {
+        String notificationMessage = notificationEvent.getMessage();
+        String notificationDetails = notificationEvent.getDetails();
+
+        getCaption().setText(
+                messages.notification()
+                        + " - "
+                        + DateUtil.formatLongDateTime(notificationEvent
+                                .getDate()));
+        messageWrapper.setStyleName(getSeverityClass(notificationEvent
+                .getSeverity()));
+
+        if (notificationEvent.isDisplayAsHtml()) {
+            SafeHtmlBuilder builder =
+                    new SafeHtmlBuilder()
+                            .appendHtmlConstant(notificationMessage);
+            message.getElement().setInnerHTML(builder.toSafeHtml().asString());
+        } else {
+            message.getElement().setInnerHTML(notificationMessage);
+        }
+
+        if (notificationEvent.isDisplayAsHtml()) {
+            if (!Strings.isNullOrEmpty(notificationDetails)) {
+                SafeHtmlBuilder builder =
+                        new SafeHtmlBuilder()
+                                .appendHtmlConstant(notificationDetails);
+                details.getElement().setInnerHTML(
+                        builder.toSafeHtml().asString());
+                details.setVisible(true);
+            } else {
+                details.setVisible(false);
             }
-        });
+        } else {
+            if (!Strings.isNullOrEmpty(notificationDetails)) {
+                details.getElement().setInnerHTML(notificationDetails);
+                details.setVisible(true);
+            } else {
+                details.setVisible(false);
+            }
+        }
     }
 
-    public void setMessageDetails(Severity severity, String title, String time,
-            String message, boolean isSafeHtml) {
-        timeLabel.setText(time);
-        severityLabel.setStyleName("icon-info-circle-2");
-        severityLabel.addStyleName("severity_icon");
-        if (severity == Severity.Error) {
-            severityLabel.addStyleName("severity_error");
-        } else if (severity == Severity.Warning) {
-            severityLabel.addStyleName("severity_warning");
-        } else {
-            severityLabel.addStyleName("severity_info");
+    private String getSeverityClass(Severity severity) {
+        if (severity == Severity.Warning) {
+            return "message--warning l__wrapper l--pad-all-half";
+        } else if (severity == Severity.Error) {
+            return "message--danger l__wrapper l--pad-all-half";
         }
+        return "message--highlight l__wrapper l--pad-all-half";
+    }
 
-        messageWidget.setHTML("");
-        messageWidget.setText("");
-        setText(title);
-        if (isSafeHtml) {
-            SafeHtmlBuilder builder = new SafeHtmlBuilder();
-            builder.appendHtmlConstant(message);
-            messageWidget.setHTML(builder.toSafeHtml());
-        } else {
-            messageWidget.setText(message);
-        }
-
-        buttonPanel.clear();
-        buttonPanel.add(closeButton);
+    interface NotificationDetailsBoxUiBinder extends
+            UiBinder<HTMLPanel, NotificationDetailsBox> {
     }
 }

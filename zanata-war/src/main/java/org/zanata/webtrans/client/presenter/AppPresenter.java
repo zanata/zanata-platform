@@ -20,6 +20,11 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -32,6 +37,7 @@ import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.events.NotificationEventHandler;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
@@ -50,21 +56,17 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import net.customware.gwt.presenter.client.PresenterRevealedHandler;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         ShowSideMenuEventHandler, WorkspaceContextUpdateEventHandler,
         DocumentStatsUpdatedEventHandler, PresenterRevealedHandler,
         AttentionModeActivationEventHandler, ProjectStatsUpdatedEventHandler,
-        AppDisplay.Listener {
+        NotificationEventHandler, AppDisplay.Listener {
 
     private static final String WORKSPACE_TITLE_QUERY_PARAMETER_KEY = "title";
 
@@ -142,6 +144,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 AttentionModeActivationEvent.getType(), this));
         registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(),
                 this));
+        registerHandler(eventBus.addHandler(NotificationEvent.getType(), this));
 
         if (selectedDocument == null) {
             display.enableTab(MainView.Editor, false);
@@ -284,6 +287,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     /**
      * Set selected document to the given document, update name and stats to
      * match the newly selected document.
+     *
      * @param docId
      *            id of the document to select
      */
@@ -401,6 +405,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     /**
      * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
+     *
      * @param projectStats
      *            project stats
      * @param selectedDocumentStats
@@ -456,5 +461,13 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             currentWordStats.add(wordStats);
         }
         refreshStatsDisplay();
+    }
+
+    @Override
+    public void onNotification(NotificationEvent event) {
+        if (event.getSeverity() == Severity.Warning
+                || event.getSeverity() == Severity.Error) {
+            display.showNotification(event);
+        }
     }
 }
