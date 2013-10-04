@@ -28,6 +28,8 @@ import java.security.MessageDigest;
 
 import org.apache.commons.io.output.WriterOutputStream;
 
+import com.google.common.base.Charsets;
+
 /**
  * A transparent writer that updates the associated message digest using the
  * bits going through the writer.
@@ -44,7 +46,8 @@ public class DigestWriter extends Writer {
     public DigestWriter(Writer delegateWriter, MessageDigest digest) {
         this.digestWriter =
                 new OutputStreamWriter(new DigestOutputStream(
-                        new WriterOutputStream(delegateWriter), digest));
+                        new WriterOutputStream(delegateWriter), digest),
+                        Charsets.UTF_8);
     }
 
     @Override

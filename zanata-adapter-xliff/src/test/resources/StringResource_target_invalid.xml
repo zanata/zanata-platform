@@ -10,7 +10,7 @@ http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd"
       <trans-unit id="transunit1">
         <source>Translation Unit 1</source>
         <target>Translation 1 with embedded test tag
-          <test></test>
+          <anIllegalTag></anIllegalTag>
         </target>
         <context-group name="ctx">
           <context context-type="sourcefile">/test/file1</context>

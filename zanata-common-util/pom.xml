@@ -20,6 +20,17 @@
   </scm>
 
   <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
+            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
     <resources>
       <resource>
         <directory>src/main/java</directory>
@@ -51,6 +62,11 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
     </dependency>
 
     <dependency>

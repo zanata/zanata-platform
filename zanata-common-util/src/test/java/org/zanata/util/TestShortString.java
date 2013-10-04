@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.testng.annotations.Test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class TestShortString {
 
     @Test
@@ -15,6 +17,7 @@ public class TestShortString {
     }
 
     @Test
+    @SuppressFBWarnings("ES_COMPARING_STRINGS_WITH_EQ")
     public void testShortenLongString() {
         String s1 =
                 "string which is really quite long. string which is really quite long. string which is really quite long. string which is really quite long. string which is really quite long. ";

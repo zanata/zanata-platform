@@ -124,20 +124,20 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        Resource resource =
-                reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                        ValidationType.CONTENT.toString());
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+                ValidationType.CONTENT.toString());
+        assert false;
     }
 
     @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
+            expectedExceptionsMessageRegExp = "Invalid XLIFF file format")
     public void invalidSourceContentElementTest2() throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        Resource resource =
-                reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                        ValidationType.XSD.toString());
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+                ValidationType.XSD.toString());
+        assert false;
     }
 
     @Test(
@@ -149,25 +149,26 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        Resource resource =
-                reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                        ValidationType.CONTENT.toString());
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+                ValidationType.CONTENT.toString());
+        assert false;
     }
 
     @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
+            expectedExceptionsMessageRegExp = "Invalid XLIFF file format")
     public void unsupportedSourceContentElementTest2()
             throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        Resource resource =
-                reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                        ValidationType.XSD.toString());
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+                ValidationType.XSD.toString());
+        assert false;
     }
 
     @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = ".*test is not legal.*")
+            expectedExceptionsMessageRegExp = "Invalid XLIFF: "
+                    + "anIllegalTag is not legal inside target")
     public void invalidTargetContentElementTest() throws FileNotFoundException {
         // expect RuntimeException with tu:transunit1 - target
         File fileTarget =
@@ -175,19 +176,9 @@ public class XliffReaderTest {
         Resource resource =
                 reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                         ValidationType.CONTENT.toString());
-        TranslationsResource tr = reader.extractTarget(fileTarget);
-    }
-
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF file format  ")
-    public void invalidTargetContentElementTest2() throws FileNotFoundException {
-        // expect RuntimeException with tu:transunit1 - target
-        File fileTarget =
-                new File(TEST_DIR, "/StringResource_target_invalid.xml");
-        Resource resource =
-                reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                        ValidationType.XSD.toString());
-        TranslationsResource tr = reader.extractTarget(fileTarget);
+        assert resource != null;
+        reader.extractTarget(fileTarget);
+        assert false;
     }
 
     private Resource getTemplateDoc() throws FileNotFoundException {

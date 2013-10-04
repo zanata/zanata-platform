@@ -27,9 +27,16 @@ public class ShortString {
         return input = shorten(input);
     }
 
+    /**
+     * Truncate a string to be no longer than MAX_LENGTH, using an ellipsis at
+     * the end. If the string is already short enough, return the same string.
+     * @param s String to shorten if required
+     * @return a new String if shortening was required, otherwise s
+     */
     public static String shorten(String s) {
-        if (s.length() <= MAX_LENGTH)
+        if (s.length() <= MAX_LENGTH) {
             return s;
+        }
         return s.substring(0, MAX_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
     }
 

@@ -21,6 +21,7 @@
 package org.zanata.adapter.po;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -55,6 +56,8 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
+
+import com.google.common.base.Charsets;
 
 public class PoWriter2 {
     private static final Logger log = LoggerFactory.getLogger(PoWriter2.class);
@@ -156,8 +159,14 @@ public class PoWriter2 {
      */
     public void writePotToFile(File potFile, Resource doc) throws IOException {
         PathUtil.makeParents(potFile);
-        FileWriter fWriter = new FileWriter(potFile);
-        write(fWriter, "UTF-8", doc, null);
+        Writer fWriter =
+                new OutputStreamWriter(new FileOutputStream(potFile),
+                        Charsets.UTF_8);
+        try {
+            write(fWriter, "UTF-8", doc, null);
+        } finally {
+            fWriter.close();
+        }
     }
 
     /**
@@ -168,6 +177,7 @@ public class PoWriter2 {
             throws IOException {
         OutputStreamWriter osWriter = new OutputStreamWriter(stream, charset);
         write(osWriter, charset, doc, null);
+        osWriter.flush();
     }
 
     /**
@@ -210,13 +220,19 @@ public class PoWriter2 {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        FileWriter fWriter = new FileWriter(poFile);
-        DigestWriter dWriter = new DigestWriter(fWriter, md5Digest);
-        write(dWriter, "UTF-8", doc, targetDoc);
+        Writer fWriter =
+                new OutputStreamWriter(new FileOutputStream(poFile),
+                        Charsets.UTF_8);
+        try {
+            DigestWriter dWriter = new DigestWriter(fWriter, md5Digest);
+            write(dWriter, "UTF-8", doc, targetDoc);
 
-        FileDetails details = new FileDetails(poFile);
-        details.setMd5(new String(Hex.encodeHex(md5Digest.digest())));
-        return details;
+            FileDetails details = new FileDetails(poFile);
+            details.setMd5(new String(Hex.encodeHex(md5Digest.digest())));
+            return details;
+        } finally {
+            fWriter.close();
+        }
     }
 
     /**
@@ -232,6 +248,7 @@ public class PoWriter2 {
             TranslationsResource targetDoc) throws IOException {
         OutputStreamWriter osWriter = new OutputStreamWriter(stream, charset);
         write(osWriter, charset, doc, targetDoc);
+        osWriter.flush();
     }
 
     /**

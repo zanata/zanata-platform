@@ -21,12 +21,17 @@
 package org.zanata.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.binary.Hex;
 import org.testng.annotations.Test;
 import org.zanata.common.io.DigestWriter;
+
+import com.google.common.base.Charsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -42,7 +47,9 @@ public class HashUtilTest {
         tmpFile.deleteOnExit();
 
         MessageDigest md5 = MessageDigest.getInstance("MD5");
-        FileWriter fw = new FileWriter(tmpFile);
+        Writer fw =
+                new OutputStreamWriter(new FileOutputStream(tmpFile),
+                        Charsets.UTF_8);
         DigestWriter dw = new DigestWriter(fw, md5);
 
         dw.write("This is a new Temporary file");

@@ -37,6 +37,8 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import com.google.common.base.Charsets;
+
 /**
  * @author aeng
  *
@@ -94,10 +96,10 @@ public class XliffReader extends XliffCommon {
             Validator validator = schema.newValidator();
             validator.validate(source);
         } catch (SAXException saxException) {
-            throw new RuntimeException("Invalid XLIFF file format  ",
+            throw new RuntimeException("Invalid XLIFF file format",
                     saxException);
         } catch (IOException ioException) {
-            throw new RuntimeException("Invalid XLIFF file format  ",
+            throw new RuntimeException("Invalid XLIFF file format",
                     ioException);
         }
     }
@@ -163,7 +165,7 @@ public class XliffReader extends XliffCommon {
             }
             xmlr.close();
         } catch (XMLStreamException e) {
-            throw new RuntimeException("Invalid XLIFF file format  ", e);
+            throw new RuntimeException("Invalid XLIFF file format", e);
         }
     }
 
@@ -338,7 +340,7 @@ public class XliffReader extends XliffCommon {
         return null;
     }
 
-    public class Input implements LSInput {
+    public static class Input implements LSInput {
 
         private String publicId;
 
@@ -377,7 +379,7 @@ public class XliffReader extends XliffCommon {
                 try {
                     byte[] input = new byte[inputStream.available()];
                     inputStream.read(input);
-                    String contents = new String(input);
+                    String contents = new String(input, Charsets.UTF_8);
                     return contents;
                 } catch (IOException e) {
                     e.printStackTrace();
