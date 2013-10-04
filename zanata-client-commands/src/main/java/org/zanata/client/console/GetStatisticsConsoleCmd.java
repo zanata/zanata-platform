@@ -34,7 +34,6 @@ import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.stats.GetStatisticsCommand;
 import org.zanata.client.commands.stats.GetStatisticsOptions;
 import org.zanata.client.config.LocaleList;
-import org.zanata.client.console.converter.URLConverter;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -52,7 +51,7 @@ public class GetStatisticsConsoleCmd implements Command, GetStatisticsOptions
    @Option private String projectType;
    @Option private LocaleList localeMapList;
    @Option private String key;
-   @Option(converter = URLConverter.class) private URL url;
+   @Option(/*converter = URLConverter.class*/) private URL url;
    @Option private File userConfig;
    @Option private String username;
    @Option private boolean logHttp;

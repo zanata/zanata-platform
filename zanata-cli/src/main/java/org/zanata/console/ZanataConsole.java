@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.parser.CommandLineParser;
 import org.jboss.aesh.console.AeshCommandRegistryBuilder;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
@@ -36,7 +37,9 @@ import org.jboss.aesh.console.settings.SettingsBuilder;
 import org.jboss.aesh.terminal.CharacterType;
 import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalCharacter;
-import org.zanata.client.console.GetStatisticsConsoleCmd;
+import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
+import org.zanata.console.util.Args4jCommandGenerator;
+import org.zanata.console.util.GetStatisticsConsoleCmd;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,13 +70,15 @@ public class ZanataConsole
       AeshConsole aeshConsole = new AeshConsoleBuilder().settings(settings)
             .prompt(prompt)
             .commandRegistry(
-                  new AeshCommandRegistryBuilder()
-                        .command(GetStatisticsConsoleCmd.class)
-                        .command(ExitCommand.class)
-                        .command(LsCommand.class)
-                        .command(SampleCommand.class)
-                        .command(HelpCommand.class)
-                        .create())
+                new AeshCommandRegistryBuilder()
+                    .command(new CommandLineParser(Args4jCommandGenerator.generateCommand("stats", "",
+                        GetStatisticsOptionsImpl.class)), new GetStatisticsConsoleCmd())
+                        //.command(GetStatisticsConsoleCmd.class)
+                    .command(ExitCommand.class)
+                    .command(LsCommand.class)
+                    .command(SampleCommand.class)
+                    .command(HelpCommand.class)
+                    .create())
             .create();
 
       aeshConsole.start();
