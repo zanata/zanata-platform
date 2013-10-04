@@ -1,6 +1,9 @@
 package org.zanata.client;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 
 import org.kohsuke.args4j.Argument;
@@ -27,6 +30,8 @@ import org.zanata.util.VersionUtility;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -41,8 +46,8 @@ public class ZanataClient extends BasicOptionsImpl {
     private boolean version;
     private final CmdLineParser parser = new CmdLineParser(this);
     private final AppAbortStrategy abortStrategy;
-    private final PrintStream out;
-    private final PrintStream err;
+    private final PrintWriter out;
+    private final PrintWriter err;
 
     @Argument(handler = SubCommandHandler2.class, metaVar = "<command>")
     @SubCommands({
@@ -93,12 +98,27 @@ public class ZanataClient extends BasicOptionsImpl {
         return null;
     }
 
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     ZanataClient() {
-        this(new SystemExitStrategy(), System.out, System.err);
+        this(new SystemExitStrategy(), new PrintWriter(System.out),
+                new PrintWriter(System.err));
     }
 
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
+    @Deprecated
     public ZanataClient(AppAbortStrategy strategy, PrintStream out,
             PrintStream err) {
+        this(strategy, new PrintWriter(new OutputStreamWriter(out)),
+                new PrintWriter(new OutputStreamWriter(err)));
+    }
+
+    public ZanataClient(AppAbortStrategy strategy, Writer out,
+            Writer err) {
+        this(strategy, new PrintWriter(out), new PrintWriter(err));
+    }
+
+    public ZanataClient(AppAbortStrategy strategy, PrintWriter out,
+            PrintWriter err) {
         this.abortStrategy = strategy;
         this.out = out;
         this.err = err;
@@ -172,14 +192,14 @@ public class ZanataClient extends BasicOptionsImpl {
         options.setQuiet(getQuiet());
     }
 
-    private void printHelp(PrintStream out) {
+    private void printHelp(PrintWriter out) {
         out.print("Usage: " + getCommandName());
-        parser.printSingleLineUsage(out);
+        parser.printSingleLineUsage(out, null);
         out.println();
         out.println();
         out.println(getCommandDescription());
         out.println();
-        parser.printUsage(out);
+        parser.printUsage(out, null);
         out.println();
         out.println("Type '" + getCommandName()
                 + " help <command>' for help on a specific command.");

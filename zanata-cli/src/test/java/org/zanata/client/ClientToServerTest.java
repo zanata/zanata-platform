@@ -1,7 +1,12 @@
 package org.zanata.client;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -17,11 +22,11 @@ public class ClientToServerTest {
 
     @Before
     public void before() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        StringWriter out = new StringWriter();
+        StringWriter err = new StringWriter();
         client =
-                new ZanataClient(new NullAbortStrategy(), new PrintStream(out),
-                        new PrintStream(err));
+                new ZanataClient(new NullAbortStrategy(), new PrintWriter(out),
+                        new PrintWriter(err));
     }
 
     @Test

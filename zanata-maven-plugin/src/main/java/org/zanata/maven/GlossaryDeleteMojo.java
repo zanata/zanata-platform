@@ -23,6 +23,8 @@ package org.zanata.maven;
 import org.zanata.client.commands.glossary.delete.GlossaryDeleteCommand;
 import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Delete glossary entry from Zanata.
  *
@@ -48,6 +50,8 @@ public class GlossaryDeleteMojo extends
      */
     private boolean allGlossary = false;
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
     @Override
     public String getlang() {
         return lang;

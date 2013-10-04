@@ -4,6 +4,7 @@
 package org.zanata.client.commands;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -89,14 +90,14 @@ public class ArgsUtil {
         }
     }
 
-    public void printHelp(PrintStream output, String clientName) {
+    public void printHelp(PrintWriter output, String clientName) {
         output.print("Usage: " + clientName + " " + opts.getCommandName());
-        parser.printSingleLineUsage(output);
+        parser.printSingleLineUsage(output, null);
         output.println();
         output.println();
         output.println(opts.getCommandDescription());
         output.println();
-        parser.printUsage(output);
+        parser.printUsage(output, null);
     }
 
     public static void handleException(Exception e, boolean outputErrors,

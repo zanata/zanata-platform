@@ -27,6 +27,8 @@ import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.RawPullCommand;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -150,6 +152,8 @@ public abstract class AbstractPullMojo extends
         return continueAfterError;
     }
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
     @Override
     public PushPullType getPullType() {
         // if the deprecated 'pushTrans' option has been used

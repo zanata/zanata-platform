@@ -2,6 +2,8 @@ package org.zanata.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 
 import org.junit.Before;
@@ -37,24 +39,23 @@ public class ZanataClientTest {
             "list-remote", "pull", "push", "put-project", "put-user",
             "put-version", "stats");
 
-    private ByteArrayOutputStream out;
-    private ByteArrayOutputStream err;
+    private StringWriter out;
+    private StringWriter err;
     private ZanataClient client;
 
     @Before
     public void before() {
-        out = new ByteArrayOutputStream();
-        err = new ByteArrayOutputStream();
+        out = new StringWriter();
+        err = new StringWriter();
         client =
-                new ZanataClient(new NullAbortStrategy(), new PrintStream(out),
-                        new PrintStream(err));
+                new ZanataClient(new NullAbortStrategy(), out, err);
     }
 
     /**
      * The top-level command, and each subcommand, should output a Usage message
      * which includes a --help option.
      */
-    private static void assertOutputIncludesUsage(ByteArrayOutputStream out) {
+    private static void assertOutputIncludesUsage(StringWriter out) {
         assertThat("Missing Usage", out.toString().contains("Usage"));
         assertThat("Missing --help", out.toString().contains("--help"));
     }
@@ -65,7 +66,7 @@ public class ZanataClientTest {
      *
      * @return
      */
-    private static boolean outputListsCommands(ByteArrayOutputStream out) {
+    private static boolean outputListsCommands(StringWriter out) {
         return out.toString().contains("Available commands:");
     }
 

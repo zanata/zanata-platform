@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.io.FileUtils;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +174,8 @@ public class BashCompletionGenerator {
         lines.add("complete -F _zanata " + commandName);
 
         Joiner lineJoiner = Joiner.on(System.getProperty("line.separator"));
-        Files.write(lineJoiner.join(lines), to, Charsets.UTF_8);
+        String fileContents = lineJoiner.join(lines);
+        FileUtils.writeStringToFile(to, fileContents, Charsets.UTF_8);
     }
 
     private static String optionsToString(Iterable<Option> options) {

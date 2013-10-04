@@ -29,6 +29,8 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.glossary.push.GlossaryPushCommand;
 import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Pushes glossary file into Zanata.
  *
@@ -92,6 +94,8 @@ public class GlossaryPushMojo extends
         super();
     }
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
     @Override
     public File getGlossaryFile() {
         return glossaryFile;
@@ -107,6 +111,8 @@ public class GlossaryPushMojo extends
         return new GlossaryPushCommand(this);
     }
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
     @Override
     public String getTransLang() {
         return transLang;
