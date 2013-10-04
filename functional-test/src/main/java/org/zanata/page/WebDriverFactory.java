@@ -22,6 +22,7 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
@@ -30,13 +31,16 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.TestEventListener;
 
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
@@ -49,6 +53,7 @@ public enum WebDriverFactory {
 
     private volatile WebDriver driver;
     private DriverService driverService;
+    private TestEventListener eventListener;
 
     public WebDriver getDriver() {
         if (driver == null) {
@@ -71,6 +76,22 @@ public enum WebDriverFactory {
         return PropertiesHolder.getProperty(zanataInstance.value());
     }
 
+    private WebDriver enableScreenshots(WebDriver webDriver) {
+        log.info("Enabling screenshot module...");
+        webDriver = new Augmenter().augment(webDriver);
+        String screensDir = System.getProperty("webdriver.screenshot.dir");
+        eventListener = new TestEventListener(webDriver, screensDir);
+        return new EventFiringWebDriver(webDriver).register(eventListener);
+    }
+
+    public void updateListenerTestName(String testname) {
+        try {
+            eventListener.updateTestID(testname);
+        } catch (NullPointerException npe) {
+            System.out.print("Driver not yet set");
+        }
+    }
+
     private WebDriver createDriver() {
         String driverType =
                 PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
@@ -88,30 +109,35 @@ public enum WebDriverFactory {
     }
 
     private WebDriver configureChromeDriver() {
-        driverService =
-                new ChromeDriverService.Builder()
-                        .usingDriverExecutable(
-                                new File(PropertiesHolder.properties
-                                        .getProperty("webdriver.chrome.driver")))
-                        .usingAnyFreePort()
-                        .withEnvironment(
-                                ImmutableMap
-                                        .of("DISPLAY",
-                                                PropertiesHolder.properties
-                                                        .getProperty("webdriver.display")))
-                        .withLogFile(
-                                new File(PropertiesHolder.properties
-                                        .getProperty("webdriver.log"))).build();
+        driverService = new ChromeDriverService.Builder()
+            .usingDriverExecutable(
+                new File(PropertiesHolder.properties
+                    .getProperty("webdriver.chrome.driver")))
+                .usingAnyFreePort()
+                .withEnvironment(ImmutableMap.of("DISPLAY",
+                        PropertiesHolder.properties
+                        .getProperty("webdriver.display")))
+                .withLogFile(
+                    new File(PropertiesHolder.properties
+                    .getProperty("webdriver.log"))).build();
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities
-                .setCapability("chrome.binary", PropertiesHolder.properties
-                        .getProperty("webdriver.chrome.bin"));
+        capabilities.setCapability("chrome.binary", PropertiesHolder.properties
+            .getProperty("webdriver.chrome.bin"));
+        capabilities.setCapability("chrome.switches", Arrays
+            .asList("--start-maximized"));
         try {
             driverService.start();
         } catch (IOException e) {
             throw new RuntimeException("fail to start chrome driver service");
         }
-        return new RemoteWebDriver(driverService.getUrl(), capabilities);
+
+        WebDriver webDriver =
+            new RemoteWebDriver(driverService.getUrl(), capabilities);
+        if (System.getProperty("webdriver.screenshot.dir")
+            != null) {
+            webDriver = enableScreenshots(webDriver);
+        }
+        return webDriver;
     }
 
     private WebDriver configureFirefoxDriver() {

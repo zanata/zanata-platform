@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.FunctionalTest;
 import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.DashboardPage;
@@ -42,7 +43,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ChangePasswordTest {
+public class ChangePasswordTest extends FunctionalTest {
+
+    // Override database class rule
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 

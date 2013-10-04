@@ -28,6 +28,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.FunctionalTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.workflow.BasicWorkFlow;
 
