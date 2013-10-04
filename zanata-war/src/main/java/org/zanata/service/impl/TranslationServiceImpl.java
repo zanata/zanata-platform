@@ -144,7 +144,7 @@ public class TranslationServiceImpl implements TranslationService {
 
     /**
      * This is used when reverting translation
-     * 
+     *
      * @param localeId
      * @param translationRequests
      * @return
@@ -275,7 +275,7 @@ public class TranslationServiceImpl implements TranslationService {
     /**
      * Generate a {@link HLocale} for the given localeId and check that
      * translations for this locale are permitted.
-     * 
+     *
      * @param localeId
      * @param projectIteration
      * @return the valid hLocale
@@ -361,7 +361,7 @@ public class TranslationServiceImpl implements TranslationService {
     /**
      * Check that requestedState is valid for the given content, adjust if
      * necessary and set the new state if it has changed.
-     * 
+     *
      * @return true if the content state or contents list were updated, false
      *         otherwise
      * @see #adjustContentsAndState(org.zanata.model.HTextFlowTarget, int,
@@ -401,7 +401,7 @@ public class TranslationServiceImpl implements TranslationService {
     /**
      * Checks target state against its contents. If necessary, modifies target
      * state and generates a warning
-     * 
+     *
      * @param target
      *            HTextFlowTarget to check/modify
      * @param nPlurals
@@ -428,7 +428,7 @@ public class TranslationServiceImpl implements TranslationService {
 
     /**
      * Ensures that target.contents has exactly legalSize elements
-     * 
+     *
      * @param target
      *            HTextFlowTarget to check/modify
      * @param legalSize
@@ -507,7 +507,7 @@ public class TranslationServiceImpl implements TranslationService {
     /**
      * Run enforced validation check(Error) if target has changed and
      * translation saving as 'Translated' or 'Approved'
-     * 
+     *
      * @param newState
      * @param projectVersion
      * @param targetId
