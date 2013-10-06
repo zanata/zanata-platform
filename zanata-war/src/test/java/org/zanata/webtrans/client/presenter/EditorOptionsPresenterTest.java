@@ -40,7 +40,7 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
+import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest
@@ -57,9 +57,9 @@ public class EditorOptionsPresenterTest
    @Mock
    private ValidationOptionsPresenter validationDetailsPresenter;
    @Mock
-   private TransUnitChangeSourceLangPresenter transUnitSourceLangPresenter;
+   private ChangeReferenceLangPresenter changeReferenceLangPresenter;
    @Mock
-   private TransUnitChangeSourceLangDisplay transUnitSourceLangDisplay;
+   private ChangeReferenceLangDisplay changeReferenceLangDisplay;
    @Mock
    private CachingDispatchAsync dispatcher;
    @Captor
@@ -77,7 +77,7 @@ public class EditorOptionsPresenterTest
       MockitoAnnotations.initMocks(this);
       when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, transUnitSourceLangPresenter, dispatcher, userOptionsService);
+      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, changeReferenceLangPresenter, dispatcher, userOptionsService);
 
       workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 
@@ -93,7 +93,7 @@ public class EditorOptionsPresenterTest
       // Given: user workspace context is not readonly
       when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       
-      when(transUnitSourceLangPresenter.getDisplay()).thenReturn(transUnitSourceLangDisplay);
+      when(changeReferenceLangPresenter.getDisplay()).thenReturn(changeReferenceLangDisplay);
 
       // When:
       presenter.onBind();

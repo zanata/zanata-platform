@@ -18,7 +18,6 @@ import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
 import org.zanata.webtrans.client.view.TransUnitsTableDisplay;
 import org.zanata.webtrans.client.view.TranslationEditorDisplay;
-import org.zanata.webtrans.client.view.TransUnitChangeSourceLangDisplay;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

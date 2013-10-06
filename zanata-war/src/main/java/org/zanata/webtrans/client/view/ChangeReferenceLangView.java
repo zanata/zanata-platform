@@ -23,24 +23,24 @@ package org.zanata.webtrans.client.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import java.net.ContentHandler;
 import java.util.List;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.LocaleListBox;
 import org.zanata.webtrans.shared.model.Locale;
 
-public class TransUnitChangeSourceLangView extends Composite implements TransUnitChangeSourceLangDisplay, ChangeHandler
+public class ChangeReferenceLangView extends Composite implements ChangeReferenceLangDisplay, ChangeHandler
 {
-   private static TransUnitChangeSourceLangViewUiBinder uiBinder = GWT.create(TransUnitChangeSourceLangViewUiBinder.class);
+   private static ChangeReferenceLangViewUiBinder uiBinder = GWT.create(ChangeReferenceLangViewUiBinder.class);
    private Listener listener;
    private UiMessages messages;
 
@@ -58,7 +58,7 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
    LocaleListBox sourceLangListBox;
 
    @Inject
-   public TransUnitChangeSourceLangView(final UiMessages messages)
+   public ChangeReferenceLangView(final UiMessages messages)
    {
       this.messages = messages;
       initWidget(uiBinder.createAndBindUi(this));
@@ -86,10 +86,18 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
    }
    
    @Override
-   public void setSelectedLocale(Locale locale)
+   public void setSelectedLocale(String localeId)
    {
-      //Not implemented yet...
-      //Look through the list with locales and se if locale is present, otherwise, select index 0
+      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)){
+         sourceLangListBox.setSelectedIndex(0);
+         listener.onHideReference();
+      }
+      else
+      {
+         int selectedIndex = sourceLangListBox.getIndexForLocaleId(localeId);
+         sourceLangListBox.setSelectedIndex(selectedIndex);
+         listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
+      }
    }
 
    @Override
@@ -110,12 +118,12 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
       if (sourceLangListBox.getLocaleAtSelectedIndex() == Locale.notChosenLocale)
       {
          listener.onHideReference();
-         listener.onSourceLangListBoxOptionChanged(null);
+         listener.onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
       }
       else
       {
          listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
-         listener.onSourceLangListBoxOptionChanged(sourceLangListBox.getLocaleAtSelectedIndex().getDisplayName());
+         listener.onSourceLangListBoxOptionChanged(sourceLangListBox.getLocaleAtSelectedIndex());
       }
    }
 
@@ -134,7 +142,7 @@ public class TransUnitChangeSourceLangView extends Composite implements TransUni
       descriptionLabel.setVisible(false);
    }
 
-   interface TransUnitChangeSourceLangViewUiBinder extends UiBinder<Widget, TransUnitChangeSourceLangView>
+   interface ChangeReferenceLangViewUiBinder extends UiBinder<Widget, ChangeReferenceLangView>
    {
    }
 }

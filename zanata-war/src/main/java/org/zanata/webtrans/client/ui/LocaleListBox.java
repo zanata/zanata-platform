@@ -4,6 +4,7 @@ import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.ui.ListBox;
 import java.util.ArrayList;
 import java.util.List;
+import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.Locale;
 
 /**
@@ -147,6 +148,28 @@ public class LocaleListBox extends ListBox
    {
       int selectedIndex = super.getSelectedIndex();
       return locales.get(selectedIndex);
+   }
+   
+   /**
+    * @param localeId
+    * @return the index of the provided (Zanata) LocaleId if it is present, 
+    * 0 otherwise
+    */
+   public int getIndexForLocaleId(String localeId)
+   {
+      //The default reference, "none", should be at index 0
+      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)){
+         return 0;
+      }
+      
+      //iterate from index 1 to avoid the default locale at index 0
+      for (int i = 1; i <= locales.size(); i++) 
+      {
+         if(locales.get(i).getId().getLocaleId().getId().equals(localeId)){
+            return i;
+         }
+      }
+      return 0;      
    }
 
    /**
