@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.ReferencePanel;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements SourceContentsDisplay
@@ -58,7 +59,7 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    private TransUnit transUnit;
    private final UserConfigHolder configHolder;
    private final History history;
-   private Label referenceLabel; 
+   private ReferencePanel referencePanel; 
    private UiMessages messages;
 
    @Inject
@@ -80,9 +81,9 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
       container.add(sourcePanelContainer);
       root.add(container);
 
-      referenceLabel = new Label(messages.noReferenceFoundText());
-      referenceLabel.addStyleName("referenceLabel");
-      root.add(referenceLabel);
+      referencePanel = new ReferencePanel();
+      referencePanel.setReferenceText(messages.noReferenceFoundText());
+      root.add(referencePanel);
       hideReference(); //Reference is hidden by default
 
       InlineLabel bookmarkIcon = createBookmarkIcon();
@@ -202,18 +203,18 @@ public class SourceContentsView extends Composite implements SourceContentsDispl
    {
       if (reference == null)
       {
-         referenceLabel.setText(messages.noReferenceFoundText());
+         referencePanel.setReferenceText(messages.noReferenceFoundText());
       }
       else
       {
-         referenceLabel.setText(messages.inLocale() + " " + reference.getDisplayName() + ": " + reference.getContent());
+         referencePanel.setReferenceText(messages.inLocale() + " " + reference.getDisplayName() + ": " + reference.getContent());
       }
-      referenceLabel.setVisible(true);
+      referencePanel.setVisible(true);
    }
 
    @Override
    public void hideReference()
    {
-      referenceLabel.setVisible(false);
+      referencePanel.setVisible(false);
    }
 }
