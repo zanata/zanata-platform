@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -118,6 +119,10 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
         eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
         eventBus.addHandler(InitEditorEvent.TYPE, this);
         eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this);
+    }
+
+    public void clearData() {
+        pageModel.setData(Collections.<TransUnit> emptyList());
     }
 
     protected void requestTransUnitsAndUpdatePageIndex(
