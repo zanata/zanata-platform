@@ -15,6 +15,7 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HDocument;
 import org.zanata.model.HGlossaryEntry;
@@ -29,6 +30,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.security.HCredentials;
 
 import javax.persistence.EntityManager;
 
@@ -75,7 +77,8 @@ public class SampleProjectProfile {
             HIterationGroup.class,
             // project
             HProjectIteration.class, HProject.class,
-            HPerson.class, HAccount.class));
+            // account
+            HAccountActivationKey.class, HCredentials.class, HPerson.class, HAccount.class));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);

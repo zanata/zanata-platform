@@ -28,12 +28,14 @@ import static org.zanata.util.GoogleSignIn.googleIsReachable;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.googleaccount.GoogleManagePermissionsPage;
 import org.zanata.page.utility.HomePage;
+import org.zanata.util.CleanDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.GoogleWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
@@ -44,6 +46,9 @@ import org.zanata.workflow.RegisterWorkFlow;
  */
 @Category(DetailedTest.class)
 public class GoogleOpenIDTest {
+
+    @Rule
+    public CleanDatabaseRule cleanDatabaseRule = new CleanDatabaseRule();
 
     private String googleUsername1 = "zanata.test.1";
     private String googlePassword1;
