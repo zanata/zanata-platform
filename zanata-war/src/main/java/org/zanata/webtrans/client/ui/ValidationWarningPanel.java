@@ -128,6 +128,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
      */
     private void copyTranslationToEditor() {
         TransUnit selectedTransUnit = navigationService.getSelectedOrNull();
+
         if (selectedTransUnit != null
                 && selectedTransUnit.getId().equals(transUnitId)) {
             timer.cancel();
@@ -154,6 +155,9 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         returnToEditor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                // clear data in navigation service to ensure first run of
+                // copyTranslationToEditor() = false
+                navigationService.clearData();
                 listener.gotoRow(documentInfo, transUnitId);
                 timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
             }
