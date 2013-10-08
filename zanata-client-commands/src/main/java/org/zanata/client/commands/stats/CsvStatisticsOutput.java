@@ -38,11 +38,19 @@ import au.com.bytecode.opencsv.CSVWriter;
 public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput {
     @Override
     public void write(ContainerTranslationStatistics statistics) {
-        CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(System.out));
-        writeToCsv(statistics, csvWriter);
         try {
-            csvWriter.flush();
-            csvWriter.close();
+            OutputStreamWriter streamWriter = new OutputStreamWriter(System.out);
+            try {
+                CSVWriter csvWriter = new CSVWriter(streamWriter);
+                try {
+                    writeToCsv(statistics, csvWriter);
+                    csvWriter.flush();
+                } finally {
+                    csvWriter.close();
+                }
+            } finally {
+                streamWriter.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
