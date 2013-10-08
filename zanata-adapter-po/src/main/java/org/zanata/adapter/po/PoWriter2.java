@@ -106,20 +106,6 @@ public class PoWriter2 {
     }
 
     /**
-     * Creates dir and its parents
-     *
-     * @param dir
-     * @throws IOException
-     */
-    private void makeDirs(File dir) throws IOException {
-        if (!dir.exists()) {
-            if (!dir.mkdirs())
-                throw new IOException("unable to create output directory: "
-                        + dir);
-        }
-    }
-
-    /**
      * Generates a pot file from Resource (document), using the publican
      * directory layout.
      *
@@ -213,7 +199,7 @@ public class PoWriter2 {
      */
     public FileDetails writePoToFile(File poFile, Resource doc,
             TranslationsResource targetDoc) throws IOException {
-        makeDirs(poFile.getParentFile());
+        PathUtil.makeDirs(poFile.getParentFile());
         MessageDigest md5Digest;
         try {
             md5Digest = MessageDigest.getInstance("MD5");

@@ -2,6 +2,7 @@ package org.zanata.util;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.jar.Attributes;
@@ -84,7 +85,7 @@ public class VersionUtility {
         return null;
     }
 
-    public static void printVersions(Class<?> clientClass, PrintStream out) {
+    public static void printVersions(Class<?> clientClass, PrintWriter out) {
         VersionInfo clientVer = getVersionInfo(clientClass);
         out.println("Client version: " + clientVer.getVersionNo());
         out.println("Client timestamp: " + clientVer.getBuildTimeStamp());

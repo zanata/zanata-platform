@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -176,6 +178,17 @@ public class PathUtil {
 
         PathResolutionException(String msg) {
             super(msg);
+        }
+    }
+
+    /**
+     * Creates dir and its parents
+     * @param dir directory to create, along with any required parent dirs
+     * @throws IOException if any of the dirs do not exist and can't be created
+     */
+    public static void makeDirs(@Nullable File dir) throws IOException {
+        if (dir != null && !dir.exists() && !dir.mkdirs()) {
+            throw new IOException("unable to create directory (or parents): " + dir);
         }
     }
 

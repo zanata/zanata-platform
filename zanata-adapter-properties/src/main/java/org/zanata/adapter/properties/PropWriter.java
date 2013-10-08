@@ -20,19 +20,10 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 public class PropWriter {
     private static final Logger log = LoggerFactory.getLogger(PropWriter.class);
-
-    private static void makeParentDirs(File f) {
-        File parentFile = f.getParentFile();
-        if (parentFile != null && !parentFile.exists()) {
-            if (!parentFile.mkdirs()) {
-                throw new RuntimeException("Unable to create dirs: "
-                        + parentFile);
-            }
-        }
-    }
 
     /**
      * Writes a properties file representation of the given {@link Resource} to
@@ -55,7 +46,7 @@ public class PropWriter {
     private static void write(final Resource doc, final File baseDir,
             boolean utf8) throws IOException {
         File baseFile = new File(baseDir, doc.getName() + ".properties");
-        makeParentDirs(baseFile);
+        PathUtil.makeDirs(baseFile.getParentFile());
 
         log.debug("Creating base file " + baseFile);
         Properties props = new Properties();
@@ -117,7 +108,7 @@ public class PropWriter {
 
         File langFile =
                 new File(baseDir, bundleName + "_" + locale + ".properties");
-        makeParentDirs(langFile);
+        PathUtil.makeDirs(langFile.getParentFile());
         log.debug("Creating target file " + langFile);
         storeProps(targetProp, langFile, utf8);
     }
