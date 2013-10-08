@@ -27,6 +27,7 @@ import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import au.com.bytecode.opencsv.CSVWriter;
 
 /**
@@ -37,6 +38,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  */
 public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput {
     @Override
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public void write(ContainerTranslationStatistics statistics) {
         try {
             OutputStreamWriter streamWriter = new OutputStreamWriter(System.out);

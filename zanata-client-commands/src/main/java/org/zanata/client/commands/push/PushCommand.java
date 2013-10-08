@@ -352,9 +352,11 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 return;
             case Both:
                 log.warn("Source is not available for this project type. Source will not be pushed.\n");
-                // continue
+                confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+                break;
             case Trans:
                 confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+                break;
             }
         } else {
             if (pushTrans()) {
