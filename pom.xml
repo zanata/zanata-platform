@@ -170,7 +170,7 @@
     <lombok.version>0.12.0</lombok.version>
     <resteasy.version>2.3.3.Final</resteasy.version>
     <findbugs.version>2.0.1</findbugs.version>
-    <guava.version>12.0.1</guava.version>
+    <guava.version>13.0.1</guava.version>
     <jackson.version>1.9.2</jackson.version>
 
     <checkstyle.skip>false</checkstyle.skip>
