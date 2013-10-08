@@ -447,11 +447,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     private String toBCP47(HLocale hLocale) {
         HLocale docLocale = document.getLocale();
-        if (docLocale == null) {
-            // *should* only happen in tests
-            log.warn("null locale, assuming 'en'");
-            return "en";
-        }
         LocaleId docLocaleId = docLocale.getLocaleId();
         return docLocaleId.getId();
     }
