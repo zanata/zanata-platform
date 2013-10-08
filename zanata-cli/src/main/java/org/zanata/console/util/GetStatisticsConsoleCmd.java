@@ -21,6 +21,9 @@
 package org.zanata.console.util;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.Command;
@@ -34,8 +37,7 @@ import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class GetStatisticsConsoleCmd implements
-        Command {
+public class GetStatisticsConsoleCmd implements Command {
 
     private boolean includeDetails;
     private boolean includeWordLevelStats;
@@ -57,6 +59,7 @@ public class GetStatisticsConsoleCmd implements
     private boolean help;
     private Boolean quiet = null;
     private boolean interactiveMode;
+    private boolean batchMode;
 
     @Override
     public CommandResult execute(AeshConsole aeshConsole,
@@ -78,29 +81,26 @@ public class GetStatisticsConsoleCmd implements
      */
     private GetStatisticsOptions toOptions() {
         GetStatisticsOptions options = new GetStatisticsOptionsImpl();
-        options.setIncludeDetails(includeDetails);
-        options.setIncludeWordLevelStats(includeWordLevelStats);
-        options.setFormat(format);
-        options.setDocumentId(documentId);
-        options.setProj(proj);
-        options.setProjectConfig(projectConfig);
-        options.setProjectVersion(projectVersion);
-        options.setProjectType(projectType);
-        options.setLocaleMapList(localeMapList);
-        options.setKey(key);
-        options.setUrl(url);
-        options.setUserConfig(userConfig);
-        options.setUsername(username);
-        options.setLogHttp(logHttp);
-        options.setDisableSSLCert(disableSSLCert);
-        if( debug != null )
-            options.setDebug(debug);
-        if( errors != null )
-            options.setErrors(errors);
-        options.setHelp(help);
-        if( quiet != null )
-            options.setQuiet(quiet);
-        options.setInteractiveMode(interactiveMode);
+        Class<? extends GetStatisticsOptions> optionsClass = options.getClass();
+
+        for (Field f : this.getClass().getDeclaredFields()) {
+            try {
+                Method setter =
+                        optionsClass.getMethod("set"
+                                + f.getName().substring(0, 1).toUpperCase()
+                                + f.getName().substring(1), f.getType());
+
+                setter.invoke(options, f.get(this));
+            } catch (NoSuchMethodException e) {
+                // TODO
+                // This happens when fields are declared as Boolean but the
+                // setter method accepts boolean. For now we can ignore this,
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
         return options;
     }
 }
