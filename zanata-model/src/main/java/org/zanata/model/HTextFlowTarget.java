@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +47,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.hibernate.annotations.Cache;
@@ -77,6 +75,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Represents a flow of translated text that should be processed as a
  * stand-alone structural unit.
@@ -90,7 +90,6 @@ import com.google.common.collect.Maps;
 @Indexed
 @Setter
 @Getter
-@NoArgsConstructor
 @Access(AccessType.FIELD)
 public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         HasSimpleComment, ITextFlowTargetHistory, Serializable,
@@ -99,8 +98,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "tf_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "tf_id", nullable = false)
     // @Field(index = Index.UN_TOKENIZED)
     // @FieldBridge(impl = ContainingWorkspaceBridge.class)
     @IndexedEmbedded
@@ -183,6 +182,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Getter(AccessLevel.NONE)
     @Transient
     private HTextFlowTargetHistory initialState;
+
+    @SuppressFBWarnings("NP_NONNULL_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR")
+    HTextFlowTarget() {
+    }
 
     public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale) {
         this.locale = locale;
