@@ -1,5 +1,6 @@
 package org.zanata.client.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,7 +12,8 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "locales")
 @XmlType(name = "localesType")
-public class LocaleList implements List<LocaleMapping> {
+public class LocaleList implements List<LocaleMapping>, Serializable {
+    private static final long serialVersionUID = 1L;
     private final List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
 
     @Override

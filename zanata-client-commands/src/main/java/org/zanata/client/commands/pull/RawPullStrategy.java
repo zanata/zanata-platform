@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.util.PathUtil;
 
 /**
  *
@@ -89,21 +90,23 @@ public class RawPullStrategy {
         } else {
             log.info("writing new document to [{}]", file.getAbsolutePath());
         }
-        file.getParentFile().mkdirs();
+        PathUtil.makeDirs(file.getParentFile());
         writeStreamToFile(stream, file);
     }
 
     private void writeStreamToFile(InputStream stream, File file)
             throws FileNotFoundException, IOException {
         OutputStream out = new FileOutputStream(file);
-        int read;
-        byte[] buffer = new byte[1024];
-        while ((read = stream.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
+        try {
+            int read;
+            byte[] buffer = new byte[1024];
+            while ((read = stream.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            out.flush();
+        } finally {
+            out.close();
         }
-        stream.close();
-        out.flush();
-        out.close();
     }
 
 }

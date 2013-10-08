@@ -1,7 +1,11 @@
 package org.zanata.client.config;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -53,12 +57,27 @@ public class ConfigUtil {
             String key = iterator.next();
             if (key.endsWith(suffix)) {
                 URL configURL = dataConfig.getURL(key);
-                if (url.equals(configURL)) {
+                if (equal(url, configURL)) {
                     return key.substring(0, key.length() - suffix.length());
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * Avoids DNS dependency for URL.equals.
+     * @see http://michaelscharf.blogspot.com/2006/11/javaneturlequals-and-hashcode-make.html
+     * @param a
+     * @param b
+     * @return
+     */
+    private static boolean equal(@Nonnull URL a, @Nullable URL b) {
+        try {
+            return b == null ? false : a.toURI().equals(b.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }

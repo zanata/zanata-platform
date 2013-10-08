@@ -155,7 +155,11 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                 (InputStream) response
                                         .getEntity(InputStream.class);
                         if (srcDoc != null) {
-                            strat.writeSrcFile(localDocName, srcDoc);
+                            try {
+                                strat.writeSrcFile(localDocName, srcDoc);
+                            } finally {
+                                srcDoc.close();
+                            }
                         }
                     }
                 }
@@ -187,8 +191,12 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                     (InputStream) response
                                             .getEntity(InputStream.class);
                             if (transDoc != null) {
-                                strat.writeTransFile(localDocName, locMapping,
-                                        transDoc);
+                                try {
+                                    strat.writeTransFile(localDocName, locMapping,
+                                            transDoc);
+                                } finally {
+                                    transDoc.close();
+                                }
                             }
                         }
                     }

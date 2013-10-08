@@ -133,7 +133,7 @@ public class PublicanPullCommandTest {
             when(mockTranslationResources.getTranslations(docUri, locale, ext))
                     .thenReturn(
                             new DummyResponse<TranslationsResource>(
-                                    Status.NOT_FOUND, entity));
+                                    Status.NOT_FOUND, null));
         }
     }
 

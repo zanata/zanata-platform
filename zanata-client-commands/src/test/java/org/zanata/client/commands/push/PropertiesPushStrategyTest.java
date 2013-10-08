@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -15,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.util.PathUtil;
 
 public class PropertiesPushStrategyTest {
     private File outDir = new File("target/test-output/readprops/");
@@ -24,8 +26,8 @@ public class PropertiesPushStrategyTest {
     private PushOptions opts;
 
     @Before
-    public void prepare() {
-        outDir.mkdirs();
+    public void prepare() throws IOException {
+        PathUtil.makeDirs(outDir);
         props = new Properties();
         props.setProperty("key", "value");
         props.setProperty("unicode", "レス");

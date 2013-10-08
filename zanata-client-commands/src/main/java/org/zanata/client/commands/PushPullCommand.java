@@ -51,6 +51,7 @@ import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.PathUtil;
 
 /**
  * @author Sean Flanigan <a
@@ -256,11 +257,11 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
             File targetFile = new File(location);
             if (!targetFile.exists()) {
-                targetFile.getParentFile().mkdirs();
+                PathUtil.makeDirs(targetFile.getParentFile());
             }
             ETagCacheReaderWriter.writeCache(this.eTagCache,
                     new FileOutputStream(location));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             log.warn("Could not create Zanata ETag cache file. Will proceed without it.");
         }
     }

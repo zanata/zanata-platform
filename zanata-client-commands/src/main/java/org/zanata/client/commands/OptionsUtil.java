@@ -62,7 +62,7 @@ public class OptionsUtil {
                 applyUserConfig(opts, dataConfig);
             } else {
                 System.err.printf(
-                        "User config file '%s' not found; ignoring.\n",
+                        "User config file '%s' not found; ignoring.%n",
                         opts.getUserConfig());
             }
         }

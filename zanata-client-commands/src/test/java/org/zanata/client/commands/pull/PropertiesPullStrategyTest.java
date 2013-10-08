@@ -2,6 +2,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.util.PathUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -26,8 +28,8 @@ public class PropertiesPullStrategyTest {
     private Resource doc;
 
     @Before
-    public void prepare() {
-        outDir.mkdirs();
+    public void prepare() throws IOException {
+        PathUtil.makeDirs(outDir);
         doc = new Resource(null);
         doc.getTextFlows().add(newTextFlow("key", "value"));
         doc.getTextFlows().add(newTextFlow("unicode", "レス"));
@@ -62,7 +64,11 @@ public class PropertiesPullStrategyTest {
 
         File f = new File(outDir, "latin1.properties");
         InputStream inStream = new FileInputStream(f);
-        props.load(inStream);
+        try {
+            props.load(inStream);
+        } finally {
+            inStream.close();
+        }
         checkResults(props);
     }
 

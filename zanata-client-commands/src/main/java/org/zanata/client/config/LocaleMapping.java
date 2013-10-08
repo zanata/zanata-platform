@@ -1,5 +1,7 @@
 package org.zanata.client.config;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,7 +19,8 @@ import org.zanata.rest.dto.DTOUtil;
 @XmlType(name = "localeType")
 @XmlRootElement(name = "locale")
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
-public class LocaleMapping {
+public class LocaleMapping implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String locale;
     private String mapFrom;

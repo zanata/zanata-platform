@@ -44,6 +44,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -344,18 +346,15 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
         if (strat.isTransOnly()) {
             switch (getOpts().getPushType()) {
-            case Source: {
+            case Source:
                 log.error("You are trying to push source only, but source is not available for this project type.\n");
                 log.info("Nothing to do. Aborting\n");
                 return;
-            }
-            case Both: {
+            case Both:
                 log.warn("Source is not available for this project type. Source will not be pushed.\n");
                 // continue
-            }
-            case Trans: {
+            case Trans:
                 confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
-            }
             }
         } else {
             if (pushTrans()) {

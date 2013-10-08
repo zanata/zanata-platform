@@ -42,8 +42,6 @@ public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl
 
     private String documentId;
 
-    private String[] locales;
-
     @Override
     public boolean getIncludeDetails() {
         return includeDetails;

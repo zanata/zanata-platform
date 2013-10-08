@@ -36,7 +36,7 @@ public class XliffPushStrategyTest {
     private final File sourceDir = new File("src/test/resources/xliffDir");
     private final File sourceDir2 = new File("src/test/resources/xliffDir2");
 
-    private final String sourceLocale = "en-US";
+    private static final String sourceLocale = "en-US";
 
     @Before
     public void prepare() {
