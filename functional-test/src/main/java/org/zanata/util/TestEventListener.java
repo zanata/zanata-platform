@@ -14,6 +14,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
@@ -21,7 +22,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-public class TestEventListener implements WebDriverEventListener {
+public class TestEventListener extends AbstractWebDriverEventListener {
 
     private WebDriver driver;
     private String targetDir;
@@ -108,53 +109,6 @@ public class TestEventListener implements WebDriverEventListener {
     @Override
     public void onException(Throwable throwable, WebDriver driver) {
         createScreenshot("_exc");
-    }
-
-    /*
-     * Unused interface functions
-     */
-    @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver) {
-    }
-
-    @Override
-    public void beforeNavigateTo(String url, WebDriver driver) {
-    }
-
-    @Override
-    public void beforeNavigateBack(WebDriver driver) {
-    }
-
-    @Override
-    public void afterNavigateBack(WebDriver driver) {
-    }
-
-    @Override
-    public void beforeNavigateForward(WebDriver driver) {
-    }
-
-    @Override
-    public void afterNavigateForward(WebDriver driver) {
-    }
-
-    @Override
-    public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-    }
-
-    @Override
-    public void afterFindBy(By by, WebElement element, WebDriver driver) {
-    }
-
-    @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-    }
-
-    @Override
-    public void beforeScript(String script, WebDriver driver) {
-    }
-
-    @Override
-    public void afterScript(String script, WebDriver driver) {
     }
 
 }

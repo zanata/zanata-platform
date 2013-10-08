@@ -51,28 +51,26 @@ import static org.zanata.util.Constants.zanataInstance;
 public enum WebDriverFactory {
     INSTANCE;
 
-    private volatile WebDriver driver;
+    private volatile WebDriver driver = createDriver();
     private DriverService driverService;
-    private TestEventListener eventListener;
+    private TestEventListener eventListener = new TestEventListener(driver,
+        System.getProperty("webdriver.screenshot.dir"));
 
     public WebDriver getDriver() {
-        if (driver == null) {
-            synchronized (this) {
-                if (driver == null) {
-                    driver = createDriver();
-                    driver.manage().timeouts()
-                            .implicitlyWait(3, TimeUnit.SECONDS);
-                    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-                }
-            }
-        }
         return driver;
     }
 
+    public WebDriver createDriver() {
+        WebDriver driver = new EventFiringWebDriver(
+            new Augmenter().augment(createPlainDriver()));
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        return driver;
+    }
+
+
     public String getHostUrl() {
-        if (driver == null) {
-            getDriver();
-        }
         return PropertiesHolder.getProperty(zanataInstance.value());
     }
 
@@ -84,15 +82,11 @@ public enum WebDriverFactory {
         return new EventFiringWebDriver(webDriver).register(eventListener);
     }
 
-    public void updateListenerTestName(String testname) {
-        try {
-            eventListener.updateTestID(testname);
-        } catch (NullPointerException npe) {
-            System.out.print("Driver not yet set");
-        }
+    public void updateListenerTestName(String testName) {
+        eventListener.updateTestID(testName);
     }
 
-    private WebDriver createDriver() {
+    private WebDriver createPlainDriver() {
         String driverType =
                 PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
         if (driverType.equalsIgnoreCase(chrome.value())) {
@@ -133,8 +127,7 @@ public enum WebDriverFactory {
 
         WebDriver webDriver =
             new RemoteWebDriver(driverService.getUrl(), capabilities);
-        if (System.getProperty("webdriver.screenshot.dir")
-            != null) {
+        if (System.getProperty("webdriver.screenshot.dir") != null) {
             webDriver = enableScreenshots(webDriver);
         }
         return webDriver;
