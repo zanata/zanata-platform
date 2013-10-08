@@ -38,10 +38,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.annotations.NaturalId;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
 
@@ -50,17 +52,21 @@ import org.zanata.model.type.EntityType;
  */
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode(of = { "actor", "approxTime", "activityType", "contextType",
+        "contextId" }, callSuper = false)
 @Access(AccessType.FIELD)
 @Getter
 public class Activity extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
     @JoinColumn(name = "actor_id", nullable = false)
     @ManyToOne
+    @NaturalId
+    @NotNull
     private HPerson actor;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @NaturalId
     @NotNull
     private Date approxTime;
 
@@ -71,12 +77,14 @@ public class Activity extends ModelEntityBase implements Serializable {
     private long endOffsetMillis;
 
     @Getter
+    @NaturalId
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType contextType;
 
-    @NotNull
     @Column(name = "context_id")
+    @NaturalId
+    @NotNull
     private long contextId;
 
     @Enumerated(EnumType.STRING)
@@ -87,6 +95,7 @@ public class Activity extends ModelEntityBase implements Serializable {
     private long lastTargetId;
 
     @Enumerated(EnumType.STRING)
+    @NaturalId
     private ActivityType activityType;
 
     // Event count starts with 1 because there is a single event when new
