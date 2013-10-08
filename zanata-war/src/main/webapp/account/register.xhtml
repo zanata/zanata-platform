@@ -82,10 +82,11 @@
                 <h:inputText id="human" styleClass="is-hidden"
                   value="#{register.humanField}"/>
 
-                <p class="txt--meta l--push-top-half">
-                  <h:outputText value="#{messages['jsf.register.agreeToTOS']}"
-                    escape="false"/>
-                </p>
+                <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
+                  <p class="txt--meta l--push-top-half">
+                    <h:outputText value="#{messages['jsf.register.agreeToTOS']}" escape="false"/>
+                  </p>
+                </s:fragment>
 
                 <div class="l--push-top-1">
                   <h:commandButton value="Sign Up" action="#{register.register}"

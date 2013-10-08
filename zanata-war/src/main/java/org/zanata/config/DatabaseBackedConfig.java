@@ -91,9 +91,7 @@ public class DatabaseBackedConfig implements Serializable {
 
     /**
      * ========================================================================
-     * ========================================== Specific property accessor
-     * methods for configuration values
-     * ==========================================
+     * ===== Specific property accessor methods for configuration values ======
      * ========================================================================
      */
     public String getAdminEmailAddress() {
@@ -147,6 +145,10 @@ public class DatabaseBackedConfig implements Serializable {
 
     public String getPiwikSiteId() {
         return getConfigValue(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+    }
+
+    public String getTermsOfUseUrl() {
+        return getConfigValue(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
     }
 
 }
