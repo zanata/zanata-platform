@@ -21,15 +21,12 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("(No Content)")
     String noContent();
 
-    @DefaultMessage("{0}% ({1,number,#.#}hrs) {2}")
-    String statusBarPercentageHrs(double approved, double remainingHours,
+    @DefaultMessage("{0} ({1,number,#.#}hrs) {2}")
+    String statusBarPercentageHrs(String approved, double remainingHours,
             String by);
 
     @DefaultMessage("{0,number,#.#}")
     String statusBarLabelHours(double remainingHours);
-
-    @DefaultMessage("{0}%")
-    String statusBarLabelPercentage(double approved);
 
     @DefaultMessage("http://zanata.org/")
     String hrefHelpLink();

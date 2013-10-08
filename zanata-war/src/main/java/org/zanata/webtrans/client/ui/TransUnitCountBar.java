@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.i18n.client.NumberFormat;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -38,6 +39,7 @@ public class TransUnitCountBar extends Composite implements
 
     protected final TooltipPopupPanel tooltipPanel;
     private static final int TOTAL_WIDTH = 100;
+    private final NumberFormat percentFormat = NumberFormat.getPercentFormat();
 
     interface TransUnitCountBarUiBinder extends
             UiBinder<Widget, TransUnitCountBar> {
@@ -169,31 +171,35 @@ public class TransUnitCountBar extends Composite implements
     }
 
     private void setLabelText() {
-        // TODO rhbz953734 - remaining hours
         switch (labelFormat) {
         case PERCENT_COMPLETE_HRS:
             TranslationStatistics wordStats =
                     stats.getStats(localeId.getId(), StatUnit.WORD);
             if (statsByWords) {
                 label.setText(messages.statusBarPercentageHrs(
-                        wordStats.getPercentTranslated(),
+                        percentFormat.format(
+                            wordStats.getPercentTranslated() / 100),
                         wordStats.getRemainingHours(), "Words"));
             } else {
                 TranslationStatistics msgStats =
                         stats.getStats(localeId.getId(), StatUnit.MESSAGE);
                 label.setText(messages.statusBarPercentageHrs(
-                        msgStats.getPercentTranslated(),
+                        percentFormat.format(
+                            msgStats.getPercentTranslated() / 100),
                         wordStats.getRemainingHours(), "Msg"));
             }
             break;
         case PERCENT_COMPLETE:
             if (statsByWords) {
-                label.setText(messages.statusBarLabelPercentage(stats.getStats(
-                        localeId.getId(), StatUnit.WORD).getPercentTranslated()));
+                double wordTranslatedProportion = stats
+                    .getStats(localeId.getId(), StatUnit.WORD)
+                    .getPercentTranslated() / 100;
+                label.setText(percentFormat.format(wordTranslatedProportion));
             } else {
-                label.setText(messages.statusBarLabelPercentage(stats.getStats(
-                        localeId.getId(), StatUnit.MESSAGE)
-                        .getPercentTranslated()));
+                double messageTranslatedProportion = stats
+                    .getStats(localeId.getId(), StatUnit.MESSAGE)
+                    .getPercentTranslated() / 100;
+                label.setText(percentFormat.format(messageTranslatedProportion));
             }
             break;
         default:
