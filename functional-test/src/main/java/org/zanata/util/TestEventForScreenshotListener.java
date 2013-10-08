@@ -23,7 +23,7 @@ import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 public class TestEventForScreenshotListener extends AbstractWebDriverEventListener {
 
     private WebDriver driver;
-    private String targetDir;
+    private File baseDir;
     private String testId = "";
 
     /**
@@ -34,10 +34,8 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
      */
     public TestEventForScreenshotListener(WebDriver drv, String targetDirectory) {
         driver = drv;
-        targetDir =
-                targetDirectory.endsWith("/") ? targetDirectory
-                        : targetDirectory.concat("/");
-        TestEventForScreenshotListener.log.info("Writing screenshots to {}", targetDir);
+        baseDir = new File(targetDirectory);
+        log.info("Writing screenshots to {}", baseDir);
     }
 
     /**
@@ -49,22 +47,20 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
-        String outputDir;
         try {
-            outputDir = targetDir.concat(testId);
-            File testIDDir = new File(outputDir);
+            File testIDDir = new File(baseDir, testId);
             testIDDir.mkdirs();
             File screenshotFile =
                     ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(screenshotFile, new File(outputDir
-                    + File.separator + generateFileName(ofType)));
+            FileUtils.copyFile(screenshotFile,
+                new File(testIDDir, generateFileName(ofType)));
 
         } catch (WebDriverException wde) {
             throw new RuntimeException("[Screenshot]: Invalid WebDriver: "
                     + wde.getMessage());
         } catch (IOException ioe) {
             throw new RuntimeException("[Screenshot]: Failed to write to "
-                    + targetDir);
+                    + baseDir);
         } catch (NullPointerException npe) {
             throw new RuntimeException("[Screenshot]: Null Object: "
                     + npe.getMessage());
@@ -98,7 +94,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
         if (isAlertPresent(driver)) {
-            TestEventForScreenshotListener.log.info("[Screenshot]: Prevented by Alert");
+            log.info("[Screenshot]: Prevented by Alert");
             return;
         }
         createScreenshot("_click");

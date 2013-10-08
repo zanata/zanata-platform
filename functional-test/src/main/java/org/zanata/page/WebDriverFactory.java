@@ -40,7 +40,7 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.util.TestEventListener;
+import org.zanata.util.TestEventForScreenshotListener;
 
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
@@ -53,8 +53,11 @@ public enum WebDriverFactory {
 
     private volatile WebDriver driver = createDriver();
     private DriverService driverService;
-    private TestEventListener eventListener = new TestEventListener(driver,
-        System.getProperty("webdriver.screenshot.dir"));
+    private TestEventForScreenshotListener eventListener;
+
+    public static String getScreenshotBaseDir() {
+        return PropertiesHolder.getProperty("webdriver.screenshot.dir");
+    }
 
     public WebDriver getDriver() {
         return driver;
@@ -69,20 +72,22 @@ public enum WebDriverFactory {
         return driver;
     }
 
-
     public String getHostUrl() {
         return PropertiesHolder.getProperty(zanataInstance.value());
     }
 
-    private WebDriver enableScreenshots(WebDriver webDriver) {
+    private WebDriver enableScreenshots() {
         log.info("Enabling screenshot module...");
-        webDriver = new Augmenter().augment(webDriver);
-        String screensDir = System.getProperty("webdriver.screenshot.dir");
-        eventListener = new TestEventListener(webDriver, screensDir);
-        return new EventFiringWebDriver(webDriver).register(eventListener);
+        return EventFiringWebDriver.class.cast(driver).register(eventListener);
     }
 
+
     public void updateListenerTestName(String testName) {
+        if (eventListener == null && getScreenshotBaseDir() != null) {
+            eventListener  = new TestEventForScreenshotListener(driver,
+                getScreenshotBaseDir());
+            driver = enableScreenshots();
+        }
         eventListener.updateTestID(testName);
     }
 
@@ -105,17 +110,17 @@ public enum WebDriverFactory {
     private WebDriver configureChromeDriver() {
         driverService = new ChromeDriverService.Builder()
             .usingDriverExecutable(
-                new File(PropertiesHolder.properties
+                new File(PropertiesHolder
                     .getProperty("webdriver.chrome.driver")))
                 .usingAnyFreePort()
                 .withEnvironment(ImmutableMap.of("DISPLAY",
-                        PropertiesHolder.properties
+                    PropertiesHolder
                         .getProperty("webdriver.display")))
                 .withLogFile(
-                    new File(PropertiesHolder.properties
-                    .getProperty("webdriver.log"))).build();
+                    new File(PropertiesHolder
+                        .getProperty("webdriver.log"))).build();
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability("chrome.binary", PropertiesHolder.properties
+        capabilities.setCapability("chrome.binary", PropertiesHolder
             .getProperty("webdriver.chrome.bin"));
         capabilities.setCapability("chrome.switches", Arrays
             .asList("--start-maximized"));
@@ -125,18 +130,13 @@ public enum WebDriverFactory {
             throw new RuntimeException("fail to start chrome driver service");
         }
 
-        WebDriver webDriver =
-            new RemoteWebDriver(driverService.getUrl(), capabilities);
-        if (System.getProperty("webdriver.screenshot.dir") != null) {
-            webDriver = enableScreenshots(webDriver);
-        }
-        return webDriver;
+        return new RemoteWebDriver(driverService.getUrl(), capabilities);
     }
 
     private WebDriver configureFirefoxDriver() {
         final String pathToFirefox =
-                Strings.emptyToNull(PropertiesHolder.properties
-                        .getProperty("firefox.path"));
+                Strings.emptyToNull(PropertiesHolder
+                    .getProperty("firefox.path"));
 
         FirefoxBinary firefoxBinary = null;
         if (pathToFirefox != null) {
@@ -149,7 +149,7 @@ public enum WebDriverFactory {
          * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
          */
         firefoxBinary.setEnvironmentProperty("DISPLAY",
-                PropertiesHolder.properties.getProperty("webdriver.display"));
+            PropertiesHolder.getProperty("webdriver.display"));
         return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
     }
 

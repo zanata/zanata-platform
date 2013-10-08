@@ -27,12 +27,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.feature.FunctionalTest;
 import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.TakeScreenshotRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -43,11 +43,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ChangePasswordTest extends FunctionalTest {
+public class ChangePasswordTest {
 
     // Override database class rule
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
+
+    @Rule
+    public TakeScreenshotRule screenshotRule =
+        new TakeScreenshotRule();
 
     @Before
     public void setUp() {
