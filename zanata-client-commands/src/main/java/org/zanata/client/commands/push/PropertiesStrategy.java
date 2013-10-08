@@ -92,7 +92,12 @@ public class PropertiesStrategy extends AbstractPushStrategy {
             throws IOException, RuntimeException {
         Resource doc = new Resource(docName);
         // doc.setContentType(contentType);
-        propReader.extractTemplate(doc, new FileInputStream(propFile));
+        FileInputStream in = new FileInputStream(propFile);
+        try {
+            propReader.extractTemplate(doc, in);
+        } finally {
+            in.close();
+        }
         return doc;
     }
 
@@ -107,7 +112,12 @@ public class PropertiesStrategy extends AbstractPushStrategy {
     private TranslationsResource loadTranslationsResource(Resource srcDoc,
             File transFile) throws IOException, RuntimeException {
         TranslationsResource targetDoc = new TranslationsResource();
-        propReader.extractTarget(targetDoc, new FileInputStream(transFile));
+        FileInputStream in = new FileInputStream(transFile);
+        try {
+            propReader.extractTarget(targetDoc, in);
+        } finally {
+            in.close();
+        }
         return targetDoc;
     }
 

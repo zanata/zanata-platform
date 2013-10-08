@@ -21,6 +21,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -301,57 +302,59 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      */
     private void pushDocumentToServer(String docId, String fileType,
             String locale, File docFile) {
-        String md5hash = calculateFileHash(docFile);
-        if (docFile.length() <= getOpts().getChunkSize()) {
-            log.info("    transmitting file [{}] as single chunk",
-                    docFile.getAbsolutePath());
-            InputStream fileStream;
-            try {
-                fileStream = new FileInputStream(docFile);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            DocumentFileUploadForm uploadForm =
-                    generateUploadForm(true, true, fileType, md5hash,
-                            docFile.length(), fileStream);
-            ClientResponse<ChunkUploadResponse> response =
-                    uploadDocumentPart(docId, locale, uploadForm);
-            checkChunkUploadStatus(response);
-        } else {
-            StreamChunker chunker;
-            try {
-                chunker = new StreamChunker(docFile, getOpts().getChunkSize());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            log.info("    transmitting file [{}] as {} chunks",
-                    docFile.getAbsolutePath(), chunker.totalChunks());
-            ClientResponse<ChunkUploadResponse> uploadResponse;
-            DocumentFileUploadForm uploadForm;
-            Long uploadId = null;
+        try {
+            String md5hash = calculateFileHash(docFile);
+            if (docFile.length() <= getOpts().getChunkSize()) {
+                log.info("    transmitting file [{}] as single chunk",
+                        docFile.getAbsolutePath());
+                InputStream fileStream = new FileInputStream(docFile);
+                try {
+                    DocumentFileUploadForm uploadForm =
+                            generateUploadForm(true, true, fileType, md5hash,
+                                    docFile.length(), fileStream);
+                    ClientResponse<ChunkUploadResponse> response =
+                            uploadDocumentPart(docId, locale, uploadForm);
+                    checkChunkUploadStatus(response);
+                } finally {
+                    fileStream.close();
+                }
+            } else {
+                StreamChunker chunker = new StreamChunker(docFile, getOpts().getChunkSize());
+                try {
+                    log.info("    transmitting file [{}] as {} chunks",
+                            docFile.getAbsolutePath(), chunker.totalChunks());
+                    ClientResponse<ChunkUploadResponse> uploadResponse;
+                    DocumentFileUploadForm uploadForm;
+                    Long uploadId = null;
 
-            for (InputStream chunkStream : chunker) {
-                log.info("        pushing chunk {} of {}",
-                        chunker.currentChunkNumber(), chunker.totalChunks());
-                boolean isFirst = chunker.currentChunkNumber() == 1;
-                boolean isLast = chunker.getRemainingChunks() == 0;
-                long chunkSize = chunker.currentChunkSize();
-                uploadForm =
-                        generateUploadForm(isFirst, isLast, fileType, md5hash,
-                                chunkSize, chunkStream);
-                if (!isFirst) {
-                    uploadForm.setUploadId(uploadId);
-                }
-                uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
-                checkChunkUploadStatus(uploadResponse);
-                if (isFirst) {
-                    uploadId = uploadResponse.getEntity().getUploadId();
-                    if (uploadId == null) {
-                        throw new RuntimeException(
-                                "server did not return upload id");
+                    for (InputStream chunkStream : chunker) {
+                        log.info("        pushing chunk {} of {}",
+                                chunker.currentChunkNumber(), chunker.totalChunks());
+                        boolean isFirst = chunker.currentChunkNumber() == 1;
+                        boolean isLast = chunker.getRemainingChunks() == 0;
+                        long chunkSize = chunker.currentChunkSize();
+                        uploadForm =
+                                generateUploadForm(isFirst, isLast, fileType, md5hash,
+                                        chunkSize, chunkStream);
+                        if (!isFirst) {
+                            uploadForm.setUploadId(uploadId);
+                        }
+                        uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
+                        checkChunkUploadStatus(uploadResponse);
+                        if (isFirst) {
+                            uploadId = uploadResponse.getEntity().getUploadId();
+                            if (uploadId == null) {
+                                throw new RuntimeException(
+                                        "server did not return upload id");
+                            }
+                        }
                     }
+                } finally {
+                    chunker.close();
                 }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -397,16 +400,18 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     private String calculateFileHash(File srcFile) {
-        InputStream fileStream;
         try {
-            fileStream = new FileInputStream(srcFile);
             MessageDigest md = MessageDigest.getInstance("MD5");
-            fileStream = new DigestInputStream(fileStream, md);
-            byte[] buffer = new byte[256];
-            while (fileStream.read(buffer) > 0) {
-                // continue
+            InputStream fileStream = new FileInputStream(srcFile);
+            try {
+                fileStream = new DigestInputStream(fileStream, md);
+                byte[] buffer = new byte[256];
+                while (fileStream.read(buffer) > 0) {
+                    // continue
+                }
+            } finally {
+                fileStream.close();
             }
-            fileStream.close();
             String md5hash = new String(Hex.encodeHex(md.digest()));
             return md5hash;
         } catch (FileNotFoundException e) {
@@ -418,8 +423,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
     }
 
-    private static class StreamChunker implements Iterable<InputStream> {
-
+    private static class StreamChunker implements Iterable<InputStream>,
+            Closeable {
         private int totalChunkCount;
         private int chunksRetrieved;
 
@@ -431,12 +436,17 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         public StreamChunker(File file, int chunkSize)
                 throws FileNotFoundException {
             this.file = file;
-            fileStream = new FileInputStream(file);
             buffer = new byte[chunkSize];
             chunksRetrieved = 0;
             totalChunkCount =
                     (int) (file.length() / chunkSize + (file.length()
                             % chunkSize == 0 ? 0 : 1));
+            fileStream = new FileInputStream(file);
+        }
+
+        @Override
+        public void close() throws IOException {
+            fileStream.close();
         }
 
         public int totalChunks() {
