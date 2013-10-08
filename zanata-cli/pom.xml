@@ -80,6 +80,16 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
+            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 
