@@ -30,6 +30,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ ChangePasswordTest.class, RegisterTest.class,
         UsernameValidationTest.class, ValidEmailAddressTest.class,
-        InvalidEmailAddressTest.class, OpenIDTest.class })
+        InvalidEmailAddressTest.class })
 public class AccountTestSuite {
 }

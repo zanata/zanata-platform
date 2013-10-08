@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.account;
+package org.zanata.page.googleaccount;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -53,15 +53,13 @@ public class GoogleAccountPage extends AbstractPage {
         return new GoogleAccountPage(getDriver());
     }
 
-    public EditProfilePage clickSignIn() {
+    public GooglePermissionsPage clickSignIn() {
         signInButton.click();
+        return new GooglePermissionsPage(getDriver());
+    }
 
-        // May return a Permissions request page, if this is the first run
-        if (!getDriver().getTitle().contains("Edit Profile")) {
-            GooglePermissionsPage googlePermissionsPage =
-                    new GooglePermissionsPage(getDriver());
-            googlePermissionsPage.acceptPermissions();
-        }
-        return new EditProfilePage(getDriver());
+    public GoogleManagePermissionsPage clickPermissionsSignIn() {
+        signInButton.click();
+        return new GoogleManagePermissionsPage(getDriver());
     }
 }

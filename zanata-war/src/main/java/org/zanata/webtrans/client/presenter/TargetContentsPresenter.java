@@ -82,8 +82,7 @@ import com.google.inject.Singleton;
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         TransUnitEditEventHandler, UserConfigChangeHandler,
         RequestValidationEventHandler, InsertStringInEditorHandler,
-        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler
-{
+        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler {
     protected static final int LAST_INDEX = -2;
     private final EventBus eventBus;
     private final TableEditorMessages messages;
@@ -137,6 +136,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         spellCheckEnabled =
                 userOptionsService.getConfigHolder().getState()
                         .isSpellCheckEnabled();
+
         editorKeyShortcuts.registerKeys(this);
         saveAsApprovedConfirmation.setListener(this);
         validationWarning.setListener(this);

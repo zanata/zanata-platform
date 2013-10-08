@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,26 +18,16 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model.po;
+package org.zanata.feature.googleopenid;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Entity;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import lombok.ToString;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- *
- * @author sflaniga@redhat.com
- * @see org.zanata.rest.dto.extensions.gettext.PoHeader
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@ToString(callSuper = true)
-@Access(AccessType.FIELD)
-public class HPoHeader extends PoHeaderBase {
-    private static final long serialVersionUID = 1L;
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ GoogleOpenIDTest.class })
+public class GoogleOpenIDTestSuite {
 }

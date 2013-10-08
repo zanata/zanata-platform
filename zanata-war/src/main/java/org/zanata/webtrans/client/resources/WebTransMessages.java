@@ -568,4 +568,7 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Confirm rejection (ctrl + enter)")
     String confirmRejection();
+
+    @DefaultMessage("More details")
+    String moreDetais();
 }

@@ -66,7 +66,7 @@
       font-size: 0.9em;
       color: black;
       position: absolute;
-      z-index: 1;
+      z-index: 3;
       background-color: #fafafa;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(0, 0, 0, 0.2);
       top: 95%;

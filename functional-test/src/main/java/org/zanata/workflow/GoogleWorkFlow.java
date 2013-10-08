@@ -20,28 +20,33 @@
  */
 package org.zanata.workflow;
 
-import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.googleaccount.GoogleManagePermissionsPage;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterWorkFlow extends AbstractWebWorkFlow {
+public class GoogleWorkFlow extends AbstractWebWorkFlow {
+    private static String permissionsPageLink =
+            "https://accounts.google.com/b/0/IssuedAuthSubTokens?hl=en_GB";
+    private static String forceLogoutLink =
+            "https://accounts.google.com/Logout?service=lso";
 
-    public HomePage registerGoogleOpenID(String name, String username,
-            String password, String email) {
+    public GoogleManagePermissionsPage resetGooglePermissions(
+            String googleUsername, String password) {
         GoogleAccountPage googleAccountPage =
-                new BasicWorkFlow().goToHome().clickSignInLink()
-                        .selectGoogleOpenID();
+                new BasicWorkFlow().goToUrl(permissionsPageLink,
+                    GoogleAccountPage.class);
 
-        EditProfilePage editProfilePage =
-                googleAccountPage.enterGoogleEmail(email)
-                        .enterGooglePassword(password).clickSignIn()
-                        .acceptPermissions();
-
-        return editProfilePage.enterName(name).enterUserName(username)
-                .enterEmail(email).clickSave();
+        return googleAccountPage.enterGoogleEmail(googleUsername)
+                .enterGooglePassword(password).clickPermissionsSignIn()
+                .removePermission("localhost");
     }
+
+    public GoogleAccountPage forceLogout() {
+        return new BasicWorkFlow().goToUrl(forceLogoutLink,
+                GoogleAccountPage.class);
+    }
+
 }

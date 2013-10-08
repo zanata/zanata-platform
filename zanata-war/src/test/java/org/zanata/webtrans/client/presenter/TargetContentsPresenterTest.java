@@ -72,6 +72,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
+import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.client.ui.SaveAsApprovedConfirmationDisplay;

@@ -19,14 +19,14 @@
       position: absolute;
       font-size: 20px;
       opacity: 0.8;
-      left: 14px;
+      left: 4px;
       top: 5px;
     }
 
     .cancelBtn {
       position: absolute;
       top: 7px;
-      left: 340px;
+      left: 330px;
       font-size: 16px;
       cursor: pointer;
     }
@@ -41,12 +41,12 @@
 
 
   </ui:style>
-  <g:FlowPanel styleName="{style.container}">
+  <g:HTMLPanel styleName="{style.container}">
     <g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}' />
     <g:InlineLabel ui:field="cancelBtn"
       styleName="{style.cancelBtn} icon-cancel-circle" />
     <g:InlineLabel styleName="icon-search {style.searchIcon}" />
-  </g:FlowPanel>
+  </g:HTMLPanel>
 
 
 </ui:UiBinder>

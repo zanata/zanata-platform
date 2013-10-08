@@ -20,18 +20,25 @@
  */
 package org.zanata.page;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
+import java.util.List;
+import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.WebElementUtil;
 
-import java.util.List;
-import java.util.Set;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 
 @Slf4j
 public class AbstractPage {
@@ -60,6 +67,10 @@ public class AbstractPage {
 
     public String getTitle() {
         return driver.getTitle();
+    }
+
+    public String getUrl() {
+        return driver.getCurrentUrl();
     }
 
     public FluentWait<WebDriver> waitForTenSec() {
@@ -92,7 +103,6 @@ public class AbstractPage {
 
     /**
      * Wait until expected number of errors presented on page or timeout.
-     *
      * @param expectedNumber
      *            expected number of errors on page
      * @return list of error message
@@ -109,7 +119,6 @@ public class AbstractPage {
 
     /**
      * Wait for all necessary elements to be available on page.
-     *
      * @param elementBys
      *            selenium search criteria for locating elements
      */

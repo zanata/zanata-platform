@@ -7,37 +7,28 @@
 
   <ui:style type="org.zanata.webtrans.client.ui.Breadcrumb.Styles">
     .container {
-      display: inline;
+      display: inline-block;
+      font-size: 1.1em;
     }
 
-    a.readOnlyLink {
-      font-size: 14px;
+    a.readOnlyLink, a.readOnlyLink:hover {
       font-weight: bold;
       color: #416988;
-      font-style: normal;
       text-decoration: none;
-    }
-
-    a.readOnlyLink:hover {
-      text-decoration: none;
-      color: #416988;
+      cursor: default;
     }
 
     a.link {
-      text-decoration: none;
-      cursor: pointer;
       font-weight: bold;
-      color: #4e9fdd;
     }
 
     a.link:hover {
       text-decoration: underline;
-      color: rgb(36, 121, 187);
     }
 
     .divider {
-      color: #000000;
-      font-size: 12px;
+      color: rgba(0, 0, 0, 0.8);
+      font-size: 0.75em;
     }
 
   </ui:style>

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Access;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,6 +49,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -73,6 +75,7 @@ import org.zanata.util.StringUtil;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -85,58 +88,118 @@ import com.google.common.collect.ImmutableList;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
+@Getter
 @NoArgsConstructor
+@Access(javax.persistence.AccessType.FIELD)
 @ToString(of = { "resId", "revision", "comment", "obsolete" })
 @Slf4j
 public class HTextFlow extends HTextContainer implements Serializable,
         ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
     private static final long serialVersionUID = 3023080107971905435L;
 
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
+    @NotNull
     private Integer revision = 1;
 
+    // TODO make this case sensitive
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @Size(max = 255)
+    @NotEmpty
     private String resId;
 
+    // we can't use @NotNull because the position isn't set until the object has
+    // been persisted
+    @Column(insertable = false, updatable = false, nullable = false)
+    // @Column(insertable=false, updatable=false)
     @Setter(AccessLevel.PROTECTED)
     private Integer pos;
 
+    @ManyToOne
+    @JoinColumn(name = "document_id", insertable = false, updatable = false,
+            nullable = false)
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @AccessType("field")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = ContainingWorkspaceBridge.class)
     private HDocument document;
 
+    /**
+     * Caller must ensure that textFlow is in document.textFlows if and only if
+     * obsolete = false
+     *
+     * @param obsolete
+     */
     private boolean obsolete = false;
 
-    private Map<Long, HTextFlowTarget> targets;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
+    @MapKeyColumn(name = "locale")
+    @BatchSize(size = 10)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Map<Long, HTextFlowTarget> targets = Maps.newHashMap();
 
-    private Map<Integer, HTextFlowHistory> history;
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlow")
+    @MapKey(name = "revision")
+    private Map<Integer, HTextFlowHistory> history = Maps.newHashMap();
 
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToOne(optional = true, fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @JoinColumn(name = "comment_id")
     private HSimpleComment comment;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            optional = true)
     private HPotEntryData potEntryData;
 
+    @NotNull
+    @Setter(AccessLevel.PRIVATE)
+    // this method is private because setContent(), and only setContent(),
+    // should be setting wordCount
     private Long wordCount;
 
+    @Setter(AccessLevel.PRIVATE)
+    // this method is private because setContent(), and only setContent(),
+    // should be setting the contentHash
     private String contentHash;
 
     private boolean plural;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content0;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content1;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content2;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content3;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content4;
 
+    @Getter(AccessLevel.PROTECTED)
     private String content5;
 
     // Only for internal use (persistence transient)
     @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
     private Integer oldRevision;
 
     // Only for internal use (persistence transient)
     @Setter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.NONE)
+    @Transient
     private HTextFlowHistory initialState;
 
     public HTextFlow(HDocument document, String resId, String content) {
@@ -145,30 +208,10 @@ public class HTextFlow extends HTextContainer implements Serializable,
         setContents(content);
     }
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
-
     @Transient
     @Override
     public LocaleId getLocale() {
         return getDocument().getSourceLocaleId();
-    }
-
-    // we can't use @NotNull because the position isn't set until the object has
-    // been persisted
-    @Column(insertable = false, updatable = false, nullable = false)
-    // @Column(insertable=false, updatable=false)
-            @Override
-            public
-            Integer getPos() {
-        return pos;
     }
 
     @Transient
@@ -181,70 +224,11 @@ public class HTextFlow extends HTextContainer implements Serializable,
                 + ":" + getResId();
     }
 
-    // TODO make this case sensitive
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    @NaturalId
-    @Size(max = 255)
-    @NotEmpty
-    public String getResId() {
-        return resId;
-    }
-
-    /**
-     * @return whether this message supports plurals
-     */
-    public boolean isPlural() {
-        return plural;
-    }
-
-    @NotNull
-    @Override
-    public Integer getRevision() {
-        return revision;
-    }
-
-    @Override
-    public boolean isObsolete() {
-        return obsolete;
-    }
-
-    /**
-     * Caller must ensure that textFlow is in document.textFlows if and only if
-     * obsolete = false
-     *
-     * @param obsolete
-     */
-    public void setObsolete(boolean obsolete) {
-        this.obsolete = obsolete;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "document_id", insertable = false, updatable = false,
-            nullable = false)
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-            @NaturalId
-            @AccessType("field")
-            @Field(analyze = Analyze.NO)
-            @FieldBridge(impl = ContainingWorkspaceBridge.class)
-            public
-            HDocument getDocument() {
-        return document;
-    }
-
     public void setDocument(HDocument document) {
         if (!Objects.equal(this.document, document)) {
             this.document = document;
             updateWordCount();
         }
-    }
-
-    // TODO use orphanRemoval=true: requires JPA 2.0
-    @OneToOne(optional = true, fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @JoinColumn(name = "comment_id")
-    public HSimpleComment getComment() {
-        return comment;
     }
 
     @Override
@@ -334,51 +318,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
         }
     }
 
-    protected String getContent0() {
-        return content0;
-    }
-
-    protected String getContent1() {
-        return content1;
-    }
-
-    protected String getContent2() {
-        return content2;
-    }
-
-    protected String getContent3() {
-        return content3;
-    }
-
-    protected String getContent4() {
-        return content4;
-    }
-
-    protected String getContent5() {
-        return content5;
-    }
-
-    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
-            CascadeType.PERSIST }, mappedBy = "textFlow")
-    @MapKey(name = "revision")
-    public Map<Integer, HTextFlowHistory> getHistory() {
-        if (this.history == null) {
-            this.history = new HashMap<Integer, HTextFlowHistory>();
-        }
-        return history;
-    }
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
-    @MapKeyColumn(name = "locale")
-    @BatchSize(size = 10)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    public Map<Long, HTextFlowTarget> getTargets() {
-        if (targets == null) {
-            targets = new HashMap<Long, HTextFlowTarget>();
-        }
-        return targets;
-    }
-
     @Override
     public ITextFlowTarget getTargetContents(LocaleId localeId) {
         // TODO performance: need efficient way to look up a target by LocaleId
@@ -394,35 +333,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @Override
     public Iterable<ITextFlowTarget> getAllTargetContents() {
         return ImmutableList.<ITextFlowTarget> copyOf(getTargets().values());
-    }
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            optional = true)
-    public HPotEntryData getPotEntryData() {
-        return potEntryData;
-    }
-
-    @NotNull
-    public Long getWordCount() {
-        return wordCount;
-    }
-
-    // this method is private because setContent(), and only setContent(),
-    // should
-    // be setting wordCount
-    private void setWordCount(Long wordCount) {
-        this.wordCount = wordCount;
-    }
-
-    public String getContentHash() {
-        return contentHash;
-    }
-
-    // this method is private because setContent(), and only setContent(),
-    // should
-    // be setting the contentHash
-    private void setContentHash(String contentHash) {
-        this.contentHash = contentHash;
     }
 
     private void updateWordCount() {

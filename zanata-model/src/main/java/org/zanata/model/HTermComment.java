@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +37,8 @@ import org.hibernate.annotations.Type;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -47,51 +51,33 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
+@Getter
 @NoArgsConstructor
+@Access(AccessType.FIELD)
 @ToString(of = "comment")
 public class HTermComment implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
-
-    private String comment;
-
-    private Integer pos;
-
-    private HGlossaryTerm glossaryTerm;
-
-    public HTermComment(String comment) {
-        this.comment = comment;
-    }
-
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
+    @Setter(AccessLevel.PROTECTED)
+    private Long id;
 
     @NotNull
     @Type(type = "text")
-    public String getComment() {
-        return comment;
-    }
+    private String comment;
 
     @Column(insertable = false, updatable = false, nullable = false)
-    public Integer getPos() {
-        return pos;
-    }
+    private Integer pos;
 
     @ManyToOne
     @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false,
             nullable = false)
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
-            public
-            HGlossaryTerm getGlossaryTerm() {
-        return glossaryTerm;
+    private HGlossaryTerm glossaryTerm;
+
+    public HTermComment(String comment) {
+        this.comment = comment;
     }
 
 }

@@ -13,11 +13,8 @@
 
     .topBar {
       border-bottom: 1px solid lightGrey;
-      background: #F3F2F2;
       width: 100%;
       height: 100%;
-      padding-left: 10px;
-      padding-right: 10px;
     }
 
     .iconButton {
