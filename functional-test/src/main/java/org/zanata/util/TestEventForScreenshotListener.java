@@ -7,7 +7,6 @@ import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -15,14 +14,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-public class TestEventListener extends AbstractWebDriverEventListener {
+public class TestEventForScreenshotListener extends AbstractWebDriverEventListener {
 
     private WebDriver driver;
     private String targetDir;
@@ -34,12 +32,12 @@ public class TestEventListener extends AbstractWebDriverEventListener {
      * @param drv the WebDriver to derive screen shots from
      * @param targetDirectory full path to screen shot storage
      */
-    public TestEventListener(WebDriver drv, String targetDirectory) {
+    public TestEventForScreenshotListener(WebDriver drv, String targetDirectory) {
         driver = drv;
         targetDir =
                 targetDirectory.endsWith("/") ? targetDirectory
                         : targetDirectory.concat("/");
-        log.info("Writing screenshots to {}", targetDir);
+        TestEventForScreenshotListener.log.info("Writing screenshots to {}", targetDir);
     }
 
     /**
@@ -100,7 +98,7 @@ public class TestEventListener extends AbstractWebDriverEventListener {
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
         if (isAlertPresent(driver)) {
-            log.info("[Screenshot]: Prevented by Alert");
+            TestEventForScreenshotListener.log.info("[Screenshot]: Prevented by Alert");
             return;
         }
         createScreenshot("_click");
