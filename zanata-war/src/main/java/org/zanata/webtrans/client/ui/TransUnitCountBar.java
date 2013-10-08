@@ -177,25 +177,29 @@ public class TransUnitCountBar extends Composite implements
                     stats.getStats(localeId.getId(), StatUnit.WORD);
             if (statsByWords) {
                 label.setText(messages.statusBarPercentageHrs(
-                        percentFormat.format(wordStats.getPercentTranslated() / 100),
+                        percentFormat.format(
+                            wordStats.getPercentTranslated() / 100),
                         wordStats.getRemainingHours(), "Words"));
             } else {
                 TranslationStatistics msgStats =
                         stats.getStats(localeId.getId(), StatUnit.MESSAGE);
                 label.setText(messages.statusBarPercentageHrs(
-                        percentFormat.format(msgStats.getPercentTranslated() / 100),
+                        percentFormat.format(
+                            msgStats.getPercentTranslated() / 100),
                         wordStats.getRemainingHours(), "Msg"));
             }
             break;
         case PERCENT_COMPLETE:
             if (statsByWords) {
-                double wordPercent = stats.getStats(
-                        localeId.getId(), StatUnit.WORD).getPercentTranslated() / 100;
-                label.setText(percentFormat.format(wordPercent));
+                double wordTranslatedProportion = stats
+                    .getStats(localeId.getId(), StatUnit.WORD)
+                    .getPercentTranslated() / 100;
+                label.setText(percentFormat.format(wordTranslatedProportion));
             } else {
-                double messagePercent = stats.getStats(
-                        localeId.getId(), StatUnit.MESSAGE).getPercentTranslated() / 100;
-                label.setText(percentFormat.format(messagePercent));
+                double messageTranslatedProportion = stats
+                    .getStats(localeId.getId(), StatUnit.MESSAGE)
+                    .getPercentTranslated() / 100;
+                label.setText(percentFormat.format(messageTranslatedProportion));
             }
             break;
         default:
