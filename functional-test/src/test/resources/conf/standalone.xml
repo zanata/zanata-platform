@@ -215,7 +215,7 @@
           <keepalive-time time="10" unit="seconds" />
         </long-running-threads>
       </default-workmanager>
-      <cached-connection-manager />
+      <cached-connection-manager debug="true" />
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:jdr:1.0" />
     <subsystem xmlns="urn:jboss:domain:jmx:1.2">
