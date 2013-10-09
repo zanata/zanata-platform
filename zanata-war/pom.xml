@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1.0</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -257,9 +255,7 @@
             </goals>
             <configuration>
               <target>
-                <copy
-                  file="${project.basedir}/src/test/resources/arquillian/standalone.xml"
-                  tofile="${arquillian.jboss.home}/standalone/configuration/zanata-standalone.xml" />
+                <copy file="${project.basedir}/src/test/resources/arquillian/standalone.xml" tofile="${arquillian.jboss.home}/standalone/configuration/zanata-standalone.xml" />
               </target>
             </configuration>
           </execution>
@@ -722,10 +718,8 @@
                 <configuration>
                   <tasks>
                     <touch file="${as7.skip.deploy.marker}" />
-                    <delete
-                      dir="${jboss.home}/standalone/deployments/zanata.war" />
-                    <copy
-                      todir="${jboss.home}/standalone/deployments/zanata.war">
+                    <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
+                    <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                       <fileset dir="${project.build.directory}/zanata" />
                     </copy>
                     <delete file="${as7.skip.deploy.marker}" />
@@ -764,10 +758,8 @@
                 <configuration>
                   <tasks>
                     <touch file="${as7.skip.deploy.marker}" />
-                    <delete
-                      dir="${jboss.home}/standalone/deployments/zanata.war" />
-                    <copy
-                      todir="${jboss.home}/standalone/deployments/zanata.war">
+                    <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
+                    <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                       <fileset dir="${project.build.directory}/zanata" />
                     </copy>
                     <delete file="${as7.skip.deploy.marker}" />
