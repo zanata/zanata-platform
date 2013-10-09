@@ -179,6 +179,7 @@
     <checkstyle.propertiesLocation />
     <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
+    <findbugs.excludeFilterFile>https://raw.github.com/zanata/zanata-parent/master/findbugs-filter.xml</findbugs.excludeFilterFile>
 
     <enunciate.version>1.27</enunciate.version>
 
@@ -360,6 +361,7 @@ package.
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>2.5.2</version>
         <configuration>
+          <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
           <!-- NB: If we want to failOnError, we may need to
                remove GuavaBetaDetector/library-detectors. -->
           <failOnError>false</failOnError>
