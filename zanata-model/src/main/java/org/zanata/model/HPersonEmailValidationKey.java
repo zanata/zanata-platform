@@ -35,11 +35,13 @@ import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -49,6 +51,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @ToString
 @NoArgsConstructor
 @Access(AccessType.FIELD)
+@EqualsAndHashCode(of = "keyHash", callSuper = false)
 public class HPersonEmailValidationKey implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -57,6 +60,7 @@ public class HPersonEmailValidationKey implements Serializable {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NaturalId
     private String keyHash;
 
     @ManyToOne(optional = false)

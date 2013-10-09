@@ -42,6 +42,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -56,8 +57,7 @@ import com.google.common.collect.Maps;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = { "transUnitId", "sourceLanguage",
-        "translationMemory" })
+@EqualsAndHashCode(of = { "translationMemory", "uniqueId" }, callSuper = false)
 @ToString(exclude = "translationMemory")
 @Data
 @NoArgsConstructor
@@ -96,9 +96,11 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "tm_id", nullable = false)
+    @NaturalId
     private TransMemory translationMemory;
 
     @Column(name = "unique_id", nullable = false)
+    @NaturalId
     private String uniqueId;
 
     @Column(nullable = true)

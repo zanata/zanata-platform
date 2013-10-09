@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -42,16 +43,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(exclude = "versionNum")
 @Getter
 @Setter
-public class ModelEntityBase implements Serializable, HashableState {
+public abstract class ModelEntityBase implements Serializable, HashableState {
     private static final long serialVersionUID = -6139220551322868743L;
 
     @Id
@@ -70,6 +69,20 @@ public class ModelEntityBase implements Serializable, HashableState {
     @Version
     @Column(nullable = false)
     protected Integer versionNum;
+
+    /**
+     * Subclasses should implement business key equality/hashCode (suggestion:
+     * use NaturalId/unique/immutable fields, not the generated ID)
+     */
+    @Override
+    public abstract boolean equals(Object obj);
+
+    /**
+     * Subclasses should implement business key equality/hashCode (suggestion:
+     * use NaturalId/unique/immutable fields, not the generated ID)
+     */
+    @Override
+    public abstract int hashCode();
 
     @SuppressWarnings("unused")
     @PrePersist

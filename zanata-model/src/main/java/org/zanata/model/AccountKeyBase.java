@@ -38,7 +38,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class AccountKeyBase {
+public abstract class AccountKeyBase {
     @NotEmpty
     @Size(min = 32, max = 32)
     @Id

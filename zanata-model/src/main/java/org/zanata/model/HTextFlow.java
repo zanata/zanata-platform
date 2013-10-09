@@ -49,6 +49,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -91,6 +92,7 @@ import com.google.common.collect.Maps;
 @Getter
 @NoArgsConstructor
 @Access(javax.persistence.AccessType.FIELD)
+@EqualsAndHashCode(of = { "resId", "document" }, callSuper = false)
 @ToString(of = { "resId", "revision", "comment", "obsolete" })
 @Slf4j
 public class HTextFlow extends HTextContainer implements Serializable,
