@@ -24,8 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,47 +33,68 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
-import com.google.common.collect.Lists;
 
 @Entity
 @Getter
 @Setter
-@Access(AccessType.FIELD)
-@NoArgsConstructor
 public class HDocumentUpload extends ModelEntityBase implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
+    private HProjectIteration projectIteration;
+    private String docId;
+    private DocumentType type;
+    private HLocale locale;
+    private String contentHash;
+    private List<HDocumentUploadPart> parts;
+
+    public HDocumentUpload() {
+        // hibernate requires this to be an ArrayList
+        parts = new ArrayList<HDocumentUploadPart>();
+    }
+
+    public void setId(Long id) {
+        super.setId(id);
+    }
 
     @ManyToOne
     @JoinColumn(name = "projectIterationid", nullable = false)
-    private HProjectIteration projectIteration;
+    public HProjectIteration getProjectIteration() {
+        return projectIteration;
+    }
 
     @NotEmpty
-    private String docId;
+    public String getDocId() {
+        return docId;
+    }
 
     @Enumerated(EnumType.STRING)
-    private DocumentType type;
+    public DocumentType getType() {
+        return type;
+    }
 
     // null for source document upload
     @ManyToOne
     @JoinColumn(name = "localeId", nullable = true)
-    private HLocale locale;
+    public HLocale getLocale() {
+        return locale;
+    }
 
     @NotEmpty
-    private String contentHash;
+    public String getContentHash() {
+        return contentHash;
+    }
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "documentUploadId", nullable = false)
     @IndexColumn(name = "partIndex", base = 0, nullable = false)
-    private List<HDocumentUploadPart> parts = Lists.newArrayList();
-
-    public void setId(Long id) {
-        super.setId(id);
+    public List<HDocumentUploadPart> getParts() {
+        return parts;
     }
 
     @Override
@@ -85,4 +104,5 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
                 + ",versionNum=" + versionNum + ",contentHash=" + contentHash
                 + "]";
     }
+
 }

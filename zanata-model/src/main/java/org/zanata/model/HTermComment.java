@@ -20,25 +20,21 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import javax.validation.constraints.NotNull;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
@@ -48,31 +44,49 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@Getter
 @NoArgsConstructor
-@Access(AccessType.FIELD)
 @ToString(of = "comment")
 public class HTermComment {
+    private Long id;
+
+    private String comment;
+
+    private Integer pos;
+
+    private HGlossaryTerm glossaryTerm;
+
+    public HTermComment(String comment) {
+        this.comment = comment;
+    }
+
     @Id
     @GeneratedValue
-    @Setter(AccessLevel.PROTECTED)
-    private Long id;
+    public Long getId() {
+        return id;
+    }
+
+    protected void setId(Long id) {
+        this.id = id;
+    }
 
     @NotNull
     @Type(type = "text")
-    private String comment;
+    public String getComment() {
+        return comment;
+    }
 
     @Column(insertable = false, updatable = false, nullable = false)
-    private Integer pos;
+    public Integer getPos() {
+        return pos;
+    }
 
     @ManyToOne
     @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false,
             nullable = false)
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    private HGlossaryTerm glossaryTerm;
-
-    public HTermComment(String comment) {
-        this.comment = comment;
+            public
+            HGlossaryTerm getGlossaryTerm() {
+        return glossaryTerm;
     }
 
 }

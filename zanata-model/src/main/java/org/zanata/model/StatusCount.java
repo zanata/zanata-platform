@@ -20,9 +20,9 @@
  */
 package org.zanata.model;
 
-import org.zanata.common.ContentState;
-
 import lombok.Data;
+
+import org.zanata.common.ContentState;
 
 @Data
 public class StatusCount {

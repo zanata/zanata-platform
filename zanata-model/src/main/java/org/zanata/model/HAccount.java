@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,6 +38,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Size;
+
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -47,7 +50,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import javax.validation.constraints.Size;
 import org.jboss.seam.annotations.security.management.UserEnabled;
 import org.jboss.seam.annotations.security.management.UserPassword;
 import org.jboss.seam.annotations.security.management.UserPrincipal;
@@ -56,14 +58,6 @@ import org.jboss.seam.security.management.PasswordHash;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.type.UserApiKey;
 import org.zanata.rest.dto.Account;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @see Account
@@ -74,32 +68,71 @@ import lombok.ToString;
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Indexed
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @ToString(callSuper = true, of = "username")
 @EqualsAndHashCode(callSuper = true, of = { "enabled", "passwordHash",
         "username", "apiKey" })
 public class HAccount extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NaturalId
-    @UserPrincipal
-    @Field()
     private String username;
-
-    @UserPassword(hash = PasswordHash.ALGORITHM_MD5)
     private String passwordHash;
-
-    @UserEnabled
     private boolean enabled;
-
-    @UserApiKey
-    @Size(min = 32, max = 32)
     private String apiKey;
+    private HPerson person;
+    private Set<HAccountRole> roles;
+    private HAccountActivationKey accountActivationKey;
+    private HAccountResetPasswordKey accountResetPasswordKey;
+    private Set<HCredentials> credentials;
+    private HAccount mergedInto;
+    private Map<String, HAccountOption> editorOptions;
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
+            mappedBy = "account")
+    public HAccountActivationKey getAccountActivationKey() {
+        return accountActivationKey;
+    }
+
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
+            mappedBy = "account")
+    public HAccountResetPasswordKey getAccountResetPasswordKey() {
+        return accountResetPasswordKey;
+    }
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-    private HPerson person;
+    public HPerson getPerson() {
+        return person;
+    }
+
+    @NaturalId
+    @UserPrincipal
+    @Field()
+    public String getUsername() {
+        return username;
+    }
+
+    @Transient
+    public boolean isPersonAccount() {
+        return person != null;
+    }
+
+    @UserPassword(hash = PasswordHash.ALGORITHM_MD5)
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    @UserEnabled
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @UserApiKey
+    @Size(min = 32, max = 32)
+    public String getApiKey() {
+        return apiKey;
+    }
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @UserRoles
@@ -107,33 +140,33 @@ public class HAccount extends ModelEntityBase implements Serializable {
     @JoinTable(name = "HAccountMembership", joinColumns = @JoinColumn(
             name = "accountId"), inverseJoinColumns = @JoinColumn(
             name = "memberOf"))
-    private Set<HAccountRole> roles = Sets.newHashSet();
-
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
-            mappedBy = "account")
-    private HAccountActivationKey accountActivationKey;
-
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
-            mappedBy = "account")
-    private HAccountResetPasswordKey accountResetPasswordKey;
+    public Set<HAccountRole> getRoles() {
+        if (roles == null) {
+            roles = new HashSet<HAccountRole>();
+            setRoles(roles);
+        }
+        return roles;
+    }
 
     @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    private Set<HCredentials> credentials = Sets.newHashSet();
+    public Set<HCredentials> getCredentials() {
+        if (credentials == null) {
+            credentials = new HashSet<HCredentials>();
+        }
+        return credentials;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mergedInto")
-    private HAccount mergedInto;
+    public HAccount getMergedInto() {
+        return mergedInto;
+    }
 
     @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
     @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @MapKey(name = "name")
-    private Map<String, HAccountOption> editorOptions = Maps.newHashMap();
-
-    @Transient
-    public boolean isPersonAccount() {
-        return person != null;
+    public Map<String, HAccountOption> getEditorOptions() {
+        return editorOptions;
     }
 }

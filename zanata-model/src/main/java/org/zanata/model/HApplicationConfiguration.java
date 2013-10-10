@@ -20,15 +20,12 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -38,8 +35,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @NoArgsConstructor
 @AllArgsConstructor
 public class HApplicationConfiguration extends ModelEntityBase {
@@ -58,15 +53,22 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
     private static final long serialVersionUID = 8652817113098817448L;
 
+    private String key;
+    private String value;
+
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
     @NotEmpty
     @Size(max = 255)
     @Column(name = "config_key", nullable = false)
-    private String key;
+    public String getKey() {
+        return key;
+    }
 
     @NotNull
     @Type(type = "text")
     @Column(name = "config_value", nullable = false)
-    private String value;
+    public String getValue() {
+        return value;
+    }
 }

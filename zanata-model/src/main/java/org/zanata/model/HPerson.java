@@ -24,8 +24,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,10 +34,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -49,7 +44,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.rest.dto.Person;
-import com.google.common.collect.Sets;
 
 /**
  * @see Person
@@ -58,27 +52,48 @@ import com.google.common.collect.Sets;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @EqualsAndHashCode(callSuper = true, of = { "account", "email",
         "maintainerProjects", "name" }, doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
-@NoArgsConstructor
 public class HPerson extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
+    private String name;
+    private HAccount account;
+
+    private String email;
+
+    private Set<HProject> maintainerProjects;
+
+    private Set<HIterationGroup> maintainerVersionGroups;
+
+    private Set<HLocaleMember> languageTeamMemberships;
+
+    public HPerson() {
+    }
 
     @NotEmpty
     @Size(min = 2, max = 80)
-    private String name;
+    public String getName() {
+        return name;
+    }
 
     @OneToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "accountId")
-    private HAccount account;
+    public HAccount getAccount() {
+        return account;
+    }
+
+    @Transient
+    public boolean hasAccount() {
+        return account != null;
+    }
 
     @Email
     @NotEmpty
     @NaturalId(mutable = true)
-    private String email;
+    public String getEmail() {
+        return email;
+    }
 
     /*
      * This is a read-only side of the relationship. Changes to this collection
@@ -86,19 +101,20 @@ public class HPerson extends ModelEntityBase implements Serializable {
      */
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
             cascade = CascadeType.ALL)
-    private Set<HProject> maintainerProjects = Sets.newHashSet();
+    public Set<HProject> getMaintainerProjects() {
+        if (maintainerProjects == null) {
+            maintainerProjects = new HashSet<HProject>();
+        }
+        return maintainerProjects;
+    }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
             cascade = CascadeType.ALL)
-    private Set<HIterationGroup> maintainerVersionGroups = Sets.newHashSet();
-
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
-    @Getter(AccessLevel.PROTECTED)
-    private Set<HLocaleMember> languageTeamMemberships = Sets.newHashSet();
-
-    @Transient
-    public boolean hasAccount() {
-        return account != null;
+    public Set<HIterationGroup> getMaintainerVersionGroups() {
+        if (maintainerVersionGroups == null) {
+            maintainerVersionGroups = new HashSet<HIterationGroup>();
+        }
+        return maintainerVersionGroups;
     }
 
     @Transient
@@ -108,6 +124,14 @@ public class HPerson extends ModelEntityBase implements Serializable {
             memberships.add(locMem.getSupportedLanguage());
         }
         return memberships;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
+    protected Set<HLocaleMember> getLanguageTeamMemberships() {
+        if (this.languageTeamMemberships == null) {
+            this.languageTeamMemberships = new HashSet<HLocaleMember>();
+        }
+        return languageTeamMemberships;
     }
 
     @Transient

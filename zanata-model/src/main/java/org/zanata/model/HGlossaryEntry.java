@@ -23,14 +23,16 @@ package org.zanata.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -42,13 +44,6 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
-import com.google.common.collect.Maps;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -58,25 +53,37 @@ import lombok.ToString;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
         exclude = "glossaryTerms")
 @ToString(of = { "sourceRef", "srcLocale" })
 public class HGlossaryEntry extends ModelEntityBase {
     private static final long serialVersionUID = -4200183325180630061L;
 
+    private Map<HLocale, HGlossaryTerm> glossaryTerms;
+    private String sourceRef;
+    private HLocale srcLocale;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
     @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     @MapKey(name = "locale")
-    private Map<HLocale, HGlossaryTerm> glossaryTerms = Maps.newHashMap();
+    public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
+        if (glossaryTerms == null) {
+            glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
+        }
+        return glossaryTerms;
+    }
 
     @Type(type = "text")
-    private String sourceRef;
+    public String getSourceRef() {
+        return sourceRef;
+    }
 
     @OneToOne
     @JoinColumn(name = "srcLocaleId", nullable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = LocaleIdBridge.class)
-    private HLocale srcLocale;
+    public HLocale getSrcLocale() {
+        return srcLocale;
+    }
+
 }

@@ -23,8 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +33,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,30 +42,19 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Setter
-@Getter
 @ToString
 @NoArgsConstructor
-@Access(AccessType.FIELD)
 public class HPersonEmailValidationKey implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, unique = true)
     private String keyHash;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "personId", nullable = false, unique = true)
     private HPerson person;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
     private Date creationDate;
 
-    @Email
-    @NotEmpty
     private String email;
 
     public HPersonEmailValidationKey(HPerson person, String email,
@@ -76,6 +62,35 @@ public class HPersonEmailValidationKey implements Serializable {
         this.person = person;
         this.keyHash = keyHash;
         this.email = email;
+    }
+
+    @Id
+    @GeneratedValue
+    public Long getId() {
+        return id;
+    }
+
+    @Column(nullable = false, unique = true)
+    public String getKeyHash() {
+        return keyHash;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "personId", nullable = false, unique = true)
+    public HPerson getPerson() {
+        return person;
+    }
+
+    @Email
+    @NotEmpty
+    public String getEmail() {
+        return email;
     }
 
     @SuppressWarnings("unused")

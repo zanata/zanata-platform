@@ -23,42 +23,49 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.sql.Blob;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @Entity
 @NoArgsConstructor
 // is this necessary?
-@Setter
-@Getter
-@Access(AccessType.FIELD)
 public class HDocumentUploadPart implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
+    @Setter
+    private long id;
+    @Setter
+    private HDocumentUpload upload;
+    @Setter
+    private Blob content;
 
     @Id
     @GeneratedValue
-    private long id;
+    public Long getId() {
+        return id;
+    }
 
     @ManyToOne
     @JoinColumn(name = "documentUploadId", nullable = false, updatable = false,
             insertable = false)
-    private HDocumentUpload upload;
+    public HDocumentUpload getUpload() {
+        return upload;
+    }
 
     @NotNull
     @Lob
-    private Blob content;
+    public Blob getContent() {
+        return content;
+    }
 
     @Override
     public String toString() {
