@@ -1782,7 +1782,7 @@
     <dependency>
       <groupId>com.allen-sauer.gwt.log</groupId>
       <artifactId>gwt-log</artifactId>
-      <version>3.2.1</version>
+      <version>3.1.8</version>
     </dependency>
 
     <dependency>
