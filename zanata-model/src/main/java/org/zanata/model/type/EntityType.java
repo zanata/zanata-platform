@@ -22,9 +22,9 @@ package org.zanata.model.type;
 
 import lombok.Getter;
 
+import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HDocument;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

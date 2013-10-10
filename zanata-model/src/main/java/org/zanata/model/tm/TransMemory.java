@@ -36,15 +36,16 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
 
-import org.zanata.model.SlugEntityBase;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.zanata.model.SlugEntityBase;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * A translation Memory representation.

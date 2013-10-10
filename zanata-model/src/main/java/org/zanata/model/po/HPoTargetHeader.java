@@ -20,21 +20,18 @@
  */
 package org.zanata.model.po;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
@@ -44,19 +41,24 @@ import lombok.ToString;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @ToString(callSuper = true, of = "targetLanguage")
 public class HPoTargetHeader extends PoHeaderBase {
     private static final long serialVersionUID = 1L;
 
+    private HLocale targetLanguage;
+    private HDocument document;
+
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "targetLanguage", nullable = false)
-    private HLocale targetLanguage;
+    public HLocale getTargetLanguage() {
+        return targetLanguage;
+    }
 
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "document_id")
-    private HDocument document;
+    public HDocument getDocument() {
+        return document;
+    }
 }

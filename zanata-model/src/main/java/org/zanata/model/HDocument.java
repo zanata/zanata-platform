@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,8 +42,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -75,8 +71,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * @see AbstractResourceMeta
@@ -89,88 +83,32 @@ import com.google.common.collect.Maps;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @NoArgsConstructor
 @ToString(of = { "name", "path", "docId", "locale", "revision" })
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
     private static final long serialVersionUID = 5129552589912687504L;
-
-    // TODO make this case sensitive
-    @NaturalId
-    @Size(max = 255)
-    @NotEmpty
     private String docId;
-
-    @NotEmpty
     private String name;
-
-    @NotNull
     private String path;
-
-    @Type(type = "contentType")
-    @NotNull
     private ContentType contentType;
-
-    @NotNull
     private Integer revision = 1;
-
-    @SuppressWarnings("null")
-    @ManyToOne
-    @JoinColumn(name = "locale", nullable = false)
-    private @Nonnull
-    HLocale locale;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "last_modified_by_id", nullable = true)
-    @Setter(AccessLevel.PROTECTED)
+    private HLocale locale;
     private HPerson lastModifiedBy;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "project_iteration_id", nullable = false)
-    @NaturalId
     private HProjectIteration projectIteration;
 
-    @OneToMany
-    @JoinColumn(name = "document_id", insertable = false, updatable = false)
-    @MapKey(name = "resId")
-    /**
-     * NB Don't modify this collection.  Add to the TextFlows list instead.
-     * TODO get ImmutableMap working here.
-     */
-    @Setter(AccessLevel.PRIVATE)
-    private Map<String, HTextFlow> allTextFlows = Maps.newHashMap();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @Where(clause = "obsolete=0")
-    @IndexColumn(name = "pos", base = 0, nullable = false)
-    @JoinColumn(name = "document_id", nullable = false)
+    private Map<String, HTextFlow> allTextFlows;
     /**
      * NB: Any elements which are removed from this list must have obsolete set
      * to true, and any elements which are added to this list must have obsolete
      * set to false.
      */
-    private List<HTextFlow> textFlows = Lists.newArrayList();
-
+    private List<HTextFlow> textFlows;
     private boolean obsolete = false;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            optional = true)
     private HPoHeader poHeader;
+    private Map<HLocale, HPoTargetHeader> poTargetHeaders;
 
-    // TODO use orphanRemoval=true: requires JPA 2.0
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            mappedBy = "document")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @MapKey(name = "targetLanguage")
-    @Setter(AccessLevel.PRIVATE)
-    private Map<HLocale, HPoTargetHeader> poTargetHeaders = Maps.newHashMap();
-
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinTable(name = "HDocument_RawDocument", joinColumns = @JoinColumn(
-            name = "documentId"), inverseJoinColumns = @JoinColumn(
-            name = "rawDocumentId"))
     private HRawDocument rawDocument;
 
     public HDocument(String fullPath, ContentType contentType, HLocale locale) {
@@ -206,12 +144,39 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
         }
     }
 
+    // TODO make this case sensitive
+    @NaturalId
+    @Size(max = 255)
+    @NotEmpty
+    public String getDocId() {
+        return docId;
+    }
+
+    @NotEmpty
+    public String getName() {
+        return name;
+    }
+
     @Transient
     @Override
     public String getQualifiedDocId() {
         HProjectIteration iter = getProjectIteration();
         HProject proj = iter.getProject();
         return proj.getSlug() + ":" + iter.getSlug() + ":" + getDocId();
+    }
+
+    @NotNull
+    public String getPath() {
+        return path;
+    }
+
+    @SuppressWarnings("null")
+    @ManyToOne
+    @JoinColumn(name = "locale", nullable = false)
+    @Override
+    public @Nonnull
+    HLocale getLocale() {
+        return this.locale;
     }
 
     @Transient
@@ -221,14 +186,122 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
         return locale.getLocaleId();
     }
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "project_iteration_id", nullable = false)
+    @NaturalId
+    public HProjectIteration getProjectIteration() {
+        return projectIteration;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    @Override
+    public HPerson getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    protected void setLastModifiedBy(HPerson lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    @NotNull
+    public Integer getRevision() {
+        return revision;
+    }
+
     @Transient
     public void incrementRevision() {
         revision++;
     }
 
+    @Type(type = "contentType")
+    @NotNull
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    @OneToMany
+    @JoinColumn(name = "document_id", insertable = false, updatable = false/*
+                                                                            * ,
+                                                                            * nullable
+                                                                            * =
+                                                                            * true
+                                                                            */)
+    @MapKey(name = "resId")
+    /**
+     * NB Don't modify this collection.  Add to the TextFlows list instead.
+     * TODO get ImmutableMap working here.
+     */
+    public Map<String, HTextFlow> getAllTextFlows() {
+        if (allTextFlows == null) {
+            allTextFlows = new HashMap<String, HTextFlow>();
+        }
+        return allTextFlows;
+    }
+
+    @SuppressWarnings("unused")
+    // used only by Hibernate
+            private
+            void setAllTextFlows(Map<String, HTextFlow> allTextFlows) {
+        this.allTextFlows = allTextFlows;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @Where(clause = "obsolete=0")
+    @IndexColumn(name = "pos", base = 0, nullable = false)
+    @JoinColumn(name = "document_id", nullable = false)
+    /**
+     * NB: Any elements which are removed from this list must have obsolete set
+     * to true, and any elements which are added to this list must have obsolete
+     * set to false.
+     */
+    public List<HTextFlow> getTextFlows() {
+        if (textFlows == null) {
+            textFlows = new ArrayList<HTextFlow>();
+        }
+        return textFlows;
+    }
+
     @Override
     public Iterator<ITextFlow> iterator() {
         return ImmutableList.<ITextFlow> copyOf(getTextFlows()).iterator();
+    }
+
+    public boolean isObsolete() {
+        return obsolete;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            optional = true)
+    public HPoHeader getPoHeader() {
+        return poHeader;
+    }
+
+    // private setter for Hibernate
+    @SuppressWarnings("unused")
+    private void setPoTargetHeaders(
+            Map<HLocale, HPoTargetHeader> poTargetHeaders) {
+        this.poTargetHeaders = poTargetHeaders;
+    }
+
+    // TODO use orphanRemoval=true: requires JPA 2.0
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+            mappedBy = "document")
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @MapKey(name = "targetLanguage")
+    public Map<HLocale, HPoTargetHeader> getPoTargetHeaders() {
+        if (poTargetHeaders == null) {
+            poTargetHeaders = new HashMap<HLocale, HPoTargetHeader>();
+        }
+        return poTargetHeaders;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinTable(name = "HDocument_RawDocument", joinColumns = @JoinColumn(
+            name = "documentId"), inverseJoinColumns = @JoinColumn(
+            name = "rawDocumentId"))
+    public HRawDocument getRawDocument() {
+        return rawDocument;
     }
 
     @PreUpdate
