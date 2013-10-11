@@ -460,6 +460,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         } else {
             currentWordStats.add(wordStats);
         }
+
         refreshStatsDisplay();
     }
 

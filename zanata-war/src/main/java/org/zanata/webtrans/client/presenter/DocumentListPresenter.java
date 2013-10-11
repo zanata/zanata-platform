@@ -28,6 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletResponse;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
+
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
@@ -75,6 +80,7 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
@@ -82,11 +88,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
-
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         implements DocumentListDisplay.Listener, DocumentSelectionHandler,
@@ -101,7 +102,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
 
     private HashMap<DocumentId, DocumentNode> nodes;
     private HashMap<DocumentId, Integer> pageRows;
-    private ArrayList<DocumentNode> sortedNodes;
+    private ArrayList<DocumentNode> filteredNodes;
 
     private final CachingDispatchAsync dispatcher;
 
@@ -132,7 +133,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                         dispatcher);
 
         nodes = new HashMap<DocumentId, DocumentNode>();
-        sortedNodes = new ArrayList<DocumentNode>();
+        filteredNodes = new ArrayList<DocumentNode>();
         pageRows = new HashMap<DocumentId, Integer>();
 
         localeId =
@@ -274,17 +275,17 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         // Auto-generated method stub
     }
 
-    public void setDocuments(List<DocumentInfo> sortedList) {
-        nodes = new HashMap<DocumentId, DocumentNode>(sortedList.size());
-        sortedNodes.clear();
+    public void setDocuments(List<DocumentInfo> sortedDocumentList) {
+        nodes =
+                new HashMap<DocumentId, DocumentNode>(sortedDocumentList.size());
+        filteredNodes.clear();
 
-        idsByPath = new HashMap<String, DocumentId>(sortedList.size());
-        for (DocumentInfo doc : sortedList) {
+        idsByPath = new HashMap<String, DocumentId>(sortedDocumentList.size());
+        for (DocumentInfo doc : sortedDocumentList) {
             idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
             DocumentNode node = new DocumentNode(doc);
-            node.setVisible(filter.accept(doc));
             nodes.put(doc.getId(), node);
-            sortedNodes.add(node);
+            filteredNodes.add(node);
         }
         updatePageCountAndGotoFirstPage();
     }
@@ -294,13 +295,13 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
 
         ArrayList<GetDocumentStats> queueList =
                 new ArrayList<GetDocumentStats>();
-        for (int i = 0; i < sortedNodes.size();) {
+        for (int i = 0; i < filteredNodes.size();) {
             int fromIndex = i;
             int toIndex =
-                    i + BATCH_SIZE > sortedNodes.size() ? sortedNodes.size()
-                            : i + BATCH_SIZE;
+                    i + BATCH_SIZE > filteredNodes.size() ? filteredNodes
+                            .size() : i + BATCH_SIZE;
             List<DocumentNode> subList =
-                    sortedNodes.subList(fromIndex, toIndex);
+                    filteredNodes.subList(fromIndex, toIndex);
             queueList.add(new GetDocumentStats(convertFromNodetoId(subList)));
             i = toIndex;
         }
@@ -314,7 +315,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     protected void setStatesForTest(ArrayList<DocumentNode> sortedNodes,
             HashMap<DocumentId, DocumentNode> nodes) {
         if (!GWT.isClient()) {
-            this.sortedNodes = sortedNodes;
+            this.filteredNodes = sortedNodes;
             this.nodes = nodes;
         }
     }
@@ -333,8 +334,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                     for (Entry<DocumentId, ContainerTranslationStatistics> entry : result
                             .getStatsMap().entrySet()) {
                         DocumentInfo docInfo = getDocumentInfo(entry.getKey());
-
                         docInfo.setStats(entry.getValue());
+
                         docInfo.setLastTranslated(result.getLastTranslatedMap()
                                 .get(entry.getKey()));
 
@@ -365,7 +366,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
 
     private void updatePageCountAndGotoFirstPage() {
         int pageCount =
-                (int) Math.ceil(sortedNodes.size()
+                (int) Math.ceil(filteredNodes.size()
                         * 1.0
                         / userOptionsService.getConfigHolder().getState()
                                 .getDocumentListPageSize());
@@ -379,10 +380,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                         .getDocumentListPageSize();
         int fromIndex = (page - 1) * pageSize;
         int toIndex =
-                (fromIndex + pageSize) > sortedNodes.size() ? sortedNodes
+                (fromIndex + pageSize) > filteredNodes.size() ? filteredNodes
                         .size() : fromIndex + pageSize;
         pageRows =
-                display.buildContent(sortedNodes.subList(fromIndex, toIndex));
+                display.buildContent(filteredNodes.subList(fromIndex, toIndex));
         display.getPageNavigation().setValue(page, false);
     }
 
@@ -391,11 +392,10 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
      * filter patterns will show all documents.
      */
     private void runFilter() {
-        sortedNodes.clear();
+        filteredNodes.clear();
         for (DocumentNode docNode : nodes.values()) {
-            docNode.setVisible(filter.accept(docNode.getDocInfo()));
-            if (docNode.isVisible()) {
-                sortedNodes.add(docNode);
+            if (filter.accept(docNode.getDocInfo())) {
+                filteredNodes.add(docNode);
             }
         }
         updatePageCountAndGotoFirstPage();
@@ -607,10 +607,12 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     @Override
     public void onFileUploadComplete(SubmitCompleteEvent event) {
         display.closeFileUpload();
-        if (event.getResults().contains(String.valueOf(HttpServletResponse.SC_OK))) {
+        if (event.getResults().contains(
+                String.valueOf(HttpServletResponse.SC_OK))) {
             if (event.getResults().contains("Warnings")) {
                 eventBus.fireEvent(new NotificationEvent(Severity.Warning,
-                        "File uploaded with warnings", event.getResults(), true, null));
+                        "File uploaded with warnings", event.getResults(),
+                        true, null));
             } else {
                 eventBus.fireEvent(new NotificationEvent(Severity.Info,
                         "File uploaded", event.getResults(), true, null));
@@ -698,9 +700,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     @Override
     public void sortList(String header, boolean asc) {
         HeaderComparator comparator = new HeaderComparator(header);
-        Collections.sort(sortedNodes, comparator);
+        Collections.sort(filteredNodes, comparator);
         if (!asc) {
-            Collections.reverse(sortedNodes);
+            Collections.reverse(filteredNodes);
         }
         gotoPage(1);
     }
@@ -883,8 +885,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         gotoPage(value);
     }
 
-    public ArrayList<DocumentNode> getSortedNodes() {
-        return sortedNodes;
+    public ArrayList<DocumentNode> getFilteredNodes() {
+        return filteredNodes;
     }
 
     public void showLoading(boolean showLoading) {

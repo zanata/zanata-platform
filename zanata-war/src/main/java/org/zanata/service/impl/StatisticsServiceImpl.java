@@ -345,13 +345,16 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         TranslationStatistics wordStatistics =
                 result.getStats(localeId.getId(), StatUnit.WORD);
-        wordStatistics.setRemainingHours(getRemainingHours(
-                wordStatistics.getDraft(), wordStatistics.getUntranslated()));
+
+        double remainingHours =
+                getRemainingHours(wordStatistics.getDraft(),
+                        wordStatistics.getUntranslated());
+
+        wordStatistics.setRemainingHours(remainingHours);
 
         TranslationStatistics msgStatistics =
                 result.getStats(localeId.getId(), StatUnit.MESSAGE);
-        msgStatistics.setRemainingHours(getRemainingHours(
-                msgStatistics.getDraft(), msgStatistics.getUntranslated()));
+        msgStatistics.setRemainingHours(remainingHours);
 
         return result;
     }
