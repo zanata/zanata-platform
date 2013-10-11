@@ -91,10 +91,20 @@ public class TranslationStatistics implements Serializable {
         this.unit = StatUnit.WORD;
         this.locale = locale;
 
-        double untransHours = wordCount.getUntranslated() / 250.0;
-        double fuzzyHours = wordCount.getNeedReview() / 500.0;
-        double translatedHours = wordCount.getTranslated() / 500.0;
-        remainingHours = untransHours + fuzzyHours + translatedHours;
+        countRemainingHours();
+    }
+
+    /**
+     * Calculate remaining hours if StatUnit equals to 'WORD'.
+     */
+    private void countRemainingHours() {
+        if (unit.equals(StatUnit.WORD)) {
+            double untransHours = translationCount.getUntranslated() / 250.0;
+            double fuzzyHours = translationCount.getNeedReview() / 500.0;
+            double translatedHours = translationCount.getTranslated() / 500.0;
+
+            remainingHours = untransHours + fuzzyHours + translatedHours;
+        }
     }
 
     /**
@@ -247,14 +257,16 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
-    public @Nullable Date getLastTranslatedDate() {
-        return lastTranslatedDate != null ?
-                new Date(lastTranslatedDate.getTime()): null;
+    public @Nullable
+    Date getLastTranslatedDate() {
+        return lastTranslatedDate != null ? new Date(
+                lastTranslatedDate.getTime()) : null;
     }
 
     public void setLastTranslatedDate(@Nullable Date lastTranslatedDate) {
-        this.lastTranslatedDate = lastTranslatedDate != null ?
-                new Date(lastTranslatedDate.getTime()): null;
+        this.lastTranslatedDate =
+                lastTranslatedDate != null ? new Date(
+                        lastTranslatedDate.getTime()) : null;
     }
 
     @XmlTransient
@@ -300,21 +312,27 @@ public class TranslationStatistics implements Serializable {
         this.remainingHours = remainingHours;
     }
 
+    // TODO Should consolidate with countRemainingHours() as it might return 0
+    // or null for StatUnit.MESSAGE
     @XmlTransient
+    @Deprecated
     public double getRemainingHours() {
         return remainingHours;
     }
 
     public void add(TranslationStatistics other) {
         translationCount.add(other.translationCount);
+        countRemainingHours();
     }
 
     public void increment(ContentState state, long count) {
         translationCount.increment(state, (int) count);
+        countRemainingHours();
     }
 
     public void decrement(ContentState state, long count) {
         translationCount.decrement(state, (int) count);
+        countRemainingHours();
     }
 
     @Override
