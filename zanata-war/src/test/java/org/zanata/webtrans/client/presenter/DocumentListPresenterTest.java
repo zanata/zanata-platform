@@ -169,12 +169,12 @@ public class DocumentListPresenterTest {
         // right amount of docs
         assertThat(
                 "the data provider should have the same sized document list returned from the server",
-                documentListPresenter.getSortedNodes().size(), is(3));
+                documentListPresenter.getFilteredNodes().size(), is(3));
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
 
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that were returned from the server",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -389,7 +389,7 @@ public class DocumentListPresenterTest {
         expectedDocs.remove(2); // third doc does not match the filter
         expectedDocs.remove(0); // first doc does not match the filter
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that exactly match the current filter",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -400,7 +400,7 @@ public class DocumentListPresenterTest {
                 actualDocInfos, hasItems(expectedDocs.get(0)));
         assertThat(
                 "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getSortedNodes().size(), is(1));
+                documentListPresenter.getFilteredNodes().size(), is(1));
     }
 
     // TODO test case sensitivity option
@@ -426,7 +426,7 @@ public class DocumentListPresenterTest {
         expectedDocs.remove(1); // second doc does not match any of the filter
                                 // strings
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that match the current filter",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -438,7 +438,7 @@ public class DocumentListPresenterTest {
                 hasItems(expectedDocs.get(0), expectedDocs.get(1)));
         assertThat(
                 "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getSortedNodes().size(), is(2));
+                documentListPresenter.getFilteredNodes().size(), is(2));
     }
 
     // TODO test case sensitive check updated from history
