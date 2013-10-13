@@ -18,13 +18,6 @@
     <to last="true" type="temporary-redirect">/robots.txt</to>
   </rule>
 
-  <!-- Terms Rules -->
-  <rule>
-    <from casesensitive="true">^/terms/?(\?.*)?$</from>
-    <to last="true">/terms.seam$1</to>
-  </rule>
-
-
   <!-- Dashboard Rules -->
   <rule>
     <from casesensitive="true">^/dashboard/?(\?.*)?$</from>

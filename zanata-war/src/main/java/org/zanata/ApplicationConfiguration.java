@@ -97,7 +97,7 @@ public class ApplicationConfiguration implements Serializable {
     private String buildTimestamp;
 
     @Getter
-    private boolean enableCopyTrans = true;
+    private boolean copyTransEnabled = true;
 
     private Map<AuthenticationType, String> loginModuleNames = Maps
             .newHashMap();

@@ -130,7 +130,7 @@ public class ZanataInit {
             log.info("Using JAAS authentication");
         }
         log.info("Enable copyTrans: {}",
-                this.applicationConfiguration.isEnableCopyTrans());
+                this.applicationConfiguration.isCopyTransEnabled());
         String javamelodyDir =
                 System.getProperty("javamelody.storage-directory");
         log.info("JavaMelody stats directory: " + javamelodyDir);
