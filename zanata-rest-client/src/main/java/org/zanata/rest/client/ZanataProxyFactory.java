@@ -71,6 +71,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
                 sslCertDisabled ? createClientExecutor() : null;
 
         crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
+        crf.setFollowRedirects(true);
         registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
         registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey,
                 clientApiVersion.getVersionNo()));
