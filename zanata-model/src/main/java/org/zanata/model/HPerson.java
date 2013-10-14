@@ -60,8 +60,7 @@ import com.google.common.collect.Sets;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(callSuper = true, of = { "account", "email",
-        "maintainerProjects", "name" }, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = false, of = "email", doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
 @NoArgsConstructor
 public class HPerson extends ModelEntityBase implements Serializable {
@@ -77,6 +76,7 @@ public class HPerson extends ModelEntityBase implements Serializable {
 
     @Email
     @NotEmpty
+    // TODO what if this does mutate? (see equals)
     @NaturalId(mutable = true)
     private String email;
 

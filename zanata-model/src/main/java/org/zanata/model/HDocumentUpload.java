@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,6 +42,7 @@ import lombok.Setter;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
+
 import com.google.common.collect.Lists;
 
 @Entity
@@ -48,6 +50,8 @@ import com.google.common.collect.Lists;
 @Setter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
+@EqualsAndHashCode(of = { "projectIteration", "docId", "locale" },
+        callSuper = false)
 public class HDocumentUpload extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
 

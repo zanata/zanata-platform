@@ -45,6 +45,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -93,6 +94,7 @@ import com.google.common.collect.Maps;
 @Access(AccessType.FIELD)
 @NoArgsConstructor
 @ToString(of = { "name", "path", "docId", "locale", "revision" })
+@EqualsAndHashCode(of = { "docId", "projectIteration" }, callSuper = false)
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
     private static final long serialVersionUID = 5129552589912687504L;

@@ -29,6 +29,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,8 @@ import com.google.common.base.Objects;
 @NoArgsConstructor
 // is this necessary?
 @Access(AccessType.FIELD)
+//FIXME what should we use for equality?
+//@EqualsAndHashCode(of="id", callSuper=false)
 public class HRawDocument extends ModelEntityBase implements Serializable {
 
     private static final long serialVersionUID = 5129552589912687504L;
@@ -80,6 +83,13 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
                 + "]";
     }
 
-    // TODO override equals to use contentHash, type, parameters, etc.
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
 
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
 }

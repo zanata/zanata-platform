@@ -32,9 +32,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+
 import javax.validation.constraints.NotNull;
+
 import org.jboss.seam.annotations.security.management.RoleConditional;
 import org.jboss.seam.annotations.security.management.RoleGroups;
 import org.jboss.seam.annotations.security.management.RoleName;
@@ -42,6 +45,7 @@ import org.zanata.model.type.RoleTypeType;
 
 import com.google.common.collect.Sets;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,6 +54,7 @@ import lombok.Setter;
 @Getter
 @Access(AccessType.FIELD)
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
+@EqualsAndHashCode(of = "name")
 public class HAccountRole implements Serializable {
     private static final long serialVersionUID = 9177366120789064801L;
 
@@ -59,6 +64,7 @@ public class HAccountRole implements Serializable {
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @RoleName
+    @NaturalId
     private String name;
 
     @RoleConditional

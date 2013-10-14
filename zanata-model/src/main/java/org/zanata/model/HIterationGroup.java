@@ -31,6 +31,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,6 +49,7 @@ import com.google.common.collect.Sets;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
+@EqualsAndHashCode(of = {}, callSuper = true)
 public class HIterationGroup extends SlugEntityBase implements HasEntityStatus {
     private static final long serialVersionUID = 5682522115222479842L;
 

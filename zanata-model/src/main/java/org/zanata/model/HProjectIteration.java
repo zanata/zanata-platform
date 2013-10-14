@@ -48,6 +48,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -86,6 +87,7 @@ import com.google.common.collect.Sets;
 @Getter
 @NoArgsConstructor
 @ToString(callSuper = true, of = { "project" })
+@EqualsAndHashCode(of = {}, callSuper = true)
 public class HProjectIteration extends SlugEntityBase implements
         Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType {
     private static final long serialVersionUID = 182037127575991478L;

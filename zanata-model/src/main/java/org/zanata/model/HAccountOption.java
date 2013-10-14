@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,6 +43,8 @@ import lombok.ToString;
 @Access(AccessType.FIELD)
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = { "name", "account" }, callSuper = false)
+// TODO should name and account form the @NaturalId ?
 public class HAccountOption extends ModelEntityBase {
     private static final long serialVersionUID = 1L;
 

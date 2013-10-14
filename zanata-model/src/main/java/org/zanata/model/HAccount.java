@@ -76,7 +76,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@ToString(callSuper = true, of = "username")
+@ToString(of = "username")
 @EqualsAndHashCode(of = "username", callSuper = false)
 public class HAccount extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;

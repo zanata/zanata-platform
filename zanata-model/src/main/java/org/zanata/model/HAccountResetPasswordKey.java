@@ -24,11 +24,16 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@EqualsAndHashCode(of = {}, callSuper = true)
+@ToString(callSuper=true)
 public class HAccountResetPasswordKey extends AccountKeyBase implements
         Serializable {
 

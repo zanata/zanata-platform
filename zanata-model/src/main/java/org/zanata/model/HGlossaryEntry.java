@@ -35,6 +35,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -60,8 +61,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
-        exclude = "glossaryTerms")
+@EqualsAndHashCode(of = { "sourceRef", "srcLocale" }, doNotUseGetters = true, callSuper = false)
 @ToString(of = { "sourceRef", "srcLocale" })
 public class HGlossaryEntry extends ModelEntityBase {
     private static final long serialVersionUID = -4200183325180630061L;
@@ -78,5 +78,6 @@ public class HGlossaryEntry extends ModelEntityBase {
     @JoinColumn(name = "srcLocaleId", nullable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = LocaleIdBridge.class)
+    @NaturalId
     private HLocale srcLocale;
 }

@@ -82,4 +82,14 @@ public class HSimpleComment implements HashableState, Serializable {
     public String toString() {
         return "HSimpleComment(" + toString(this) + ")";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
 }

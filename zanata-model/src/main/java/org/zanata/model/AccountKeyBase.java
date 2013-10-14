@@ -29,15 +29,20 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @MappedSuperclass
 @Setter
 @Getter
 @Access(AccessType.FIELD)
+@EqualsAndHashCode(of = "account", callSuper = false)
+@ToString(of = { "account", "keyHash" })
 public abstract class AccountKeyBase {
     @NotEmpty
     @Size(min = 32, max = 32)
@@ -46,5 +51,6 @@ public abstract class AccountKeyBase {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountId")
+    @NaturalId
     private HAccount account;
 }

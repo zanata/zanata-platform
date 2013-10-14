@@ -53,7 +53,7 @@ import lombok.ToString;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = { "description" })
+@EqualsAndHashCode(callSuper = true, of = {})
 @ToString(exclude = "translationUnits")
 @Data
 @Access(AccessType.FIELD)

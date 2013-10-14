@@ -73,8 +73,8 @@ import lombok.ToString;
 @Getter
 @Access(AccessType.FIELD)
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
-        exclude = "glossaryEntry")
+@EqualsAndHashCode(of = { "glossaryEntry", "locale" }, doNotUseGetters = true,
+        callSuper = false)
 @ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase {
     private static final long serialVersionUID = 1854278563597070432L;

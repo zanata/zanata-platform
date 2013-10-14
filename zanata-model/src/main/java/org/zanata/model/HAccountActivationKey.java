@@ -31,6 +31,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,8 +41,9 @@ import lombok.ToString;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-@ToString
 @NoArgsConstructor
+@EqualsAndHashCode(of = {}, callSuper = true)
+@ToString(callSuper=true)
 public class HAccountActivationKey extends AccountKeyBase implements
         Serializable {
     private static final long serialVersionUID = 1L;

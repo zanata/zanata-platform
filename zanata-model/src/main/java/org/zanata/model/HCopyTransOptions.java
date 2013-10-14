@@ -28,10 +28,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+
 import javax.validation.constraints.NotNull;
+
 import org.zanata.model.type.ConditionRuleActionType;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,7 +56,20 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+// FIXME what should we use for equality?
+//@EqualsAndHashCode(of="id", callSuper=false)
 public class HCopyTransOptions extends ModelEntityBase {
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
     /**
      * Indicates the different actions that can be taken when evaluating
      * conditions for a Text Flow during Copy Trans.

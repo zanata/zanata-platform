@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -46,6 +47,8 @@ import lombok.ToString;
 @Getter
 @Access(AccessType.FIELD)
 @ToString(callSuper = true)
+@EqualsAndHashCode(of = { "policyName", "identityRegExp", "roleToAssign" },
+        callSuper = false)
 public class HRoleAssignmentRule extends ModelEntityBase {
     @Column(length = 100)
     private String policyName;
