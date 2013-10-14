@@ -19,6 +19,10 @@
   </security-constraint>
   <login-config>
     <auth-method>SPNEGO</auth-method>
+    <form-login-config>
+      <form-login-page>/account/login</form-login-page>
+      <form-error-page>/sdsdf</form-error-page>
+    </form-login-config>
   </login-config>
   <security-role>
     <role-name>*</role-name>
