@@ -219,7 +219,7 @@ public class DocumentListPresenterTest {
         documentListPresenter.setDocuments(buildSampleDocumentArray());
         documentListPresenter.onTransUnitUpdated(mockEvent);
 
-        verify(mockEventBus, times(1)).fireEvent(
+        verify(mockEventBus, times(2)).fireEvent(
                 capturedEventBusEvent.capture());
 
         DocumentStatsUpdatedEvent docStatsEvent = null;
@@ -557,7 +557,7 @@ public class DocumentListPresenterTest {
 
         verify(mockEventBus, times(3)).fireEvent(
                 isA(DocumentStatsUpdatedEvent.class));
-        verify(mockEventBus, times(3)).fireEvent(
+        verify(mockEventBus, times(1)).fireEvent(
                 isA(RefreshProjectStatsEvent.class));
     }
 
