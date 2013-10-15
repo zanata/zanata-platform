@@ -59,13 +59,6 @@ public class DocumentId implements Identifier<Long>, Comparable,
 
     @Override
     public int compareTo(Object o) {
-        if (o == this) {
-            return 0;
-        }
-        if (o == null) {
-            return -1;
-        }
-
         DocumentId compareTo = (DocumentId) o;
         return this.getDocId().compareTo(compareTo.getDocId());
     }
