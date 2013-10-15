@@ -39,6 +39,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -193,8 +194,7 @@ public class DocumentListTable extends FlexTable {
             boolean statsByWords) {
         clearContent();
 
-        HashMap<DocumentId, Integer> pageRows =
-                new HashMap<DocumentId, Integer>();
+        HashMap<DocumentId, Integer> pageRows = Maps.newHashMap();
 
         for (int i = 0; i < nodes.size(); i++) {
             DocumentNode node = nodes.get(i);

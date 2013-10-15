@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
@@ -590,8 +591,9 @@ public class AppPresenterTest {
         ProjectStatsUpdatedEvent event = new ProjectStatsUpdatedEvent(newStats);
         presenter.onProjectStatsUpdated(event);
 
-        assertThat(projectStats.getStats(),
-                Matchers.contains(unitStats, wordStats));
+        assertThat("project stats should contains stats in the event",
+                projectStats.getStats().size(), is(2));
+
         verify(display, times(2)).setStats(projectStats, true);
     }
 

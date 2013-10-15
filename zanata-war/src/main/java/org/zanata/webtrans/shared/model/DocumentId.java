@@ -5,8 +5,8 @@ import java.io.Serializable;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
-public class DocumentId implements Identifier<Long>, IsSerializable,
-        Serializable {
+public class DocumentId implements Identifier<Long>, Comparable,
+        IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -55,5 +55,18 @@ public class DocumentId implements Identifier<Long>, IsSerializable,
             return false;
         }
         return obj instanceof DocumentId && ((DocumentId) obj).id.equals(id);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == this) {
+            return 0;
+        }
+        if (o == null) {
+            return -1;
+        }
+
+        DocumentId compareTo = (DocumentId) o;
+        return this.getDocId().compareTo(compareTo.getDocId());
     }
 }

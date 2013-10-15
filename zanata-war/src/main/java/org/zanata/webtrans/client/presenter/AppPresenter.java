@@ -439,10 +439,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                         .getStats(localeId.getId(), StatUnit.MESSAGE);
         TranslationStatistics currentMsgStats =
                 projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
-
         if (currentMsgStats == null) {
             if (msgStats != null) {
-                projectStats.addStats(msgStats);
+                projectStats.addStats(copyFrom(msgStats));
             }
         } else {
             currentMsgStats.add(msgStats);
@@ -455,13 +454,26 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
         if (currentWordStats == null) {
             if (wordStats != null) {
-                projectStats.addStats(wordStats);
+                projectStats.addStats(copyFrom(wordStats));
             }
         } else {
             currentWordStats.add(wordStats);
         }
 
         refreshStatsDisplay();
+    }
+
+    /**
+     * Create new instance copy of TranslationStatistic
+     * @param from
+     * @return
+     */
+    private TranslationStatistics copyFrom(TranslationStatistics from) {
+        TranslationStatistics stats = new TranslationStatistics(from.getUnit());
+        stats.setLocale(from.getLocale());
+        stats.add(from);
+
+        return stats;
     }
 
     @Override
