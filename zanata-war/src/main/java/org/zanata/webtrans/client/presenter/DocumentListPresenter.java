@@ -308,8 +308,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     /**
      * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
      */
-    protected void setStatesForTest(ArrayList<DocumentNode> sortedNodes,
-            TreeMap<DocumentId, DocumentNode> nodes) {
+    protected void setStatesForTest(List<DocumentNode> sortedNodes,
+            Map<DocumentId, DocumentNode> nodes) {
         if (!GWT.isClient()) {
             this.filteredNodes = sortedNodes;
             this.nodes = nodes;
