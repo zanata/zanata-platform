@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -84,6 +85,8 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -100,9 +103,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     private final UserOptionsService userOptionsService;
     private final LocaleId localeId;
 
-    private HashMap<DocumentId, DocumentNode> nodes;
-    private HashMap<DocumentId, Integer> pageRows;
-    private ArrayList<DocumentNode> filteredNodes;
+    private Map<DocumentId, DocumentNode> nodes = Maps.newTreeMap();
+    private Map<DocumentId, Integer> pageRows = Maps.newHashMap();
+    private List<DocumentNode> filteredNodes = Lists.newArrayList();
 
     private final CachingDispatchAsync dispatcher;
 
@@ -112,7 +115,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
      * For quick lookup of document id by full path (including document name).
      * Primarily for use with history token.
      */
-    private HashMap<String, DocumentId> idsByPath;
+    private HashMap<String, DocumentId> idsByPath = Maps.newHashMap();
 
     private final PathDocumentFilter filter = new PathDocumentFilter();
 
@@ -131,10 +134,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         docStatQueueDispatcher =
                 new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(
                         dispatcher);
-
-        nodes = new HashMap<DocumentId, DocumentNode>();
-        filteredNodes = new ArrayList<DocumentNode>();
-        pageRows = new HashMap<DocumentId, Integer>();
 
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
@@ -276,18 +275,14 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     }
 
     public void setDocuments(List<DocumentInfo> sortedDocumentList) {
-        nodes =
-                new HashMap<DocumentId, DocumentNode>(sortedDocumentList.size());
-        filteredNodes.clear();
+        nodes.clear();
+        idsByPath.clear();
 
-        idsByPath = new HashMap<String, DocumentId>(sortedDocumentList.size());
         for (DocumentInfo doc : sortedDocumentList) {
             idsByPath.put(doc.getPath() + doc.getName(), doc.getId());
-            DocumentNode node = new DocumentNode(doc);
-            nodes.put(doc.getId(), node);
-            filteredNodes.add(node);
+            nodes.put(doc.getId(), new DocumentNode(doc));
         }
-        updatePageCountAndGotoFirstPage();
+        runFilter();
     }
 
     public void queryStats() {
@@ -312,8 +307,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     /**
      * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
      */
-    protected void setStatesForTest(ArrayList<DocumentNode> sortedNodes,
-            HashMap<DocumentId, DocumentNode> nodes) {
+    protected void setStatesForTest(List<DocumentNode> sortedNodes,
+            Map<DocumentId, DocumentNode> nodes) {
         if (!GWT.isClient()) {
             this.filteredNodes = sortedNodes;
             this.nodes = nodes;
@@ -345,18 +340,19 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                             display.updateLastTranslated(row,
                                     docInfo.getLastTranslated());
                         }
+
                         eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry
                                 .getKey(), docInfo.getStats()));
-                        eventBus.fireEvent(new ProjectStatsUpdatedEvent(docInfo
-                                .getStats()));
                     }
-
+                    eventBus.fireEvent(new RefreshProjectStatsEvent(Lists
+                            .newArrayList(nodes.values())));
                     docStatQueueDispatcher.executeQueue();
+
                 }
             };
 
     private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes) {
-        ArrayList<DocumentId> documentIds = new ArrayList<DocumentId>();
+        ArrayList<DocumentId> documentIds = Lists.newArrayList();
 
         for (DocumentNode node : nodes) {
             documentIds.add(node.getDocInfo().getId());
@@ -479,6 +475,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(
                     updatedDoc.getId(), currentStats));
         }
+
+        eventBus.fireEvent(new RefreshProjectStatsEvent(Lists
+                .newArrayList(nodes.values())));
     }
 
     private void updateLastTranslatedInfo(DocumentInfo doc,
@@ -646,7 +645,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                     userOptionsService.getConfigHolder().getState()
                             .getEnabledValidationIds();
             if (!valIds.isEmpty() && !pageRows.keySet().isEmpty()) {
-                ArrayList<DocumentId> docList = new ArrayList<DocumentId>();
+                ArrayList<DocumentId> docList = Lists.newArrayList();
                 for (DocumentId documentId : pageRows.keySet()) {
                     display.showRowLoading(pageRows.get(documentId));
                     docList.add(documentId);
@@ -885,7 +884,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         gotoPage(value);
     }
 
-    public ArrayList<DocumentNode> getFilteredNodes() {
+    public List<DocumentNode> getFilteredNodes() {
         return filteredNodes;
     }
 
