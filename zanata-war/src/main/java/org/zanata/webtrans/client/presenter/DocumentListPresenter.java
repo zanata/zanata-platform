@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -103,9 +104,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     private final UserOptionsService userOptionsService;
     private final LocaleId localeId;
 
-    private TreeMap<DocumentId, DocumentNode> nodes = Maps.newTreeMap();
-    private HashMap<DocumentId, Integer> pageRows = Maps.newHashMap();
-    private ArrayList<DocumentNode> filteredNodes = Lists.newArrayList();
+    private Map<DocumentId, DocumentNode> nodes = Maps.newTreeMap();
+    private Map<DocumentId, Integer> pageRows = Maps.newHashMap();
+    private List<DocumentNode> filteredNodes = Lists.newArrayList();
 
     private final CachingDispatchAsync dispatcher;
 
@@ -349,17 +350,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                     docStatQueueDispatcher.executeQueue();
                 }
             };
-
-    private void debug(String from) {
-        for (DocumentNode node : filteredNodes) {
-            String log = from + "-" + node.getDocInfo().getName();
-
-            if (node.getDocInfo().getStats() != null) {
-                log += node.getDocInfo().getStats().getStats();
-            }
-            Log.info(log);
-        }
-    }
 
     private List<DocumentId> convertFromNodetoId(List<DocumentNode> nodes) {
         ArrayList<DocumentId> documentIds = Lists.newArrayList();
@@ -891,7 +881,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         gotoPage(value);
     }
 
-    public ArrayList<DocumentNode> getFilteredNodes() {
+    public List<DocumentNode> getFilteredNodes() {
         return filteredNodes;
     }
 

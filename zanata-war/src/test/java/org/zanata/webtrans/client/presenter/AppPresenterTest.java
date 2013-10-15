@@ -591,7 +591,7 @@ public class AppPresenterTest {
         ProjectStatsUpdatedEvent event = new ProjectStatsUpdatedEvent(newStats);
         presenter.onProjectStatsUpdated(event);
 
-        assertThat("project stats should contains stats in the event",
+        assertThat("project stats should contain stats in the event",
                 projectStats.getStats().size(), is(2));
 
         verify(display, times(2)).setStats(projectStats, true);
