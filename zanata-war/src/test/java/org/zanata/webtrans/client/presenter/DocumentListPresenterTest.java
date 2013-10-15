@@ -37,7 +37,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -558,7 +558,7 @@ public class DocumentListPresenterTest {
         verify(mockEventBus, times(3)).fireEvent(
                 isA(DocumentStatsUpdatedEvent.class));
         verify(mockEventBus, times(3)).fireEvent(
-                isA(ProjectStatsUpdatedEvent.class));
+                isA(RefreshProjectStatsEvent.class));
     }
 
     private static HasWorkspaceContextUpdateData workplaceContextData(

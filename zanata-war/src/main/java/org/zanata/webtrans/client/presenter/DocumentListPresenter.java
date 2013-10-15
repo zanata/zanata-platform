@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,7 +46,7 @@ import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -344,10 +343,11 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
 
                         eventBus.fireEvent(new DocumentStatsUpdatedEvent(entry
                                 .getKey(), docInfo.getStats()));
-                        eventBus.fireEvent(new ProjectStatsUpdatedEvent(docInfo
-                                .getStats()));
                     }
+                    eventBus.fireEvent(new RefreshProjectStatsEvent(Lists
+                            .newArrayList(nodes.values())));
                     docStatQueueDispatcher.executeQueue();
+
                 }
             };
 
@@ -475,6 +475,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
             eventBus.fireEvent(new DocumentStatsUpdatedEvent(
                     updatedDoc.getId(), currentStats));
         }
+
+        eventBus.fireEvent(new RefreshProjectStatsEvent(Lists
+                .newArrayList(nodes.values())));
     }
 
     private void updateLastTranslatedInfo(DocumentInfo doc,

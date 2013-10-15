@@ -38,9 +38,9 @@ import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -52,6 +52,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -142,7 +143,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 this));
         registerHandler(eventBus.addHandler(
                 AttentionModeActivationEvent.getType(), this));
-        registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(),
+        registerHandler(eventBus.addHandler(RefreshProjectStatsEvent.getType(),
                 this));
         registerHandler(eventBus.addHandler(NotificationEvent.getType(), this));
 
@@ -433,31 +434,40 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     }
 
     @Override
-    public void onProjectStatsUpdated(ProjectStatsUpdatedEvent event) {
-        TranslationStatistics msgStats =
-                event.getNewStats()
-                        .getStats(localeId.getId(), StatUnit.MESSAGE);
-        TranslationStatistics currentMsgStats =
-                projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
-        if (currentMsgStats == null) {
-            if (msgStats != null) {
-                projectStats.addStats(copyFrom(msgStats));
-            }
-        } else {
-            currentMsgStats.add(msgStats);
+    public void onProjectStatsUpdated(RefreshProjectStatsEvent event) {
+        if (projectStats.getStats() != null) {
+            projectStats.getStats().clear();
         }
+        for (DocumentNode documentNode : event.getDocumentNodes()) {
+            ContainerTranslationStatistics statsContainer =
+                    documentNode.getDocInfo().getStats();
 
-        TranslationStatistics wordStats =
-                event.getNewStats().getStats(localeId.getId(), StatUnit.WORD);
-        TranslationStatistics currentWordStats =
-                projectStats.getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics msgStats =
+                    statsContainer.getStats(localeId.getId(), StatUnit.MESSAGE);
 
-        if (currentWordStats == null) {
-            if (wordStats != null) {
-                projectStats.addStats(copyFrom(wordStats));
+            TranslationStatistics currentMsgStats =
+                    projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
+
+            if (currentMsgStats == null) {
+                if (msgStats != null) {
+                    projectStats.addStats(copyFrom(msgStats));
+                }
+            } else {
+                currentMsgStats.add(msgStats);
             }
-        } else {
-            currentWordStats.add(wordStats);
+
+            TranslationStatistics wordStats =
+                    statsContainer.getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics currentWordStats =
+                    projectStats.getStats(localeId.getId(), StatUnit.WORD);
+
+            if (currentWordStats == null) {
+                if (wordStats != null) {
+                    projectStats.addStats(copyFrom(wordStats));
+                }
+            } else {
+                currentWordStats.add(wordStats);
+            }
         }
 
         refreshStatsDisplay();
@@ -465,6 +475,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     /**
      * Create new instance copy of TranslationStatistic
+     *
      * @param from
      * @return
      */
