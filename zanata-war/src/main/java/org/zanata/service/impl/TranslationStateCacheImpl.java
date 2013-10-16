@@ -158,11 +158,13 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             ValidationId validationId) {
         Map<ValidationId, Boolean> cacheEntry =
                 targetValidationCache.getWithLoader(targetId);
-        if (!cacheEntry.containsKey(validationId)) {
-            Boolean result = loadTargetValidation(targetId, validationId);
-            cacheEntry.put(validationId, result);
+        synchronized (cacheEntry) {
+            if (!cacheEntry.containsKey(validationId)) {
+                Boolean result = loadTargetValidation(targetId, validationId);
+                cacheEntry.put(validationId, result);
+            }
+            return cacheEntry.get(validationId);
         }
-        return cacheEntry.get(validationId);
     }
 
     private void updateDocStatusCache(Long documentId, LocaleId localeId,
