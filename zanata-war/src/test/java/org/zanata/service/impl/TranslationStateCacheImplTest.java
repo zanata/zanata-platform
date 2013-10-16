@@ -81,8 +81,8 @@ public class TranslationStateCacheImplTest {
         TranslatedDocumentKey key =
                 new TranslatedDocumentKey(documentId, testLocaleId);
         DocumentStatus docStats =
-                new DocumentStatus(new DocumentId(documentId, ""), false,
-                        new Date(), "");
+                new DocumentStatus(new DocumentId(documentId, ""), new Date(),
+                        "");
 
         // When:
         when(docStatsLoader.load(key)).thenReturn(docStats);

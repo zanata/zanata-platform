@@ -31,6 +31,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.sf.ehcache.CacheManager;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
@@ -234,13 +235,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             }
         }
         HDocument document = documentDAO.findById(documentId, false);
-        boolean hasError =
-                validationServiceImpl.runDocValidationsWithServerRules(
-                        document, localeId);
-
         documentStatus.update(
                 new DocumentId(document.getId(), document.getDocId()),
-                lastTranslatedDate, lastTranslatedBy, hasError);
+                lastTranslatedDate, lastTranslatedBy);
         return documentStatus;
     }
 
