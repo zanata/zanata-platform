@@ -908,8 +908,7 @@ public class ResourceUtils {
             return ZANATA_GENERATOR_PREFIX
                     + " "
                     + ((ApplicationConfiguration) Component.getInstance(
-                            ApplicationConfiguration.class,
-                            ScopeType.APPLICATION)).getVersion();
+                            ApplicationConfiguration.class)).getVersion();
         } catch (Exception e) {
             return ZANATA_GENERATOR_PREFIX + " UNKNOWN";
         }

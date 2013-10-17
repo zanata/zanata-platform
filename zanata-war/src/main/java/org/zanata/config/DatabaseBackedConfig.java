@@ -30,6 +30,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Synchronized;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 
@@ -42,6 +43,7 @@ import org.zanata.model.HApplicationConfiguration;
 @Name("databaseBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
+@Synchronized
 public class DatabaseBackedConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;

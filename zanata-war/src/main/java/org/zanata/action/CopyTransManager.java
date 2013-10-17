@@ -26,7 +26,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.security.Identity;
 import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.async.tasks.DocumentCopyTransTask;
@@ -52,8 +51,7 @@ import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransManager")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Scope(ScopeType.STATELESS)
 // TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {
     private static final long serialVersionUID = 1L;

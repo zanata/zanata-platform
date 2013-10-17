@@ -38,9 +38,10 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Synchronized;
 
 /**
- * Configuration store implementation that is backed by JNDI properties.
+ * Singleton configuration store implementation that is backed by JNDI properties.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -48,6 +49,8 @@ import org.jboss.seam.annotations.Scope;
 @Name("jndiBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
+// TODO populate HashMap in constructor; remove @Synchronized
+@Synchronized
 public class JndiBackedConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 

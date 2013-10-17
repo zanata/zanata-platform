@@ -16,6 +16,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.log.Log;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
@@ -35,6 +36,7 @@ import org.zanata.service.AsyncTaskManagerService;
 @Name("reindexAsync")
 @Scope(ScopeType.APPLICATION)
 @Startup
+@Synchronized
 public class ReindexAsyncBean implements Serializable {
     private static final long serialVersionUID = 1L;
 

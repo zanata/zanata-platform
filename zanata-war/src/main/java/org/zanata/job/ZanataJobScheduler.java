@@ -32,10 +32,11 @@ import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.async.QuartzTriggerHandle;
 
 /**
- * Responsible for scheduling all Zanata application level background jobs.
+ * Singleton responsible for scheduling all Zanata application level background jobs.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -45,8 +46,10 @@ import org.jboss.seam.async.QuartzTriggerHandle;
 @AutoCreate
 @Startup
 @Install(false)
+@Synchronized
 public class ZanataJobScheduler {
 
+    // TODO have jobs schedule themselves after injecting this bean
     @In(create = true)
     private DownloadFileCleanupJob downloadFileCleanupJob;
 
