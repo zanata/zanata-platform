@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -17,13 +18,11 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.deployment.StandardDeploymentStrategy;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.web.ServletContexts;
@@ -37,14 +36,12 @@ import com.google.common.collect.Maps;
 @Name("seamDispatch")
 @Scope(ScopeType.APPLICATION)
 @Startup
+@Slf4j
 public class SeamDispatch implements Dispatch {
 
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
             Maps.newHashMap();
-
-    @Logger
-    Log log;
 
     @SuppressWarnings("rawtypes")
     public SeamDispatch() {
@@ -75,7 +72,7 @@ public class SeamDispatch implements Dispatch {
 
     @SuppressWarnings("unchecked")
     private void register(Class<?> clazz) {
-        log.debug("Registering ActionHandler {0}", clazz.getName());
+        log.debug("Registering ActionHandler {}", clazz.getName());
         ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
         handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);
     }

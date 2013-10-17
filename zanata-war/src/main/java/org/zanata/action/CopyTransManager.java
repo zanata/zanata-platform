@@ -23,6 +23,7 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -40,7 +41,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 
 /**
@@ -50,6 +50,7 @@ import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@AutoCreate
 @Name("copyTransManager")
 @Scope(ScopeType.STATELESS)
 // TODO This class should be merged with the copy trans service (?)
