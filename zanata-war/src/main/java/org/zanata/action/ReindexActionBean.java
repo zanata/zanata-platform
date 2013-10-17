@@ -6,6 +6,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -15,6 +16,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
 
+@AutoCreate
 @Name("reindexAction")
 @Scope(ScopeType.STATELESS)
 @Restrict("#{s:hasRole('admin')}")
