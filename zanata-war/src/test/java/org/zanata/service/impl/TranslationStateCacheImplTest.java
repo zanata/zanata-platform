@@ -53,16 +53,18 @@ public class TranslationStateCacheImplTest {
     private TextFlowTargetDAO textFlowTargetDAO;
     @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
-    @Mock
-    private ValidationService validationServiceImpl;
 
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         tsCache =
                 new TranslationStateCacheImpl(docStatsLoader,
-                        targetValidationLoader, textFlowTargetDAO,
-                        validationServiceImpl);
+                        targetValidationLoader) {
+            @Override
+            TextFlowTargetDAO getTextFlowTargetDAO() {
+                return textFlowTargetDAO;
+            }
+        };
 
         tsCache.create();
         tsCache.destroy();
