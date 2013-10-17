@@ -27,18 +27,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
@@ -47,6 +48,7 @@ import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -57,7 +59,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
 @Startup
-@BypassInterceptors
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class ApplicationConfiguration implements Serializable {
 
     private static final Log log = Logging
@@ -71,7 +73,9 @@ public class ApplicationConfiguration implements Serializable {
 
     private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.css";
 
+    @In
     private DatabaseBackedConfig databaseBackedConfig;
+    @In
     private JndiBackedConfig jndiBackedConfig;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
@@ -95,13 +99,6 @@ public class ApplicationConfiguration implements Serializable {
     @Create
     public void load() {
         log.info("Reloading configuration");
-        databaseBackedConfig =
-                (DatabaseBackedConfig) Component
-                        .getInstance(DatabaseBackedConfig.class);
-        jndiBackedConfig =
-                (JndiBackedConfig) Component
-                        .getInstance(JndiBackedConfig.class);
-
         this.loadLoginModuleNames();
         this.validateConfiguration();
         this.applyLoggingConfiguration();

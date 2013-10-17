@@ -7,6 +7,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Log;
 
 @Name("versionManager")
+// Singleton with no state
 @Scope(ScopeType.APPLICATION)
 public class VersionManager {
     @Logger

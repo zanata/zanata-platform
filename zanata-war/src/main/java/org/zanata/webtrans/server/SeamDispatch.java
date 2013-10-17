@@ -1,6 +1,5 @@
 package org.zanata.webtrans.server;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -34,6 +32,8 @@ import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
+import com.google.common.collect.Maps;
+
 @Name("seamDispatch")
 @Scope(ScopeType.APPLICATION)
 @Startup
@@ -41,14 +41,13 @@ public class SeamDispatch implements Dispatch {
 
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
-            new HashMap<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>>();
+            Maps.newHashMap();
 
     @Logger
     Log log;
 
     @SuppressWarnings("rawtypes")
-    @Create
-    public void create() {
+    public SeamDispatch() {
         // register all handlers with the @ActionHandlerFor annotation
         Set<Class<?>> annotatedClasses =
                 StandardDeploymentStrategy.instance().getAnnotatedClasses()

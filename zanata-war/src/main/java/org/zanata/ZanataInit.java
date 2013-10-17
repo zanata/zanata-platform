@@ -56,7 +56,7 @@ import com.beust.jcommander.internal.Lists;
  * @author Christian Bauer
  */
 @Name("zanataInit")
-@Scope(ScopeType.APPLICATION)
+@Scope(ScopeType.STATELESS)
 @Slf4j
 public class ZanataInit {
     static {
