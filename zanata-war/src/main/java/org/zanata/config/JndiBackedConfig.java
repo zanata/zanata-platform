@@ -39,6 +39,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Synchronized;
+import org.zanata.ServerConstants;
 
 /**
  * Singleton configuration store implementation that is backed by JNDI properties.
@@ -50,7 +51,7 @@ import org.jboss.seam.annotations.Synchronized;
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
 // TODO populate HashMap in constructor; remove @Synchronized
-@Synchronized
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class JndiBackedConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 

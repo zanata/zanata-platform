@@ -59,7 +59,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
 @Startup
-@Synchronized
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class ApplicationConfiguration implements Serializable {
 
     private static final Log log = Logging

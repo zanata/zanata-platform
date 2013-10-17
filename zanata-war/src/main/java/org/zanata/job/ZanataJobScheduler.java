@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.async.QuartzTriggerHandle;
+import org.zanata.ServerConstants;
 
 /**
  * Singleton responsible for scheduling all Zanata application level background jobs.
@@ -46,7 +47,7 @@ import org.jboss.seam.async.QuartzTriggerHandle;
 @AutoCreate
 @Startup
 @Install(false)
-@Synchronized
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class ZanataJobScheduler {
 
     // TODO have jobs schedule themselves after injecting this bean
