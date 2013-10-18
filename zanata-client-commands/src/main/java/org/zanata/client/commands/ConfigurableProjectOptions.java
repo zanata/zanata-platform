@@ -1,8 +1,10 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.util.List;
 
 import org.kohsuke.args4j.Option;
+import org.zanata.client.config.CommandHook;
 import org.zanata.client.config.LocaleList;
 
 /**
@@ -53,4 +55,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
 
     public void setLocaleMapList(LocaleList locales);
 
+    public List<CommandHook> getCommandHooks();
+
+    public void setCommandHooks(List<CommandHook> commandHooks);
 }

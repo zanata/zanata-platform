@@ -1,9 +1,11 @@
 package org.zanata.maven;
 
 import java.io.File;
+import java.util.List;
 
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
+import org.zanata.client.config.CommandHook;
 import org.zanata.client.config.LocaleList;
 
 /**
@@ -61,6 +63,8 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
 
     private LocaleList localeMapList;
 
+    private List<CommandHook> commandHooks;
+
     public ConfigurableProjectMojo() {
         super();
     }
@@ -113,6 +117,16 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
     @Override
     public void setLocaleMapList(LocaleList localeMapList) {
         this.localeMapList = localeMapList;
+    }
+
+    @Override
+    public void setCommandHooks(List<CommandHook> commandHooks) {
+        this.commandHooks = commandHooks;
+    }
+
+    @Override
+    public List<CommandHook> getCommandHooks() {
+        return commandHooks;
     }
 
 }
