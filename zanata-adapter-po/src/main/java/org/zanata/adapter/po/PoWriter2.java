@@ -22,7 +22,6 @@ package org.zanata.adapter.po;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -311,7 +310,7 @@ public class PoWriter2 {
                 }
                 copyCommentsToMessage(tfTarget, message);
             }
-            copyTFTContentsToMessage(textFlow, tftContents, nPlurals, message);
+            copyTFTContentsToMessage(document.getName(), textFlow, tftContents, nPlurals, message);
 
             if (entryData != null) {
                 copyMetadataToMessage(entryData, srcComment, message);
@@ -371,7 +370,7 @@ public class PoWriter2 {
             if (tfContents.size() > 1) {
                 if (continueAfterError) {
                     log.warn(
-                            "textflow has no plural flag but has multiple plural forms: restId={}",
+                            "textflow has no plural flag but has multiple plural forms: resId={}",
                             textFlow.getId());
                 } else {
                     throwContinueableException(
@@ -417,7 +416,7 @@ public class PoWriter2 {
         }
     }
 
-    private void copyTFTContentsToMessage(TextFlow textFlow,
+    private void copyTFTContentsToMessage(String docName, TextFlow textFlow,
             List<String> tftContents, int nPlurals, Message message) {
         if (message.isPlural()) {
             while (tftContents.size() < nPlurals) {
@@ -427,8 +426,9 @@ public class PoWriter2 {
                 message.addMsgstrPlural(tftContents.get(i), i);
             }
             if (tftContents.size() > nPlurals) {
-                log.warn("too many plural forms for text flow: resId={}",
-                        textFlow.getId());
+                log.warn("Marking as fuzzy: too many plural forms for text "
+                        + "flow: resId={}, doc={}", textFlow.getId(), docName);
+                message.setFuzzy(true);
             }
         } else {
             if (tftContents.size() == 0) {
@@ -436,18 +436,10 @@ public class PoWriter2 {
             } else {
                 message.setMsgstr(tftContents.get(0));
                 if (tftContents.size() > 1) {
-                    if (continueAfterError) {
-                        log.warn(
-                                "extra translation found and will be ignored in this text flow: resId={}",
-                                textFlow.getId());
-                    } else {
-                        throwContinueableException(
-                                "textflow has no plural flag but multiple plural forms: [resId="
-                                        + textFlow.getId()
-                                        + "]. This is likely caused by changed plural forms",
-                                "To write content as singular form and continue");
-                    }
-
+                    log.warn("Marking as fuzzy: unexpected plural translation "
+                            + "found for text flow: resId={}, doc={}",
+                            textFlow.getId(), docName);
+                    message.setFuzzy(true);
                 }
             }
         }
