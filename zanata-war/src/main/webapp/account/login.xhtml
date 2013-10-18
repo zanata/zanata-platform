@@ -15,12 +15,15 @@
       <div
         class="g__item w--1-2 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
         <div class="l--push-v-2">
-          <h1 class="l--push-all-0 beta">Log In</h1>
+          <h1 class="l--push-all-0 beta">#{messages['jsf.Login']}</h1>
 
           <div class="g">
+            <ui:remove>
+              <!--Internal and JAAS Login form-->
+            </ui:remove>
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
-              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
+              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2 class="gamma heading--sub">with Zanata</h2>
               </s:fragment>
@@ -28,13 +31,15 @@
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
                 <div class="l--clearfix">
-                  <label for="username" class="l--float-left">Username</label>
+                  <label for="username"
+                    class="l--float-left">#{messages['jsf.Username']}</label>
                 </div>
                 <h:inputText id="username" value="#{loginAction.username}"
                   tabindex="1"/>
 
                 <div class="l--push-top-half l--clearfix">
-                  <label for="password" class="l--float-left">Password</label>
+                  <label for="password"
+                    class="l--float-left">#{messages['jsf.Password']}</label>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml"
                       propagation="none" tabindex="3">
@@ -47,13 +52,53 @@
 
                 <div class="l--push-top-half">
                   <h:commandButton id="loginButton"
-                    action="#{loginAction.login}" value="Log In"
+                    action="#{loginAction.login}"
+                    value="#{messages['jsf.Login']}"
                     styleClass="button--primary"/>
                   <span class="l--push-h-quarter">or</span>
-                  <s:link view="/account/register.xhtml" value="Sign Up"/>
+                  <s:link view="/account/register.xhtml"
+                    value="#{messages['jsf.Signup']}"/>
                 </div>
               </h:form>
             </s:div>
+            <ui:remove>
+              <!-- Kerberos Login form-->
+            </ui:remove>
+            <s:div
+              styleClass="l--push-top-half g__item"
+              rendered="#{applicationConfiguration.kerberosAuth}">
+              <span>
+                Please Log in with your kerberos credentials
+              </span>
+
+              <form id="loginForm"
+                action="#{request.getContextPath()}/j_security_check"
+                method="POST"
+                class="l--push-top-half l--pad-all-1 bg--pop-higher">
+                <div class="l--clearfix">
+                  <label for="j_username"
+                    class="l--float-left">#{messages['jsf.Username']}</label>
+                </div>
+                <input id="j_username" type="text" name="j_username"
+                  tabindex="1"/>
+
+                <div class="l--push-top-half l--clearfix">
+                  <label for="j_password"
+                    class="l--float-left">#{messages['jsf.Password']}</label>
+                </div>
+                <input id="j_password" type="password" name="j_password"
+                  tabindex="2"/>
+
+                <div class="l--push-top-half">
+                  <input id="loginButton" type="submit"
+                    value="#{messages['jsf.Login']}"
+                    class="button--primary"/>
+                </div>
+              </form>
+            </s:div>
+            <ui:remove>
+              <!-- OpenId Login form-->
+            </ui:remove>
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--5-12 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">

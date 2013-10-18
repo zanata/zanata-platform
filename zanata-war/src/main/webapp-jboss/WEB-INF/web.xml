@@ -11,7 +11,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>sign in</web-resource-name>
-      <url-pattern>/account/klogin.seam</url-pattern>
+      <url-pattern>/account/klogin</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>*</role-name>
@@ -20,7 +20,7 @@
   <login-config>
     <auth-method>SPNEGO</auth-method>
     <form-login-config>
-      <form-login-page>/account/login</form-login-page>
+      <form-login-page>/account/klogin_form.html</form-login-page>
       <form-error-page>/sdsdf</form-error-page>
     </form-login-config>
   </login-config>
