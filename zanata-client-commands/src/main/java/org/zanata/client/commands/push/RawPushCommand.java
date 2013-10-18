@@ -82,7 +82,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     @Override
-    public void run() throws Exception {
+    public void performWork() throws Exception {
         PushCommand.logOptions(log, getOpts());
         log.warn("Using EXPERIMENTAL project type 'file'.");
 

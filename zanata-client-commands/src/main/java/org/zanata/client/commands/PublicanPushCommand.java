@@ -79,7 +79,7 @@ public class PublicanPushCommand extends
     }
 
     @Override
-    public void run() throws Exception {
+    public void performWork() throws Exception {
         log.info("Server: {}", getOpts().getUrl());
         log.info("Project: {}", getOpts().getProj());
         log.info("Version: {}", getOpts().getProjectVersion());

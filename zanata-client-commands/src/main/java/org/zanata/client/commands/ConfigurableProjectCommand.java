@@ -59,4 +59,12 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
     protected String getProjectType() {
         return this.getOpts().getProjectType();
     }
+
+
+    @Override
+    public void run() throws Exception {
+        performWork();
+    };
+
+    protected abstract void performWork() throws Exception;
 }

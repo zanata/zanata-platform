@@ -24,7 +24,7 @@ public class ListLocalCommand extends
     }
 
     @Override
-    public void run() {
+    public void performWork() {
         // TODO remove this
         log.debug("listlocal");
 

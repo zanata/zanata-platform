@@ -197,7 +197,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     }
 
     @Override
-    public void run() throws Exception {
+    public void performWork() throws Exception {
         logOptions(log, getOpts());
         pushCurrentModule();
 

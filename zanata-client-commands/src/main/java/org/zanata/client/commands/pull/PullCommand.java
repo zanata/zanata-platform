@@ -138,7 +138,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     }
 
     @Override
-    public void run() throws Exception {
+    public void performWork() throws Exception {
         logOptions();
 
         LocaleList locales = getOpts().getLocaleMapList();
