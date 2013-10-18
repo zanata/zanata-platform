@@ -90,6 +90,9 @@ public class OptionsUtil {
         }
         LocaleList locales = config.getLocales();
         opts.setLocaleMapList(locales);
+
+        // command hooks cannot be set via parameters
+        opts.setCommandHooks(config.getHooks());
     }
 
     /**
