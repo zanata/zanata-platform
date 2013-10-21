@@ -126,7 +126,6 @@
             <usedDependency>commons-lang:commons-lang</usedDependency>
             <usedDependency>javax.el:el-api</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <usedDependency>javax.servlet:javax.servlet-api</usedDependency>
             <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
