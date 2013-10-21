@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import com.allen_sauer.gwt.log.client.*;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -13,16 +12,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -66,9 +61,6 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
       self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
     });
 
-    codeMirrorEditor.on("keydown", function() {
-      self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onKeyDown()();
-    });
     return codeMirrorEditor;
 
     }-*/;
@@ -116,14 +108,6 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     // mirror editor content has changed.
     private void onChange() {
         ValueChangeEvent.fire(this, getCodeMirrorContent());
-    }
-
-    // callback function for the code mirror instance. Gets called when code
-    // mirror editor content has changed.
-    private void onKeyDown() {
-        NativeEvent keydownEvent =
-                Document.get().createKeyDownEvent(false, false, false, false, 0);
-        KeyDownEvent.fireNativeEvent(keydownEvent, this, this.getElement());
     }
 
     private native String getCodeMirrorContent() /*-{
@@ -269,11 +253,6 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     @Override
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
         return addHandler(handler, FocusEvent.getType());
-    }
-
-    @Override
-    public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
-        return addHandler(handler, KeyDownEvent.getType());
     }
 
     interface CodeMirrorEditorUiBinder extends

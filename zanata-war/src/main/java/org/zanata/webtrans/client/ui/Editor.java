@@ -16,7 +16,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -61,27 +60,27 @@ public class Editor extends Composite implements ToggleEditor {
     @UiField(provided = true)
     TextAreaWrapper textArea;
 
-    //Timer period, in ms
+    // Timer period, in ms
     private final int TYPING_TIMER_INTERVAL = 200;
 
-    //Validation will be forced after this many periods
+    // Validation will be forced after this many periods
     private final int TYPING_TIMER_INTERVALS_UNTIL_VALIDATION = 5;
 
-    //Has a key been pressed since the timer was started or the last firing
+    // Has a key been pressed since the timer was started or the last firing
     private boolean keyPressedSinceTimer;
 
-    //Has a timer been started
+    // Has a timer been started
     private boolean timerStarted;
 
-    //The number of timer cycles since the last keydown
+    // The number of timer cycles since the last keydown
     private int typingCycles;
 
-    //NB: In some cases, the idle detection may take almost 2 cycles
-    //1. Key pressed at time = 0
-    //2. Key pressed at time = 1ms (keyPressedSinceTimer = true)
-    //3. Timer goes off at 200ms without validating
-    //4. Timer goes off at 400ms and runs validation
-    //This could be fixed by using 2 separate timers
+    // NB: In some cases, the idle detection may take almost 2 cycles
+    // 1. Key pressed at time = 0
+    // 2. Key pressed at time = 1ms (keyPressedSinceTimer = true)
+    // 3. Timer goes off at 200ms without validating
+    // 4. Timer goes off at 400ms and runs validation
+    // This could be fixed by using 2 separate timers
     final Timer typingTimer = new Timer() {
         @Override
         public void run() {
@@ -89,8 +88,7 @@ public class Editor extends Composite implements ToggleEditor {
                 // still typing, validate periodically
                 keyPressedSinceTimer = false;
                 typingCycles++;
-                if (typingCycles %
-                    TYPING_TIMER_INTERVALS_UNTIL_VALIDATION == 0) {
+                if (typingCycles % TYPING_TIMER_INTERVALS_UNTIL_VALIDATION == 0) {
                     fireValidationEvent();
                 }
             } else {
@@ -138,7 +136,7 @@ public class Editor extends Composite implements ToggleEditor {
         targetWrapper.getElement().setAttribute("contenteditable",
                 enabled.toString());
         targetWrapper.getElement().setAttribute("spellcheck",
-            enabled.toString());
+                enabled.toString());
     }
 
     private void fireValidationEvent() {
@@ -149,6 +147,15 @@ public class Editor extends Composite implements ToggleEditor {
 
     @UiHandler("textArea")
     public void onValueChange(ValueChangeEvent<String> event) {
+        if (timerStarted) {
+            keyPressedSinceTimer = true;
+        } else {
+            // set false so that next keypress is detectable
+            keyPressedSinceTimer = false;
+            timerStarted = true;
+            typingCycles = 0;
+            typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+        }
         listener.setEditingState(id, UNSAVED);
     }
 
@@ -167,19 +174,6 @@ public class Editor extends Composite implements ToggleEditor {
     @UiHandler("copyIcon")
     public void onCopySource(ClickEvent event) {
         listener.copySource(this, id);
-    }
-
-    @UiHandler("textArea")
-    public void onKeyDown(KeyDownEvent event) {
-        if (timerStarted) {
-            keyPressedSinceTimer = true;
-        } else {
-            // set false so that next keypress is detectable
-            keyPressedSinceTimer = false;
-            timerStarted = true;
-            typingCycles = 0;
-            typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
-        }
     }
 
     @Override
