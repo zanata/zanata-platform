@@ -121,6 +121,11 @@
     <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
   </listener>
 
+  <filter-mapping>
+    <filter-name>MDCInsertingServletFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <filter>
     <filter-name>gwtCacheControlFilter</filter-name>
     <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
