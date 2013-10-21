@@ -61,27 +61,42 @@ public class Editor extends Composite implements ToggleEditor {
     @UiField(provided = true)
     TextAreaWrapper textArea;
 
-    private final int TYPING_TIMER_INTERVAL = 200; // ms
-    private final int TYPING_TIMER_RECURRENT_VALIDATION_PERIOD = 5; // intervals
+    //Timer period, in ms
+    private final int TYPING_TIMER_INTERVAL = 200;
 
-    private boolean keypressed;
-    private boolean typing;
+    //Validation will be forced after this many periods
+    private final int TYPING_TIMER_INTERVALS_UNTIL_VALIDATION = 5;
+
+    //Has a key been pressed since the timer was started or the last firing
+    private boolean keyPressedSinceTimer;
+
+    //Has a timer been started
+    private boolean timerStarted;
+
+    //The number of timer cycles since the last keydown
     private int typingCycles;
 
+    //NB: In some cases, the idle detection may take almost 2 cycles
+    //1. Key pressed at time = 0
+    //2. Key pressed at time = 1ms (keyPressedSinceTimer = true)
+    //3. Timer goes off at 200ms without validating
+    //4. Timer goes off at 400ms and runs validation
+    //This could be fixed by using 2 separate timers
     final Timer typingTimer = new Timer() {
         @Override
         public void run() {
-            if (keypressed) {
+            if (keyPressedSinceTimer) {
                 // still typing, validate periodically
-                keypressed = false;
+                keyPressedSinceTimer = false;
                 typingCycles++;
-                if (typingCycles % TYPING_TIMER_RECURRENT_VALIDATION_PERIOD == 0) {
+                if (typingCycles %
+                    TYPING_TIMER_INTERVALS_UNTIL_VALIDATION == 0) {
                     fireValidationEvent();
                 }
             } else {
                 // finished, validate immediately
                 this.cancel();
-                typing = false;
+                timerStarted = false;
                 fireValidationEvent();
             }
         }
@@ -123,7 +138,7 @@ public class Editor extends Composite implements ToggleEditor {
         targetWrapper.getElement().setAttribute("contenteditable",
                 enabled.toString());
         targetWrapper.getElement().setAttribute("spellcheck",
-                enabled.toString());
+            enabled.toString());
     }
 
     private void fireValidationEvent() {
@@ -156,12 +171,12 @@ public class Editor extends Composite implements ToggleEditor {
 
     @UiHandler("textArea")
     public void onKeyDown(KeyDownEvent event) {
-        if (typing) {
-            keypressed = true;
+        if (timerStarted) {
+            keyPressedSinceTimer = true;
         } else {
             // set false so that next keypress is detectable
-            keypressed = false;
-            typing = true;
+            keyPressedSinceTimer = false;
+            timerStarted = true;
             typingCycles = 0;
             typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
         }
