@@ -32,14 +32,25 @@ public class RegisterWorkFlow extends AbstractWebWorkFlow {
 
     public HomePage registerGoogleOpenID(String name, String username,
             String password, String email) {
-        GoogleAccountPage googleAccountPage =
-                new BasicWorkFlow().goToHome().clickSignInLink()
-                        .selectGoogleOpenID();
+        GoogleAccountPage googleAccountPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .selectGoogleOpenID();
 
-        EditProfilePage editProfilePage =
-                googleAccountPage.enterGoogleEmail(email)
-                        .enterGooglePassword(password).clickSignIn()
-                        .acceptPermissions();
+        // If Google has remembered us, skip entering the email
+        // If Google has remembered someone else, change the user
+        if (googleAccountPage.hasRememberedAuthentication()) {
+            if (!googleAccountPage.rememberedUser().equals(email)) {
+                googleAccountPage = googleAccountPage.removeSavedAuthentication();
+            }
+        } else {
+            googleAccountPage = googleAccountPage.enterGoogleEmail(email);
+        }
+
+        EditProfilePage editProfilePage = googleAccountPage
+                .enterGooglePassword(password)
+                .clickSignIn()
+                .acceptPermissions();
 
         return editProfilePage.enterName(name).enterUserName(username)
                 .enterEmail(email).clickSave();
