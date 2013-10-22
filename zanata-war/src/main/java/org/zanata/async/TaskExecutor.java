@@ -26,6 +26,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 
 /**
  * This component executes {@link org.zanata.async.AsyncTask} instances. It is
@@ -62,8 +63,8 @@ public class TaskExecutor {
 
         Identity identity = Identity.instance();
         asynchronousTaskExecutor.runAsynchronously(task, identity
-                .getPrincipal(), identity.getSubject(), identity
-                .getCredentials().getUsername());
+                .getPrincipal(), identity.getSubject(),
+            RuleBasedPermissionResolver.instance().getSecurityContext());
         return handle;
     }
 
