@@ -36,10 +36,15 @@ public class RegisterWorkFlow extends AbstractWebWorkFlow {
                 .goToHome()
                 .clickSignInLink()
                 .selectGoogleOpenID();
-
-        // If Google has remembered us, skip entering the email
-        // If Google has remembered someone else, change the user
-        if (googleAccountPage.hasRememberedAuthentication()) {
+        /*
+            There is the chance that Google presents the old page. It seems
+            to be random. Just enter the email in this case.
+            Otherwise, If Google has remembered us, skip entering the email.
+            If Google has remembered someone else, change the user.
+        */
+        if (googleAccountPage.isTheOldGoogleSite()) {
+            googleAccountPage = googleAccountPage.enterGoogleEmail(email);
+        } else if (googleAccountPage.hasRememberedAuthentication()) {
             if (!googleAccountPage.rememberedUser().equals(email)) {
                 googleAccountPage = googleAccountPage.removeSavedAuthentication();
             }
