@@ -24,12 +24,15 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.security.RunAsOperation;
+import org.zanata.action.AuthenticationEvents;
+import org.zanata.dao.AccountDAO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,13 +54,14 @@ public class AsynchronousTaskExecutor {
     @Asynchronous
     public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(
             final AsyncTask<V, H> task, final Principal runAsPpal,
-            final Subject runAsSubject) {
+            final Subject runAsSubject, final String username) {
         AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
         RunAsOperation runAsOp = new RunAsOperation() {
             @Override
             public void execute() {
                 try {
+                    prepareSecurityContext(username);
                     V returnValue = task.call();
                     task.getHandle().set(returnValue);
                 } catch (Exception t) {
@@ -82,4 +86,21 @@ public class AsynchronousTaskExecutor {
         runAsOp.run();
     }
 
+    /**
+     * Prepares the Drools security context so that it contains all the
+     * necessary facts for security checking.
+     */
+    private static void prepareSecurityContext(String username) {
+        /*
+         * TODO This should be changed to not need the username. There should be
+         * a way to simulate a login for asyn tasks, or at least to inherit the
+         * caller's context
+         */
+        AccountDAO accountDAO =
+                (AccountDAO) Component.getInstance(AccountDAO.class);
+        AuthenticationEvents authEvts =
+                (AuthenticationEvents) Component
+                        .getInstance(AuthenticationEvents.class);
+        authEvts.loginSuccessful(accountDAO.getByUsername(username));
+    }
 }
