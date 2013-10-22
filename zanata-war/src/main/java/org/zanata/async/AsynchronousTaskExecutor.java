@@ -24,16 +24,18 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
-import org.drools.StatefulSession;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.action.AuthenticationEvents;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class
@@ -41,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
  * wrapper to make sure Seam can run the task in the background.
  * {@link TaskExecutor} is able to do this as well as return an instance of the
  * task handle to keep track of the task's progress.
- * 
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -58,20 +59,19 @@ public class AsynchronousTaskExecutor {
      * @param task Task to run asynchronously.
      * @param runAsPpal Security Principal to tun the task.
      * @param runAsSubject Security Subject to run the task.
-     * @param secCtx The security context to inherit to run the task.
+     * @param username The username to run the task.
      */
     @Asynchronous
     public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(
             final AsyncTask<V, H> task, final Principal runAsPpal,
-            final Subject runAsSubject, final StatefulSession secCtx) {
+            final Subject runAsSubject, final String username) {
         AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
         RunAsOperation runAsOp = new RunAsOperation() {
             @Override
             public void execute() {
                 try {
-                    RuleBasedPermissionResolver.instance().setSecurityContext(
-                            secCtx);
+                    prepareSecurityContext(username);
                     V returnValue = task.call();
                     task.getHandle().set(returnValue);
                 } catch (Exception t) {
@@ -94,5 +94,28 @@ public class AsynchronousTaskExecutor {
         };
 
         runAsOp.run();
+    }
+
+    /**
+     * Prepares the Drools security context so that it contains all the
+     * necessary facts for security checking.
+     */
+    private static void prepareSecurityContext(String username) {
+        /*
+         * TODO This should be changed to not need the username. There should be
+         * a way to simulate a login for asyn tasks, or at least to inherit the
+         * caller's context
+         */
+        if( username != null ) {
+            // Only if it's an authenticated task should it try and do this
+            // injection
+            AccountDAO accountDAO =
+                (AccountDAO) Component.getInstance(AccountDAO.class);
+            AuthenticationEvents authEvts =
+                (AuthenticationEvents) Component
+                    .getInstance(AuthenticationEvents.class);
+            HAccount authenticatedAccount = accountDAO.getByUsername(username);
+            authEvts.injectAuthenticatedPersonIntoWorkingMemory(authenticatedAccount);
+        }
     }
 }

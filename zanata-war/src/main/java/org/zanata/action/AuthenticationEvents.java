@@ -49,6 +49,10 @@ public class AuthenticationEvents implements Serializable {
     @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
     public void loginSuccessful(HAccount account) {
         log.info("Account {0} authenticated", account.getUsername());
+        injectAuthenticatedPersonIntoWorkingMemory(account);
+    }
+
+    public void injectAuthenticatedPersonIntoWorkingMemory(HAccount account) {
         HPerson authenticatedPerson = account.getPerson();
         // insert authenticatedPerson for use in security.drl rules
         RuleBasedPermissionResolver.instance().getSecurityContext()
