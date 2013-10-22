@@ -145,6 +145,10 @@ public class Editor extends Composite implements ToggleEditor {
         }
     }
 
+    /**
+     * This gets triggered on each keydown event from both codemirror and plain
+     * text area.
+     */
     @UiHandler("textArea")
     public void onValueChange(ValueChangeEvent<String> event) {
         if (timerStarted) {
