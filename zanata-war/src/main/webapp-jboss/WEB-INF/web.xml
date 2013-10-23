@@ -20,7 +20,7 @@
   <login-config>
     <auth-method>SPNEGO</auth-method>
     <form-login-config>
-      <form-login-page>/account/klogin_form.html</form-login-page>
+      <form-login-page>/account/kloginform</form-login-page>
       <form-error-page>/sdsdf</form-error-page>
     </form-login-config>
   </login-config>
@@ -186,6 +186,16 @@
   <!--    <servlet-name>javax.ws.rs.core.Application</servlet-name> -->
   <!--    <url-pattern>/seam/resource/restv1/*</url-pattern> -->
   <!-- </servlet-mapping> -->
+
+  <servlet>
+    <servlet-name>KerberosLoginFormServlet</servlet-name>
+    <servlet-class>org.zanata.servlet.KerberosLoginFormServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>KerberosLoginFormServlet</servlet-name>
+    <url-pattern>/account/kloginform</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>Seam Resource Servlet</servlet-name>
