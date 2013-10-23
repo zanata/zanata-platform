@@ -6,7 +6,7 @@
 
   <!-- sso security -->
 
-  <!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)-->
+  <!-- Kerberos ticket based authentication settings -->
 
   <security-constraint>
     <web-resource-collection>
@@ -27,7 +27,6 @@
   <security-role>
     <role-name>*</role-name>
   </security-role>
-
 
   <!-- RichFaces -->
   <context-param>

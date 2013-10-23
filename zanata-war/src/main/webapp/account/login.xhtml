@@ -23,7 +23,7 @@
             </ui:remove>
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
-              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
+              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2 class="gamma heading--sub">with Zanata</h2>
               </s:fragment>
@@ -60,41 +60,6 @@
                     value="#{messages['jsf.Signup']}"/>
                 </div>
               </h:form>
-            </s:div>
-            <ui:remove>
-              <!-- Kerberos Login form-->
-            </ui:remove>
-            <s:div
-              styleClass="l--push-top-half g__item"
-              rendered="#{applicationConfiguration.kerberosAuth}">
-              <span>
-                Please Log in with your kerberos credentials
-              </span>
-
-              <form id="loginForm"
-                action="#{request.getContextPath()}/j_security_check"
-                method="POST"
-                class="l--push-top-half l--pad-all-1 bg--pop-higher">
-                <div class="l--clearfix">
-                  <label for="j_username"
-                    class="l--float-left">#{messages['jsf.Username']}</label>
-                </div>
-                <input id="j_username" type="text" name="j_username"
-                  tabindex="1"/>
-
-                <div class="l--push-top-half l--clearfix">
-                  <label for="j_password"
-                    class="l--float-left">#{messages['jsf.Password']}</label>
-                </div>
-                <input id="j_password" type="password" name="j_password"
-                  tabindex="2"/>
-
-                <div class="l--push-top-half">
-                  <input id="loginButton" type="submit"
-                    value="#{messages['jsf.Login']}"
-                    class="button--primary"/>
-                </div>
-              </form>
             </s:div>
             <ui:remove>
               <!-- OpenId Login form-->
