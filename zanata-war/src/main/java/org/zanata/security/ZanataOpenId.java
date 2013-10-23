@@ -231,12 +231,13 @@ public class ZanataOpenId implements OpenIdAuthCallback {
         discovered = null;
         id = null;
         authResult = new OpenIdAuthenticationResult();
+        // TODO inject these
         identity =
                 (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
                         ScopeType.SESSION);
         applicationConfiguration =
                 (ApplicationConfiguration) Component.getInstance(
-                        ApplicationConfiguration.class, ScopeType.APPLICATION);
+                        ApplicationConfiguration.class);
     }
 
     private void loginImmediate() {

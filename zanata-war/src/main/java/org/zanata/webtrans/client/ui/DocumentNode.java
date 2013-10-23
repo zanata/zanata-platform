@@ -24,7 +24,6 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 
 public class DocumentNode {
     private DocumentInfo docInfo;
-    private boolean isVisible = true;
 
     public DocumentNode(DocumentInfo doc) {
         this.docInfo = doc;
@@ -32,13 +31,5 @@ public class DocumentNode {
 
     public DocumentInfo getDocInfo() {
         return docInfo;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    public void setVisible(boolean isVisible) {
-        this.isVisible = isVisible;
     }
 }

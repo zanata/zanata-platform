@@ -31,10 +31,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.sf.ehcache.CacheManager;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -42,14 +42,12 @@ import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.EhcacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
-import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -64,6 +62,7 @@ import com.google.common.cache.CacheLoader;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("translationStateCacheImpl")
+// TODO split into APPLICATION and STATELESS beans
 @Scope(ScopeType.APPLICATION)
 public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String BASE = TranslationStateCacheImpl.class
@@ -72,18 +71,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             + ".docStatusCache";
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
-
-    @In
-    private TextFlowDAO textFlowDAO;
-
-    @In
-    private DocumentDAO documentDAO;
-
-    @In
-    private TextFlowTargetDAO textFlowTargetDAO;
-
-    @In
-    private ValidationService validationServiceImpl;
 
     private CacheManager cacheManager;
     private CacheWrapper<TranslatedDocumentKey, DocumentStatus> docStatusCache;
@@ -99,14 +86,10 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     public TranslationStateCacheImpl(
             CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader,
-            CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
-            TextFlowTargetDAO textFlowTargetDAO,
-            ValidationService validationServiceImpl) {
+            CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader) {
         // constructor for testing
         this.docStatusLoader = docStatsLoader;
         this.targetValidationLoader = targetValidationLoader;
-        this.textFlowTargetDAO = textFlowTargetDAO;
-        this.validationServiceImpl = validationServiceImpl;
     }
 
     @Create
@@ -158,11 +141,13 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             ValidationId validationId) {
         Map<ValidationId, Boolean> cacheEntry =
                 targetValidationCache.getWithLoader(targetId);
-        if (!cacheEntry.containsKey(validationId)) {
-            Boolean result = loadTargetValidation(targetId, validationId);
-            cacheEntry.put(validationId, result);
+        synchronized (cacheEntry) {
+            if (!cacheEntry.containsKey(validationId)) {
+                Boolean result = loadTargetValidation(targetId, validationId);
+                cacheEntry.put(validationId, result);
+            }
+            return cacheEntry.get(validationId);
         }
-        return cacheEntry.get(validationId);
     }
 
     private void updateDocStatusCache(Long documentId, LocaleId localeId,
@@ -170,30 +155,45 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         DocumentStatus documentStatus =
                 docStatusCache.get(new TranslatedDocumentKey(documentId,
                         localeId));
+        TextFlowTargetDAO textFlowTargetDAO = getTextFlowTargetDAO();
         HTextFlowTarget target =
                 textFlowTargetDAO.findById(updatedTargetId, false);
-        updateDocumentStatus(documentStatus, documentId, localeId, target);
+        updateDocumentStatus(getDocumentDAO(), documentStatus, documentId, localeId, target);
+    }
+
+    DocumentDAO getDocumentDAO() {
+        return (DocumentDAO) Component.getInstance(DocumentDAO.class);
+    }
+
+    TextFlowTargetDAO getTextFlowTargetDAO() {
+        TextFlowTargetDAO textFlowTargetDAO = (TextFlowTargetDAO) Component.getInstance(TextFlowTargetDAO.class);
+        return textFlowTargetDAO;
     }
 
     private void invalidateTargetValidationCache(Long textFlowTargetId) {
         targetValidationCache.remove(textFlowTargetId);
     }
 
-    private final class HTextFlowTargetIdLoader extends
+    private static class HTextFlowTargetIdLoader extends
             CacheLoader<TranslatedDocumentKey, DocumentStatus> {
+        DocumentDAO getDocumentDAO() {
+            return (DocumentDAO) Component.getInstance(DocumentDAO.class);
+        }
+
         @Override
         public DocumentStatus load(TranslatedDocumentKey key) throws Exception {
+            DocumentDAO documentDAO = getDocumentDAO();
             HTextFlowTarget target =
                     documentDAO.getLastTranslatedTarget(key.getDocumentId(),
                             key.getLocaleId());
             DocumentStatus documentStatus = new DocumentStatus();
 
-            return updateDocumentStatus(documentStatus, key.getDocumentId(),
+            return updateDocumentStatus(documentDAO, documentStatus, key.getDocumentId(),
                     key.getLocaleId(), target);
         }
     }
 
-    private final class HTextFlowTargetValidationLoader extends
+    private static class HTextFlowTargetValidationLoader extends
             CacheLoader<Long, Map<ValidationId, Boolean>> {
         @Override
         public Map<ValidationId, Boolean> load(Long key) throws Exception {
@@ -203,6 +203,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     private Boolean loadTargetValidation(Long textFlowTargetId,
             ValidationId validationId) {
+        TextFlowTargetDAO textFlowTargetDAO = getTextFlowTargetDAO();
         HTextFlowTarget tft =
                 textFlowTargetDAO.findById(textFlowTargetId, false);
 
@@ -218,8 +219,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         return null;
     }
 
-    private DocumentStatus updateDocumentStatus(DocumentStatus documentStatus,
-            Long documentId, LocaleId localeId, HTextFlowTarget target) {
+    private static DocumentStatus updateDocumentStatus(DocumentDAO documentDAO,
+            DocumentStatus documentStatus, Long documentId, LocaleId localeId,
+            HTextFlowTarget target) {
         Date lastTranslatedDate = null;
         String lastTranslatedBy = "";
 
@@ -232,13 +234,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             }
         }
         HDocument document = documentDAO.findById(documentId, false);
-        boolean hasError =
-                validationServiceImpl.runDocValidationsWithServerRules(
-                        document, localeId);
-
         documentStatus.update(
                 new DocumentId(document.getId(), document.getDocId()),
-                lastTranslatedDate, lastTranslatedBy, hasError);
+                lastTranslatedDate, lastTranslatedBy);
         return documentStatus;
     }
 

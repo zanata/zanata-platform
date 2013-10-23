@@ -32,7 +32,7 @@ import org.zanata.model.HLocale;
  * @author Sean Flanigan
  */
 @Name("essentialDataCreator")
-@Scope(ScopeType.APPLICATION)
+@Scope(ScopeType.STATELESS)
 @Install(false)
 public class EssentialDataCreator {
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -126,7 +126,6 @@
             <usedDependency>commons-lang:commons-lang</usedDependency>
             <usedDependency>javax.el:el-api</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <usedDependency>javax.servlet:javax.servlet-api</usedDependency>
             <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
@@ -1774,7 +1773,7 @@
     <dependency>
       <groupId>com.allen-sauer.gwt.log</groupId>
       <artifactId>gwt-log</artifactId>
-      <version>3.1.8</version>
+      <version>3.2.1</version>
     </dependency>
 
     <dependency>

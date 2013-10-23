@@ -22,6 +22,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -58,6 +59,46 @@ public class Editor extends Composite implements ToggleEditor {
 
     @UiField(provided = true)
     TextAreaWrapper textArea;
+
+    // Timer period, in ms
+    private final int TYPING_TIMER_INTERVAL = 200;
+
+    // Validation will be forced after this many periods
+    private final int TYPING_TIMER_INTERVALS_UNTIL_VALIDATION = 5;
+
+    // Has a key been pressed since the timer was started or the last firing
+    private boolean keyPressedSinceTimer;
+
+    // Has a timer been started
+    private boolean timerStarted;
+
+    // The number of timer cycles since the last keydown
+    private int typingCycles;
+
+    // NB: In some cases, the idle detection may take almost 2 cycles
+    // 1. Key pressed at time = 0
+    // 2. Key pressed at time = 1ms (keyPressedSinceTimer = true)
+    // 3. Timer goes off at 200ms without validating
+    // 4. Timer goes off at 400ms and runs validation
+    // This could be fixed by using 2 separate timers
+    final Timer typingTimer = new Timer() {
+        @Override
+        public void run() {
+            if (keyPressedSinceTimer) {
+                // still typing, validate periodically
+                keyPressedSinceTimer = false;
+                typingCycles++;
+                if (typingCycles % TYPING_TIMER_INTERVALS_UNTIL_VALIDATION == 0) {
+                    fireValidationEvent();
+                }
+            } else {
+                // finished, validate immediately
+                this.cancel();
+                timerStarted = false;
+                fireValidationEvent();
+            }
+        }
+    };
 
     public Editor(String displayString, final int index,
             final TargetContentsDisplay.Listener listener, final TransUnitId id) {
@@ -104,9 +145,21 @@ public class Editor extends Composite implements ToggleEditor {
         }
     }
 
+    /**
+     * This gets triggered on each keydown event from both codemirror and plain
+     * text area.
+     */
     @UiHandler("textArea")
     public void onValueChange(ValueChangeEvent<String> event) {
-        fireValidationEvent();
+        if (timerStarted) {
+            keyPressedSinceTimer = true;
+        } else {
+            // set false so that next keypress is detectable
+            keyPressedSinceTimer = false;
+            timerStarted = true;
+            typingCycles = 0;
+            typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
+        }
         listener.setEditingState(id, UNSAVED);
     }
 

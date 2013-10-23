@@ -1,9 +1,12 @@
 package org.zanata.webtrans.client.events;
 
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import java.util.List;
+
+import org.zanata.webtrans.client.ui.DocumentNode;
+
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ProjectStatsUpdatedEvent extends
+public class RefreshProjectStatsEvent extends
         GwtEvent<ProjectStatsUpdatedEventHandler> {
 
     /**
@@ -11,7 +14,7 @@ public class ProjectStatsUpdatedEvent extends
      */
     private static Type<ProjectStatsUpdatedEventHandler> TYPE;
 
-    private ContainerTranslationStatistics newStats;
+    private List<DocumentNode> documentNodes;
 
     /**
      * Gets the type associated with this event.
@@ -23,12 +26,12 @@ public class ProjectStatsUpdatedEvent extends
                 new Type<ProjectStatsUpdatedEventHandler>());
     }
 
-    public ProjectStatsUpdatedEvent(ContainerTranslationStatistics newStats) {
-        this.newStats = newStats;
+    public RefreshProjectStatsEvent(List<DocumentNode> documentNodes) {
+        this.documentNodes = documentNodes;
     }
 
-    public ContainerTranslationStatistics getNewStats() {
-        return newStats;
+    public List<DocumentNode> getDocumentNodes() {
+        return documentNodes;
     }
 
     @Override

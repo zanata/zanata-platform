@@ -166,34 +166,16 @@ public class ValidationServiceImpl implements ValidationService {
         return validationIds;
     }
 
-    /**
-     * USE_COMBINE_CACHE method combine last translated info, document has
-     * validation error into single cache list. However this might cause some
-     * overhead/slowness if request has no intention of getting the validation
-     * result. Using USE_COMBINE_CACHE will trigger validation runs against
-     * document/locale whenever a transUnit is updated.
-     */
-    private boolean USE_COMBINE_CACHE = false;
-
     @Override
     public boolean runDocValidations(Long hDocId,
             List<ValidationId> validationIds, LocaleId localeId) {
         log.debug("Start runDocValidations {0}", hDocId);
         Stopwatch stopwatch = new Stopwatch().start();
 
-        boolean result;
-        if (USE_COMBINE_CACHE) {
-            DocumentStatus docStats =
-                    translationStateCacheImpl.getDocumentStatus(hDocId,
-                            localeId);
-            result = docStats.hasError();
-        } else {
-            HDocument hDoc = documentDAO.findById(hDocId, false);
-            result = documentHasWarningOrError(hDoc, validationIds, localeId);
-        }
-
+        HDocument hDoc = documentDAO.findById(hDocId, false);
+        boolean hasError = documentHasWarningOrError(hDoc, validationIds, localeId);
         log.debug("Finished runDocValidations in " + stopwatch);
-        return result;
+        return hasError;
     }
 
     @Override

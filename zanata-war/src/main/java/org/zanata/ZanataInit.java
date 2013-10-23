@@ -27,6 +27,9 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.LinkRef;
@@ -56,14 +59,16 @@ import com.beust.jcommander.internal.Lists;
  * @author Christian Bauer
  */
 @Name("zanataInit")
-@Scope(ScopeType.APPLICATION)
+@Scope(ScopeType.STATELESS)
 @Slf4j
 public class ZanataInit {
     static {
         // Prevent AS 7 from warning about gwt-servlet's
         // org.hibernate.validator.ValidationMessages
-        java.util.logging.Logger.getLogger("org.jboss.modules").setLevel(
-                java.util.logging.Level.SEVERE);
+        Logger.getLogger("org.jboss.modules").setLevel(Level.SEVERE);
+        // Disable "RP discovery / realm validation disabled;"
+        Logger.getLogger("org.openid4java.server.RealmVerifier").setLevel(
+                Level.SEVERE);
     }
 
     public static final String EVENT_Zanata_Startup = "Zanata.startup";

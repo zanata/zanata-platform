@@ -61,8 +61,9 @@ public class TaskExecutor {
         }
 
         Identity identity = Identity.instance();
-        asynchronousTaskExecutor.runAsynchronously(task,
-                identity.getPrincipal(), identity.getSubject());
+        asynchronousTaskExecutor.runAsynchronously(task, identity
+                .getPrincipal(), identity.getSubject(),
+                identity.getCredentials().getUsername());
         return handle;
     }
 

@@ -6,19 +6,19 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.security.Restrict;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
 
+@AutoCreate
 @Name("reindexAction")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Scope(ScopeType.STATELESS)
 @Restrict("#{s:hasRole('admin')}")
 public class ReindexActionBean implements Serializable {
     private static final long serialVersionUID = 1L;

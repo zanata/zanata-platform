@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
@@ -36,7 +37,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -169,12 +170,12 @@ public class DocumentListPresenterTest {
         // right amount of docs
         assertThat(
                 "the data provider should have the same sized document list returned from the server",
-                documentListPresenter.getSortedNodes().size(), is(3));
+                documentListPresenter.getFilteredNodes().size(), is(3));
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
 
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that were returned from the server",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -207,19 +208,18 @@ public class DocumentListPresenterTest {
                         .setMsgContext("msgContext").setRowIndex(1)
                         .setVerNum(1).build();
         TransUnitUpdateInfo updateInfo =
-                new TransUnitUpdateInfo(true, true, new DocumentId(2222L, ""),
-                        newTransUnit, 3, 0, ContentState.NeedReview);
+                new TransUnitUpdateInfo(true, true, new DocumentId(2222L,
+                        "match/exact/filter"), newTransUnit, 3, 0,
+                        ContentState.NeedReview);
         TransUnitUpdatedEvent mockEvent = mock(TransUnitUpdatedEvent.class);
 
         when(mockEvent.getUpdateInfo()).thenReturn(updateInfo);
 
-        ArrayList<DocumentInfo> documentInfos = buildSampleDocumentArray();
-
         documentListPresenter.bind();
-        documentListPresenter.setDocuments(documentInfos);
+        documentListPresenter.setDocuments(buildSampleDocumentArray());
         documentListPresenter.onTransUnitUpdated(mockEvent);
 
-        verify(mockEventBus, times(1)).fireEvent(
+        verify(mockEventBus, times(2)).fireEvent(
                 capturedEventBusEvent.capture());
 
         DocumentStatsUpdatedEvent docStatsEvent = null;
@@ -389,7 +389,7 @@ public class DocumentListPresenterTest {
         expectedDocs.remove(2); // third doc does not match the filter
         expectedDocs.remove(0); // first doc does not match the filter
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that exactly match the current filter",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -400,7 +400,7 @@ public class DocumentListPresenterTest {
                 actualDocInfos, hasItems(expectedDocs.get(0)));
         assertThat(
                 "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getSortedNodes().size(), is(1));
+                documentListPresenter.getFilteredNodes().size(), is(1));
     }
 
     // TODO test case sensitivity option
@@ -413,8 +413,8 @@ public class DocumentListPresenterTest {
         String filterText = " does/not, not/match ,no/filter ";
 
         documentListPresenter.bind();
-        documentListPresenter.setDocuments(buildSampleDocumentArray());
         documentListPresenter.updateFilterAndRun(filterText, false, false);
+        documentListPresenter.setDocuments(buildSampleDocumentArray());
 
         // simulate firing history change event
         HistoryToken historyTokenWithFilter = new HistoryToken();
@@ -426,7 +426,7 @@ public class DocumentListPresenterTest {
         expectedDocs.remove(1); // second doc does not match any of the filter
                                 // strings
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
-        for (DocumentNode node : documentListPresenter.getSortedNodes()) {
+        for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that match the current filter",
                     node.getDocInfo(), isIn(expectedDocs));
@@ -438,7 +438,7 @@ public class DocumentListPresenterTest {
                 hasItems(expectedDocs.get(0), expectedDocs.get(1)));
         assertThat(
                 "the data provider list should contain exactly the number of documents matching the filter",
-                documentListPresenter.getSortedNodes().size(), is(2));
+                documentListPresenter.getFilteredNodes().size(), is(2));
     }
 
     // TODO test case sensitive check updated from history
@@ -467,20 +467,19 @@ public class DocumentListPresenterTest {
         documentListPresenter.bind();
         documentListPresenter.setDocuments(buildSampleDocumentArray());
 
-        DocumentInfo docInfo =
-                documentListPresenter
-                        .getDocumentInfo(new DocumentId(1111L, ""));
-        assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(1111L,
-                ""), "doc111", "first/path/", LocaleId.EN_US,
+        DocumentId doc1 = new DocumentId(1111L, "no/filter/matches");
+        DocumentInfo docInfo = documentListPresenter.getDocumentInfo(doc1);
+
+        assertThat(docInfo, is(equalTo(new DocumentInfo(doc1, "doc111",
+                "first/path/", LocaleId.EN_US,
                 new ContainerTranslationStatistics(), new AuditInfo(new Date(),
                         "Translator"), new HashMap<String, String>(),
                 new AuditInfo(new Date(), "last translator")))));
 
-        docInfo =
-                documentListPresenter
-                        .getDocumentInfo(new DocumentId(3333L, ""));
-        assertThat(docInfo, is(equalTo(new DocumentInfo(new DocumentId(3333L,
-                ""), "doc123", "third/path/", LocaleId.EN_US,
+        DocumentId doc2 = new DocumentId(3333L, "does/not/match/exact/filter");
+        docInfo = documentListPresenter.getDocumentInfo(doc2);
+        assertThat(docInfo, is(equalTo(new DocumentInfo(doc2, "doc123",
+                "third/path/", LocaleId.EN_US,
                 new ContainerTranslationStatistics(), new AuditInfo(new Date(),
                         "Translator"), new HashMap<String, String>(),
                 new AuditInfo(new Date(), "last translator")))));
@@ -525,8 +524,8 @@ public class DocumentListPresenterTest {
     public void queryStats() {
         ArrayList<DocumentInfo> documentInfoList = buildSampleDocumentArray();
         ArrayList<DocumentNode> sortedNodes = new ArrayList<DocumentNode>();
-        HashMap<DocumentId, DocumentNode> nodes =
-                new HashMap<DocumentId, DocumentNode>();
+        TreeMap<DocumentId, DocumentNode> nodes =
+                new TreeMap<DocumentId, DocumentNode>();
         HashMap<DocumentId, ContainerTranslationStatistics> statMap =
                 new HashMap<DocumentId, ContainerTranslationStatistics>();
         HashMap<DocumentId, AuditInfo> lastTranslatedMap =
@@ -558,8 +557,8 @@ public class DocumentListPresenterTest {
 
         verify(mockEventBus, times(3)).fireEvent(
                 isA(DocumentStatsUpdatedEvent.class));
-        verify(mockEventBus, times(3)).fireEvent(
-                isA(ProjectStatsUpdatedEvent.class));
+        verify(mockEventBus, times(1)).fireEvent(
+                isA(RefreshProjectStatsEvent.class));
     }
 
     private static HasWorkspaceContextUpdateData workplaceContextData(
@@ -596,23 +595,24 @@ public class DocumentListPresenterTest {
                 .toString()));
 
         DocumentInfo docInfo =
-                new DocumentInfo(new DocumentId(1111L, ""), "matches",
-                        "no/filter", LocaleId.EN_US, stats, new AuditInfo(
-                                new Date(), "Translator"),
+                new DocumentInfo(new DocumentId(1111L, "no/filter/matches"),
+                        "matches", "no/filter", LocaleId.EN_US, stats,
+                        new AuditInfo(new Date(), "Translator"),
                         new HashMap<String, String>(), new AuditInfo(
                                 new Date(), "last translator"));
         docList.add(docInfo);
 
         docInfo =
-                new DocumentInfo(new DocumentId(2222L, ""), "filter",
-                        "match/exact/", LocaleId.EN_US, stats, new AuditInfo(
-                                new Date(), "Translator"),
+                new DocumentInfo(new DocumentId(2222L, "match/exact/filter"),
+                        "filter", "match/exact/", LocaleId.EN_US, stats,
+                        new AuditInfo(new Date(), "Translator"),
                         new HashMap<String, String>(), new AuditInfo(
                                 new Date(), "last translator"));
         docList.add(docInfo);
 
         docInfo =
-                new DocumentInfo(new DocumentId(3333L, ""), "filter",
+                new DocumentInfo(new DocumentId(3333L,
+                        "does/not/match/exact/filter"), "filter",
                         "does/not/match/exact/", LocaleId.EN_US, stats,
                         new AuditInfo(new Date(), "Translator"),
                         new HashMap<String, String>(), new AuditInfo(

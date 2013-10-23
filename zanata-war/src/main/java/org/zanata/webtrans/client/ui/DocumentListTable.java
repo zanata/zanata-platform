@@ -39,6 +39,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -193,8 +194,7 @@ public class DocumentListTable extends FlexTable {
             boolean statsByWords) {
         clearContent();
 
-        HashMap<DocumentId, Integer> pageRows =
-                new HashMap<DocumentId, Integer>();
+        HashMap<DocumentId, Integer> pageRows = Maps.newHashMap();
 
         for (int i = 0; i < nodes.size(); i++) {
             DocumentNode node = nodes.get(i);
@@ -389,15 +389,15 @@ public class DocumentListTable extends FlexTable {
     private Widget getRemainingWidget(DocumentInfo docInfo) {
         String text = "0";
         if (docInfo.getStats() != null) {
+            String locale =
+                    userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
+                            .getLocaleId().getId();
             text =
-                    messages.statusBarLabelHours(docInfo
-                            .getStats()
-                            .getStats(
-                                    userWorkspaceContext.getWorkspaceContext()
-                                            .getWorkspaceId().getLocaleId()
-                                            .getId(), StatUnit.WORD)
+                    messages.statusBarLabelHours(docInfo.getStats()
+                            .getStats(locale, StatUnit.WORD)
                             .getRemainingHours());
         }
+
         return new InlineLabel(text);
     }
 
@@ -474,17 +474,27 @@ public class DocumentListTable extends FlexTable {
             String locale =
                     userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                             .getLocaleId().toString();
+            TranslationStatistics wordStats =
+                    stats.getStats(locale, StatUnit.WORD);
+
             if (statsByWords) {
-                translated.setText(String.valueOf(stats.getStats(locale,
-                        StatUnit.WORD).getTranslatedAndApproved()));
-                untranslated.setText(String.valueOf(stats.getStats(locale,
-                        StatUnit.WORD).getIncomplete()));
+                translated.setText(String.valueOf(wordStats
+                        .getTranslatedAndApproved()));
+                untranslated.setText(String.valueOf(wordStats.getIncomplete()));
             } else {
-                translated.setText(String.valueOf(stats.getStats(locale,
-                        StatUnit.MESSAGE).getTranslatedAndApproved()));
-                untranslated.setText(String.valueOf(stats.getStats(locale,
-                        StatUnit.MESSAGE).getIncomplete()));
+
+                TranslationStatistics msgStats =
+                        stats.getStats(locale, StatUnit.MESSAGE);
+
+                translated.setText(String.valueOf(msgStats
+                        .getTranslatedAndApproved()));
+                untranslated.setText(String.valueOf(msgStats.getIncomplete()));
             }
+
+            HasText remainingHour =
+                    (HasText) this.getWidget(row, REMAINING_COLUMN);
+            remainingHour.setText(messages.statusBarLabelHours(wordStats
+                    .getRemainingHours()));
         }
     }
 

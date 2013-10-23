@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +37,7 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.history.History;
@@ -45,6 +47,7 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -140,7 +143,7 @@ public class AppPresenterTest {
                 presenter);
         verify(eventBus)
                 .addHandler(PresenterRevealedEvent.getType(), presenter);
-        verify(eventBus).addHandler(ProjectStatsUpdatedEvent.getType(),
+        verify(eventBus).addHandler(RefreshProjectStatsEvent.getType(),
                 presenter);
 
         WorkspaceId workspaceId =
@@ -572,27 +575,58 @@ public class AppPresenterTest {
     public void onProjectStatsUpdated() {
         projectStats = new ContainerTranslationStatistics();
 
-        ContainerTranslationStatistics newStats =
-                new ContainerTranslationStatistics();
-        TranslationStatistics unitStats =
-                new TranslationStatistics(new TransUnitCount(7, 8, 9),
-                        LocaleId.EN_US.getId());
-        TranslationStatistics wordStats =
-                new TranslationStatistics(new TransUnitWords(10, 11, 12),
-                        LocaleId.EN_US.getId());
-        newStats.addStats(unitStats);
-        newStats.addStats(wordStats);
-
         presenter.setStatesForTest(projectStats, selectedDocumentStats, null,
                 null);
         presenter.showView(MainView.Documents);
 
-        ProjectStatsUpdatedEvent event = new ProjectStatsUpdatedEvent(newStats);
+        RefreshProjectStatsEvent event = new RefreshProjectStatsEvent(buildSampleDocumentArray());
         presenter.onProjectStatsUpdated(event);
 
-        assertThat(projectStats.getStats(),
-                Matchers.contains(unitStats, wordStats));
+        assertThat("project stats should contain stats in the event",
+                projectStats.getStats().size(), is(2));
+
         verify(display, times(2)).setStats(projectStats, true);
+    }
+
+    private ArrayList<DocumentNode> buildSampleDocumentArray() {
+        ArrayList<DocumentNode> docList = new ArrayList<DocumentNode>();
+
+        TransUnitCount unitCount = new TransUnitCount(1, 2, 3);
+        TransUnitWords wordCount = new TransUnitWords(4, 5, 6);
+
+        ContainerTranslationStatistics stats =
+            new ContainerTranslationStatistics();
+        stats.addStats(new TranslationStatistics(unitCount, LocaleId.EN_US
+            .toString()));
+        stats.addStats(new TranslationStatistics(wordCount, LocaleId.EN_US
+            .toString()));
+
+        DocumentInfo docInfo =
+            new DocumentInfo(new DocumentId(1111L, "no/filter/matches"),
+                "matches", "no/filter", LocaleId.EN_US, stats,
+                new AuditInfo(new Date(), "Translator"),
+                new HashMap<String, String>(), new AuditInfo(
+                new Date(), "last translator"));
+        docList.add(new DocumentNode(docInfo));
+
+        docInfo =
+            new DocumentInfo(new DocumentId(2222L, "match/exact/filter"),
+                "filter", "match/exact/", LocaleId.EN_US, stats,
+                new AuditInfo(new Date(), "Translator"),
+                new HashMap<String, String>(), new AuditInfo(
+                new Date(), "last translator"));
+        docList.add(new DocumentNode(docInfo));
+
+        docInfo =
+            new DocumentInfo(new DocumentId(3333L,
+                "does/not/match/exact/filter"), "filter",
+                "does/not/match/exact/", LocaleId.EN_US, stats,
+                new AuditInfo(new Date(), "Translator"),
+                new HashMap<String, String>(), new AuditInfo(
+                new Date(), "last translator"));
+        docList.add(new DocumentNode(docInfo));
+
+        return docList;
     }
 
     private static HasWorkspaceContextUpdateData contextUpdateData(
