@@ -248,6 +248,8 @@ public class ProfileAction implements Serializable {
 
     public String cancel() {
         if (identityStore.isNewUser(username)) {
+            // Log the identity out
+            identity.logout();
             return "home";
         }
         return "view";

@@ -21,7 +21,7 @@
     </s:link>
   </h1>
 
-  <s:fragment rendered="#{identity.loggedIn}">
+  <s:fragment rendered="#{identity.loggedIn and personHome.instance.account.enabled}">
     <a href="#off-canvas--right" id="user_avatar"
       class="off-canvas__toggle--right l--float-right"
       title="#{personHome.instance.account.username}">
