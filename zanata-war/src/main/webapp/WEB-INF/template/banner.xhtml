@@ -40,7 +40,8 @@
         propagation="none" styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
-      <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+      <s:fragment
+        rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{messages['jsf.Signup']}</a>
       </s:fragment>

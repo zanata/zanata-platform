@@ -49,7 +49,8 @@
                     class="l--float-left">#{messages['jsf.Password']}</label>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="3">
+                      propagation="none" tabindex="3"
+                      rendered="#{applicationConfiguration.internalAuth}">
                       #{messages['jsf.ForgotYourPassword']}
                     </s:link>
                   </span>
@@ -62,9 +63,17 @@
                     action="#{loginAction.login}"
                     value="#{messages['jsf.Login']}"
                     styleClass="button--primary"/>
-                  <span class="l--push-h-quarter">or</span>
-                  <s:link view="/account/register.xhtml"
-                    value="#{messages['jsf.Signup']}"/>
+                  <s:fragment
+                    rendered="#{applicationConfiguration.internalAuth}">
+                    <span class="l--push-h-quarter">or</span>
+                    <s:link view="/account/register.xhtml"
+                      value="#{messages['jsf.Signup']}" />
+                  </s:fragment>
+                  <s:fragment
+                    rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
+                    <s:link view="#{applicationConfiguration.registerPath}"
+                      value="#{messages['jsf.Signup']}" />
+                  </s:fragment>
                 </div>
               </h:form>
             </s:div>
