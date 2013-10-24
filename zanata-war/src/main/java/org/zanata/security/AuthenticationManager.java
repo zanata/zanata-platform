@@ -149,7 +149,7 @@ public class AuthenticationManager {
     }
 
     /**
-     * Logs in with the kerberos authentication type using ticket based 
+     * Logs in with the kerberos authentication type using ticket based
      * authentication.
      */
     public void kerberosLogin() {
