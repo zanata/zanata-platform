@@ -264,4 +264,8 @@ public class BasePage extends AbstractPage {
         }
     }
 
+    public boolean hasNoCriticalErrors() {
+        return getDriver().findElements(By.id("errorMessage")).size() <= 0;
+    }
+
 }
