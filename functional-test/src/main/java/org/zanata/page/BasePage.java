@@ -264,4 +264,12 @@ public class BasePage extends AbstractPage {
         }
     }
 
+    /**
+     * Shift focus to the page, in order to activate some elements that
+     * only exhibit behaviour on losing focus.
+     */
+    public void defocus() {
+        getDriver().findElement(By.tagName("body")).click();
+    }
+
 }
