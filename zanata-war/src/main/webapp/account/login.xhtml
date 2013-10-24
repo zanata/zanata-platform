@@ -26,7 +26,7 @@
 
           <div class="g">
             <s:div
-              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
@@ -70,7 +70,7 @@
               </h:form>
             </s:div>
             <s:div
-              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--5-12 w--1-m' : ''}"
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
