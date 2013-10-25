@@ -113,11 +113,14 @@
             <!-- used by REST API interfaces -->
             <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
+            <!-- used indirectly by drools -->
+            <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
+            <!-- used for annotations -->
+            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
             <usedDependency>antlr:antlr</usedDependency>
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
             <usedDependency>com.ibm.icu:icu4j</usedDependency>
             <usedDependency>com.sun.faces:jsf-impl</usedDependency>
@@ -148,6 +151,8 @@
             <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
             <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <usedDependency>org.zanata:zanata-rest-client</usedDependency>
+            <!-- NB: Don't add anything without a comment explaining how the
+                 dependency is used -->
           </usedDependencies>
         </configuration>
       </plugin>
@@ -1215,7 +1220,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
