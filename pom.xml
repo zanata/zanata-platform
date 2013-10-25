@@ -788,6 +788,13 @@ package.
       </dependency>
 
       <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${guava.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>annotations</artifactId>
         <version>${findbugs.version}</version>
