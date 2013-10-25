@@ -19,23 +19,36 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.events;
+package org.zanata.service.impl;
 
-import org.zanata.common.LocaleId;
+import java.util.concurrent.locks.Lock;
 
 import lombok.Data;
 
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+
+import com.google.common.util.concurrent.Striped;
+
 /**
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Data
-public final class DocumentUploadedEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.event.HDocumentUploaded";
-    private final long actorId;
-    private final Long documentId;
-    private final boolean isSourceDocument;
-    private final LocaleId localeId;
+@Name("activityLockManager")
+@AutoCreate
+@Scope(ScopeType.APPLICATION)
+public class ActivityLockManager {
+    private static final int NUM_STRIPES = Runtime.getRuntime().availableProcessors() * 4;
+    public ActivityLockManager() {
+    }
+
+    private Striped<Lock> stripedLock = Striped.lock(NUM_STRIPES);
+
+    public Lock getLock(Long personId) {
+        return stripedLock.get(personId);
+    }
+
 
 }

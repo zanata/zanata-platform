@@ -70,6 +70,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
@@ -135,6 +136,9 @@ public class TranslationServiceImpl implements TranslationService {
 
     @In
     private ZanataMessages zanataMessages;
+
+    @In
+    private ActivityService activityServiceImpl;
 
     @Override
     public List<TranslationResult> translate(LocaleId localeId,
@@ -293,7 +297,7 @@ public class TranslationServiceImpl implements TranslationService {
     /**
      * Sends out an event to signal that a Text Flow target has been translated
      */
-    private void signalPostTranslateEvent(HTextFlowTarget hTextFlowTarget) {
+    private void signalPostTranslateEvent(Long actorId, HTextFlowTarget hTextFlowTarget) {
         if (Events.exists()) {
             HTextFlow textFlow = hTextFlowTarget.getTextFlow();
             HDocument document = textFlow.getDocument();
@@ -303,15 +307,12 @@ public class TranslationServiceImpl implements TranslationService {
             // new DocumentId(document.getId(), document.getDocId()), hasError,
             // hTextFlowTarget.getLastChanged(),
             // hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
-
-            Events.instance()
-                    .raiseTransactionSuccessEvent(
-                            TextFlowTargetStateEvent.EVENT_NAME,
-                            new TextFlowTargetStateEvent(document.getId(),
-                                    textFlow.getId(), hTextFlowTarget
-                                            .getLocale().getLocaleId(),
-                                    hTextFlowTarget.getId(), hTextFlowTarget
-                                            .getState()));
+            Events.instance().raiseTransactionSuccessEvent(
+                    TextFlowTargetStateEvent.EVENT_NAME,
+                    new TextFlowTargetStateEvent(actorId, document
+                            .getId(), textFlow.getId(), hTextFlowTarget
+                            .getLocale().getLocaleId(), hTextFlowTarget
+                            .getId(), hTextFlowTarget.getState()));
         }
     }
 
@@ -338,7 +339,8 @@ public class TranslationServiceImpl implements TranslationService {
 
         // fire event after flush
         if (targetChanged || hTextFlowTarget.getVersionNum() == 0) {
-            this.signalPostTranslateEvent(hTextFlowTarget);
+            this.signalPostTranslateEvent(authenticatedAccount.getPerson()
+                    .getId(), hTextFlowTarget);
         }
 
         return targetChanged;
@@ -685,13 +687,13 @@ public class TranslationServiceImpl implements TranslationService {
                                 targetChanged |=
                                         adjustContentsAndState(hTarget,
                                                 nPlurals, warnings);
-
                                 // update translation information if applicable
                                 if (targetChanged) {
                                     hTarget.setVersionNum(hTarget
                                             .getVersionNum() + 1);
 
                                     changed = true;
+                                    Long actorId;
                                     if (incomingTarget.getTranslator() != null) {
                                         String email =
                                                 incomingTarget.getTranslator()
@@ -707,13 +709,15 @@ public class TranslationServiceImpl implements TranslationService {
                                         }
                                         hTarget.setTranslator(hPerson);
                                         hTarget.setLastModifiedBy(hPerson);
+                                        actorId = hPerson.getId();
                                     } else {
                                         hTarget.setTranslator(null);
                                         hTarget.setLastModifiedBy(null);
+                                        actorId = null;
                                     }
                                     textFlowTargetDAO.makePersistent(hTarget);
+                                    signalPostTranslateEvent(actorId, hTarget);
                                 }
-                                signalPostTranslateEvent(hTarget);
                             }
 
                             personDAO.flush();
@@ -755,10 +759,12 @@ public class TranslationServiceImpl implements TranslationService {
                 }.workInTransaction();
 
                 if (Events.exists()) {
+                    Long actorId = authenticatedAccount
+                            .getPerson().getId();
                     Events.instance().raiseEvent(
                             DocumentUploadedEvent.EVENT_NAME,
-                            new DocumentUploadedEvent(document.getId(), false,
-                                    hLocale.getLocaleId()));
+                            new DocumentUploadedEvent(actorId, document.getId(),
+                                    false, hLocale.getLocaleId()));
                 }
             } catch (Exception e) {
                 throw new ZanataServiceException("Error during translation.",

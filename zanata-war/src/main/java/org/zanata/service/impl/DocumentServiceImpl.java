@@ -28,11 +28,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.lock.Lock;
+import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -77,6 +79,10 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private ApplicationConfiguration applicationConfiguration;
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
+            required = false)
+    private HAccount authenticatedAccount;
+
 
     @Override
     @Transactional
@@ -148,10 +154,11 @@ public class DocumentServiceImpl implements DocumentService {
                         extensions, hLocale, nextDocRev);
         documentDAO.flush();
 
+        long actorId = authenticatedAccount.getPerson().getId();
         if (changed && Events.exists()) {
             Events.instance().raiseTransactionSuccessEvent(
                     DocumentUploadedEvent.EVENT_NAME,
-                    new DocumentUploadedEvent(document.getId(), true, hLocale
+                    new DocumentUploadedEvent(actorId, document.getId(), true, hLocale
                             .getLocaleId()));
         }
 

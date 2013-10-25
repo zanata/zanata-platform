@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>14</version>
+    <version>15-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -187,13 +187,6 @@
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>3.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava-gwt</artifactId>
-        <version>11.0.2</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
