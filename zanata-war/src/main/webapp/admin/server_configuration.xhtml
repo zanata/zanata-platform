@@ -187,6 +187,24 @@
           </s:span>
         </s:decorate>
 
+        <s:decorate id="termsOfUseUrlField"
+          template="../WEB-INF/layout/edit.xhtml" enclose="true">
+          <ui:define
+            name="label">#{messages['jsf.config.TermsOfUseUrl']}</ui:define>
+          <h:inputText id="termsOfUseUrlEml"
+            value="#{serverConfigurationBean.termsOfUseUrl}">
+            <a4j:ajax event="blur" render="termsOfUseUrlField"/>
+          </h:inputText>
+
+          <s:span styleClass="icon-info-circle-2 input_help"
+            id="termsOfUseUrlHelp">
+            <rich:tooltip>
+              #{messages['jsf.config.TermsOfUseUrltooltip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
+
+
         <div style="clear:both"/>
 
         <div class="actionButtons">

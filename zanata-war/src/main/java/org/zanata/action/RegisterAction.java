@@ -37,7 +37,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
@@ -66,21 +66,14 @@ public class RegisterAction implements Serializable {
     @In
     EmailService emailServiceImpl;
 
-    @In(create = true)
-    private Renderer renderer;
-
     private String username;
     private String email;
     private String password;
-    private String passwordConfirm;
-
-    private boolean agreedToTermsOfUse;
+    private String humanField;
 
     private boolean valid;
 
     private HPerson person;
-
-    private String activationKey;
 
     @Begin(join = true)
     public HPerson getPerson() {
@@ -126,21 +119,13 @@ public class RegisterAction implements Serializable {
         return password;
     }
 
-    public void setPasswordConfirm(String passwordConfirm) {
-        validatePasswords(getPassword(), passwordConfirm);
-        this.passwordConfirm = passwordConfirm;
+    @Size(min = 0, max = 0)
+    public String getHumanField() {
+        return humanField;
     }
 
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public boolean isAgreedToTermsOfUse() {
-        return agreedToTermsOfUse;
-    }
-
-    public void setAgreedToTermsOfUse(boolean agreedToTermsOfUse) {
-        this.agreedToTermsOfUse = agreedToTermsOfUse;
+    public void setHumanField(String humanField) {
+        this.humanField = humanField;
     }
 
     public void validateUsername(String username) {
@@ -156,30 +141,21 @@ public class RegisterAction implements Serializable {
         }
     }
 
-    public void validatePasswords(String p1, String p2) {
-
-        if (p1 == null || !p1.equals(p2)) {
+    public void validateHumanField() {
+        if (humanField != null && humanField.length() > 0) {
             valid = false;
-            FacesMessages.instance().addToControl("passwordConfirm",
-                    "Passwords do not match");
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "You have filled a field that was not meant for humans.");
+            humanField = null;
         }
 
-    }
-
-    public void validateTermsOfUse() {
-        if (!isAgreedToTermsOfUse()) {
-            valid = false;
-            FacesMessages.instance().addToControl("agreedToTerms",
-                    "You must accept the Terms of Use");
-        }
     }
 
     @End
     public String register() {
         valid = true;
         validateUsername(getUsername());
-        validatePasswords(getPassword(), getPasswordConfirm());
-        validateTermsOfUse();
+        validateHumanField();
 
         if (!isValid()) {
             return null;
@@ -199,11 +175,6 @@ public class RegisterAction implements Serializable {
         FacesMessages.instance().add(message);
 
         return "/home.xhtml";
-    }
-
-    @Begin(join = true)
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
     }
 
     public boolean isValid() {

@@ -51,6 +51,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_EMAIL_LOG_LEVEL = "log.email.level";
     public static String KEY_PIWIK_URL = "piwik.url";
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
+    public static String KEY_TERMS_CONDITIONS_URL = "terms.conditions.url";
     private static final long serialVersionUID = 8652817113098817448L;
 
     private String key;

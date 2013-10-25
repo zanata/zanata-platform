@@ -101,8 +101,11 @@
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Login'])}" />
+    <navigation>
+      <rule if="#{identity.loggedIn}">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
+    </navigation>
     <navigation from-action="#{loginAction.login}">
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
@@ -160,9 +163,6 @@
   </page>
 
   <page view-id="/account/register.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Register'])}" />
     <navigation>
       <rule if="#{identity.loggedIn}">
         <redirect view-id="/dashboard/home.xhtml" />

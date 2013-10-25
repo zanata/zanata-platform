@@ -8,143 +8,141 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
   <ui:define name="center_content">
-    <h:form id="registerForm"
-      rendered="#{applicationConfiguration.internalAuth}">
-      <s:token allowMultiplePosts="true"/>
-      <rich:panel>
-        <f:facet name="header">#{messages['jsf.SignUp']}</f:facet>
 
-        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-          <h:inputText id="name" required="true"
-            value="#{register.person.name}">
-            <a4j:ajax event="blur" render="nameField"/>
-          </h:inputText>
-          <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-            <rich:tooltip>
-              #{messages['jsf.NameToolTip']}
-            </rich:tooltip>
-          </s:span>
-        </s:decorate>
+    <div class="header__logo-only">
+      <s:link view="/home.xhtml" propagation="none" id="home">
+        <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg"
+          alt="Zanata"/>
+      </s:link>
+    </div>
 
-        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-          <h:inputText id="email" required="true"
-            value="#{register.email}">
-            <a4j:ajax event="blur" render="emailField"/>
-          </h:inputText>
-          <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-            <rich:tooltip>
-              #{messages['jsf.EmailToolTip']}
-            </rich:tooltip>
-          </s:span>
-        </s:decorate>
+    <div class="g--centered">
+      <div
+        class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
+        <div class="l--push-v-2">
 
-        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">Username</ui:define>
-          <h:inputText id="username" required="true"
-            value="#{register.username}">
-            <a4j:ajax event="blur" render="usernameField" execute="@this"/>
-          </h:inputText>
-          <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-            <rich:tooltip>
-              #{messages['jsf.UsernameToolTip']}
-            </rich:tooltip>
-          </s:span>
-        </s:decorate>
+          <div class="g">
+            <s:div
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
+              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
+              <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                <h2
+                  class="gamma heading--sub">#{messages['jsf.register.WithZanata']}</h2>
+              </s:fragment>
 
-        <s:decorate id="passwordField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{messages['jsf.Password']}</ui:define>
-          <h:inputSecret id="password" redisplay="true" required="true"
-            value="#{register.password}">
-            <a4j:ajax event="blur" render="passwordField"/>
-          </h:inputSecret>
-        </s:decorate>
+              <h:form id="loginForm"
+                styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
+                <h:outputLabel
+                  for="name">#{messages['jsf.register.FullName.label']}</h:outputLabel>
+                <h:inputText id="name" value="#{register.person.name}"
+                  tabindex="1"/>
 
-        <s:decorate id="passwordConfirmField"
-          template="../WEB-INF/layout/edit.xhtml" enclose="true">
-          <ui:define name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
-          <h:inputSecret id="passwordConfirm" redisplay="true" required="true"
-            value="#{register.passwordConfirm}">
-            <a4j:ajax event="blur" render="passwordConfirmField"/>
-          </h:inputSecret>
-        </s:decorate>
+                <h:outputLabel
+                  for="username">#{messages['jsf.Username']}</h:outputLabel>
+                <s:decorate id="usernameField"
+                  template="../WEB-INF/layout/field.xhtml">
+                  <h:inputText id="username" value="#{register.username}"
+                    tabindex="2">
+                    <a4j:ajax event="blur" render="usernameField"
+                      execute="@this"/>
+                  </h:inputText>
+                </s:decorate>
 
-        <s:decorate id="captcha" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label"><h:graphicImage
-            value="/seam/resource/captcha"/></ui:define>
-          <h:inputText id="verifyCaptcha" value="#{captcha.captchaResponse}"
-            required="true"/>
-        </s:decorate>
+                <h:outputLabel
+                  for="email">#{messages['jsf.Email']}</h:outputLabel>
+                <s:decorate id="emailField"
+                  template="../WEB-INF/layout/field.xhtml">
+                  <h:inputText id="email" value="#{register.email}"
+                    tabindex="3">
+                    <a4j:ajax event="blur" render="emailField" execute="@this"/>
+                  </h:inputText>
+                </s:decorate>
 
-        <ui:remove>
-          <!-- FIXME string concatenation not good for l10n -->
-        </ui:remove>
-        <s:decorate id="agreedToTerms" template="../WEB-INF/layout/edit.xhtml">
-          <h:selectBooleanCheckbox id="agreedToTerms"
-            value="#{register.agreedToTermsOfUse}"/>
-          <label for="agreedToTerms">
-            #{messages['jsf.IAgreeToThe']}
-            <h:outputLink value="#" id="termsOfUseLink"
-              onclick="#{rich:component('termsOfUse')}.show()">
-              <h:outputText value=" #{messages['jsf.TermsOfUse']}"/>
-            </h:outputLink>
-          </label>
-        </s:decorate>
+                <h:outputLabel
+                  for="password">#{messages['jsf.Password']}</h:outputLabel>
+                <s:decorate id="passwordField"
+                  template="../WEB-INF/layout/field.xhtml">
+                  <div class="form__password js-form-password">
+                    <h:inputSecret id="password"
+                      styleClass="js-form-password-input form__input"
+                      value="#{register.password}"
+                      tabindex="4">
+                    </h:inputSecret>
+                    <a href="#"
+                      class="form__toggle js-form-password-toggle">Show</a>
+                  </div>
+                </s:decorate>
 
-        <div style="clear:both"/>
-        <s:div rendered="#{applicationConfiguration.openIdAuth}">
-          <h:outputText value="#{messages['jsf.register.LoginUsingOpenId']}"
-            escape="false"/>
-        </s:div>
+                <h:outputLabel for="human"
+                  styleClass="is-hidden">If you are a human, do not fill in this field.</h:outputLabel>
+                <h:inputText id="human" styleClass="is-hidden"
+                  value="#{register.humanField}"/>
 
-        <div class="actionButtons">
-          <h:commandButton id="registerButton"
-            value="#{messages['jsf.Register']}" action="#{register.register}"/>
+                <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
+                  <p class="txt--meta l--push-top-half">
+                    <h:outputText value="#{messages['jsf.register.agreeToTOS']}" escape="false"/>
+                  </p>
+                </s:fragment>
+
+                <div class="l--push-top-1">
+                  <h:commandButton value="Sign Up" action="#{register.register}"
+                    styleClass="button--primary button--full"/>
+
+                  <div
+                    class="l--push-top-half txt--align-center txt--align-center-s">
+                    #{messages['jsf.register.AlreadyHaveAccount.label']} <s:link
+                    view="/account/login.xhtml"
+                    value="#{messages['jsf.register.LogIn.label']}"/>
+                  </div>
+                </div>
+              </h:form>
+            </s:div>
+            <s:div
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
+              rendered="#{applicationConfiguration.openIdAuth}">
+              <h:form>
+                <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                  <h2
+                    class="gamma heading--sub">#{messages['jsf.register.WithOther.label']}</h2>
+                </s:fragment>
+                <ul class="list--no-bullets">
+                  <li class="l--push-top-half">
+                    <h:commandLink action="#{loginAction.openIdLogin('Fedora')}"
+                      styleClass="button--full button--fedora" value="Fedora"/>
+                  </li>
+                  <li class="l--push-top-half">
+                    <h:commandLink action="#{loginAction.openIdLogin('Google')}"
+                      styleClass="button--full button--google" value="Google"/>
+                  </li>
+                  <li class="l--push-top-half">
+                    <h:commandLink action="#{loginAction.openIdLogin('Yahoo')}"
+                      styleClass="button--full button--yahoo" value="Yahoo"/>
+                  </li>
+                  <li
+                    class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
+                    <label for="openid">Open ID</label>
+
+                    <div class="g--tighter">
+                      <div class="g__item w--3-4 w--3-4-s">
+                        <h:inputText id="openid" value="#{loginAction.openId}"/>
+                      </div>
+                      <div class="g__item w--1-4 w--1-4-s">
+                        <h:commandButton
+                          action="#{loginAction.openIdLogin('Generic')}"
+                          styleClass="button--full" value="Go"/>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </h:form>
+            </s:div>
+          </div>
         </div>
-      </rich:panel>
-    </h:form>
-
-    <rich:popupPanel id="termsOfUse" width="640" height="480"
-      rendered="#{not identity.loggedIn and applicationConfiguration.internalAuth}">
-      <f:facet name="header">
-        <h:panelGroup>
-          <h:outputText value="#{messages['jsf.TermsOfUse']}"/>
-        </h:panelGroup>
-      </f:facet>
-      <f:facet name="controls">
-        <h:panelGroup>
-          <h:graphicImage value="../images/close.gif" styleClass="hidelink"
-            id="hideTermsLink">
-            <rich:componentControl operation="hide" event="click"
-              target="hideTermsLink"/>
-          </h:graphicImage>
-        </h:panelGroup>
-      </f:facet>
-      <ui:include src="/legal.html"/>
-      <h:panelGroup style="width: 600px; text-align: center;">
-        <h:form>
-          <richext:spacer height="40"/>
-          <a4j:commandButton value="#{messages['jsf.Close']}"
-            onclick="#{rich:component('termsOfUse')}.hide()"/>
-        </h:form>
-      </h:panelGroup>
-    </rich:popupPanel>
-
-    <rich:panel rendered="#{not applicationConfiguration.internalAuth}">
-      <h:outputText
-        value="#{messages['jsf.PleaseContactAdministrationToGetRegistrationLink']}"/>
-    </rich:panel>
-
+      </div>
+    </div>
   </ui:define>
-
 </ui:composition>
