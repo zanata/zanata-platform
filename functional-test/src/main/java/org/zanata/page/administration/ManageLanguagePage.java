@@ -39,6 +39,8 @@ import java.util.List;
 public class ManageLanguagePage extends BasePage {
 
     public static final int LOCALE_COLUMN = 0;
+    public static final int ENABLED_COLUMN = 3;
+
     @FindBy(id = "languageForm:threads")
     private WebElement languageTable;
 
@@ -103,7 +105,7 @@ public class ManageLanguagePage extends BasePage {
     public ManageLanguagePage enableLanguageByDefault(String localeId) {
         TableRow matchedRow = findRowByLocale(localeId);
 
-        WebElement enabledCell = matchedRow.getCells().get(3);
+        WebElement enabledCell = matchedRow.getCells().get(ENABLED_COLUMN);
         WebElement enabledCheckbox =
                 enabledCell.findElement(By.tagName("input"));
         if (!enabledCheckbox.isSelected()) {
@@ -112,6 +114,11 @@ public class ManageLanguagePage extends BasePage {
         }
 
         return this;
+    }
+
+    public boolean languageIsEnabled(String localeId) {
+        return findRowByLocale(localeId).getCells().get(ENABLED_COLUMN)
+                .findElement(By.tagName("input")).isSelected();
     }
 
     public List<String> getLanguageLocales() {
