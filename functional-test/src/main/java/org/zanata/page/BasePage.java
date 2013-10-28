@@ -264,6 +264,10 @@ public class BasePage extends AbstractPage {
         }
     }
 
+    public boolean hasNoCriticalErrors() {
+        return getDriver().findElements(By.id("errorMessage")).size() <= 0;
+    }
+
     /**
      * Shift focus to the page, in order to activate some elements that
      * only exhibit behaviour on losing focus.

@@ -18,33 +18,19 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+
+package org.zanata.feature.project;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.zanata.feature.account.AccountTestSuite;
-import org.zanata.feature.administration.AdministrationTestSuite;
-import org.zanata.feature.dashboard.DashboardTestSuite;
-import org.zanata.feature.document.DocumentTestSuite;
-import org.zanata.feature.glossary.GlossaryTestSuite;
-import org.zanata.feature.googleopenid.GoogleOpenIDTestSuite;
-import org.zanata.feature.project.ProjectTestSuite;
-import org.zanata.feature.security.SecurityTestSuite;
-import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
-import org.zanata.feature.versionGroup.VersionGroupTestSuite;
 
 /**
- * The top level of the feature test suite hierarchy. Lists the available test
- * suites and can be extended for the purpose of running categorised test
- * collections.
+ * List of test classes for the Project test suite.
  * @author Damian Jansen <a
  *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see org.zanata.feature.AggregateTestSuite
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ AccountTestSuite.class, AdministrationTestSuite.class,
-        GlossaryTestSuite.class, SecurityTestSuite.class,
-        CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
-        DocumentTestSuite.class, DashboardTestSuite.class,
-        GoogleOpenIDTestSuite.class, ProjectTestSuite.class })
-public class AggregateTestSuite {
+@Suite.SuiteClasses({EditMaintainersTest.class})
+public class ProjectTestSuite {
 }
