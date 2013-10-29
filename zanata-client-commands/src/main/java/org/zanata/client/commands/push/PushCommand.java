@@ -50,6 +50,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
  */
 public class PushCommand extends PushPullCommand<PushOptions>
 {
+   private static final int POLL_PERIOD = 250;
    private static final Logger log = LoggerFactory.getLogger(PushCommand.class);
    private static final String UTF_8 = "UTF-8";
 
@@ -430,7 +431,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   throw new RuntimeException("Did not expect 'Not Accepted' state.");
             }
 
-            wait(2000); // Wait before retrying
+            wait(POLL_PERIOD); // Wait before retrying
             status =
                asyncProcessResource.getProcessStatus(status.getUrl());
          }
@@ -547,7 +548,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
                   throw new RuntimeException("Did not expect 'Not Accepted' state.");
             }
 
-            wait(2000); // Wait before retrying
+            wait(POLL_PERIOD); // Wait before retrying
             status =
                   asyncProcessResource.getProcessStatus(status.getUrl());
          }
@@ -624,7 +625,7 @@ public class PushCommand extends PushPullCommand<PushOptions>
       {
          try
          {
-            Thread.sleep(2000);
+            Thread.sleep(POLL_PERIOD);
          }
          catch (InterruptedException e)
          {
