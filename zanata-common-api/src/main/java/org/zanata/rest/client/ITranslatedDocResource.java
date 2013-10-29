@@ -44,8 +44,8 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 /**
  * Client Interface for the Translation Resources service.
  */
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ITranslatedDocResource extends TranslatedDocResource {
     @GET
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
