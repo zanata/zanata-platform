@@ -39,8 +39,8 @@ import javax.ws.rs.core.MediaType;
 public interface IVersionResource extends VersionResource {
     @Override
     @GET
-    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON,
-            MediaTypes.APPLICATION_ZANATA_VERSION_XML })
+    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML,
+                MediaTypes.APPLICATION_ZANATA_VERSION_JSON })
     public ClientResponse<VersionInfo> get();
 
 }

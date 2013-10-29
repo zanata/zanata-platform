@@ -51,8 +51,8 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface TranslatedDocResource {
     public static final String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";

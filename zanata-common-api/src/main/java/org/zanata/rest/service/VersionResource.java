@@ -49,8 +49,8 @@ public interface VersionResource {
      *         the server while performing this operation.
      */
     @GET
-    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON,
-            MediaTypes.APPLICATION_ZANATA_VERSION_XML })
+    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML,
+                MediaTypes.APPLICATION_ZANATA_VERSION_JSON })
     @TypeHint(VersionInfo.class)
     public Response get();
 
