@@ -51,16 +51,6 @@
     <div class="off-canvas__outer new-zanata">
       <div class="off-canvas__inner">
 
-        <a:outputPanel ajaxRendered="true" layout="block"
-          styleClass="l__wrapper l--push-top-1">
-          <h:messages id="messages" globalOnly="true"
-            styleClass="list--no-bullets"
-            errorClass="message--danger l--push-bottom-half"
-            infoClass="message--highlight l--push-bottom-half"
-            warnClass="message--warning l--push-bottom-half"
-            rendered="#{showGlobalMessages != 'false'}"/>
-        </a:outputPanel>
-
         <main role="main" class="l--pad-bottom-1">
           <div class="l__wrapper">
             <ui:insert name="center_content"/>

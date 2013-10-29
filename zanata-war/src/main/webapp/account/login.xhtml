@@ -13,7 +13,7 @@
   <ui:define name="center_content">
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home">
+      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
         <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg"
           alt="Zanata"/>
       </s:link>
@@ -23,7 +23,14 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
-
+          <a4j:outputPanel ajaxRendered="true" layout="block">
+            <h:messages id="messages" globalOnly="true"
+              styleClass="list--no-bullets"
+              errorClass="message--danger l--push-bottom-half"
+              infoClass="message--highlight l--push-bottom-half"
+              warnClass="message--warning l--push-bottom-half"
+              rendered="#{showGlobalMessages != 'false'}"/>
+          </a4j:outputPanel>
           <div class="g">
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
@@ -40,20 +47,20 @@
                     styleClass="l--float-left">#{messages['jsf.Username']}</h:outputLabel>
                 </div>
                 <h:inputText id="username" value="#{loginAction.username}"
-                  tabindex="1"/>
+                  tabindex="2"/>
 
                 <div class="l--push-top-half l--clearfix">
                   <h:outputLabel for="password"
                     styleClass="l--float-left">#{messages['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="3">
+                      propagation="none" tabindex="4">
                       #{messages['jsf.ForgotYourPassword']}
                     </s:link>
                   </span>
                 </div>
                 <h:inputSecret id="password" value="#{loginAction.password}"
-                  tabindex="2"/>
+                  tabindex="3"/>
 
                 <div class="l--push-top-1">
                   <h:commandButton id="loginButton"

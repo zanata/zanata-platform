@@ -14,7 +14,7 @@
   <ui:define name="center_content">
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home">
+      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
         <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg"
           alt="Zanata"/>
       </s:link>
@@ -24,7 +24,14 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
-
+          <a4j:outputPanel ajaxRendered="true" layout="block">
+            <h:messages id="messages" globalOnly="true"
+              styleClass="list--no-bullets"
+              errorClass="message--danger l--push-bottom-half"
+              infoClass="message--highlight l--push-bottom-half"
+              warnClass="message--warning l--push-bottom-half"
+              rendered="#{showGlobalMessages != 'false'}"/>
+          </a4j:outputPanel>
           <div class="g">
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
@@ -39,14 +46,14 @@
                 <h:outputLabel
                   for="name">#{messages['jsf.register.FullName.label']}</h:outputLabel>
                 <h:inputText id="name" value="#{register.person.name}"
-                  tabindex="1"/>
+                  tabindex="2"/>
 
                 <h:outputLabel
                   for="username">#{messages['jsf.Username']}</h:outputLabel>
                 <s:decorate id="usernameField"
                   template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="username" value="#{register.username}"
-                    tabindex="2">
+                    tabindex="3">
                     <a4j:ajax event="blur" render="usernameField"
                       execute="@this"/>
                   </h:inputText>
@@ -57,7 +64,7 @@
                 <s:decorate id="emailField"
                   template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="email" value="#{register.email}"
-                    tabindex="3">
+                    tabindex="4">
                     <a4j:ajax event="blur" render="emailField" execute="@this"/>
                   </h:inputText>
                 </s:decorate>
@@ -70,7 +77,7 @@
                     <h:inputSecret id="password"
                       styleClass="js-form-password-input form__input"
                       value="#{register.password}"
-                      tabindex="4">
+                      tabindex="5">
                     </h:inputSecret>
                     <a href="#"
                       class="form__toggle js-form-password-toggle">Show</a>
