@@ -4,6 +4,14 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib">
+  <script>
+    function formatPercentage(percent) {
+      return Math.floor(percent);
+    }
+    function formatHours(hours) {
+      return Math.ceil(hours * 100) / 100;
+    }
+  </script>
 
   <ui:param name="approved" value="#{status.approved}"/>
   <ui:param name="translated" value="#{status.translatedOnly}"/>
@@ -43,14 +51,14 @@
         style="width:#{wUntranslated}px;"></div>
 
         <span class="statusBar_percentage">
-          <h:outputText value="#{status.percentTranslated/100}"
-            rendered="#{status.total > 0}">
-            <f:convertNumber type="percent"/>
-          </h:outputText>
+
+          <h:outputText
+            value="#{statisticsUtil.formatPercentage(status.percentTranslated)}%"
+            rendered="#{status.total > 0}"/>
           (
-          <h:outputText value="#{status.remainingHours}">
-            <f:convertNumber maxFractionDigits="1"/>
-          </h:outputText>#{messages['jsf.stats.ShortHoursSuffix']}
+          <h:outputText
+            value="#{statisticsUtil.formatHours(status.remainingHours)}"/>
+          #{messages['jsf.stats.ShortHoursSuffix']}
           )
         </span>
     </div>

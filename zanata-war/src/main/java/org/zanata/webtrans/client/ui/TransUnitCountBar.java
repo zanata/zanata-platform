@@ -5,6 +5,7 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.TextFormatUtil;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
@@ -19,7 +20,6 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
@@ -39,7 +39,6 @@ public class TransUnitCountBar extends Composite implements
 
     protected final TooltipPopupPanel tooltipPanel;
     private static final int TOTAL_WIDTH = 100;
-    private final NumberFormat percentFormat = NumberFormat.getPercentFormat();
 
     interface TransUnitCountBarUiBinder extends
             UiBinder<Widget, TransUnitCountBar> {
@@ -180,28 +179,33 @@ public class TransUnitCountBar extends Composite implements
             TranslationStatistics wordStats =
                     stats.getStats(localeId.getId(), StatUnit.WORD);
             if (statsByWords) {
-                label.setText(messages.statusBarPercentageHrs(percentFormat
-                        .format(wordStats.getPercentTranslated() / 100),
-                        wordStats.getRemainingHours(), "Words"));
+                label.setText(messages.statusBarPercentageHrs(TextFormatUtil
+                        .formatPercentage(wordStats.getPercentTranslated()),
+                        TextFormatUtil.formatHours(wordStats
+                            .getRemainingHours()), "Words"));
             } else {
                 TranslationStatistics msgStats =
                         stats.getStats(localeId.getId(), StatUnit.MESSAGE);
-                label.setText(messages.statusBarPercentageHrs(percentFormat
-                        .format(msgStats.getPercentTranslated() / 100),
-                        wordStats.getRemainingHours(), "Msg"));
+                label.setText(messages.statusBarPercentageHrs(TextFormatUtil
+                        .formatPercentage(msgStats.getPercentTranslated()),
+                        TextFormatUtil.formatHours(wordStats
+                            .getRemainingHours()), "Msg"));
             }
             break;
         case PERCENT_COMPLETE:
             if (statsByWords) {
                 double wordTranslatedProportion =
                         stats.getStats(localeId.getId(), StatUnit.WORD)
-                                .getPercentTranslated() / 100;
-                label.setText(percentFormat.format(wordTranslatedProportion));
+                                .getPercentTranslated();
+
+                label.setText(TextFormatUtil
+                        .formatPercentage(wordTranslatedProportion) + "%");
             } else {
                 double messageTranslatedProportion =
                         stats.getStats(localeId.getId(), StatUnit.MESSAGE)
-                                .getPercentTranslated() / 100;
-                label.setText(percentFormat.format(messageTranslatedProportion));
+                                .getPercentTranslated();
+                label.setText(TextFormatUtil
+                        .formatPercentage(messageTranslatedProportion) + "%");
             }
             break;
         default:

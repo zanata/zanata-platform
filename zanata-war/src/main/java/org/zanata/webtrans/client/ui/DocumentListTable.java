@@ -32,6 +32,7 @@ import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.client.util.TextFormatUtil;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -52,9 +53,9 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- *
+ * 
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  */
 public class DocumentListTable extends FlexTable {
     public static enum DocValidationStatus {
@@ -393,9 +394,10 @@ public class DocumentListTable extends FlexTable {
                     userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                             .getLocaleId().getId();
             text =
-                    messages.statusBarLabelHours(docInfo.getStats()
-                            .getStats(locale, StatUnit.WORD)
-                            .getRemainingHours());
+                    messages.statusBarLabelHours(TextFormatUtil
+                            .formatHours(docInfo.getStats()
+                                .getStats(locale, StatUnit.WORD)
+                                .getRemainingHours()));
         }
 
         return new InlineLabel(text);
@@ -493,8 +495,8 @@ public class DocumentListTable extends FlexTable {
 
             HasText remainingHour =
                     (HasText) this.getWidget(row, REMAINING_COLUMN);
-            remainingHour.setText(messages.statusBarLabelHours(wordStats
-                    .getRemainingHours()));
+            remainingHour.setText(messages.statusBarLabelHours(TextFormatUtil
+                    .formatHours(wordStats.getRemainingHours())));
         }
     }
 
