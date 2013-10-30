@@ -50,14 +50,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 /**
+ * A Base Page is an extension of the Core Page, providing the navigation bar
+ * and sidebar links common to most pages outside of the editor.
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- *
- *         This is a basic page that contains features all pages of Zanata
- *         share, eg. the main navigation menu.
  */
 @Slf4j
-public class BasePage extends AbstractPage {
+public class BasePage extends CorePage {
     private List<WebElement> navMenuItems = Collections.emptyList();
 
     @FindBy(id = "nav-main")
@@ -74,9 +73,6 @@ public class BasePage extends AbstractPage {
 
     @FindBy(id = "user_avatar")
     private WebElement userAvatar;
-
-    @FindBy(id = "home")
-    private WebElement homeLink;
 
     private static final By BY_SIGN_IN = By.id("signin_link");
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
@@ -95,11 +91,6 @@ public class BasePage extends AbstractPage {
         clickLinkAfterAnimation(BY_PROFILE_LINK);
 
         return new MyAccountPage(getDriver());
-    }
-
-    public HomePage goToHomePage() {
-        homeLink.click();
-        return new HomePage(getDriver());
     }
 
     public ProjectsPage goToProjects() {
@@ -214,22 +205,6 @@ public class BasePage extends AbstractPage {
         return PageFactory.initElements(getDriver(), pageClass);
     }
 
-    public String getNotificationMessage() {
-        List<WebElement> messages = getDriver().findElements(By.id("messages"));
-        return messages.size() > 0 ? messages.get(0).getText() : "";
-    }
-
-    public List<String> waitForErrors() {
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.xpath("//span[@class='errors']"));
-            }
-        });
-        return getErrors();
-    }
-
     /**
      * This is a workaround for
      * https://code.google.com/p/selenium/issues/detail?id=2766 Elemenet not
@@ -254,26 +229,4 @@ public class BasePage extends AbstractPage {
                 ExpectedConditions.visibilityOfElementLocated(By
                         .className("off-canvas--right-under")));
     }
-
-    public void assertNoCriticalErrors() {
-        List<WebElement> errors =
-                getDriver().findElements(By.id("errorMessage"));
-        if (errors.size() > 0) {
-            throw new RuntimeException("Critical error: \n"
-                    + errors.get(0).getText());
-        }
-    }
-
-    public boolean hasNoCriticalErrors() {
-        return getDriver().findElements(By.id("errorMessage")).size() <= 0;
-    }
-
-    /**
-     * Shift focus to the page, in order to activate some elements that
-     * only exhibit behaviour on losing focus.
-     */
-    public void defocus() {
-        getDriver().findElement(By.tagName("body")).click();
-    }
-
 }
