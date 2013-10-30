@@ -77,12 +77,15 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 public class ViewAllStatusAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER =
+    // Period Formatters are thread safe and immutableaccording to joda time
+    // docs
+    private static final PeriodFormatter COPY_TRANS_TIME_REMAINING_FORMATTER =
             new PeriodFormatterBuilder().appendDays()
                     .appendSuffix(" day", " days").appendSeparator(", ")
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins");
+                    .appendSuffix(" min", " mins")
+                    .toFormatter();
 
     @Logger
     private Log log;
@@ -342,8 +345,7 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}")
-    public
-            void cancelCopyTrans() {
+    public void cancelCopyTrans() {
         if (isCopyTransRunning()) {
             copyTransManager.cancelCopyTrans(getProjectIteration());
         }
@@ -464,16 +466,13 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     private String formatTimePeriod(long durationInMillis) {
-        PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
-        CopyTransTaskHandle handle =
-                copyTransManager
-                        .getCopyTransProcessHandle(getProjectIteration());
         Period period = new Period(durationInMillis);
 
         if (period.toStandardMinutes().getMinutes() <= 0) {
             return "less than a minute"; // TODO Localize
         } else {
-            return formatter.print(period.normalizedStandard());
+            return COPY_TRANS_TIME_REMAINING_FORMATTER
+                .print(period.normalizedStandard());
         }
     }
 

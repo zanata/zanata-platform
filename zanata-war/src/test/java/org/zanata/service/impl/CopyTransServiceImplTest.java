@@ -335,6 +335,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         doc.getTextFlows().add(textFlow);
 
         projectIteration = iterationDAO.makePersistent(projectIteration);
+        getEm().flush(); // So the rest of the test sees the results
 
         HCopyTransOptions options =
                 new HCopyTransOptions(execution.getContextMismatchAction(),
@@ -448,6 +449,58 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         CopyTransExecution execution =
                 new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true,
                         true, true, Approved).expectTransState(Approved);
+        testCopyTrans(execution);
+    }
+
+    /**
+     * Makes sure that given two equal results, it will reuse the most recent
+     * translation.
+     */
+    @Test
+    public void preferLatestTranslation() throws Exception {
+        ProjectIterationDAO projectIterationDAO =
+                seam.autowire(ProjectIterationDAO.class);
+        DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
+
+        HProjectIteration version =
+                projectIterationDAO.getBySlug("same-project", "same-version");
+
+        // Create another version with translations in the same project
+        HProjectIteration newerVersion = new HProjectIteration();
+        newerVersion.setSlug("newer-version");
+        newerVersion.setProject(version.getProject());
+        projectIterationDAO.makePersistent(newerVersion);
+
+        // Duplicate the documents (with text flows and translations) on the
+        // newer version
+        for (HDocument doc : version.getDocuments().values()) {
+            HDocument newDoc =
+                    new HDocument(doc.getDocId(), doc.getContentType(),
+                            doc.getLocale());
+            newDoc.setProjectIteration(newerVersion);
+
+            for (HTextFlow tf : doc.getTextFlows()) {
+                HTextFlow newTf =
+                        new HTextFlow(newDoc, tf.getResId(), tf.getContents()
+                                .get(0));
+
+                for (HTextFlowTarget tft : tf.getTargets().values()) {
+                    HTextFlowTarget newTft =
+                            new HTextFlowTarget(newTf, tft.getLocale());
+                    newTft.setContent0(tft.getContents().get(0) + " recent");
+                    newTft.setState(Translated);
+                    newTf.getTargets().put(newTft.getLocale().getId(), newTft);
+                }
+                newDoc.getTextFlows().add(newTf);
+            }
+            documentDAO.makePersistent(newDoc);
+        }
+
+        // run copy trans and make sure the latest translation is copied
+        CopyTransExecution execution =
+                new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true,
+                        true, true, Approved).expectTransState(Translated)
+                        .withContents("target-content-de recent");
         testCopyTrans(execution);
     }
 
