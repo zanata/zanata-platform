@@ -101,9 +101,8 @@ public class TranslationStatistics implements Serializable {
         if (unit.equals(StatUnit.WORD)) {
             double untransHours = translationCount.getUntranslated() / 250.0;
             double fuzzyHours = translationCount.getNeedReview() / 500.0;
-            double translatedHours = translationCount.getTranslated() / 500.0;
 
-            remainingHours = untransHours + fuzzyHours + translatedHours;
+            remainingHours = untransHours + fuzzyHours;
         }
     }
 
