@@ -118,6 +118,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         this.window = window;
         this.windowLocation = windowLocation;
 
+
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                         .getLocaleId();
@@ -471,20 +472,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         }
 
         refreshStatsDisplay();
-    }
-
-    /**
-     * Create new instance copy of TranslationStatistic
-     *
-     * @param from
-     * @return
-     */
-    private TranslationStatistics copyFrom(TranslationStatistics from) {
-        TranslationStatistics stats = new TranslationStatistics(from.getUnit());
-        stats.setLocale(from.getLocale());
-        stats.add(from);
-
-        return stats;
     }
 
     @Override
