@@ -1,20 +1,13 @@
 package org.zanata.util;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.common.AbstractTranslationCount;
 import org.zanata.common.ContentState;
-
-import java.io.Serializable;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("statisticsUtil")
-@Scope(ScopeType.APPLICATION)
-public class StatisticsUtil implements Serializable {
+public class StatisticsUtil {
 
     public static int calculateUntranslated(Long totalCount,
             AbstractTranslationCount translationCount) {

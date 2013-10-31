@@ -251,8 +251,8 @@ public interface WebTransMessages extends Messages {
         "other|=0", "Items can not be undone"
         // @formatter:on
             })
-            String undoUnsuccessful(@PluralCount int unsuccessfulCount,
-                    @PluralCount int successfulCount);
+    String undoUnsuccessful(@PluralCount int unsuccessfulCount,
+        @PluralCount int successfulCount);
 
     @DefaultMessage("Undo failed")
     String undoFailure();
