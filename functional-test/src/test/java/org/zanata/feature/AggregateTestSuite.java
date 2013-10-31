@@ -28,6 +28,7 @@ import org.zanata.feature.dashboard.DashboardTestSuite;
 import org.zanata.feature.document.DocumentTestSuite;
 import org.zanata.feature.glossary.GlossaryTestSuite;
 import org.zanata.feature.googleopenid.GoogleOpenIDTestSuite;
+import org.zanata.feature.language.LanguageTestSuite;
 import org.zanata.feature.project.ProjectTestSuite;
 import org.zanata.feature.security.SecurityTestSuite;
 import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
@@ -45,6 +46,7 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
         GlossaryTestSuite.class, SecurityTestSuite.class,
         CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
         DocumentTestSuite.class, DashboardTestSuite.class,
-        GoogleOpenIDTestSuite.class, ProjectTestSuite.class })
+        GoogleOpenIDTestSuite.class, ProjectTestSuite.class,
+        LanguageTestSuite.class})
 public class AggregateTestSuite {
 }
