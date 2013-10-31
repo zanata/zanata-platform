@@ -45,6 +45,7 @@ public class VersionRawCompatibilityITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             @Override
             protected void prepareRequest(ClientRequest request) {
+                request.accept("application/vnd.zanata.Version+xml");
             }
 
             @Override
@@ -60,7 +61,7 @@ public class VersionRawCompatibilityITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             @Override
             protected void prepareRequest(ClientRequest request) {
-                request.accept(MediaType.APPLICATION_JSON);
+                request.accept("application/vnd.zanata.Version+json");
             }
 
             @Override
