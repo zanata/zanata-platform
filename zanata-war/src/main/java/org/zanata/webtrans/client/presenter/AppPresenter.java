@@ -299,7 +299,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     /**
      * Set selected document to the given document, update name and stats to
      * match the newly selected document.
-     * 
+     *
      * @param docId
      *            id of the document to select
      */
@@ -417,7 +417,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     /**
      * Facilitate unit testing. Will be no-op if in client(GWT compiled) mode.
-     * 
+     *
      * @param projectStats
      *            project stats
      * @param selectedDocumentStats

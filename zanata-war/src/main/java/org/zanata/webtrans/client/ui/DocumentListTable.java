@@ -53,9 +53,9 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
 public class DocumentListTable extends FlexTable {
     public static enum DocValidationStatus {
