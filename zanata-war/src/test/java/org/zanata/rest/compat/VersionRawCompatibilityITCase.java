@@ -23,8 +23,6 @@ package org.zanata.rest.compat;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
-import javax.ws.rs.core.MediaType;
-
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
@@ -39,6 +37,10 @@ public class VersionRawCompatibilityITCase extends RestTest {
     protected void prepareDBUnitOperations() {
     }
 
+    /**
+     * JSON is the default return type if no header is passed to REST service.
+     * @see org.zanata.rest.service.VersionResource
+     */
     @Test
     @RunAsClient
     public void getVersionXml() throws Exception {
