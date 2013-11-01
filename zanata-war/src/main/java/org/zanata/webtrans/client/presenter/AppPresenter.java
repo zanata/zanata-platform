@@ -26,6 +26,8 @@ import net.customware.gwt.presenter.client.PresenterRevealedHandler;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.common.LocaleId;
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -86,12 +88,15 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     // states
     private DocumentInfo selectedDocument;
+
     private ContainerTranslationStatistics selectedDocumentStats =
             new ContainerTranslationStatistics();
-    private ContainerTranslationStatistics projectStats =
-            new ContainerTranslationStatistics();
+
+    private ContainerTranslationStatistics projectStats;
+
     private ContainerTranslationStatistics currentDisplayStats =
             new ContainerTranslationStatistics();
+
     private MainView currentView = null;
 
     @Inject
@@ -121,6 +126,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                         .getLocaleId();
+
+        projectStats = new ContainerTranslationStatistics();
+        projectStats.addStats(new TranslationStatistics(new TransUnitCount(0,
+                0, 0), localeId.getId()));
+        projectStats.addStats(new TranslationStatistics(new TransUnitWords(0,
+                0, 0), localeId.getId()));
 
         display.setListener(this);
     }
@@ -435,9 +446,6 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     @Override
     public void onProjectStatsUpdated(RefreshProjectStatsEvent event) {
-        if (projectStats.getStats() != null) {
-            projectStats.getStats().clear();
-        }
         for (DocumentNode documentNode : event.getDocumentNodes()) {
             ContainerTranslationStatistics statsContainer =
                     documentNode.getDocInfo().getStats();
@@ -445,46 +453,20 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             TranslationStatistics msgStats =
                     statsContainer.getStats(localeId.getId(), StatUnit.MESSAGE);
 
-            TranslationStatistics currentMsgStats =
-                    projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
-
-            if (currentMsgStats == null) {
-                if (msgStats != null) {
-                    projectStats.addStats(copyFrom(msgStats));
-                }
-            } else {
-                currentMsgStats.add(msgStats);
+            if (msgStats != null) {
+                projectStats.getStats(localeId.getId(), StatUnit.MESSAGE).add(
+                        msgStats);
             }
 
             TranslationStatistics wordStats =
                     statsContainer.getStats(localeId.getId(), StatUnit.WORD);
-            TranslationStatistics currentWordStats =
-                    projectStats.getStats(localeId.getId(), StatUnit.WORD);
 
-            if (currentWordStats == null) {
-                if (wordStats != null) {
-                    projectStats.addStats(copyFrom(wordStats));
-                }
-            } else {
-                currentWordStats.add(wordStats);
+            if (wordStats != null) {
+                projectStats.getStats(localeId.getId(), StatUnit.WORD).add(
+                        wordStats);
             }
         }
-
         refreshStatsDisplay();
-    }
-
-    /**
-     * Create new instance copy of TranslationStatistic
-     *
-     * @param from
-     * @return
-     */
-    private TranslationStatistics copyFrom(TranslationStatistics from) {
-        TranslationStatistics stats = new TranslationStatistics(from.getUnit());
-        stats.setLocale(from.getLocale());
-        stats.add(from);
-
-        return stats;
     }
 
     @Override
