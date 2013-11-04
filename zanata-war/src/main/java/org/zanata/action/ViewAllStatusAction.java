@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,18 +36,17 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.framework.EntityNotFoundException;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.PersonDAO;
@@ -68,9 +69,6 @@ import org.zanata.util.DateUtil;
 
 import com.google.common.base.Optional;
 
-import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
@@ -83,9 +81,6 @@ public class ViewAllStatusAction implements Serializable {
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
                     .appendSuffix(" min", " mins");
-
-    @Logger
-    private Log log;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;

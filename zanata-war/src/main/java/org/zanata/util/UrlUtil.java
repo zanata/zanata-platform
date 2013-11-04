@@ -26,13 +26,13 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 
 /**
@@ -41,17 +41,11 @@ import org.zanata.common.LocaleId;
  *
  * @author David Mason, damason@redhat.com
  */
+@AutoCreate
 @Name("urlUtil")
 @Scope(ScopeType.SESSION)
-@AutoCreate
+@Slf4j
 public class UrlUtil implements Serializable {
-
-    @Logger
-    private Log log;
-
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
     private final static String contextPath = ServletLifecycle
@@ -82,7 +76,7 @@ public class UrlUtil implements Serializable {
         } else {
             url = request.getRequestURI();
             queryString = request.getQueryString();
-            log.warn("encountered non-rewritten url {0} with query string {1}",
+            log.warn("encountered non-rewritten url {} with query string {}",
                     url, queryString);
         }
 

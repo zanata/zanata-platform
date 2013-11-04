@@ -27,18 +27,18 @@ import javax.persistence.NoResultException;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
-import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
@@ -47,12 +47,10 @@ import org.zanata.service.RegisterService;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
+@Slf4j
 public class RegisterAction implements Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
-
-    @Logger
-    Log log;
 
     @In
     private EntityManager entityManager;

@@ -25,16 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
@@ -54,6 +54,7 @@ import org.zanata.service.LocaleService;
  */
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class SendEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -78,9 +79,6 @@ public class SendEmailAction implements Serializable {
 
     @In
     private LocaleSelector localeSelector;
-
-    @Logger
-    private Log log;
 
     private String fromName;
     private String fromLoginName;
@@ -243,7 +241,7 @@ public class SendEmailAction implements Serializable {
                     "There was a problem sending the message: "
                             + e.getMessage());
             log.error(
-                    "Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
+                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                     e, fromName, fromLoginName, replyEmail, subject, message);
             return "failure";
         } finally {
@@ -256,7 +254,7 @@ public class SendEmailAction implements Serializable {
      */
     public String cancel() {
         log.info(
-                "Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
+                "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, message);
         FacesMessages.instance().add("Sending message canceled");
         return "canceled";

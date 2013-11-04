@@ -27,10 +27,8 @@ import java.util.List;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
@@ -49,9 +47,6 @@ public class AccountSearchAction implements Serializable {
     private AccountDAO accountDAO;
     @In
     private PersonDAO personDAO;
-
-    @Logger
-    Log log;
 
     public void setMaintainer(String sr) {
         this.maintainer = sr;

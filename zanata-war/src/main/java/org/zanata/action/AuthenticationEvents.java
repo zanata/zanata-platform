@@ -22,12 +22,12 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
@@ -36,19 +36,13 @@ import org.zanata.model.HPerson;
 
 @Name("authenticationEvents")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class AuthenticationEvents implements Serializable {
-
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    Log log;
 
     @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
     public void loginSuccessful(HAccount account) {
-        log.info("Account {0} authenticated", account.getUsername());
+        log.info("Account {} authenticated", account.getUsername());
         injectAuthenticatedPersonIntoWorkingMemory(account);
     }
 
@@ -61,7 +55,7 @@ public class AuthenticationEvents implements Serializable {
 
     @Observer(JpaIdentityStore.EVENT_USER_CREATED)
     public void createSuccessful(HAccount account) {
-        log.info("Account {0} created", account.getUsername());
+        log.info("Account {} created", account.getUsername());
     }
 
     @Observer(Identity.EVENT_LOGIN_SUCCESSFUL)

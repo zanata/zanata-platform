@@ -8,12 +8,12 @@ import javax.persistence.Persistence;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
@@ -25,14 +25,12 @@ import org.zanata.testng.TestMethodListener;
 @Listeners(TestMethodListener.class)
 @Test(groups = { "jpa-tests" })
 public abstract class ZanataJpaTest {
-
+    private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
     private static final String PERSIST_NAME = "zanataTestDatasourcePU";
 
     private static EntityManagerFactory emf;
 
     protected EntityManager em;
-
-    private static final Log log = Logging.getLog(ZanataJpaTest.class);
 
     @BeforeMethod
     @Before

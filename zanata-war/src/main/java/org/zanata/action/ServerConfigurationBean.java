@@ -26,14 +26,12 @@ import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
@@ -44,14 +42,7 @@ import org.zanata.model.validator.Url;
 @Scope(ScopeType.PAGE)
 @Restrict("#{s:hasRole('admin')}")
 public class ServerConfigurationBean implements Serializable {
-
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    Log log;
 
     @In
     ApplicationConfigurationDAO applicationConfigurationDAO;

@@ -12,13 +12,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -32,10 +32,9 @@ import org.zanata.rest.dto.Account;
 
 @Name("accountService")
 @Path(AccountResource.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class AccountService implements AccountResource {
-    private static final Log log = Logging.getLog(AccountService.class);
-
     /** User name that identifies an account. */
     @PathParam("username")
     String username;
@@ -63,7 +62,7 @@ public class AccountService implements AccountResource {
 
     @Override
     public Response get() {
-        log.debug("HTTP GET {0}", request.getRequestURL());
+        log.debug("HTTP GET {}", request.getRequestURL());
         HAccount hAccount = accountDAO.getByUsername(username);
         if (hAccount == null) {
             return Response.status(Status.NOT_FOUND)
@@ -78,7 +77,7 @@ public class AccountService implements AccountResource {
 
     @Override
     public Response put(Account account) {
-        log.debug("HTTP PUT {0} : \n{1}", request.getRequestURL(), account);
+        log.debug("HTTP PUT {} : \n{}", request.getRequestURL(), account);
 
         // RestUtils.validateEntity(account);
         HAccount hAccount = accountDAO.getByUsername(username);
@@ -123,7 +122,7 @@ public class AccountService implements AccountResource {
             HAccountRole hAccountRole = accountRoleDAO.findByName(role);
             if (hAccountRole == null) {
                 // generate error for missing role
-                log.debug("Invalid role '{0}'", role);
+                log.debug("Invalid role '{}'", role);
                 throw new NoLogWebApplicationException(Response
                         .status(Status.BAD_REQUEST)
                         .entity("Invalid role '" + role + "'").build());

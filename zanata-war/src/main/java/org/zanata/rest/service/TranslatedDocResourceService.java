@@ -37,12 +37,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -68,6 +68,7 @@ import com.google.common.base.Optional;
  */
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class TranslatedDocResourceService implements TranslatedDocResource {
 
@@ -132,8 +133,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     @In
     private TranslationService translationServiceImpl;
-
-    private final Log log = Logging.getLog(TranslatedDocResourceService.class);
 
     @In
     private LocaleService localeServiceImpl;

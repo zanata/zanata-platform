@@ -5,15 +5,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.HibernateException;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 
 @Provider
+@Slf4j
 public class HibernateExceptionMapper implements
         ExceptionMapper<HibernateException> {
-
-    Log log = Logging.getLog(HibernateExceptionMapper.class);
 
     @Override
     public Response toResponse(HibernateException exception) {

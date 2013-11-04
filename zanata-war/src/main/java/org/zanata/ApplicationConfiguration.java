@@ -30,8 +30,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -40,8 +41,6 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Synchronized;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JndiBackedConfig;
@@ -60,10 +59,8 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
+@Slf4j
 public class ApplicationConfiguration implements Serializable {
-
-    private static final Log log = Logging
-            .getLog(ApplicationConfiguration.class);
     private static final long serialVersionUID = -4970657841198107092L;
 
     private static final String EMAIL_APPENDER_NAME =
@@ -153,7 +150,8 @@ public class ApplicationConfiguration implements Serializable {
      * Apply logging configuration.
      */
     public void applyLoggingConfiguration() {
-        final Logger rootLogger = Logger.getRootLogger();
+        // TODO is this still working with jboss logging?
+        final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
 
         if (isEmailLogAppenderEnabled()) {
             // NB: This appender uses Seam's email configuration (no need for

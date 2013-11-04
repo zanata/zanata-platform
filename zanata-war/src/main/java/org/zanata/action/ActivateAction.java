@@ -28,11 +28,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -45,9 +43,6 @@ import org.zanata.model.HAccountActivationKey;
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
-
-    @Logger
-    Log log;
 
     @In
     private AccountActivationKeyDAO accountActivationKeyDAO;
