@@ -88,7 +88,8 @@ public class ChangeReferenceLangView extends Composite implements ChangeReferenc
    @Override
    public void setSelectedLocale(String localeId)
    {
-      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)){
+      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE))
+      {
          sourceLangListBox.setSelectedIndex(0);
          listener.onHideReference();
       }
@@ -96,7 +97,14 @@ public class ChangeReferenceLangView extends Composite implements ChangeReferenc
       {
          int selectedIndex = sourceLangListBox.getIndexForLocaleId(localeId);
          sourceLangListBox.setSelectedIndex(selectedIndex);
-         listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
+         if (selectedIndex == 0)
+         {
+            listener.onHideReference();            
+         }
+         else
+         {
+            listener.onShowReference(sourceLangListBox.getLocaleAtSelectedIndex());
+         }
       }
    }
 

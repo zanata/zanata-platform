@@ -158,14 +158,16 @@ public class LocaleListBox extends ListBox
    public int getIndexForLocaleId(String localeId)
    {
       //The default reference, "none", should be at index 0
-      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)){
+      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE))
+      {
          return 0;
       }
       
       //iterate from index 1 to avoid the default locale at index 0
-      for (int i = 1; i <= locales.size(); i++) 
+      for (int i = 1; i < locales.size(); i++) 
       {
-         if(locales.get(i).getId().getLocaleId().getId().equals(localeId)){
+         if(locales.get(i).getId().getLocaleId().getId().equals(localeId))
+         {
             return i;
          }
       }
