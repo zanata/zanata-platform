@@ -107,7 +107,7 @@
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
             <usedDependency>com.google.code.findbugs:annotations</usedDependency>
-            <usedDependency>quartz:quartz</usedDependency>
+            <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- used by REST API interfaces -->
@@ -1401,7 +1401,7 @@
     <!-- Quartz -->
 
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
     </dependency>
 
