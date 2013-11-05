@@ -22,6 +22,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -45,23 +48,66 @@ public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    ApplicationConfigurationDAO applicationConfigurationDAO;
+    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     @In
     private ApplicationConfiguration applicationConfiguration;
 
+    @Url(canEndInSlash = true)
+    @Getter
+    @Setter
     private String registerUrl;
+
+    @Url(canEndInSlash = false)
+    @Getter
+    @Setter
     private String serverUrl;
+
+    @Getter
+    @Setter
     private String emailDomain;
+
+    @Getter
+    @Setter
+    @EmailList
     private String adminEmail;
+
+    @Email
+    @Getter
+    @Setter
     private String fromEmailAddr;
+
+    @Setter
     private String homeContent;
+
+    @Setter
     private String helpContent;
+
+    @Getter
+    @Setter
     private boolean enableLogEmail;
+
+    @Getter
+    @Setter
     private String logDestinationEmails;
+
+    @Getter
+    @Setter
     private String logEmailLevel;
+
+    @Url(canEndInSlash = true)
+    @Getter
+    @Setter
     private String piwikUrl;
+
+    @Getter
+    @Setter
     private String piwikIdSite;
+
+    @Url(canEndInSlash = true)
+    @Getter
+    @Setter
+    private String termsOfUseUrl;
 
     public String getHomeContent() {
         HApplicationConfiguration var =
@@ -70,45 +116,11 @@ public class ServerConfigurationBean implements Serializable {
         return var != null ? var.getValue() : "";
     }
 
-    public void setHomeContent(String homeContent) {
-        this.homeContent = homeContent;
-    }
-
     public String getHelpContent() {
         HApplicationConfiguration var =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
         return var != null ? var.getValue() : "";
-    }
-
-    public void setHelpContent(String helpContent) {
-        this.helpContent = helpContent;
-    }
-
-    @EmailList
-    public String getAdminEmail() {
-        return adminEmail;
-    }
-
-    public void setAdminEmail(String adminEmail) {
-        this.adminEmail = adminEmail;
-    }
-
-    @Email
-    public String getFromEmailAddr() {
-        return fromEmailAddr;
-    }
-
-    public void setFromEmailAddr(String fromEmailAddr) {
-        this.fromEmailAddr = fromEmailAddr;
-    }
-
-    public String getEmailDomain() {
-        return emailDomain;
-    }
-
-    public void setEmailDomain(String emailDomain) {
-        this.emailDomain = emailDomain;
     }
 
     public String updateHomeContent() {
@@ -134,65 +146,6 @@ public class ServerConfigurationBean implements Serializable {
         FacesMessages.instance().add(
                 "Help page content was successfully updated.");
         return "/help/view.xhtml";
-    }
-
-    @Url(canEndInSlash = true)
-    public String getRegisterUrl() {
-        return registerUrl;
-    }
-
-    public void setRegisterUrl(String registerUrl) {
-        this.registerUrl = registerUrl;
-    }
-
-    @Url(canEndInSlash = false)
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    public boolean isEnableLogEmail() {
-        return enableLogEmail;
-    }
-
-    public void setEnableLogEmail(boolean enableLogEmail) {
-        this.enableLogEmail = enableLogEmail;
-    }
-
-    public String getLogDestinationEmails() {
-        return logDestinationEmails;
-    }
-
-    public void setLogDestinationEmails(String logDestinationEmails) {
-        this.logDestinationEmails = logDestinationEmails;
-    }
-
-    public String getLogEmailLevel() {
-        return logEmailLevel;
-    }
-
-    public void setLogEmailLevel(String logEmailLevel) {
-        this.logEmailLevel = logEmailLevel;
-    }
-
-    @Url(canEndInSlash = true)
-    public String getPiwikUrl() {
-        return piwikUrl;
-    }
-
-    public void setPiwikUrl(String piwikUrl) {
-        this.piwikUrl = piwikUrl;
-    }
-
-    public String getPiwikIdSite() {
-        return piwikIdSite;
-    }
-
-    public void setPiwikIdSite(String piwikIdSite) {
-        this.piwikIdSite = piwikIdSite;
     }
 
     @Create
@@ -254,6 +207,13 @@ public class ServerConfigurationBean implements Serializable {
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
         if (piwikIdSiteValue != null) {
             this.piwikIdSite = piwikIdSiteValue.getValue();
+        }
+
+        HApplicationConfiguration termsOfUseUrlValue =
+                applicationConfigurationDAO
+                        .findByKey(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
+        if (termsOfUseUrlValue != null) {
+            this.termsOfUseUrl = termsOfUseUrlValue.getValue();
         }
     }
 
@@ -327,6 +287,13 @@ public class ServerConfigurationBean implements Serializable {
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
         persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_IDSITE,
                 piwikIdSiteValue, piwikIdSite);
+
+        HApplicationConfiguration termsOfUseUrlValue =
+                applicationConfigurationDAO
+                        .findByKey(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
+        persistApplicationConfig(
+                HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
+                termsOfUseUrlValue, termsOfUseUrl);
 
         applicationConfigurationDAO.flush();
         FacesMessages.instance().add("Configuration was successfully updated.");

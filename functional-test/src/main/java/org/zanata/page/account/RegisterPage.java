@@ -26,7 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.BasePage;
+import org.zanata.page.CorePage;
 import org.zanata.page.utility.HomePage;
 
 import java.util.List;
@@ -36,45 +36,31 @@ import java.util.Map;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class RegisterPage extends BasePage {
+public class RegisterPage extends CorePage {
 
-    @FindBy(id = "registerForm:nameField:name")
+    @FindBy(id = "loginForm:name")
     private WebElement nameField;
 
-    @FindBy(id = "registerForm:emailField:email")
+    @FindBy(id = "loginForm:emailField:email")
     private WebElement emailField;
 
-    @FindBy(id = "registerForm:usernameField:username")
+    @FindBy(id = "loginForm:usernameField:username")
     private WebElement usernameField;
 
-    @FindBy(id = "registerForm:passwordField:password")
+    @FindBy(id = "loginForm:passwordField:password")
     private WebElement passwordField;
 
-    @FindBy(id = "registerForm:passwordConfirmField:passwordConfirm")
-    private WebElement confirmPasswordField;
-
-    @FindBy(id = "registerForm:captcha:verifyCaptcha")
-    private WebElement captchaField;
-
-    @FindBy(id = "registerForm:agreedToTerms:agreedToTerms")
-    private WebElement termsCheckbox;
-
-    @FindBy(id = "registerForm:registerButton")
+    @FindBy(xpath = "//input[@value='Sign Up']")
     private WebElement registerButton;
 
     public RegisterPage(WebDriver driver) {
         super(driver);
-        List<By> elementBys =
-                ImmutableList
-                        .<By> builder()
-                        .add(By.id("registerForm:nameField:name"))
-                        .add(By.id("registerForm:emailField:email"))
-                        .add(By.id("registerForm:usernameField:username"))
-                        .add(By.id("registerForm:passwordField:password"))
-                        .add(By.id("registerForm:passwordConfirmField:passwordConfirm"))
-                        .add(By.id("registerForm:captcha:verifyCaptcha"))
-                        .add(By.id("registerForm:agreedToTerms:agreedToTerms"))
-                        .add(By.id("registerForm:registerButton")).build();
+        List<By> elementBys = ImmutableList.<By> builder()
+                .add(By.id("loginForm:name"))
+                .add(By.id("loginForm:emailField:email"))
+                .add(By.id("loginForm:usernameField:username"))
+                .add(By.id("loginForm:passwordField:password"))
+                .add(By.xpath("//input[@value='Sign Up']")).build();
         waitForPage(elementBys);
     }
 
@@ -98,21 +84,6 @@ public class RegisterPage extends BasePage {
         return new RegisterPage(getDriver());
     }
 
-    public RegisterPage enterConfirmPassword(String confirmPassword) {
-        confirmPasswordField.sendKeys(confirmPassword);
-        return new RegisterPage(getDriver());
-    }
-
-    public RegisterPage enterCaptcha(String captcha) {
-        captchaField.sendKeys(captcha);
-        return new RegisterPage(getDriver());
-    }
-
-    public RegisterPage clickTerms() {
-        termsCheckbox.click();
-        return new RegisterPage(getDriver());
-    }
-
     // TODO: Add a "signup success" page
     public HomePage register() {
         registerButton.click();
@@ -129,8 +100,6 @@ public class RegisterPage extends BasePage {
         emailField.clear();
         usernameField.clear();
         passwordField.clear();
-        confirmPasswordField.clear();
-        captchaField.clear();
         return new RegisterPage(getDriver());
     }
 
@@ -144,8 +113,6 @@ public class RegisterPage extends BasePage {
         enterEmail(fields.get("email"));
         enterUserName(fields.get("username"));
         enterPassword(fields.get("password"));
-        enterConfirmPassword(fields.get("confirmpassword"));
-        enterCaptcha(fields.get("captcha"));
         return new RegisterPage(getDriver());
     }
 

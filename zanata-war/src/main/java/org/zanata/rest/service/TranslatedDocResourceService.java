@@ -289,7 +289,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     // TODO investigate how this became dead code, then delete
     public void copyClosestEquivalentTranslation(HDocument document) {
-        if (applicationConfiguration.getEnableCopyTrans()) {
+        if (applicationConfiguration.isCopyTransEnabled()) {
             copyTransServiceImpl.copyTransForDocument(document);
         }
     }

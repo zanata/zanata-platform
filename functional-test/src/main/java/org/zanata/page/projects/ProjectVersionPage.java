@@ -43,6 +43,9 @@ public class ProjectVersionPage extends BasePage {
     @FindBy(linkText = "Source Documents")
     private WebElement sourceDocumentsButton;
 
+    @FindBy(linkText = "Edit Version")
+    private WebElement editVersionButton;
+
     public ProjectVersionPage(final WebDriver driver) {
         super(driver);
     }
@@ -112,5 +115,10 @@ public class ProjectVersionPage extends BasePage {
     public ProjectSourceDocumentsPage goToSourceDocuments() {
         sourceDocumentsButton.click();
         return new ProjectSourceDocumentsPage(getDriver());
+    }
+
+    public CreateVersionPage clickEditVersion() {
+        editVersionButton.click();
+        return new CreateVersionPage(getDriver());
     }
 }

@@ -178,10 +178,11 @@ public class InvalidEmailAddressTest {
         String errorMsg = "not a well-formed email address";
         RegisterPage registerPage =
                 new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage =
-                registerPage.enterEmail(emailAddress.toString()).clickTerms();
+        registerPage = registerPage.enterEmail(emailAddress.toString());
+        registerPage.defocus();
+
         assertThat("Email validation errors are not shown",
-                registerPage.waitForErrors(), Matchers.hasItem(errorMsg));
+                registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
 }

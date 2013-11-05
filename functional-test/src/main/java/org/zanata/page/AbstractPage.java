@@ -40,6 +40,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 
+/**
+ * The base class for the page driver. Contains functionality not generally of
+ * a user visible nature.
+ */
 @Slf4j
 public class AbstractPage {
     private final WebDriver driver;
@@ -65,56 +69,12 @@ public class AbstractPage {
         return driver;
     }
 
-    public String getTitle() {
-        return driver.getTitle();
-    }
-
     public String getUrl() {
         return driver.getCurrentUrl();
     }
 
     public FluentWait<WebDriver> waitForTenSec() {
         return ajaxWaitForTenSec;
-    }
-
-    protected void clickAndCheckErrors(WebElement button) {
-        button.click();
-        List<String> errors = getErrors();
-        if (!errors.isEmpty()) {
-            throw new RuntimeException(Joiner.on(";").join(errors));
-        }
-    }
-
-    protected void clickAndExpectErrors(WebElement button) {
-        button.click();
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() > 0;
-            }
-        });
-    }
-
-    public List<String> getErrors() {
-        List<WebElement> errorSpans =
-                getDriver().findElements(By.xpath("//span[@class='errors']"));
-        return WebElementUtil.elementsToText(errorSpans);
-    }
-
-    /**
-     * Wait until expected number of errors presented on page or timeout.
-     * @param expectedNumber
-     *            expected number of errors on page
-     * @return list of error message
-     */
-    public List<String> getErrors(final int expectedNumber) {
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() == expectedNumber;
-            }
-        });
-        return getErrors();
     }
 
     /**

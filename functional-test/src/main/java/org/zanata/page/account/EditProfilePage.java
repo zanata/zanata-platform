@@ -51,6 +51,7 @@ public class EditProfilePage extends BasePage {
     }
 
     public EditProfilePage enterName(String name) {
+        nameField.clear();
         nameField.sendKeys(name);
         return new EditProfilePage(getDriver());
     }
@@ -61,6 +62,7 @@ public class EditProfilePage extends BasePage {
     }
 
     public EditProfilePage enterEmail(String email) {
+        emailField.clear();
         emailField.sendKeys(email);
         return new EditProfilePage(getDriver());
     }
@@ -70,4 +72,18 @@ public class EditProfilePage extends BasePage {
         return new HomePage(getDriver());
     }
 
+    public MyAccountPage clickSaveChanges() {
+        saveButton.click();
+        return new MyAccountPage(getDriver());
+    }
+
+    public EditProfilePage clickSaveAndExpectErrors() {
+        saveButton.click();
+        return new EditProfilePage(getDriver());
+    }
+
+    public MyAccountPage clickCancel() {
+        cancelButton.click();
+        return new MyAccountPage(getDriver());
+    }
 }

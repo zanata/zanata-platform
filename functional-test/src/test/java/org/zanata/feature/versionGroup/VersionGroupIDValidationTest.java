@@ -96,24 +96,29 @@ public class VersionGroupIDValidationTest {
 
     @BeforeClass
     public static void beforeClass() {
-        groupPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToGroups()
-                        .createNewGroup();
+        groupPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToGroups()
+                .createNewGroup();
     }
 
     @Theory
     public void inputValidationForID(String inputText) {
-        String errorMsg =
-                "must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.";
+        String errorMsg = "must start and end with letter or number, and "+
+                "contain only letters, numbers, underscores and hyphens.";
+
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
-        groupPage =
-                groupPage.clearFields().inputGroupId(inputText)
-                        .inputGroupName(inputText).selectStatus("OBSOLETE")
-                        .selectStatus("ACTIVE") // this is to avoid
-                                                // ConcurrentModificationException
-                                                // thanks to JSF!!
-                        .saveGroupFailure();
+        groupPage = groupPage
+                .clearFields()
+                .inputGroupId(inputText)
+                .inputGroupName(inputText)
+                .selectStatus("OBSOLETE")
+                .selectStatus("ACTIVE") // this is to avoid
+                                        // ConcurrentModificationException
+                                        // thanks to JSF!!
+                .saveGroupFailure();
+
         assertThat("Validation error is displayed for input:" + inputText,
                 groupPage.getErrors(1), Matchers.contains(errorMsg));
     }

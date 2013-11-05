@@ -20,10 +20,11 @@
  */
 package org.zanata;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.log4j.Level;
 import org.jboss.seam.ScopeType;
@@ -51,9 +54,8 @@ import org.zanata.security.AuthenticationType;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -78,13 +80,26 @@ public class ApplicationConfiguration implements Serializable {
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
 
+    @Getter
     private boolean debug;
+
+    @Getter
     private int authenticatedSessionTimeoutMinutes = 0;
+
+    @Getter
+    @Setter
     private String version;
+
+    @Getter
+    @Setter
     private String buildTimestamp;
-    private boolean enableCopyTrans = true;
-    private Map<AuthenticationType, String> loginModuleNames =
-            new HashMap<AuthenticationType, String>();
+
+    @Getter
+    private boolean copyTransEnabled = true;
+
+    private Map<AuthenticationType, String> loginModuleNames = Maps
+            .newHashMap();
+
     private Set<String> adminUsers;
 
     private String webAssetsUrl;
@@ -272,34 +287,6 @@ public class ApplicationConfiguration implements Serializable {
         return this.loginModuleNames.get(authType);
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public int getAuthenticatedSessionTimeoutMinutes() {
-        return authenticatedSessionTimeoutMinutes;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getBuildTimestamp() {
-        return buildTimestamp;
-    }
-
-    void setBuildTimestamp(String buildTimestamp) {
-        this.buildTimestamp = buildTimestamp;
-    }
-
-    public boolean getEnableCopyTrans() {
-        return enableCopyTrans;
-    }
-
     public Set<String> getAdminUsers() {
         String configValue =
                 Strings.nullToEmpty(jndiBackedConfig.getAdminUsersList());
@@ -340,6 +327,10 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getPiwikIdSite() {
         return databaseBackedConfig.getPiwikSiteId();
+    }
+
+    public String getTermsOfUseUrl() {
+        return databaseBackedConfig.getTermsOfUseUrl();
     }
 
     public String getEmailServerHost() {
