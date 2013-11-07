@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public enum UserOptions implements IsSerializable {
+
     // @formatter:off
     EnterSavesApproved(editor()+ ".EnterSavesApproved"),
     DisplayButtons(editor()+ ".DisplayButtons"),

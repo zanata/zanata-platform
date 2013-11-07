@@ -137,6 +137,7 @@ public class UserOptionsServiceTest {
     @Test
     public void getEditorOptions() {
         Map<UserOptions, String> map = service.getEditorOptions();
+
         assertThat(map.size(), Matchers.equalTo(18));
 
         assertThat(map.containsKey(UserOptions.ShowErrors),

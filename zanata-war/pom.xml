@@ -490,7 +490,7 @@
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
- <!-- Container (Arquillian tests) -->
+          <!-- Container (Arquillian tests) -->
           <execution>
             <id>container-tests</id>
             <goals>

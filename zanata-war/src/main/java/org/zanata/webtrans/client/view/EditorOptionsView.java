@@ -51,13 +51,13 @@ public class EditorOptionsView extends Composite implements
     private static EditorOptionsUiBinder uiBinder = GWT
             .create(EditorOptionsUiBinder.class);
     private final EnumRadioButtonGroup<NavOption> navOptionGroup;
-   
+
     @UiField
     CheckBox enterChk, editorButtonsChk;
-   
+
     @UiField
     Label navOptionHeader, editorOptionHeader;
-   
+
     @UiField
     VerticalPanel optionsContainer;
     @UiField

@@ -48,7 +48,7 @@ import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements
         SourceContentsDisplay {
-   
+
     public static final int COLUMNS = 1;
     public static final int DEFAULT_ROWS = 1;
     private final Grid sourcePanelContainer;
@@ -89,6 +89,7 @@ public class SourceContentsView extends Composite implements
 
         InlineLabel bookmarkIcon = createBookmarkIcon();
         root.add(bookmarkIcon);
+
         transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
         root.add(transUnitDetailsPanel);
 
@@ -108,6 +109,7 @@ public class SourceContentsView extends Composite implements
         });
         return bookmarkIcon;
     }
+
     @Override
     public List<HasSelectableSource> getSourcePanelList() {
         return sourcePanelList;

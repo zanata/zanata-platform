@@ -70,6 +70,7 @@
         <g:VerticalPanel ui:field="optionsContainer" />
       </g:VerticalPanel>
     </g:cell>
+
     <g:cell>
       <g:VerticalPanel width="100%">
         <g:Label ui:field="transMemoryHeader" styleName="gwt-sideMenu-header" />

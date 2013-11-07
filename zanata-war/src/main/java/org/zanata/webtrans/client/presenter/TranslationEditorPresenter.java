@@ -65,6 +65,7 @@ public class TranslationEditorPresenter extends
 
         transUnitsTablePresenter.bind();
         display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());
+        
         transUnitNavigationPresenter.bind();
         display.setTransUnitNavigation(transUnitNavigationPresenter
                 .getDisplay().asWidget());

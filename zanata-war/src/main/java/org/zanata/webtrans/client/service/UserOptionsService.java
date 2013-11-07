@@ -187,4 +187,5 @@ public class UserOptionsService {
     public UserConfigHolder getConfigHolder() {
         return configHolder;
     }
+
 }
