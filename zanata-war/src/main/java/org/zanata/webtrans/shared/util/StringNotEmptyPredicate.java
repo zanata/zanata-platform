@@ -21,24 +21,19 @@
 
 package org.zanata.webtrans.shared.util;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Collections2;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public enum StringNotEmptyPredicate implements Predicate<String>
-{
-   INSTANCE;
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public enum StringNotEmptyPredicate implements Predicate<String> {
+    INSTANCE;
 
-   @Override
-   public boolean apply(String input)
-   {
-      return !Strings.isNullOrEmpty(input);
-   }
+    @Override
+    public boolean apply(String input) {
+        return !Strings.isNullOrEmpty(input);
+    }
 
 }

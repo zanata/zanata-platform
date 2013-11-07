@@ -28,39 +28,39 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HPersonEmailValidationKey;
 
-
 @Name("personEmailValidationKeyDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class PersonEmailValidationKeyDAO extends AbstractDAOImpl<HPersonEmailValidationKey, Long>
-{
+public class PersonEmailValidationKeyDAO extends
+        AbstractDAOImpl<HPersonEmailValidationKey, Long> {
 
-   public PersonEmailValidationKeyDAO()
-   {
-      super(HPersonEmailValidationKey.class);
-   }
+    public PersonEmailValidationKeyDAO() {
+        super(HPersonEmailValidationKey.class);
+    }
 
-   public PersonEmailValidationKeyDAO(Session session)
-   {
-      super(HPersonEmailValidationKey.class, session);
-   }
+    public PersonEmailValidationKeyDAO(Session session) {
+        super(HPersonEmailValidationKey.class, session);
+    }
 
-   
-   public HPersonEmailValidationKey findByKeyHash(String keyHash)
-   {
-    Query query = getSession().createQuery("from HPersonEmailValidationKey as key where key.keyHash= :keyHash");
-    query.setParameter("keyHash", keyHash);
-    query.setCacheable(false);
-    query.setComment("PersonEmailValidationKeyDAO.findByKeyHash");
-    return (HPersonEmailValidationKey) query.uniqueResult();
-   }
-   
-   public HPersonEmailValidationKey findByPersonId(Long personId)
-   {
-    Query query = getSession().createQuery("from HPersonEmailValidationKey as key where key.person.id= :personId");
-    query.setLong("personId", personId);
-    query.setCacheable(false);
-    query.setComment("PersonEmailValidationKeyDAO.findByPersonId");
-    return (HPersonEmailValidationKey) query.uniqueResult();
-   }
+    public HPersonEmailValidationKey findByKeyHash(String keyHash) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "from HPersonEmailValidationKey as key where key.keyHash= :keyHash");
+        query.setParameter("keyHash", keyHash);
+        query.setCacheable(false);
+        query.setComment("PersonEmailValidationKeyDAO.findByKeyHash");
+        return (HPersonEmailValidationKey) query.uniqueResult();
+    }
+
+    public HPersonEmailValidationKey findByPersonId(Long personId) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "from HPersonEmailValidationKey as key where key.person.id= :personId");
+        query.setLong("personId", personId);
+        query.setCacheable(false);
+        query.setComment("PersonEmailValidationKeyDAO.findByPersonId");
+        return (HPersonEmailValidationKey) query.uniqueResult();
+    }
 }

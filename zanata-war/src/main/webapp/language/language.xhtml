@@ -1,201 +1,226 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="page_title">#{messages['jsf.LanguageTeamTitle']}</ui:define>
+  <ui:define name="page_title">#{messages['jsf.LanguageTeamTitle']}</ui:define>
 
-    <ui:define name="head">
-        <script type="text/javascript">
-            function submitSearchOnEnter(e)
-            {
-                if(e.keyCode == 13 )
-                {
-                    #{rich:element('searchBtn')}.click();
-                    return false;
-                }
-            }
-        </script>
-    </ui:define>
+  <ui:define name="head">
+    <script type="text/javascript">
+      function submitSearchOnEnter(e) {
+        if (e.keyCode == 13) {
+          #{rich:element('searchBtn')}
+        .
+          click();
+          return false;
+        }
+      }
+    </script>
+  </ui:define>
 
-    <ui:define name="center_content">
-    	<rich:jQuery query="jquery" />
-        <h:form id="memberPanel">
-                <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
-                <p>#{messages['jsf.SizeMembers']}</p>
-                <rich:dataTable
-                    id="threads"
-                    value="#{languageTeamAction.localeMembers}"
-                    var="member" 
-                    rendered="#{not empty languageTeamAction.locale.members}"
-                    sortMode="single">
-                  <rich:column id="usernameCol" width="auto" sortBy="#{member.person.account.username}" sortOrder="ascending">
-                    <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-                    #{member.person.account.username}
-                  </rich:column>
-                  <rich:column width="auto" sortBy="#{member.person.name}">
-                    <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-                    #{member.person.name}
-                  </rich:column>
-                  <rich:column width="auto" rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                    <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-                        #{member.person.email}
-                  </rich:column>
+  <ui:define name="center_content">
+    <rich:jQuery query="jquery"/>
+    <h:form id="memberPanel">
+      <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
 
-                  <rich:column width="auto" styleClass="centered">
-                    <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
-                    <h:selectBooleanCheckbox value="#{member.translator}"
-                        rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamTranslator(member)}"/>
-                    </h:selectBooleanCheckbox>
-	                <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.translator}"/>
-                  </rich:column>
+      <p>#{messages['jsf.SizeMembers']}</p>
+      <rich:dataTable id="threads" value="#{languageTeamAction.localeMembers}"
+        var="member" rendered="#{not empty languageTeamAction.locale.members}"
+        sortMode="single">
+        <rich:column id="usernameCol" width="auto"
+          sortBy="#{member.person.account.username}" sortOrder="ascending">
+          <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+          #{member.person.account.username}
+        </rich:column>
 
-                  <rich:column width="auto" styleClass="centered">
-                    <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
-                    <h:selectBooleanCheckbox value="#{member.reviewer}"
-                        rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamReviewer(member)}"/>
-                    </h:selectBooleanCheckbox>
-                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.reviewer}"/>
-                  </rich:column>
+        <rich:column width="auto" sortBy="#{member.person.name}">
+          <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+          #{member.person.name}
+        </rich:column>
 
-                  <rich:column width="auto" styleClass="centered">
-                    <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
-                    <h:selectBooleanCheckbox value="#{member.coordinator}"
-                        rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                        <a4j:ajax event="change" render="threads" execute="@this" listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
-                    </h:selectBooleanCheckbox>
-                    <s:span styleClass="icon-ok checkmark" rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}"/>
-                  </rich:column>
+        <rich:column width="auto"
+          rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+          <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+          #{member.person.email}
+        </rich:column>
 
-                  <rich:column width="auto" styleClass="centered"
-                      rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-                      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-                      <ui:remove>
-                          <!-- TODO Using regular command button instead of ajax as the page context is lost when using the latter -->
-                      </ui:remove>
-                      <h:commandButton value="#{messages['jsf.Remove']}"
-                          action="#{languageTeamAction.removeMembership(member)}"
-                          render="memberPanel, actionPanel, userAddPanel" execute="@this">
-                      </h:commandButton>
-                  </rich:column>
-                </rich:dataTable>
-        </h:form>
-    </ui:define>
+        <rich:column width="auto" styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
+          <h:selectBooleanCheckbox value="#{member.translator}"
+            rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+            <a4j:ajax event="change" render="threads" execute="@this"
+              listener="#{languageTeamAction.saveTeamTranslator(member)}"/>
+          </h:selectBooleanCheckbox>
+          <s:span styleClass="icon-ok checkmark"
+            rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.translator}"/>
+        </rich:column>
 
-    <ui:define name="right_content">
+        <rich:column width="auto" styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
+          <h:selectBooleanCheckbox value="#{member.reviewer}"
+            rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+            <a4j:ajax event="change" render="threads" execute="@this"
+              listener="#{languageTeamAction.saveTeamReviewer(member)}"/>
+          </h:selectBooleanCheckbox>
+          <s:span styleClass="icon-ok checkmark"
+            rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.reviewer}"/>
+        </rich:column>
 
-      <rich:panel id="actionPanel" rendered="#{identity.loggedIn}">
-        <f:facet name="header">
-          #{messages['jsf.Actions']}
-        </f:facet>
-        <h:form id="Language_team_member_toggle_form">
-          <a4j:commandLink id="Join" styleClass="action_link" action="#{languageTeamAction.joinTribe}" rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}" render="memberPanel, actionPanel">
-            #{messages['jsf.JoinLanguageTeam']}
-            <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a4j:commandLink>
-          <a4j:commandLink id="Leave" styleClass="action_link" action="#{languageTeamAction.leaveTribe}" rendered="#{languageTeamAction.isUserInTeam()}" render="memberPanel, actionPanel">
-            #{messages['jsf.LeaveLanguageTeam']}
-            <s:conversationId name="id" value="#{languageTeamAction.language}"/>
-          </a4j:commandLink>
-          <s:link styleClass="action_link" value="#{messages['jsf.RequestToJoinLanguageTeam']}" view="/language/request_to_join_update_role.xhtml" 
-                  rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}">
-                <f:param name="emailType" value="request_join_language"/>
-                <f:param name="id" value="#{languageTeamAction.language}"/>
-          </s:link>
-          <s:link styleClass="action_link" value="#{messages['jsf.RequestUpdateRoleLanguageTeam']}" view="/language/request_to_join_update_role.xhtml" 
-                  rendered="#{identity.loggedIn and languageTeamAction.isUserInTeam() and !(s:hasPermission(languageTeamAction.locale, 'manage-language-team'))}">
-                <f:param name="emailType" value="request_role_language"/>
-                <f:param name="id" value="#{languageTeamAction.language}"/>
-          </s:link>
-          <s:link styleClass="action_link" value="#{messages['jsf.contactLanguageTeamCoordinator']}" view="/language/contact_coordinator.xhtml" propagation="none"  rendered="#{identity.loggedIn}" >
-          		<f:param name="emailType" value="contact_coordinator"/>
-          		<f:param name="id" value="#{languageTeamAction.language}"/>
-          </s:link>
-          <s:fragment rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
-            <a id="addTeamMemberLink" href="#" class="action_link" onclick="#{rich:component('userAddPanel')}.show();#{rich:element('searchField')}.focus();">#{messages['jsf.AddTeamMember']}</a>
-          </s:fragment>
-        </h:form>
-      </rich:panel>
-      
-      <rich:popupPanel id="userAddPanel" width="700" height="480">
-          <h:form id="searchForm">
-            <h1>#{messages['jsf.FindUsersToAdd']}</h1>
-            <p>
-              <h:inputText value="#{languageTeamAction.searchTerm}" id="searchField"
-                           onkeydown="return submitSearchOnEnter(event);"/>
-              <a4j:commandButton id="searchBtn"
-                                 value="#{messages['jsf.Search']}"
-                                 action="#{languageTeamAction.searchForTeamMembers}"
-                                 render="searchResults"
-                                 status="searchStatus" />
-              <h:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
-                               onclick="#{rich:component('userAddPanel')}.hide(); return false;" />
-            </p>
-          </h:form>
+        <rich:column width="auto" styleClass="centered">
+          <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
+          <h:selectBooleanCheckbox value="#{member.coordinator}"
+            rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+            <a4j:ajax event="change" render="threads" execute="@this"
+              listener="#{languageTeamAction.saveTeamCoordinator(member)}"/>
+          </h:selectBooleanCheckbox>
+          <s:span styleClass="icon-ok checkmark"
+            rendered="#{not s:hasPermission(languageTeamAction.locale, 'manage-language-team') and member.coordinator}"/>
+        </rich:column>
 
-          <a4j:status id="searchStatus" startText="#{messages['jsf.Loading']}" stopText="" />
-          <h:form id="resultForm">
-	          <a4j:outputPanel id="searchResults" layout="block" style="overflow:auto;max-height:320px">
-	            <h:outputText id="noResultsMessage" rendered="#{empty languageTeamAction.searchResults}" value="No results to display." />
+        <rich:column width="auto" styleClass="centered"
+          rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <ui:remove>
+            <!-- TODO Using regular command button instead of ajax as the page context is lost when using the latter -->
+          </ui:remove>
+          <h:commandButton value="#{messages['jsf.Remove']}"
+            action="#{languageTeamAction.removeMembership(member)}"
+            render="memberPanel, actionPanel, userAddPanel" execute="@this">
+          </h:commandButton>
+        </rich:column>
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
 
-	            <rich:dataTable id="personTable"
-	                            value="#{languageTeamAction.searchResults}" var="selectablePerson" rendered="#{not empty languageTeamAction.searchResults}">
+  <ui:define name="right_content">
+    <rich:panel id="actionPanel" rendered="#{identity.loggedIn}">
+      <f:facet name="header">
+        #{messages['jsf.Actions']}
+      </f:facet>
+      <h:form id="Language_team_member_toggle_form">
+        <a4j:commandLink id="Join" styleClass="action_link"
+          action="#{languageTeamAction.joinTribe}"
+          rendered="#{not languageTeamAction.isUserInTeam() and s:hasRole('admin')}"
+          render="memberPanel, actionPanel">
+          #{messages['jsf.JoinLanguageTeam']}
+          <s:conversationId name="id" value="#{languageTeamAction.language}"/>
+        </a4j:commandLink>
+        <a4j:commandLink id="Leave" styleClass="action_link"
+          action="#{languageTeamAction.leaveTribe}"
+          rendered="#{languageTeamAction.isUserInTeam()}"
+          render="memberPanel, actionPanel">
+          #{messages['jsf.LeaveLanguageTeam']}
+          <s:conversationId name="id" value="#{languageTeamAction.language}"/>
+        </a4j:commandLink>
+        <s:link styleClass="action_link"
+          value="#{messages['jsf.RequestToJoinLanguageTeam']}"
+          view="/language/request_to_join_update_role.xhtml"
+          rendered="#{identity.loggedIn and not languageTeamAction.isUserInTeam()}">
+          <f:param name="emailType" value="request_join_language"/>
+          <f:param name="id" value="#{languageTeamAction.language}"/>
+        </s:link>
+        <s:link styleClass="action_link"
+          value="#{messages['jsf.RequestUpdateRoleLanguageTeam']}"
+          view="/language/request_to_join_update_role.xhtml"
+          rendered="#{identity.loggedIn and languageTeamAction.isUserInTeam() and !(s:hasPermission(languageTeamAction.locale, 'manage-language-team'))}">
+          <f:param name="emailType" value="request_role_language"/>
+          <f:param name="id" value="#{languageTeamAction.language}"/>
+        </s:link>
+        <s:link styleClass="action_link"
+          value="#{messages['jsf.contactLanguageTeamCoordinator']}"
+          view="/language/contact_coordinator.xhtml" propagation="none"
+          rendered="#{identity.loggedIn}">
+          <f:param name="emailType" value="contact_coordinator"/>
+          <f:param name="id" value="#{languageTeamAction.language}"/>
+        </s:link>
+        <s:fragment
+          rendered="#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}">
+          <a id="addTeamMemberLink" href="#" class="action_link"
+            onclick="#{rich:component('userAddPanel')}.show();#{rich:element('searchField')}.focus();">#{messages['jsf.AddTeamMember']}</a>
+        </s:fragment>
+      </h:form>
+    </rich:panel>
 
-	                <rich:column styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
-	                    <f:facet name="header">
-                            <h:panelGroup>
-                                <h:selectBooleanCheckbox title="#{messages['jsf.ManageSearch.SelectAll']}" value="#{languageTeamAction.selectAll}">
-                                    <a4j:ajax event="change" render="searchResults" listener="#{languageTeamAction.selectAll()}"/>
-                                </h:selectBooleanCheckbox>
-                            </h:panelGroup>
-                        </f:facet>
+    <rich:popupPanel id="userAddPanel" width="700" height="480">
+      <h:form id="searchForm">
+        <h1>#{messages['jsf.FindUsersToAdd']}</h1>
 
-                        <h:selectBooleanCheckbox title="#{messages['jsf.Select']}" value="#{selectablePerson.selected}">
-                            <a4j:ajax event="change" render="searchResults"/>
-                        </h:selectBooleanCheckbox>
-                    </rich:column>
+        <p>
+          <h:inputText value="#{languageTeamAction.searchTerm}" id="searchField"
+            onkeydown="return submitSearchOnEnter(event);"/>
+          <a4j:commandButton id="searchBtn"
+            value="#{messages['jsf.Search']}"
+            action="#{languageTeamAction.searchForTeamMembers}"
+            render="searchResults"
+            status="searchStatus"/>
+          <h:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
+            action="#{languageTeamAction.clearSearchResult}"
+            render="searchResults"
+            onclick="#{rich:component('userAddPanel')}.hide(); return false;"/>
+        </p>
+      </h:form>
 
-                    <rich:column sortBy="#{selectablePerson.person.name}" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''}">
-	                	<f:facet name="header">#{messages['jsf.Name']}</f:facet>
-                        #{selectablePerson.person.name}
-	                </rich:column>
-                    <rich:column sortBy="#{selectablePerson.person.account.username}" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''}">
-	                  <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-                      #{selectablePerson.person.account.username}
-	                </rich:column>
+      <a4j:status id="searchStatus" startText="#{messages['jsf.Loading']}"
+        stopText=""/>
+      <h:form id="resultForm">
+        <a4j:outputPanel id="searchResults" layout="block"
+          style="overflow:auto;max-height:320px">
+          <h:outputText id="noResultsMessage"
+            rendered="#{empty languageTeamAction.searchResults}"
+            value="No results to display."/>
 
-                    <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
-                        <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
-                            <h:selectBooleanCheckbox value="#{selectablePerson.translator}"/>
-                    </rich:column>
+          <rich:dataTable id="personTable"
+            value="#{languageTeamAction.searchResults}" var="selectablePerson"
+            rendered="#{not empty languageTeamAction.searchResults}">
+            <rich:column sortBy="#{selectablePerson.person.name}"
+              styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''}">
+              <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+              #{selectablePerson.person.name}
+            </rich:column>
 
-                    <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
-                        <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}"/>
-                    </rich:column>
+            <rich:column sortBy="#{selectablePerson.person.account.username}"
+              styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''}">
+              <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+              #{selectablePerson.person.account.username}
+            </rich:column>
 
-                    <rich:column width="auto" styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
-                        <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
-                        <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}"/>
-                    </rich:column>
+            <rich:column width="auto"
+              styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
+              <f:facet name="header">#{messages['jsf.Translator']}</f:facet>
+              <h:selectBooleanCheckbox value="#{selectablePerson.translator}">
+                <a4j:ajax event="change" render="searchResults"/>
+              </h:selectBooleanCheckbox>
+            </rich:column>
 
-	              </rich:dataTable>
-	          </a4j:outputPanel>
-              <br/>
-              <a4j:commandButton id="addSelectedBtn" value="#{messages['jsf.AddSelected']}"
-                                 action="#{languageTeamAction.addSelected}"
-                                 render="searchResults, memberPanel" />
-          </h:form>
-      </rich:popupPanel>
+            <rich:column width="auto"
+              styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
+              <f:facet name="header">#{messages['jsf.Reviewer']}</f:facet>
+              <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}">
+                <a4j:ajax event="change" render="searchResults"/>
+              </h:selectBooleanCheckbox>
+            </rich:column>
 
-    </ui:define>
-
+            <rich:column width="auto"
+              styleClass="#{selectablePerson.selected ? 'highlighted_datatable_row' : ''} centered">
+              <f:facet name="header">#{messages['jsf.Coordinator']}</f:facet>
+              <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}">
+                <a4j:ajax event="change" render="searchResults"/>
+              </h:selectBooleanCheckbox>
+            </rich:column>
+          </rich:dataTable>
+        </a4j:outputPanel>
+        <br/>
+        <a4j:commandButton id="addSelectedBtn"
+          value="#{messages['jsf.AddSelected']}"
+          action="#{languageTeamAction.addSelected}"
+          render="searchResults, memberPanel"/>
+      </h:form>
+    </rich:popupPanel>
+  </ui:define>
 </ui:composition>

@@ -58,116 +58,117 @@ import org.zanata.service.ActivityService;
 @Name("activityServiceImpl")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class ActivityServiceImpl implements ActivityService
-{
-   @Logger
-   private Log log;
-   
-   @In
-   private ActivityDAO activityDAO;
+public class ActivityServiceImpl implements ActivityService {
+    @Logger
+    private Log log;
 
-   @In
-   private TextFlowTargetDAO textFlowTargetDAO;
+    @In
+    private ActivityDAO activityDAO;
 
-   @In
-   private DocumentDAO documentDAO;
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-   
-   @In
-   private EntityManager entityManager;
+    @In
+    private DocumentDAO documentDAO;
 
-   @Override
-   public Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType, Date actionTime)
-   {
-      return activityDAO.findActivity(actorId, contextType, contextId, activityType, DateUtils.truncate(actionTime, Calendar.HOUR));
-   }
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @Override
-   public List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int maxResults)
-   {
-      return activityDAO.findLatestActivitiesForContext(personId, contextId, offset, maxResults);
-   }
+    @In
+    private EntityManager entityManager;
 
-   @Override
-   public List<Activity> findLatestActivities(long personId, int offset, int maxResults)
-   {
-      return activityDAO.findLatestActivities(personId, offset, maxResults);
-   }
+    @Override
+    public Activity findActivity(long actorId, EntityType contextType,
+            long contextId, ActivityType activityType, Date actionTime) {
+        return activityDAO.findActivity(actorId, contextType, contextId,
+                activityType, DateUtils.truncate(actionTime, Calendar.HOUR));
+    }
 
-   @Override
-   public void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType, int wordCount)
-   {
-      if (actor != null && context != null && activityType != null)
-      {
-         Date currentActionTime = new Date();
-         Activity activity = findActivity(actor.getId(), context.getEntityType(), context.getId(), activityType, currentActionTime);
+    @Override
+    public List<Activity> findLatestActivitiesForContext(long personId,
+            long contextId, int offset, int maxResults) {
+        return activityDAO.findLatestActivitiesForContext(personId, contextId,
+                offset, maxResults);
+    }
 
-         if (activity != null)
-         {
-            activity.updateActivity(currentActionTime, wordCount);
-         }
-         else
-         {
-            activity = new Activity(actor, context, target, activityType, wordCount);
-         }
-         activityDAO.makePersistent(activity);
-         activityDAO.flush();
-      }
-      else
-      {
-         log.warn("Unable to log activity. One or more of the information is null: actor-{0}, context-{1}, activityType-{2}", actor, context, activityType);
-      }
-   }
+    @Override
+    public List<Activity> findLatestActivities(long personId, int offset,
+            int maxResults) {
+        return activityDAO.findLatestActivities(personId, offset, maxResults);
+    }
 
-   @Override
-   public Object getEntity(EntityType entityType, long entityId)
-   {
-      return entityManager.find(entityType.getEntityClass(), entityId);
-   }
+    @Override
+    public void logActivity(HPerson actor, IsEntityWithType context,
+            IsEntityWithType target, ActivityType activityType, int wordCount) {
+        if (actor != null && context != null && activityType != null) {
+            Date currentActionTime = new Date();
+            Activity activity =
+                    findActivity(actor.getId(), context.getEntityType(),
+                            context.getId(), activityType, currentActionTime);
 
-   /**
-    * Logs each text flow target translation immediately after successful translation.
-    */
-   @Observer(TextFlowTargetStateEvent.EVENT_NAME)
-   @Transactional
-   public void logTextFlowStateUpdate(TextFlowTargetStateEvent event)
-   {
-      HTextFlowTarget target = textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
-      HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION : ActivityType.UPDATE_TRANSLATION;
+            if (activity != null) {
+                activity.updateActivity(currentActionTime, target, wordCount);
+            } else {
+                activity =
+                        new Activity(actor, context, target, activityType,
+                                wordCount);
+            }
+            activityDAO.makePersistent(activity);
+            activityDAO.flush();
+        }
+    }
 
-      logActivity(target.getLastModifiedBy(), document.getProjectIteration(), target, activityType, target.getTextFlow().getWordCount().intValue());
-   }
+    @Override
+    public Object getEntity(EntityType entityType, long entityId) {
+        return entityManager.find(entityType.getEntityClass(), entityId);
+    }
 
-   /**
-    * Logs document upload immediately after successful upload.
-    */
-   @Observer(DocumentUploadedEvent.EVENT_NAME)
-   @Transactional
-   public void onDocumentUploaded(DocumentUploadedEvent event)
-   {
-      HDocument document = documentDAO.getById(event.getDocumentId());
-      ActivityType activityType = event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
-      
-      logActivity(document.getLastModifiedBy(), document.getProjectIteration(), document, activityType, getDocumentWordCount(document));
-   }
+    /**
+     * Logs each text flow target translation immediately after successful
+     * translation.
+     */
+    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
+    @Transactional
+    public void logTextFlowStateUpdate(TextFlowTargetStateEvent event) {
+        HTextFlowTarget target =
+                textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
+        HDocument document = documentDAO.getById(event.getDocumentId());
+        ActivityType activityType =
+                event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+                        : ActivityType.UPDATE_TRANSLATION;
 
-   private int getDocumentWordCount(HDocument document)
-   {
-      int total = 0;
+        logActivity(target.getLastModifiedBy(), document.getProjectIteration(),
+                target, activityType, target.getTextFlow().getWordCount()
+                        .intValue());
+    }
 
-      for (HTextFlow textFlow : document.getTextFlows())
-      {
-         total += textFlow.getWordCount().intValue();
-      }
-      return total;
-   }
+    /**
+     * Logs document upload immediately after successful upload.
+     */
+    @Observer(DocumentUploadedEvent.EVENT_NAME)
+    @Transactional
+    public void onDocumentUploaded(DocumentUploadedEvent event) {
+        HDocument document = documentDAO.getById(event.getDocumentId());
+        ActivityType activityType =
+                event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
+                        : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 
-   @Override
-   public int getActivityCountByActor(long personId)
-   {
-      return activityDAO.getActivityCountByActor(personId);
-   }
+        logActivity(document.getLastModifiedBy(),
+                document.getProjectIteration(), document, activityType,
+                getDocumentWordCount(document));
+    }
+
+    private int getDocumentWordCount(HDocument document) {
+        int total = 0;
+
+        for (HTextFlow textFlow : document.getTextFlows()) {
+            total += textFlow.getWordCount().intValue();
+        }
+        return total;
+    }
+
+    @Override
+    public int getActivityCountByActor(long personId) {
+        return activityDAO.getActivityCountByActor(personId);
+    }
 }

@@ -20,30 +20,19 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
+import java.util.*;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import org.jboss.seam.*;
+import org.jboss.seam.annotations.*;
+import org.zanata.model.*;
+import org.zanata.service.*;
+import org.zanata.service.TranslationService.*;
+import org.zanata.webtrans.server.*;
+import org.zanata.webtrans.shared.rpc.*;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.service.SecurityService;
-import org.zanata.service.TranslationService;
-import org.zanata.service.TranslationService.TranslationResult;
-import org.zanata.webtrans.server.ActionHandlerFor;
-import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+import net.customware.gwt.dispatch.server.*;
+import net.customware.gwt.dispatch.shared.*;
 
 /**
  * @author David Mason, damason@redhat.com
@@ -53,43 +42,38 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 @Name("webtrans.gwt.RevertTransUnitUpdatesHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(RevertTransUnitUpdates.class)
-public class RevertTransUnitUpdatesHandler extends AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult>
-{
-   @In
-   private TranslationService translationServiceImpl;
+public class RevertTransUnitUpdatesHandler extends
+        AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult> {
+    @In
+    private TranslationService translationServiceImpl;
 
-   @In
-   private TransUnitTransformer transUnitTransformer;
+    @In
+    private SecurityService securityServiceImpl;
 
-   @In
-   private SecurityService securityServiceImpl;
+    @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
+    private TransUnitUpdateHelper transUnitUpdateHelper;
 
-   @Override
-   public UpdateTransUnitResult execute(RevertTransUnitUpdates action, ExecutionContext context) throws ActionException
-   {
-      SecurityService.SecurityCheckResult securityCheckResult = securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY);
-      HLocale hLocale = securityCheckResult.getLocale();
-      TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+    @Override
+    public UpdateTransUnitResult execute(RevertTransUnitUpdates action,
+            ExecutionContext context) throws ActionException {
+        SecurityService.SecurityCheckResult securityCheckResult =
+                securityServiceImpl.checkPermission(action,
+                        SecurityService.TranslationAction.MODIFY);
+        HLocale hLocale = securityCheckResult.getLocale();
+        TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
-      List<TranslationResult> revertResults = translationServiceImpl.revertTranslations(hLocale.getLocaleId(), action.getUpdatesToRevert());
+        List<TranslationResult> revertResults =
+                translationServiceImpl.revertTranslations(
+                        hLocale.getLocaleId(), action.getUpdatesToRevert());
 
-      UpdateTransUnitResult results = new UpdateTransUnitResult();
-      for (TranslationResult translationResult : revertResults)
-      {
-         HTextFlowTarget newTarget = translationResult.getTranslatedTextFlowTarget();
-         HTextFlow hTextFlow = newTarget.getTextFlow();
-         int wordCount = hTextFlow.getWordCount().intValue();
-         TransUnit tu = transUnitTransformer.transform(hTextFlow, newTarget.getLocale());
-         TransUnitUpdateInfo updateInfo = new TransUnitUpdateInfo(translationResult.isTranslationSuccessful(), translationResult.isTargetChanged(), new DocumentId(hTextFlow.getDocument().getId(), hTextFlow.getDocument().getDocId()), tu, wordCount, translationResult.getBaseVersionNum(), translationResult.getBaseContentState());
+        return transUnitUpdateHelper.generateUpdateTransUnitResult(
+                revertResults, action.getEditorClientId(), UpdateType.Revert,
+                workspace);
+    }
 
-         workspace.publish(new TransUnitUpdated(updateInfo, action.getEditorClientId(), UpdateType.Revert));
-         results.addUpdateResult(updateInfo);
-      }
-      return results;
-   }
-
-   @Override
-   public void rollback(RevertTransUnitUpdates action, UpdateTransUnitResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(RevertTransUnitUpdates action,
+            UpdateTransUnitResult result, ExecutionContext context)
+            throws ActionException {
+    }
 }

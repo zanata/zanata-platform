@@ -26,7 +26,7 @@ import java.util.List;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationDisplayRules;
 import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
 import org.zanata.webtrans.shared.validation.action.JavaVariablesValidation;
 import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
@@ -50,80 +50,74 @@ import com.google.common.collect.Lists;
  * @see TabValidation
  * @see XmlEntityValidation
  **/
-public abstract class AbstractValidationAction implements ValidationAction
-{
-   private ValidationId id;
-   private String description;
+public abstract class AbstractValidationAction implements ValidationAction {
+    private ValidationId id;
+    private String description;
 
-   private ValidationInfo validationInfo;
+    private ValidationDisplayRules displayRules;
 
-   private ArrayList<ValidationAction> exclusiveValidations = new ArrayList<ValidationAction>();
+    private ArrayList<ValidationAction> exclusiveValidations = Lists
+            .newArrayList();
 
-   private ValidationMessages validationMessages;
+    private ValidationMessages validationMessages;
 
-   public AbstractValidationAction(ValidationId id, String description, ValidationInfo validationInfo, ValidationMessages validationMessages)
-   {
-      this.id = id;
-      this.description = description;
-      this.validationInfo = validationInfo;
-      this.validationMessages = validationMessages;
-   }
+    private State state = State.Warning;
 
-   @Override
-   public List<String> validate(String source, String target)
-   {
-      ArrayList<String> errorList = new ArrayList<String>();
-      if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source))
-      {
-         doValidate(errorList, source, target);
-      }
-      return errorList;
-   }
+    public AbstractValidationAction(ValidationId id, String description,
+            ValidationMessages validationMessages) {
+        this.id = id;
+        this.description = description;
+        this.displayRules = new ValidationDisplayRules(state);
+        this.validationMessages = validationMessages;
+    }
 
-   protected abstract void doValidate(ArrayList<String> errorList, String source, String target);
+    @Override
+    public List<String> validate(String source, String target) {
+        if (!Strings.isNullOrEmpty(target) && !Strings.isNullOrEmpty(source)) {
+            return doValidate(source, target);
+        }
+        return Lists.newArrayList();
+    }
 
+    protected abstract List<String> doValidate(String source, String target);
 
-   @Override
-   public List<ValidationAction> getExclusiveValidations()
-   {
-      return exclusiveValidations;
-   }
-   
-   @Override
-   public void mutuallyExclusive(ValidationAction... exclusiveValidations)
-   {
-      this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
-   }
-   
-   protected ValidationMessages getMessages()
-   {
-      return validationMessages;
-   }
-   
-   @Override
-   public void setValidationInfo(ValidationInfo validationInfo)
-   {
-      this.validationInfo = validationInfo;
-   }
+    @Override
+    public List<ValidationAction> getExclusiveValidations() {
+        return exclusiveValidations;
+    }
 
-   @Override
-   public ValidationInfo getValidationInfo()
-   {
-      return validationInfo;
-   }
+    @Override
+    public void mutuallyExclusive(ValidationAction... exclusiveValidations) {
+        this.exclusiveValidations = Lists.newArrayList(exclusiveValidations);
+    }
 
-   @Override
-   public ValidationId getId()
-   {
-      return id;
-   }
+    protected ValidationMessages getMessages() {
+        return validationMessages;
+    }
 
-   @Override
-   public String getDescription()
-   {
-      return description;
-   }
+    @Override
+    public ValidationDisplayRules getRules() {
+        return displayRules;
+    }
+
+    @Override
+    public ValidationId getId() {
+        return id;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public State getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(State state) {
+        this.state = state;
+        displayRules.updateRules(state);
+    }
 }
-
-
- 

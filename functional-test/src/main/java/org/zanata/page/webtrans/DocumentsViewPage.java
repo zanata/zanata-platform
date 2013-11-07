@@ -10,21 +10,20 @@ import org.zanata.util.WebElementUtil;
 import java.util.List;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class DocumentsViewPage extends BasePage
-{
-   @FindBy(id = "gwt-debug-documentListTable")
-   private WebElement documentListTable;
+public class DocumentsViewPage extends BasePage {
+    @FindBy(id = "gwt-debug-documentListTable")
+    private WebElement documentListTable;
 
-   public DocumentsViewPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public DocumentsViewPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public List<List<String>> getDocumentListTableContent()
-   {
-      return WebElementUtil.getTwoDimensionList(getDriver(), By.id("gwt-debug-documentListTable"));
-   }
+    public List<List<String>> getDocumentListTableContent() {
+        return WebElementUtil.getTwoDimensionList(getDriver(),
+                By.id("gwt-debug-documentListTable"));
+    }
 
 }

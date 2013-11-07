@@ -25,46 +25,73 @@ import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 /**
  * View contexts within the application that may have key shortcuts bound and
  * may be activated and deactivated to enable or disable bound shortcuts.
- * 
+ *
  * @see KeyShortcutPresenter#register(KeyShortcut)
  * @see KeyShortcutPresenter#setContextActive(ShortcutContext, boolean)
  */
-public enum ShortcutContext
-{
+public enum ShortcutContext {
 
-   /**
-    * For shortcuts that should always be active. Presenters should not
-    * deactivate this context.
-    */
-   Application,
+    /**
+     * For shortcuts that should always be active. Presenters should not
+     * deactivate this context.
+     */
+    Application,
 
-   /**
-    * Used by {@link SearchResultsPresenter}
-    */
-   ProjectWideSearch,
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.SearchResultsPresenter}
+     */
+    ProjectWideSearch,
 
-   /**
-    * Used by {@link TableEditorPresenter}
-    */
-   Navigation,
+    /**
+     * Used by {@link org.zanata.webtrans.client.presenter.TranslationPresenter}
+     */
+    Navigation,
 
-   /**
-    * Used by {@link InlineTargetCellEditor}
-    */
-   Edit,
-   
-   /**
-    * Used by {@link TransMemoryPresenter}
-    */
-   TM,
-   
-   /**
-    * Used by {@link GlossaryPresenter}
-    */
-   Glossary,
-   
-   /**
-    * Used by {@link WorkspaceUsersPresenter}
-    */
-   Chat;
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.TargetContentsPresenter}
+     */
+    Edit,
+
+    /**
+     * Used by {@link org.zanata.webtrans.client.presenter.TransMemoryPresenter}
+     */
+    TM,
+
+    /**
+     * Used by {@link org.zanata.webtrans.client.presenter.GlossaryPresenter}
+     */
+    Glossary,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter}
+     */
+    Chat,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.TranslationHistoryPresenter}
+     */
+    TransHistoryPopup,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.ForceReviewCommentPresenter}
+     */
+    RejectConfirmationPopup,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.presenter.TargetContentsPresenter}
+     */
+    ValidationWarningPopup,
+
+    /**
+     * Used by
+     * {@link org.zanata.webtrans.client.ui.NotificationDetailsBox}
+     */
+    NotificationDetailsPopup
+
 }

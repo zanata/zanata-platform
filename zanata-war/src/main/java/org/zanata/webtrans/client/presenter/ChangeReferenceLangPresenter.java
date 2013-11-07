@@ -33,96 +33,92 @@ import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 
 /**
- * 
+ *
  * @author Hannes Eskebaek <hannes.eskebaek@databyran.se>
  */
-public class ChangeReferenceLangPresenter extends WidgetPresenter<ChangeReferenceLangDisplay> implements ChangeReferenceLangDisplay.Listener
-{
-   private final CachingDispatchAsync dispatcher;
+public class ChangeReferenceLangPresenter extends
+        WidgetPresenter<ChangeReferenceLangDisplay> implements
+        ChangeReferenceLangDisplay.Listener {
+    private final CachingDispatchAsync dispatcher;
+    private final UserOptionsService userOptionsService;
 
-   private final UserOptionsService userOptionsService;
+    @Inject
+    public ChangeReferenceLangPresenter(ChangeReferenceLangDisplay display,
+    EventBus eventBus, CachingDispatchAsync dispatcher,
+    UserOptionsService userOptionsService) {
+        super(display, eventBus);
+        this.dispatcher = dispatcher;
+        this.userOptionsService = userOptionsService;
+        display.setListener(this);
+    }
 
-   @Inject
-   public ChangeReferenceLangPresenter(ChangeReferenceLangDisplay display, EventBus eventBus, CachingDispatchAsync dispatcher, UserOptionsService userOptionsService)
-   {
-      super(display, eventBus);
-      this.dispatcher = dispatcher;
-      this.userOptionsService = userOptionsService;
-      display.setListener(this);
-   }
+    @Override
+    protected void onBind() {
+        buildListBoxAndSetSelectedIndex();
+    }
 
-   @Override
-   protected void onBind()
-   {
-      buildListBoxAndSetSelectedIndex();
-   }
+    @Override
+    protected void onUnbind() {
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+    @Override
+    protected void onRevealDisplay() {
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
+    private void buildListBoxAndSetSelectedIndex() {
+        GetLocaleList action = new GetLocaleList();
 
-   private void buildListBoxAndSetSelectedIndex()
-   {
-      GetLocaleList action = new GetLocaleList();
+        dispatcher.execute(action, new AsyncCallback<GetLocaleListResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                eventBus.fireEvent(new NotificationEvent(NotificationEvent
+                        .Severity.Error, "Failed to fetch locales"));
+            }
 
-      dispatcher.execute(action, new AsyncCallback<GetLocaleListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, "Failed to fetch locales"));
-         }
+            @Override
+            public void onSuccess(GetLocaleListResult result) {
+                display.buildListBox(result.getLocales());
+                setSelectedLocale();
+            }
+        });
+    }
 
-         @Override
-         public void onSuccess(GetLocaleListResult result)
-         {
-            display.buildListBox(result.getLocales());
-            setSelectedLocale();
-         }
-      });
-   }
-   
-   @Override
-   public void onShowReference(Locale selectedLocale)
-   {
-      eventBus.fireEvent(new ReferenceVisibleEvent(selectedLocale, true));
-   }
+    @Override
+    public void onShowReference(Locale selectedLocale) {
+        eventBus.fireEvent(new ReferenceVisibleEvent(selectedLocale, true));
+    }
 
-   @Override
-   public void onHideReference()
-   {
-      eventBus.fireEvent(new ReferenceVisibleEvent(null, false));
-   }
+    @Override
+    public void onHideReference() {
+        eventBus.fireEvent(new ReferenceVisibleEvent(null, false));
+    }
 
-   @Override
-   public void onSourceLangListBoxOptionChanged(Locale selectedLocale)
-   {
-      if(selectedLocale == Locale.notChosenLocale)
-      {
-         userOptionsService.getConfigHolder().setSelectedReferenceForSourceLang(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
-      }
-      else if (!userOptionsService.getConfigHolder().getState().getSelectedReferenceForSourceLang().equals(selectedLocale.getId().getLocaleId().getId()))
-      {
-         userOptionsService.getConfigHolder().setSelectedReferenceForSourceLang(selectedLocale.getId().getLocaleId().getId());
-      }
-      eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }  
+    @Override
+    public void onSourceLangListBoxOptionChanged(Locale selectedLocale) {
+        if (selectedLocale == Locale.notChosenLocale) {
+            userOptionsService.getConfigHolder()
+                    .setSelectedReferenceForSourceLang(UserConfigHolder
+                    .DEFAULT_SELECTED_REFERENCE);
+        } else if (!userOptionsService.getConfigHolder().getState()
+                .getSelectedReferenceForSourceLang().equals(selectedLocale
+                .getId().getLocaleId().getId())) {
+            userOptionsService.getConfigHolder()
+                    .setSelectedReferenceForSourceLang(selectedLocale.getId()
+                    .getLocaleId().getId());
+        }
+        eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   private void setSelectedLocale()
-   {
-      if (userOptionsService.getConfigHolder().getState().getSelectedReferenceForSourceLang().equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE))
-      {
-         display.setSelectedLocale(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
-      }
-      else 
-      {
-         display.setSelectedLocale(userOptionsService.getConfigHolder().getState().getSelectedReferenceForSourceLang());
-      }
-   }
+    private void setSelectedLocale() {
+        if (userOptionsService.getConfigHolder().getState()
+                .getSelectedReferenceForSourceLang()
+                .equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)) {
+            display.setSelectedLocale(UserConfigHolder
+                    .DEFAULT_SELECTED_REFERENCE);
+        } else {
+            display.setSelectedLocale(userOptionsService
+                    .getConfigHolder().getState()
+                    .getSelectedReferenceForSourceLang());
+        }
+    }
 }

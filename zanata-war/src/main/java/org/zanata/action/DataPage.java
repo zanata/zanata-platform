@@ -23,46 +23,41 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
-public class DataPage<E> implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class DataPage<E> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   private int datasetSize;
+    private int datasetSize;
 
-   private int startRow;
+    private int startRow;
 
-   private List<E> data;
+    private List<E> data;
 
-   public DataPage(int datasetSize, int startRow, List<E> data)
-   {
+    public DataPage(int datasetSize, int startRow, List<E> data) {
 
-      this.datasetSize = datasetSize;
+        this.datasetSize = datasetSize;
 
-      this.startRow = startRow;
+        this.startRow = startRow;
 
-      this.data = data;
+        this.data = data;
 
-   }
+    }
 
-   public int getDatasetSize()
-   {
+    public int getDatasetSize() {
 
-      return datasetSize;
+        return datasetSize;
 
-   }
+    }
 
-   public int getStartRow()
-   {
+    public int getStartRow() {
 
-      return startRow;
+        return startRow;
 
-   }
+    }
 
-   public List<E> getData()
-   {
+    public List<E> getData() {
 
-      return data;
+        return data;
 
-   }
+    }
 
 }

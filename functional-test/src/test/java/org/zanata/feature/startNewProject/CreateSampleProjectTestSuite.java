@@ -26,24 +26,22 @@ import org.junit.runners.Suite;
 import org.zanata.util.ResetDatabaseRule;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.zanata.util.ResetDatabaseRule.Config.*;
 
 @Slf4j
 @RunWith(Suite.class)
 // @formatter:off
 @Suite.SuiteClasses({
-      StartNewProjectTest.class,
-      CreateNewProjectTest.class,
-      CreateVersionAndAddToProjectTest.class,
-      AddLanguageTest.class,
-      TranslatorJoinsLanguageTeamTest.class,
-      PushPodirPluralProjectTest.class,
-      DocumentListInWebTransTest.class
+    StartNewProjectTest.class,
+    CreateNewProjectTest.class,
+    CreateVersionAndAddToProjectTest.class,
+    AddLanguageTest.class,
+    TranslatorJoinsLanguageTeamTest.class,
+    PushPodirPluralProjectTest.class,
+    DocumentListInWebTransTest.class
 })
 // @formatter:on
-public class CreateSampleProjectTestSuite
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class CreateSampleProjectTestSuite {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
 }

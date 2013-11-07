@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.annotations.Install;
@@ -35,25 +34,22 @@ import static org.jboss.seam.ScopeType.SESSION;
 @Scope(SESSION)
 @Install(precedence = Install.DEPLOYMENT)
 @BypassInterceptors
-public class FixedRememberMe extends RememberMe
-{
-   private static final long serialVersionUID = 1L;
+public class FixedRememberMe extends RememberMe {
+    private static final long serialVersionUID = 1L;
 
-   @Override
-   public String getCookiePath()
-   {
-      FacesContext ctx = FacesContext.getCurrentInstance();
-      if (ctx == null)
-      {
-         return null;
-      }
-      String requestContextPath = ctx.getExternalContext().getRequestContextPath();
-      // workaround for https://issues.jboss.org/browse/SEAMSECURITY-9
-      if (requestContextPath.isEmpty())
-      {
-         requestContextPath = "/";
-      }
-      return requestContextPath;
-   }
+    @Override
+    public String getCookiePath() {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        if (ctx == null) {
+            return null;
+        }
+        String requestContextPath =
+                ctx.getExternalContext().getRequestContextPath();
+        // workaround for https://issues.jboss.org/browse/SEAMSECURITY-9
+        if (requestContextPath.isEmpty()) {
+            requestContextPath = "/";
+        }
+        return requestContextPath;
+    }
 
 }

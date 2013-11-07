@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 
@@ -29,20 +27,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class StatusCountTest
-{
-   @Test
-   public void lombokWorks() {
-      StatusCount statusCount = new StatusCount(ContentState.New, 1L);
+public class StatusCountTest {
+    @Test
+    public void lombokWorks() {
+        StatusCount statusCount = new StatusCount(ContentState.New, 1L);
 
-      StatusCount other = new StatusCount(ContentState.New, 1L);
+        StatusCount other = new StatusCount(ContentState.New, 1L);
 
-      assertThat(statusCount.canEqual(other), equalTo(true));
-      assertThat(statusCount.equals(other), equalTo(true));
-      assertThat(statusCount.hashCode(), equalTo(other.hashCode()));
-      System.out.println(statusCount.hashCode());
-      assertThat(statusCount.toString(), equalTo("StatusCount(status=New, count=1)"));
-   }
+        assertThat(statusCount.canEqual(other), equalTo(true));
+        assertThat(statusCount.equals(other), equalTo(true));
+        assertThat(statusCount.hashCode(), equalTo(other.hashCode()));
+        System.out.println(statusCount.hashCode());
+        assertThat(statusCount.toString(),
+                equalTo("StatusCount(status=New, count=1)"));
+    }
 }

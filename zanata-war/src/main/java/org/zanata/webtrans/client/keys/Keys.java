@@ -27,111 +27,101 @@ import java.util.Set;
 /**
  * Represents a combination of modifier keys and a single key code for use with
  * {@link KeyShortcut}.
- * 
+ *
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
- * 
+ *
  */
-public class Keys implements Comparable<Keys>
-{
+public class Keys implements Comparable<Keys> {
 
-   public static final int NO_MODIFIER = 0x0;
-   public static final int ALT_KEY = 0x1;
-   public static final int SHIFT_KEY = 0x2;
-   public static final int CTRL_KEY = 0x4;
-   public static final int META_KEY = 0x8;
-   public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
-   public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
+    public static final int NO_MODIFIER = 0x0;
+    public static final int ALT_KEY = 0x1;
+    public static final int SHIFT_KEY = 0x2;
+    public static final int CTRL_KEY = 0x4;
+    public static final int META_KEY = 0x8;
+    public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
+    public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
 
-   public static final int KEY_1 = 49;
-   public static final int KEY_2 = 50;
-   public static final int KEY_3 = 51;
-   public static final int KEY_4 = 52;
+    public static final int KEY_1 = 49;
+    public static final int KEY_2 = 50;
+    public static final int KEY_3 = 51;
+    public static final int KEY_4 = 52;
 
-   public static final int KEY_NUM_1 = 97;
-   public static final int KEY_NUM_2 = 98;
-   public static final int KEY_NUM_3 = 99;
-   public static final int KEY_NUM_4 = 100;
+    public static final int KEY_NUM_1 = 97;
+    public static final int KEY_NUM_2 = 98;
+    public static final int KEY_NUM_3 = 99;
+    public static final int KEY_NUM_4 = 100;
 
-   private final int modifiers;
-   private final int keyCode;
+    private final int modifiers;
+    private final int keyCode;
 
-   public Keys(int modifiers, int keyCode)
-   {
-      this.modifiers = modifiers;
-      this.keyCode = keyCode;
-   }
+    public Keys(int modifiers, int keyCode) {
+        this.modifiers = modifiers;
+        this.keyCode = keyCode;
+    }
 
-   /**
-    * Shortcut for {@code Keys(Keys.NO_MODIFIER, keyCode)}
-    * @param keyCode
-    */
-   public Keys(int keyCode)
-   {
-      this(NO_MODIFIER, keyCode);
-   }
+    /**
+     * Shortcut for {@code Keys(Keys.NO_MODIFIER, keyCode)}
+     *
+     * @param keyCode
+     */
+    public Keys(int keyCode) {
+        this(NO_MODIFIER, keyCode);
+    }
 
-   public int getModifiers()
-   {
-      return modifiers;
-   }
+    public int getModifiers() {
+        return modifiers;
+    }
 
-   public int getKeyCode()
-   {
-      return keyCode;
-   }
+    public int getKeyCode() {
+        return keyCode;
+    }
 
-   @Override
-   public int hashCode()
-   {
-      // could pre-calculate hash as these are both final.
-      return keyCode * 8 + modifiers;
-   }
+    @Override
+    public int hashCode() {
+        // could pre-calculate hash as these are both final.
+        return keyCode * 8 + modifiers;
+    }
 
-   /**
-    * Two {@link KeyShortcut} objects are equal if they have the same key
-    * combination and context.
-    */
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (obj == null)
-         return false;
-      if (!(obj instanceof Keys))
-         return false;
-      Keys other = (Keys) obj;
-      boolean equal = keyCode == other.keyCode && modifiers == other.modifiers;
-      return equal;
-   }
+    /**
+     * Two {@link KeyShortcut} objects are equal if they have the same key
+     * combination and context.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Keys))
+            return false;
+        Keys other = (Keys) obj;
+        boolean equal =
+                keyCode == other.keyCode && modifiers == other.modifiers;
+        return equal;
+    }
 
-   @Override
-   public int compareTo(Keys o)
-   {
-      Integer compareFrom;
-      Integer compareTo;
+    @Override
+    public int compareTo(Keys o) {
+        Integer compareFrom;
+        Integer compareTo;
 
-      if (this.modifiers == o.modifiers)
-      {
-         compareFrom = this.modifiers + this.keyCode;
-         compareTo = o.modifiers + o.keyCode;
-      }
-      else
-      {
-         compareFrom = this.modifiers;
-         compareTo = o.modifiers;
-      }
+        if (this.modifiers == o.modifiers) {
+            compareFrom = this.modifiers + this.keyCode;
+            compareTo = o.modifiers + o.keyCode;
+        } else {
+            compareFrom = this.modifiers;
+            compareTo = o.modifiers;
+        }
 
-      return compareFrom.compareTo(compareTo);
-   }
+        return compareFrom.compareTo(compareTo);
+    }
 
-   @Override
-   public String toString()
-   {
-      return "mod: " + modifiers + " key: " + keyCode + " hash: " + hashCode();
-   }
+    @Override
+    public String toString() {
+        return "mod: " + modifiers + " key: " + keyCode + " hash: "
+                + hashCode();
+    }
 
-   public static Set<Keys> setOf(Keys... keys)
-   {
-      return new HashSet<Keys>(Arrays.asList(keys));
-   }
+    public static Set<Keys> setOf(Keys... keys) {
+        return new HashSet<Keys>(Arrays.asList(keys));
+    }
 }

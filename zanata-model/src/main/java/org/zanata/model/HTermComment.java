@@ -26,15 +26,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 import javax.validation.constraints.NotNull;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -46,55 +46,47 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(of = "comment")
-public class HTermComment
-{
-   private Long id;
+public class HTermComment {
+    private Long id;
 
-   private String comment;
+    private String comment;
 
-   private Integer pos;
+    private Integer pos;
 
-   private HGlossaryTerm glossaryTerm;
+    private HGlossaryTerm glossaryTerm;
 
-   public HTermComment(String comment)
-   {
-      this.comment = comment;
-   }
+    public HTermComment(String comment) {
+        this.comment = comment;
+    }
 
-   @Id
-   @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
+    @Id
+    @GeneratedValue
+    public Long getId() {
+        return id;
+    }
 
-   protected void setId(Long id)
-   {
-      this.id = id;
-   }
+    protected void setId(Long id) {
+        this.id = id;
+    }
 
-   @NotNull
-   @Type(type = "text")
-   public String getComment()
-   {
-      return comment;
-   }
+    @NotNull
+    @Type(type = "text")
+    public String getComment() {
+        return comment;
+    }
 
-   @Column(insertable = false, updatable = false, nullable = false)
-   public Integer getPos()
-   {
-      return pos;
-   }
+    @Column(insertable = false, updatable = false, nullable = false)
+    public Integer getPos() {
+        return pos;
+    }
 
-   @ManyToOne
-   @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false, nullable = false)
-   // TODO PERF @NaturalId(mutable=false) for better criteria caching
-   public HGlossaryTerm getGlossaryTerm()
-   {
-      return glossaryTerm;
-   }
+    @ManyToOne
+    @JoinColumn(name = "glossaryTermId", insertable = false, updatable = false,
+            nullable = false)
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+            public
+            HGlossaryTerm getGlossaryTerm() {
+        return glossaryTerm;
+    }
 
 }
-
-
- 

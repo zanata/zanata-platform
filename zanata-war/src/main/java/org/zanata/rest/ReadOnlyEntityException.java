@@ -1,17 +1,14 @@
 package org.zanata.rest;
 
-public class ReadOnlyEntityException extends RuntimeException
-{
+public class ReadOnlyEntityException extends RuntimeException {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   public ReadOnlyEntityException()
-   {
-   }
+    public ReadOnlyEntityException() {
+    }
 
-   public ReadOnlyEntityException(String message)
-   {
-      super(message);
-   }
+    public ReadOnlyEntityException(String message) {
+        super(message);
+    }
 
 }

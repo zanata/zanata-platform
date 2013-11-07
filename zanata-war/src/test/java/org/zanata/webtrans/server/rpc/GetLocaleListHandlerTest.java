@@ -34,10 +34,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 
-/**
- * @author Patrick Huang <a
- * href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
 @Test(groups = {"jpa-tests"})
 @Slf4j
 public class GetLocaleListHandlerTest
@@ -86,8 +82,10 @@ public class GetLocaleListHandlerTest
         iterationLocales.add(new HLocale(LocaleId.EN_US));
         iterationLocales.add(new HLocale(LocaleId.DE));
         when(hProjectIteration.getId()).thenReturn(1L);
-        when(hProjectIteration.getCustomizedLocales()).thenReturn(iterationLocales);
-        when(projectIterationDAO.getBySlug("project", "master")).thenReturn(hProjectIteration);
+        when(hProjectIteration.getCustomizedLocales())
+                .thenReturn(iterationLocales);
+        when(projectIterationDAO.getBySlug("project", "master"))
+                .thenReturn(hProjectIteration);
         
         Set<HLocale> projectLocales = new HashSet<HLocale>();
         projectLocales.add(new HLocale(LocaleId.ES));
@@ -99,48 +97,54 @@ public class GetLocaleListHandlerTest
         defaultLocales.add(new HLocale(LocaleId.FR));
         defaultLocales.add(new HLocale(LocaleId.EN));
         defaultLocales.add(new HLocale(LocaleId.DE));
-        when(localeDAO.findAllActiveAndEnabledByDefault()).thenReturn(defaultLocales);
+        when(localeDAO.findAllActiveAndEnabledByDefault())
+                .thenReturn(defaultLocales);
     }
 
     @Test
     public void testExecute() throws Exception
     {        
-        when(hProjectIteration.getOverrideLocales()).thenReturn(false);
-        when(hProject.getOverrideLocales()).thenReturn(false);
+        when(hProjectIteration.isOverrideLocales()).thenReturn(false);
+        when(hProject.isOverrideLocales()).thenReturn(false);
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         assertThat(result.getLocales(), Matchers.hasSize(3));
         
-        assertThat(result.getLocales().get(0).getId().getLocaleId(), Matchers.equalTo(LocaleId.FR));
-        assertThat(result.getLocales().get(1).getId().getLocaleId(), Matchers.equalTo(LocaleId.EN));
-        assertThat(result.getLocales().get(2).getId().getLocaleId(), Matchers.equalTo(LocaleId.DE));
+        assertThat(result.getLocales().get(0).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.FR));
+        assertThat(result.getLocales().get(1).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.EN));
+        assertThat(result.getLocales().get(2).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.DE));
     }
     
     @Test
     public void testExecuteWithOverriddenProjectLocales() throws Exception
     {
-        when(hProject.getOverrideLocales()).thenReturn(true);
+        when(hProject.isOverrideLocales()).thenReturn(true);
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         assertThat(result.getLocales(), Matchers.hasSize(1));
-        assertThat(result.getLocales().get(0).getId().getLocaleId(), Matchers.equalTo(LocaleId.ES));
+        assertThat(result.getLocales().get(0).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.ES));
     }
     
     @Test
     public void testExecuteWithOverriddenIterationLocales() throws Exception
     {
-        when(hProject.getOverrideLocales()).thenReturn(true);
-        when(hProjectIteration.getOverrideLocales()).thenReturn(true);
+        when(hProject.isOverrideLocales()).thenReturn(true);
+        when(hProjectIteration.isOverrideLocales()).thenReturn(true);
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         assertThat(result.getLocales(), Matchers.hasSize(2));
-        assertThat(result.getLocales().get(0).getId().getLocaleId(), Matchers.equalTo(LocaleId.DE));
-        assertThat(result.getLocales().get(1).getId().getLocaleId(), Matchers.equalTo(LocaleId.EN_US));
-    }
-    
+        assertThat(result.getLocales().get(0).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.DE));
+        assertThat(result.getLocales().get(1).getId().getLocaleId(),
+                Matchers.equalTo(LocaleId.EN_US));
+    }    
 
     @Test
     public void testRollback() throws Exception

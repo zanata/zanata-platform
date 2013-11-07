@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -28,177 +28,179 @@ import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface UiMessages extends Messages
-{
-   @DefaultMessage("Clear")
-   String clearButtonLabel();
+public interface UiMessages extends Messages {
+    @DefaultMessage("Clear")
+    String clearButtonLabel();
 
-   @DefaultMessage("Search")
-   String searchButtonLabel();
+    @DefaultMessage("Search")
+    String searchButtonLabel();
 
-   @DefaultMessage("Similarity")
-   String similarityLabel();
-   
-   @DefaultMessage("Details")
-   String detailsLabel();
+    @DefaultMessage("Similarity")
+    String similarityLabel();
 
-   @DefaultMessage("Origin")
-   String originLabel();
+    @DefaultMessage("Details")
+    String detailsLabel();
 
-   @DefaultMessage("Number of times translation has been used")
-   String matchCountHeaderTooltip();
+    @DefaultMessage("Origin")
+    String originLabel();
 
-   @DefaultMessage("This translation has been used {0} times")
-   @AlternateMessage({"one", "This translation has been used once"})
-   String matchCountTooltip(@PluralCount int matchCount);
+    @DefaultMessage("Number of times translation has been used")
+    String matchCountHeaderTooltip();
 
-   @DefaultMessage("Source")
-   String sourceLabel();
+    @DefaultMessage("This translation has been used {0} times")
+    @AlternateMessage({ "one", "This translation has been used once" })
+    String matchCountTooltip(@PluralCount int matchCount);
 
-   @DefaultMessage("Target")
-   String targetLabel();
-   
-   @DefaultMessage("Source Term")
-   String srcTermLabel();
-   
-   @DefaultMessage("Target Term")
-   String targetTermLabel();
+    @DefaultMessage("Source")
+    String sourceLabel();
 
-   @DefaultMessage("Translation Memory")
-   String translationMemoryHeading();
-   
-   @DefaultMessage("Translation Memory Details")
-   String translationMemoryDetails();
+    @DefaultMessage("Target")
+    String targetLabel();
 
-   @DefaultMessage("Glossary")
-   String glossaryHeading();
+    @DefaultMessage("Source Term")
+    String srcTermLabel();
 
-   @DefaultMessage("Entry #{0}")
-   String entriesLabel(int count);
+    @DefaultMessage("Target Term")
+    String targetTermLabel();
 
-   @DefaultMessage("Source Term [{0}]:")
-   String glossarySourceTermLabel(String locale);
+    @DefaultMessage("Translation Memory")
+    String translationMemoryHeading();
 
-   @DefaultMessage("Target Term [{0}]:")
-   String glossaryTargetTermLabel(String locale);
+    @DefaultMessage("Translation Memory Details")
+    String translationMemoryDetails();
 
-   @DefaultMessage("Send")
-   String sendLabel();
+    @DefaultMessage("Glossary")
+    String glossaryHeading();
 
-   @DefaultMessage("Processing")
-   String processing();
+    @DefaultMessage("Entry #{0}")
+    String entriesLabel(int count);
 
-   @DefaultMessage("TM merge")
-   String mergeTMButtonLabel();
+    @DefaultMessage("Source Term [{0}]:")
+    String glossarySourceTermLabel(String locale);
 
-   @DefaultMessage("Merge translation from Translation Memory for untranslated and fuzzy text flows on current page")
-   String mergeTMTooltip();
+    @DefaultMessage("Target Term [{0}]:")
+    String glossaryTargetTermLabel(String locale);
 
-   @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state.")
-   String mergeTMCaption();
+    @DefaultMessage("Send")
+    String sendLabel();
 
-   @DefaultMessage("No text can be TM merged")
-   String noTranslationToMerge();
+    @DefaultMessage("Processing")
+    String processing();
 
-   @DefaultMessage("TM merge failed")
-   String mergeTMFailed();
+    @DefaultMessage("TM merge")
+    String mergeTMButtonLabel();
 
-   @DefaultMessage("TM merge success on following rows: {0,list,string}")
-   String mergeTMSuccess(List<String> rowIndices);
+    @DefaultMessage("Merge translation from Translation Memory for untranslated and fuzzy text flows on current page")
+            String mergeTMTooltip();
 
-   @DefaultMessage("Proceed to auto-fill")
-   String mergeTMConfirm();
+    @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state.")
+            String mergeTMCaption();
 
-   @DefaultMessage("Cancel")
-   String mergeTMCancel();
+    @DefaultMessage("No text can be TM merged")
+    String noTranslationToMerge();
 
-   @DefaultMessage("Match percentage threshold")
-   String matchThreshold();
+    @DefaultMessage("TM merge failed")
+    String mergeTMFailed();
 
-   @DefaultMessage("On Content mismatch:")
-   String differentContent();
+    @DefaultMessage("TM merge success on following rows: {0,list,string}")
+    String mergeTMSuccess(List<String> rowIndices);
 
-   @DefaultMessage("On Project Name mismatch:")
-   String differentProjectSlug();
+    @DefaultMessage("Proceed to auto-fill")
+    String mergeTMConfirm();
 
-   @DefaultMessage("On Document Id mismatch (Document name and path):")
-   String differentDocument();
+    @DefaultMessage("Cancel")
+    String mergeTMCancel();
 
-   @DefaultMessage("On Context mismatch (resId, msgctxt):")
-   String differentContext();
+    @DefaultMessage("Match percentage threshold")
+    String matchThreshold();
 
-   @DefaultMessage("On match from Imported Translation Memory:")
-   String importedMatch();
+    @DefaultMessage("On Content mismatch:")
+    String differentContent();
 
-   @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
-   String otherwise();
+    @DefaultMessage("On Project Name mismatch:")
+    String differentProjectSlug();
 
-   @DefaultMessage("Condition")
-   String condition();
+    @DefaultMessage("On Document Id mismatch (Document name and path):")
+    String differentDocument();
 
-   @DefaultMessage("Action")
-   String action();
+    @DefaultMessage("On Context mismatch (resId, msgctxt):")
+    String differentContext();
 
-   @DefaultMessage("100% (Identical)")
-   String identical();
+    @DefaultMessage("On match from Imported Translation Memory:")
+    String importedMatch();
 
-   @DefaultMessage("Copy")
-   String copy();
+    @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
+    String otherwise();
 
-   @DefaultMessage("Copy text and paste into editor")
-   String copyTooltip();
+    @DefaultMessage("Condition")
+    String condition();
 
-   @DefaultMessage("Glossary Details")
-   String glossaryDetails();
+    @DefaultMessage("Action")
+    String action();
 
-   @DefaultMessage("Dismiss")
-   String dismiss();
+    @DefaultMessage("100% (Identical)")
+    String identical();
 
-   @DefaultMessage("Save")
-   String save();
+    @DefaultMessage("Copy")
+    String copy();
 
-   @DefaultMessage("Last modified on {0}")
-   String lastModifiedOn(String date);
-   
-   @DefaultMessage("Last modified on {0} by {1}")
-   String lastModified(String date, String by);
+    @DefaultMessage("Copy text and paste into editor")
+    String copyTooltip();
 
-   @DefaultMessage("Searching...")
-   String searching();
+    @DefaultMessage("Glossary Details")
+    String glossaryDetails();
 
-   @DefaultMessage("Found no glossary results")
-   String foundNoGlossaryResults();
-   
-   @DefaultMessage("Found no translation memory results")
-   String foundNoTMResults();
+    @DefaultMessage("Dismiss")
+    String dismiss();
 
-   @DefaultMessage("Glossary save fail")
-   String saveGlossaryFailed();
+    @DefaultMessage("Save")
+    String save();
 
-   @DefaultMessage("#")
-   String hash();
+    @DefaultMessage("Last modified on {0}")
+    String lastModifiedOn(String date);
 
-   @DefaultMessage("Color legend")
-   String colorLegend();
+    @DefaultMessage("Last modified on {0} by {1}")
+    String lastModified(String date, String by);
 
-   @DefaultMessage("Search Source or Target content")
-   String findSourceOrTargetString();
+    @DefaultMessage("Searching...")
+    String searching();
 
-   @DefaultMessage("Show as Diff")
-   String diffModeAsDiff();
+    @DefaultMessage("Found no glossary results")
+    String foundNoGlossaryResults();
 
-   @DefaultMessage("Highlight matches")
-   String diffModeAsHighlight();
+    @DefaultMessage("Found no translation memory results")
+    String foundNoTMResults();
 
-   @DefaultMessage("Show reference translations from")
-   String changeSourceLangDescription();
+    @DefaultMessage("Glossary save fail")
+    String saveGlossaryFailed();
 
-   @DefaultMessage("No reference found")
-   String noReferenceFoundText();
+    @DefaultMessage("#")
+    String hash();
 
-   @DefaultMessage("In")
-   String inLocale();
+    @DefaultMessage("Color legend")
+    String colorLegend();
 
-   @DefaultMessage("None")
-   String chooseRefLang();
+    @DefaultMessage("Search Source or Target content")
+    String findSourceOrTargetString();
+
+    @DefaultMessage("Show as Diff")
+    String diffModeAsDiff();
+
+    @DefaultMessage("Highlight matches")
+    String diffModeAsHighlight();
+
+    @DefaultMessage("Translation that contained validation warning or error.")
+    String invalidTooltip();
+
+    @DefaultMessage("Show reference translations from")
+    String changeSourceLangDescription();
+
+    @DefaultMessage("No reference found")
+    String noReferenceFoundText();
+
+    @DefaultMessage("In")
+    String inLocale();
+
+    @DefaultMessage("None")
+    String chooseRefLang();
 }

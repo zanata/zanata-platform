@@ -66,320 +66,299 @@ import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 
-
 @Name("org.jboss.seam.security.zanataOpenId")
 @Scope(SESSION)
 @AutoCreate
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
-public class ZanataOpenId implements OpenIdAuthCallback
-{
-   private static final Logger LOGGER = LoggerFactory.getLogger(ZanataOpenId.class);
+public class ZanataOpenId implements OpenIdAuthCallback {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ZanataOpenId.class);
 
-   private ZanataIdentity identity;
-   private ApplicationConfiguration applicationConfiguration;
+    private ZanataIdentity identity;
+    private ApplicationConfiguration applicationConfiguration;
 
-   @In
-   private Credentials credentials;
+    @In
+    private Credentials credentials;
 
-   @In
-   private UserRedirectBean userRedirect;
+    @In
+    private UserRedirectBean userRedirect;
 
-   @In
-   private AccountDAO accountDAO;
+    @In
+    private AccountDAO accountDAO;
 
-   private String id;
-   private OpenIdAuthenticationResult authResult;
-   private OpenIdAuthCallback callback;
-   private OpenIdProvider openIdProvider;
+    private String id;
+    private OpenIdAuthenticationResult authResult;
+    private OpenIdAuthCallback callback;
+    private OpenIdProvider openIdProvider;
 
-   private ConsumerManager manager;
-   private DiscoveryInformation discovered;
+    private ConsumerManager manager;
+    private DiscoveryInformation discovered;
 
-   public String getId()
-   {
-      return id;
-   }
+    public String getId() {
+        return id;
+    }
 
-   public void setId(String id)
-   {
-      this.id = id;
-   }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-   public OpenIdAuthenticationResult getAuthResult()
-   {
-      return authResult;
-   }
+    public OpenIdAuthenticationResult getAuthResult() {
+        return authResult;
+    }
 
-   public void setCallback(OpenIdAuthCallback callback)
-   {
-      this.callback = callback;
-   }
+    public void setCallback(OpenIdAuthCallback callback) {
+        this.callback = callback;
+    }
 
-   @SuppressWarnings("rawtypes")
-   protected String authRequest(String userSuppliedString, String returnToUrl)
-   {
-      try
-      {
-         // perform discovery on the user-supplied identifier
-         List discoveries = manager.discover(userSuppliedString);
+    @SuppressWarnings("rawtypes")
+    protected String authRequest(String userSuppliedString, String returnToUrl) {
+        try {
+            // perform discovery on the user-supplied identifier
+            List discoveries = manager.discover(userSuppliedString);
 
-         // attempt to associate with the OpenID providerType
-         // and retrieve one service endpoint for authentication
-         discovered = manager.associate(discoveries);
+            // attempt to associate with the OpenID providerType
+            // and retrieve one service endpoint for authentication
+            discovered = manager.associate(discoveries);
 
-         // // store the discovery information in the user's session
-         // httpReq.getSession().setAttribute("openid-disc", discovered);
+            // // store the discovery information in the user's session
+            // httpReq.getSession().setAttribute("openid-disc", discovered);
 
-         // obtain a AuthRequest message to be sent to the OpenID providerType
-         AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
+            // obtain a AuthRequest message to be sent to the OpenID
+            // providerType
+            AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
 
-         // Attribute Exchange example: fetching the 'email' attribute
-         FetchRequest fetch = FetchRequest.createFetchRequest();
-         openIdProvider.prepareRequest(fetch);
+            // Attribute Exchange example: fetching the 'email' attribute
+            FetchRequest fetch = FetchRequest.createFetchRequest();
+            openIdProvider.prepareRequest(fetch);
 
-         // attach the extension to the authentication request
-         authReq.addExtension(fetch);
+            // attach the extension to the authentication request
+            authReq.addExtension(fetch);
 
-         return authReq.getDestinationUrl(true);
-      }
-      catch (OpenIDException e)
-      {
-         LOGGER.warn("exception", e);
-      }
+            return authReq.getDestinationUrl(true);
+        } catch (OpenIDException e) {
+            LOGGER.warn("exception", e);
+        }
 
-      return null;
-   }
+        return null;
+    }
 
-   public void verify()
-   {
-      ExternalContext context = javax.faces.context.FacesContext.getCurrentInstance().getExternalContext();
-      HttpServletRequest request = (HttpServletRequest) context.getRequest();
+    public void verify() {
+        ExternalContext context =
+                javax.faces.context.FacesContext.getCurrentInstance()
+                        .getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) context.getRequest();
 
-      authResult.setAuthenticatedId( verifyResponse(request) );
-   }
+        authResult.setAuthenticatedId(verifyResponse(request));
+    }
 
-   public boolean loginImmediately()
-   {
-      if (authResult.isAuthenticated())
-      {
-         Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(authResult.getAuthenticatedId())));
-         return true;
-      }
+    public boolean loginImmediately() {
+        if (authResult.isAuthenticated()) {
+            Identity.instance().acceptExternallyAuthenticatedPrincipal(
+                    (new OpenIdPrincipal(authResult.getAuthenticatedId())));
+            return true;
+        }
 
-      return false;
-   }
+        return false;
+    }
 
-   public String verifyResponse(HttpServletRequest httpReq)
-   {
-      try
-      {
-         // extract the parameters from the authentication response
-         // (which comes in as a HTTP request from the OpenID providerType)
-         ParameterList response = new ParameterList(httpReq.getParameterMap());
+    public String verifyResponse(HttpServletRequest httpReq) {
+        try {
+            // extract the parameters from the authentication response
+            // (which comes in as a HTTP request from the OpenID providerType)
+            ParameterList response =
+                    new ParameterList(httpReq.getParameterMap());
 
-         StringBuilder receivingURL = new StringBuilder(returnToUrl());
-         String queryString = httpReq.getQueryString();
-         if (queryString != null && queryString.length() > 0)
-         {
-            receivingURL.append("?").append(httpReq.getQueryString());
-         }
-
-         // verify the response; ConsumerManager needs to be the same
-         // (static) instance used to place the authentication request
-         VerificationResult verification = manager.verify(receivingURL.toString(), response, discovered);
-
-         // The OpenId provider cancelled the authentication
-         if( "cancel".equals( response.getParameterValue("openid.mode") ) )
-         {
-            // TODO This should be done at a higher level. i.e. instead of returning a string, return an
-            // object that holds more information for the UI to render
-            FacesMessages.instance().add(StatusMessage.Severity.INFO, "Authentication Request Cancelled");
-         }
-
-         // examine the verification result and extract the verified identifier
-         Identifier verified = verification.getVerifiedId();
-         if (verified != null)
-         {
-            authResult = new OpenIdAuthenticationResult();
-            authResult.setAuthenticatedId( verified.getIdentifier() );
-            authResult.setEmail( openIdProvider.getEmail(response) ); // Get the email address
-         }
-
-         // invoke the callbacks
-         if( callback != null )
-         {
-            callback.afterOpenIdAuth(authResult);
-            if( callback.getRedirectToUrl() != null )
-            {
-               userRedirect.setLocalUrl(callback.getRedirectToUrl());
+            StringBuilder receivingURL = new StringBuilder(returnToUrl());
+            String queryString = httpReq.getQueryString();
+            if (queryString != null && queryString.length() > 0) {
+                receivingURL.append("?").append(httpReq.getQueryString());
             }
-         }
 
-         if( verified != null )
-         {
-            return verified.getIdentifier();
-         }
-      }
-      catch (OpenIDException e)
-      {
-         LOGGER.warn("exception", e);
-      }
+            // verify the response; ConsumerManager needs to be the same
+            // (static) instance used to place the authentication request
+            VerificationResult verification =
+                    manager.verify(receivingURL.toString(), response,
+                            discovered);
 
-      return null;
-   }
+            // The OpenId provider cancelled the authentication
+            if ("cancel".equals(response.getParameterValue("openid.mode"))) {
+                // TODO This should be done at a higher level. i.e. instead of
+                // returning a string, return an
+                // object that holds more information for the UI to render
+                FacesMessages.instance().add(StatusMessage.Severity.INFO,
+                        "Authentication Request Cancelled");
+            }
 
-   public void logout()
-   {
-      init();
-   }
+            // examine the verification result and extract the verified
+            // identifier
+            Identifier verified = verification.getVerifiedId();
+            if (verified != null) {
+                authResult = new OpenIdAuthenticationResult();
+                authResult.setAuthenticatedId(verified.getIdentifier());
+                authResult.setEmail(openIdProvider.getEmail(response)); // Get
+                                                                        // the
+                                                                        // email
+                                                                        // address
+            }
 
-   @Create
-   public void init()
-   {
-      try
-      {
-         manager = new ConsumerManager();
-         discovered = null;
-         id = null;
-         authResult = new OpenIdAuthenticationResult();
-      }
-      catch (ConsumerException e)
-      {
-         throw new RuntimeException(e);
-      }
-      identity = (ZanataIdentity) Component.getInstance(ZanataIdentity.class, ScopeType.SESSION);
-      applicationConfiguration = (ApplicationConfiguration) Component.getInstance(ApplicationConfiguration.class, ScopeType.APPLICATION);
-   }
-   
-   private void loginImmediate()
-   {
-      if (loginImmediately() && Events.exists())
-      {
-         Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE, identity);
-         // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
-         // AuthenticationType.OPENID);
-         Events.instance().raiseEvent(AuthenticationManager.EVENT_LOGIN_COMPLETED, AuthenticationType.OPENID);
-      }
-   }
+            // invoke the callbacks
+            if (callback != null) {
+                callback.afterOpenIdAuth(authResult);
+                if (callback.getRedirectToUrl() != null) {
+                    userRedirect.setLocalUrl(callback.getRedirectToUrl());
+                }
+            }
 
-   private void login(String username, OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback)
-   {
-      try
-      {
-         this.setProvider(openIdProviderType);
-         String var = openIdProvider.getOpenId(username);
-         setId(var);
-         setCallback(callback);
-         LOGGER.info("openid: {}", getId());
-         login();
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+            if (verified != null) {
+                return verified.getIdentifier();
+            }
+        } catch (OpenIDException e) {
+            LOGGER.warn("exception", e);
+        }
 
-   public void login(ZanataCredentials credentials)
-   {
-      this.login(credentials, this);
-   }
+        return null;
+    }
 
-   public void login(ZanataCredentials credentials, OpenIdAuthCallback callback)
-   {
-      this.login(credentials.getUsername(), credentials.getOpenIdProviderType(), callback);
-   }
+    public void logout() {
+        init();
+    }
 
-   private void login()
-   {
-      authResult = new OpenIdAuthenticationResult();
-      String returnToUrl = returnToUrl();
+    @Create
+    public void init() {
+        manager = new ConsumerManager();
+        discovered = null;
+        id = null;
+        authResult = new OpenIdAuthenticationResult();
+        // TODO inject these
+        identity =
+                (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
+                        ScopeType.SESSION);
+        applicationConfiguration =
+                (ApplicationConfiguration) Component.getInstance(
+                        ApplicationConfiguration.class);
+    }
 
-      String url = authRequest(id, returnToUrl);
+    private void loginImmediate() {
+        if (loginImmediately() && Events.exists()) {
+            Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
+                    identity);
+            // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
+            // AuthenticationType.OPENID);
+            Events.instance().raiseEvent(
+                    AuthenticationManager.EVENT_LOGIN_COMPLETED,
+                    AuthenticationType.OPENID);
+        }
+    }
 
-      if (url != null)
-      {
-         Redirect redirect = Redirect.instance();
-         redirect.captureCurrentView();
+    private void login(String username, OpenIdProviderType openIdProviderType,
+            OpenIdAuthCallback callback) {
+        try {
+            this.setProvider(openIdProviderType);
+            String var = openIdProvider.getOpenId(username);
+            setId(var);
+            setCallback(callback);
+            LOGGER.info("openid: {}", getId());
+            login();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-         FacesManager.instance().redirectToExternalURL(url);
-      }
-   }
+    public void login(ZanataCredentials credentials) {
+        this.login(credentials, this);
+    }
 
-   public String returnToUrl()
-   {
-      return applicationConfiguration.getServerPath() + "/openid.seam";
-   }
+    public void
+            login(ZanataCredentials credentials, OpenIdAuthCallback callback) {
+        this.login(credentials.getUsername(),
+                credentials.getOpenIdProviderType(), callback);
+    }
 
-   /**
-    * Default implementation for an authentication callback. This implementations simply authenticates
-    * the user locally.
-    */
-   @Override
-   public void afterOpenIdAuth(OpenIdAuthenticationResult result)
-   {
-      if( result.isAuthenticated() )
-      {
-         HAccount authenticatedAccount = accountDAO.getByCredentialsId( result.getAuthenticatedId() );
+    private void login() {
+        authResult = new OpenIdAuthenticationResult();
+        String returnToUrl = returnToUrl();
 
-         identity.setPreAuthenticated(true);
+        String url = authRequest(id, returnToUrl);
 
-         // If the user hasn't been registered, there is no authenticated account
-         if( authenticatedAccount != null && authenticatedAccount.isEnabled() )
-         {
-            credentials.setUsername(authenticatedAccount.getUsername());
-            Identity.instance().acceptExternallyAuthenticatedPrincipal((new OpenIdPrincipal(result.getAuthenticatedId())));
-            this.loginImmediate();
-         }
+        if (url != null) {
+            Redirect redirect = Redirect.instance();
+            redirect.captureCurrentView();
 
-      }
-   }
+            FacesManager.instance().redirectToExternalURL(url);
+        }
+    }
 
-   /**
-    * Default implementation for an authentication callback. This implementation does not provide a redirect url.
-    */
-   @Override
-   public String getRedirectToUrl()
-   {
-      return null;
-   }
+    public String returnToUrl() {
+        return applicationConfiguration.getServerPath() + "/openid.seam";
+    }
 
-   public void setProvider( OpenIdProviderType providerType )
-   {
-      if( providerType != null )
-      {
-         switch (providerType)
-         {
+    /**
+     * Default implementation for an authentication callback. This
+     * implementations simply authenticates the user locally.
+     */
+    @Override
+    public void afterOpenIdAuth(OpenIdAuthenticationResult result) {
+        if (result.isAuthenticated()) {
+            HAccount authenticatedAccount =
+                    accountDAO.getByCredentialsId(result.getAuthenticatedId());
+
+            identity.setPreAuthenticated(true);
+
+            if (authenticatedAccount != null
+                    && authenticatedAccount.isEnabled()) {
+                credentials.setUsername(authenticatedAccount.getUsername());
+                Identity.instance().acceptExternallyAuthenticatedPrincipal(
+                        (new OpenIdPrincipal(result.getAuthenticatedId())));
+                this.loginImmediate();
+            }
+            // If the user hasn't been registered yet
+            else if (authenticatedAccount == null) {
+                credentials.setUsername(result.getAuthenticatedId()); // this is
+                                                                      // the
+                                                                      // full
+                                                                      // open id
+            }
+        }
+    }
+
+    /**
+     * Default implementation for an authentication callback. This
+     * implementation does not provide a redirect url.
+     */
+    @Override
+    public String getRedirectToUrl() {
+        return null;
+    }
+
+    public void setProvider(OpenIdProviderType providerType) {
+        if (providerType != null) {
+            switch (providerType) {
             case Fedora:
-               this.openIdProvider = new FedoraOpenIdProvider();
-               break;
+                this.openIdProvider = new FedoraOpenIdProvider();
+                break;
 
             case Google:
-               this.openIdProvider = new GoogleOpenIdProvider();
-               break;
+                this.openIdProvider = new GoogleOpenIdProvider();
+                break;
 
             case MyOpenId:
-               this.openIdProvider = new MyOpenIdProvider();
-               break;
+                this.openIdProvider = new MyOpenIdProvider();
+                break;
 
             case Yahoo:
-               this.openIdProvider = new YahooOpenIdProvider();
-               break;
+                this.openIdProvider = new YahooOpenIdProvider();
+                break;
 
             case Generic:
-               this.openIdProvider = new GenericOpenIdProvider();
-               break;
+                this.openIdProvider = new GenericOpenIdProvider();
+                break;
 
             default:
-               this.openIdProvider = new GenericOpenIdProvider();
-               break;
-         }
-      }
-   }
-
-   public boolean isFederatedProvider()
-   {
-      return this.openIdProvider instanceof GoogleOpenIdProvider;
-   }
+                this.openIdProvider = new GenericOpenIdProvider();
+                break;
+            }
+        }
+    }
 }

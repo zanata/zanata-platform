@@ -2,17 +2,17 @@
  * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -57,154 +57,169 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetProjectTransUnitLists.class)
 @Slf4j
-public class GetProjectTransUnitListsHandler extends AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult>
-{
-   @In
-   private LocaleService localeServiceImpl;
+public class GetProjectTransUnitListsHandler
+        extends
+        AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult> {
+    @In
+    private LocaleService localeServiceImpl;
 
-   @In
-   private TextFlowSearchService textFlowSearchServiceImpl;
+    @In
+    private TextFlowSearchService textFlowSearchServiceImpl;
 
-   @In
-   private TransUnitTransformer transUnitTransformer;
+    @In
+    private TransUnitTransformer transUnitTransformer;
 
-   @In
-   private ZanataIdentity identity;
+    @In
+    private ZanataIdentity identity;
 
-   @Override
-   public GetProjectTransUnitListsResult execute(GetProjectTransUnitLists action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      log.info("Searching all targets for workspace {}", action.getWorkspaceId());
-      HLocale hLocale;
-      try
-      {
-         hLocale = localeServiceImpl.validateLocaleByProjectIteration(action.getWorkspaceId().getLocaleId(), action.getWorkspaceId().getProjectIterationId().getProjectSlug(), action.getWorkspaceId().getProjectIterationId().getIterationSlug());
-      }
-      catch (ZanataServiceException e)
-      {
-         throw new ActionException(e);
-      }
+    @Override
+    public GetProjectTransUnitListsResult execute(
+            GetProjectTransUnitLists action, ExecutionContext context)
+            throws ActionException {
+        identity.checkLoggedIn();
+        log.info("Searching all targets for workspace {}",
+                action.getWorkspaceId());
+        HLocale hLocale;
+        try {
+            hLocale =
+                    localeServiceImpl.validateLocaleByProjectIteration(action
+                            .getWorkspaceId().getLocaleId(), action
+                            .getWorkspaceId().getProjectIterationId()
+                            .getProjectSlug(), action.getWorkspaceId()
+                            .getProjectIterationId().getIterationSlug());
+        } catch (ZanataServiceException e) {
+            throw new ActionException(e);
+        }
 
-      HashMap<Long, List<TransUnit>> matchingTUs = new HashMap<Long, List<TransUnit>>();
-      HashMap<Long, String> docPaths = new HashMap<Long, String>();
-      if (Strings.isNullOrEmpty(action.getSearchString()))
-      {
-         // TODO empty searches shouldn't be requested, consider replacing this
-         // with an error, or making behaviour return all targets for the
-         // project (consider performance).
-         return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
-      }
+        HashMap<Long, List<TransUnit>> matchingTUs =
+                new HashMap<Long, List<TransUnit>>();
+        HashMap<Long, String> docPaths = new HashMap<Long, String>();
+        if (Strings.isNullOrEmpty(action.getSearchString())) {
+            // TODO empty searches shouldn't be requested, consider replacing
+            // this
+            // with an error, or making behaviour return all targets for the
+            // project (consider performance).
+            return new GetProjectTransUnitListsResult(action, docPaths,
+                    matchingTUs);
+        }
 
-      // @formatter:off
-      FilterConstraints filterConstraints = FilterConstraints.builder()
-            .filterBy(action.getSearchString())
-            .caseSensitive(action.isCaseSensitive())
-            .checkInSource(action.isSearchInSource())
-            .checkInTarget(action.isSearchInTarget())
-            .build();
-      // @formatter:on
+        FilterConstraints filterConstraints =
+                FilterConstraints.builder().filterBy(action.getSearchString())
+                        .caseSensitive(action.isCaseSensitive())
+                        .checkInSource(action.isSearchInSource())
+                        .checkInTarget(action.isSearchInTarget()).build();
 
-      List<HTextFlow> matchingFlows = textFlowSearchServiceImpl.findTextFlows(action.getWorkspaceId(), action.getDocumentPaths(), filterConstraints);
-      log.info("Returned {} results for search", matchingFlows.size());
+        List<HTextFlow> matchingFlows =
+                textFlowSearchServiceImpl.findTextFlows(
+                        action.getWorkspaceId(), action.getDocumentPaths(),
+                        filterConstraints);
+        log.info("Returned {} results for search", matchingFlows.size());
 
-      //FIXME remove when analyzer handles leading & trailing whitespace
-      boolean needsWhitespaceCheck = !action.getSearchString().equals(action.getSearchString().trim());
-      Iterable<HTextFlow> result = matchingFlows;
-      if (needsWhitespaceCheck)
-      {
-         // FIXME temporary check for leading and trailing whitespace to compensate
-         // for NGramAnalyzer trimming strings before tokenization. This should
-         // be removed when updating to a lucene version with the whitespace
-         // issue resolved.
-         result = Iterables.filter(matchingFlows, new WhitespaceMatchPredicate(action, hLocale.getId()));
-      }
+        // FIXME remove when analyzer handles leading & trailing whitespace
+        boolean needsWhitespaceCheck =
+                !action.getSearchString().equals(
+                        action.getSearchString().trim());
+        Iterable<HTextFlow> result = matchingFlows;
+        if (needsWhitespaceCheck) {
+            // FIXME temporary check for leading and trailing whitespace to
+            // compensate
+            // for NGramAnalyzer trimming strings before tokenization. This
+            // should
+            // be removed when updating to a lucene version with the whitespace
+            // issue resolved.
+            result =
+                    Iterables.filter(
+                            matchingFlows,
+                            new WhitespaceMatchPredicate(action, hLocale
+                                    .getId()));
+        }
 
-      for (HTextFlow textFlow : result)
-      {
-         List<TransUnit> listForDoc = matchingTUs.get(textFlow.getDocument().getId());
-         if (listForDoc == null)
-         {
-            listForDoc = new ArrayList<TransUnit>();
-         }
-
-         TransUnit transUnit = transUnitTransformer.transform(textFlow, hLocale);
-         listForDoc.add(transUnit);
-         matchingTUs.put(textFlow.getDocument().getId(), listForDoc);
-         docPaths.put(textFlow.getDocument().getId(), textFlow.getDocument().getDocId());
-      }
-      return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
-   }
-
-   private static String foldCase(String original)
-   {
-      char[] buffer = original.toCharArray();
-      for (int i=0; i<buffer.length; i++)
-      {
-         buffer[i] = (char) UCharacter.foldCase(buffer[i], true);
-      }
-      return new String(buffer);
-   }
-
-   @Override
-   public void rollback(GetProjectTransUnitLists action, GetProjectTransUnitListsResult result, ExecutionContext context) throws ActionException
-   {
-   }
-
-   private static class WhitespaceMatchPredicate implements Predicate<HTextFlow>
-   {
-
-      private final GetProjectTransUnitLists action;
-      private final Long localeId;
-      private ContainSearchTermPredicate containSearchTermPredicate;
-
-      private WhitespaceMatchPredicate(GetProjectTransUnitLists action, Long localeId)
-      {
-         this.action = action;
-         this.localeId = localeId;
-         containSearchTermPredicate = new ContainSearchTermPredicate(action);
-      }
-
-      @Override
-      public boolean apply(HTextFlow textFlow)
-      {
-         if (action.isSearchInSource())
-         {
-            Optional<String> optional = Iterables.tryFind(textFlow.getContents(), containSearchTermPredicate);
-            if (optional.isPresent())
-            {
-               return true;
+        for (HTextFlow textFlow : result) {
+            List<TransUnit> listForDoc =
+                    matchingTUs.get(textFlow.getDocument().getId());
+            if (listForDoc == null) {
+                listForDoc = new ArrayList<TransUnit>();
             }
-         }
 
-         if (action.isSearchInTarget())
-         {
-            // FIXME hibernate n + 1 select happening here
-            List<String> targetContents = textFlow.getTargets().get(localeId).getContents();
-            Optional<String> optional = Iterables.tryFind(targetContents, containSearchTermPredicate);
-            return optional.isPresent();
-         }
-         return false;
-      }
+            TransUnit transUnit =
+                    transUnitTransformer.transform(textFlow, hLocale);
+            listForDoc.add(transUnit);
+            matchingTUs.put(textFlow.getDocument().getId(), listForDoc);
+            docPaths.put(textFlow.getDocument().getId(), textFlow.getDocument()
+                    .getDocId());
+        }
+        return new GetProjectTransUnitListsResult(action, docPaths, matchingTUs);
+    }
 
-   }
+    private static String foldCase(String original) {
+        char[] buffer = original.toCharArray();
+        for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = (char) UCharacter.foldCase(buffer[i], true);
+        }
+        return new String(buffer);
+    }
 
-   private static class ContainSearchTermPredicate implements Predicate<String>
-   {
-      private final String searchTerm;
-      private final boolean caseSensitive;
+    @Override
+    public void rollback(GetProjectTransUnitLists action,
+            GetProjectTransUnitListsResult result, ExecutionContext context)
+            throws ActionException {
+    }
 
-      private ContainSearchTermPredicate(GetProjectTransUnitLists action)
-      {
-         caseSensitive = action.isCaseSensitive();
-         searchTerm = !caseSensitive ? foldCase(action.getSearchString()) : action.getSearchString();
-      }
+    private static class WhitespaceMatchPredicate implements
+            Predicate<HTextFlow> {
 
-      @Override
-      public boolean apply(String input)
-      {
-         String contentStr = !caseSensitive ? foldCase(input) : input;
-         return contentStr.contains(searchTerm);
-      }
-   }
+        private final GetProjectTransUnitLists action;
+        private final Long localeId;
+        private ContainSearchTermPredicate containSearchTermPredicate;
+
+        private WhitespaceMatchPredicate(GetProjectTransUnitLists action,
+                Long localeId) {
+            this.action = action;
+            this.localeId = localeId;
+            containSearchTermPredicate = new ContainSearchTermPredicate(action);
+        }
+
+        @Override
+        public boolean apply(HTextFlow textFlow) {
+            if (action.isSearchInSource()) {
+                Optional<String> optional =
+                        Iterables.tryFind(textFlow.getContents(),
+                                containSearchTermPredicate);
+                if (optional.isPresent()) {
+                    return true;
+                }
+            }
+
+            if (action.isSearchInTarget()) {
+                // FIXME hibernate n + 1 select happening here
+                List<String> targetContents =
+                        textFlow.getTargets().get(localeId).getContents();
+                Optional<String> optional =
+                        Iterables.tryFind(targetContents,
+                                containSearchTermPredicate);
+                return optional.isPresent();
+            }
+            return false;
+        }
+
+    }
+
+    private static class ContainSearchTermPredicate implements
+            Predicate<String> {
+        private final String searchTerm;
+        private final boolean caseSensitive;
+
+        private ContainSearchTermPredicate(GetProjectTransUnitLists action) {
+            caseSensitive = action.isCaseSensitive();
+            searchTerm =
+                    !caseSensitive ? foldCase(action.getSearchString())
+                            : action.getSearchString();
+        }
+
+        @Override
+        public boolean apply(String input) {
+            String contentStr = !caseSensitive ? foldCase(input) : input;
+            return contentStr.contains(searchTerm);
+        }
+    }
 }

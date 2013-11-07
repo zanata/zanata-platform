@@ -36,82 +36,93 @@ import org.zanata.util.WebElementUtil;
 import java.util.List;
 
 @Slf4j
-public class ManageLanguagePage extends BasePage
-{
+public class ManageLanguagePage extends BasePage {
 
-   public static final int LOCALE_COLUMN = 0;
-   @FindBy(id = "languageForm:threads")
-   private WebElement languageTable;
+    public static final int LOCALE_COLUMN = 0;
+    public static final int ENABLED_COLUMN = 3;
 
-   private By languageTableBy = By.id("languageForm:threads");
+    @FindBy(id = "languageForm:threads")
+    private WebElement languageTable;
 
-   public ManageLanguagePage(WebDriver driver)
-   {
-      super(driver);
-   }
+    private By languageTableBy = By.id("languageForm:threads");
 
-   public AddLanguagePage addNewLanguage()
-   {
-      getDriver().findElement(By.linkText("Add New Language")).click();
-      return new AddLanguagePage(getDriver());
-   }
+    public ManageLanguagePage(WebDriver driver) {
+        super(driver);
+    }
 
-   public ManageLanguageTeamMemberPage manageTeamMembersFor(final String localeId)
-   {
-      TableRow matchedRow = findRowByLocale(localeId);
+    public AddLanguagePage addNewLanguage() {
+        getDriver().findElement(By.linkText("Add New Language")).click();
+        return new AddLanguagePage(getDriver());
+    }
 
-      log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-      List<WebElement> cells = matchedRow.getCells();
-      int teamMemberCellIndex = cells.size() - 1;
-      WebElement teamMemberCell = cells.get(teamMemberCellIndex);
-      WebElement teamMemberButton = teamMemberCell.findElement(By.xpath(".//input[@value='Team Members']"));
-      teamMemberButton.click();
-      return new ManageLanguageTeamMemberPage(getDriver());
-   }
+    public ManageLanguageTeamMemberPage manageTeamMembersFor(
+            final String localeId) {
+        TableRow matchedRow = findRowByLocale(localeId);
 
-   private TableRow findRowByLocale(final String localeId)
-   {
-      TableRow matchedRow = waitForTenSec().until(new Function<WebDriver, TableRow>()
-      {
-         @Override
-         public TableRow apply(WebDriver driver)
-         {
-            List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(), languageTable);
-            Optional<TableRow> matchedRow = Iterables.tryFind(tableRows, new Predicate<TableRow>()
-            {
-               @Override
-               public boolean apply(TableRow input)
-               {
-                  List<String> cellContents = input.getCellContents();
-                  String localeCell = cellContents.get(LOCALE_COLUMN).trim();
-                  return localeCell.equalsIgnoreCase(localeId);
-               }
-            });
+        log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
+        List<WebElement> cells = matchedRow.getCells();
+        int teamMemberCellIndex = cells.size() - 1;
+        WebElement teamMemberCell = cells.get(teamMemberCellIndex);
+        WebElement teamMemberButton =
+                teamMemberCell.findElement(By
+                        .xpath(".//input[@value='Team Members']"));
+        teamMemberButton.click();
+        return new ManageLanguageTeamMemberPage(getDriver());
+    }
 
-            //we keep looking for the locale until timeout
-            return matchedRow.isPresent() ? matchedRow.get() : null;
-         }
-      });
-      return matchedRow;
-   }
+    private TableRow findRowByLocale(final String localeId) {
+        TableRow matchedRow =
+                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                    @Override
+                    public TableRow apply(WebDriver driver) {
+                        List<TableRow> tableRows =
+                                WebElementUtil.getTableRows(getDriver(),
+                                        languageTable);
+                        Optional<TableRow> matchedRow =
+                                Iterables.tryFind(tableRows,
+                                        new Predicate<TableRow>() {
+                                            @Override
+                                            public boolean
+                                                    apply(TableRow input) {
+                                                List<String> cellContents =
+                                                        input.getCellContents();
+                                                String localeCell =
+                                                        cellContents.get(
+                                                                LOCALE_COLUMN)
+                                                                .trim();
+                                                return localeCell
+                                                        .equalsIgnoreCase(localeId);
+                                            }
+                                        });
 
-   public ManageLanguagePage enableLanguageByDefault(String localeId)
-   {
-      TableRow matchedRow = findRowByLocale(localeId);
+                        // we keep looking for the locale until timeout
+                        return matchedRow.isPresent() ? matchedRow.get() : null;
+                    }
+                });
+        return matchedRow;
+    }
 
-      WebElement enabledCell = matchedRow.getCells().get(3);
-      WebElement enabledCheckbox = enabledCell.findElement(By.tagName("input"));
-      if(!enabledCheckbox.isSelected())
-      {
-         enabledCheckbox.click();
-         getDriver().switchTo().alert().accept();
-      }
+    public ManageLanguagePage enableLanguageByDefault(String localeId) {
+        TableRow matchedRow = findRowByLocale(localeId);
 
-      return this;
-   }
+        WebElement enabledCell = matchedRow.getCells().get(ENABLED_COLUMN);
+        WebElement enabledCheckbox =
+                enabledCell.findElement(By.tagName("input"));
+        if (!enabledCheckbox.isSelected()) {
+            enabledCheckbox.click();
+            getDriver().switchTo().alert().accept();
+        }
 
-   public List<String> getLanguageLocales()
-   {
-      return WebElementUtil.getColumnContents(getDriver(), languageTableBy, LOCALE_COLUMN);
-   }
+        return this;
+    }
+
+    public boolean languageIsEnabled(String localeId) {
+        return findRowByLocale(localeId).getCells().get(ENABLED_COLUMN)
+                .findElement(By.tagName("input")).isSelected();
+    }
+
+    public List<String> getLanguageLocales() {
+        return WebElementUtil.getColumnContents(getDriver(), languageTableBy,
+                LOCALE_COLUMN);
+    }
 }

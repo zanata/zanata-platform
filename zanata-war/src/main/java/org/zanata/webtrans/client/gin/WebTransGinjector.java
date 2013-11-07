@@ -19,33 +19,31 @@ import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 
 @GinModules(WebTransClientModule.class)
-public interface WebTransGinjector extends Ginjector
-{
+public interface WebTransGinjector extends Ginjector {
 
-   AppPresenter getAppPresenter();
+    AppPresenter getAppPresenter();
 
-   CachingDispatchAsync getDispatcher();
+    CachingDispatchAsync getDispatcher();
 
-   EventBus getEventBus();
+    EventBus getEventBus();
 
-   UserWorkspaceContext getUserWorkspaceContext();
+    UserWorkspaceContext getUserWorkspaceContext();
 
-   EventProcessor getEventProcessor();
+    EventProcessor getEventProcessor();
 
-   UserConfigHolder getUserConfig();
-   
-   Window.Location getLocation();
+    UserConfigHolder getUserConfig();
 
-   DocumentListPresenter getDocumentListPresenter();
+    Window.Location getLocation();
 
+    DocumentListPresenter getDocumentListPresenter();
 
-   History getHistory();
+    History getHistory();
 
-   HistoryEventHandlerService getHistoryEventHandlerService();
+    HistoryEventHandlerService getHistoryEventHandlerService();
 
-   TargetContentsPresenter getTargetContentsPresenter();
+    TargetContentsPresenter getTargetContentsPresenter();
 
-   ValidationService getValidationService();
+    ValidationService getValidationService();
 
-   TransUnitSaveService getTransUnitSaveService();
+    TransUnitSaveService getTransUnitSaveService();
 }

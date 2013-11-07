@@ -1,71 +1,67 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:z="urn:import:org.zanata.webtrans.client.ui">
 
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+  <ui:style
+    type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
+    .container {
+      width: 96%;
+      table-layout: fixed;
+      margin: 0.1em 0 0.1em 0.1em;
+    }
 
-	<ui:style
-		type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
-        .container {
-            width: 96%;
-            margin-left: 3%;
-            table-layout: fixed;
-            margin-bottom: 3px;
-        }
+    .container td {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
 
-        .headerLabel
-        {
-			font-size: 11px;
-			font-weight: bold;
-			color:#FFFFFF;
-		}
+    .error {
+      color: rgb(224, 87, 91);
+    }
 
-        .label {
-            font-size: 11px;
-            color: #e0575b;
-        }
+    .warning {
+      color: rgb(227, 130, 78);
+    }
 
-        .header {
-            text-indent: 5px;
-            cursor: pointer;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-            background: #e0575b;
-        }
+    .header {
+      cursor: pointer;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      background: #e3824e;
+      padding: 0.25em;
+      font-size: 0.9em;
+      font-weight: bold;
+      color: #FFFFFF;
+    }
 
-        .header tr:hover
-        {
-			background: #e0575b;
-			color:#FFFFFF;
-			text-decoration:underline;
-		}
+    .header:hover {
+      text-decoration: underline;
+    }
 
-        .content {
-            color: #e0575b;
-        }
+    .contents {
 
-    </ui:style>
+    }
 
+    .contents li {
+      border-left: 3px solid;
+      padding: 0.1em 0.5em;
+      margin: 0.15em 0;
+      font-size: 0.9em;
+    }
 
+  </ui:style>
 
-	<g:DisclosurePanel addStyleNames="{style.container}" animationEnabled="true" ui:field="disclosurePanel">
-        <g:customHeader>
-            <g:HorizontalPanel styleName="{style.header}">
-                <g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
-                    <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
-                </g:cell>
-            </g:HorizontalPanel>
-        </g:customHeader>
+  <g:DisclosurePanel addStyleNames="{style.container} new-zanata"
+    animationEnabled="true" ui:field="disclosurePanel">
+    <g:customHeader>
+      <g:Label ui:field="headerLabel" styleName="{style.header}" />
+    </g:customHeader>
 
-		<g:ScrollPanel>
-			<g:FlowPanel >
-                <g:VerticalPanel ui:field="contents" addStyleNames="{style.content}" />
-			</g:FlowPanel>
-		</g:ScrollPanel>
+    <z:UnorderedListWidget ui:field="contents"
+      styleName="list--no-bullets {style.contents}" />
 
-	</g:DisclosurePanel>
-
-
+  </g:DisclosurePanel>
 
 </ui:UiBinder>

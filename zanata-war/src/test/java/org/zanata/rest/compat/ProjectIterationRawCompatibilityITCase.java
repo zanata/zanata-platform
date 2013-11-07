@@ -29,7 +29,6 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.client.IProjectIterationResource;
@@ -42,73 +41,78 @@ import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class ProjectIterationRawCompatibilityITCase extends RestTest
-{
+public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
-   
-   @Test
-   @RunAsClient
-   public void getJsonProjectIteration() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-            request.header(HttpHeaders.ACCEPT, MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-         };
-         
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-            assertJsonUnmarshal(response, ProjectIteration.class);
-            
-            ProjectIteration it = jsonUnmarshal(response, ProjectIteration.class);
-            assertThat(it.getId(), is("1.0"));
-         }
-         
-      }.run();
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @Test
-   @RunAsClient
-   public void putJsonProjectIteration() throws Exception
-   {
-      final ProjectIteration newIteration = new ProjectIteration("new-iteration");
-      
-      new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project/iterations/i/" + newIteration.getId()),
-            "PUT", getAuthorizedEnvironment())
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request) 
-         {
-            request.body( MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON, jsonMarshal(newIteration) );
-         };
-         
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-         }
-         
-      }.run();
-      
-      
-      // Retreive it again
-      IProjectIterationResource iterationClient = super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
+    @Test
+    @RunAsClient
+    public void getJsonProjectIteration() throws Exception {
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+            };
 
-      ClientResponse<ProjectIteration> getResponse = iterationClient.get();
-      
-      assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-      
-      ProjectIteration it = getResponse.getEntity();
-      assertThat(it.getId(), is("new-iteration"));
-   }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                assertJsonUnmarshal(response, ProjectIteration.class);
+
+                ProjectIteration it =
+                        jsonUnmarshal(response, ProjectIteration.class);
+                assertThat(it.getId(), is("1.0"));
+            }
+
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void putJsonProjectIteration() throws Exception {
+        final ProjectIteration newIteration =
+                new ProjectIteration("new-iteration");
+
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/"
+                        + newIteration.getId()), "PUT",
+                getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
+                        jsonMarshal(newIteration));
+            };
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.CREATED.getStatusCode())); // 201
+            }
+
+        }.run();
+
+        // Retreive it again
+        IProjectIterationResource iterationClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IProjectIterationResource.class,
+                        "/projects/p/sample-project/iterations/i/"
+                                + newIteration.getId());
+
+        ClientResponse<ProjectIteration> getResponse = iterationClient.get();
+
+        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+
+        ProjectIteration it = getResponse.getEntity();
+        assertThat(it.getId(), is("new-iteration"));
+    }
 }

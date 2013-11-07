@@ -7,79 +7,70 @@ import org.zanata.common.LocaleId;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GlossaryDetails implements IsSerializable
-{
-   private List<String> sourceComment;
-   private List<String> targetComment;
-   private String sourceRef;
-   private LocaleId srcLocale;
-   private LocaleId targetLocale;
-   private Integer targetVersionNum;
-   private String source;
-   private String target;
-   private Date lastModifiedDate;
+public class GlossaryDetails implements IsSerializable {
+    private List<String> sourceComment;
+    private List<String> targetComment;
+    private String sourceRef;
+    private LocaleId srcLocale;
+    private LocaleId targetLocale;
+    private Integer targetVersionNum;
+    private String source;
+    private String target;
+    private Date lastModifiedDate;
 
-   @SuppressWarnings("unused")
-   private GlossaryDetails()
-   {
-      this(null, null, null, null, null, null, null, null, null);
-   }
+    @SuppressWarnings("unused")
+    private GlossaryDetails() {
+        this(null, null, null, null, null, null, null, null, null);
+    }
 
-   public GlossaryDetails(String source, String target, List<String> sourceComment, List<String> targetComment, String sourceRef, LocaleId srcLocale, LocaleId targetLocale, Integer targetVersionNum, Date lastModifiedDate)
-   {
-      this.source = source;
-      this.target = target;
-      this.sourceComment = sourceComment;
-      this.targetComment = targetComment;
-      this.sourceRef = sourceRef;
-      this.srcLocale = srcLocale;
-      this.targetLocale = targetLocale;
-      this.targetVersionNum = targetVersionNum;
-      this.lastModifiedDate = lastModifiedDate;
-   }
+    public GlossaryDetails(String source, String target,
+            List<String> sourceComment, List<String> targetComment,
+            String sourceRef, LocaleId srcLocale, LocaleId targetLocale,
+            Integer targetVersionNum, Date lastModifiedDate) {
+        this.source = source;
+        this.target = target;
+        this.sourceComment = sourceComment;
+        this.targetComment = targetComment;
+        this.sourceRef = sourceRef;
+        this.srcLocale = srcLocale;
+        this.targetLocale = targetLocale;
+        this.targetVersionNum = targetVersionNum;
+        this.lastModifiedDate = lastModifiedDate;
+    }
 
-   public List<String> getSourceComment()
-   {
-      return sourceComment;
-   }
+    public List<String> getSourceComment() {
+        return sourceComment;
+    }
 
-   public List<String> getTargetComment()
-   {
-      return targetComment;
-   }
+    public List<String> getTargetComment() {
+        return targetComment;
+    }
 
-   public String getSourceRef()
-   {
-      return sourceRef;
-   }
+    public String getSourceRef() {
+        return sourceRef;
+    }
 
-   public LocaleId getSrcLocale()
-   {
-      return srcLocale;
-   }
+    public LocaleId getSrcLocale() {
+        return srcLocale;
+    }
 
-   public LocaleId getTargetLocale()
-   {
-      return targetLocale;
-   }
+    public LocaleId getTargetLocale() {
+        return targetLocale;
+    }
 
-   public Integer getTargetVersionNum()
-   {
-      return targetVersionNum;
-   }
+    public Integer getTargetVersionNum() {
+        return targetVersionNum;
+    }
 
-   public String getSource()
-   {
-      return source;
-   }
+    public String getSource() {
+        return source;
+    }
 
-   public String getTarget()
-   {
-      return target;
-   }
+    public String getTarget() {
+        return target;
+    }
 
-   public Date getLastModifiedDate()
-   {
-      return lastModifiedDate;
-   }
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
 }

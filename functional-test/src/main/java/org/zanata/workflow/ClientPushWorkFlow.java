@@ -32,13 +32,11 @@ import java.util.concurrent.TimeUnit;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.Constants;
 import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
@@ -48,98 +46,95 @@ import com.google.common.util.concurrent.SimpleTimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ClientPushWorkFlow
-{
+public class ClientPushWorkFlow {
 
-   public File getProjectRootPath(String sampleProject)
-   {
-      String baseDir = PropertiesHolder.getProperty(Constants.sampleProjects.value());
-      Preconditions.checkState(!(Strings.isNullOrEmpty(sampleProject) || Strings.isNullOrEmpty(baseDir)), "base dir and sample project can't be empty");
+    public File getProjectRootPath(String sampleProject) {
+        String baseDir =
+                PropertiesHolder.getProperty(Constants.sampleProjects.value());
+        Preconditions.checkState(
+                !(Strings.isNullOrEmpty(sampleProject) || Strings
+                        .isNullOrEmpty(baseDir)),
+                "base dir and sample project can't be empty");
 
-      File projectDir = new File(baseDir, sampleProject);
-      log.info("about to push project at: {}", projectDir.getAbsolutePath());
-      return projectDir;
-   }
+        File projectDir = new File(baseDir, sampleProject);
+        log.info("about to push project at: {}", projectDir.getAbsolutePath());
+        return projectDir;
+    }
 
-   public static String getUserConfigPath(String user)
-   {
-      String configName = "zanata-" + user + ".ini";
-      URL resource = Thread.currentThread().getContextClassLoader().getResource(configName);
-      Preconditions.checkNotNull(resource, configName + " can not be found.");
-      return resource.getPath();
-   }
+    public static String getUserConfigPath(String user) {
+        String configName = "zanata-" + user + ".ini";
+        URL resource =
+                Thread.currentThread().getContextClassLoader()
+                        .getResource(configName);
+        Preconditions.checkNotNull(resource, configName + " can not be found.");
+        return resource.getPath();
+    }
 
-   public List<String> callWithTimeout(final File workingDirectory, String command)
-   {
-      final List<String> commands = Lists.newArrayList(Splitter.on(" ").split(command));
+    public List<String> callWithTimeout(final File workingDirectory,
+            String command) {
+        final List<String> commands =
+                Lists.newArrayList(Splitter.on(" ").split(command));
 
-      SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
-      Callable<List<String>> work = new Callable<List<String>>()
-      {
-         @Override
-         public List<String> call() throws Exception
-         {
-            Process process = ClientPushWorkFlow.invokeClient(workingDirectory, commands);
-            process.waitFor();
-            List<String> output = ClientPushWorkFlow.getOutput(process);
-            logOutputLines(output);
-            return output;
-         }
-      };
-      try
-      {
-         return timeLimiter.callWithTimeout(work, 60, TimeUnit.SECONDS, true);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+        SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
+        Callable<List<String>> work = new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                Process process =
+                        ClientPushWorkFlow.invokeClient(workingDirectory,
+                                commands);
+                process.waitFor();
+                List<String> output = ClientPushWorkFlow.getOutput(process);
+                logOutputLines(output);
+                return output;
+            }
+        };
+        try {
+            return timeLimiter
+                    .callWithTimeout(work, 60, TimeUnit.SECONDS, true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-   public boolean isPushSuccessful(List<String> output)
-   {
-      Optional<String> successOutput = Iterables.tryFind(output, new Predicate<String>()
-      {
-         @Override
-         public boolean apply(String input)
-         {
-            return input.contains("BUILD SUCCESS");
-         }
-      });
-      return successOutput.isPresent();
-   }
+    public boolean isPushSuccessful(List<String> output) {
+        Optional<String> successOutput =
+                Iterables.tryFind(output, new Predicate<String>() {
+                    @Override
+                    public boolean apply(String input) {
+                        return input.contains("BUILD SUCCESS");
+                    }
+                });
+        return successOutput.isPresent();
+    }
 
-   private synchronized static Process invokeClient(File projectDir, List<String> command) throws IOException
-   {
-      ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
-      Map<String, String> env = processBuilder.environment();
-      // mvn and java home
-      log.info("M2: {}", env.get("M2"));
-      log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
-//      log.debug("env: {}", env);
-      processBuilder.directory(projectDir);
-      return processBuilder.start();
-   }
+    private synchronized static Process invokeClient(File projectDir,
+            List<String> command) throws IOException {
+        ProcessBuilder processBuilder =
+                new ProcessBuilder(command).redirectErrorStream(true);
+        Map<String, String> env = processBuilder.environment();
+        // mvn and java home
+        log.info("M2: {}", env.get("M2"));
+        log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
+        // log.debug("env: {}", env);
+        processBuilder.directory(projectDir);
+        return processBuilder.start();
+    }
 
-   private void logOutputLines(List<String> output)
-   {
-      for (String line : output)
-      {
-         log.info(line);
-      }
-   }
+    private void logOutputLines(List<String> output) {
+        for (String line : output) {
+            log.info(line);
+        }
+    }
 
-   public static List<String> getOutput(Process process) throws IOException
-   {
-      final InputStream inputStream = process.getInputStream();
+    public static List<String> getOutput(Process process) throws IOException {
+        final InputStream inputStream = process.getInputStream();
 
-      return CharStreams.readLines(CharStreams.newReaderSupplier(new InputSupplier<InputStream>()
-      {
-         @Override
-         public InputStream getInput() throws IOException
-         {
-            return inputStream;
-         }
-      }, Charsets.UTF_8));
-   }
+        return CharStreams.readLines(CharStreams.newReaderSupplier(
+                new InputSupplier<InputStream>() {
+                    @Override
+                    public InputStream getInput() throws IOException {
+                        return inputStream;
+                    }
+                }, Charsets.UTF_8));
+    }
 }

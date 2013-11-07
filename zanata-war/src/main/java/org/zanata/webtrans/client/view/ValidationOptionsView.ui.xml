@@ -1,51 +1,51 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en">
-    
-	<ui:style>
-        .mainPanel {
-		}
-		
-		.mainPanel table td {
-			font-size:13px;
-			padding:2px;
-			border-radius:5px;
-			color:#FFFFFF;
-		}
-		
-		.runValidationButton
-		{
-			color:#000000;
-			border-radius: 3px;
-			width:85px;
-			margin-top:10px;
-			display:inline-block;
-		}
-		
-		.lastValidationRun
-		{
-			color:#ffa500;
-		}
-        
-	</ui:style>
-    
-    
-    <g:LayoutPanel>
-    	<g:layer top="5px" bottom="0" left="5px" right="5px">
-    		<g:HTMLPanel>
-	    		 <g:ScrollPanel styleName="{style.mainPanel}">
-			        <g:VerticalPanel width="100%">
-			            <g:Label ui:field="validationOptionsHeader" styleName="gwt-sideMenu-header"/>
-			            <g:VerticalPanel ui:field="contentPanel" width="100%"/>
-			        </g:VerticalPanel>
-			    </g:ScrollPanel>
-			    <g:PushButton ui:field="runValidation" addStyleNames="{style.runValidationButton}"/>
-			    <g:InlineLabel ui:field="lastValidationRun" styleName="{style.lastValidationRun}"/>
-		    </g:HTMLPanel>
-    	</g:layer>
-    </g:LayoutPanel>
-		
-</ui:UiBinder> 
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+  ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+  ui:generateLocales="en">
+
+  <ui:style>
+    .mainPanel {
+    }
+
+    .mainPanel table td {
+      font-size: 13px;
+      padding: 2px;
+      border-radius: 5px;
+      color: #FFFFFF;
+    }
+
+    .runValidationButton {
+      border-radius: 3px;
+      width: 85px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .lastValidationRun {
+      color: #ffa500;
+    }
+
+  </ui:style>
+
+
+  <g:LayoutPanel>
+    <g:layer top="5px" bottom="0" left="5px" right="5px">
+      <g:HTMLPanel>
+        <g:ScrollPanel styleName="{style.mainPanel}">
+          <g:VerticalPanel width="100%">
+            <g:Label ui:field="validationOptionsHeader"
+              styleName="gwt-sideMenu-header" />
+            <g:VerticalPanel ui:field="contentPanel" width="100%" />
+          </g:VerticalPanel>
+        </g:ScrollPanel>
+        <g:PushButton ui:field="runValidation"
+          addStyleNames="{style.runValidationButton}" />
+        <g:InlineLabel ui:field="lastValidationRun"
+          styleName="{style.lastValidationRun}" />
+      </g:HTMLPanel>
+    </g:layer>
+  </g:LayoutPanel>
+
+</ui:UiBinder>

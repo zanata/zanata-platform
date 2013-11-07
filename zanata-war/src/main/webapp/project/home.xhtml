@@ -1,14 +1,14 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-    template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Projects']}</ui:define>
 
@@ -16,160 +16,177 @@
     <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link id="createProjectLink" styleClass="action_link"
-      				rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
-      				value="#{messages['jsf.CreateProject']}"
-                    view="/project/create_project.xhtml"
-                    propagation="none"/>
+        rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
+        value="#{messages['jsf.CreateProject']}"
+        view="/project/create_project.xhtml"
+        propagation="none"/>
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"
-                  rendered="#{s:hasRole('admin')}"
-                  onclick="return confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
-                  value="#{request.contextPath}/rest/tm/all">
-                  <h:outputText value="#{messages['jsf.ExportTMXAll']}"/>
+        rendered="#{s:hasRole('admin')}"
+        onclick="return confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
+        value="#{request.contextPath}/rest/tm/all">
+        <h:outputText value="#{messages['jsf.ExportTMXAll']}"/>
       </h:outputLink>
     </rich:panel>
   </ui:define>
 
-  <ui:define name="center_content" >
+  <ui:define name="center_content">
     <s:decorate id="main_content">
-    <s:fragment rendered="#{projectAction.getEmpty()}">
-	   <h:outputText value="#{messages['jsf.NoProjectExists']}" />
-    </s:fragment>
-    <s:fragment rendered="#{!projectAction.getEmpty()}" id="projectList">
-      <h:form id="form">
+      <s:fragment rendered="#{projectAction.getEmpty()}">
+        <h:outputText value="#{messages['jsf.NoProjectExists']}"/>
+      </s:fragment>
+      <s:fragment rendered="#{!projectAction.getEmpty()}" id="projectList">
+        <h:form id="form">
 
-    <div style="text-align: center">
-        <rich:dataScroller renderIfSinglePage="false" for="projectList" maxPages="10"
-                page="#{projectAction.scrollerPage}" id="scroller" render="sc2"
-                fastControls="hide">
-            <f:facet name="first">
+          <div style="text-align: center">
+            <rich:dataScroller renderIfSinglePage="false" for="projectList"
+              maxPages="10"
+              page="#{projectAction.scrollerPage}" id="scroller" render="sc2"
+              fastControls="hide">
+              <f:facet name="first">
                 <h:outputText value="" styleClass="icon-to-start"/>
-            </f:facet>
-            <f:facet name="previous">
+              </f:facet>
+              <f:facet name="previous">
                 <h:outputText value="" styleClass="icon-left-open"/>
-            </f:facet>
-            <f:facet name="next">
+              </f:facet>
+              <f:facet name="next">
                 <h:outputText value="" styleClass="icon-right-open-1"/>
-            </f:facet>
-            <f:facet name="fastforward">
+              </f:facet>
+              <f:facet name="fastforward">
                 <h:outputText value="" styleClass="icon-fast-fw-1"/>
-            </f:facet>
-            <f:facet name="last">
+              </f:facet>
+              <f:facet name="last">
                 <h:outputText value="" styleClass="icon-to-end"/>
-            </f:facet>
+              </f:facet>
 
-            <f:facet name="first_disabled">
+              <f:facet name="first_disabled">
                 <h:outputText value="" styleClass="icon-to-start"/>
-            </f:facet>
-            <f:facet name="previous_disabled">
+              </f:facet>
+              <f:facet name="previous_disabled">
                 <h:outputText value="" styleClass="icon-left-open"/>
-            </f:facet>
-            <f:facet name="next_disabled">
+              </f:facet>
+              <f:facet name="next_disabled">
                 <h:outputText value="" styleClass="icon-right-open-1"/>
-            </f:facet>
-            <f:facet name="fastforward_disabled">
+              </f:facet>
+              <f:facet name="fastforward_disabled">
                 <h:outputText value="" styleClass="icon-fast-fw-1"/>
-            </f:facet>
-            <f:facet name="last_disabled">
+              </f:facet>
+              <f:facet name="last_disabled">
                 <h:outputText value="" styleClass="icon-to-end"/>
-            </f:facet>
-        </rich:dataScroller>
-    </div>
+              </f:facet>
+            </rich:dataScroller>
+          </div>
 
-        <s:div styleClass="float-right">
-	        <a4j:region>
-	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterActiveProjects']}" value="#{projectAction.showActive}">
-	                <a4j:ajax event="change" render="projectList" />
-	            </h:selectBooleanCheckbox>
-	            <h:outputText value="#{messages['jsf.Active']}"/>
+          <s:div styleClass="float-right">
+            <a4j:region>
+              <h:selectBooleanCheckbox
+                title="#{messages['jsf.FilterActiveProjects']}"
+                value="#{projectAction.showActive}">
+                <a4j:ajax event="change" render="projectList"/>
+              </h:selectBooleanCheckbox>
+              <h:outputText value="#{messages['jsf.Active']}"/>
 
-	            <richext:spacer width="5" />
-	            <h:selectBooleanCheckbox title="#{messages['jsf.FilterReadOnlyProjects']}" value="#{projectAction.showReadOnly}">
-	                <a4j:ajax event="change" render="projectList" />
-	            </h:selectBooleanCheckbox>
-	            <h:outputText value="#{messages['jsf.ReadOnly']}"/>
+              <richext:spacer width="5"/>
+              <h:selectBooleanCheckbox
+                title="#{messages['jsf.FilterReadOnlyProjects']}"
+                value="#{projectAction.showReadOnly}">
+                <a4j:ajax event="change" render="projectList"/>
+              </h:selectBooleanCheckbox>
+              <h:outputText value="#{messages['jsf.ReadOnly']}"/>
 
-	            <richext:spacer width="5" />
-	            <s:fragment rendered="#{s:hasPermission('HProject','view-obsolete')}">
-		            <h:selectBooleanCheckbox title="#{messages['jsf.FilterObsoleteProjects']}" value="#{projectAction.showObsolete}">
-		                <a4j:ajax event="change" render="projectList" />
-		            </h:selectBooleanCheckbox>
-	                <h:outputText value="#{messages['jsf.Obsolete']}"/>
-	            </s:fragment>
-	        </a4j:region>
-        </s:div>
-        <br/>
-        <rich:dataTable id="projectList"
+              <richext:spacer width="5"/>
+              <s:fragment
+                rendered="#{s:hasPermission('HProject','view-obsolete')}">
+                <h:selectBooleanCheckbox
+                  title="#{messages['jsf.FilterObsoleteProjects']}"
+                  value="#{projectAction.showObsolete}">
+                  <a4j:ajax event="change" render="projectList"/>
+                </h:selectBooleanCheckbox>
+                <h:outputText value="#{messages['jsf.Obsolete']}"/>
+              </s:fragment>
+            </a4j:region>
+          </s:div>
+          <br/>
+          <rich:dataTable id="projectList"
             rows="#{projectAction.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
-                <rich:column width="270px" sortBy="#{project.name}">
-                <f:facet name="header">#{messages['jsf.ProjectName']}
-                    <richext:columnSorter />
-                </f:facet>
+            <rich:column width="270px" sortBy="#{project.name}">
+              <f:facet name="header">#{messages['jsf.ProjectName']}
+                <richext:columnSorter/>
+              </f:facet>
 
-                   <s:link id="project" styleClass="table_link" value="#{project.name}"  propagation="none"
-                        view="/project/project.xhtml" rendered="#{project.status == 'ACTIVE'}">
-                       <f:param name="slug" value="#{project.slug}"/>
-                   </s:link>
-                   <s:link id="readonlyProject" styleClass="table_link readonly_link" value="#{project.name}"  propagation="none"
-                        view="/project/project.xhtml" rendered="#{project.status == 'READONLY'}">
-                       <f:param name="slug" value="#{project.slug}"/>
-                   </s:link>
-                   <s:link id="obsoleteProject" styleClass="table_link obsolete_link" value="#{project.name}"  propagation="none"
-                        view="/project/project.xhtml" rendered="#{project.status == 'OBSOLETE'}">
-                       <f:param name="slug" value="#{project.slug}"/>
-                   </s:link>
-                </rich:column>
-                <rich:column width="270px">
-                    <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                    <h:outputText value="#{project.description}" />
-                </rich:column>
-                <rich:column sortBy="#{project.creationDate}" width="auto">
-                    <f:facet name="header">#{messages['jsf.CreationDate']}<richext:columnSorter /></f:facet>
-                    <h:outputText value="#{project.creationDate}">
-                       <f:convertDateTime type="date" dateStyle="default"/>
-                    </h:outputText>
-                </rich:column>
+              <s:link id="project" styleClass="table_link"
+                value="#{project.name}" propagation="none"
+                view="/project/project.xhtml"
+                rendered="#{project.status == 'ACTIVE'}">
+                <f:param name="slug" value="#{project.slug}"/>
+              </s:link>
+              <s:link id="readonlyProject" styleClass="table_link readonly_link"
+                value="#{project.name}" propagation="none"
+                view="/project/project.xhtml"
+                rendered="#{project.status == 'READONLY'}">
+                <f:param name="slug" value="#{project.slug}"/>
+              </s:link>
+              <s:link id="obsoleteProject" styleClass="table_link obsolete_link"
+                value="#{project.name}" propagation="none"
+                view="/project/project.xhtml"
+                rendered="#{project.status == 'OBSOLETE'}">
+                <f:param name="slug" value="#{project.slug}"/>
+              </s:link>
+            </rich:column>
+            <rich:column width="270px">
+              <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+              <h:outputText value="#{project.description}"/>
+            </rich:column>
+            <rich:column sortBy="#{project.creationDate}" width="auto">
+              <f:facet name="header">#{messages['jsf.CreationDate']}
+                <richext:columnSorter/></f:facet>
+              <h:outputText value="#{project.creationDate}">
+                <f:convertDateTime type="date" dateStyle="default"/>
+              </h:outputText>
+            </rich:column>
 
-                <rich:column styleClass="centered" width="60px" sortBy="#{project.status}">
-                    <f:facet name="header">#{messages['jsf.Status']}<richext:columnSorter /></f:facet>
-                    <h:outputText value="#{messages[project.status.messageKey]}"/>
-                </rich:column>
-        </rich:dataTable>
+            <rich:column styleClass="centered" width="60px"
+              sortBy="#{project.status}">
+              <f:facet name="header">#{messages['jsf.Status']}
+                <richext:columnSorter/></f:facet>
+              <h:outputText value="#{messages[project.status.messageKey]}"/>
+            </rich:column>
+          </rich:dataTable>
 
-        <div style="text-align: center">
+          <div style="text-align: center">
             <rich:dataScroller align="center" for="projectList" maxPages="10"
-                page="#{projectAction.scrollerPage}" id="sc2" render="scroller"
-                fastControls="hide"
-                renderIfSinglePage="false">
-                <f:facet name="first">
-                    <h:outputText value="" styleClass="icon-to-start"/>
-                </f:facet>
-                <f:facet name="previous">
-                    <h:outputText value="" styleClass="icon-left-open"/>
-                </f:facet>
-                <f:facet name="next">
-                    <h:outputText value="" styleClass="icon-right-open-1"/>
-                </f:facet>
-                <f:facet name="last">
-                    <h:outputText value="" styleClass="icon-to-end"/>
-                </f:facet>
+              page="#{projectAction.scrollerPage}" id="sc2" render="scroller"
+              fastControls="hide"
+              renderIfSinglePage="false">
+              <f:facet name="first">
+                <h:outputText value="" styleClass="icon-to-start"/>
+              </f:facet>
+              <f:facet name="previous">
+                <h:outputText value="" styleClass="icon-left-open"/>
+              </f:facet>
+              <f:facet name="next">
+                <h:outputText value="" styleClass="icon-right-open-1"/>
+              </f:facet>
+              <f:facet name="last">
+                <h:outputText value="" styleClass="icon-to-end"/>
+              </f:facet>
 
-                <f:facet name="first_disabled">
-                    <h:outputText value="" styleClass="icon-to-start"/>
-                </f:facet>
-                <f:facet name="previous_disabled">
-                    <h:outputText value="" styleClass="icon-left-open"/>
-                </f:facet>
-                <f:facet name="next_disabled">
-                    <h:outputText value="" styleClass="icon-right-open-1"/>
-                </f:facet>
-                <f:facet name="last_disabled">
-                    <h:outputText value="" styleClass="icon-to-end"/>
-                </f:facet>
+              <f:facet name="first_disabled">
+                <h:outputText value="" styleClass="icon-to-start"/>
+              </f:facet>
+              <f:facet name="previous_disabled">
+                <h:outputText value="" styleClass="icon-left-open"/>
+              </f:facet>
+              <f:facet name="next_disabled">
+                <h:outputText value="" styleClass="icon-right-open-1"/>
+              </f:facet>
+              <f:facet name="last_disabled">
+                <h:outputText value="" styleClass="icon-to-end"/>
+              </f:facet>
             </rich:dataScroller>
-        </div>
-	</h:form>
-</s:fragment>
+          </div>
+        </h:form>
+      </s:fragment>
     </s:decorate>
   </ui:define>
 

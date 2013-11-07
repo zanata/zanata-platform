@@ -22,7 +22,6 @@
 package org.zanata.rest.service;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,157 +51,164 @@ import org.zanata.xml.TmxDtdResolver;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-abstract class TMXStreamingOutputTest
-{
-   static
-   {
-      // Tell XMLUnit about the offical xml: namespace (as used in xml:lang)
-      NamespaceContext ctx = new SimpleNamespaceContext(ImmutableMap.of("xml", "http://www.w3.org/XML/1998/namespace"));
-      XMLUnit.setXpathNamespaceContext(ctx);
-   }
+abstract class TMXStreamingOutputTest {
+    static {
+        // Tell XMLUnit about the offical xml: namespace (as used in xml:lang)
+        NamespaceContext ctx =
+                new SimpleNamespaceContext(ImmutableMap.of("xml",
+                        "http://www.w3.org/XML/1998/namespace"));
+        XMLUnit.setXpathNamespaceContext(ctx);
+    }
 
-   LocaleId sourceLocale = LocaleId.EN;
-   XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
+    LocaleId sourceLocale = LocaleId.EN;
+    XpathEngine simpleXpathEngine = XMLUnit.newXpathEngine();
 
-   abstract boolean expectAttributes();
-   abstract boolean expectProperties();
+    abstract boolean expectAttributes();
 
-   void checkAllLocales(StreamingOutput output) throws IOException, SAXException, XpathException
-   {
-      Document doc = writeToXmlWithValidation(output);
+    abstract boolean expectProperties();
 
-      assertContainsFrenchTUs(doc);
-      assertContainsGermanTUs(doc);
-   }
+    void checkAllLocales(StreamingOutput output) throws IOException,
+            SAXException, XpathException {
+        Document doc = writeToXmlWithValidation(output);
 
-   void checkFrench(StreamingOutput output) throws IOException, SAXException, XpathException
-   {
-      Document doc = writeToXmlWithValidation(output);
+        assertContainsFrenchTUs(doc);
+        assertContainsGermanTUs(doc);
+    }
 
-      assertContainsFrenchTUs(doc);
-      assertTUAbsent("doc1", "resId1", doc);
-      assertLangAbsent("de", doc);
-   }
+    void checkFrench(StreamingOutput output) throws IOException, SAXException,
+            XpathException {
+        Document doc = writeToXmlWithValidation(output);
 
-   void checkGerman(StreamingOutput output) throws IOException, SAXException, XpathException
-   {
-      Document doc = writeToXmlWithValidation(output);
+        assertContainsFrenchTUs(doc);
+        assertTUAbsent("doc1", "resId1", doc);
+        assertLangAbsent("de", doc);
+    }
 
-      assertContainsGermanTUs(doc);
-      assertTUAbsent("doc0", "resId1", doc);
-      assertTUAbsent("doc1", "resId0", doc);
+    void checkGerman(StreamingOutput output) throws IOException, SAXException,
+            XpathException {
+        Document doc = writeToXmlWithValidation(output);
 
-      assertLangAbsent("fr", doc);
-   }
+        assertContainsGermanTUs(doc);
+        assertTUAbsent("doc0", "resId1", doc);
+        assertTUAbsent("doc1", "resId0", doc);
 
-   @SuppressWarnings("deprecation")
-   void assertSingleTU(String docId, String resId, Document doc) throws XpathException, SAXException, IOException
-   {
-      String xpathTU = "//tu[@tuid='"+docId+":"+resId+"']";
-      NodeList nodeList = simpleXpathEngine.getMatchingNodes(xpathTU, doc);
-      int matches = nodeList.getLength();
-      assertEquals("Should be one tu node per docId:resId", 1, matches);
-      Node tuNode = nodeList.item(0);
-      Node srclang = tuNode.getAttributes().getNamedItem("srclang");
-      assertEquals(sourceLocale.getId(), srclang.getNodeValue());
+        assertLangAbsent("fr", doc);
+    }
 
-      String xpathTUV = xpathTU+"/tuv[@xml:lang='"+sourceLocale.getId()+"']";
-      NodeList tuvNodes = simpleXpathEngine.getMatchingNodes(xpathTUV, doc);
-      int tuvMatches = tuvNodes.getLength();
-      assertEquals("Should be exactly one tuv node for srclang", 1, tuvMatches);
+    @SuppressWarnings("deprecation")
+    void assertSingleTU(String docId, String resId, Document doc)
+            throws XpathException, SAXException, IOException {
+        String xpathTU = "//tu[@tuid='" + docId + ":" + resId + "']";
+        NodeList nodeList = simpleXpathEngine.getMatchingNodes(xpathTU, doc);
+        int matches = nodeList.getLength();
+        assertEquals("Should be one tu node per docId:resId", 1, matches);
+        Node tuNode = nodeList.item(0);
+        Node srclang = tuNode.getAttributes().getNamedItem("srclang");
+        assertEquals(sourceLocale.getId(), srclang.getNodeValue());
 
-      if (expectAttributes())
-      {
-         String xpathAttr = xpathTU+"/@creationid";
-         assertXpathEvaluatesTo("TU_CREATOR", xpathAttr, doc);
-      }
-      if (expectProperties())
-      {
-         String xpathProp1 = xpathTU+"/prop[@type='prop1']/text()";
-         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
-         String xpathProp2 = xpathTU+"/prop[@type='prop2']/text()";
-         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
-      }
-   }
+        String xpathTUV =
+                xpathTU + "/tuv[@xml:lang='" + sourceLocale.getId() + "']";
+        NodeList tuvNodes = simpleXpathEngine.getMatchingNodes(xpathTUV, doc);
+        int tuvMatches = tuvNodes.getLength();
+        assertEquals("Should be exactly one tuv node for srclang", 1,
+                tuvMatches);
 
-   void assertTUContainsSegment(String segmentText, String docId, String resId, String lang, Document doc) throws XpathException, SAXException, IOException
-   {
-      String xpathTUV = "//tu[@tuid='"+docId+":"+resId+"']/tuv[@xml:lang='"+lang+"']";
-      if (expectAttributes())
-      {
-         String xpathAttr = xpathTUV+"/@creationid";
-         assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
-      }
-      if (expectProperties())
-      {
-         String xpathProp1 = xpathTUV+"/prop[@type='prop1']/text()";
-         assertXpathEvaluatesTo("propval1", xpathProp1, doc);
-         String xpathProp2 = xpathTUV+"/prop[@type='prop2']/text()";
-         assertXpathEvaluatesTo("propval2", xpathProp2, doc);
-      }
+        if (expectAttributes()) {
+            String xpathAttr = xpathTU + "/@creationid";
+            assertXpathEvaluatesTo("TU_CREATOR", xpathAttr, doc);
+        }
+        if (expectProperties()) {
+            String xpathProp1 = xpathTU + "/prop[@type='prop1']/text()";
+            assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+            String xpathProp2 = xpathTU + "/prop[@type='prop2']/text()";
+            assertXpathEvaluatesTo("propval2", xpathProp2, doc);
+        }
+    }
 
-      assertXpathEvaluatesTo(segmentText, xpathTUV + "/seg/text()", doc);
-   }
+    void assertTUContainsSegment(String segmentText, String docId,
+            String resId, String lang, Document doc) throws XpathException,
+            SAXException, IOException {
+        String xpathTUV =
+                "//tu[@tuid='" + docId + ":" + resId + "']/tuv[@xml:lang='"
+                        + lang + "']";
+        if (expectAttributes()) {
+            String xpathAttr = xpathTUV + "/@creationid";
+            assertXpathEvaluatesTo("TUV_CREATOR", xpathAttr, doc);
+        }
+        if (expectProperties()) {
+            String xpathProp1 = xpathTUV + "/prop[@type='prop1']/text()";
+            assertXpathEvaluatesTo("propval1", xpathProp1, doc);
+            String xpathProp2 = xpathTUV + "/prop[@type='prop2']/text()";
+            assertXpathEvaluatesTo("propval2", xpathProp2, doc);
+        }
 
-   static void assertTUAbsent(String docId, String resId, Document doc) throws XpathException, SAXException, IOException
-   {
-      assertXpathNotExists("//tu[@tuid='"+docId+":"+resId+"']", doc);
-   }
+        assertXpathEvaluatesTo(segmentText, xpathTUV + "/seg/text()", doc);
+    }
 
-   static void assertLangAbsent(String lang, Document doc) throws XpathException, SAXException, IOException
-   {
-      assertXpathNotExists("//tuv[@xml:lang='"+lang+"']", doc);
-   }
+    static void assertTUAbsent(String docId, String resId, Document doc)
+            throws XpathException, SAXException, IOException {
+        assertXpathNotExists("//tu[@tuid='" + docId + ":" + resId + "']", doc);
+    }
 
-   private Document writeToXmlWithValidation(StreamingOutput output) throws IOException, SAXException
-   {
-      StringBuilderWriter sbWriter = new StringBuilderWriter();
-      WriterOutputStream writerOutputStream = new WriterOutputStream(sbWriter);
-      output.write(writerOutputStream);
-      writerOutputStream.close();
-      String xml = sbWriter.toString();
-      assertValidTMX(xml);
-      DocumentBuilder controlParser = XMLUnit.newControlParser();
-      controlParser.setEntityResolver(new TmxDtdResolver());
-      Document doc = XMLUnit.buildDocument(controlParser, new StringReader(xml));
-      return doc;
-   }
+    static void assertLangAbsent(String lang, Document doc)
+            throws XpathException, SAXException, IOException {
+        assertXpathNotExists("//tuv[@xml:lang='" + lang + "']", doc);
+    }
 
-   private void assertValidTMX(String xml) throws MalformedURLException, SAXException
-   {
-      StringReader reader = new StringReader(xml);
-      String systemID = getClass().getResource("/org/zanata/xml/tmx14.dtd").toString();
-      String doctype = "tmx";
-      Validator v = new Validator(reader, systemID, doctype);
-      assertTrue(v.toString(), v.isValid());
-   }
+    private Document writeToXmlWithValidation(StreamingOutput output)
+            throws IOException, SAXException {
+        StringBuilderWriter sbWriter = new StringBuilderWriter();
+        WriterOutputStream writerOutputStream =
+                new WriterOutputStream(sbWriter);
+        output.write(writerOutputStream);
+        writerOutputStream.close();
+        String xml = sbWriter.toString();
+        assertValidTMX(xml);
+        DocumentBuilder controlParser = XMLUnit.newControlParser();
+        controlParser.setEntityResolver(new TmxDtdResolver());
+        Document doc =
+                XMLUnit.buildDocument(controlParser, new StringReader(xml));
+        return doc;
+    }
 
-   void assertContainsFrenchTUs(Document doc) throws XpathException, SAXException, IOException
-   {
-      assertSingleTU("doc0", "resId0", doc);
-      assertTUContainsSegment("source0", "doc0", "resId0", "en", doc);
-      assertTUContainsSegment("targetFR0", "doc0", "resId0", "fr", doc);
-      assertSingleTU("doc0", "resId1", doc);
-      assertTUContainsSegment("SOURCE0", "doc0", "resId1", "en", doc);
-      assertTUContainsSegment("TARGETfr0", "doc0", "resId1", "fr", doc);
+    private void assertValidTMX(String xml) throws MalformedURLException,
+            SAXException {
+        StringReader reader = new StringReader(xml);
+        String systemID =
+                org.zanata.xml.TmxDtdResolver.class.getResource(
+                        "/org/zanata/xml/tmx14.dtd").toString();
+        String doctype = "tmx";
+        Validator v = new Validator(reader, systemID, doctype);
+        assertTrue(v.toString(), v.isValid());
+    }
 
-      assertSingleTU("doc1", "resId0", doc);
-      assertTUContainsSegment("\nsource0  ", "doc1", "resId0", "en", doc);
-      assertTUContainsSegment("\ntargetFR0  ", "doc1", "resId0", "fr", doc);
-   }
+    void assertContainsFrenchTUs(Document doc) throws XpathException,
+            SAXException, IOException {
+        assertSingleTU("doc0", "resId0", doc);
+        assertTUContainsSegment("source0", "doc0", "resId0", "en", doc);
+        assertTUContainsSegment("targetFR0", "doc0", "resId0", "fr", doc);
+        assertSingleTU("doc0", "resId1", doc);
+        assertTUContainsSegment("SOURCE0", "doc0", "resId1", "en", doc);
+        assertTUContainsSegment("TARGETfr0", "doc0", "resId1", "fr", doc);
 
-   void assertContainsGermanTUs(Document doc) throws XpathException, SAXException, IOException
-   {
-      assertSingleTU("doc0", "resId0", doc);
-      assertTUContainsSegment("source0", "doc0", "resId0", "en", doc);
-      assertTUContainsSegment("targetDE0", "doc0", "resId0", "de", doc);
+        assertSingleTU("doc1", "resId0", doc);
+        assertTUContainsSegment("\nsource0  ", "doc1", "resId0", "en", doc);
+        assertTUContainsSegment("\ntargetFR0  ", "doc1", "resId0", "fr", doc);
+    }
 
-      assertSingleTU("doc1", "resId1", doc);
-      assertTUContainsSegment("SOURCE0", "doc1", "resId1", "en", doc);
-      assertTUContainsSegment("TARGETde0", "doc1", "resId1", "de", doc);
-   }
+    void assertContainsGermanTUs(Document doc) throws XpathException,
+            SAXException, IOException {
+        assertSingleTU("doc0", "resId0", doc);
+        assertTUContainsSegment("source0", "doc0", "resId0", "en", doc);
+        assertTUContainsSegment("targetDE0", "doc0", "resId0", "de", doc);
+
+        assertSingleTU("doc1", "resId1", doc);
+        assertTUContainsSegment("SOURCE0", "doc1", "resId1", "en", doc);
+        assertTUContainsSegment("TARGETde0", "doc1", "resId1", "de", doc);
+    }
 
 }

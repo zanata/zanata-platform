@@ -1,346 +1,398 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j"
-                xmlns:richext="http://java.sun.com/jsf/composite/richext"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="head">
+<ui:define name="head">
+  <script type="text/javascript">
+    function downloadAllFilesClick() {
+      if (confirm("#{messages['jsf.iteration.files.ConfirmDownloadAllFiles']}")) {
+        #{rich:component('downloadProgressPanel')}
+      .
+        show();
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    function openUploadPanel(docId) {
+      #{rich:element('uploadPanelHeader')}
+    .
+      innerHTML = '#{messages['jsf.iteration.files.UploadFile']}: ' + docId;
+      #{rich:element('uploadDocId')}
+    .
+      value = docId;
+      #{rich:component('uploadPanel')}
+    .
+      show();
+    }
+
+    function hideUploadPanel() {
+      #{rich:component('uploadPanel')}
+    .
+      hide();
+      return false;
+    }
+
+    function focusNameFilterInput() {
+      #{rich:element("name_filter_input")}
+    .
+      focus();
+    }
+  </script>
+</ui:define>
+
+<ui:define
+  name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.Documents']} (#{projectIterationFilesAction.localeId})</ui:define>
+<ui:define name="center_content">
+<h:form onkeydown="if(event.keyCode==13) { return false;}">
+  <s:token allowMultiplePosts="true"/>
+  <rich:dataScroller id="data_table_scroller" align="center" for="data_table"
+    fastControls="hide"
+    rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+    <f:facet name="first">
+      <h:outputText value="" styleClass="icon-to-start"/>
+    </f:facet>
+    <f:facet name="previous">
+      <h:outputText value="" styleClass="icon-left-open"/>
+    </f:facet>
+    <f:facet name="next">
+      <h:outputText value="" styleClass="icon-right-open-1"/>
+    </f:facet>
+    <f:facet name="last">
+      <h:outputText value="" styleClass="icon-to-end"/>
+    </f:facet>
+
+    <f:facet name="first_disabled">
+      <h:outputText value="" styleClass="icon-to-start"/>
+    </f:facet>
+    <f:facet name="previous_disabled">
+      <h:outputText value="" styleClass="icon-left-open"/>
+    </f:facet>
+    <f:facet name="next_disabled">
+      <h:outputText value="" styleClass="icon-right-open-1"/>
+    </f:facet>
+    <f:facet name="last_disabled">
+      <h:outputText value="" styleClass="icon-to-end"/>
+    </f:facet>
+  </rich:dataScroller>
+  <richext:spacer height="20"/>
+  <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
+    rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
+  <rich:dataTable id="data_table" width="100%"
+    value="#{projectIterationFilesAction.iterationDocuments}"
+    var="doc"
+    styleClass="iteration_inline_tribes"
+    rows="20"
+    rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
+    <rich:column sortOrder="ascending"
+      styleClass="wrapped">
+      <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+      #{doc.path}
+    </rich:column>
+    <rich:column filterValue="#{projectIterationFilesAction.documentNameFilter}"
+      filterExpression="#{fn:containsIgnoreCase(doc.name, projectIterationFilesAction.documentNameFilter)}"
+      styleClass="wrapped">
+      <f:facet name="header">
+        <h:panelGroup>
+          <h:outputText value="#{messages['jsf.Name']}"/>
+          <br/>
+          <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
+            id="name_filter_input" styleClass="filter_input"
+            title="#{messages['jsf.iteration.files.Filter.title']}">
+            <a4j:ajax event="keyup" render="data_table,data_table_scroller"
+              oncomplete="focusNameFilterInput()">
+              <a4j:attachQueue ignoreDupResponses="true" requestDelay="700"/>
+            </a4j:ajax>
+          </h:inputText>
+        </h:panelGroup>
+      </f:facet>
+      <h:outputText value="#{doc.name}"/>
+    </rich:column>
+
+    <rich:column
+      rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}"
+      styleClass="centered actionCol">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+
+      <div style="float:left">
+        <h:outputLink
+          title="#{messages['jsf.Open']}" styleClass="table_link"
+          value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
+          <span class="icon-eye icon" title="#{messages['jsf.Open']}"/>
+        </h:outputLink>
+      </div>
+    </rich:column>
+
+    <rich:column
+      rendered="#{identity.loggedIn and (projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview())}"
+      styleClass="centered actionCol">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+
+      <div style="float:left">
+        <h:outputLink
+          title="#{messages['jsf.Translate']}" styleClass="table_link"
+          value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
+          <span class="icon-edit icon" title="#{messages['jsf.Translate']}"/>
+        </h:outputLink>
+      </div>
+      <div>
+        <s:fragment
+          rendered="#{projectIterationFilesAction.fileUploadAllowed and projectIterationFilesAction.isUserAllowedToTranslate()}">
+          <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;"
+            class="table_link" title="#{messages['jsf.Upload']}">
+            <span class="icon-upload icon"
+              title="#{messages['jsf.Upload.Title']}"/>
+          </a>
+        </s:fragment>
+      </div>
+    </rich:column>
+
+    <rich:column>
+      <f:facet name="header">
+        #{messages['jsf.iteration.files.Download']}
+      </f:facet>
+      <h:outputLink styleClass="table_link"
+        rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+        value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
+        <f:param name="docId" value="#{doc.docId}"/>
+        <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
+      </h:outputLink>
+      <h:outputLink styleClass="table_link"
+        rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.isPoDocument(doc.docId)}"
+        value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/offlinepo">
+        <f:param name="docId" value="#{doc.docId}"/>
+        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepo']}"
+          title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}"/>
+      </h:outputLink>
+      <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"
+        title="#{messages['jsf.ConfigFileDisabledProjectNotSet']}"
+        rendered="#{!projectIterationFilesAction.knownProjectType}"/>
+      <h:outputText value="&#160;&#160;&#160;"/>
+      <h:outputLink
+        rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}"
+        styleClass="table_link"
+        value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
+        <f:param name="docId" value="#{doc.docId}"/>
+        <h:outputText
+          value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
+      </h:outputLink>
+    </rich:column>
+    <rich:column>
+      <f:facet name="header">
+        <h:panelGroup>
+          <h:outputText value="#{messages['jsf.Statistics']}"/>
+          <br/>
+          <h:selectOneMenu id="statsOption" styleClass="headerInput"
+            value="#{projectIterationFilesAction.statsOption}">
+            <f:selectItem itemLabel="#{messages['jsf.ByWords']}"
+              itemValue="WORD"/>
+            <f:selectItem itemLabel="#{messages['jsf.Message']}"
+              itemValue="MESSAGE"/>
+            <a4j:ajax event="change" render="data_table"/>
+          </h:selectOneMenu>
+        </h:panelGroup>
+      </f:facet>
+      <ui:param name="tstatus"
+        value="#{projectIterationFilesAction.getStatsForDocument(doc)}"/>
+      <ui:include src="../WEB-INF/layout/statsbar.xhtml">
+        <ui:param name="status" value="#{tstatus}"/>
+      </ui:include>
+    </rich:column>
+
+    <rich:column styleClass="centered">
+      <f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
+      <h:outputText value="#{tstatus.lastTranslated}"/>
+    </rich:column>
+
+  </rich:dataTable>
+</h:form>
+
+<rich:popupPanel id="downloadProgressPanel"
+  moveable="#{false}"
+  resizeable="#{false}"
+  autosized="#{true}">
+
+  <f:facet name="header">
+    <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
+  </f:facet>
+  <h:form>
+    <rich:progressBar id="downloadProgressBar"
+      value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
+      interval="500"
+      label="#{messages['jsf.generatezip.ProgressLabel']}"
+      minValue="-1"
+      maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
+      enabled="#{not projectIterationZipFileAction.zipFilePrepHandle.done}"
+      ignoreDupResponses="true"
+      reRenderAfterComplete="downloadProgressBar">
+      <f:facet name="finish">
         <script type="text/javascript">
-            function downloadAllFilesClick() {
-                if (confirm("#{messages['jsf.iteration.files.ConfirmDownloadAllFiles']}")) {
-                    #{rich:component('downloadProgressPanel')}.show();
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-
-            function openUploadPanel(docId) {
-                #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadFile']}: ' + docId;
-                #{rich:element('uploadDocId')}.value = docId;
-                #{rich:component('uploadPanel')}.show();
-            }
-
-            function hideUploadPanel() {
-                #{rich:component('uploadPanel')}.hide();
-                return false;
-            }
-
-            function focusNameFilterInput() {
-                #{rich:element("name_filter_input")}.focus();
-            }
+          #{rich:component('downloadProgressPanel')}.hide();
+          window.location =
+            "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.get()}";
         </script>
-    </ui:define>
+      </f:facet>
+    </rich:progressBar>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.Documents']} (#{projectIterationFilesAction.localeId})</ui:define>
-    <ui:define name="center_content">
-        <h:form onkeydown="if(event.keyCode==13) { return false;}">
-            <s:token allowMultiplePosts="true"/>
-            <rich:dataScroller id="data_table_scroller" align="center" for="data_table" fastControls="hide"
-                               rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
-                <f:facet name="first">
-                    <h:outputText value="" styleClass="icon-to-start"/>
-                </f:facet>
-                <f:facet name="previous">
-                    <h:outputText value="" styleClass="icon-left-open"/>
-                </f:facet>
-                <f:facet name="next">
-                    <h:outputText value="" styleClass="icon-right-open-1"/>
-                </f:facet>
-                <f:facet name="last">
-                    <h:outputText value="" styleClass="icon-to-end"/>
-                </f:facet>
+    <div align="right">
+      <a4j:commandButton id="closeProgressPanelButton"
+        action="#{projectIterationZipFileAction.cancelFileDownload}"
+        value="#{messages['jsf.Cancel']}"
+        render="downloadProgressBar">
+        <rich:componentControl for="downloadProgressPanel" operation="hide"
+          event="onclick"/>
+      </a4j:commandButton>
+    </div>
+  </h:form>
+</rich:popupPanel>
 
-                <f:facet name="first_disabled">
-                    <h:outputText value="" styleClass="icon-to-start"/>
-                </f:facet>
-                <f:facet name="previous_disabled">
-                    <h:outputText value="" styleClass="icon-left-open"/>
-                </f:facet>
-                <f:facet name="next_disabled">
-                    <h:outputText value="" styleClass="icon-right-open-1"/>
-                </f:facet>
-                <f:facet name="last_disabled">
-                    <h:outputText value="" styleClass="icon-to-end"/>
-                </f:facet>
-            </rich:dataScroller>
-            <richext:spacer height="20"/>
-            <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
-                          rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
-            <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"
-                            var="doc"
-                            styleClass="iteration_inline_tribes"
-                            rows="20"
-                            rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
-                <rich:column sortOrder="ascending"
-                             styleClass="wrapped">
-                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
-                    #{doc.path}
-                </rich:column>
-                <rich:column filterValue="#{projectIterationFilesAction.documentNameFilter}" 
-                			 filterExpression="#{fn:containsIgnoreCase(doc.name, projectIterationFilesAction.documentNameFilter)}"
-                             styleClass="wrapped">
-                    <f:facet name="header">
-                        <h:panelGroup>
-                            <h:outputText value="#{messages['jsf.Name']}"/>
-                            <br/>
-                            <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
-                                         id="name_filter_input" styleClass="filter_input" title="#{messages['jsf.iteration.files.Filter.title']}">
-                                <a4j:ajax event="keyup" render="data_table,data_table_scroller"
-                                             oncomplete="focusNameFilterInput()">
-                                    <a4j:attachQueue ignoreDupResponses="true" requestDelay="700"/>
-                                </a4j:ajax>
-                            </h:inputText>
-                        </h:panelGroup>
-                    </f:facet>
-                    <h:outputText value="#{doc.name}"/>
-                </rich:column>
+<rich:popupPanel id="uploadPanel"
+  moveable="#{false}"
+  resizeable="#{false}"
+  autosized="#{true}">
+  <f:facet name="header">
+    <h:outputText id="uploadPanelHeader"/>
+  </f:facet>
+  <h:form id="uploadForm" enctype="multipart/form-data">
+    <!-- Could add warning for non-po documents,
+         to note that po files must be offline-po format -->
+    <s:fileUpload accept="*"
+      data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
+      fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>
+    <br/>
+    <h:outputText value="#{messages['jsf.iteration.files.Merge']}?"
+      title="#{messages['jsf.iteration.files.Merge.title']}"/>
+    <h:inputHidden id="uploadDocId"
+      value="#{projectIterationFilesAction.translationFileUpload.docId}"/>
+    <h:selectBooleanCheckbox
+      value="#{projectIterationFilesAction.translationFileUpload.mergeTranslations}"
+      title="#{messages['jsf.iteration.files.MergeCheckbox.Title']}"/>
 
-				 <rich:column
-					rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}" 
-					styleClass="centered actionCol">
-					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-					<div style="float:left">
-						<h:outputLink
-	                            title="#{messages['jsf.Open']}" styleClass="table_link" 
-	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<span class="icon-eye icon" title="#{messages['jsf.Open']}"/>
-	                    </h:outputLink>
-                    </div>
-				</rich:column>
+    <div align="right">
+      <h:commandButton value="#{messages['jsf.Upload']}"
+        action="#{projectIterationFilesAction.uploadTranslationFile}"/>
+      <h:commandButton value="#{messages['jsf.Cancel']}"
+        onclick="return hideUploadPanel();"/>
+    </div>
+  </h:form>
+</rich:popupPanel>
 
-				<rich:column 
-					rendered="#{identity.loggedIn and (projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview())}" 
-					styleClass="centered actionCol">
-					<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-					<div style="float:left">
-						<h:outputLink
-	                            title="#{messages['jsf.Translate']}" styleClass="table_link" 
-	                            value="#{request.contextPath}/webtrans/Application.seam?project=#{projectIterationFilesAction.projectSlug}&amp;iteration=#{projectIterationFilesAction.iterationSlug}&amp;localeId=#{projectIterationFilesAction.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{doc.docId}">
-	                       		<span class="icon-edit icon" title="#{messages['jsf.Translate']}"/>
-	                    </h:outputLink>
-                    </div>
-                    <div>
-	                     <s:fragment rendered="#{projectIterationFilesAction.fileUploadAllowed and projectIterationFilesAction.isUserAllowedToTranslate()}">
-		                     <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link" title="#{messages['jsf.Upload']}">
-		                      	<span class="icon-upload icon" title="#{messages['jsf.Upload.Title']}"/> 
-		                    </a>
-	                    </s:fragment>
-                    </div>
-				</rich:column>
+</ui:define>
 
-                 <rich:column>
-                    <f:facet name="header">
-                        #{messages['jsf.iteration.files.Download']}
-                    </f:facet>
-                    <h:outputLink styleClass="table_link"
-                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
-                            value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/po">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"/>
-                    </h:outputLink>
-                    <h:outputLink styleClass="table_link"
-                            rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.isPoDocument(doc.docId)}"
-                            value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/offlinepo">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepo']}"
-                                      title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}"/>
-                    </h:outputLink>
-                    <h:outputText value="#{messages['jsf.iteration.files.dotpo']}"
-                                  title="#{messages['jsf.ConfigFileDisabledProjectNotSet']}"
-                                  rendered="#{!projectIterationFilesAction.knownProjectType}" />
-                    <h:outputText value="&#160;&#160;&#160;" />
-                    <h:outputLink rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" value="#{request.contextPath}/rest/file/translation/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/#{projectIterationFilesAction.localeId}/baked">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
-                    </h:outputLink>
-                </rich:column>
-                <rich:column>
-                    <f:facet name="header">
-                     	<h:panelGroup>
-                            <h:outputText value="#{messages['jsf.Statistics']}"/>
-                            <br/>
-                            <h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{projectIterationFilesAction.statsOption}">
-                            	 <f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
-                            	 <f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
-								 <a4j:ajax event="change" render="data_table" />
-				        	</h:selectOneMenu>
-                        </h:panelGroup>
-                   </f:facet>
-                    <ui:param name="tstatus"
-                              value="#{projectIterationFilesAction.getStatsForDocument(doc)}"/>
-                    <ui:include src="../WEB-INF/layout/statsbar.xhtml">
-                        <ui:param name="status" value="#{tstatus}"/>
-                    </ui:include>
-                </rich:column>
+<ui:define name="right_content">
 
-                <rich:column>
-					<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
-					<h:outputText value="#{tstatus.lastTranslated}"/>
-				</rich:column>
-	
-            </rich:dataTable>
-        </h:form>
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    <h:form>
 
-        <rich:popupPanel id="downloadProgressPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}">
+      <h:outputLink
+        rendered="#{not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}"
+        value="#{request.contextPath}/webtrans/Application.seam"
+        styleClass="action_link">
+        <f:param name="project"
+          value="#{projectIterationFilesAction.projectSlug}"/>
+        <f:param name="iteration"
+          value="#{projectIterationFilesAction.iterationSlug}"/>
+        <f:param name="localeId"
+          value="#{projectIterationFilesAction.localeId}"/>
+        <f:param name="locale" value="#{locale.language}"/>
+        <span class="icon-eye"/>#{messages['jsf.Open']}
+      </h:outputLink>
 
-            <f:facet name="header">
-                <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
-            </f:facet>
-            <h:form>
-                <rich:progressBar id="downloadProgressBar"
-                                  value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
-                                  interval="500"
-                                  label="#{messages['jsf.generatezip.ProgressLabel']}"
-                                  minValue="-1"
-                                  maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
-                                  enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
-                                  ignoreDupResponses="true"
-                                  reRenderAfterComplete="downloadProgressBar">
-                    <f:facet name="finish">
-                        <script type="text/javascript">
-                            #{rich:component('downloadProgressPanel')}.hide();
-                            window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
-                        </script>
-                    </f:facet>
-                </rich:progressBar>
+      <h:outputLink
+        rendered="#{projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview()}"
+        value="#{request.contextPath}/webtrans/Application.seam"
+        styleClass="action_link">
+        <f:param name="project"
+          value="#{projectIterationFilesAction.projectSlug}"/>
+        <f:param name="iteration"
+          value="#{projectIterationFilesAction.iterationSlug}"/>
+        <f:param name="localeId"
+          value="#{projectIterationFilesAction.localeId}"/>
+        <f:param name="locale" value="#{locale.language}"/>
+        <span class="icon-edit"/>#{messages['jsf.Translate']}
+      </h:outputLink>
 
-                <div align="right">
-                    <a4j:commandButton id="closeProgressPanelButton"
-                                       action="#{projectIterationZipFileAction.cancelFileDownload}"
-                                       value="#{messages['jsf.Cancel']}"
-                                       render="downloadProgressBar">
-                        <rich:componentControl for="downloadProgressPanel" operation="hide" event="onclick"/>
-                    </a4j:commandButton>
-                </div>
-            </h:form>
-        </rich:popupPanel>
+      <s:link styleClass="action_link"
+        rendered="#{projectIterationFilesAction.poProject}"
+        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+        title="#{messages['jsf.GenerateProjectConfigSingleLocale']}"
+        action="#{configurationAction.downloadOfflineTranslationConfig(projectIterationFilesAction.locale)}">
+        <f:param name="projectSlug"
+          value="#{projectIterationFilesAction.projectSlug}"/>
+        <f:param name="iterationSlug"
+          value="#{projectIterationFilesAction.iterationSlug}"/>
+      </s:link>
 
-        <rich:popupPanel id="uploadPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}">
-            <f:facet name="header">
-                <h:outputText id="uploadPanelHeader"/>
-            </f:facet>
-            <h:form id="uploadForm" enctype="multipart/form-data">
-                <!-- Could add warning for non-po documents,
-                     to note that po files must be offline-po format -->
-                <s:fileUpload accept="*"
-                              data="#{projectIterationFilesAction.translationFileUpload.fileContents}"
-                              fileName="#{projectIterationFilesAction.translationFileUpload.fileName}"/>
-                <br/>
-                <h:outputText value="#{messages['jsf.iteration.files.Merge']}?" title="#{messages['jsf.iteration.files.Merge.title']}"/>
-                <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.translationFileUpload.docId}"/>
-                <h:selectBooleanCheckbox value="#{projectIterationFilesAction.translationFileUpload.mergeTranslations}"
-                                         title="#{messages['jsf.iteration.files.MergeCheckbox.Title']}"/>
-                <div align="right">
-                    <h:commandButton value="#{messages['jsf.Upload']}"
-                                     action="#{projectIterationFilesAction.uploadTranslationFile}"/>
-                    <h:commandButton value="#{messages['jsf.Cancel']}"
-                                     onclick="return hideUploadPanel();"/>
-                </div>
-            </h:form>
-        </rich:popupPanel>
+      <s:link styleClass="action_link"
+        rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.poProject}"
+        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+        title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
+        action="#{configurationAction.downloadOfflineTranslationConfig(projectIterationFilesAction.locale)}">
+        <f:param name="projectSlug"
+          value="#{projectIterationFilesAction.projectSlug}"/>
+        <f:param name="iterationSlug"
+          value="#{projectIterationFilesAction.iterationSlug}"/>
+      </s:link>
 
-    </ui:define>
+      <s:link styleClass="action_link disabled"
+        rendered="#{!projectIterationFilesAction.knownProjectType}"
+        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
+        title="#{messages['jsf.ConfigFileDisabledProjectNotSet']} #{messages['jsf.GenerateProjectConfigSingleLocale']}"
+        disabled="true">
+      </s:link>
 
-    <ui:define name="right_content">
+      <ui:param name="downloadAllAllowed"
+        value="#{projectIterationFilesAction.zipFileDownloadAllowed}"/>
 
-        <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <h:form>
+      <a4j:commandLink
+        styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+        rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
+        value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
+        action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
+        onclick="if(!downloadAllFilesClick()){ return false; }"
+        render="downloadProgressBar"
+        disabled="#{not downloadAllAllowed}"
+        title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
 
-            	<h:outputLink
-					rendered="#{not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}"
-					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
-					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
-					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-					<f:param name="locale" value="#{locale.language}" />
-					<span class="icon-eye"/>#{messages['jsf.Open']}
-				</h:outputLink>
+      <a4j:commandLink
+        styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
+        rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
+        value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
+        action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
+        onclick="if(!downloadAllFilesClick()){ return false; }"
+        render="downloadProgressBar"
+        disabled="#{not downloadAllAllowed}"
+        title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
+    </h:form>
+  </rich:panel>
 
-				<h:outputLink
-					rendered="#{projectIterationFilesAction.isUserAllowedToTranslate() or projectIterationFilesAction.isUserAllowedToReview()}"
-					value="#{request.contextPath}/webtrans/Application.seam" styleClass="action_link">
-					<f:param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-					<f:param name="iteration" value="#{projectIterationFilesAction.iterationSlug}" />
-					<f:param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-					<f:param name="locale" value="#{locale.language}" />
-					<span class="icon-edit"/>#{messages['jsf.Translate']}
-    			</h:outputLink>
-
-                <s:link styleClass="action_link"
-                        rendered="#{projectIterationFilesAction.poProject}"
-                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
-                        title="#{messages['jsf.GenerateProjectConfigSingleLocale']}"
-                        action="#{configurationAction.getData(projectIterationFilesAction.locale)}">
-                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
-                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
-                </s:link>
-
-                <s:link styleClass="action_link"
-                        rendered="#{projectIterationFilesAction.knownProjectType and !projectIterationFilesAction.poProject}"
-                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
-                        title="#{messages['jsf.GenerateProjectConfigForOfflineTranslation']}"
-                        action="#{configurationAction.getOfflinePoConfigData(projectIterationFilesAction.locale)}">
-                    <f:param name="projectSlug" value="#{projectIterationFilesAction.projectSlug}" />
-                    <f:param name="iterationSlug" value="#{projectIterationFilesAction.iterationSlug}" />
-                </s:link>
-
-                <s:link styleClass="action_link disabled"
-                        rendered="#{!projectIterationFilesAction.knownProjectType}"
-                        value="#{messages['jsf.ConfigFileForOfflineTranslation']}"
-                        title="#{messages['jsf.ConfigFileDisabledProjectNotSet']} #{messages['jsf.GenerateProjectConfigSingleLocale']}"
-                        disabled="true">
-                </s:link>
-
-                <ui:param name="downloadAllAllowed" value="#{projectIterationFilesAction.zipFileDownloadAllowed}" />
-                
-                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
-                                 rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
-                                 value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
-                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
-                                 onclick="if(!downloadAllFilesClick()){ return false; }"
-                                 render="downloadProgressBar"
-                                 disabled="#{not downloadAllAllowed}"
-                                 title="#{projectIterationFilesAction.zipFileDownloadTitle}"/>
-                                 
-                <a4j:commandLink styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
-                                 rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
-                                 value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
-                                 action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
-                                 onclick="if(!downloadAllFilesClick()){ return false; }"
-                                 render="downloadProgressBar"
-                                 disabled="#{not downloadAllAllowed}"
-                                 title="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo.title']}"/>
-           </h:form>
-        </rich:panel>
-
-        <rich:panel rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}">
-            <h3 class="translate_restriction_title">
-                <span class="icon-eye" style="font-size: 16px"></span>#{messages['jsf.iteration.files.WhyCantITranslate']}
-            </h3>
-            <h:dataTable value="#{projectIterationFilesAction.translationDeniedReasonMessages}"
-                         var="mssg"
-                         columnClasses="translate_restriction_mssg_row">
-                <h:column>
-                    <h:outputText value="#{mssg}"/>
-                </h:column>
-            </h:dataTable>
-        </rich:panel>
-    </ui:define>
+  <rich:panel
+    rendered="#{identity.loggedIn and not projectIterationFilesAction.isUserAllowedToTranslate() and not projectIterationFilesAction.isUserAllowedToReview()}">
+    <h3 class="translate_restriction_title">
+      <span class="icon-eye"
+        style="font-size: 16px"></span>#{messages['jsf.iteration.files.WhyCantITranslate']}
+    </h3>
+    <h:dataTable
+      value="#{projectIterationFilesAction.translationDeniedReasonMessages}"
+      var="mssg"
+      columnClasses="translate_restriction_mssg_row">
+      <h:column>
+        <h:outputText value="#{mssg}"/>
+      </h:column>
+    </h:dataTable>
+  </rich:panel>
+</ui:define>
 
 </ui:composition>

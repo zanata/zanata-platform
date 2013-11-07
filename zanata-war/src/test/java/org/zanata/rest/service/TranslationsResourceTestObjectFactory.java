@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
@@ -11,73 +10,74 @@ import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+public class TranslationsResourceTestObjectFactory {
+    private final Logger log = LoggerFactory
+            .getLogger(TranslationsResourceTestObjectFactory.class);
 
-public class TranslationsResourceTestObjectFactory
-{
-   private final Logger log = LoggerFactory.getLogger(TranslationsResourceTestObjectFactory.class);
+    public TranslationsResource getTestObject() {
+        TranslationsResource entity = new TranslationsResource();
+        TextFlowTarget target = new TextFlowTarget("rest1");
+        target.setContents("hello world");
+        target.setState(ContentState.Approved);
+        target.setTranslator(new Person("root@localhost", "Administrator"));
+        // for the convenience of test
+        target.getExtensions(true);
+        entity.getTextFlowTargets().add(target);
+        entity.getExtensions(true);
+        return entity;
+    }
 
-   public TranslationsResource getTestObject()
-   {
-      TranslationsResource entity = new TranslationsResource();
-      TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContents("hello world");
-      target.setState(ContentState.Approved);
-      target.setTranslator(new Person("root@localhost", "Administrator"));
-      // for the convenience of test
-      target.getExtensions(true);
-      entity.getTextFlowTargets().add(target);
-      entity.getExtensions(true);
-      return entity;
-   }
+    public TranslationsResource getTestObject2() {
+        TranslationsResource entity = new TranslationsResource();
+        TextFlowTarget target = new TextFlowTarget("rest1");
+        target.setContents("hello world");
+        target.setState(ContentState.Approved);
+        target.setTranslator(new Person("root@localhost", "Administrator"));
+        target.getExtensions(true);
+        TextFlowTarget target2 = new TextFlowTarget("rest2");
+        target2.setContents("greeting world");
+        target2.setState(ContentState.Approved);
+        target2.setTranslator(new Person("root@localhost", "Administrator"));
+        target2.getExtensions(true);
+        entity.getTextFlowTargets().add(target2);
+        entity.getExtensions(true);
+        log.debug(entity.toString());
+        return entity;
+    }
 
-   public TranslationsResource getTestObject2()
-   {
-      TranslationsResource entity = new TranslationsResource();
-      TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContents("hello world");
-      target.setState(ContentState.Approved);
-      target.setTranslator(new Person("root@localhost", "Administrator"));
-      target.getExtensions(true);
-      TextFlowTarget target2 = new TextFlowTarget("rest2");
-      target2.setContents("greeting world");
-      target2.setState(ContentState.Approved);
-      target2.setTranslator(new Person("root@localhost", "Administrator"));
-      target2.getExtensions(true);
-      entity.getTextFlowTargets().add(target2);
-      entity.getExtensions(true);
-      log.debug(entity.toString());
-      return entity;
-   }
+    public TranslationsResource getTextFlowTargetCommentTest() {
+        TranslationsResource sr = getTestObject();
+        TextFlowTarget stf = sr.getTextFlowTargets().get(0);
 
-   public TranslationsResource getTextFlowTargetCommentTest()
-   {
-      TranslationsResource sr = getTestObject();
-      TextFlowTarget stf = sr.getTextFlowTargets().get(0);
+        SimpleComment simpleComment =
+                new SimpleComment("textflowtarget comment");
 
-      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
+        stf.getExtensions(true).add(simpleComment);
+        return sr;
+    }
 
-      stf.getExtensions(true).add(simpleComment);
-      return sr;
-   }
+    public TranslationsResource getPoTargetHeaderTextFlowTargetTest() {
+        TranslationsResource sr = getTestObject();
+        PoTargetHeader poTargetHeader =
+                new PoTargetHeader(
+                        "target header comment\nAdmin user <root@localhost>, 2011. #zanata",
+                        new HeaderEntry("ht", "vt1"), new HeaderEntry("th2",
+                                "tv2"), new HeaderEntry("Content-Type",
+                                "charset=UTF-8"));
 
-   public TranslationsResource getPoTargetHeaderTextFlowTargetTest()
-   {
-      TranslationsResource sr = getTestObject();
-      PoTargetHeader poTargetHeader = new PoTargetHeader("target header comment\nAdmin user <root@localhost>, 2011. #zanata", new HeaderEntry("ht", "vt1"), new HeaderEntry("th2", "tv2"), new HeaderEntry("Content-Type","charset=UTF-8"));
+        sr.getExtensions(true).add(poTargetHeader);
+        return sr;
+    }
 
-      sr.getExtensions(true).add(poTargetHeader);
-      return sr;
-   }
+    public TranslationsResource getAllExtension() {
+        TranslationsResource sr = getPoTargetHeaderTextFlowTargetTest();
+        TextFlowTarget stf = sr.getTextFlowTargets().get(0);
 
-   public TranslationsResource getAllExtension()
-   {
-      TranslationsResource sr = getPoTargetHeaderTextFlowTargetTest();
-      TextFlowTarget stf = sr.getTextFlowTargets().get(0);
+        SimpleComment simpleComment =
+                new SimpleComment("textflowtarget comment");
 
-      SimpleComment simpleComment = new SimpleComment("textflowtarget comment");
-
-      stf.getExtensions(true).add(simpleComment);
-      return sr;
-   }
+        stf.getExtensions(true).add(simpleComment);
+        return sr;
+    }
 
 }

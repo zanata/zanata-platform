@@ -1,89 +1,99 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    template="../WEB-INF/template/template_2x.xhtml">
-   
-    <ui:define name="page_title">#{projectHome.instance.name}:#{messages['jsf.AddProjectMaintainer']}</ui:define>
-    <ui:define name="right_content">
-		<rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-      	    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <a href="#" class="action_link" onclick="showAddMaintainer()">#{messages['jsf.AddProjectMaintainer']}</a>
-    	</rich:panel>
-    </ui:define>
-   
-    <ui:define name="center_content">
-        
-      <script type="text/javascript">
-        function confirmDelete()
-        {
-          return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsProjectMaintainer']}");
-        }
-        
-        function showAddMaintainer()
-        {
-        	#{rich:component('maintainerAddPanel')}.show();
-        	//#{rich:element('userNameAutoCompleteInput')}.focus();
-        }
-      </script>
-      
-	
-      <s:fragment rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-		<h:messages />
-		
-        <h:form>
-            <s:token allowMultiplePosts="true" />
-	        <rich:dataTable 
-	            id="threads"
-	            value="#{allList}" 
-	            var="maintainer">
-	
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
-	            #{maintainer.account.username}
-	          </rich:column>
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Name']}</f:facet>
-	            #{maintainer.name}
-	          </rich:column>
-	          <rich:column width="auto">
-	            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
-	            #{maintainer.email}
-	          </rich:column>
-	          <rich:column width="auto" styleClass="centered">
-	            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>          
-	            <h:commandButton value="#{messages['jsf.Remove']}" action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
-	                      onclick="return confirmDelete()"/>
-	          </rich:column>
-	  	    </rich:dataTable>
-        </h:form>              
-      </s:fragment>
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template_2x.xhtml">
+
+  <ui:define
+    name="page_title">#{projectHome.instance.name}:#{messages['jsf.AddProjectMaintainer']}</ui:define>
+  <ui:define name="right_content">
+    <rich:panel
+      rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <a href="#" class="action_link"
+        onclick="showAddMaintainer()">#{messages['jsf.AddProjectMaintainer']}</a>
+    </rich:panel>
+  </ui:define>
+
+  <ui:define name="center_content">
+
+    <script type="text/javascript">
+      function confirmDelete() {
+        return confirm("#{messages['jsf.AreYouSureYouWishToRemoveThisPersonAsProjectMaintainer']}");
+      }
+
+      function showAddMaintainer() {
+        #{rich:component('maintainerAddPanel')}
+      .
+        show();
+        //#{rich:element('userNameAutoCompleteInput')}.focus();
+      }
+    </script>
 
 
-        <rich:popupPanel id="maintainerAddPanel" width="505" autosized="true" moveable="false">
-            <rich:panel rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-                <h:form>
-                    <h1>#{messages['jsf.AddProjectMaintainer']}</h1>
-                    <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml" />
+    <s:fragment
+      rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+      <h:messages/>
 
-                    <div style="clear: both" />
+      <h:form id="projectMaintainersForm">
+        <s:token allowMultiplePosts="true"/>
+        <rich:dataTable
+          id="threads"
+          value="#{allList}"
+          var="maintainer">
 
-                    <div class="actionButtons">
-                        <a4j:commandButton
-                                value="#{messages['jsf.Add']}"
-                                action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}" render="results, threads" />
-                        <h:commandButton value="#{messages['jsf.Close']}"
-                                         onclick="#{rich:component('maintainerAddPanel')}.hide(); return false;" />
-                    </div>
-                </h:form>
-            </rich:panel>
+          <rich:column width="auto">
+            <f:facet name="header">#{messages['jsf.Username']}</f:facet>
+            #{maintainer.account.username}
+          </rich:column>
+          <rich:column width="auto">
+            <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+            #{maintainer.name}
+          </rich:column>
+          <rich:column width="auto">
+            <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+            #{maintainer.email}
+          </rich:column>
+          <rich:column width="auto" styleClass="centered">
+            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+            <h:commandButton value="#{messages['jsf.Remove']}"
+              action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}"
+              onclick="return confirmDelete()"/>
+          </rich:column>
+        </rich:dataTable>
+      </h:form>
+    </s:fragment>
 
-        </rich:popupPanel>
-    </ui:define>
-    
-  </ui:composition>
+
+    <rich:popupPanel id="maintainerAddPanel" width="505" autosized="true"
+      moveable="false">
+      <rich:panel
+        rendered="#{s:hasPermission(projectMaintainerManageAction.project, 'update')}">
+        <h:form id="addMaintainerForm">
+          <h1>#{messages['jsf.AddProjectMaintainer']}</h1>
+          <ui:include src="../WEB-INF/layout/add_maintainer_form.xhtml"/>
+
+          <div style="clear: both"/>
+
+          <div class="actionButtons">
+            <a4j:commandButton
+              id="addButton"
+              value="#{messages['jsf.Add']}"
+              action="#{projectMaintainerManageAction.addMaintainers(accountSearch.maintainer)}"
+              render="results, threads"/>
+            <h:commandButton id="closeButton" value="#{messages['jsf.Close']}"
+              onclick="#{rich:component('maintainerAddPanel')}.hide(); return false;"/>
+          </div>
+        </h:form>
+      </rich:panel>
+
+    </rich:popupPanel>
+  </ui:define>
+
+</ui:composition>

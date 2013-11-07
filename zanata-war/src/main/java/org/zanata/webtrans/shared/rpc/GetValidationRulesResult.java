@@ -2,30 +2,24 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.Map;
 
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 
+public class GetValidationRulesResult implements DispatchResult {
 
+    private static final long serialVersionUID = 1L;
 
-public class GetValidationRulesResult implements DispatchResult
-{
+    private Map<ValidationId, State> validationRules;
 
-   private static final long serialVersionUID = 1L;
+    @SuppressWarnings("unused")
+    private GetValidationRulesResult() {
+    }
 
-   private Map<ValidationId, ValidationInfo> validations;
+    public GetValidationRulesResult(Map<ValidationId, State> validations) {
+        this.validationRules = validations;
+    }
 
-   @SuppressWarnings("unused")
-   private GetValidationRulesResult()
-   {
-   }
-
-   public GetValidationRulesResult(Map<ValidationId, ValidationInfo> validations)
-   {
-      this.validations = validations;
-   }
-
-   public Map<ValidationId, ValidationInfo> getValidations()
-   {
-      return validations;
-   }
+    public Map<ValidationId, State> getValidationRules() {
+        return validationRules;
+    }
 }

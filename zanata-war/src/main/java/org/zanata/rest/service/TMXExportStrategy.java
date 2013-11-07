@@ -31,26 +31,34 @@ import nu.xom.Element;
 
 /**
  * A strategy for exporting translation units to TMX
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
- * @param <T> a translation unit (either ITextFlow or TransMemoryUnit)
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @param <T>
+ *            a translation unit (either ITextFlow or TransMemoryUnit)
  */
 @ParametersAreNonnullByDefault
-public interface TMXExportStrategy<T>
-{
-   /**
-    * Builds a {@code <header>} element.
-    * @return
-    * @throws IOException
-    */
-   public abstract Element buildHeader() throws IOException;
-   /**
-    * Builds a {@code <tu>} element for the specified T and one or all of its translations.
-    * @param tu the T whose contents and translations are to be exported
-    * @param tuidPrefix String to be prepended to all resIds when generating tuids
-    * @return a TU Element, or absent() if the TU is invalid
-    * @throws IOException 
-    * @throws Exception 
-    */
-   public abstract Optional<Element> buildTU(T tu) throws IOException;
+public interface TMXExportStrategy<T> {
+    /**
+     * Builds a {@code <header>} element.
+     *
+     * @return
+     * @throws IOException
+     */
+    public abstract Element buildHeader() throws IOException;
+
+    /**
+     * Builds a {@code <tu>} element for the specified T and one or all of its
+     * translations.
+     *
+     * @param tu
+     *            the T whose contents and translations are to be exported
+     * @param tuidPrefix
+     *            String to be prepended to all resIds when generating tuids
+     * @return a TU Element, or absent() if the TU is invalid
+     * @throws IOException
+     * @throws Exception
+     */
+    public abstract Optional<Element> buildTU(T tu) throws IOException;
 }

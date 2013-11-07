@@ -35,32 +35,30 @@ import com.google.gwt.user.client.ui.HasValue;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface GlossaryDisplay extends WidgetDisplay
-{
-   HasText getGlossaryTextBox();
+public interface GlossaryDisplay extends WidgetDisplay {
+    HasText getGlossaryTextBox();
 
-   HasValue<SearchType> getSearchType();
+    HasValue<SearchType> getSearchType();
 
-   void startProcessing();
+    void startProcessing();
 
-   void renderTable(ArrayList<GlossaryResultItem> glossaries);
+    void renderTable(ArrayList<GlossaryResultItem> glossaries);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   void stopProcessing(boolean showResult);
+    void stopProcessing(boolean showResult);
 
-   void clearTableContent();
+    void clearTableContent();
 
-   interface Listener
-   {
-      void fireCopyEvent(GlossaryResultItem item);
+    interface Listener {
+        void fireCopyEvent(GlossaryResultItem item);
 
-      void showGlossaryDetail(GlossaryResultItem item);
+        void showGlossaryDetail(GlossaryResultItem item);
 
-      void fireSearchEvent();
+        void fireSearchEvent();
 
-      void clearContent();
+        void clearContent();
 
-      void onFocus(boolean isFocused);
-   }
+        void onFocus(boolean isFocused);
+    }
 }

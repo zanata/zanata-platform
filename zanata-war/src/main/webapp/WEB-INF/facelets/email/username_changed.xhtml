@@ -1,28 +1,34 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j"
-                xmlns:rich="http://richfaces.org/rich"
-                template="/WEB-INF/facelets/email/template_email.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  template="/WEB-INF/facelets/email/template_email.xhtml">
 
-    <ui:param name="toName" value="#{userAction.getName(userAction.username)}" />
-    <ui:param name="toEmailAddr" value="#{userAction.getEmail(userAction.username)}" />
-    <ui:param name="subject" value="#{messages['jsf.email.usernamechange.Subject']}" />
+  <ui:param name="toName" value="#{userAction.getName(userAction.username)}"/>
+  <ui:param name="toEmailAddr"
+    value="#{userAction.getEmail(userAction.username)}"/>
+  <ui:param name="subject"
+    value="#{messages['jsf.email.usernamechange.Subject']}"/>
 
-    <ui:define name="body">
-        <p>#{messages['jsf.email.usernamechange.DearName']}</p>
-        <p>#{messages['jsf.email.usernamechange.Content']}</p>
-        <p>#{messages['jsf.email.usernamechange.YourNewUsername']}</p>
-        <s:div rendered="#{applicationConfiguration.internalAuth}">
-            <p>#{messages['jsf.email.usernamechange.ResetPassword']}</p>
-            <p>
-                <a href="#{applicationConfiguration.serverPath}/account/password_reset_request">
-                    #{messages['jsf.email.usernamechange.ClickLinkForPasswordReset']}
-                </a>
-            </p>
-        </s:div>
-    </ui:define>
+  <ui:define name="body">
+    <p>#{messages['jsf.email.usernamechange.DearName']}</p>
+
+    <p>#{messages['jsf.email.usernamechange.Content']}</p>
+
+    <p>#{messages['jsf.email.usernamechange.YourNewUsername']}</p>
+    <s:div rendered="#{applicationConfiguration.internalAuth}">
+      <p>#{messages['jsf.email.usernamechange.ResetPassword']}</p>
+
+      <p>
+        <a
+          href="#{applicationConfiguration.serverPath}/account/password_reset_request">
+          #{messages['jsf.email.usernamechange.ClickLinkForPasswordReset']}
+        </a>
+      </p>
+    </s:div>
+  </ui:define>
 
 </ui:composition>

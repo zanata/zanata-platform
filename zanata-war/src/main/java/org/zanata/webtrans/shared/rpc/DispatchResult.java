@@ -26,11 +26,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The DispatchResult class just makes it easier to ensure that all our Results implement IsSerializable.
+ * The DispatchResult class just makes it easier to ensure that all our Results
+ * implement IsSerializable.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public interface DispatchResult extends Result, IsSerializable
-{
+public interface DispatchResult extends Result, IsSerializable {
 
 }

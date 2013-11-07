@@ -9,8 +9,7 @@ import org.junit.runner.RunWith
 class ZanataTest {
 
     @After
-    void generateIndex()
-    {
+    void generateIndex() {
         URL url = Thread.currentThread().getContextClassLoader().getResource(getClass().name.replace('.', '/') + ".class");
 
         File currentDir = new File(url.getFile());
@@ -21,8 +20,7 @@ class ZanataTest {
 
         def htmls = []
         currentDir.getParentFile().eachFileRecurse {
-            if (it.name.endsWith(".html"))
-            {
+            if (it.name.endsWith(".html")) {
                 // because we write index.html to concordion output dir root,
                 // we need to prepend package path of this class
                 def relativePath = packagePath + (it.absolutePath - dirPath)

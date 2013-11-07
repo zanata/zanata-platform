@@ -42,75 +42,87 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("securityServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class SecurityServiceImpl implements SecurityService
-{
-   @In
-   private ProjectDAO projectDAO;
-   
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+public class SecurityServiceImpl implements SecurityService {
+    @In
+    private ProjectDAO projectDAO;
 
-   @In
-   private LocaleService localeServiceImpl;
-   
-   @In
-   ZanataIdentity identity;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @Override
-   public SecurityCheckResult checkPermission(AbstractWorkspaceAction action, TranslationAction translationAction) throws NoSuchWorkspaceException
-   {
-      identity.checkLoggedIn();
+    @In
+    ZanataIdentity identity;
 
-      WorkspaceId workspaceId = action.getWorkspaceId();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
-      
-      HProject project = projectDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug());
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug());
-      
-      if (projectIterationIsInactive(project.getStatus(), projectIteration.getStatus()))
-      {
-         throw new AuthorizationException("Project or version is read-only");
-      }
-      
-      HLocale locale = localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
-      identity.checkPermission(translationAction.action(), locale, project);
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-      return new SecurityCheckResultImpl(locale, workspace);
-   }
-   
-   private boolean projectIterationIsInactive(EntityStatus projectStatus, EntityStatus iterStatus)
-   {
-      return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus.equals(EntityStatus.ACTIVE));
-   }
+    @Override
+    public SecurityCheckResult checkPermission(AbstractWorkspaceAction action,
+            TranslationAction translationAction)
+            throws NoSuchWorkspaceException {
+        WorkspaceId workspaceId = action.getWorkspaceId();
+        HProject project = checkWorkspaceStatus(workspaceId);
 
-   private static class SecurityCheckResultImpl implements SecurityCheckResult
-   {
-      private final HLocale hLocale;
-      private final TranslationWorkspace workspace;
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
+        HLocale locale =
+                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
 
-      private SecurityCheckResultImpl(HLocale hLocale, TranslationWorkspace workspace)
-      {
-         this.hLocale = hLocale;
-         this.workspace = workspace;
-      }
+        identity.checkPermission(translationAction.action(), locale, project);
 
-      @Override
-      public HLocale getLocale()
-      {
-         return hLocale;
-      }
+        return new SecurityCheckResultImpl(locale, workspace);
+    }
 
-      @Override
-      public TranslationWorkspace getWorkspace()
-      {
-         return workspace;
-      }
-   }
+    @Override
+    public HProject checkWorkspaceStatus(WorkspaceId workspaceId) {
+        identity.checkLoggedIn();
+
+        HProject project =
+                projectDAO.getBySlug(workspaceId.getProjectIterationId()
+                        .getProjectSlug());
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(workspaceId
+                        .getProjectIterationId().getProjectSlug(), workspaceId
+                        .getProjectIterationId().getIterationSlug());
+
+        if (projectIterationIsInactive(project.getStatus(),
+                projectIteration.getStatus())) {
+            throw new AuthorizationException("Project or version is read-only");
+        }
+        return project;
+    }
+
+    private static boolean projectIterationIsInactive(
+            EntityStatus projectStatus, EntityStatus iterStatus) {
+        return !(projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
+                .equals(EntityStatus.ACTIVE));
+    }
+
+    private static class SecurityCheckResultImpl implements SecurityCheckResult {
+        private final HLocale hLocale;
+        private final TranslationWorkspace workspace;
+
+        private SecurityCheckResultImpl(HLocale hLocale,
+                TranslationWorkspace workspace) {
+            this.hLocale = hLocale;
+            this.workspace = workspace;
+        }
+
+        @Override
+        public HLocale getLocale() {
+            return hLocale;
+        }
+
+        @Override
+        public TranslationWorkspace getWorkspace() {
+            return workspace;
+        }
+    }
 }

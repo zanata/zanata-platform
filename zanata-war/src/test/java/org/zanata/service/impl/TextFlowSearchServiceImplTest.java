@@ -28,29 +28,30 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = { "jpa-tests" })
-public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest
-{
-   private TextFlowSearchService service;
-   @Mock
-   private LocaleService localeService;
-   private final LocaleId localeId = new LocaleId("ja");
-   private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId, "plurals", "master", ProjectType.Podir);
-   private HLocale jaHLocale;
+public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
+    private TextFlowSearchService service;
+    @Mock
+    private LocaleService localeService;
+    private final LocaleId localeId = new LocaleId("ja");
+    private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId,
+            "plurals", "master", ProjectType.Podir);
+    private HLocale jaHLocale;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("performance/GetTransUnitListTest.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "performance/GetTransUnitListTest.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       service = SeamAutowire.instance()
             .use("localeServiceImpl", localeService)
             .use("documentDAO", new DocumentDAO(getSession()))
@@ -59,16 +60,20 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest
             .use("session", new FullTextSessionImpl(getSession()))
             .autowire(TextFlowSearchServiceImpl.class);
       // @formatter:on
-      jaHLocale = getEm().find(HLocale.class, 3L);
-      when(localeService.validateLocaleByProjectIteration(localeId, workspaceId.getProjectIterationId().getProjectSlug(), workspaceId.getProjectIterationId().getIterationSlug())).thenReturn(jaHLocale);
-   }
+        jaHLocale = getEm().find(HLocale.class, 3L);
+        when(
+                localeService.validateLocaleByProjectIteration(localeId,
+                        workspaceId.getProjectIterationId().getProjectSlug(),
+                        workspaceId.getProjectIterationId().getIterationSlug()))
+                .thenReturn(jaHLocale);
+    }
 
-   @Test
-   public void testFindTextFlows() throws Exception
-   {
-      List<HTextFlow> result = service.findTextFlows(workspaceId,
-            FilterConstraints.builder().filterBy("file").build());
+    @Test
+    public void testFindTextFlows() throws Exception {
+        List<HTextFlow> result =
+                service.findTextFlows(workspaceId, FilterConstraints.builder()
+                        .filterBy("file").build());
 
-      assertThat(result.size(), Matchers.equalTo(7));
-   }
+        assertThat(result.size(), Matchers.equalTo(7));
+    }
 }

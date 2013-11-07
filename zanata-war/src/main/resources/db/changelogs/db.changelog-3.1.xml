@@ -6,6 +6,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
                   http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <!--
+    This changelog file (despite the filename) is actually part 2 of the changes for Zanata 3.0.
+    Please start a new file (eg db.changelog-3.1a.xml) for the 3.1 dev cycle.
+     -->
+
     <changeSet id="1" author="camunoz@redhat.com">
         <comment>Create the Translation Memory table.</comment>
 
@@ -37,7 +42,7 @@
 
     <changeSet id="2" author="camunoz@redhat.com">
         <comment>Create Translation Memory metadata table.</comment>
-        
+
         <createTable tableName="TransMemory_Metadata">
             <column name="trans_memory_id" type="bigint">
                 <constraints  primaryKey="true" nullable="false"/>
@@ -135,7 +140,24 @@
         <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
                                  constraintName="FK_TransUnitVariant_TransUnit"
                                  referencedTableName="TransMemoryUnit"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="5" author="camunoz@redhat.com">
+        <comment>Modify Trans Memory Foreign Keys to cascade delete.</comment>
+        <dropForeignKeyConstraint baseTableName="TransMemoryUnitVariant" constraintName="FK_TransUnitVariant_TransUnit"/>
+        <dropForeignKeyConstraint baseTableName="TransMemoryUnit" constraintName="FK_tmunit_trans_memory"/>
+
+        <addForeignKeyConstraint baseTableName="TransMemoryUnitVariant" baseColumnNames="trans_unit_id"
+                                 constraintName="FK_TransUnitVariant_TransUnit"
+                                 referencedTableName="TransMemoryUnit"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="TransMemoryUnit" baseColumnNames="tm_id"
+                                 constraintName="FK_tmunit_trans_memory"
+                                 referencedTableName="TransMemory"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="1" author="pahuang@redhat.com">
@@ -303,9 +325,9 @@
         <addForeignKeyConstraint constraintName="FKActivity_person"
                                  referencedTableName="HPerson" referencedColumnNames="id"
                                  baseTableName="Activity" baseColumnNames="actor_id"/>
-        
+
         <addUniqueConstraint tableName="Activity"
-		    columnNames="actor_id,approxTime,activityType,contextType,context_id" 
+		    columnNames="actor_id,approxTime,activityType,contextType,context_id"
 		    constraintName="UKactivity"/>
     </changeSet>
 

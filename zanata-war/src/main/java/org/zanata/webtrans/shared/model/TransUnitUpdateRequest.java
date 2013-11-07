@@ -32,72 +32,63 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * Represents a request to update the translation for a {@link TransUnit},
  * encapsulating the details of the update
- * 
+ *
  * @author David Mason, damason@redhat.com
- * 
+ *
  */
-public class TransUnitUpdateRequest implements IsSerializable
-{
-   private TransUnitId transUnitId;
-   private List<String> newContents;
-   private ContentState newContentState;
-   private int baseTranslationVersion;
-   private String targetComment;
+public class TransUnitUpdateRequest implements IsSerializable {
+    private TransUnitId transUnitId;
+    private List<String> newContents;
+    private ContentState newContentState;
+    private int baseTranslationVersion;
+    private String targetComment;
 
-   // required for GWT rpc serialization
-   @SuppressWarnings("unused")
-   private TransUnitUpdateRequest()
-   {
-   }
+    // required for GWT rpc serialization
+    @SuppressWarnings("unused")
+    private TransUnitUpdateRequest() {
+    }
 
-   public TransUnitUpdateRequest(TransUnitId transUnitId, List<String> newContents, ContentState newContentState, int baseTranslationVersion)
-   {
-      this.transUnitId = transUnitId;
-      this.newContents = newContents;
-      this.newContentState = newContentState;
-      this.baseTranslationVersion = baseTranslationVersion;
-   }
+    public TransUnitUpdateRequest(TransUnitId transUnitId,
+            List<String> newContents, ContentState newContentState,
+            int baseTranslationVersion) {
+        this.transUnitId = transUnitId;
+        this.newContents = newContents;
+        this.newContentState = newContentState;
+        this.baseTranslationVersion = baseTranslationVersion;
+    }
 
-   public TransUnitUpdateRequest addTargetComment(String comment)
-   {
-      targetComment = comment;
-      return this;
-   }
+    public TransUnitUpdateRequest addTargetComment(String comment) {
+        targetComment = comment;
+        return this;
+    }
 
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
+    public TransUnitId getTransUnitId() {
+        return transUnitId;
+    }
 
-   public List<String> getNewContents()
-   {
-      return newContents;
-   }
+    public List<String> getNewContents() {
+        return newContents;
+    }
 
-   public ContentState getNewContentState()
-   {
-      return newContentState;
-   }
+    public ContentState getNewContentState() {
+        return newContentState;
+    }
 
-   public int getBaseTranslationVersion()
-   {
-      return baseTranslationVersion;
-   }
+    public int getBaseTranslationVersion() {
+        return baseTranslationVersion;
+    }
 
-   public boolean hasTargetComment()
-   {
-      return !Strings.isNullOrEmpty(targetComment);
-   }
+    public boolean hasTargetComment() {
+        return !Strings.isNullOrEmpty(targetComment);
+    }
 
-   public String getTargetComment()
-   {
-      return targetComment;
-   }
+    public String getTargetComment() {
+        return targetComment;
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
+    @Override
+    public String toString() {
+        // @formatter:off
       return Objects.toStringHelper(this).
             add("transUnitId", transUnitId).
             add("newContents", newContents).
@@ -106,5 +97,5 @@ public class TransUnitUpdateRequest implements IsSerializable
             add("targetComment", targetComment).
             toString();
       // @formatter:on
-   }
+    }
 }

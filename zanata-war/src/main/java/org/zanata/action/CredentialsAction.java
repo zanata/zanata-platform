@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -53,167 +53,135 @@ import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 import static org.jboss.seam.international.StatusMessage.Severity.INFO;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("credentialsAction")
 @Scope(ScopeType.PAGE)
-public class CredentialsAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class CredentialsAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @In(value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+    private HAccount authenticatedAccount;
 
-   @In
-   private AccountDAO accountDAO;
+    @In
+    private AccountDAO accountDAO;
 
-   @In
-   private AuthenticationManager authenticationManager;
+    @In
+    private AuthenticationManager authenticationManager;
 
-   @DataModel
-   private List<HCredentials> userCredentials;
+    @DataModel
+    private List<HCredentials> userCredentials;
 
-   @DataModelSelection
-   private HCredentials selectedCredentials;
+    @DataModelSelection
+    private HCredentials selectedCredentials;
 
-   private String credentialsUsername;
+    public void loadUserCredentials() {
+        // Get the list of credentials from the database
+        HAccount account =
+                accountDAO.findById(authenticatedAccount.getId(), false);
+        userCredentials = new ArrayList<HCredentials>(account.getCredentials());
+    }
 
-   private OpenIdProviderType providerType;
+    public List<HCredentials> getUserCredentials() {
+        return userCredentials;
+    }
 
+    public void remove() {
+        HAccount account =
+                accountDAO.findById(authenticatedAccount.getId(), false);
+        account.getCredentials().remove(selectedCredentials);
+        userCredentials = new ArrayList<HCredentials>(account.getCredentials()); // Reload
+                                                                                 // the
+                                                                                 // credentials
+        accountDAO.makePersistent(account);
+    }
 
-   public void loadUserCredentials()
-   {
-      // Get the list of credentials from the database
-      HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
-      userCredentials = new ArrayList<HCredentials>( account.getCredentials() );
-   }
+    public void cancel() {
+        // See pages.xml
+    }
 
-   public String getProviderType()
-   {
-      return providerType != null ? providerType.toString() : "";
-   }
+    public void verifyCredentials(String providerTypeStr) {
+        OpenIdProviderType providerType =
+                OpenIdProviderType.valueOf(providerTypeStr);
+        HOpenIdCredentials newCreds = new HOpenIdCredentials();
+        newCreds.setAccount(authenticatedAccount);
 
-   public void setProviderType(String providerType)
-   {
-      try
-      {
-         this.providerType = OpenIdProviderType.valueOf(providerType);
-      }
-      catch (IllegalArgumentException e)
-      {
-         this.providerType = OpenIdProviderType.Generic;
-      }
-   }
+        authenticationManager.openIdAuthenticate(providerType,
+                new CredentialsCreationCallback(newCreds));
+    }
 
-   public List<HCredentials> getUserCredentials()
-   {
-      return userCredentials;
-   }
+    public boolean isGoogleOpenId(String openId) {
+        return new GoogleOpenIdProvider().accepts(openId);
+    }
 
-   public void setCredentialsUsername(String credentialsUsername)
-   {
-      this.credentialsUsername = credentialsUsername;
-   }
+    public boolean isFedoraOpenId(String openId) {
+        return new FedoraOpenIdProvider().accepts(openId);
+    }
 
-   public String getCredentialsUsername()
-   {
-      return credentialsUsername;
-   }
+    public boolean isMyOpenId(String openId) {
+        return new MyOpenIdProvider().accepts(openId);
+    }
 
-   public void remove()
-   {
-      HAccount account = accountDAO.findById( authenticatedAccount.getId(), false );
-      account.getCredentials().remove( selectedCredentials );
-      userCredentials = new ArrayList<HCredentials>( account.getCredentials() ); // Reload the credentials
-      accountDAO.makePersistent( account );
-   }
+    public boolean isYahooOpenId(String openId) {
+        return new YahooOpenIdProvider().accepts(openId);
+    }
 
-   public void cancel()
-   {
-      // See pages.xml
-   }
+    public boolean isGenericOpenId(String openId) {
+        return !this.isFedoraOpenId(openId) && !this.isGoogleOpenId(openId)
+                && !this.isMyOpenId(openId) && !this.isYahooOpenId(openId);
+    }
 
-   public void verifyCredentials()
-   {
-      HOpenIdCredentials newCreds = new HOpenIdCredentials();
-      newCreds.setAccount(authenticatedAccount);
+    /**
+     * Callback for credential creation.
+     */
+    private static class CredentialsCreationCallback implements
+            OpenIdAuthCallback, Serializable {
+        private static final long serialVersionUID = 1L;
+        private HCredentials newCredentials;
 
-      authenticationManager.openIdAuthenticate(
-            this.providerType, this.credentialsUsername, new CredentialsCreationCallback(newCreds) );
-   }
+        private CredentialsCreationCallback(HCredentials newCredentials) {
+            this.newCredentials = newCredentials;
+        }
 
-   public boolean isGoogleOpenId( String openId )
-   {
-      return new GoogleOpenIdProvider().accepts( openId );
-   }
+        @Override
+        public void afterOpenIdAuth(OpenIdAuthenticationResult result) {
+            // Save the credentials after a successful authentication
+            if (result.isAuthenticated()) {
+                this.newCredentials.setUser(result.getAuthenticatedId());
+                this.newCredentials.setEmail(result.getEmail());
+                // NB: Seam component injection won't work on callbacks
+                EntityManager em =
+                        (EntityManager) Component.getInstance("entityManager");
+                CredentialsDAO credentialsDAO =
+                        (CredentialsDAO) Component
+                                .getInstance(CredentialsDAO.class);
 
-   public boolean isFedoraOpenId( String openId )
-   {
-      return new FedoraOpenIdProvider().accepts( openId );
-   }
+                Conversation.instance().begin(true, false); // (To retain
+                                                            // messages)
+                FacesMessages.instance().clear();
 
-   public boolean isMyOpenId( String openId )
-   {
-      return new MyOpenIdProvider().accepts(openId);
-   }
-
-   public boolean isYahooOpenId( String openId )
-   {
-      return new YahooOpenIdProvider().accepts(openId);
-   }
-
-   public boolean isGenericOpenId( String openId )
-   {
-      return !this.isFedoraOpenId(openId) && !this.isGoogleOpenId(openId) && !this.isMyOpenId(openId)
-            && !this.isYahooOpenId(openId);
-   }
-
-   /**
-    * Callback for credential creation.
-    */
-   private static class CredentialsCreationCallback implements OpenIdAuthCallback, Serializable
-   {
-      private static final long serialVersionUID = 1L;
-      private HCredentials newCredentials;
-
-      private CredentialsCreationCallback(HCredentials newCredentials)
-      {
-         this.newCredentials = newCredentials;
-      }
-
-      @Override
-      public void afterOpenIdAuth(OpenIdAuthenticationResult result)
-      {
-         // Save the credentials after a successful authentication
-         if( result.isAuthenticated() )
-         {
-            this.newCredentials.setUser(result.getAuthenticatedId());
-            this.newCredentials.setEmail( result.getEmail() );
-            // NB: Seam component injection won't work on callbacks
-            EntityManager em = (EntityManager)Component.getInstance("entityManager");
-            CredentialsDAO credentialsDAO = (CredentialsDAO)Component.getInstance(CredentialsDAO.class);
-
-            Conversation.instance().begin(true, false); // (To retain messages)
-            FacesMessages.instance().clear();
-
-            if( credentialsDAO.findByUser( result.getAuthenticatedId() ) != null )
-            {
-               FacesMessages.instance().add(ERROR, "jsf.identities.invalid.Duplicate", null,
-                     "Duplicate identity", "This Identity is already in use.");
+                if (credentialsDAO.findByUser(result.getAuthenticatedId()) != null) {
+                    FacesMessages.instance().add(ERROR,
+                            "jsf.identities.invalid.Duplicate", null,
+                            "Duplicate identity",
+                            "This Identity is already in use.");
+                } else {
+                    em.persist(this.newCredentials);
+                    FacesMessages
+                            .instance()
+                            .add(INFO, "jsf.identities.IdentityAdded", null,
+                                    "Identity Added",
+                                    "Your new identity has been added to this account.");
+                }
             }
-            else
-            {
-               em.persist(this.newCredentials);
-               FacesMessages.instance().add(INFO, "jsf.identities.IdentityAdded", null,
-                     "Identity Added", "Your new identity has been added to this account.");
-            }
-         }
-      }
+        }
 
-      @Override
-      public String getRedirectToUrl()
-      {
-         return "/profile/identities.seam?cid=" + Conversation.instance().getId(); // keep the same conversation
-      }
-   }
+        @Override
+        public String getRedirectToUrl() {
+            return "/profile/identities.seam?cid="
+                    + Conversation.instance().getId(); // keep the same
+                                                       // conversation
+        }
+    }
 }

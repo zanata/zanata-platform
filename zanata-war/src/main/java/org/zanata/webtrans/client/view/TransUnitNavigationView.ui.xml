@@ -1,35 +1,40 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style type="org.zanata.webtrans.client.view.TransUnitNavigationView.Styles">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+  <ui:style
+    type="org.zanata.webtrans.client.view.TransUnitNavigationView.Styles">
 
-        .navButton {
-	       cursor:pointer;
-	       font-size:18px;
-	       color:#4E4E4E;
-        }
+    .navButton {
+      cursor: pointer;
+      font-size: 18px;
+      color: #4E4E4E;
+    }
 
-        .navButton:hover {
-	       color:#4e9fdd;
-        }
+    .navButton:hover {
+      color: #4e9fdd;
+    }
 
-        .fuzzyUntranslated {
-			color:#a2b4c3;
-		}
+    .fuzzyUntranslated {
+      color: #c6d2db;
+    }
 
-		.fuzzy {
-			color:#e0c350;
-		}
+    .fuzzy {
+      color: #e0c350;
+    }
 
-		.untranslated {
-			color:#a2b4c3;
-		}
+    .untranslated {
+      color: #c6d2db;
+    }
 
-	</ui:style>
-	<g:FlowPanel>
-	   <g:InlineLabel ui:field="firstEntry" addStyleNames="{style.navButton} icon-to-start"/>
-	   <g:InlineLabel ui:field="prevState" addStyleNames="{style.navButton} icon-left-open"/>
-	   <g:InlineLabel ui:field="nextState" addStyleNames="{style.navButton} icon-right-open-1"/>
-	   <g:InlineLabel ui:field="lastEntry" addStyleNames="{style.navButton} icon-to-end"/>
-	</g:FlowPanel>
+  </ui:style>
+  <g:FlowPanel>
+    <g:InlineLabel ui:field="firstEntry"
+      addStyleNames="{style.navButton} icon-to-start" />
+    <g:InlineLabel ui:field="prevState"
+      addStyleNames="{style.navButton} icon-left-open" />
+    <g:InlineLabel ui:field="nextState"
+      addStyleNames="{style.navButton} icon-right-open-1" />
+    <g:InlineLabel ui:field="lastEntry"
+      addStyleNames="{style.navButton} icon-to-end" />
+  </g:FlowPanel>
 </ui:UiBinder>

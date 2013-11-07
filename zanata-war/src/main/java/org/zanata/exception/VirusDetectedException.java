@@ -22,21 +22,19 @@
 package org.zanata.exception;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class VirusDetectedException extends ZanataException
-{
-   private static final long serialVersionUID = 1L;
+public class VirusDetectedException extends ZanataException {
+    private static final long serialVersionUID = 1L;
 
-   public VirusDetectedException(String message, Throwable e)
-   {
-      super(message, e);
-   }
+    public VirusDetectedException(String message, Throwable e) {
+        super(message, e);
+    }
 
-   public VirusDetectedException(String message)
-   {
-      super(message);
-   }
+    public VirusDetectedException(String message) {
+        super(message);
+    }
 
 }

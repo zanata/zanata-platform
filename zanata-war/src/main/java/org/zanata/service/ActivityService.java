@@ -33,67 +33,72 @@ import org.zanata.model.type.EntityType;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface ActivityService
-{
-   /**
-    * Find activity with given person, context, action in the hour of given action time
-    * 
-    * @param actorId
-    * @param contextType
-    * @param contextId
-    * @param activityType
-    * @param actionTime
-    * @return
-    */
-   Activity findActivity(long actorId, EntityType contextType, long contextId, ActivityType activityType, Date actionTime);
-   
-   
-   /**
-    * Get user activities with given contextId
-    * @param personId
-    * @param contextId
-    * @param offset
-    * @param count
-    * @return List<Activity>
-    */
-   List<Activity> findLatestActivitiesForContext(long personId, long contextId, int offset, int count);
-   
-   /**
-    * Get user activities regardless of which context
-    * @param personId
-    * @param offset
-    * @param maxResults
-    * @return List<Activity>
-    */
-   List<Activity> findLatestActivities(long personId, int offset, int maxResults);
-   
-   /**
-    * Log activity, records roll up in hourly basis
-    * 
-    * @param actor
-    * @param context
-    * @param target
-    * @param activityType
-    * @param wordCount
-    */
-   void logActivity(HPerson actor, IsEntityWithType context, IsEntityWithType target, ActivityType activityType, int wordCount);
+public interface ActivityService {
+    /**
+     * Find activity with given person, context, action in the hour of given
+     * action time
+     *
+     * @param actorId
+     * @param contextType
+     * @param contextId
+     * @param activityType
+     * @param actionTime
+     * @return
+     */
+    Activity findActivity(long actorId, EntityType contextType, long contextId,
+            ActivityType activityType, Date actionTime);
 
-   /**
-    * Get target or lastTarget entity in activity
-    * 
-    * @param entityType
-    * @param entityId
-    * @return
-    * @throws Exception
-    */
-   Object getEntity(EntityType entityType, long entityId) throws ZanataServiceException;
+    /**
+     * Get user activities with given contextId
+     *
+     * @param personId
+     * @param contextId
+     * @param offset
+     * @param count
+     * @return List<Activity>
+     */
+    List<Activity> findLatestActivitiesForContext(long personId,
+            long contextId, int offset, int count);
 
+    /**
+     * Get user activities regardless of which context
+     *
+     * @param personId
+     * @param offset
+     * @param maxResults
+     * @return List<Activity>
+     */
+    List<Activity> findLatestActivities(long personId, int offset,
+            int maxResults);
 
-   /**
-    * Get activity count of an actor
-    * 
-    * @param personId
-    * @return
-    */
-   int getActivityCountByActor(long personId);
+    /**
+     * Log activity, records roll up in hourly basis
+     *
+     * @param actor
+     * @param context
+     * @param target
+     * @param activityType
+     * @param wordCount
+     */
+    void logActivity(HPerson actor, IsEntityWithType context,
+            IsEntityWithType target, ActivityType activityType, int wordCount);
+
+    /**
+     * Get target or lastTarget entity in activity
+     *
+     * @param entityType
+     * @param entityId
+     * @return
+     * @throws Exception
+     */
+    Object getEntity(EntityType entityType, long entityId)
+            throws ZanataServiceException;
+
+    /**
+     * Get activity count of an actor
+     *
+     * @param personId
+     * @return
+     */
+    int getActivityCountByActor(long personId);
 }

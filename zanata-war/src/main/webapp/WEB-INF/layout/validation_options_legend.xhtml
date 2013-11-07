@@ -1,0 +1,23 @@
+<rich:panel styleClass="new-zanata" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich">
+
+  <f:facet name="header">#{messages['jsf.ValidationHelp']}</f:facet>
+  <ul class="list--no-bullets">
+    <li class="l--push-v-half">
+      <span class="Epsilon">#{messages['jsf.Off']}</span>
+
+      <div>#{messages['jsf.ValidationStateHelpOff']}</div>
+    </li>
+    <li class="l--push-v-half txt--warning">
+      <span class="Epsilon txt--warning">#{messages['jsf.Warning']}</span>
+
+      <div>#{messages['jsf.ValidationStateHelpWarning']}</div>
+    </li>
+    <li class="l--push-v-half txt--danger">
+      <span class="Epsilon txt--danger">#{messages['jsf.Error']}</span>
+
+      <div>#{messages['jsf.ValidationStateHelpError']}</div>
+    </li>
+  </ul>
+</rich:panel>

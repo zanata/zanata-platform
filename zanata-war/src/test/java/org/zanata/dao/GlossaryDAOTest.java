@@ -22,74 +22,72 @@ import static org.mockito.Mockito.when;
 
 @Test(groups = { "jpa-tests" })
 @Slf4j
-public class GlossaryDAOTest extends ZanataDbunitJpaTest
-{
-   private GlossaryDAO dao;
+public class GlossaryDAOTest extends ZanataDbunitJpaTest {
+    private GlossaryDAO dao;
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/GlossaryData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
 
-   @BeforeClass
-   void beforeClass()
-   {
-      Identity.setSecurityEnabled(false);
-   }
+    @BeforeClass
+    void beforeClass() {
+        Identity.setSecurityEnabled(false);
+    }
 
-   @BeforeMethod(firstTimeOnly = true)
-   public void setup()
-   {
-      dao = new GlossaryDAO((Session) getEm().getDelegate());
-   }
+    @BeforeMethod(firstTimeOnly = true)
+    public void setup() {
+        dao = new GlossaryDAO((Session) getEm().getDelegate());
+    }
 
-   @Test
-   public void testGetEntryById()
-   {
-      log.debug("testGetEntryById");
-      HGlossaryEntry entry = dao.getEntryById(1L);
+    @Test
+    public void testGetEntryById() {
+        log.debug("testGetEntryById");
+        HGlossaryEntry entry = dao.getEntryById(1L);
 
-      Assert.assertNotNull(entry);
-      assertThat(entry.getGlossaryTerms().size(), is(3));
-   }
+        Assert.assertNotNull(entry);
+        assertThat(entry.getGlossaryTerms().size(), is(3));
+    }
 
-   @Test
-   public void testGetTermByLocaleId()
-   {
-      log.debug("testGetTermByLocaleId");
-      List<HGlossaryEntry> entryList = dao.getEntriesByLocaleId(LocaleId.DE);
-      assertThat(entryList.size(), is(1));
-   }
+    @Test
+    public void testGetTermByLocaleId() {
+        log.debug("testGetTermByLocaleId");
+        List<HGlossaryEntry> entryList = dao.getEntriesByLocaleId(LocaleId.DE);
+        assertThat(entryList.size(), is(1));
+    }
 
-   @Test
-   public void testGetTermEntryAndLocale()
-   {
-      HGlossaryEntry mockEntry = mock(HGlossaryEntry.class);
-      when(mockEntry.getId()).thenReturn(1L);
+    @Test
+    public void testGetTermEntryAndLocale() {
+        HGlossaryEntry mockEntry = mock(HGlossaryEntry.class);
+        when(mockEntry.getId()).thenReturn(1L);
 
-      log.debug("testGetTermEntryAndLocale");
-      HGlossaryTerm term = dao.getTermByEntryAndLocale(mockEntry.getId(), LocaleId.DE);
-      Assert.assertNotNull(term);
+        log.debug("testGetTermEntryAndLocale");
+        HGlossaryTerm term =
+                dao.getTermByEntryAndLocale(mockEntry.getId(), LocaleId.DE);
+        Assert.assertNotNull(term);
 
-   }
+    }
 
-   @Test
-   public void testGetTermByGlossaryEntryId()
-   {
-      log.debug("testGetTermByGlossaryEntry");
-      List<HGlossaryTerm> termList = dao.getTermByGlossaryEntryId(1L);
-      assertThat(termList.size(), is(3));
+    @Test
+    public void testGetTermByGlossaryEntryId() {
+        log.debug("testGetTermByGlossaryEntry");
+        List<HGlossaryTerm> termList = dao.getTermByGlossaryEntryId(1L);
+        assertThat(termList.size(), is(3));
 
-   }
+    }
 
-   @Test
-   public void testGetEntryBySrcContentLocale()
-   {
-      log.debug("testGetEntryBySrcContentLocale");
-      HGlossaryEntry entry = dao.getEntryBySrcLocaleAndContent(LocaleId.EN_US, "test data content 1 (source lang)");
-      Assert.assertNotNull(entry);
-      assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
-   }
+    @Test
+    public void testGetEntryBySrcContentLocale() {
+        log.debug("testGetEntryBySrcContentLocale");
+        HGlossaryEntry entry =
+                dao.getEntryBySrcLocaleAndContent(LocaleId.EN_US,
+                        "test data content 1 (source lang)");
+        Assert.assertNotNull(entry);
+        assertThat(entry.getSrcLocale().getLocaleId(), is(LocaleId.EN_US));
+    }
 }

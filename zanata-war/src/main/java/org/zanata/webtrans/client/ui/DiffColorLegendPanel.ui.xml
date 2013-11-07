@@ -1,85 +1,93 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages" />
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-	<ui:style field="style"
-		type="org.zanata.webtrans.client.ui.DiffColorLegendPanel.Styles">
-			.diffLegendPanel {
-				background: #454545;
-				padding: 20px 40px 20px 40px;
-				border-radius: 10px;
-			}
-			
-			.headerLabel {
-				color: #FFFFFF;
-				font-weight: bold;
-				font-size: 14px;
-			}
-			
-			.insertLabel {
-				color: #454545;
-				background: #9CF;
-			}
-			
-			.deleteLabel {
-				color: #454545;
-				background: #F99;
-				text-decoration: line-through;
-			}
-			
-			.containLabel {
-				color: #FFFFFF;
-			}
-			
-			.descriptionLabel {
-				color: #FFFFFF;
-			}
-			
-			.table td
-			{
-				border-bottom:1px dotted gray;
-			}
-		</ui:style>
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.ui.DiffColorLegendPanel.Styles">
+    .diffLegendPanel {
+      background: #454545;
+      padding: 20px 40px 20px 40px;
+      border-radius: 10px;
+    }
 
-	<g:HTMLPanel>
-		<g:Grid styleName="{style.table}" cellPadding="5">
-			<g:row>
-				<g:customCell>
-					<g:Label styleName="{style.headerLabel}" text="{messages.style}"/>
-				</g:customCell>
-				<g:customCell>
-					<g:Label styleName="{style.headerLabel}" text="{messages.description}"/>
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell>
-					<g:Label styleName="{style.insertLabel}" text="{messages.blueColor}"/>
-				</g:customCell>
-				<g:customCell>
-					<g:Label ui:field="insDescription" styleName="{style.descriptionLabel}"/>
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell>
-					<g:Label styleName="{style.deleteLabel}" text="{messages.redColorCrossedOut}"/>
-				</g:customCell>
-				<g:customCell>
-					<g:Label ui:field="delDescription" styleName="{style.descriptionLabel}"/>
-				</g:customCell>
-			</g:row>
-			
-			<g:row>
-				<g:customCell>
-					<g:Label styleName="{style.containLabel}" text="{messages.plainText}"/>
-				</g:customCell>
-				<g:customCell>
-					<g:Label ui:field="containDescription" styleName="{style.descriptionLabel}"/>
-				</g:customCell>
-			</g:row>
-		</g:Grid>
-	</g:HTMLPanel>
-</ui:UiBinder> 
+    .headerLabel {
+      color: #FFFFFF;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .insertLabel {
+      color: #454545;
+      background: #9CF;
+    }
+
+    .deleteLabel {
+      color: #454545;
+      background: #F99;
+      text-decoration: line-through;
+    }
+
+    .containLabel {
+      color: #FFFFFF;
+    }
+
+    .descriptionLabel {
+      color: #FFFFFF;
+    }
+
+    .table td {
+      border-bottom: 1px dotted gray;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+    <g:Grid styleName="{style.table}" cellPadding="5">
+      <g:row>
+        <g:customCell>
+          <g:Label styleName="{style.headerLabel}" text="{messages.style}" />
+        </g:customCell>
+        <g:customCell>
+          <g:Label styleName="{style.headerLabel}"
+            text="{messages.description}" />
+        </g:customCell>
+      </g:row>
+
+      <g:row>
+        <g:customCell>
+          <g:Label styleName="{style.insertLabel}"
+            text="{messages.blueColor}" />
+        </g:customCell>
+        <g:customCell>
+          <g:Label ui:field="insDescription"
+            styleName="{style.descriptionLabel}" />
+        </g:customCell>
+      </g:row>
+
+      <g:row>
+        <g:customCell>
+          <g:Label styleName="{style.deleteLabel}"
+            text="{messages.redColorCrossedOut}" />
+        </g:customCell>
+        <g:customCell>
+          <g:Label ui:field="delDescription"
+            styleName="{style.descriptionLabel}" />
+        </g:customCell>
+      </g:row>
+
+      <g:row>
+        <g:customCell>
+          <g:Label styleName="{style.containLabel}"
+            text="{messages.plainText}" />
+        </g:customCell>
+        <g:customCell>
+          <g:Label ui:field="containDescription"
+            styleName="{style.descriptionLabel}" />
+        </g:customCell>
+      </g:row>
+    </g:Grid>
+  </g:HTMLPanel>
+</ui:UiBinder>

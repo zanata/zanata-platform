@@ -23,14 +23,13 @@ package org.zanata.adapter;
 import net.sf.okapi.filters.plaintext.PlainTextFilter;
 
 /**
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class PlainTextAdapter extends GenericOkapiFilterAdapter
-{
-   public PlainTextAdapter()
-   {
-      super(new PlainTextFilter(), IdSource.textUnitId);
-   }
+public class PlainTextAdapter extends GenericOkapiFilterAdapter {
+    public PlainTextAdapter() {
+        super(new PlainTextFilter(), IdSource.textUnitId);
+    }
 }

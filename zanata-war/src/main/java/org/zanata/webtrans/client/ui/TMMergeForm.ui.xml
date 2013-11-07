@@ -1,149 +1,157 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.UiMessages"/>
-    <ui:with field="enumMessages" type="org.zanata.webtrans.client.resources.EnumMessages" />
-    <ui:style field="style" type="org.zanata.webtrans.client.ui.TMMergeForm.Styles">
-        .header {
-            font-weight: bold;
-            text-align: center;
-        }
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.UiMessages" />
+  <ui:with field="enumMessages"
+    type="org.zanata.webtrans.client.resources.EnumMessages" />
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.ui.TMMergeForm.Styles">
+    .header {
+      font-weight: bold;
+      text-align: center;
+    }
 
-        .header td {
-            border-bottom: 1px dotted;
-        }
+    .header td {
+      border-bottom: 1px dotted;
+    }
 
-        .ignore_action {
-            background-color: #a2b4c3;
-            text-align: center;
-            width: 100px;
-            display: block
-        }
+    .ignore_action {
+      background-color: #a2b4c3;
+      text-align: center;
+      width: 100px;
+      display: block
+    }
 
-        .downgrade_action {
-            background-color: #e0c350;
-            text-align: center;
-            width: 100px;
-            display: block;
-        }
+    .downgrade_action {
+      background-color: #e0c350;
+      text-align: center;
+      width: 100px;
+      display: block;
+    }
 
-        .approved_action {
-            background-color: #70a98b;
-            text-align: center;
-            width: 100px;
-            display: block
-        }
+    .approved_action {
+      background-color: #70a98b;
+      text-align: center;
+      width: 100px;
+      display: block
+    }
 
-        .reject_action {
-            background-color: #e3824e;
-            text-align: center;
-            width: 100px;
-            display: block
-        }
+    .reject_action {
+      background-color: #e3824e;
+      text-align: center;
+      width: 100px;
+      display: block
+    }
 
-        .tmMergeTable {
-            background-color: #F3F2F2;
-            border-color: silver;
-        }
-        .tmMergeTable td {
-            padding: 1px 3px 1px 3px;
-        }
+    .tmMergeTable {
+      background-color: #F3F2F2;
+      border-color: silver;
+    }
 
-    </ui:style>
+    .tmMergeTable td {
+      padding: 1px 3px 1px 3px;
+    }
 
-    <g:Grid styleName="{style.tmMergeTable}">
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.matchThreshold}"/>
-            </g:customCell>
-            <g:customCell width="70px">
-                <g:ListBox ui:field="matchThreshold">
-                    <g:item value='100'>100</g:item>
-                    <g:item value='90'>90%</g:item>
-                    <g:item value='80'>80%</g:item>
-                </g:ListBox>
-            </g:customCell>
-            <g:cell />
-        </g:row>
-        <g:row styleName="{style.header}">
-            <g:customCell>
-                <g:Label text="{messages.condition}" />
-            </g:customCell>
-            <g:cell />
-            <g:customCell>
-                <g:Label text="{messages.action}" />
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.differentContent}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel styleName="{style.reject_action}" text="{enumMessages.rejectMerge}" ui:field="differentContentStatus"/>
-            </g:customCell>
-            <g:customCell>
-                <g:Label text="{enumMessages.rejectMerge}" ui:field="differentContentLabel" />
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.differentProjectSlug}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel ui:field="differentProjectStatus"/>
-            </g:customCell>
-            <g:customCell>
-                <g:HorizontalPanel ui:field="differentProject"/>
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.differentDocument}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel ui:field="differentDocIdStatus"/>
-            </g:customCell>
-            <g:customCell>
-                <g:HorizontalPanel ui:field="differentDocument" />
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.differentContext}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel ui:field="differentContextStatus"/>
-            </g:customCell>
-            <g:customCell>
-                <g:HorizontalPanel ui:field="differentContext" />
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.importedMatch}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel ui:field="importedMatchStatus"/>
-            </g:customCell>
-            <g:customCell>
-                <g:HorizontalPanel ui:field="importedMatchPanel" />
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:customCell>
-                <g:Label text="{messages.otherwise}" />
-            </g:customCell>
-            <g:customCell>
-                <g:InlineLabel styleName="{style.approved_action}" text="{enumMessages.approvedStatus}"/>
-            </g:customCell>
-        </g:row>
-        <g:row>
-            <g:cell />
-            <g:cell />
-            <g:customCell>
-                <g:FlowPanel >
-                    <g:Button ui:field="confirmButton" text="{messages.mergeTMConfirm}"/>
-                    <g:Button ui:field="cancelButton" text="{messages.mergeTMCancel}"/>
-                </g:FlowPanel>
-            </g:customCell>
-        </g:row>
-    </g:Grid>
+  </ui:style>
+
+  <g:Grid styleName="{style.tmMergeTable}">
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.matchThreshold}" />
+      </g:customCell>
+      <g:customCell width="70px">
+        <g:ListBox ui:field="matchThreshold">
+          <g:item value='100'>100</g:item>
+          <g:item value='90'>90%</g:item>
+          <g:item value='80'>80%</g:item>
+        </g:ListBox>
+      </g:customCell>
+      <g:cell />
+    </g:row>
+    <g:row styleName="{style.header}">
+      <g:customCell>
+        <g:Label text="{messages.condition}" />
+      </g:customCell>
+      <g:cell />
+      <g:customCell>
+        <g:Label text="{messages.action}" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.differentContent}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel styleName="{style.reject_action}"
+          text="{enumMessages.rejectMerge}" ui:field="differentContentStatus" />
+      </g:customCell>
+      <g:customCell>
+        <g:Label text="{enumMessages.rejectMerge}"
+          ui:field="differentContentLabel" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.differentProjectSlug}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel ui:field="differentProjectStatus" />
+      </g:customCell>
+      <g:customCell>
+        <g:HorizontalPanel ui:field="differentProject" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.differentDocument}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel ui:field="differentDocIdStatus" />
+      </g:customCell>
+      <g:customCell>
+        <g:HorizontalPanel ui:field="differentDocument" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.differentContext}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel ui:field="differentContextStatus" />
+      </g:customCell>
+      <g:customCell>
+        <g:HorizontalPanel ui:field="differentContext" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.importedMatch}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel ui:field="importedMatchStatus" />
+      </g:customCell>
+      <g:customCell>
+        <g:HorizontalPanel ui:field="importedMatchPanel" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:customCell>
+        <g:Label text="{messages.otherwise}" />
+      </g:customCell>
+      <g:customCell>
+        <g:InlineLabel styleName="{style.approved_action}"
+          text="{enumMessages.approvedStatus}" />
+      </g:customCell>
+    </g:row>
+    <g:row>
+      <g:cell />
+      <g:cell />
+      <g:customCell>
+        <g:FlowPanel>
+          <g:Button ui:field="confirmButton" text="{messages.mergeTMConfirm}" />
+          <g:Button ui:field="cancelButton" text="{messages.mergeTMCancel}" />
+        </g:FlowPanel>
+      </g:customCell>
+    </g:row>
+  </g:Grid>
 </ui:UiBinder>

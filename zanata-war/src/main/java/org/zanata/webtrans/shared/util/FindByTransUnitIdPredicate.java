@@ -24,22 +24,18 @@ package org.zanata.webtrans.shared.util;
 import javax.annotation.Nullable;
 
 import org.zanata.webtrans.shared.model.HasTransUnitId;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Predicate;
 
-public class FindByTransUnitIdPredicate implements Predicate<HasTransUnitId>
-{
-   private final TransUnitId id;
+public class FindByTransUnitIdPredicate implements Predicate<HasTransUnitId> {
+    private final TransUnitId id;
 
-   public FindByTransUnitIdPredicate(TransUnitId id)
-   {
-      this.id = id;
-   }
+    public FindByTransUnitIdPredicate(TransUnitId id) {
+        this.id = id;
+    }
 
-   @Override
-   public boolean apply(@Nullable HasTransUnitId input)
-   {
-      return input != null && input.getId().equals(id);
-   }
+    @Override
+    public boolean apply(@Nullable HasTransUnitId input) {
+        return input != null && input.getId().equals(id);
+    }
 }

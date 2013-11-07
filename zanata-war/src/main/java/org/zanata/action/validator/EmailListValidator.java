@@ -29,35 +29,32 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
 
 // FIXME don't use org.hibernate.validator.internal.*
-public class EmailListValidator implements ConstraintValidator<EmailList, String>, Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class EmailListValidator implements
+        ConstraintValidator<EmailList, String>, Serializable {
+    private static final long serialVersionUID = 1L;
 
-   private ConstraintValidator<Email, CharSequence> emailValidator;
+    private ConstraintValidator<Email, CharSequence> emailValidator;
 
-   @Override
-   public boolean isValid(String s, ConstraintValidatorContext context)
-   {
-      if (s == null)
-         return true;
-      if (s.length() == 0)
-         return true;
+    @Override
+    public boolean isValid(String s, ConstraintValidatorContext context) {
+        if (s == null)
+            return true;
+        if (s.length() == 0)
+            return true;
 
-      // trim still required to prevent leading whitespace invalidating the
-      // first email address
-      for (String email : s.trim().split("\\s*,\\s*"))
-      {
-         if (!emailValidator.isValid(email, context))
-            return false;
-      }
-      return true;
-   }
+        // trim still required to prevent leading whitespace invalidating the
+        // first email address
+        for (String email : s.trim().split("\\s*,\\s*")) {
+            if (!emailValidator.isValid(email, context))
+                return false;
+        }
+        return true;
+    }
 
-   @Override
-   public void initialize(EmailList parameters)
-   {
-      emailValidator = new EmailValidator();
-      emailValidator.initialize(null);
-   }
+    @Override
+    public void initialize(EmailList parameters) {
+        emailValidator = new EmailValidator();
+        emailValidator.initialize(null);
+    }
 
 }

@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -27,100 +26,99 @@ import org.zanata.service.EmailService;
 
 @Name("inactiveAccountAction")
 @Scope(ScopeType.PAGE)
-public class InactiveAccountAction implements Serializable
-{
-   @In
-   private AccountDAO accountDAO;
-   
-   @In
-   private PersonDAO personDAO;
+public class InactiveAccountAction implements Serializable {
+    @In
+    private AccountDAO accountDAO;
 
-   @In
-   private EmailService emailServiceImpl;
+    @In
+    private PersonDAO personDAO;
 
-   @In
-   private ZanataCredentials credentials;
+    @In
+    private EmailService emailServiceImpl;
 
-   @In
-   private ZanataOpenId zanataOpenId;
+    @In
+    private ZanataCredentials credentials;
 
-   @In
-   private CredentialsDAO credentialsDAO;
-   
-   @In
-   private AccountActivationKeyDAO accountActivationKeyDAO;
+    @In
+    private ZanataOpenId zanataOpenId;
 
-   private String email;
+    @In
+    private CredentialsDAO credentialsDAO;
 
-   private HAccount account;
+    @In
+    private AccountActivationKeyDAO accountActivationKeyDAO;
 
-   private static final long serialVersionUID = 1L;
+    private String email;
 
-   public void init()
-   {
-      if( credentials.getAuthType() == AuthenticationType.OPENID )
-      {
-         // NB: Maybe we can get the authenticated openid from somewhere else
-         account = credentialsDAO.findByUser(zanataOpenId.getAuthResult().getAuthenticatedId()).getAccount();
-      }
-      else
-      {
-         account = accountDAO.getByUsername(credentials.getUsername());
-      }
-   }
+    private HAccount account;
 
-   public void sendActivationEmail()
-   {
-      HAccountActivationKey key = account.getAccountActivationKey();
-      key.setCreationDate(new Date());
-      
-      accountActivationKeyDAO.makePersistent(key);
-      accountActivationKeyDAO.flush();
-      
-      String message = emailServiceImpl.sendActivationEmail(EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, account.getPerson().getName(), account.getPerson().getEmail(), account.getAccountActivationKey().getKeyHash());
-      FacesMessages.instance().add(message);
-   }
-   
-   @Transactional
-   public String changeEmail()
-   {
-      if(validateEmail(email))
-      {
-         HPerson person = personDAO.findById(account.getPerson().getId(), true);
-         person.setEmail(email);
-         personDAO.makePersistent(person);
-         personDAO.flush();
-         
-         account.getPerson().setEmail(email);
-         FacesMessages.instance().add("Email updated.");
-         
-         sendActivationEmail();
-         return "home";
-      }
-      return null;
-   }
-   
-   private boolean validateEmail(String email)
-   {
-      if(StringUtils.isEmpty(email))
-      {
-         FacesMessages.instance().addToControl("email", "#{messages['javax.faces.component.UIInput.REQUIRED']}");
-         return false;
-      }
-      
-      HPerson person = personDAO.findByEmail(email);
-      
-      if( person != null && !person.getAccount().equals( account ) )
-      {
-         FacesMessages.instance().addToControl("email", "This email address is already taken");
-         return false;
-      }
-      return true;
-   }
+    private static final long serialVersionUID = 1L;
 
+    public void init() {
+        if (credentials.getAuthType() == AuthenticationType.OPENID) {
+            // NB: Maybe we can get the authenticated openid from somewhere else
+            account =
+                    credentialsDAO.findByUser(
+                            zanataOpenId.getAuthResult().getAuthenticatedId())
+                            .getAccount();
+        } else {
+            account = accountDAO.getByUsername(credentials.getUsername());
+        }
+    }
+
+    public void sendActivationEmail() {
+        HAccountActivationKey key = account.getAccountActivationKey();
+        key.setCreationDate(new Date());
+
+        accountActivationKeyDAO.makePersistent(key);
+        accountActivationKeyDAO.flush();
+
+        String message =
+                emailServiceImpl.sendActivationEmail(
+                        EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, account
+                                .getPerson().getName(), account.getPerson()
+                                .getEmail(), account.getAccountActivationKey()
+                                .getKeyHash());
+        FacesMessages.instance().add(message);
+    }
+
+    @Transactional
+    public String changeEmail() {
+        if (validateEmail(email)) {
+            HPerson person =
+                    personDAO.findById(account.getPerson().getId(), true);
+            person.setEmail(email);
+            personDAO.makePersistent(person);
+            personDAO.flush();
+
+            account.getPerson().setEmail(email);
+            FacesMessages.instance().add("Email updated.");
+
+            sendActivationEmail();
+            return "home";
+        }
+        return null;
+    }
+
+    private boolean validateEmail(String email) {
+        if (StringUtils.isEmpty(email)) {
+            FacesMessages.instance().addToControl("email",
+                    "#{messages['javax.faces.component.UIInput.REQUIRED']}");
+            return false;
+        }
+
+        HPerson person = personDAO.findByEmail(email);
+
+        if (person != null && !person.getAccount().equals(account)) {
+            FacesMessages.instance().addToControl("email",
+                    "This email address is already taken");
+            return false;
+        }
+        return true;
+    }
 
     @Email
-    @NotDuplicateEmail(message="This email address is already taken.")
+    @NotDuplicateEmail(message = "This email address is already taken.")
     public String getEmail() {
         return email;
     }

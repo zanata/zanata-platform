@@ -30,8 +30,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.service.impl.LocaleServiceImpl;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -41,64 +39,65 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  **/
 @Test(groups = { "jpa-tests" })
-public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest
-{
-   private GlossaryDAO glossaryDAO;
+public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest {
+    private GlossaryDAO glossaryDAO;
 
-   @BeforeMethod(firstTimeOnly = true)
-   public void beforeMethod()
-   {
-      glossaryDAO = new GlossaryDAO((Session) em.getDelegate());
-   }
+    @BeforeMethod(firstTimeOnly = true)
+    public void beforeMethod() {
+        glossaryDAO = new GlossaryDAO((Session) em.getDelegate());
+    }
 
-   @Test
-   public void testHashMap()
-   {
-      List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
+    @Test
+    public void testHashMap() {
+        List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
 
-      for (HGlossaryEntry hGlossaryEntry : entryList)
-      {
-         for (Map.Entry<HLocale, HGlossaryTerm> entry : hGlossaryEntry.getGlossaryTerms().entrySet())
-         {
-            Assert.assertTrue(hGlossaryEntry.getGlossaryTerms().containsKey(entry.getKey()));
-            Assert.assertNotNull(hGlossaryEntry.getGlossaryTerms().get(entry.getKey()));
-         }
-      }
+        for (HGlossaryEntry hGlossaryEntry : entryList) {
+            for (Map.Entry<HLocale, HGlossaryTerm> entry : hGlossaryEntry
+                    .getGlossaryTerms().entrySet()) {
+                Assert.assertTrue(hGlossaryEntry.getGlossaryTerms()
+                        .containsKey(entry.getKey()));
+                Assert.assertNotNull(hGlossaryEntry.getGlossaryTerms().get(
+                        entry.getKey()));
+            }
+        }
 
-   }
+    }
 
-   @Test
-   public void testTermsSize()
-   {
-      List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
-      assertThat(entryList.get(0).getGlossaryTerms().size(), is(3));
-   }
+    @Test
+    public void testTermsSize() {
+        List<HGlossaryEntry> entryList = glossaryDAO.getEntries();
+        assertThat(entryList.get(0).getGlossaryTerms().size(), is(3));
+    }
 
-   @Test
-   public void testDeleteGlossaries()
-   {
-      List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
+    @Test
+    public void testDeleteGlossaries() {
+        List<HGlossaryEntry> hGlossaryEntries = glossaryDAO.getEntries();
 
-      for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries)
-      {
-         glossaryDAO.makeTransient(hGlossaryEntry);
-      }
-      glossaryDAO.flush();
+        for (HGlossaryEntry hGlossaryEntry : hGlossaryEntries) {
+            glossaryDAO.makeTransient(hGlossaryEntry);
+        }
+        glossaryDAO.flush();
 
-      assertThat(glossaryDAO.getEntries().size(), is(0));
+        assertThat(glossaryDAO.getEntries().size(), is(0));
 
-      assertThat(((Long)super.getSession().createQuery("select count(*) from HTermComment").uniqueResult()), is(0L));
-      assertThat(((Long)super.getSession().createQuery("select count(*) from HGlossaryTerm").uniqueResult()), is(0L));
-   }
+        assertThat(
+                ((Long) super.getSession()
+                        .createQuery("select count(*) from HTermComment")
+                        .uniqueResult()), is(0L));
+        assertThat(
+                ((Long) super.getSession()
+                        .createQuery("select count(*) from HGlossaryTerm")
+                        .uniqueResult()), is(0L));
+    }
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/GlossaryData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-      beforeTestOperations.add(new DataSetOperation("org/zanata/test/model/LocalesData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+    @Override
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/GlossaryData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
 
-   }
+    }
 }
-
-
- 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+    This changelog file is the real changelog for Zanata 3.1.
+     -->
+
+    <changeSet id="1" author="alex.eng@redhat.com">
+        <comment>Remove overrideValidations from HProject</comment>
+        <dropColumn tableName="HProject" columnName="overrideValidations" />
+    </changeSet>
+
+    <changeSet id="2" author="alex.eng@redhat.com">
+        <comment>Remove overrideValidations from HProjectIteration</comment>
+        <dropColumn tableName="HProjectIteration" columnName="overrideValidations" />
+    </changeSet>
+
+    <changeSet id="3" author="alex.eng@redhat.com">
+        <comment>Add State to HProject_Validation</comment>
+        <addColumn tableName="HProject_Validation">
+            <column name="state" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <sql>
+            update HProject_Validation set state = 'Warning';
+        </sql>
+    </changeSet>
+
+    <changeSet id="4" author="alex.eng@redhat.com">
+        <comment>Add State to HProjectIteration_Validation</comment>
+        <addColumn tableName="HProjectIteration_Validation">
+            <column name="state" type="varchar(100)">
+                <constraints nullable="false" />
+             </column>
+        </addColumn>
+         <sql>
+            update HProjectIteration_Validation set state = 'Warning';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

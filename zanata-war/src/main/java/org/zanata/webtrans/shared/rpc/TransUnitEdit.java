@@ -23,44 +23,38 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
-public class TransUnitEdit implements SessionEventData, HasTransUnitEditData
-{
-   private static final long serialVersionUID = 5332535583909340461L;
-   private Person person;
-   private TransUnitId selectedTransUnit;
-   private EditorClientId editorClientId;
+public class TransUnitEdit implements SessionEventData, HasTransUnitEditData {
+    private static final long serialVersionUID = 5332535583909340461L;
+    private Person person;
+    private TransUnitId selectedTransUnit;
+    private EditorClientId editorClientId;
 
-   public TransUnitEdit(EditorClientId editorClientId, Person person, TransUnitId selectedTransUnit)
-   {
-      this.editorClientId = editorClientId;
-      this.person = person;
-      this.selectedTransUnit = selectedTransUnit;
-   }
+    public TransUnitEdit(EditorClientId editorClientId, Person person,
+            TransUnitId selectedTransUnit) {
+        this.editorClientId = editorClientId;
+        this.person = person;
+        this.selectedTransUnit = selectedTransUnit;
+    }
 
-   // for ExposeEntity
-   public TransUnitEdit()
-   {
-   }
+    // for ExposeEntity
+    public TransUnitEdit() {
+    }
 
-   @Override
-   public Person getPerson()
-   {
-      return person;
-   }
+    @Override
+    public Person getPerson() {
+        return person;
+    }
 
-   @Override
-   public TransUnitId getSelectedTransUnitId()
-   {
-      return selectedTransUnit;
-   }
+    @Override
+    public TransUnitId getSelectedTransUnitId() {
+        return selectedTransUnit;
+    }
 
-   @Override
-   public EditorClientId getEditorClientId()
-   {
-      return editorClientId;
-   }
+    @Override
+    public EditorClientId getEditorClientId() {
+        return editorClientId;
+    }
 
 }

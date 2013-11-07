@@ -7,24 +7,22 @@ import org.zanata.webtrans.shared.model.Locale;
 /**
  * @author Hannes Eskebaek
  */
-public interface ChangeReferenceLangDisplay extends WidgetDisplay
-{
-   void buildListBox(List<Locale> locales);
+public interface ChangeReferenceLangDisplay extends WidgetDisplay {
+    void buildListBox(List<Locale> locales);
 
-   void setSelectedLocale(String localeId);
+    void setSelectedLocale(String localeId);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   public void showReferenceList();
+    public void showReferenceList();
 
-   public void hideReferenceList();
+    public void hideReferenceList();
 
-   interface Listener
-   {
-      public void onShowReference(Locale selectedLocale);
+    interface Listener {
+        public void onShowReference(Locale selectedLocale);
 
-      public void onHideReference();
+        public void onHideReference();
 
-     void onSourceLangListBoxOptionChanged(Locale selectedLocale);
-   }
+        void onSourceLangListBoxOptionChanged(Locale selectedLocale);
+    }
 }

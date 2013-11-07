@@ -5,36 +5,35 @@ import org.zanata.webtrans.client.service.NavigationService;
 import com.google.common.base.Preconditions;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class EditorPageSizeChangeEvent extends GwtEvent<EditorPageSizeChangeEventHandler> implements NavigationService.UpdateContextCommand
-{
-   public static Type<EditorPageSizeChangeEventHandler> TYPE = new Type<EditorPageSizeChangeEventHandler>();
+public class EditorPageSizeChangeEvent extends
+        GwtEvent<EditorPageSizeChangeEventHandler> implements
+        NavigationService.UpdateContextCommand {
+    public static Type<EditorPageSizeChangeEventHandler> TYPE =
+            new Type<EditorPageSizeChangeEventHandler>();
 
-   private int pageSize;
+    private int pageSize;
 
-   public EditorPageSizeChangeEvent(int pageSize)
-   {
-      this.pageSize = pageSize;
-   }
+    public EditorPageSizeChangeEvent(int pageSize) {
+        this.pageSize = pageSize;
+    }
 
-   public Type<EditorPageSizeChangeEventHandler> getAssociatedType()
-   {
-      return TYPE;
-   }
+    public Type<EditorPageSizeChangeEventHandler> getAssociatedType() {
+        return TYPE;
+    }
 
-   protected void dispatch(EditorPageSizeChangeEventHandler handler)
-   {
-      handler.onPageSizeChange(this);
-   }
+    protected void dispatch(EditorPageSizeChangeEventHandler handler) {
+        handler.onPageSizeChange(this);
+    }
 
-   @Override
-   public GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext)
-   {
-      Preconditions.checkNotNull(currentContext, "current context can not be null");
-      return currentContext.changeCount(pageSize);
-   }
+    @Override
+    public GetTransUnitActionContext updateContext(
+            GetTransUnitActionContext currentContext) {
+        Preconditions.checkNotNull(currentContext,
+                "current context can not be null");
+        return currentContext.changeCount(pageSize);
+    }
 
-   public int getPageSize()
-   {
-      return pageSize;
-   }
+    public int getPageSize() {
+        return pageSize;
+    }
 }

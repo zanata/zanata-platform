@@ -41,6 +41,7 @@ import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ChunkUploadException;
@@ -62,216 +63,218 @@ import com.google.common.base.Optional;
 //TODO damason: add thorough unit testing
 @Slf4j
 @Name("translationDocumentUploader")
-public class TranslationDocumentUpload
-{
+public class TranslationDocumentUpload {
 
-   @In(create = true, value = "documentUploadUtil")
-   private DocumentUploadUtil util;
-   @In
-   private ZanataIdentity identity;
-   @In
-   private LocaleDAO localeDAO;
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-   @In
-   private TranslationService translationServiceImpl;
-   @In
-   private TranslationFileService translationFileServiceImpl;
+    @In(create = true, value = "documentUploadUtil")
+    private DocumentUploadUtil util;
+    @In
+    private ZanataIdentity identity;
+    @In
+    private LocaleDAO localeDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+    @In
+    private TranslationService translationServiceImpl;
+    @In
+    private TranslationFileService translationFileServiceImpl;
+    @In
+    private DocumentUploadDAO documentUploadDAO;
 
-   public Response tryUploadTranslationFile(GlobalDocumentId id,
-         String localeId, String mergeType, DocumentFileUploadForm uploadForm)
-   {
-      try
-      {
-         failIfTranslationUploadNotValid(id, localeId, uploadForm);
+    public Response
+            tryUploadTranslationFile(GlobalDocumentId id, String localeId,
+                    String mergeType, DocumentFileUploadForm uploadForm) {
+        try {
+            failIfTranslationUploadNotValid(id, localeId, uploadForm);
 
-         HLocale locale = findHLocale(localeId);
-         Optional<File> tempFile;
-         int totalChunks;
+            HLocale locale = findHLocale(localeId);
+            Optional<File> tempFile;
+            int totalChunks;
 
-         if (isSinglePart(uploadForm))
-         {
-            totalChunks = 1;
-            tempFile = Optional.<File> absent();
-         }
-         else
-         {
-            HDocumentUpload upload = util.saveUploadPart(id, locale, uploadForm);
-            totalChunks = upload.getParts().size();
-            if (!uploadForm.getLast())
-            {
-               return Response.status(Status.ACCEPTED)
-                     .entity(new ChunkUploadResponse(upload.getId(), totalChunks, true,
-                           "Chunk accepted, awaiting remaining chunks."))
-                     .build();
+            if (isSinglePart(uploadForm)) {
+                totalChunks = 1;
+                tempFile = Optional.<File> absent();
+            } else {
+                if (!uploadForm.getLast()) {
+                    HDocumentUpload upload =
+                            util.saveUploadPart(id, locale, uploadForm);
+                    totalChunks = upload.getParts().size();
+                    return Response
+                            .status(Status.ACCEPTED)
+                            .entity(new ChunkUploadResponse(upload.getId(),
+                                    totalChunks, true,
+                                    "Chunk accepted, awaiting remaining chunks."))
+                            .build();
+                } else {
+                    HDocumentUpload previousParts =
+                            documentUploadDAO
+                                    .findById(uploadForm.getUploadId());
+                    totalChunks = previousParts.getParts().size();
+                    totalChunks++; // add final part
+                    tempFile =
+                            Optional.of(util
+                                    .combineToTempFileAndDeleteUploadRecord(
+                                            previousParts,
+                                            uploadForm.getFileStream()));
+                }
             }
-            tempFile = Optional.of(util.combineToTempFileAndDeleteUploadRecord(upload));
-         }
 
-         TranslationsResource transRes;
-         if (uploadForm.getFileType().equals(".po"))
-         {
-            InputStream poStream = getInputStream(tempFile, uploadForm);
-            transRes = translationFileServiceImpl.parsePoFile(poStream, id.getProjectSlug(),
-                  id.getVersionSlug(), id.getDocId());
-         }
-         else
-         {
-            if (!tempFile.isPresent())
-            {
-               tempFile = Optional.of(util.persistTempFileFromUpload(uploadForm));
+            TranslationsResource transRes;
+            if (uploadForm.getFileType().equals(".po")) {
+                InputStream poStream = getInputStream(tempFile, uploadForm);
+                transRes =
+                        translationFileServiceImpl.parsePoFile(poStream,
+                                id.getProjectSlug(), id.getVersionSlug(),
+                                id.getDocId());
+            } else {
+                if (!tempFile.isPresent()) {
+                    tempFile =
+                            Optional.of(util
+                                    .persistTempFileFromUpload(uploadForm));
+                }
+                // FIXME this is misusing the 'filename' field. the method
+                // should probably take a
+                // type anyway
+                transRes =
+                        translationFileServiceImpl.parseAdapterTranslationFile(
+                                tempFile.get(), id.getProjectSlug(),
+                                id.getVersionSlug(), id.getDocId(), localeId,
+                                uploadForm.getFileType());
             }
-            // FIXME this is misusing the 'filename' field. the method should probably take a
-            // type anyway
-            transRes = translationFileServiceImpl.parseAdapterTranslationFile(tempFile.get(),
-                  id.getProjectSlug(), id.getVersionSlug(), id.getDocId(), localeId, uploadForm.getFileType());
-         }
-         if (tempFile.isPresent())
-         {
-            tempFile.get().delete();
-         }
+            if (tempFile.isPresent()) {
+                tempFile.get().delete();
+            }
 
-         Set<String> extensions = newExtensions(uploadForm.getFileType().equals(".po"));
-         // TODO useful error message for failed saving?
-         List<String> warnings = translationServiceImpl.translateAllInDoc(id.getProjectSlug(), id.getVersionSlug(),
-               id.getDocId(), locale.getLocaleId(), transRes, extensions, mergeTypeFromString(mergeType));
+            Set<String> extensions =
+                    newExtensions(uploadForm.getFileType().equals(".po"));
+            // TODO useful error message for failed saving?
+            List<String> warnings =
+                    translationServiceImpl.translateAllInDoc(
+                            id.getProjectSlug(), id.getVersionSlug(),
+                            id.getDocId(), locale.getLocaleId(), transRes,
+                            extensions, mergeTypeFromString(mergeType));
 
-         return transUploadResponse(totalChunks, warnings);
-      }
-      catch (FileNotFoundException e)
-      {
-         log.error("failed to create input stream from temp file", e);
-         return Response.status(Status.INTERNAL_SERVER_ERROR)
-               .entity(e).build();
-      }
-      catch (ChunkUploadException e)
-      {
-         return Response.status(e.getStatusCode())
-               .entity(new ChunkUploadResponse(e.getMessage()))
-               .build();
-      }
-   }
+            return transUploadResponse(totalChunks, warnings);
+        } catch (FileNotFoundException e) {
+            log.error("failed to create input stream from temp file", e);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
+                    .build();
+        } catch (ChunkUploadException e) {
+            return Response.status(e.getStatusCode())
+                    .entity(new ChunkUploadResponse(e.getMessage())).build();
+        }
+    }
 
-   private void failIfTranslationUploadNotValid(GlobalDocumentId id, String localeId,
-         DocumentFileUploadForm uploadForm) throws ChunkUploadException
-   {
-      util.failIfUploadNotValid(id, uploadForm);
-      failIfDocumentDoesNotExist(id);
-      failIfFileTypeNotValid(uploadForm);
-      failIfTranslationUploadNotAllowed(id, localeId);
-   }
+    private void failIfTranslationUploadNotValid(GlobalDocumentId id,
+            String localeId, DocumentFileUploadForm uploadForm)
+            throws ChunkUploadException {
+        util.failIfUploadNotValid(id, uploadForm);
+        failIfDocumentDoesNotExist(id);
+        failIfFileTypeNotValid(uploadForm);
+        failIfTranslationUploadNotAllowed(id, localeId);
+    }
 
-   private void failIfDocumentDoesNotExist(GlobalDocumentId id) throws ChunkUploadException
-   {
-      if (util.isNewDocument(id))
-      {
-         throw new ChunkUploadException(Status.NOT_FOUND,
-               "No document with id \"" + id.getDocId() + "\" exists in project-version \"" +
-                     id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
-      }
-   }
+    private void failIfDocumentDoesNotExist(GlobalDocumentId id)
+            throws ChunkUploadException {
+        if (util.isNewDocument(id)) {
+            throw new ChunkUploadException(Status.NOT_FOUND,
+                    "No document with id \"" + id.getDocId()
+                            + "\" exists in project-version \""
+                            + id.getProjectSlug() + ":" + id.getVersionSlug()
+                            + "\".");
+        }
+    }
 
-   private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm) throws ChunkUploadException
-   {
-      String fileType = uploadForm.getFileType();
-      if (!fileType.equals(".po")
-            && !translationFileServiceImpl.hasAdapterFor(DocumentType.typeFor(fileType)))
-      {
-         throw new ChunkUploadException(Status.BAD_REQUEST,
-               "The type \"" + fileType + "\" specified in form parameter 'type' " +
-                     "is not valid for a translation file on this server.");
-      }
-   }
+    private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
+            throws ChunkUploadException {
+        String fileType = uploadForm.getFileType();
+        if (!fileType.equals(".po")
+                && !translationFileServiceImpl.hasAdapterFor(DocumentType
+                        .typeFor(fileType))) {
+            throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
+                    + fileType + "\" specified in form parameter 'type' "
+                    + "is not valid for a translation file on this server.");
+        }
+    }
 
-   private void failIfTranslationUploadNotAllowed(GlobalDocumentId id, String localeId)
-         throws ChunkUploadException
-   {
-      HLocale locale = findHLocale(localeId);
-      if (!isTranslationUploadAllowed(id, locale))
-      {
-         throw new ChunkUploadException(Status.FORBIDDEN,
-               "You do not have permission to upload translations for locale \"" + localeId +
-                     "\" to project-version \"" + id.getProjectSlug() + ":" + id.getVersionSlug() + "\".");
-      }
-   }
+    private void failIfTranslationUploadNotAllowed(GlobalDocumentId id,
+            String localeId) throws ChunkUploadException {
+        HLocale locale = findHLocale(localeId);
+        if (!isTranslationUploadAllowed(id, locale)) {
+            throw new ChunkUploadException(Status.FORBIDDEN,
+                    "You do not have permission to upload translations for locale \""
+                            + localeId + "\" to project-version \""
+                            + id.getProjectSlug() + ":" + id.getVersionSlug()
+                            + "\".");
+        }
+    }
 
-   private HLocale findHLocale(String localeString)
-   {
-      LocaleId localeId;
-      try
-      {
-         localeId = new LocaleId(localeString);
-      }
-      catch (IllegalArgumentException e)
-      {
-         throw new ChunkUploadException(Status.BAD_REQUEST,
-               "Invalid value for locale", e);
-      }
+    private HLocale findHLocale(String localeString) {
+        LocaleId localeId;
+        try {
+            localeId = new LocaleId(localeString);
+        } catch (IllegalArgumentException e) {
+            throw new ChunkUploadException(Status.BAD_REQUEST,
+                    "Invalid value for locale", e);
+        }
 
-      HLocale locale = localeDAO.findByLocaleId(localeId);
-      if (locale == null)
-      {
-         throw new ChunkUploadException(Status.NOT_FOUND,
-               "The specified locale \"" + localeString + "\" does not exist on this server.");
-      }
-      return locale;
-   }
+        HLocale locale = localeDAO.findByLocaleId(localeId);
+        if (locale == null) {
+            throw new ChunkUploadException(Status.NOT_FOUND,
+                    "The specified locale \"" + localeString
+                            + "\" does not exist on this server.");
+        }
+        return locale;
+    }
 
-   private boolean isTranslationUploadAllowed(GlobalDocumentId id, HLocale localeId)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
-      // TODO should this check be "add-translation" or "modify-translation"?
-      // They appear to be granted identically at the moment.
-      return projectIteration.getStatus() == EntityStatus.ACTIVE && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
-            && identity != null && identity.hasPermission("add-translation", projectIteration.getProject(), localeId);
-   }
+    private boolean isTranslationUploadAllowed(GlobalDocumentId id,
+            HLocale localeId) {
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(id.getProjectSlug(),
+                        id.getVersionSlug());
+        // TODO should this check be "add-translation" or "modify-translation"?
+        // They appear to be granted identically at the moment.
+        return projectIteration.getStatus() == EntityStatus.ACTIVE
+                && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
+                && identity != null
+                && identity.hasPermission("add-translation",
+                        projectIteration.getProject(), localeId);
+    }
 
-   private static Set<String> newExtensions(boolean gettextExtensions)
-   {
-      Set<String> extensions;
-      if (gettextExtensions)
-      {
-         extensions = new StringSet(ExtensionType.GetText.toString());
-      }
-      else
-      {
-         extensions = Collections.<String> emptySet();
-      }
-      return extensions;
-   }
+    private static Set<String> newExtensions(boolean gettextExtensions) {
+        Set<String> extensions;
+        if (gettextExtensions) {
+            extensions = new StringSet(ExtensionType.GetText.toString());
+        } else {
+            extensions = Collections.<String> emptySet();
+        }
+        return extensions;
+    }
 
-   private static Response transUploadResponse(int totalChunks, List<String> warnings)
-   {
-      ChunkUploadResponse response = new ChunkUploadResponse();
-      response.setExpectingMore(false);
-      response.setAcceptedChunks(totalChunks);
-      if (warnings != null && !warnings.isEmpty())
-      {
-         response.setSuccessMessage(buildWarningString(warnings));
-      }
-      else
-      {
-         response.setSuccessMessage("Translations uploaded successfully");
-      }
-      return Response.status(Status.OK).entity(response).build();
-   }
+    private static Response transUploadResponse(int totalChunks,
+            List<String> warnings) {
+        ChunkUploadResponse response = new ChunkUploadResponse();
+        response.setExpectingMore(false);
+        response.setAcceptedChunks(totalChunks);
+        if (warnings != null && !warnings.isEmpty()) {
+            response.setSuccessMessage(buildWarningString(warnings));
+        } else {
+            response.setSuccessMessage("Translations uploaded successfully");
+        }
+        return Response.status(Status.OK).entity(response).build();
+    }
 
-   private static String buildWarningString(List<String> warnings)
-   {
-      return Joiner.on("\n\t")
-            .join("Upload succeeded but had the following warnings:", warnings) + "\n";
-      }
+    private static String buildWarningString(List<String> warnings) {
+        return Joiner.on("\n\t").join(
+                "Upload succeeded but had the following warnings:", warnings)
+                + "\n";
+    }
 
-   private static MergeType mergeTypeFromString(String type)
-   {
-      if ("import".equals(type))
-      {
-         return MergeType.IMPORT;
-      }
-      else
-      {
-         return MergeType.AUTO;
-      }
-   }
+    private static MergeType mergeTypeFromString(String type) {
+        if ("import".equals(type)) {
+            return MergeType.IMPORT;
+        } else {
+            return MergeType.AUTO;
+        }
+    }
 
 }

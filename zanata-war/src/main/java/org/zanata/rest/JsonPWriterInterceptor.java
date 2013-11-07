@@ -13,27 +13,23 @@ import org.jboss.resteasy.spi.interception.MessageBodyWriterInterceptor;
 
 @Provider
 @ServerInterceptor
-public class JsonPWriterInterceptor implements MessageBodyWriterInterceptor
-{
+public class JsonPWriterInterceptor implements MessageBodyWriterInterceptor {
 
-   @Context
-   HttpRequest request;
+    @Context
+    HttpRequest request;
 
-   @Override
-   public void write(MessageBodyWriterContext context) throws IOException, WebApplicationException
-   {
-      String jsonp = request.getUri().getQueryParameters().getFirst("jsonp");
-      if (jsonp != null)
-      {
-         context.getOutputStream().write(jsonp.getBytes());
-         context.getOutputStream().write("{".getBytes());
-         context.proceed();
-         context.getOutputStream().write("}".getBytes());
-      }
-      else
-      {
-         context.proceed();
-      }
-   }
+    @Override
+    public void write(MessageBodyWriterContext context) throws IOException,
+            WebApplicationException {
+        String jsonp = request.getUri().getQueryParameters().getFirst("jsonp");
+        if (jsonp != null) {
+            context.getOutputStream().write(jsonp.getBytes());
+            context.getOutputStream().write("{".getBytes());
+            context.proceed();
+            context.getOutputStream().write("}".getBytes());
+        } else {
+            context.proceed();
+        }
+    }
 
 }

@@ -21,172 +21,147 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class HtmlXmlTagValidation extends AbstractValidationAction
-{
-   public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.xmlHtmlValidatorDesc(), new ValidationInfo(true), messages);
-   }
-   
-   public HtmlXmlTagValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
-   }
+public class HtmlXmlTagValidation extends AbstractValidationAction {
+    public HtmlXmlTagValidation(ValidationId id, ValidationMessages messages) {
+        super(id, messages.xmlHtmlValidatorDesc(), messages);
+    }
 
-   private final static String tagRegex = "<[^>]+>";
+    private final static String tagRegex = "<[^>]+>";
 
-   @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
-   {
-      ArrayList<String> error = listMissing(source, target);
-      if (!error.isEmpty())
-      {
-         errorList.add(getMessages().tagsMissing(error));
-      }
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      error = listMissing(target, source);
-      if (!error.isEmpty())
-      {
-         errorList.add(getMessages().tagsAdded(error));
-      }
+        List<String> foundErrors = listMissing(source, target);
+        if (!foundErrors.isEmpty()) {
+            errors.add(getMessages().tagsMissing(foundErrors));
+        }
+        foundErrors = listMissing(target, source);
+        if (!foundErrors.isEmpty()) {
+            errors.add(getMessages().tagsAdded(foundErrors));
+        }
 
-      if (errorList.isEmpty())
-      {
-         ArrayList<String> sourceTags = getTagList(source);
-         ArrayList<String> targetTags = getTagList(target);
+        if (errors.isEmpty()) {
+            ArrayList<String> sourceTags = getTagList(source);
+            ArrayList<String> targetTags = getTagList(target);
 
-         orderValidation(sourceTags, targetTags, errorList);
-      }
-   }
+            errors.addAll(orderValidation(sourceTags, targetTags));
+        }
+        return errors;
+    }
 
-   private void orderValidation(ArrayList<String> srcTags, ArrayList<String> trgTags, ArrayList<String> errorList)
-   {
-      ArrayList<String> longestRun = null;
-      ArrayList<String> currentRun;
+    private List<String> orderValidation(ArrayList<String> srcTags,
+            ArrayList<String> trgTags) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      String[] src = srcTags.toArray(new String[srcTags.size()]);
-      String[] trg = trgTags.toArray(new String[trgTags.size()]);
+        ArrayList<String> longestRun = null;
+        ArrayList<String> currentRun;
 
-      for (int i = 0; i < src.length; i++)
-      {
-         String token = src[i];
-         int srcIndex = i;
-         int trgIndex = trgTags.indexOf(token);
+        String[] src = srcTags.toArray(new String[srcTags.size()]);
+        String[] trg = trgTags.toArray(new String[trgTags.size()]);
 
-         if (trgIndex > -1)
-         {
-            currentRun = new ArrayList<String>();
-            currentRun.add(token);
+        for (int i = 0; i < src.length; i++) {
+            String token = src[i];
+            int srcIndex = i;
+            int trgIndex = trgTags.indexOf(token);
 
-            int j = trgIndex + 1;
+            if (trgIndex > -1) {
+                currentRun = new ArrayList<String>();
+                currentRun.add(token);
 
-            while (j < trg.length && srcIndex < src.length - 1)
-            {
-               int nextIndexInSrc = findInTail(trg[j], src, srcIndex + 1);
-               if (nextIndexInSrc > -1)
-               {
-                  srcIndex = nextIndexInSrc;
-                  currentRun.add(src[srcIndex]);
-               }
-               j++;
+                int j = trgIndex + 1;
+
+                while (j < trg.length && srcIndex < src.length - 1) {
+                    int nextIndexInSrc = findInTail(trg[j], src, srcIndex + 1);
+                    if (nextIndexInSrc > -1) {
+                        srcIndex = nextIndexInSrc;
+                        currentRun.add(src[srcIndex]);
+                    }
+                    j++;
+                }
+
+                if (currentRun.size() == srcTags.size()) {
+                    // must all match
+                    return errors;
+                }
+
+                if (longestRun == null || longestRun.size() < currentRun.size()) {
+                    longestRun = currentRun;
+                }
             }
+        }
 
-            if (currentRun.size() == srcTags.size())
-            {
-               // must all match
-               return;
+        if (longestRun != null && longestRun.size() > 0) {
+            ArrayList<String> outOfOrder = new ArrayList<String>();
+
+            for (String aSrc : src) {
+                if (!longestRun.contains(aSrc)) {
+                    outOfOrder.add(aSrc);
+                }
             }
-
-            if (longestRun == null || longestRun.size() < currentRun.size())
-            {
-               longestRun = currentRun;
+            if (!outOfOrder.isEmpty()) {
+                errors.add(getMessages().tagsWrongOrder(outOfOrder));
             }
-         }
-      }
+        }
 
-      if (longestRun != null && longestRun.size() > 0)
-      {
-         ArrayList<String> outOfOrder = new ArrayList<String>();
+        return errors;
+    }
 
-         for (String aSrc : src)
-         {
-            if (!longestRun.contains(aSrc))
-            {
-               outOfOrder.add(aSrc);
+    private int findInTail(String toFind, String[] findIn, int startIndex) {
+        for (int i = startIndex; i < findIn.length; i++) {
+            if (findIn[i].equals(toFind)) {
+                return i;
             }
-         }
-         if (!outOfOrder.isEmpty())
-         {
-            errorList.add(getMessages().tagsWrongOrder(outOfOrder));
-         }
-      }
-   }
+        }
+        return -1;
+    }
 
-   private int findInTail(String toFind, String[] findIn, int startIndex)
-   {
-      for (int i = startIndex; i < findIn.length; i++)
-      {
-         if (findIn[i].equals(toFind))
-         {
-            return i;
-         }
-      }
-      return -1;
-   }
+    private ArrayList<String> getTagList(String src) {
+        final RegExp regExp = RegExp.compile(tagRegex, "g");
 
-   private ArrayList<String> getTagList(String src)
-   {
-      final RegExp regExp = RegExp.compile(tagRegex, "g");
+        ArrayList<String> list = new ArrayList<String>();
+        MatchResult result = regExp.exec(src);
+        while (result != null) {
+            String node = result.getGroup(0);
+            list.add(node);
+            result = regExp.exec(src);
+        }
+        return list;
+    }
 
-      ArrayList<String> list = new ArrayList<String>();
-      MatchResult result = regExp.exec(src);
-      while (result != null)
-      {
-         String node = result.getGroup(0);
-         list.add(node);
-         result = regExp.exec(src);
-      }
-      return list;
-   }
+    private List<String> listMissing(String compareFrom, String compareTo) {
+        final RegExp regExp = RegExp.compile(tagRegex, "g");
 
-   private ArrayList<String> listMissing(String compareFrom, String compareTo)
-   {
-      final RegExp regExp = RegExp.compile(tagRegex, "g");
+        String tmp = compareTo;
+        ArrayList<String> unmatched = new ArrayList<String>();
+        MatchResult result = regExp.exec(compareFrom);
 
-      String tmp = compareTo;
-      ArrayList<String> unmatched = new ArrayList<String>();
-      MatchResult result = regExp.exec(compareFrom);
-
-      while (result != null)
-      {
-         String node = result.getGroup(0);
-         if (!tmp.contains(node))
-         {
-            unmatched.add(node);
-         }
-         else
-         {
-            int index = tmp.indexOf(node);
-            String beforeNode = tmp.substring(0, index);
-            String afterNode = tmp.substring(index + node.length());
-            tmp = beforeNode + afterNode; // remove matched node from
-         }
-         result = regExp.exec(compareFrom);
-      }
-      return unmatched;
-   }
+        while (result != null) {
+            String node = result.getGroup(0);
+            if (!tmp.contains(node)) {
+                unmatched.add(node);
+            } else {
+                int index = tmp.indexOf(node);
+                String beforeNode = tmp.substring(0, index);
+                String afterNode = tmp.substring(index + node.length());
+                tmp = beforeNode + afterNode; // remove matched node from
+            }
+            result = regExp.exec(compareFrom);
+        }
+        return unmatched;
+    }
 }

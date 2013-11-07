@@ -20,113 +20,102 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class ValidationOptionsView extends Composite implements ValidationOptionsDisplay
-{
-   private static ValidationOptionsViewUiBinder uiBinder = GWT.create(ValidationOptionsViewUiBinder.class);
+public class ValidationOptionsView extends Composite implements
+        ValidationOptionsDisplay {
+    private static ValidationOptionsViewUiBinder uiBinder = GWT
+            .create(ValidationOptionsViewUiBinder.class);
 
-   interface ValidationOptionsViewUiBinder extends UiBinder<Widget, ValidationOptionsView>
-   {
-   }
+    interface ValidationOptionsViewUiBinder extends
+            UiBinder<Widget, ValidationOptionsView> {
+    }
 
-   @UiField
-   Label validationOptionsHeader;
+    @UiField
+    Label validationOptionsHeader;
 
-   @UiField
-   VerticalPanel contentPanel;
+    @UiField
+    VerticalPanel contentPanel;
 
-   @UiField
-   PushButton runValidation;
+    @UiField
+    PushButton runValidation;
 
-   @UiField
-   InlineLabel lastValidationRun;
+    @UiField
+    InlineLabel lastValidationRun;
 
-   private Listener listener;
+    private Listener listener;
 
-   private final WebTransMessages messages;
+    private final WebTransMessages messages;
 
-   @Inject
-   public ValidationOptionsView(WebTransMessages messages)
-   {
-      initWidget(uiBinder.createAndBindUi(this));
-      this.messages = messages;
+    @Inject
+    public ValidationOptionsView(WebTransMessages messages) {
+        initWidget(uiBinder.createAndBindUi(this));
+        this.messages = messages;
 
-      validationOptionsHeader.setText(messages.validationOptions());
-      runValidation.setText(messages.runValidation());
-      runValidation.setTitle(messages.documentValidationTitle());
-   }
+        validationOptionsHeader.setText(messages.validationOptions());
+        runValidation.setText(messages.runValidation());
+        runValidation.setTitle(messages.documentValidationTitle());
+    }
 
-   @Override
-   public HasValueChangeHandlers<Boolean> addValidationSelector(String label, String tooltip, boolean enabled, boolean locked)
-   {
-      CheckBox chk = new CheckBox(label);
-      chk.setValue(enabled);
-      chk.setTitle(tooltip);
-      chk.setEnabled(!locked);
-      contentPanel.add(chk);
+    @Override
+    public HasValueChangeHandlers<Boolean> addValidationSelector(String label,
+            String tooltip, boolean enabled, boolean locked) {
+        CheckBox chk = new CheckBox(label);
+        chk.setValue(enabled);
+        chk.setTitle(tooltip);
+        chk.setEnabled(!locked);
+        contentPanel.add(chk);
 
-      return chk;
-   }
+        return chk;
+    }
 
-   @Override
-   public void changeValidationSelectorValue(String label, boolean enabled)
-   {
-      for (Widget checkbox : contentPanel)
-      {
-         if (checkbox instanceof CheckBox && ((CheckBox) checkbox).getText().equals(label))
-         {
-            ((CheckBox) checkbox).setValue(enabled);
-         }
-      }
-   }
+    @Override
+    public void changeValidationSelectorValue(String label, boolean enabled) {
+        for (Widget checkbox : contentPanel) {
+            if (checkbox instanceof CheckBox
+                    && ((CheckBox) checkbox).getText().equals(label)) {
+                ((CheckBox) checkbox).setValue(enabled);
+            }
+        }
+    }
 
-   @Override
-   public Widget asWidget()
-   {
-      return this;
-   }
+    @Override
+    public Widget asWidget() {
+        return this;
+    }
 
-   @Override
-   public void clearValidationSelector()
-   {
-      contentPanel.clear();
-   }
+    @Override
+    public void clearValidationSelector() {
+        contentPanel.clear();
+    }
 
-   @Override
-   public void setRunValidationVisible(boolean visible)
-   {
-      runValidation.setVisible(visible);
-      lastValidationRun.setVisible(visible);
-   }
+    @Override
+    public void setRunValidationVisible(boolean visible) {
+        runValidation.setVisible(visible);
+        lastValidationRun.setVisible(visible);
+    }
 
-   @UiHandler("runValidation")
-   public void onRunValidationClicked(ClickEvent event)
-   {
-      listener.onRunValidation();
-   }
+    @UiHandler("runValidation")
+    public void onRunValidationClicked(ClickEvent event) {
+        listener.onRunValidation();
+    }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
-   @Override
-   public void enabledRunValidation(boolean enabled)
-   {
-      runValidation.setEnabled(enabled);
-   }
+    @Override
+    public void enabledRunValidation(boolean enabled) {
+        runValidation.setEnabled(enabled);
+    }
 
-   @Override
-   public void updateValidationResult(Date endTime)
-   {
-      if (endTime != null)
-      {
-         lastValidationRun.setText(messages.lastValidationRun(DateUtil.formatLongDateTime(endTime)));
-      }
-      else
-      {
-         lastValidationRun.setText(messages.lastValidationRun("none"));
-      }
-   }
+    @Override
+    public void updateValidationResult(Date endTime) {
+        if (endTime != null) {
+            lastValidationRun.setText(messages.lastValidationRun(DateUtil
+                    .formatLongDateTime(endTime)));
+        } else {
+            lastValidationRun.setText(messages.lastValidationRun("none"));
+        }
+    }
 
 }

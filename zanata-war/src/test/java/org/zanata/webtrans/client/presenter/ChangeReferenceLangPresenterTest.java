@@ -23,57 +23,58 @@ import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 import org.zanata.webtrans.shared.model.IdForLocale;
 import org.zanata.webtrans.shared.model.Locale;
 
-@Test(groups = { "unit-tests" })
-public class ChangeReferenceLangPresenterTest
-{
-   private ChangeReferenceLangPresenter presenter;
-   @Mock
-   private ChangeReferenceLangDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private ChangeReferenceLangDisplay transUnitSourceLangDisplay;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   @Mock
-   private UserOptionsService userOptionsService;
+@Test(groups = {"unit-tests"})
+public class ChangeReferenceLangPresenterTest {
+    private ChangeReferenceLangPresenter presenter;
+    @Mock
+    private ChangeReferenceLangDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private ChangeReferenceLangDisplay transUnitSourceLangDisplay;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    @Mock
+    private UserOptionsService userOptionsService;
+    private UserConfigHolder configHolder = new UserConfigHolder();
+    private WorkspaceId workspaceId;
 
-   private UserConfigHolder configHolder = new UserConfigHolder();
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-   private WorkspaceId workspaceId;
+        presenter = new ChangeReferenceLangPresenter(display, eventBus,
+                dispatcher, userOptionsService);
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
+        workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug",
+                "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 
-      presenter = new ChangeReferenceLangPresenter(display, eventBus, dispatcher, userOptionsService);
+        verify(display).setListener(presenter);
+    }
 
-      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
+    @Test
+    public void onSourceLangListBoxOptionChangedWithValidLocale() {
+        configHolder.setSelectedReferenceForSourceLang(configHolder
+                .DEFAULT_SELECTED_REFERENCE);
 
-      verify(display).setListener(presenter);
-   }
-   
-   @Test
-   public void onSourceLangListBoxOptionChangedWithValidLocale()
-   {
-      configHolder.setSelectedReferenceForSourceLang(configHolder.DEFAULT_SELECTED_REFERENCE);
+        presenter.onSourceLangListBoxOptionChanged(new Locale(
+                new IdForLocale(1L, LocaleId.EN_US), "en-US"));
 
-      presenter.onSourceLangListBoxOptionChanged(new Locale(new IdForLocale(1L, LocaleId.EN_US), "en-US"));
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
+                Matchers.equalTo("en-US"));
+        verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-      assertThat(configHolder.getState().getSelectedReferenceForSourceLang(), Matchers.equalTo("en-US"));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
-   
-   @Test
-   public void onSourceLangListBoxOptionChangedWithNotChosenLocale()
-   {
-      configHolder.setSelectedReferenceForSourceLang(configHolder.DEFAULT_SELECTED_REFERENCE);
+    @Test
+    public void onSourceLangListBoxOptionChangedWithNotChosenLocale() {
+        configHolder.setSelectedReferenceForSourceLang(configHolder
+                .DEFAULT_SELECTED_REFERENCE);
 
-      presenter.onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
+        presenter.onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
 
-      assertThat(configHolder.getState().getSelectedReferenceForSourceLang(), Matchers.equalTo(configHolder.DEFAULT_SELECTED_REFERENCE));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
+                Matchers.equalTo(configHolder.DEFAULT_SELECTED_REFERENCE));
+        verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 }

@@ -17,25 +17,28 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 @Name("webtrans.gwt.EventServiceConnectedHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(EventServiceConnectedAction.class)
-public class EventServiceConnectedHandler extends AbstractActionHandler<EventServiceConnectedAction, NoOpResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class EventServiceConnectedHandler extends
+        AbstractActionHandler<EventServiceConnectedAction, NoOpResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @Override
-   public NoOpResult execute(EventServiceConnectedAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      workspace.onEventServiceConnected(action.getEditorClientId(), action.getConnectionId());
-      return new NoOpResult();
-   }
+    @Override
+    public NoOpResult execute(EventServiceConnectedAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId());
+        workspace.onEventServiceConnected(action.getEditorClientId(),
+                action.getConnectionId());
+        return new NoOpResult();
+    }
 
-   @Override
-   public void rollback(EventServiceConnectedAction action, NoOpResult result, ExecutionContext context) throws ActionException
-   {
-   }
+    @Override
+    public void rollback(EventServiceConnectedAction action, NoOpResult result,
+            ExecutionContext context) throws ActionException {
+    }
 }

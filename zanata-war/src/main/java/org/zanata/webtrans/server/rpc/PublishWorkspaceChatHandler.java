@@ -42,35 +42,39 @@ import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 @Name("webtrans.gwt.PublishWorkspaceChatHandler")
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(PublishWorkspaceChatAction.class)
-public class PublishWorkspaceChatHandler extends AbstractActionHandler<PublishWorkspaceChatAction, NoOpResult>
-{
-   @In
-   private ZanataIdentity identity;
+public class PublishWorkspaceChatHandler extends
+        AbstractActionHandler<PublishWorkspaceChatAction, NoOpResult> {
+    @In
+    private ZanataIdentity identity;
 
-   @In
-   private TranslationWorkspaceManager translationWorkspaceManager;
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
-   @Override
-   public NoOpResult execute(PublishWorkspaceChatAction action, ExecutionContext context) throws ActionException
-   {
-      identity.checkLoggedIn();
+    @Override
+    public NoOpResult execute(PublishWorkspaceChatAction action,
+            ExecutionContext context) throws ActionException {
+        identity.checkLoggedIn();
 
-      TranslationWorkspace workspace = translationWorkspaceManager.getOrRegisterWorkspace(action.getWorkspaceId());
-      // Send PublishWorkspaceChat event to client
+        TranslationWorkspace workspace =
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId());
+        // Send PublishWorkspaceChat event to client
 
-      Date currentDate = new Date();
-      SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy h:mm:ss");
-      
-      PublishWorkspaceChat event = new PublishWorkspaceChat(action.getPerson(), formatter.format(currentDate), action.getMsg(), action.getMessageType());
-      workspace.publish(event);
+        Date currentDate = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy h:mm:ss");
 
-      return new NoOpResult();
-   }
+        PublishWorkspaceChat event =
+                new PublishWorkspaceChat(action.getPerson(),
+                        formatter.format(currentDate), action.getMsg(),
+                        action.getMessageType());
+        workspace.publish(event);
 
-   @Override
-   public void rollback(PublishWorkspaceChatAction action, NoOpResult result, ExecutionContext context) throws ActionException
-   {
-   }
+        return new NoOpResult();
+    }
 
+    @Override
+    public void rollback(PublishWorkspaceChatAction action, NoOpResult result,
+            ExecutionContext context) throws ActionException {
+    }
 
 }

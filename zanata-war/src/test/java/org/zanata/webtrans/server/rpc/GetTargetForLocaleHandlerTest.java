@@ -29,42 +29,35 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
-/**
- * @author Patrick Huang <a
- * href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
 @Test(groups = {"jpa-tests"})
 @Slf4j
-public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest
-{
+public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
     private GetTargetForLocaleHandler handler;
-
     @Mock
     private ZanataIdentity identity;
-
     @Mock
     private TextFlowTargetDAO textFlowTargetDAO;
-
     private GetTargetForLocale action;
-
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
     private TransUnitId sourceTransUnitId;
 
     @Override
-    protected void prepareDBUnitOperations()
-    {
-        beforeTestOperations.add(new ZanataDbunitJpaTest.DataSetOperation("performance/GetTransUnitListTest.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
+    protected void prepareDBUnitOperations() {
+        beforeTestOperations.add(new ZanataDbunitJpaTest
+                .DataSetOperation("performance/GetTransUnitListTest.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
     }
 
     @BeforeMethod
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
-        TransUnitTransformer transUnitTransformer = SeamAutowire.instance().use("resourceUtils", resourceUtils).autowire(TransUnitTransformer.class);
+        TransUnitTransformer transUnitTransformer = SeamAutowire.instance()
+                .use("resourceUtils", resourceUtils)
+                .autowire(TransUnitTransformer.class);
 
         handler = SeamAutowire.instance()
                 .use("identity", identity)
@@ -78,40 +71,43 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest
 
         WorkspaceId workspaceId = TestFixture.workspaceId();
 
-        sourceTransUnitId = new TransUnitId(3L); //plural="true" content0="One file removed_" content1="%d more files removed"/>
-        action = new GetTargetForLocale(sourceTransUnitId, new Locale(new IdForLocale(jaHLocale.getId(), localeId), ""));
+        //plural="true" content0="One file removed_" content1="%d more files removed"
+        sourceTransUnitId = new TransUnitId(3L);
+        action = new GetTargetForLocale(sourceTransUnitId,
+                new Locale(new IdForLocale(jaHLocale.getId(), localeId), ""));
         action.setWorkspaceId(workspaceId);
     }
 
     @Test
-    public void testExecute() throws Exception
-    {        
-        when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(), jaHLocale.getLocaleId())).thenReturn(getEm().find(HTextFlowTarget.class, 61L));
+    public void testExecute() throws Exception {
+        when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(),
+                jaHLocale.getLocaleId())).thenReturn(getEm()
+                .find(HTextFlowTarget.class, 61L));
 
-        
+
         GetTargetForLocaleResult result = handler.execute(action, null);
-        
+
         verify(identity).checkLoggedIn();
 
-        assertThat(result.getTarget().getContent(), Matchers.equalTo(getEm().find(HTextFlowTarget.class, 61L).getContents().get(0)));
+        assertThat(result.getTarget().getContent(), Matchers.equalTo(getEm()
+                .find(HTextFlowTarget.class, 61L).getContents().get(0)));
     }
-    
-    @Test
-    public void testExecuteWhenTargetLangDoesNotExsist() throws Exception
-    {        
-        when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(), jaHLocale.getLocaleId())).thenReturn(null);
 
-        
+    @Test
+    public void testExecuteWhenTargetLangDoesNotExsist() throws Exception {
+        when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(),
+                jaHLocale.getLocaleId())).thenReturn(null);
+
+
         GetTargetForLocaleResult result = handler.execute(action, null);
-        
+
         verify(identity).checkLoggedIn();
 
         assertThat(result.getTarget(), Matchers.equalTo(null));
     }
 
     @Test
-    public void testRollback() throws Exception
-    {
+    public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }
 }

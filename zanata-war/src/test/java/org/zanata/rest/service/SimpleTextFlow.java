@@ -36,66 +36,56 @@ import com.google.common.collect.ImmutableList;
 import lombok.Data;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Data
-class SimpleTextFlow implements ITextFlow
-{
-   private final String qualifiedId;
-   private final Map<LocaleId, ITextFlowTarget> targets;
-   private final @Nonnull LocaleId locale;
-   private List<String> contents;
+class SimpleTextFlow implements ITextFlow {
+    private final String qualifiedId;
+    private final Map<LocaleId, ITextFlowTarget> targets;
+    private final @Nonnull
+    LocaleId locale;
+    private List<String> contents;
 
-   public SimpleTextFlow(String qualifiedId,
-         Map<LocaleId, ITextFlowTarget> targets,
-         @Nonnull LocaleId locale,
-         List<String> contents)
-   {
-      this.qualifiedId = qualifiedId;
-      this.targets = targets;
-      this.locale = locale;
-      this.contents = contents;
-   }
+    public SimpleTextFlow(String qualifiedId,
+            Map<LocaleId, ITextFlowTarget> targets, @Nonnull LocaleId locale,
+            List<String> contents) {
+        this.qualifiedId = qualifiedId;
+        this.targets = targets;
+        this.locale = locale;
+        this.contents = contents;
+    }
 
-   public SimpleTextFlow(String qualifiedId,
-         @Nonnull LocaleId locale,
-         @Nonnull String content0,
-         Map<LocaleId, ITextFlowTarget> targets)
-   {
-      this(qualifiedId, targets, locale, ImmutableList.of(content0));
-   }
+    public SimpleTextFlow(String qualifiedId, @Nonnull LocaleId locale,
+            @Nonnull String content0, Map<LocaleId, ITextFlowTarget> targets) {
+        this(qualifiedId, targets, locale, ImmutableList.of(content0));
+    }
 
-   public SimpleTextFlow(String qualifiedId,
-         Map<LocaleId, ITextFlowTarget> targets,
-         @Nonnull LocaleId locale,
-         @Nonnull String... contents)
-   {
-      this(qualifiedId, targets, locale, ImmutableList.copyOf(contents));
-   }
+    public SimpleTextFlow(String qualifiedId,
+            Map<LocaleId, ITextFlowTarget> targets, @Nonnull LocaleId locale,
+            @Nonnull String... contents) {
+        this(qualifiedId, targets, locale, ImmutableList.copyOf(contents));
+    }
 
-   // Lombok won't generate this because of the other setContents method
-   @Override
-   public void setContents(List<String> contents)
-   {
-      this.contents = contents;
-   }
+    // Lombok won't generate this because of the other setContents method
+    @Override
+    public void setContents(List<String> contents) {
+        this.contents = contents;
+    }
 
-   @Override
-   public void setContents(String... contents)
-   {
-      setContents(Arrays.asList(contents));
-   }
+    @Override
+    public void setContents(String... contents) {
+        setContents(Arrays.asList(contents));
+    }
 
-   @Override
-   public ITextFlowTarget getTargetContents(LocaleId localeId)
-   {
-      return targets.get(localeId);
-   }
+    @Override
+    public ITextFlowTarget getTargetContents(LocaleId localeId) {
+        return targets.get(localeId);
+    }
 
-   @Override
-   public Iterable<ITextFlowTarget> getAllTargetContents()
-   {
-      return ImmutableList.<ITextFlowTarget>copyOf(getTargets().values());
-   }
+    @Override
+    public Iterable<ITextFlowTarget> getAllTargetContents() {
+        return ImmutableList.<ITextFlowTarget> copyOf(getTargets().values());
+    }
 }

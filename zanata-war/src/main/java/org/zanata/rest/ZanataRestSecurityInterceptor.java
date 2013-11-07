@@ -17,31 +17,36 @@ import org.zanata.security.ZanataIdentity;
 
 @SecurityPrecedence
 @ServerInterceptor
-public class ZanataRestSecurityInterceptor implements PreProcessInterceptor
-{
+public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
 
-   public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
-   public static final String X_AUTH_USER_HEADER = "X-Auth-User";
+    public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
+    public static final String X_AUTH_USER_HEADER = "X-Auth-User";
 
-   @Override
-   public ServerResponse preProcess(HttpRequest request, ResourceMethod method) throws Failure, WebApplicationException
-   {
+    @Override
+    public ServerResponse
+            preProcess(HttpRequest request, ResourceMethod method)
+                    throws Failure, WebApplicationException {
 
-      Log log = Logging.getLog(ZanataRestSecurityInterceptor.class);
-      String username = request.getHttpHeaders().getRequestHeaders().getFirst(X_AUTH_USER_HEADER);
-      String apiKey = request.getHttpHeaders().getRequestHeaders().getFirst(X_AUTH_TOKEN_HEADER);
+        Log log = Logging.getLog(ZanataRestSecurityInterceptor.class);
+        String username =
+                request.getHttpHeaders().getRequestHeaders()
+                        .getFirst(X_AUTH_USER_HEADER);
+        String apiKey =
+                request.getHttpHeaders().getRequestHeaders()
+                        .getFirst(X_AUTH_TOKEN_HEADER);
 
-      if (username != null && apiKey != null)
-      {
-         ZanataIdentity.instance().getCredentials().setUsername(username);
-         ZanataIdentity.instance().setApiKey(apiKey);
-         ZanataIdentity.instance().tryLogin();
-         if (!ZanataIdentity.instance().isLoggedIn())
-         {
-            log.info("Failed attempt to authenticate REST request for user {0}", username);
-            return ServerResponse.copyIfNotServerResponse(Response.status(Status.UNAUTHORIZED).build());
-         }
-      }
-      return null;
-   }
+        if (username != null && apiKey != null) {
+            ZanataIdentity.instance().getCredentials().setUsername(username);
+            ZanataIdentity.instance().setApiKey(apiKey);
+            ZanataIdentity.instance().tryLogin();
+            if (!ZanataIdentity.instance().isLoggedIn()) {
+                log.info(
+                        "Failed attempt to authenticate REST request for user {0}",
+                        username);
+                return ServerResponse.copyIfNotServerResponse(Response.status(
+                        Status.UNAUTHORIZED).build());
+            }
+        }
+        return null;
+    }
 }

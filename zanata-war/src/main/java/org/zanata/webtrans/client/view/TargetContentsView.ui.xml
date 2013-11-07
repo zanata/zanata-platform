@@ -1,66 +1,71 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-        >
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+  >
 
 
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.TableEditorMessages" />
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.TableEditorMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
-        .targetContentsCell {
-            table-layout: fixed;
-        }
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
+    .targetContentsCell {
+      table-layout: fixed;
+    }
 
-        .editorGridWrapper {
-            display: block;
-            overflow-x: auto;
-            height: 100%;
-            position: relative;
-        }
+    .editorGridWrapper {
+      display: block;
+      overflow-x: auto;
+      height: 100%;
+      position: relative;
+    }
 
-        .unsaved {
-            background-color: #416988;
-        }
+    .unsaved {
+      background-color: #416988;
+    }
 
-        .saving {
-            position: absolute;
-            top: 8px;
-            left: 30px;
-            font-size: smaller;
-            color: #ffffff;
-            z-index: 1;
-            background-color: #416988;
-        }
+    .saving {
+      position: absolute;
+      top: 8px;
+      left: 32px;
+      font-size: smaller;
+      color: #ffffff;
+      z-index: 5;
+      background-color: #416988;
+    }
 
-        .commentIndicator {
-            position: absolute;
-            right: 3px;
-            top: 2px;
-            font-size: 12px;
-            color: #fff;
-            z-index: 1;
-            font-weight: 600;
-            background-color: #a2b4c3;
-            border-radius: 2px;
-            border: none;
-            padding: 2px 6px;
-            cursor: pointer;
-        }
+    .commentIndicator {
+      position: absolute;
+      right: 3px;
+      top: 2px;
+      font-size: 12px;
+      color: #fff;
+      z-index: 1;
+      font-weight: 600;
+      background-color: #a2b4c3;
+      border-radius: 2px;
+      border: none;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
 
-    </ui:style>
+  </ui:style>
 
-    <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
-        <g:cell verticalAlignment="ALIGN_TOP">
-        	<g:FlowPanel styleName="{style.editorGridWrapper}">
-                <g:Label ui:field="savingIndicator" text="{messages.saving}" styleName="icon-progress {style.saving}" visible="false"/>
-                <g:Label ui:field="commentIndicator" styleName="{style.commentIndicator}" visible="false"/>
-                <g:Grid ui:field="editorGrid" />
-                <fui:ValidationMessagePanelView ui:field="validationPanel"/>
-            </g:FlowPanel>
-        </g:cell>
-        <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY" width="22px">
-            <fui:EditorButtonsWidget ui:field="buttons" />
-        </g:cell>
-    </g:HorizontalPanel>
+  <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
+    <g:cell verticalAlignment="ALIGN_TOP">
+      <g:FlowPanel styleName="{style.editorGridWrapper}">
+        <g:Label ui:field="savingIndicator" text="{messages.saving}"
+          styleName="icon-progress {style.saving}" visible="false" />
+        <g:Label ui:field="commentIndicator"
+          styleName="{style.commentIndicator}" visible="false" />
+        <g:Grid ui:field="editorGrid" />
+        <fui:ValidationMessagePanelView ui:field="validationPanel" />
+      </g:FlowPanel>
+    </g:cell>
+    <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY"
+      width="22px">
+      <fui:EditorButtonsWidget ui:field="buttons" />
+    </g:cell>
+  </g:HorizontalPanel>
 </ui:UiBinder>

@@ -1,203 +1,200 @@
 <h:form id="projectForm"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext">
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext">
 
-    <s:token allowMultiplePosts="true" />
-    <rich:panel>
-        <s:decorate id="slugField" template="edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.ProjectId']}</ui:define>
-            <h:outputText rendered="#{projectHome.managed}" value="#{projectHome.instance.slug}" />
-            <h:inputText rendered="#{not projectHome.managed}"
-                         id="slug" required="true"
-                         value="#{projectHome.instance.slug}"
-                         valueChangeListener="#{projectHome.verifySlugAvailable}">
-              <a4j:ajax event="blur" render="slugField" execute="@this"/>
-            </h:inputText>
+  <s:token allowMultiplePosts="true"/>
+  <rich:panel>
+    <s:decorate id="slugField" template="edit.xhtml" enclose="true">
+      <ui:define name="label">#{messages['jsf.ProjectId']}</ui:define>
+      <h:outputText rendered="#{projectHome.managed}"
+        value="#{projectHome.instance.slug}"/>
+      <h:inputText rendered="#{not projectHome.managed}"
+        id="slug" required="true"
+        value="#{projectHome.instance.slug}"
+        valueChangeListener="#{projectHome.verifySlugAvailable}">
+        <a4j:ajax event="blur" render="slugField" execute="@this"/>
+      </h:inputText>
 
-            <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
-            	<rich:tooltip>
-	          		<em><code>#{messages['jsf.ProjectIdExample']}</code></em>
-	        	</rich:tooltip>
-           	</s:span>
-       </s:decorate>
+      <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
+        <rich:tooltip>
+          <em><code>#{messages['jsf.ProjectIdExample']}</code></em>
+        </rich:tooltip>
+      </s:span>
+    </s:decorate>
 
-        <s:decorate id="nameField" template="edit.xhtml" enclose="true">
-            <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-            <h:inputText id="name" required="true"
-                         value="#{projectHome.instance.name}">
-                <a4j:ajax event="blur" render="nameField" execute="@this"/>
-            </h:inputText>
-        </s:decorate>
+    <s:decorate id="nameField" template="edit.xhtml" enclose="true">
+      <ui:define name="label">#{messages['jsf.Name']}</ui:define>
+      <h:inputText id="name" required="true"
+        value="#{projectHome.instance.name}">
+        <a4j:ajax event="blur" render="nameField" execute="@this"/>
+      </h:inputText>
+    </s:decorate>
 
-        <s:decorate id="descriptionField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Description']}</ui:define>
-            <h:inputText id="description" required="false"
-                         value="#{projectHome.instance.description}" style="width:400px;"/>
-        </s:decorate>
+    <s:decorate id="descriptionField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.Description']}</ui:define>
+      <h:inputText id="description" required="false"
+        value="#{projectHome.instance.description}" style="width:400px;"/>
+    </s:decorate>
 
-         <s:decorate id="projectTypeField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
-            <h:selectOneMenu id="selectField" value="#{projectHome.instance.defaultProjectType}">
-                <f:selectItem itemValue="#{null}"
-                              itemLabel="#{messages['jsf.projectType.NoSelection']}"
-                              noSelectionOption="true" />
-                <f:selectItems value="#{projectHome.projectTypeList}"
-                               var="projectType"
-                               itemValue="#{projectType}"
-                               itemLabel="#{messages['jsf.projectType.detail.'.concat(projectType)]}" />
-            </h:selectOneMenu>
-            <s:span styleClass="icon-info-circle-2 input_help" id="defaultProjectTypeHelp">
-                <rich:tooltip>
-                   #{messages['jsf.projectType.Description']}<br/>
-                   #{messages['jsf.projectType.DefaultBehaviour']}<br/>
-                   <br/>
-                   <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
-                </rich:tooltip>
-            </s:span>
-        </s:decorate>
+    <s:decorate id="projectTypeField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.projectType']}</ui:define>
+      <h:selectOneMenu id="selectField"
+        value="#{projectHome.instance.defaultProjectType}">
+        <f:selectItem itemValue="#{null}"
+          itemLabel="#{messages['jsf.projectType.NoSelection']}"
+          noSelectionOption="true"/>
+        <f:selectItems value="#{projectHome.projectTypeList}"
+          var="projectType"
+          itemValue="#{projectType}"
+          itemLabel="#{messages['jsf.projectType.detail.'.concat(projectType)]}"/>
+      </h:selectOneMenu>
+      <s:span styleClass="icon-info-circle-2 input_help"
+        id="defaultProjectTypeHelp">
+        <rich:tooltip>
+          #{messages['jsf.projectType.Description']}<br/>
+          #{messages['jsf.projectType.DefaultBehaviour']}<br/>
+          <br/>
+          <em>#{messages['jsf.projectType.MoreInfo']}</em><br/>
+        </rich:tooltip>
+      </s:span>
+    </s:decorate>
 
-        <s:decorate id="humanViewableSourceUrlField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.viewSourceFiles']}</ui:define>
-            <h:inputText id="humanViewableSourceUrl" required="false"
-                         value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
-            <s:span styleClass="icon-info-circle-2 input_help" id="humanSourceUrlHelp">
-                <rich:tooltip>
-                   <em><code>#{messages['jsf.viewSourceFiles.Example']}</code></em>
-                </rich:tooltip>
-            </s:span>
-        </s:decorate>
+    <s:decorate id="humanViewableSourceUrlField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.viewSourceFiles']}</ui:define>
+      <h:inputText id="humanViewableSourceUrl" required="false"
+        value="#{projectHome.instance.sourceViewURL}" style="width:400px;"/>
+      <s:span styleClass="icon-info-circle-2 input_help"
+        id="humanSourceUrlHelp">
+        <rich:tooltip>
+          <em><code>#{messages['jsf.viewSourceFiles.Example']}</code></em>
+        </rich:tooltip>
+      </s:span>
+    </s:decorate>
 
-        <s:decorate id="machineReadableSourceUrlField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.SourceCheckoutUrl']}</ui:define>
-            <h:inputText id="machineReadableSourceUrl" required="false"
-                         value="#{projectHome.instance.sourceCheckoutURL}" style="width:400px;"/>
-            <s:span styleClass="icon-info-circle-2 input_help" id="machineSourceUrlHelp">
-                <rich:tooltip>
-                   <em><code>#{messages['jsf.SourceCheckoutUrl.Example']}</code></em>
-                </rich:tooltip>
-            </s:span>
-        </s:decorate>
+    <s:decorate id="machineReadableSourceUrlField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.SourceCheckoutUrl']}</ui:define>
+      <h:inputText id="machineReadableSourceUrl" required="false"
+        value="#{projectHome.instance.sourceCheckoutURL}" style="width:400px;"/>
+      <s:span styleClass="icon-info-circle-2 input_help"
+        id="machineSourceUrlHelp">
+        <rich:tooltip>
+          <em><code>#{messages['jsf.SourceCheckoutUrl.Example']}</code></em>
+        </rich:tooltip>
+      </s:span>
+    </s:decorate>
 
-        <s:decorate id="homeContentField" template="edit.xhtml">
-            <ui:define name="label">#{messages['jsf.HomepageContent']}</ui:define>
-             <rich:editor id="homeContent" 
-                width="412" height="300" style="width:412px;"
-                required="false"
-                value="#{projectHome.instance.homeContent}"
-                viewMode="visual" 
-                useSeamText="true"
-                configuration="richeditor"
-                theme="advanced">
-            </rich:editor>
-        </s:decorate>
-	
-	    <s:decorate id="statusField" template="edit.xhtml">
-	        <ui:define name="label">#{messages['jsf.Status']}</ui:define>
-	        <h:selectOneMenu id="selectField" value="#{projectHome.instance.status}">
-	            <f:selectItems value="#{projectHome.statusList}"/>
-	        </h:selectOneMenu>
-	    </s:decorate>
+    <s:decorate id="homeContentField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.HomepageContent']}</ui:define>
+      <rich:editor id="homeContent"
+        width="412" height="300" style="width:412px;"
+        required="false"
+        value="#{projectHome.instance.homeContent}"
+        viewMode="visual"
+        useSeamText="true"
+        configuration="richeditor"
+        theme="advanced">
+      </rich:editor>
+    </s:decorate>
 
-        <div style="clear:both"></div>
+    <s:decorate id="statusField" template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.Status']}</ui:define>
+      <h:selectOneMenu id="selectField" value="#{projectHome.instance.status}">
+        <f:selectItems value="#{projectHome.statusList}"/>
+      </h:selectOneMenu>
+    </s:decorate>
 
-    </rich:panel>
+    <div style="clear:both"/>
+    <ui:include src="validation_options.xhtml"/>
+  </rich:panel>
 
-	<s:div>
-		<a4j:region>
-		<h:selectBooleanCheckbox
-		  value="#{localeListAction.setting}" >
-			<a4j:ajax event="change" render="languagelist" />
-		</h:selectBooleanCheckbox>
-		</a4j:region>
-		<h:outputText
-		  value="#{messages['jsf.customizedLocaleMessage']}"/>
-	</s:div>
-
-
-	<s:div id="languagelist">
-	<a4j:region renderRegionOnly="true">
-      	<h:panelGrid columns="3" id ="languagePanel" rendered="#{localeListAction.setting}">
-	    <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
-	    <h:outputText value=""/>
-	    <h:outputText value="#{messages['jsf.EnabledLocales']}"/>
-            <h:selectManyListbox id ="languagelist2" value="#{localeListAction.availableList}" styleClass="language_list">
-                <f:selectItems value="#{availableItems}"/>
-                <a4j:ajax event="dblclick" render="languagePanel" listener="#{localeListAction.toCustomizedLocales}"/>
-            </h:selectManyListbox>
-            <h:panelGroup id="buttons" styleClass="language_action_buttons">
-                <a4j:commandButton value="#{messages['jsf.AddLocale']}" action="#{localeListAction.toCustomizedLocales}" styleClass="language_action_button" render="languagePanel" />
-                <a4j:commandButton value="#{messages['jsf.RemoveLocale']}" action="#{localeListAction.removeFromCustomizedLocales}" styleClass="language_action_button" render="languagePanel" />
-            </h:panelGroup>
-            <h:selectManyListbox id="languagelist1" value="#{localeListAction.customizedLocales}" styleClass="language_list" >
-                <f:selectItems value="#{localeListAction.customizedItems}"/>
-                <a4j:ajax event="dblclick" render="languagePanel" listener="#{localeListAction.removeFromCustomizedLocales}"/>
-            </h:selectManyListbox>
-      	</h:panelGrid>
-	</a4j:region>
-	</s:div>
-
-    <s:div>
-        <a4j:region>
-            <h:selectBooleanCheckbox title="#{messages['jsf.RestrictRoleAccessTooltip']}" value="#{projectRoleRestrictionAction.restrictByRoles}" >
-                <a4j:ajax event="change" render="roleList" />
-            </h:selectBooleanCheckbox>
-        </a4j:region>
-        <h:outputText
-                value="#{messages['jsf.RestrictRoleAccessMessage']}"/>
-    </s:div>
-
-    <s:div id="roleList">
-        <a4j:region renderRegionOnly="true">
-            <rich:dataGrid value="#{projectRoleRestrictionAction.availableRoles}" var="role" columns="4"
-                           rendered="#{projectRoleRestrictionAction.restrictByRoles}">
-                <h:selectBooleanCheckbox value="#{projectRoleRestrictionAction.roleRestrictions[role.name]}"/>
-                <h:outputLabel value="#{role.name}"/>
-            </rich:dataGrid>
-        </a4j:region>
-    </s:div>
-    
-    <s:div>
-		<a4j:region>
-			<h:selectBooleanCheckbox id="validationOptions" value="#{projectValidationOptionsAction.overrideValidations}" >
-				<a4j:ajax event="change" render="validationOptionsList" />
-			</h:selectBooleanCheckbox>
-		</a4j:region>
-		<h:outputText value="#{messages['jsf.customizedValidationMessage']}"/>
-	</s:div>
+  <s:div>
+    <a4j:region>
+      <h:selectBooleanCheckbox
+        value="#{localeListAction.setting}">
+        <a4j:ajax event="change" render="languagelist"/>
+      </h:selectBooleanCheckbox>
+    </a4j:region>
+    <h:outputText
+      value="#{messages['jsf.customizedLocaleMessage']}"/>
+  </s:div>
 
 
-	<s:div id="validationOptionsList">
-		<a4j:region renderRegionOnly="true">
-		 <rich:dataGrid value="#{projectValidationOptionsAction.validationList}" var="validationAction" columns="1"
-                  rendered="#{projectValidationOptionsAction.overrideValidations}">
-       		<h:selectBooleanCheckbox value="#{projectValidationOptionsAction.selectedValidations[validationAction.id.name()]}">
-       			<a4j:ajax event="change" listener="#{projectValidationOptionsAction.checkExclusive(validationAction)}" render="validationOptionsList"/>
-       		</h:selectBooleanCheckbox>
-       		<h:outputLabel value="#{validationAction.id.displayName}"/>
-       		<h:outputLabel value="#{validationAction.description}" style="float:right;margin-right:20px;"/>
-          </rich:dataGrid>
-          </a4j:region>
-	</s:div>
+  <s:div id="languagelist">
+    <a4j:region renderRegionOnly="true">
+      <h:panelGrid columns="3" id="languagePanel"
+        rendered="#{localeListAction.setting}">
+        <h:outputText value="#{messages['jsf.DisabledLocales']}"/>
+        <h:outputText value=""/>
+        <h:outputText value="#{messages['jsf.EnabledLocales']}"/>
+        <h:selectManyListbox id="languagelist2"
+          value="#{localeListAction.availableList}" styleClass="language_list">
+          <f:selectItems value="#{availableItems}"/>
+          <a4j:ajax event="dblclick" render="languagePanel"
+            listener="#{localeListAction.toCustomizedLocales}"/>
+        </h:selectManyListbox>
+        <h:panelGroup id="buttons" styleClass="language_action_buttons">
+          <a4j:commandButton value="#{messages['jsf.AddLocale']}"
+            action="#{localeListAction.toCustomizedLocales}"
+            styleClass="language_action_button"
+            render="languagePanel"/>
+          <a4j:commandButton value="#{messages['jsf.RemoveLocale']}"
+            action="#{localeListAction.removeFromCustomizedLocales}"
+            styleClass="language_action_button" render="languagePanel"/>
+        </h:panelGroup>
+        <h:selectManyListbox id="languagelist1"
+          value="#{localeListAction.customizedLocales}"
+          styleClass="language_list">
+          <f:selectItems value="#{localeListAction.customizedItems}"/>
+          <a4j:ajax event="dblclick" render="languagePanel"
+            listener="#{localeListAction.removeFromCustomizedLocales}"/>
+        </h:selectManyListbox>
+      </h:panelGrid>
+    </a4j:region>
+  </s:div>
 
-    <div class="actionButtons">
-        <h:commandButton id="save"
-                      value="#{messages['jsf.Save']}"
-                     action="#{projectHome.persist}"
-                   rendered="#{!projectHome.managed}"/>
-        <h:commandButton id="update"
-                      value="#{messages['jsf.Update']}"
-                     action="#{projectHome.update}"
-                   rendered="#{projectHome.managed}"/>
-        <s:button id="cancel"
-                        value="#{messages['jsf.Cancel']}"
-                        propagation="none"
-                       action="#{projectHome.cancel}"/>
-    </div>
+  <s:div>
+    <a4j:region>
+      <h:selectBooleanCheckbox
+        title="#{messages['jsf.RestrictRoleAccessTooltip']}"
+        value="#{projectRoleRestrictionAction.restrictByRoles}">
+        <a4j:ajax event="change" render="roleList"/>
+      </h:selectBooleanCheckbox>
+    </a4j:region>
+    <h:outputText
+      value="#{messages['jsf.RestrictRoleAccessMessage']}"/>
+  </s:div>
+
+  <s:div id="roleList">
+    <a4j:region renderRegionOnly="true">
+      <rich:dataGrid value="#{projectRoleRestrictionAction.availableRoles}"
+        var="role" columns="4"
+        rendered="#{projectRoleRestrictionAction.restrictByRoles}">
+        <h:selectBooleanCheckbox
+          value="#{projectRoleRestrictionAction.roleRestrictions[role.name]}"/>
+        <h:outputLabel value="#{role.name}"/>
+      </rich:dataGrid>
+    </a4j:region>
+  </s:div>
+
+  <div class="actionButtons">
+    <h:commandButton id="save"
+      value="#{messages['jsf.Save']}"
+      action="#{projectHome.persist}"
+      rendered="#{!projectHome.managed}"/>
+    <h:commandButton id="update"
+      value="#{messages['jsf.Update']}"
+      action="#{projectHome.update}"
+      rendered="#{projectHome.managed}"/>
+    <s:button id="cancel"
+      value="#{messages['jsf.Cancel']}"
+      propagation="none"
+      action="#{projectHome.cancel}"/>
+  </div>
 
 </h:form>

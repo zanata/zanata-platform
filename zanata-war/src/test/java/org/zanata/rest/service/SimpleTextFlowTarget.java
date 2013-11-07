@@ -33,39 +33,37 @@ import org.zanata.model.ITextFlowTarget;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @Data
-class SimpleTextFlowTarget implements ITextFlowTarget
-{
-   private final ContentState state;
-   private List<String> contents;
-   private final LocaleId localeId;
+class SimpleTextFlowTarget implements ITextFlowTarget {
+    private final ContentState state;
+    private List<String> contents;
+    private final LocaleId localeId;
 
-   public SimpleTextFlowTarget(LocaleId localeId, ContentState state, List<String> contents)
-   {
-      this.localeId = localeId;
-      this.state = state;
-      this.contents = contents;
-   }
+    public SimpleTextFlowTarget(LocaleId localeId, ContentState state,
+            List<String> contents) {
+        this.localeId = localeId;
+        this.state = state;
+        this.contents = contents;
+    }
 
-   public SimpleTextFlowTarget(LocaleId localeId, ContentState state, String... contents)
-   {
-      this(localeId, state, ImmutableList.copyOf(contents));
-   }
+    public SimpleTextFlowTarget(LocaleId localeId, ContentState state,
+            String... contents) {
+        this(localeId, state, ImmutableList.copyOf(contents));
+    }
 
-   // Lombok won't generate this because of the other setContents method
-   @Override
-   public void setContents(List<String> contents)
-   {
-      this.contents = contents;
-   }
+    // Lombok won't generate this because of the other setContents method
+    @Override
+    public void setContents(List<String> contents) {
+        this.contents = contents;
+    }
 
-   @Override
-   public void setContents(String... contents)
-   {
-      setContents(Arrays.asList(contents));
-   }
+    @Override
+    public void setContents(String... contents) {
+        setContents(Arrays.asList(contents));
+    }
 
 }

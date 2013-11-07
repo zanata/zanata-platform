@@ -9,23 +9,22 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import com.google.gwt.event.dom.client.ClickHandler;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 
-public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh
-{
-   void setValue(TransUnit value);
+public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh {
+    void setValue(TransUnit value);
 
-   List<HasSelectableSource> getSourcePanelList();
+    List<HasSelectableSource> getSourcePanelList();
 
-   void setValue(TransUnit value, boolean fireEvents);
+    void setValue(TransUnit value, boolean fireEvents);
 
-   void highlightSearch(String search);
+    void highlightSearch(String search);
 
-   void setSourceSelectionHandler(ClickHandler clickHandler);
+    void setSourceSelectionHandler(ClickHandler clickHandler);
 
-   void toggleTransUnitDetails(boolean showTransUnitDetails);
+    void toggleTransUnitDetails(boolean showTransUnitDetails);
 
-   void updateTransUnitDetails(TransUnit transUnit);
+    void updateTransUnitDetails(TransUnit transUnit);
 
-   void showReference(TextFlowTarget reference);
+    void showReference(TextFlowTarget reference);
 
-   void hideReference();
+    void hideReference();
 }

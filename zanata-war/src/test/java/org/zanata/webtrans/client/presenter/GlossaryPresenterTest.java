@@ -73,285 +73,340 @@ import com.google.gwt.user.client.ui.HasValue;
  *
  */
 @Test(groups = { "unit-tests" })
-public class GlossaryPresenterTest
-{
-   private GlossaryPresenter presenter;
+public class GlossaryPresenterTest {
+    private GlossaryPresenter presenter;
 
-   @Mock
-   private GlossaryDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   @Mock
-   private WebTransMessages messages;
-   @Mock
-   private GlossaryDetailsPresenter glossaryDetailsPresenter;
-   private UserWorkspaceContext userWorkspaceContext;
-   @Mock
-   private KeyShortcutPresenter keyShortcutPresenter;
-   @Mock
-   private HasText mockGlossaryTextBox;
-   @Mock
-   private HasValue<SearchType> mockSearchType;
-   @Captor
-   private ArgumentCaptor<GetGlossary> getGlossaryCaptor;
-   @Captor
-   private ArgumentCaptor<AsyncCallback<GetGlossaryResult>> callbackCaptor;
+    @Mock
+    private GlossaryDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    @Mock
+    private WebTransMessages messages;
+    @Mock
+    private GlossaryDetailsPresenter glossaryDetailsPresenter;
+    private UserWorkspaceContext userWorkspaceContext;
+    @Mock
+    private KeyShortcutPresenter keyShortcutPresenter;
+    @Mock
+    private HasText mockGlossaryTextBox;
+    @Mock
+    private HasValue<SearchType> mockSearchType;
+    @Captor
+    private ArgumentCaptor<GetGlossary> getGlossaryCaptor;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<GetGlossaryResult>> callbackCaptor;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      userWorkspaceContext = TestFixture.userWorkspaceContext();
-      presenter = new GlossaryPresenter(display, eventBus, dispatcher, messages, glossaryDetailsPresenter, userWorkspaceContext, keyShortcutPresenter);
-   }
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        userWorkspaceContext = TestFixture.userWorkspaceContext();
+        presenter =
+                new GlossaryPresenter(display, eventBus, dispatcher, messages,
+                        glossaryDetailsPresenter, userWorkspaceContext,
+                        keyShortcutPresenter);
+    }
 
-   @Test
-   public void onBind()
-   {
-      when(messages.searchGlossary()).thenReturn("Search glossary");
+    @Test
+    public void onBind() {
+        when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      presenter.bind();
+        presenter.bind();
 
-      verify(eventBus).addHandler(TransUnitSelectionEvent.getType(), presenter);
-      verify(keyShortcutPresenter).register(isA(KeyShortcut.class));
-      verify(display).setListener(presenter);
-      verify(glossaryDetailsPresenter).onBind();
-      verify(glossaryDetailsPresenter).setGlossaryListener(presenter);
+        verify(eventBus).addHandler(TransUnitSelectionEvent.getType(),
+                presenter);
+        verify(keyShortcutPresenter).register(isA(KeyShortcut.class));
+        verify(display).setListener(presenter);
+        verify(glossaryDetailsPresenter).onBind();
+        verify(glossaryDetailsPresenter).setGlossaryListener(presenter);
 
-   }
+    }
 
-   @Test
-   public void clearContent()
-   {
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+    @Test
+    public void clearContent() {
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
 
-      presenter.clearContent();
+        presenter.clearContent();
 
-      verify(display).clearTableContent();
-      verify(mockGlossaryTextBox).setText("");
-   }
+        verify(display).clearTableContent();
+        verify(mockGlossaryTextBox).setText("");
+    }
 
-   @Test
-   public void onFocus()
-   {
-      boolean isFocused = true;
+    @Test
+    public void onFocus() {
+        boolean isFocused = true;
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      presenter.onFocus(isFocused);
+        presenter.onFocus(isFocused);
 
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
-      assertThat(presenter.isFocused(), Matchers.is(isFocused));
-   }
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary,
+                isFocused);
+        verify(keyShortcutPresenter).setContextActive(
+                ShortcutContext.Navigation, !isFocused);
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit,
+                !isFocused);
+        assertThat(presenter.isFocused(), Matchers.is(isFocused));
+    }
 
-   @Test
-   public void onBlur()
-   {
-      boolean isFocused = false;
+    @Test
+    public void onBlur() {
+        boolean isFocused = false;
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      presenter.onFocus(isFocused);
+        presenter.onFocus(isFocused);
 
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary, isFocused);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Navigation, !isFocused);
-      verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit, !isFocused);
-   }
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Glossary,
+                isFocused);
+        verify(keyShortcutPresenter).setContextActive(
+                ShortcutContext.Navigation, !isFocused);
+        verify(keyShortcutPresenter).setContextActive(ShortcutContext.Edit,
+                !isFocused);
+    }
 
-   @Test
-   public void showGlossaryDetail()
-   {
-      GlossaryResultItem object = new GlossaryResultItem("","", 0, 0);
-      
-      when(messages.searchGlossary()).thenReturn("Search glossary");
+    @Test
+    public void showGlossaryDetail() {
+        GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
 
-      presenter.showGlossaryDetail(object);
+        when(messages.searchGlossary()).thenReturn("Search glossary");
 
-      verify(glossaryDetailsPresenter).show(object);
-   }
+        presenter.showGlossaryDetail(object);
 
-   @Test
-   public void fireCopyEvent()
-   {
-      GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
-      ArgumentCaptor<InsertStringInEditorEvent> eventCaptor = ArgumentCaptor.forClass(InsertStringInEditorEvent.class);
-      
-      when(messages.searchGlossary()).thenReturn("Search glossary");
+        verify(glossaryDetailsPresenter).show(object);
+    }
 
-      presenter.fireCopyEvent(object);
+    @Test
+    public void fireCopyEvent() {
+        GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
+        ArgumentCaptor<InsertStringInEditorEvent> eventCaptor =
+                ArgumentCaptor.forClass(InsertStringInEditorEvent.class);
 
-      verify(eventBus).fireEvent(eventCaptor.capture());
-   }
+        when(messages.searchGlossary()).thenReturn("Search glossary");
 
-   @Test
-   public void fireSearchEvent()
-   {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
+        presenter.fireCopyEvent(object);
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+        verify(eventBus).fireEvent(eventCaptor.capture());
+    }
 
-      presenter.fireSearchEvent();
+    @Test
+    public void fireSearchEvent() {
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
 
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      GetGlossary action = getGlossaryCaptor.getValue();
-      assertThat(action.getQuery(), Matchers.equalTo("query"));
-      assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
-      assertThat(action.getSrcLocaleId(), Matchers.equalTo(docInfo.getSourceLocale()));
-   }
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
 
-   @Test
-   public void fireSearchEventInSequentialWillBlockSecondRequestUntilFirstReturn()
-   {
-      // Given:
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query1", "query2");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY, SearchType.FUZZY_PLURAL);
+        presenter.fireSearchEvent();
 
-      // When: calling search glossary twice while the first one hasn't return any result
-      presenter.fireSearchEvent();
-      presenter.fireSearchEvent();
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        GetGlossary action = getGlossaryCaptor.getValue();
+        assertThat(action.getQuery(), Matchers.equalTo("query"));
+        assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
+        assertThat(action.getSrcLocaleId(),
+                Matchers.equalTo(docInfo.getSourceLocale()));
+    }
 
-      // Then: there is only one RPC call to the server and the second request get ignored
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      GetGlossary action = getGlossaryCaptor.getValue();
-      assertThat(action.getQuery(), Matchers.equalTo("query1"));
-      assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
-      assertThat(action.getSrcLocaleId(), Matchers.equalTo(docInfo.getSourceLocale()));
-   }
+    @Test
+    public void
+            fireSearchEventInSequentialWillBlockSecondRequestUntilFirstReturn() {
+        // Given:
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query1", "query2");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY,
+                SearchType.FUZZY_PLURAL);
 
-   @Test
-   public void fireSearchEventOnSuccessCallbackWithGlossaryResults()
-   {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
+        // When: calling search glossary twice while the first one hasn't return
+        // any result
+        presenter.fireSearchEvent();
+        presenter.fireSearchEvent();
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+        // Then: there is only one RPC call to the server and the second request
+        // get ignored
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        GetGlossary action = getGlossaryCaptor.getValue();
+        assertThat(action.getQuery(), Matchers.equalTo("query1"));
+        assertThat(action.getSearchType(), Matchers.equalTo(SearchType.FUZZY));
+        assertThat(action.getSrcLocaleId(),
+                Matchers.equalTo(docInfo.getSourceLocale()));
+    }
 
-      presenter.fireSearchEvent();
+    @Test
+    public void fireSearchEventOnSuccessCallbackWithGlossaryResults() {
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
 
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
-      ArrayList<GlossaryResultItem> glossaries = Lists.newArrayList(new GlossaryResultItem("source", "target", 100, 100));
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
 
-      // on rpc callback success and result contains glossaries
-      callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(), glossaries));
+        presenter.fireSearchEvent();
 
-      verify(mockGlossaryTextBox).setText("query");
-      verify(mockSearchType).setValue(SearchType.FUZZY);
-      verify(display).renderTable(glossaries);
-      verify(display).stopProcessing(true);
-   }
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+        ArrayList<GlossaryResultItem> glossaries =
+                Lists.newArrayList(new GlossaryResultItem("source", "target",
+                        100, 100));
 
-   @Test
-   public void fireSearchEventOnSuccessCallbackButNoGlossaryFound()
-   {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
+        // on rpc callback success and result contains glossaries
+        callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(),
+                glossaries));
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+        verify(mockGlossaryTextBox).setText("query");
+        verify(mockSearchType).setValue(SearchType.FUZZY);
+        verify(display).renderTable(glossaries);
+        verify(display).stopProcessing(true);
+    }
 
-      presenter.fireSearchEvent();
+    @Test
+    public void fireSearchEventOnSuccessCallbackButNoGlossaryFound() {
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
 
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
 
-      // on rpc callback success and result contains glossaries
-      callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(), Lists.<GlossaryResultItem>newArrayList()));
+        presenter.fireSearchEvent();
 
-      verify(mockGlossaryTextBox).setText("query");
-      verify(mockSearchType).setValue(SearchType.FUZZY);
-      verify(display).stopProcessing(false);
-   }
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
 
-   @Test
-   public void fireSearchEventOnFailureCallback()
-   {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
+        // on rpc callback success and result contains glossaries
+        callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(),
+                Lists.<GlossaryResultItem> newArrayList()));
 
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+        verify(mockGlossaryTextBox).setText("query");
+        verify(mockSearchType).setValue(SearchType.FUZZY);
+        verify(display).stopProcessing(false);
+    }
 
-      presenter.fireSearchEvent();
+    @Test
+    public void fireSearchEventOnFailureCallback() {
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
 
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
 
-      // on rpc callback failure
-      callback.onFailure(new RuntimeException());
+        presenter.fireSearchEvent();
 
-      verify(display).stopProcessing(false);
-   }
-   
-   @Test
-   public void createGlossaryRequestForTransUnit()
-   {
-      DocumentInfo docInfo = new DocumentInfo(new DocumentId(new Long(1), ""), "test", "test/path", LocaleId.EN_US, new ContainerTranslationStatistics(), new AuditInfo(new Date(), "Translator"), new HashMap<String, String>(), new AuditInfo(new Date(), "last translator"));
-      userWorkspaceContext.setSelectedDoc(docInfo);
-      when(messages.searchGlossary()).thenReturn("Search glossary");
-      when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
-      when(mockGlossaryTextBox.getText()).thenReturn("query");
-      when(display.getSearchType()).thenReturn(mockSearchType);
-      when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
-      TransUnit transUnit = TransUnit.Builder.newTransUnitBuilder().setId(1).setResId("resId").setVerNum(0)
-            .setLocaleId("en").addSource("source1", "source2").setRowIndex(1).build();
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
 
-      presenter.onTransUnitSelected(new TransUnitSelectionEvent(transUnit));
+        // on rpc callback failure
+        callback.onFailure(new RuntimeException());
 
-      verify(display).startProcessing();
-      verify(dispatcher).execute(getGlossaryCaptor.capture(), callbackCaptor.capture());
-      GetGlossary action = getGlossaryCaptor.getValue();
-      assertThat(action.getQuery(), Matchers.equalTo("source1 source2 "));
-   }
+        verify(display).stopProcessing(false);
+    }
 
-   @Test
-   public void onKeyShortcut()
-   {
-      ArgumentCaptor<KeyShortcut> keyShortcutCaptor = ArgumentCaptor.forClass(KeyShortcut.class);
-      when(messages.searchGlossary()).thenReturn("search glossary");
-      GlossaryPresenter spyPresenter = spy(presenter);
-      doNothing().when(spyPresenter).fireSearchEvent();
+    @Test
+    public void createGlossaryRequestForTransUnit() {
+        DocumentInfo docInfo =
+                new DocumentInfo(new DocumentId(new Long(1), ""), "test",
+                        "test/path", LocaleId.EN_US,
+                        new ContainerTranslationStatistics(), new AuditInfo(
+                                new Date(), "Translator"),
+                        new HashMap<String, String>(), new AuditInfo(
+                                new Date(), "last translator"));
+        userWorkspaceContext.setSelectedDoc(docInfo);
+        when(messages.searchGlossary()).thenReturn("Search glossary");
+        when(display.getGlossaryTextBox()).thenReturn(mockGlossaryTextBox);
+        when(mockGlossaryTextBox.getText()).thenReturn("query");
+        when(display.getSearchType()).thenReturn(mockSearchType);
+        when(mockSearchType.getValue()).thenReturn(SearchType.FUZZY);
+        TransUnit transUnit =
+                TransUnit.Builder.newTransUnitBuilder().setId(1)
+                        .setResId("resId").setVerNum(0).setLocaleId("en")
+                        .addSource("source1", "source2").setRowIndex(1).build();
 
-      spyPresenter.onBind();
+        presenter.onTransUnitSelected(new TransUnitSelectionEvent(transUnit));
 
-      verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
-      KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
-      assertThat(keyShortcut.getAllKeys(), Matchers.containsInAnyOrder(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER)));
-      assertThat(keyShortcut.getContext(), Matchers.equalTo(ShortcutContext.Glossary));
-      assertThat(keyShortcut.getDescription(), Matchers.equalTo("search glossary"));
+        verify(display).startProcessing();
+        verify(dispatcher).execute(getGlossaryCaptor.capture(),
+                callbackCaptor.capture());
+        GetGlossary action = getGlossaryCaptor.getValue();
+        assertThat(action.getQuery(), Matchers.equalTo("source1 source2 "));
+    }
 
-      keyShortcut.getHandler().onKeyShortcut(null);
-      verify(spyPresenter).fireSearchEvent();
-   }
+    @Test
+    public void onKeyShortcut() {
+        ArgumentCaptor<KeyShortcut> keyShortcutCaptor =
+                ArgumentCaptor.forClass(KeyShortcut.class);
+        when(messages.searchGlossary()).thenReturn("search glossary");
+        GlossaryPresenter spyPresenter = spy(presenter);
+        doNothing().when(spyPresenter).fireSearchEvent();
+
+        spyPresenter.onBind();
+
+        verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
+        KeyShortcut keyShortcut = keyShortcutCaptor.getValue();
+        assertThat(keyShortcut.getAllKeys(),
+                Matchers.containsInAnyOrder(new Keys(Keys.NO_MODIFIER,
+                        KeyCodes.KEY_ENTER)));
+        assertThat(keyShortcut.getContext(),
+                Matchers.equalTo(ShortcutContext.Glossary));
+        assertThat(keyShortcut.getDescription(),
+                Matchers.equalTo("search glossary"));
+
+        keyShortcut.getHandler().onKeyShortcut(null);
+        verify(spyPresenter).fireSearchEvent();
+    }
 
 }

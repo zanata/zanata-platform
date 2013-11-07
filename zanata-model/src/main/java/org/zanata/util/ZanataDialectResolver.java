@@ -23,19 +23,18 @@ package org.zanata.util;
 
 import org.hibernate.service.jdbc.dialect.internal.BasicDialectResolver;
 
-
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-// FIXME eliminate this (and ZanataMySQL5InnoDBDialect) or avoid Hibernate internals
-public class ZanataDialectResolver extends BasicDialectResolver
-{
-   private static final long serialVersionUID = 1L;
+// FIXME eliminate this (and ZanataMySQL5InnoDBDialect) or avoid Hibernate
+// internals
+public class ZanataDialectResolver extends BasicDialectResolver {
+    private static final long serialVersionUID = 1L;
 
-   public ZanataDialectResolver()
-   {
-      super("MySQL", ZanataMySQL5InnoDBDialect.class);
-   }
+    public ZanataDialectResolver() {
+        super("MySQL", ZanataMySQL5InnoDBDialect.class);
+    }
 
 }

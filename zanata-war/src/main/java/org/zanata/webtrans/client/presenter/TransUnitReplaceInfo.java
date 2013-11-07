@@ -29,109 +29,93 @@ import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
 /**
  * Data model used by {@link SearchResultsDocumentTable}.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class TransUnitReplaceInfo
-{
-   private static Comparator<TransUnitReplaceInfo> comparator;
+public class TransUnitReplaceInfo {
+    private static Comparator<TransUnitReplaceInfo> comparator;
 
-   private ReplacementState replacementState;
-   private PreviewState previewState;
-   private Long docId;
-   private TransUnit tu;
-   private TransUnitUpdatePreview preview;
-   private TransUnitUpdateInfo replaceInfo;
+    private ReplacementState replacementState;
+    private PreviewState previewState;
+    private Long docId;
+    private TransUnit tu;
+    private TransUnitUpdatePreview preview;
+    private TransUnitUpdateInfo replaceInfo;
 
-   public TransUnitReplaceInfo(Long containingDocId, TransUnit tu)
-   {
-      this.docId = containingDocId;
-      this.tu = tu;
-      preview = null;
-      replaceInfo = null;
-      replacementState = ReplacementState.NotReplaced;
-      previewState = PreviewState.NotFetched;
-   }
+    public TransUnitReplaceInfo(Long containingDocId, TransUnit tu) {
+        this.docId = containingDocId;
+        this.tu = tu;
+        preview = null;
+        replaceInfo = null;
+        replacementState = ReplacementState.NotReplaced;
+        previewState = PreviewState.NotFetched;
+    }
 
-   public TransUnit getTransUnit()
-   {
-      return tu;
-   }
+    public TransUnit getTransUnit() {
+        return tu;
+    }
 
-   public void setTransUnit(TransUnit tu)
-   {
-      this.tu = tu;
-   }
+    public void setTransUnit(TransUnit tu) {
+        this.tu = tu;
+    }
 
-   public TransUnitUpdatePreview getPreview()
-   {
-      return preview;
-   }
+    public TransUnitUpdatePreview getPreview() {
+        return preview;
+    }
 
-   public void setPreview(TransUnitUpdatePreview preview)
-   {
-      this.preview = preview;
-   }
+    public void setPreview(TransUnitUpdatePreview preview) {
+        this.preview = preview;
+    }
 
-   public TransUnitUpdateInfo getReplaceInfo()
-   {
-      return replaceInfo;
-   }
+    public TransUnitUpdateInfo getReplaceInfo() {
+        return replaceInfo;
+    }
 
-   public void setReplaceInfo(TransUnitUpdateInfo replaceInfo)
-   {
-      this.replaceInfo = replaceInfo;
-   }
+    public void setReplaceInfo(TransUnitUpdateInfo replaceInfo) {
+        this.replaceInfo = replaceInfo;
+    }
 
-   public ReplacementState getReplaceState()
-   {
-      return replacementState;
-   }
+    public ReplacementState getReplaceState() {
+        return replacementState;
+    }
 
-   public void setReplaceState(ReplacementState state)
-   {
-      this.replacementState = state;
-   }
+    public void setReplaceState(ReplacementState state) {
+        this.replacementState = state;
+    }
 
-   public PreviewState getPreviewState()
-   {
-      return previewState;
-   }
+    public PreviewState getPreviewState() {
+        return previewState;
+    }
 
-   public void setPreviewState(PreviewState previewState)
-   {
-      this.previewState = previewState;
-   }
+    public void setPreviewState(PreviewState previewState) {
+        this.previewState = previewState;
+    }
 
-   public Long getDocId()
-   {
-      return docId;
-   }
+    public Long getDocId() {
+        return docId;
+    }
 
+    public static Comparator<TransUnitReplaceInfo> getRowComparator() {
+        if (comparator == null) {
+            comparator = new Comparator<TransUnitReplaceInfo>() {
 
-   public static Comparator<TransUnitReplaceInfo> getRowComparator()
-   {
-      if (comparator == null)
-      {
-         comparator = new Comparator<TransUnitReplaceInfo>()
-         {
-
-            @Override
-            public int compare(TransUnitReplaceInfo o1, TransUnitReplaceInfo o2)
-            {
-               if (o1 == o2)
-               {
-                  return 0;
-               }
-               if (o1 != null)
-               {
-                  return (o2 != null ? Integer.valueOf(o1.getTransUnit().getRowIndex()).compareTo(o2.getTransUnit().getRowIndex()) : 1);
-               }
-               return -1;
-            }
-         };
-      }
-      return comparator;
-   }
+                @Override
+                public int compare(TransUnitReplaceInfo o1,
+                        TransUnitReplaceInfo o2) {
+                    if (o1 == o2) {
+                        return 0;
+                    }
+                    if (o1 != null) {
+                        return (o2 != null ? Integer.valueOf(
+                                o1.getTransUnit().getRowIndex()).compareTo(
+                                o2.getTransUnit().getRowIndex()) : 1);
+                    }
+                    return -1;
+                }
+            };
+        }
+        return comparator;
+    }
 }

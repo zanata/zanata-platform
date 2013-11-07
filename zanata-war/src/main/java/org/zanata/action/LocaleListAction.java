@@ -41,138 +41,113 @@ import org.zanata.service.LocaleService;
 
 @Name("localeListAction")
 @Scope(ScopeType.PAGE)
-public class LocaleListAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
-   private List<String> customizedLocales = new ArrayList<String>();
-   private List<String> availableList = new ArrayList<String>();
-   private Map<String, String> globalItems;
-   private Map<String, String> availableItems;
-   @Out(required = false)
-   private Map<String, String> customizedItems;
-   @Out(required = false)
-   private Boolean overrideLocales;
-   private boolean setting;
-   @Logger
-   Log log;
-   @In
-   ProjectDAO projectDAO;
+public class LocaleListAction implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private List<String> customizedLocales = new ArrayList<String>();
+    private List<String> availableList = new ArrayList<String>();
+    private Map<String, String> globalItems;
+    private Map<String, String> availableItems;
+    @Out(required = false)
+    private Map<String, String> customizedItems;
+    @Out(required = false)
+    private Boolean overrideLocales;
+    private boolean setting;
+    @Logger
+    Log log;
+    @In
+    ProjectDAO projectDAO;
 
-   private String slug;
+    private String slug;
 
-   @In
-   LocaleService localeServiceImpl;
+    @In
+    LocaleService localeServiceImpl;
 
-   public void toCustomizedLocales()
-   {
-      if (!availableList.isEmpty())
-      {
-         for (String op : availableList)
-         {
-            customizedItems.put(op, op);
-            availableItems.remove(op);
-         }
-      }
-   }
+    public void toCustomizedLocales() {
+        if (!availableList.isEmpty()) {
+            for (String op : availableList) {
+                customizedItems.put(op, op);
+                availableItems.remove(op);
+            }
+        }
+    }
 
-   public void removeFromCustomizedLocales()
-   {
-      if (!customizedLocales.isEmpty())
-      {
-         for (String op : customizedLocales)
-         {
-            customizedItems.remove(op);
-            availableItems.put(op, op);
-         }
-      }
+    public void removeFromCustomizedLocales() {
+        if (!customizedLocales.isEmpty()) {
+            for (String op : customizedLocales) {
+                customizedItems.remove(op);
+                availableItems.put(op, op);
+            }
+        }
 
-   }
+    }
 
-   public List<String> getCustomizedLocales()
-   {
-      return customizedLocales;
-   }
+    public List<String> getCustomizedLocales() {
+        return customizedLocales;
+    }
 
-   public void setCustomizedLocales(List<String> var)
-   {
-      customizedLocales = var;
-   }
+    public void setCustomizedLocales(List<String> var) {
+        customizedLocales = var;
+    }
 
-   public List<String> getAvailableList()
-   {
-      return availableList;
-   }
+    public List<String> getAvailableList() {
+        return availableList;
+    }
 
-   public void setAvailableList(List<String> var)
-   {
-      availableList = var;
-   }
+    public void setAvailableList(List<String> var) {
+        availableList = var;
+    }
 
-   public Map<String, String> getCustomizedItems()
-   {
-      return customizedItems;
-   }
-   
-   @Factory("availableItems")
-   public Map<String, String> loadItems()
-   {
-      availableItems = new TreeMap<String, String>();
-      log.debug("loadProjectItems");
-      customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
-      if (customizedItems.isEmpty())
-      {
-         customizedItems = localeServiceImpl.getDefaultCustomizedLocalesItems();
-      }
+    public Map<String, String> getCustomizedItems() {
+        return customizedItems;
+    }
 
-      for (String op : globalItems.keySet())
-      {
-         if (!customizedItems.containsKey(op))
-         {
-            availableItems.put(op, op);
-         }
-      }
-      return availableItems;
-   }
+    @Factory("availableItems")
+    public Map<String, String> loadItems() {
+        availableItems = new TreeMap<String, String>();
+        log.debug("loadProjectItems");
+        customizedItems = localeServiceImpl.getCustomizedLocalesItems(slug);
+        if (customizedItems.isEmpty()) {
+            customizedItems =
+                    localeServiceImpl.getDefaultCustomizedLocalesItems();
+        }
 
+        for (String op : globalItems.keySet()) {
+            if (!customizedItems.containsKey(op)) {
+                availableItems.put(op, op);
+            }
+        }
+        return availableItems;
+    }
 
-   @Create
-   public void loadGlobalItems()
-   {
-      globalItems = localeServiceImpl.getGlobalLocaleItems();
-   }
+    @Create
+    public void loadGlobalItems() {
+        globalItems = localeServiceImpl.getGlobalLocaleItems();
+    }
 
-   public String getSlug()
-   {
-      return slug;
-   }
+    public String getSlug() {
+        return slug;
+    }
 
-   public void setSlug(String slug)
-   {
-      this.slug = slug;
-   }
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 
-   public void setSetting(boolean var)
-   {
-      setting = var;
-      overrideLocales = new Boolean(setting);
-   }
+    public void setSetting(boolean var) {
+        setting = var;
+        overrideLocales = new Boolean(setting);
+    }
 
-   public boolean getSetting()
-   {
-      if (overrideLocales == null)
-      {
-         if (slug == null || slug.isEmpty())
-         {
-            setting = false;
-         }
-         else
-         {
-            HProject project = projectDAO.getBySlug(slug);
-            setting = project.getOverrideLocales();
-         }
-         overrideLocales = new Boolean(setting);
-      }
-      return setting;
-   }
+    public boolean getSetting() {
+        if (overrideLocales == null) {
+            if (slug == null || slug.isEmpty()) {
+                setting = false;
+            } else {
+                HProject project = projectDAO.getBySlug(slug);
+                setting = project.isOverrideLocales();
+            }
+            overrideLocales = new Boolean(setting);
+        }
+        return setting;
+    }
 
 }

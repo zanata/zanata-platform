@@ -13,196 +13,173 @@ import org.zanata.webtrans.shared.model.Locale;
  *
  * @author Hannes Eskebaek <hannes.eskebaek@databyran.se>
  */
-public class LocaleListBox extends ListBox
-{
-   private List<Locale> locales;
+public class LocaleListBox extends ListBox {
+    private List<Locale> locales;
 
-   public LocaleListBox()
-   {
-      super();
-      locales = new ArrayList<Locale>();
-   }
+    public LocaleListBox() {
+        super();
+        locales = new ArrayList<Locale>();
+    }
 
-   /**
-    * Adds a Locale to the list, adding the Locales displayName as the list
-    * item
-    *
-    * @param locale
-    */
-   public void addItem(Locale locale)
-   {
-      super.addItem(locale.getDisplayName());
-      locales.add(locale);
-   }
+    /**
+     * Adds a Locale to the list, adding the Locales displayName as the list
+     * item
+     *
+     * @param locale
+     */
+    public void addItem(Locale locale) {
+        super.addItem(locale.getDisplayName());
+        locales.add(locale);
+    }
 
-   /**
-    *
-    * @param item the item to display in the list
-    * @param locale the locale to be mapped with the item
-    */
-   public void addItem(String item, Locale locale)
-   {
-      super.addItem(item, locale.getDisplayName());
-      locales.add(locale);
-   }
+    /**
+     * @param item the item to display in the list
+     * @param locale the locale to be mapped with the item
+     */
+    public void addItem(String item, Locale locale) {
+        super.addItem(item, locale.getDisplayName());
+        locales.add(locale);
+    }
 
-   /**
-    * Adds a Locale to the list, adding the Locales displayName as the list
-    * item, specifying its direction
-    *
-    * @param item the item to display in the list
-    * @param locale the locale to be mapped with the item
-    */
-   public void addItem(Locale locale, HasDirection.Direction dir)
-   {
-      super.addItem(locale.getDisplayName(), dir);
-      locales.add(locale);
-   }
+    /**
+     * Adds a Locale to the list, adding the Locales displayName as the list
+     * item, specifying its direction
+     *
+     * @param item the item to display in the list
+     * @param locale the locale to be mapped with the item
+     */
+    public void addItem(Locale locale, HasDirection.Direction dir) {
+        super.addItem(locale.getDisplayName(), dir);
+        locales.add(locale);
+    }
 
-   /**
-    *
-    * @param item the item to display in the list
-    * @param dir the items direction
-    * @param locale the locale to be mapped with the item
-    */
-   public void addItem(String item, HasDirection.Direction dir, Locale locale)
-   {
-      super.addItem(item, dir, locale.getDisplayName());
-      locales.add(locale);
-   }
+    /**
+     *
+     * @param item the item to display in the list
+     * @param dir the items direction
+     * @param locale the locale to be mapped with the item
+     */
+    public void addItem(String item, HasDirection.Direction dir, Locale locale) {
+        super.addItem(item, dir, locale.getDisplayName());
+        locales.add(locale);
+    }
 
-   /**
-    * Inserts a locale into the list box at the given index. Using the Locales
-    * displayName as the list item.
-    *
-    * @param locale
-    */
-   public void insertItem(Locale locale, int index)
-   {
-      super.insertItem(locale.getDisplayName(), index);
-      locales.add(index, locale);
-   }
+    /**
+     * Inserts a locale into the list box at the given index. Using the Locales
+     * displayName as the list item.
+     *
+     * @param locale
+     */
+    public void insertItem(Locale locale, int index) {
+        super.insertItem(locale.getDisplayName(), index);
+        locales.add(index, locale);
+    }
 
-   /**
-    * Inserts a locale into the list box at the given index, specifying its
-    * direction. Using the Locales displayName as the list item.
-    *
-    * @param locale
-    */
-   public void insertItem(Locale locale, HasDirection.Direction dir, int index)
-   {
-      super.insertItem(locale.getDisplayName(), dir, index);
-      locales.add(index, locale);
-   }
+    /**
+     * Inserts a locale into the list box at the given index, specifying its
+     * direction. Using the Locales displayName as the list item.
+     *
+     * @param locale
+     */
+    public void insertItem(Locale locale, HasDirection.Direction dir, int index) {
+        super.insertItem(locale.getDisplayName(), dir, index);
+        locales.add(index, locale);
+    }
 
-   /**
-    * @param item the item to display in the list
-    * @param locale the locale to be mapped with the item
-    * @param index the index where it should be inserted
-    */
-   public void insertItem(String item, Locale locale, int index)
-   {
-      super.insertItem(item, locale.getDisplayName(), index);
-      locales.add(index, locale);
-   }
+    /**
+     * @param item the item to display in the list
+     * @param locale the locale to be mapped with the item
+     * @param index the index where it should be inserted
+     */
+    public void insertItem(String item, Locale locale, int index) {
+        super.insertItem(item, locale.getDisplayName(), index);
+        locales.add(index, locale);
+    }
 
-   /**
-    * @param item the item to display in the list
-    * @param dir the direction of the item
-    * @param locale the locale to be mapped with the item
-    * @param index the index where it should be inserted
-    */
-   public void insertItem(String item, HasDirection.Direction dir, Locale locale, int index)
-   {
-      super.insertItem(item, dir, locale.getDisplayName(), index);
-      locales.add(index, locale);
-   }
+    /**
+     * @param item the item to display in the list
+     * @param dir the direction of the item
+     * @param locale the locale to be mapped with the item
+     * @param index the index where it should be inserted
+     */
+    public void insertItem(String item, HasDirection.Direction dir, 
+            Locale locale, int index) {
+        super.insertItem(item, dir, locale.getDisplayName(), index);
+        locales.add(index, locale);
+    }
 
-   /**
-    * Gets the Locale associated with the item at a given index. Returns null
-    * if no locale is associated with the item at this index.
-    *
-    *
-    * @param index
-    * @return the locale at the given index, null if no locale is associated
-    */
-   public Locale getLocale(int index)
-   {
-      Locale locale = locales.get(index);
-      if (locale == null)
-      {
-         return null;
-      }
-      else
-      {
-         return locales.get(index);
-      }
-   }
+    /**
+     * Gets the Locale associated with the item at a given index. Returns null
+     * if no locale is associated with the item at this index.
+     *
+     *
+     * @param index
+     * @return the locale at the given index, null if no locale is associated
+     */
+    public Locale getLocale(int index) {
+        Locale locale = locales.get(index);
+        if (locale == null) {
+            return null;
+        } else {
+            return locales.get(index);
+        }
+    }
 
-   /**
-    * Gets the locale associated with the currently selected item.
-    *
-    * @return
-    */
-   public Locale getLocaleAtSelectedIndex()
-   {
-      int selectedIndex = super.getSelectedIndex();
-      return locales.get(selectedIndex);
-   }
-   
-   /**
-    * @param localeId
-    * @return the index of the provided (Zanata) LocaleId if it is present, 
-    * 0 otherwise
-    */
-   public int getIndexForLocaleId(String localeId)
-   {
-      //The default reference, "none", should be at index 0
-      if(localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE))
-      {
-         return 0;
-      }
-      
-      //iterate from index 1 to avoid the default locale at index 0
-      for (int i = 1; i < locales.size(); i++) 
-      {
-         if(locales.get(i).getId().getLocaleId().getId().equals(localeId))
-         {
-            return i;
-         }
-      }
-      return 0;      
-   }
+    /**
+     * Gets the locale associated with the currently selected item.
+     *
+     * @return
+     */
+    public Locale getLocaleAtSelectedIndex() {
+        int selectedIndex = super.getSelectedIndex();
+        return locales.get(selectedIndex);
+    }
 
-   /**
-    * Removes all items and locales from the list box.
-    */
-   @Override
-   public void clear()
-   {
-      super.clear();
-      locales.clear();
-   }
+    /**
+     * @param localeId
+     * @return the index of the provided (Zanata)LocaleId if it is present, 0
+     * otherwise
+     */
+    public int getIndexForLocaleId(String localeId) {
+        //The default reference, "none", should be at index 0
+        if (localeId.equals(UserConfigHolder.DEFAULT_SELECTED_REFERENCE)) {
+            return 0;
+        }
 
-   /**
-    * Removes the item and the associated locale at the specified index.
-    *
-    * @param index
-    * @throws IndexOutOfBoundsException if the index is out of range
-    */
-   @Override
-   public void removeItem(int index)
-   {
-      super.removeItem(index);
-      locales.remove(index);
-   }
+        //iterate from index 1 to avoid the default locale at index 0
+        for (int i = 1; i < locales.size(); i++) {
+            if (locales.get(i).getId().getLocaleId().getId().equals(localeId)) {
+                return i;
+            }
+        }
+        return 0;
+    }
 
-   /**
-    * @return the list with the locales that this ListBox contains
-    */
-   public List<Locale> getLocales()
-   {
-      return locales;
-   }
+    /**
+     * Removes all items and locales from the list box.
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        locales.clear();
+    }
 
+    /**
+     * Removes the item and the associated locale at the specified index.
+     *
+     * @param index
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
+    @Override
+    public void removeItem(int index) {
+        super.removeItem(index);
+        locales.remove(index);
+    }
+
+    /**
+     * @return the list with the locales that this ListBox contains
+     */
+    public List<Locale> getLocales() {
+        return locales;
+    }
 }

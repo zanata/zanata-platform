@@ -19,6 +19,7 @@ import function org.zanata.security.SecurityFunctions.isUserAllowedAccess;
 import function org.zanata.security.SecurityFunctions.isUserTranslatorOfLanguage;
 import function org.zanata.security.SecurityFunctions.isUserReviewerOfLanguage;
 import function org.zanata.security.SecurityFunctions.isUserCoordinatorOfLanguage;
+import function org.zanata.security.SecurityFunctions.isLanguageTeamMember;
 
 /* admin can do anything */
 rule AdminAnything
@@ -44,7 +45,7 @@ end
 /*****************************************************************************************
 
   The Following Rules are for Identity Management
-  
+
 ******************************************************************************************/
 
 rule ManageUsers
@@ -71,7 +72,7 @@ end
 /*****************************************************************************************
 
   Project ownership rules
-  
+
 ******************************************************************************************/
 
 /* admin can delete projects (see rule AdminAnything above) */
@@ -112,42 +113,42 @@ then
 end
 
 
-/* 
+/*
   Project maintainers may edit (but not delete) a project, or add an iteration.
-  Note that 'add-iteration' (on a project) should be granted in the same 
+  Note that 'add-iteration' (on a project) should be granted in the same
   circumstances that 'insert' is granted (on an iteration).  In other words,
   make sure the rules agree with each other.  (NB: 'add-iteration' is used in the
   UI to enable buttons etc, without requiring the construction of
-  HProjectIteration just to do a permission check.)   
+  HProjectIteration just to do a permission check.)
  */
 rule UpdateProjectOrAddIteration
   no-loop
   activation-group "permissions"
 when
-	check: PermissionCheck(action == "update" || action == "add-iteration", granted == false)
-	authenticatedPerson: HPerson() 
-	eval(authenticatedPerson != null)
- 	$project: HProject()
-  	HPerson( id == authenticatedPerson.id ) from $project.maintainers 
+  check: PermissionCheck(action == "update" || action == "add-iteration", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject()
+  HPerson( id == authenticatedPerson.id ) from $project.maintainers
 then
-  	check.grant();
- end
- 
+  check.grant();
+end
 
-/* 
-  Project maintainers may create or edit (but not delete) a project iteration 
+
+/*
+  Project maintainers may create or edit (but not delete) a project iteration
  */
 rule InsertOrUpdateProjectIteration
   no-loop
   activation-group "permissions"
 when
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $iter: HProjectIteration(
     $project : project, authenticatedPerson.isMaintainer($project)
   )
   check: PermissionCheck(
-    target == $iter, 
+    target == $iter,
     action == "insert" || action == "update" || action == "import-template",
     granted == false)
 then
@@ -178,7 +179,7 @@ end
 /*****************************************************************************************
 
   Translation rules
-  
+
 ******************************************************************************************/
 
 /* Language Team members can add a translation for their language teams */
@@ -222,7 +223,7 @@ rule ProjectMaintainerAddTranslation
   activation-group "permissions"
 when
   check: PermissionCheck(action == "add-translation" || action == "modify-translation" || action == "review-translation", granted == false)
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $project: HProject(
     eval(authenticatedPerson.isMaintainer($project))
@@ -249,7 +250,7 @@ end
 /*****************************************************************************************
 
   Glossary rules
-  
+
 ******************************************************************************************/
 
 /* 'glossarist' can push */
@@ -278,7 +279,7 @@ end
 /*****************************************************************************************
 
   Language Team Coordinator rules
-  
+
 ******************************************************************************************/
 
 /* Anyone can read Locale members */
@@ -301,7 +302,7 @@ rule TeamCoordinatorManageLanguageTeam
   activation-group "permissions"
 when
   PermissionCheck(action == "manage-language-team")
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $locale: HLocale(
     eval(isUserCoordinatorOfLanguage($locale))
@@ -319,15 +320,15 @@ rule TeamCoordinatorModifyLanguageTeamMembers
   no-loop
   activation-group "permissions"
 when
-  PermissionCheck(action == "insert" || action == "update" || action == "delete", 
+  PermissionCheck(action == "insert" || action == "update" || action == "delete",
     granted == false)
   HLocaleMember()
-  authenticatedPerson: HPerson() 
+  authenticatedPerson: HPerson()
   eval(authenticatedPerson != null)
   $member: HLocaleMember( $locale : supportedLanguage, isUserCoordinatorOfLanguage($locale) )
   check: PermissionCheck(
-    target == $member, 
-    action == "insert" || action == "update" || action == "delete", 
+    target == $member,
+    action == "insert" || action == "update" || action == "delete",
     granted == false)
 then
   check.grant();
@@ -337,7 +338,7 @@ end
 /*****************************************************************************************
 
   View Obsolete Project and Project Iteration rules
-  
+
 ******************************************************************************************/
 
 rule ViewObsoleteProject
@@ -363,7 +364,7 @@ end
 /*****************************************************************************************
 
   Mark Project and Project Iteration obsolete rules
-  
+
 ******************************************************************************************/
 
 rule MarkProjectObsolete
@@ -392,7 +393,7 @@ end
 /*****************************************************************************************
 
   File Download rules
-  
+
 ******************************************************************************************/
 
 /* Permissions to download files.
@@ -406,7 +407,7 @@ when
   authenticatedPerson: HPerson()
   $iteration: HProjectIteration()
   check: PermissionCheck(
-    target == $iteration, 
+    target == $iteration,
     action == "download-single" || action == "download-all",
     granted == false)
 then
@@ -509,6 +510,42 @@ when
   eval(authenticatedPerson != null)
   $project: HProject(
     eval( authenticatedPerson.isMaintainer($project) )
+  )
+then
+  check.grant();
+end
+
+/*****************************************************************************************
+
+  Review comment rules
+
+******************************************************************************************/
+rule LanguageTeamMemberReviewerComment
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-comment", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval( isUserAllowedAccess($project) )
+  )
+  $locale: HLocale(
+    eval( isLanguageTeamMember($locale))
+  )
+then
+  check.grant();
+end
+
+rule ProjectMaintainerReviewerComment
+  no-loop
+  activation-group "permissions"
+when
+  check: PermissionCheck(action == "review-comment", granted == false)
+  authenticatedPerson: HPerson()
+  eval(authenticatedPerson != null)
+  $project: HProject(
+    eval(authenticatedPerson.isMaintainer($project))
   )
 then
   check.grant();

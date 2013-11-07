@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -70,339 +71,338 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class NavigationService implements TransUnitUpdatedEventHandler, FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler, EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler, InitEditorEventHandler, RequestSelectTableRowEventHandler
-{
-   public static final int FIRST_PAGE = 0;
-   public static final int UNDEFINED = -1;
-   private final EventBus eventBus;
-   private final CachingDispatchAsync dispatcher;
-   private final ModalNavigationStateHolder navigationStateHolder;
-   private final GetTransUnitActionContextHolder contextHolder;
-   private final UserConfigHolder configHolder;
-   private final TableEditorMessages messages;
-   private final SinglePageDataModelImpl pageModel;
-   private NavigationService.PageDataChangeListener pageDataChangeListener;
+public class NavigationService implements TransUnitUpdatedEventHandler,
+        FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler,
+        EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler,
+        InitEditorEventHandler, RequestSelectTableRowEventHandler {
+    public static final int FIRST_PAGE = 0;
+    public static final int UNDEFINED = -1;
+    private final EventBus eventBus;
+    private final CachingDispatchAsync dispatcher;
+    private final ModalNavigationStateHolder navigationStateHolder;
+    private final GetTransUnitActionContextHolder contextHolder;
+    private final UserConfigHolder configHolder;
+    private final TableEditorMessages messages;
+    private final SinglePageDataModelImpl pageModel;
+    private NavigationService.PageDataChangeListener pageDataChangeListener;
 
-   private final History history;
+    private final History history;
 
-   @Inject
-   public NavigationService(EventBus eventBus, CachingDispatchAsync dispatcher, UserConfigHolder configHolder, TableEditorMessages messages, SinglePageDataModelImpl pageModel, ModalNavigationStateHolder navigationStateHolder, GetTransUnitActionContextHolder getTransUnitActionContextHolder, History history)
-   {
-      this.eventBus = eventBus;
-      this.dispatcher = dispatcher;
-      this.configHolder = configHolder;
-      this.messages = messages;
-      this.pageModel = pageModel;
-      this.navigationStateHolder = navigationStateHolder;
-      this.contextHolder = getTransUnitActionContextHolder;
-      this.history = history;
-      bindHandlers();
-   }
+    @Inject
+    public NavigationService(EventBus eventBus,
+            CachingDispatchAsync dispatcher, UserConfigHolder configHolder,
+            TableEditorMessages messages, SinglePageDataModelImpl pageModel,
+            ModalNavigationStateHolder navigationStateHolder,
+            GetTransUnitActionContextHolder getTransUnitActionContextHolder,
+            History history) {
+        this.eventBus = eventBus;
+        this.dispatcher = dispatcher;
+        this.configHolder = configHolder;
+        this.messages = messages;
+        this.pageModel = pageModel;
+        this.navigationStateHolder = navigationStateHolder;
+        this.contextHolder = getTransUnitActionContextHolder;
+        this.history = history;
+        bindHandlers();
+    }
 
-   private void bindHandlers()
-   {
-      eventBus.addHandler(DocumentSelectionEvent.getType(), this);
-      eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
-      eventBus.addHandler(FindMessageEvent.getType(), this);
-      eventBus.addHandler(NavTransUnitEvent.getType(), this);
-      eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
-      eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
-      eventBus.addHandler(InitEditorEvent.TYPE, this);
-      eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this);
-   }
+    private void bindHandlers() {
+        eventBus.addHandler(DocumentSelectionEvent.getType(), this);
+        eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+        eventBus.addHandler(FindMessageEvent.getType(), this);
+        eventBus.addHandler(NavTransUnitEvent.getType(), this);
+        eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
+        eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
+        eventBus.addHandler(InitEditorEvent.TYPE, this);
+        eventBus.addHandler(RequestSelectTableRowEvent.TYPE, this);
+    }
 
-   protected void requestTransUnitsAndUpdatePageIndex(GetTransUnitActionContext actionContext, final boolean needReloadIndex)
-   {
-      eventBus.fireEvent(LoadingEvent.START_EVENT);
+    public void clearData() {
+        pageModel.setData(Collections.<TransUnit> emptyList());
+    }
 
-      GetTransUnitList action = GetTransUnitList.newAction(actionContext).setNeedReloadIndex(needReloadIndex);
-      Log.info("requesting transUnits: " + action);
-      dispatcher.execute(action, new AsyncCallback<GetTransUnitListResult>()
-      {
-         @Override
-         public void onFailure(Throwable caught)
-         {
-            Log.error("GetTransUnits failure " + caught, caught);
-            eventBus.fireEvent(new NotificationEvent(NotificationEvent.Severity.Error, messages.notifyLoadFailed()));
-            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
-         }
+    protected void requestTransUnitsAndUpdatePageIndex(
+            GetTransUnitActionContext actionContext,
+            final boolean needReloadIndex) {
+        eventBus.fireEvent(LoadingEvent.START_EVENT);
 
-         @Override
-         public void onSuccess(GetTransUnitListResult result)
-         {
-            List<TransUnit> units = result.getUnits();
-            Log.info("result size: " + units.size());
-            contextHolder.changeOffset(result.getTargetOffset());
-            pageModel.setData(units);
-            pageDataChangeListener.showDataForCurrentPage(pageModel.getData());
-
-            if (result.getNavigationIndex() != null)
-            {
-               navigationStateHolder.init(result.getNavigationIndex().getTransIdStateList(), result.getNavigationIndex().getIdIndexList());
-               eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
+        GetTransUnitList action =
+                GetTransUnitList.newAction(actionContext).setNeedReloadIndex(
+                        needReloadIndex);
+        Log.info("requesting transUnits: " + action);
+        dispatcher.execute(action, new AsyncCallback<GetTransUnitListResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.error("GetTransUnits failure " + caught, caught);
+                eventBus.fireEvent(new NotificationEvent(
+                        NotificationEvent.Severity.Error, messages
+                                .notifyLoadFailed()));
+                eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
             }
-            navigationStateHolder.updateCurrentPage(result.getTargetPageIndex());
 
-            if (!units.isEmpty())
-            {
-               TransUnitId selectedId = units.get(result.getGotoRow()).getId();
-               navigationStateHolder.updateSelected(selectedId);
-               // in case there is pending save (as fuzzy) happening, we do not want to trigger another pending save
-               eventBus.fireEvent(new TableRowSelectedEvent(selectedId).setSuppressSavePending(true));
+            @Override
+            public void onSuccess(GetTransUnitListResult result) {
+                List<TransUnit> units = result.getUnits();
+                Log.info("result size: " + units.size());
+                contextHolder.changeOffset(result.getTargetOffset());
+                pageModel.setData(units);
+                pageDataChangeListener.showDataForCurrentPage(pageModel
+                        .getData());
+
+                if (result.getNavigationIndex() != null) {
+                    navigationStateHolder.init(result.getNavigationIndex()
+                            .getTransIdStateList(), result.getNavigationIndex()
+                            .getIdIndexList());
+                    eventBus.fireEvent(new PageCountChangeEvent(
+                            navigationStateHolder.getPageCount()));
+                }
+                navigationStateHolder.updateCurrentPage(result
+                        .getTargetPageIndex());
+
+                if (!units.isEmpty()) {
+                    TransUnitId selectedId =
+                            units.get(result.getGotoRow()).getId();
+                    navigationStateHolder.updateSelected(selectedId);
+                    // in case there is pending save (as fuzzy) happening, we do
+                    // not want to trigger another pending save
+                    eventBus.fireEvent(new TableRowSelectedEvent(selectedId)
+                            .setSuppressSavePending(true));
+                }
+                eventBus.fireEvent(new PageChangeEvent(result
+                        .getTargetPageIndex()));
+                highlightSearch();
+
+                // run validation on TransUnit and display error message
+                eventBus.fireEvent(new RequestPageValidationEvent());
+                eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
             }
-            eventBus.fireEvent(new PageChangeEvent(result.getTargetPageIndex()));
-            highlightSearch();
+        });
+    }
 
-            // run validation on TransUnit and display error message
-            eventBus.fireEvent(new RequestPageValidationEvent());
-            eventBus.fireEvent(LoadingEvent.FINISH_EVENT);
-         }
-      });
-   }
+    private void highlightSearch() {
+        String findMessage = contextHolder.getContext().getFindMessage();
+        if (!Strings.isNullOrEmpty(findMessage)) {
+            pageDataChangeListener.highlightSearch(findMessage);
+        }
+    }
 
-   private void highlightSearch()
-   {
-      String findMessage = contextHolder.getContext().getFindMessage();
-      if (!Strings.isNullOrEmpty(findMessage))
-      {
-         pageDataChangeListener.highlightSearch(findMessage);
-      }
-   }
+    public void gotoPage(int pageIndex) {
+        int page = normalizePageIndex(pageIndex);
+        if (page != navigationStateHolder.getCurrentPage()) {
+            GetTransUnitActionContext context = contextHolder.getContext();
+            GetTransUnitActionContext newContext =
+                    contextHolder.changeOffset(context.getCount() * page)
+                            .changeTargetTransUnitId(null);
+            Log.info("page index: " + page + " page context: " + newContext);
+            requestTransUnitsAndUpdatePageIndex(newContext,
+                    !configHolder.isAcceptAllStatus());
+        }
+    }
 
-   public void gotoPage(int pageIndex)
-   {
-      int page = normalizePageIndex(pageIndex);
-      if (page != navigationStateHolder.getCurrentPage())
-      {
-         GetTransUnitActionContext context = contextHolder.getContext();
-         GetTransUnitActionContext newContext = contextHolder.changeOffset(context.getCount() * page).changeTargetTransUnitId(null);
-         Log.info("page index: " + page + " page context: " + newContext);
-         requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
-      }
-   }
+    private int normalizePageIndex(int pageIndex) {
+        if (pageIndex <= 0) {
+            return FIRST_PAGE;
+        } else {
+            return Math.min(navigationStateHolder.lastPage(), pageIndex);
+        }
+    }
 
-   private int normalizePageIndex(int pageIndex)
-   {
-      if (pageIndex <= 0)
-      {
-         return FIRST_PAGE;
-      }
-      else
-      {
-         return Math.min(navigationStateHolder.lastPage(), pageIndex);
-      }
-   }
+    @Override
+    public void onNavTransUnit(NavTransUnitEvent event) {
+        TransUnitId targetId;
+        switch (event.getRowType()) {
+        case PrevEntry:
+            targetId = navigationStateHolder.getPrevId();
+            break;
+        case NextEntry:
+            targetId = navigationStateHolder.getNextId();
+            break;
+        case PrevState:
+            targetId = navigationStateHolder.getPreviousStateId();
+            break;
+        case NextState:
+            targetId = navigationStateHolder.getNextStateId();
+            break;
+        case FirstEntry:
+            targetId = navigationStateHolder.getFirstId();
+            break;
+        case LastEntry:
+            targetId = navigationStateHolder.getLastId();
+            break;
+        default:
+            Log.warn("ignore unknown navigation type:" + event.getRowType());
+            return;
+        }
+        int targetPage = navigationStateHolder.getTargetPage(targetId);
+        Log.info("target page : [" + targetPage + "] target TU id: " + targetId);
 
-   @Override
-   public void onNavTransUnit(NavTransUnitEvent event)
-   {
-      TransUnitId targetId;
-      switch (event.getRowType())
-      {
-      case PrevEntry:
-         targetId = navigationStateHolder.getPrevId();
-         break;
-      case NextEntry:
-         targetId = navigationStateHolder.getNextId();
-         break;
-      case PrevState:
-         targetId = navigationStateHolder.getPreviousStateId();
-         break;
-      case NextState:
-         targetId = navigationStateHolder.getNextStateId();
-         break;
-      case FirstEntry:
-         targetId = navigationStateHolder.getFirstId();
-         break;
-      case LastEntry:
-         targetId = navigationStateHolder.getLastId();
-         break;
-      default:
-         Log.warn("ignore unknown navigation type:" + event.getRowType());
-         return;
-      }
-      int targetPage = navigationStateHolder.getTargetPage(targetId);
-      Log.info("target page : [" + targetPage + "] target TU id: " + targetId);
+        if (navigationStateHolder.getCurrentPage() == targetPage) {
+            eventBus.fireEvent(new TableRowSelectedEvent(targetId));
+        } else {
+            loadPageAndGoToRow(targetPage, targetId);
+        }
+    }
 
-      if (navigationStateHolder.getCurrentPage() == targetPage)
-      {
-         eventBus.fireEvent(new TableRowSelectedEvent(targetId));
-      }
-      else
-      {
-         loadPageAndGoToRow(targetPage, targetId);
-      }
-   }
+    private void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId) {
+        int page = normalizePageIndex(pageIndex);
+        GetTransUnitActionContext context = contextHolder.getContext();
+        GetTransUnitActionContext newContext =
+                contextHolder.changeOffset(context.getCount() * page)
+                        .changeTargetTransUnitId(transUnitId);
+        Log.debug("page index: " + page + " page context: " + newContext);
+        requestTransUnitsAndUpdatePageIndex(newContext,
+                !configHolder.isAcceptAllStatus());
+    }
 
-   private void loadPageAndGoToRow(int pageIndex, TransUnitId transUnitId)
-   {
-      int page = normalizePageIndex(pageIndex);
-      GetTransUnitActionContext context = contextHolder.getContext();
-      GetTransUnitActionContext newContext = contextHolder.changeOffset(context.getCount() * page).changeTargetTransUnitId(transUnitId);
-      Log.debug("page index: " + page + " page context: " + newContext);
-      requestTransUnitsAndUpdatePageIndex(newContext, !configHolder.isAcceptAllStatus());
-   }
-
-   @Override
-   public void onTransUnitUpdated(TransUnitUpdatedEvent event)
-   {
-      if (contextHolder.isContextInitialized())
-      {
-         if (Objects.equal(event.getUpdateInfo().getDocumentId(), contextHolder.getContext().getDocument().getId()))
-         {
-            TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
-            boolean updated = updateDataModel(updatedTU);
-            if (updated)
-            {
-               pageDataChangeListener.refreshRow(updatedTU, event.getEditorClientId(), event.getUpdateType());
+    @Override
+    public void onTransUnitUpdated(TransUnitUpdatedEvent event) {
+        if (contextHolder.isContextInitialized()) {
+            if (Objects.equal(event.getUpdateInfo().getDocumentId(),
+                    contextHolder.getContext().getDocument().getId())) {
+                TransUnit updatedTU = event.getUpdateInfo().getTransUnit();
+                boolean updated = updateDataModel(updatedTU);
+                if (updated) {
+                    pageDataChangeListener.refreshRow(updatedTU,
+                            event.getEditorClientId(), event.getUpdateType());
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   public boolean updateDataModel(TransUnit updatedTU)
-   {
-      navigationStateHolder.updateState(updatedTU.getId(), updatedTU.getStatus());
-      return pageModel.updateIfInCurrentPage(updatedTU);
-   }
+    public boolean updateDataModel(TransUnit updatedTU) {
+        navigationStateHolder.updateState(updatedTU.getId(),
+                updatedTU.getStatus());
+        return pageModel.updateIfInCurrentPage(updatedTU);
+    }
 
-   @Override
-   public void onFindMessage(FindMessageEvent findMessageEvent)
-   {
-      execute(findMessageEvent);
-   }
+    @Override
+    public void onFindMessage(FindMessageEvent findMessageEvent) {
+        execute(findMessageEvent);
+    }
 
-   @Override
-   public void onDocumentSelected(DocumentSelectionEvent documentSelection)
-   {
-      execute(documentSelection);
-   }
+    @Override
+    public void onDocumentSelected(DocumentSelectionEvent documentSelection) {
+        execute(documentSelection);
+    }
 
-   @Override
-   public void onBookmarkableTextFlow(BookmarkedTextFlowEvent bookmarkedTextFlowEvent)
-   {
-      int oldOffset = contextHolder.getContext().getOffset();
-      int offset = bookmarkedTextFlowEvent.getOffset();
-      if (oldOffset == offset)
-      {
-         // target text flow is on current page
-         eventBus.fireEvent(new TableRowSelectedEvent(bookmarkedTextFlowEvent.getTargetTransUnitId()));
-      }
-      else
-      {
-         execute(bookmarkedTextFlowEvent);
-      }
-   }
+    @Override
+    public void onBookmarkableTextFlow(
+            BookmarkedTextFlowEvent bookmarkedTextFlowEvent) {
+        int oldOffset = contextHolder.getContext().getOffset();
+        int offset = bookmarkedTextFlowEvent.getOffset();
+        if (oldOffset == offset) {
+            // target text flow is on current page
+            eventBus.fireEvent(new TableRowSelectedEvent(
+                    bookmarkedTextFlowEvent.getTargetTransUnitId()));
+        } else {
+            execute(bookmarkedTextFlowEvent);
+        }
+    }
 
-   @Override
-   public void onPageSizeChange(EditorPageSizeChangeEvent pageSizeChangeEvent)
-   {
-      execute(pageSizeChangeEvent);
-      navigationStateHolder.updatePageSize();
-      eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder.getPageCount()));
-   }
+    @Override
+    public void onPageSizeChange(EditorPageSizeChangeEvent pageSizeChangeEvent) {
+        execute(pageSizeChangeEvent);
+        navigationStateHolder.updatePageSize();
+        eventBus.fireEvent(new PageCountChangeEvent(navigationStateHolder
+                .getPageCount()));
+    }
 
-   @Override
-   public void onInitEditor(InitEditorEvent event)
-   {
-      requestTransUnitsAndUpdatePageIndex(contextHolder.getContext(), true);
-   }
+    @Override
+    public void onInitEditor(InitEditorEvent event) {
+        requestTransUnitsAndUpdatePageIndex(contextHolder.getContext(), true);
+    }
 
-   @Override
-   public void onRequestSelectTableRow(RequestSelectTableRowEvent event)
-   {
-      contextHolder.updateContext(null); // this will ensure
-                                         // HistoryEventHandlerService fire
-                                         // InitEditorEvent
-      HistoryToken token = history.getHistoryToken();
-      token.setView(MainView.Editor);
-      token.setDocumentPath(event.getDocInfo().getPath() + event.getDocInfo().getName());
-      token.clearEditorFilterAndSearch();
-      token.setTextFlowId(event.getSelectedId().toString());
-      history.newItem(token);
-      history.fireCurrentHistoryState();
-   }
+    @Override
+    public void onRequestSelectTableRow(RequestSelectTableRowEvent event) {
+        contextHolder.updateContext(null); // this will ensure
+                                           // HistoryEventHandlerService fire
+                                           // InitEditorEvent
+        HistoryToken token = history.getHistoryToken();
+        token.setView(MainView.Editor);
+        token.setDocumentPath(event.getDocInfo().getPath()
+                + event.getDocInfo().getName());
+        token.clearEditorFilterAndSearch();
+        token.setTextFlowId(event.getSelectedId().toString());
+        history.newItem(token);
+        history.fireCurrentHistoryState();
+    }
 
-   public void execute(UpdateContextCommand command)
-   {
-      GetTransUnitActionContext context = contextHolder.getContext();
-      GetTransUnitActionContext newContext = command.updateContext(context);
-      Log.debug("old context: " + context);
-      Log.debug("new context: " + newContext);
-      if (context.needReloadList(newContext))
-      {
-         boolean needReloadIndex = context.needReloadNavigationIndex(newContext);
-         requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
-      }
-      contextHolder.updateContext(newContext);
-   }
+    public void execute(UpdateContextCommand command) {
+        GetTransUnitActionContext context = contextHolder.getContext();
+        GetTransUnitActionContext newContext = command.updateContext(context);
+        Log.debug("old context: " + context);
+        Log.debug("new context: " + newContext);
+        if (context.needReloadList(newContext)) {
+            boolean needReloadIndex =
+                    context.needReloadNavigationIndex(newContext);
+            requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
+        }
+        contextHolder.updateContext(newContext);
+    }
 
-   public void selectByRowIndex(int rowIndexOnPage)
-   {
-      if (pageModel.getCurrentRow() != rowIndexOnPage)
-      {
-         pageModel.setSelected(rowIndexOnPage);
-         contextHolder.changeTargetTransUnitId(pageModel.getSelectedOrNull().getId());
-         eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
-         navigationStateHolder.updateSelected(getSelectedOrNull().getId());
-      }
-   }
+    public void selectByRowIndex(int rowIndexOnPage) {
+        if (pageModel.getCurrentRow() != rowIndexOnPage) {
+            pageModel.setSelected(rowIndexOnPage);
+            contextHolder.changeTargetTransUnitId(pageModel.getSelectedOrNull()
+                    .getId());
+            eventBus.fireEvent(new TransUnitSelectionEvent(getSelectedOrNull()));
+            navigationStateHolder.updateSelected(getSelectedOrNull().getId());
+        }
+    }
 
-   public int getCurrentRowIndexOnPage()
-   {
-      return pageModel.getCurrentRow();
-   }
+    public int getCurrentRowIndexOnPage() {
+        return pageModel.getCurrentRow();
+    }
 
-   public int findRowIndexById(TransUnitId selectedId)
-   {
-      return pageModel.findIndexById(selectedId);
-   }
+    public int findRowIndexById(TransUnitId selectedId) {
+        return pageModel.findIndexById(selectedId);
+    }
 
-   public void addPageDataChangeListener(PageDataChangeListener dataChangeListener)
-   {
-      pageDataChangeListener = dataChangeListener;
-   }
+    public void addPageDataChangeListener(
+            PageDataChangeListener dataChangeListener) {
+        pageDataChangeListener = dataChangeListener;
+    }
 
-   public TransUnit getSelectedOrNull()
-   {
-      return pageModel.getSelectedOrNull();
-   }
+    public TransUnit getSelectedOrNull() {
+        return pageModel.getSelectedOrNull();
+    }
 
-   public List<TransUnit> getCurrentPageValues()
-   {
-      return ImmutableList.copyOf(pageModel.getData());
-   }
+    public List<TransUnit> getCurrentPageValues() {
+        return ImmutableList.copyOf(pageModel.getData());
+    }
 
-   public TransUnit getByIdOrNull(TransUnitId transUnitId)
-   {
-      return pageModel.getByIdOrNull(transUnitId);
-   }
+    public TransUnit getByIdOrNull(TransUnitId transUnitId) {
+        return pageModel.getByIdOrNull(transUnitId);
+    }
 
-   /**
-    * for testing only
-    * @param context GetTransUnitActionContext
-    */
-   protected void init(GetTransUnitActionContext context)
-   {
-      contextHolder.updateContext(context);
-      configHolder.setEditorPageSize(context.getCount());
-      requestTransUnitsAndUpdatePageIndex(context, true);
-   }
+    /**
+     * for testing only
+     *
+     * @param context
+     *            GetTransUnitActionContext
+     */
+    protected void init(GetTransUnitActionContext context) {
+        contextHolder.updateContext(context);
+        configHolder.setEditorPageSize(context.getCount());
+        requestTransUnitsAndUpdatePageIndex(context, true);
+    }
 
-   public static interface UpdateContextCommand
-   {
-      GetTransUnitActionContext updateContext(GetTransUnitActionContext currentContext);
-   }
+    public static interface UpdateContextCommand {
+        GetTransUnitActionContext updateContext(
+                GetTransUnitActionContext currentContext);
+    }
 
-   public static interface PageDataChangeListener
-   {
-      void showDataForCurrentPage(List<TransUnit> transUnits);
+    public static interface PageDataChangeListener {
+        void showDataForCurrentPage(List<TransUnit> transUnits);
 
-      void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType);
+        void refreshRow(TransUnit updatedTransUnit,
+                EditorClientId editorClientId,
+                TransUnitUpdated.UpdateType updateType);
 
-      void highlightSearch(String findMessage);
-   }
+        void highlightSearch(String findMessage);
+    }
 }

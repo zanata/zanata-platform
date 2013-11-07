@@ -36,87 +36,75 @@ import org.zanata.model.HProject;
 
 @Name("projectAction")
 @Scope(ScopeType.PAGE)
-public class ProjectAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class ProjectAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   private boolean showActive = true;
-   private boolean showReadOnly = true;
-   private boolean showObsolete = false;
+    private boolean showActive = true;
+    private boolean showReadOnly = true;
+    private boolean showObsolete = false;
 
-   private HProject securedEntity = null;
+    private HProject securedEntity = null;
 
-   private ProjectPagedListDataModel projectPagedListDataModel = new ProjectPagedListDataModel(!showActive, !showReadOnly, !showObsolete);
+    private ProjectPagedListDataModel projectPagedListDataModel =
+            new ProjectPagedListDataModel(!showActive, !showReadOnly,
+                    !showObsolete);
 
-   private int scrollerPage = 1;
+    private int scrollerPage = 1;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private ProjectDAO projectDAO;
+    @In
+    private ProjectDAO projectDAO;
 
-   @In
-   Identity identity;
+    @In
+    Identity identity;
 
+    public boolean getEmpty() {
+        return projectDAO.getFilterProjectSize(false, false, false) == 0;
+    }
 
+    public int getPageSize() {
+        return projectPagedListDataModel.getPageSize();
+    }
 
-   public boolean getEmpty()
-   {
-      return projectDAO.getFilterProjectSize(false, false, false) == 0;
-   }
+    public int getScrollerPage() {
+        return scrollerPage;
+    }
 
-   public int getPageSize()
-   {
-      return projectPagedListDataModel.getPageSize();
-   }
+    public void setScrollerPage(int scrollerPage) {
+        this.scrollerPage = scrollerPage;
+    }
 
-   public int getScrollerPage()
-   {
-      return scrollerPage;
-   }
+    public DataModel getProjectPagedListDataModel() {
+        return projectPagedListDataModel;
+    }
 
-   public void setScrollerPage(int scrollerPage)
-   {
-      this.scrollerPage = scrollerPage;
-   }
+    public boolean isShowObsolete() {
+        return showObsolete;
+    }
 
-   public DataModel getProjectPagedListDataModel()
-   {
-      return projectPagedListDataModel;
-   }
+    public void setShowObsolete(boolean showObsolete) {
+        projectPagedListDataModel.setFilterObsolete(!showObsolete);
+        this.showObsolete = showObsolete;
+    }
 
-   public boolean isShowObsolete()
-   {
-      return showObsolete;
-   }
+    public boolean isShowActive() {
+        return showActive;
+    }
 
-   public void setShowObsolete(boolean showObsolete)
-   {
-      projectPagedListDataModel.setFilterObsolete(!showObsolete);
-      this.showObsolete = showObsolete;
-   }
+    public void setShowActive(boolean showActive) {
+        projectPagedListDataModel.setFilterActive(!showActive);
+        this.showActive = showActive;
+    }
 
-   public boolean isShowActive()
-   {
-      return showActive;
-   }
+    public boolean isShowReadOnly() {
+        return showReadOnly;
+    }
 
-   public void setShowActive(boolean showActive)
-   {
-      projectPagedListDataModel.setFilterActive(!showActive);
-      this.showActive = showActive;
-   }
-
-   public boolean isShowReadOnly()
-   {
-      return showReadOnly;
-   }
-
-   public void setShowReadOnly(boolean showReadOnly)
-   {
-      projectPagedListDataModel.setFilterReadOnly(!showReadOnly);
-      this.showReadOnly = showReadOnly;
-   }
+    public void setShowReadOnly(boolean showReadOnly) {
+        projectPagedListDataModel.setFilterReadOnly(!showReadOnly);
+        this.showReadOnly = showReadOnly;
+    }
 
 }

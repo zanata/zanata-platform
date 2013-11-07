@@ -31,16 +31,15 @@ import com.google.gwt.view.client.ListDataProvider;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface KeyShortcutDisplay extends WidgetDisplay
-{
-   ListDataProvider<KeyShortcut> addContext(String contextName);
+public interface KeyShortcutDisplay extends WidgetDisplay {
+    ListDataProvider<KeyShortcut> addContext(String contextName);
 
-   void showPanel();
+    void showPanel();
 
-   public void clearPanel();
+    public void clearPanel();
 
-   boolean isShowing();
+    boolean isShowing();
 
-   void hide(boolean autoClosed);
+    void hide(boolean autoClosed);
 
 }

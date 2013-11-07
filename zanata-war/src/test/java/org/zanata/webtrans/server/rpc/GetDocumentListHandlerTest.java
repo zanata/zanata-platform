@@ -32,28 +32,27 @@ import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class GetDocumentListHandlerTest
-{
-   private GetDocumentListHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private DocumentDAO documentDAO;
-   @Mock
-   private TranslationFileService translationFileServiceImpl;
-   @Mock
-   private TranslationStateCache translationStateCacheImpl;
-   @Mock
-   private FilePersistService filePersistService;
+public class GetDocumentListHandlerTest {
+    private GetDocumentListHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private DocumentDAO documentDAO;
+    @Mock
+    private TranslationFileService translationFileServiceImpl;
+    @Mock
+    private TranslationStateCache translationStateCacheImpl;
+    @Mock
+    private FilePersistService filePersistService;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("documentDAO", documentDAO)
@@ -63,58 +62,59 @@ public class GetDocumentListHandlerTest
             .ignoreNonResolvable()
             .autowire(GetDocumentListHandler.class);
       // @formatter:on
-   }
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList();
-      action.setWorkspaceId(workspaceId);
-      HDocument hDocument = hDocument(1);
-      List<HDocument> documentList = Arrays.asList(hDocument);
+    @Test
+    public void testExecute() throws Exception {
+        WorkspaceId workspaceId = TestFixture.workspaceId();
+        GetDocumentList action = new GetDocumentList();
+        action.setWorkspaceId(workspaceId);
+        HDocument hDocument = hDocument(1);
+        List<HDocument> documentList = Arrays.asList(hDocument);
 
-      when(documentDAO.getAllByProjectIteration("project", "master")).thenReturn(documentList);
+        when(documentDAO.getAllByProjectIteration("project", "master"))
+                .thenReturn(documentList);
 
-      GetDocumentListResult result = handler.execute(action, null);
+        GetDocumentListResult result = handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      assertThat(result.getDocuments(), Matchers.hasSize(1));
-      DocumentInfo documentInfo = result.getDocuments().get(0);
-      assertThat(documentInfo.getId(), Matchers.equalTo(new DocumentId(new Long(1), "")));
-      assertThat(documentInfo.getPath(), Matchers.equalTo("/dot/"));
-      assertThat(documentInfo.getName(), Matchers.equalTo("a.po"));
-   }
+        verify(identity).checkLoggedIn();
+        assertThat(result.getDocuments(), Matchers.hasSize(1));
+        DocumentInfo documentInfo = result.getDocuments().get(0);
+        assertThat(documentInfo.getId(),
+                Matchers.equalTo(new DocumentId(new Long(1), "")));
+        assertThat(documentInfo.getPath(), Matchers.equalTo("/dot/"));
+        assertThat(documentInfo.getName(), Matchers.equalTo("a.po"));
+    }
 
-   @Test
-   public void testExecuteWithFilter() throws Exception
-   {
-      WorkspaceId workspaceId = TestFixture.workspaceId();
-      GetDocumentList action = new GetDocumentList();
-      action.setWorkspaceId(workspaceId);
-      HDocument hDocument = hDocument(1);
-      List<HDocument> documentList = Arrays.asList(hDocument);
-      when(documentDAO.getAllByProjectIteration("project", "master")).thenReturn(documentList);
+    @Test
+    public void testExecuteWithFilter() throws Exception {
+        WorkspaceId workspaceId = TestFixture.workspaceId();
+        GetDocumentList action = new GetDocumentList();
+        action.setWorkspaceId(workspaceId);
+        HDocument hDocument = hDocument(1);
+        List<HDocument> documentList = Arrays.asList(hDocument);
+        when(documentDAO.getAllByProjectIteration("project", "master"))
+                .thenReturn(documentList);
 
-      GetDocumentListResult result = handler.execute(action, null);
+        GetDocumentListResult result = handler.execute(action, null);
 
-      assertThat(result.getDocuments(), Matchers.hasSize(1));
-   }
+        assertThat(result.getDocuments(), Matchers.hasSize(1));
+    }
 
-   private HDocument hDocument(long id)
-   {
-      HProjectIteration iteration = new HProjectIteration();
-      iteration.setProjectType(ProjectType.Podir);
+    private HDocument hDocument(long id) {
+        HProjectIteration iteration = new HProjectIteration();
+        iteration.setProjectType(ProjectType.Podir);
 
-      HDocument hDocument = new HDocument("/dot/a.po", ContentType.PO, new HLocale(LocaleId.EN_US));
-      hDocument.setProjectIteration(iteration);
-      TestFixture.setId(id, hDocument);
-      return hDocument;
-   }
+        HDocument hDocument =
+                new HDocument("/dot/a.po", ContentType.PO, new HLocale(
+                        LocaleId.EN_US));
+        hDocument.setProjectIteration(iteration);
+        TestFixture.setId(id, hDocument);
+        return hDocument;
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

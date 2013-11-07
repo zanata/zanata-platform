@@ -28,30 +28,32 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 /**
  * Wrapper around {@link com.google.gwt.user.client.Event} and related classes,
  * allowing mocking for testing.
- * 
+ *
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public interface EventWrapper
-{
-   HandlerRegistration addNativePreviewHandler(final NativePreviewHandler handler);
+public interface EventWrapper {
+    HandlerRegistration addNativePreviewHandler(
+            final NativePreviewHandler handler);
 
-   int keyDownEvent();
+    int keyDownEvent();
 
-   int keyUpEvent();
+    int keyUpEvent();
 
-   /**
-    * Wrapper for {@link NativePreviewEvent#getTypeInt()}, to present a
-    * non-final method to allow mocking.
-    * 
-    * See: http://stackoverflow.com/questions/7210171/easymock-mocked-object-is-calling-actual-method
-    * 
-    * @param evt
-    * @return
-    */
-   int getTypeInt(NativePreviewEvent evt);
+    /**
+     * Wrapper for {@link NativePreviewEvent#getTypeInt()}, to present a
+     * non-final method to allow mocking.
+     *
+     * See:
+     * http://stackoverflow.com/questions/7210171/easymock-mocked-object-is-
+     * calling-actual-method
+     *
+     * @param evt
+     * @return
+     */
+    int getTypeInt(NativePreviewEvent evt);
 
-   String getType(NativeEvent evt);
+    String getType(NativeEvent evt);
 
-   Keys createKeys(NativeEvent evt);
+    Keys createKeys(NativeEvent evt);
 }

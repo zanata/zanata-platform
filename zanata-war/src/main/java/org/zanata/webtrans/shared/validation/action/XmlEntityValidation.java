@@ -21,10 +21,10 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.common.base.Splitter;
@@ -32,80 +32,72 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class XmlEntityValidation extends AbstractValidationAction
-{
-   // &amp;, &quot;
-   private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
-   private final static RegExp charRefExp = RegExp.compile(charRefRegex);
+public class XmlEntityValidation extends AbstractValidationAction {
+    // &amp;, &quot;
+    private final static String charRefRegex = "&[:a-z_A-Z][a-z_A-Z0-9.-]*;";
+    private final static RegExp charRefExp = RegExp.compile(charRefRegex);
 
-   // &#[numeric]
-   private final static String decimalRefRegex = ".*&#[0-9]+;";
-   private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex);
+    // &#[numeric]
+    private final static String decimalRefRegex = ".*&#[0-9]+;";
+    private final static RegExp decimalRefExp = RegExp.compile(decimalRefRegex);
 
-   // &#x[hexadecimal]
-   private final static String hexadecimalRefRegex = ".*&#x[0-9a-f_A-F]+;";
-   private final static RegExp hexadecimalRefExp = RegExp.compile(hexadecimalRefRegex);
+    // &#x[hexadecimal]
+    private final static String hexadecimalRefRegex = ".*&#x[0-9a-f_A-F]+;";
+    private final static RegExp hexadecimalRefExp = RegExp
+            .compile(hexadecimalRefRegex);
 
-   private final static String ENTITY_START_CHAR = "&";
+    private final static String ENTITY_START_CHAR = "&";
 
-   public XmlEntityValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.xmlEntityValidatorDesc(), new ValidationInfo(true), messages);
-   }
+    public XmlEntityValidation(ValidationId id, ValidationMessages messages) {
+        super(id, messages.xmlEntityValidatorDesc(), messages);
+    }
 
-   public XmlEntityValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
-   }
+    @Override
+    public List<String> doValidate(String source, String target) {
+        return validateIncompleteEntity(target);
+    }
 
-   @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
-   {
-      validateIncompleteEntity(errorList, target);
-   }
+    private List<String> validateIncompleteEntity(String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-   private void validateIncompleteEntity(ArrayList<String> errorList, String target)
-   {
-      Iterable<String> words = Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
+        Iterable<String> words =
+                Splitter.on(" ").trimResults().omitEmptyStrings().split(target);
 
-      for (String word : words)
-      {
-         if (word.contains(ENTITY_START_CHAR) && word.length() > 1)
-         {
-            word = replaceEntityWithEmptyString(charRefExp, word);
-            word = replaceEntityWithEmptyString(decimalRefExp, word);
-            word = replaceEntityWithEmptyString(hexadecimalRefExp, word);
+        for (String word : words) {
+            if (word.contains(ENTITY_START_CHAR) && word.length() > 1) {
+                word = replaceEntityWithEmptyString(charRefExp, word);
+                word = replaceEntityWithEmptyString(decimalRefExp, word);
+                word = replaceEntityWithEmptyString(hexadecimalRefExp, word);
 
-            if (word.contains(ENTITY_START_CHAR))
-            {
-               //remove any string that occurs in front
-               word = word.substring(word.indexOf(ENTITY_START_CHAR)); 
-               errorList.add(getMessages().invalidXMLEntity(word));
+                if (word.contains(ENTITY_START_CHAR)) {
+                    // remove any string that occurs in front
+                    word = word.substring(word.indexOf(ENTITY_START_CHAR));
+                    errors.add(getMessages().invalidXMLEntity(word));
+                }
             }
-         }
-      }
-   }
+        }
+        return errors;
+    }
 
-   /**
-    * Replace matched string with empty string
-    * 
-    * @param regex
-    * @param text
-    * @return
-    */
-   private static String replaceEntityWithEmptyString(RegExp regex, String text)
-   {
-      MatchResult result = regex.exec(text);
-      while (result != null)
-      {
-         // replace match entity with empty string
-         text = text.replace(result.getGroup(0), ""); 
-         result = regex.exec(text);
-      }
-      return text;
-   }
+    /**
+     * Replace matched string with empty string
+     *
+     * @param regex
+     * @param text
+     * @return
+     */
+    private static String
+            replaceEntityWithEmptyString(RegExp regex, String text) {
+        MatchResult result = regex.exec(text);
+        while (result != null) {
+            // replace match entity with empty string
+            text = text.replace(result.getGroup(0), "");
+            result = regex.exec(text);
+        }
+        return text;
+    }
 }

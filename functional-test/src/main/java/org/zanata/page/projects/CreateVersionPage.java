@@ -20,67 +20,165 @@
  */
 package org.zanata.page.projects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 
-public class CreateVersionPage extends BasePage
-{
-   @FindBy(id = "iterationForm:slugField:slug")
-   private WebElement versionIdField;
+public class CreateVersionPage extends BasePage {
 
-   @FindBy(id = "iterationForm:projectTypeField:projectType")
-   private WebElement projectTypeSelection;
+    @FindBy(id = "iterationForm:projectTypeField:projectType")
+    private WebElement projectTypeSelection;
 
-   @FindBy(id = "iterationForm:statusField:status")
-   private WebElement statusSelection;
+    @FindBy(id = "iterationForm:statusField:status")
+    private WebElement statusSelection;
 
-   @FindBy(id = "iterationForm:save")
-   private WebElement saveButton;
+    @FindBy(id = "iterationForm:save")
+    private WebElement saveButton;
 
-   private static final Map<String, String> projectTypeOptions = new HashMap<String, String>();
-   static
-   {
-      projectTypeOptions.put("File", "File. For plain text, LibreOffice, InDesign.");
-      projectTypeOptions.put("Gettext", "Gettext. For gettext software strings.");
-      projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
-      projectTypeOptions.put("Properties", "Properties. For Java properties files.");
-      projectTypeOptions.put("Utf8Properties", "Utf8Properties. For UTF8-encoded Java properties.");
-      projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
-      projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
-   }
+    private static final Map<String, String> projectTypeOptions =
+            new HashMap<String, String>();
+    static {
+        projectTypeOptions.put("File",
+                "File. For plain text, LibreOffice, InDesign.");
+        projectTypeOptions.put("Gettext",
+                "Gettext. For gettext software strings.");
+        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
+        projectTypeOptions.put("Properties",
+                "Properties. For Java properties files.");
+        projectTypeOptions.put("Utf8Properties",
+                "Utf8Properties. For UTF8-encoded Java properties.");
+        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
+        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
+    }
 
-   public CreateVersionPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public CreateVersionPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public CreateVersionPage inputVersionId(String versionId)
-   {
-      versionIdField.sendKeys(versionId);
-      return this;
-   }
+    public CreateVersionPage inputVersionId(String versionId) {
+        getVersionIdField().clear();
+        new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
+        getVersionIdField().sendKeys(versionId);
+        defocus();
+        return new CreateVersionPage(getDriver());
+    }
 
-   public CreateVersionPage selectProjectType(String projectType)
-   {
-      new Select(projectTypeSelection).selectByVisibleText(projectTypeOptions.get(projectType));
-      return this;
-   }
+    private WebElement getVersionIdField() {
+        return getDriver().findElement(By.id("iterationForm:slugField:slug"));
+    }
 
-   public CreateVersionPage selectStatus(String status)
-   {
-      new Select(statusSelection).selectByVisibleText(status);
-      return this;
-   }
+    public CreateVersionPage selectProjectType(String projectType) {
+        new Select(projectTypeSelection).selectByVisibleText(projectTypeOptions
+                .get(projectType));
+        return this;
+    }
 
-   public ProjectVersionPage saveVersion()
-   {
-      clickAndCheckErrors(saveButton);
-      return new ProjectVersionPage(getDriver());
-   }
+    public CreateVersionPage selectStatus(String status) {
+        new Select(statusSelection).selectByVisibleText(status);
+        return this;
+    }
+
+    public ProjectVersionPage saveVersion() {
+        clickAndCheckErrors(saveButton);
+        return new ProjectVersionPage(getDriver());
+    }
+
+    public CreateVersionPage showLocalesOverride() {
+        getDriver().findElement(By.xpath("//*[@title='overrideLocales']"))
+                .click();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                        .findElement(By.id("iterationForm:languagelist1"))
+                        .isDisplayed();
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage selectEnabledLanguage(String language) {
+        getDriver()
+                .findElement(By.id("iterationForm:languagelist1"))
+                .findElement(By.xpath(".//option[@value='"+language+"']"))
+                .click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage selectDisabledLanguage(String language) {
+        getDriver()
+                .findElement(By.id("iterationForm:languagelist2"))
+                .findElement(By.xpath(".//option[@value='"+language+"']"))
+                .click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage clickAddLanguage() {
+        getDriver().findElement(By.xpath("//*[@value='Add >']")).click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage clickRemoveLanguage() {
+        getDriver().findElement(By.xpath("//*[@value='< Remove']")).click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public List<String> getEnabledLanguages() {
+        List<String> languages = new ArrayList<String>();
+        for (WebElement element : getDriver()
+                .findElement(By.id("iterationForm:languagelist1"))
+                .findElements(By.tagName("option"))) {
+            languages.add(element.getText());
+        }
+        return languages;
+    }
+
+    public List<String> getDisabledLanguages() {
+        List<String> languages = new ArrayList<String>();
+        for (WebElement element : getDriver()
+                .findElement(By.id("iterationForm:languagelist2"))
+                .findElements(By.tagName("option"))) {
+            languages.add(element.getText());
+        }
+        return languages;
+    }
+
+    public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getErrors().size() == numberOfErrors;
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage waitForListCount(final int enabled,
+                                              final int disabled) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                    .findElement(By.id("iterationForm:languagelist1"))
+                    .findElements(By.tagName("option"))
+                        .size() == enabled &&
+                    getDriver()
+                        .findElement(By.id("iterationForm:languagelist2"))
+                        .findElements(By.tagName("option"))
+                            .size() == disabled;
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
 }

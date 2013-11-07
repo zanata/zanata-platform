@@ -1,106 +1,137 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:rich="http://richfaces.org/rich"
-    xmlns:a4j="http://richfaces.org/a4j"
-    template="../WEB-INF/template/template_2x.xhtml"
-    >
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template_2x.xhtml"
+  >
 
-    <ui:define name="page_title">#{messages['jsf.MyProfile']}</ui:define>
-    <ui:define name="right_content">
-      <s:fragment rendered="#{identity.loggedIn}">
-        <rich:panel>
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-          <s:link styleClass="action_link" view="/profile/edit.xhtml" propagation="none">
-            #{messages['jsf.EditProfile']}
-          </s:link>
-          <s:link styleClass="action_link" view="/account/changepassword.xhtml" propagation="none" rendered="#{applicationConfiguration.internalAuth}">
-            #{messages['jsf.ChangePassword']}
-          </s:link>
-          <s:link styleClass="action_link" view="/profile/identities.xhtml" propagation="none" rendered="#{applicationConfiguration.openIdAuth}">
-              #{messages['jsf.ManageIdentities']}
-          </s:link>
-          <s:link styleClass="action_link" view="/profile/merge_account.xhtml" propagation="none"
-                  title="#{messages['jsf.identities.MergeAccount.tootip']}"
-                  rendered="#{applicationConfiguration.openIdAuth}">
-            #{messages['jsf.identities.MergeAccount']}
-          </s:link>
-        </rich:panel>
-      </s:fragment>
-    </ui:define>
+  <ui:define name="page_title">#{messages['jsf.MyProfile']}</ui:define>
+  <ui:define name="right_content">
+    <s:fragment rendered="#{identity.loggedIn}">
+      <rich:panel>
+        <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+        <s:link styleClass="action_link" view="/profile/edit.xhtml"
+          propagation="none">
+          #{messages['jsf.EditProfile']}
+        </s:link>
+        <s:link styleClass="action_link" view="/account/changepassword.xhtml"
+          propagation="none"
+          rendered="#{applicationConfiguration.internalAuth}">
+          #{messages['jsf.ChangePassword']}
+        </s:link>
+        <s:link styleClass="action_link" view="/profile/identities.xhtml"
+          propagation="none" rendered="#{applicationConfiguration.openIdAuth}">
+          #{messages['jsf.ManageIdentities']}
+        </s:link>
+        <s:link styleClass="action_link" view="/profile/merge_account.xhtml"
+          propagation="none"
+          title="#{messages['jsf.identities.MergeAccount.tootip']}"
+          rendered="#{applicationConfiguration.openIdAuth}">
+          #{messages['jsf.identities.MergeAccount']}
+        </s:link>
+      </rich:panel>
+    </s:fragment>
+  </ui:define>
 
-    <ui:define name="center_content">
-        <h1>#{personHome.instance.name}</h1>
-        <h3>#{personHome.instance.account.username}</h3>
-        <br/>
+  <ui:define name="center_content">
+    <h1>#{personHome.instance.name}</h1>
 
-        <h:form>
-          <s:token allowMultiplePosts="true" />
+    <h3>#{personHome.instance.account.username}</h3>
+    <br/>
 
-          <rich:panel>
-          	  <table>
-          	  	<tr>
-          	  		<td><h2>#{messages['jsf.ApiKey']}</h2></td>
-          	  		<td style="padding-left:15px"><h:commandButton action="#{personHome.regenerateApiKey}"
-                  value="Generate API Key" render="api_key,no_api_key"
-                  onclick="if (!confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) return false" /></td>
-          	  	</tr>
-          	  </table>
-              <s:span id="no_api_key" rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
-              <s:fragment id="api_key" rendered="#{personHome.instance.account.apiKey != null}">
-                <p>#{messages['jsf.YourCurrentApiKeyIs']}
-                  <input type="text" class="code api_key" value="#{personHome.instance.account.apiKey}" readonly="true" size="30"/>
-                </p>
-              </s:fragment>
-          </rich:panel>
+    <h:form id="userConfig">
+      <s:token allowMultiplePosts="true"/>
 
-          <rich:panel>
-              <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
-              <textarea rows="5" readonly="true" class="code configTextArea">
-[servers]
-#{personHome.urlKeyLabel}#{applicationConfiguration.serverPath}/
-#{personHome.usernameKeyLabel}#{personHome.instance.account.username}
-#{personHome.apiKeyLabel}#{personHome.instance.account.apiKey}</textarea>
-          </rich:panel>
+      <rich:panel>
+        <table>
+          <tr>
+            <td><h2>#{messages['jsf.ApiKey']}</h2></td>
+            <td style="padding-left:15px">
+              <h:commandButton id="generateApiButton"
+                action="#{personHome.regenerateApiKey}"
+                value="Generate API Key" render="api_key,no_api_key"
+                onclick="if (!confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) return false"/>
+            </td>
+          </tr>
+        </table>
+        <s:span id="no_api_key"
+          rendered="#{personHome.instance.account.apiKey == null}">#{messages['jsf.NotGenerated']}</s:span>
+        <s:fragment id="api_key"
+          rendered="#{personHome.instance.account.apiKey != null}">
+          <p>#{messages['jsf.YourCurrentApiKeyIs']}
+            <input id="apiKeyLabel" type="text" class="code api_key"
+              value="#{personHome.instance.account.apiKey}" readonly="true"
+              size="30"/>
+          </p>
+        </s:fragment>
+      </rich:panel>
+
+      <rich:panel>
+        <h2>#{messages['jsf.ConfigurationForZanataini']}</h2>
+        <textarea id="configurationTextArea" rows="5" readonly="true"
+          class="code configTextArea">
+          [servers]
+          #{personHome.urlKeyLabel}#{applicationConfiguration.serverPath}/
+          #{personHome.usernameKeyLabel}#{personHome.instance.account.username}
+          #{personHome.apiKeyLabel}#{personHome.instance.account.apiKey}</textarea>
+      </rich:panel>
+    </h:form>
+    <br/>
+
+    <rich:tabPanel switchType="client"
+      inactiveTabClass="inactive_tab">
+      <rich:tab
+        header="#{messages['jsf.MaintainedProjects']} (#{personHome.instance.maintainerProjects.size})">
+        <h:form id="maintainerProjectsForm">
+          <rich:dataGrid
+            value="#{personHome.instance.maintainerProjects.toArray()}"
+            var="project" columns="2" styleClass="noBorderDataGrid"
+            style="border:0px">
+            <s:link id="project" styleClass="table_link"
+              value="#{project.name} " propagation="none"
+              view="/project/project.xhtml">
+              <f:param name="slug" value="#{project.slug}"/>
+            </s:link>
+          </rich:dataGrid>
         </h:form>
-        <br/>
-
-        <rich:tabPanel switchType="client"
-                       inactiveTabClass="inactive_tab">
-            <rich:tab header="#{messages['jsf.MaintainedProjects']} (#{personHome.instance.maintainerProjects.size})">
-                <h:form>
-                    <rich:dataGrid value="#{personHome.instance.maintainerProjects.toArray()}" var="project" columns="2" styleClass="noBorderDataGrid" style="border:0px">
-                        <s:link id="project" styleClass="table_link" value="#{project.name} " propagation="none"
-                                view="/project/project.xhtml">
-                            <f:param name="slug" value="#{project.slug}"/>
-                        </s:link>
-                    </rich:dataGrid>
-                </h:form>
-            </rich:tab>
-            <rich:tab header="#{messages['jsf.LanguageTeams']} (#{personHome.instance.languageMemberships.size})">
-                <h:outputText value="None Available" rendered="#{empty personHome.instance.languageMemberships}"/>
-                <h:form>
-                    <rich:dataGrid value="#{personHome.instance.languageMemberships.toArray()}" var="language" columns="6" styleClass="noBorderDataGrid" style="border:0px">
-                        <s:link view="/language/language.xhtml" propagation="none" value="#{language.localeId.id}" styleClass="table_link">
-                            <f:param name="id" value="#{language.localeId.id}" />
-                        </s:link>
-                    </rich:dataGrid>
-                </h:form>
-            </rich:tab>
-            <rich:tab header="#{messages['jsf.MaintainedGroups']} (#{personHome.instance.maintainerVersionGroups.size})">
-                <h:outputText value="None Available" rendered="#{empty personHome.instance.maintainerVersionGroups}"/>
-                <h:form>
-                    <rich:dataGrid value="#{personHome.instance.maintainerVersionGroups.toArray()}" var="group" columns="3" styleClass="noBorderDataGrid" style="border:0px">
-                        <s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="table_link">
-                            <f:param name="versionGroupSlug" value="#{group.slug}" />
-                        </s:link>
-                    </rich:dataGrid>
-                </h:form>
-            </rich:tab>
-        </rich:tabPanel>
-    </ui:define>
+      </rich:tab>
+      <rich:tab
+        header="#{messages['jsf.LanguageTeams']} (#{personHome.instance.languageMemberships.size})">
+        <h:outputText value="None Available"
+          rendered="#{empty personHome.instance.languageMemberships}"/>
+        <h:form id="languageMembershipsForm">
+          <rich:dataGrid
+            value="#{personHome.instance.languageMemberships.toArray()}"
+            var="language" columns="6" styleClass="noBorderDataGrid"
+            style="border:0px">
+            <s:link view="/language/language.xhtml" propagation="none"
+              value="#{language.localeId.id}" styleClass="table_link">
+              <f:param name="id" value="#{language.localeId.id}"/>
+            </s:link>
+          </rich:dataGrid>
+        </h:form>
+      </rich:tab>
+      <rich:tab
+        header="#{messages['jsf.MaintainedGroups']} (#{personHome.instance.maintainerVersionGroups.size})">
+        <h:outputText value="None Available"
+          rendered="#{empty personHome.instance.maintainerVersionGroups}"/>
+        <h:form id="maintainerGroupsForm">
+          <rich:dataGrid
+            value="#{personHome.instance.maintainerVersionGroups.toArray()}"
+            var="group" columns="3" styleClass="noBorderDataGrid"
+            style="border:0px">
+            <s:link view="/version-group/version_group.xhtml" propagation="none"
+              value="#{group.name}" styleClass="table_link">
+              <f:param name="versionGroupSlug" value="#{group.slug}"/>
+            </s:link>
+          </rich:dataGrid>
+        </h:form>
+      </rich:tab>
+    </rich:tabPanel>
+  </ui:define>
 </ui:composition>

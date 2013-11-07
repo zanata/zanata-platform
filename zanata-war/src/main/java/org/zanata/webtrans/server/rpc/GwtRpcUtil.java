@@ -32,49 +32,48 @@ import org.zanata.model.HTextFlowTarget;
 import com.google.common.collect.Lists;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-class GwtRpcUtil
-{
-   private static final Logger log = LoggerFactory.getLogger(GwtRpcUtil.class);
+class GwtRpcUtil {
+    private static final Logger log = LoggerFactory.getLogger(GwtRpcUtil.class);
 
-   static ArrayList<String> getSourceContents(HTextFlow textFlow)
-   {
-      ArrayList<String> sourceContents = Lists.newArrayList(textFlow.getContents());
-      assert textFlow.isPlural() || sourceContents.size() < 2 : "non-plural textflow with multiple strings: " + textFlow.getResId();
-      return sourceContents;
-   }
+    static ArrayList<String> getSourceContents(HTextFlow textFlow) {
+        ArrayList<String> sourceContents =
+                Lists.newArrayList(textFlow.getContents());
+        assert textFlow.isPlural() || sourceContents.size() < 2 : "non-plural textflow with multiple strings: "
+                + textFlow.getResId();
+        return sourceContents;
+    }
 
-   /**
-    * Gets the string contents of target (unless null), padding the ArrayList
-    * to nPlurals (if the textFlow allows plurals), or to 1 otherwise.
-    * @param textFlow
-    * @param target
-    * @param nPlurals
-    * @return
-    */
-   static ArrayList<String> getTargetContentsWithPadding(HTextFlow textFlow, HTextFlowTarget target, int nPlurals)
-   {
-      int expectedResultSize = textFlow.isPlural() ? nPlurals : 1;
-      ArrayList<String> result = new ArrayList<String>(expectedResultSize);
-      if (target != null)
-      {
-         List<String> targetContents = target.getContents();
-         if (targetContents.size() > expectedResultSize)
-         {
-            log.warn("TextFlowTarget {} has {} strings: trimming excess plurals", target.getId(), targetContents.size());
-            result.addAll(targetContents.subList(0, expectedResultSize));
-         }
-         else
-         {
-            result.addAll(targetContents);
-         }
-      }
-      while (result.size() < expectedResultSize)
-      {
-         result.add("");
-      }
-      return result;
-   }
+    /**
+     * Gets the string contents of target (unless null), padding the ArrayList
+     * to nPlurals (if the textFlow allows plurals), or to 1 otherwise.
+     *
+     * @param textFlow
+     * @param target
+     * @param nPlurals
+     * @return
+     */
+    static ArrayList<String> getTargetContentsWithPadding(HTextFlow textFlow,
+            HTextFlowTarget target, int nPlurals) {
+        int expectedResultSize = textFlow.isPlural() ? nPlurals : 1;
+        ArrayList<String> result = new ArrayList<String>(expectedResultSize);
+        if (target != null) {
+            List<String> targetContents = target.getContents();
+            if (targetContents.size() > expectedResultSize) {
+                log.warn(
+                        "TextFlowTarget {} has {} strings: trimming excess plurals",
+                        target.getId(), targetContents.size());
+                result.addAll(targetContents.subList(0, expectedResultSize));
+            } else {
+                result.addAll(targetContents);
+            }
+        }
+        while (result.size() < expectedResultSize) {
+            result.add("");
+        }
+        return result;
+    }
 }

@@ -32,6 +32,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
@@ -46,145 +47,126 @@ import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.UrlUtil;
 
-import com.ctc.wstx.util.URLUtil;
-
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
-public class DashboardAction implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+@Restrict("#{identity.loggedIn}")
+public class DashboardAction implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @Logger
-   private Log log;
+    @Logger
+    private Log log;
 
-   @In
-   private GravatarService gravatarServiceImpl;
+    @In
+    private GravatarService gravatarServiceImpl;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In
-   private ProjectDAO projectDAO;
+    @In
+    private ProjectDAO projectDAO;
 
-   @In
-   private ZanataIdentity identity;
-   
-   @In
-   private UrlUtil urlUtil;
-   
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   private HAccount authenticatedAccount;
+    @In
+    private ZanataIdentity identity;
 
-   private final int USER_IMAGE_SIZE = 115;
+    @In
+    private UrlUtil urlUtil;
 
-   private final Comparator<HProject> projectCreationDateComparator = new Comparator<HProject>()
-   {
-      @Override
-      public int compare(HProject o1, HProject o2)
-      {
-         return o2.getCreationDate().after(o1.getCreationDate()) ? 1 : -1;
-      }
-   };
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    private HAccount authenticatedAccount;
 
-   public String getUserImageUrl()
-   {
-      return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
-   }
+    private final int USER_IMAGE_SIZE = 115;
 
-   public String getUsername()
-   {
-      return authenticatedAccount.getPerson().getAccount().getUsername();
-   }
+    private final Comparator<HProject> projectCreationDateComparator =
+            new Comparator<HProject>() {
+                @Override
+                public int compare(HProject o1, HProject o2) {
+                    return o2.getCreationDate().after(o1.getCreationDate()) ? 1
+                            : -1;
+                }
+            };
 
-   public String getUserFullName()
-   {
-      return authenticatedAccount.getPerson().getName();
-   }
+    public String getUserImageUrl() {
+        return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
+    }
 
-   @CachedMethodResult
-   public int getUserMaintainedProjectsCount()
-   {
-      return authenticatedAccount.getPerson().getMaintainerProjects().size();
-   }
+    public String getUsername() {
+        return authenticatedAccount.getPerson().getAccount().getUsername();
+    }
 
-   @CachedMethodResult
-   public List<HProject> getUserMaintainedProjects()
-   {
-      List<HProject> sortedList = new ArrayList<HProject>();
+    public String getUserFullName() {
+        return authenticatedAccount.getPerson().getName();
+    }
 
-      if (canViewObsolete())
-      {
-         sortedList.addAll(authenticatedAccount.getPerson().getMaintainerProjects());
-      }
-      else
-      {
-         for (HProject project : authenticatedAccount.getPerson().getMaintainerProjects())
-         {
-            if (project.getStatus() != EntityStatus.OBSOLETE)
-            {
-               sortedList.add(project);
+    @CachedMethodResult
+    public int getUserMaintainedProjectsCount() {
+        return authenticatedAccount.getPerson().getMaintainerProjects().size();
+    }
+
+    @CachedMethodResult
+    public List<HProject> getUserMaintainedProjects() {
+        List<HProject> sortedList = new ArrayList<HProject>();
+
+        if (canViewObsolete()) {
+            sortedList.addAll(authenticatedAccount.getPerson()
+                    .getMaintainerProjects());
+        } else {
+            for (HProject project : authenticatedAccount.getPerson()
+                    .getMaintainerProjects()) {
+                if (project.getStatus() != EntityStatus.OBSOLETE) {
+                    sortedList.add(project);
+                }
             }
-         }
-      }
-      Collections.sort(sortedList, projectCreationDateComparator);
+        }
+        Collections.sort(sortedList, projectCreationDateComparator);
 
-      return sortedList;
-   }
+        return sortedList;
+    }
 
-   @CachedMethodResult
-   public boolean canViewObsolete()
-   {
-      return identity != null && identity.hasPermission("HProject", "view-obsolete");
-   }
+    @CachedMethodResult
+    public boolean canViewObsolete() {
+        return identity != null
+                && identity.hasPermission("HProject", "view-obsolete");
+    }
 
-   @CachedMethodResult
-   public List<HProjectIteration> getProjectVersions(Long projectId)
-   {
-      List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-      if (canViewObsolete())
-      {
-         result.addAll(projectIterationDAO.searchByProjectId(projectId));
-      }
-      else
-      {
-         result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(projectId, EntityStatus.OBSOLETE));
-      }
-      return result;
-   }
+    @CachedMethodResult
+    public List<HProjectIteration> getProjectVersions(Long projectId) {
+        List<HProjectIteration> result = new ArrayList<HProjectIteration>();
+        if (canViewObsolete()) {
+            result.addAll(projectIterationDAO.searchByProjectId(projectId));
+        } else {
+            result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(
+                    projectId, EntityStatus.OBSOLETE));
+        }
+        return result;
+    }
 
-   @CachedMethodResult
-   public boolean isUserMaintainer(Long projectId)
-   {
-      HProject project = getProject(projectId);
-      return authenticatedAccount.getPerson().isMaintainer(project);
-   }
+    @CachedMethodResult
+    public boolean isUserMaintainer(Long projectId) {
+        HProject project = getProject(projectId);
+        return authenticatedAccount.getPerson().isMaintainer(project);
+    }
 
-   @CachedMethodResult
-   public int getDocumentCount(Long versionId)
-   {
-      HProjectIteration version = getProjectVersion(versionId);
-      return version.getDocuments().size();
-   }
+    @CachedMethodResult
+    public int getDocumentCount(Long versionId) {
+        HProjectIteration version = getProjectVersion(versionId);
+        return version.getDocuments().size();
+    }
 
-   public String getFormattedDate(Date date)
-   {
-      return DateUtil.formatShortDate(date);
-   }
+    public String getFormattedDate(Date date) {
+        return DateUtil.formatShortDate(date);
+    }
 
-   @CachedMethodResult
-   private HProjectIteration getProjectVersion(Long versionId)
-   {
-      return projectIterationDAO.findById(versionId, false);
-   }
+    @CachedMethodResult
+    private HProjectIteration getProjectVersion(Long versionId) {
+        return projectIterationDAO.findById(versionId, false);
+    }
 
-   @CachedMethodResult
-   private HProject getProject(Long projectId)
-   {
-      return projectDAO.findById(projectId, false);
-   }
-   
-   public String getCreateVersionUrl(String projectSlug)
-   {
-      return urlUtil.createNewVersionUrl(projectSlug);
-   }
+    @CachedMethodResult
+    private HProject getProject(Long projectId) {
+        return projectDAO.findById(projectId, false);
+    }
+
+    public String getCreateVersionUrl(String projectSlug) {
+        return urlUtil.createNewVersionUrl(projectSlug);
+    }
 }

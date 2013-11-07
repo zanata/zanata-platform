@@ -1,63 +1,60 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
-	
-	<ui:with field="resources" type="org.zanata.webtrans.client.resources.Resources" />
-	<ui:style>
-		.editor {
-			background-color: #ffffff;
-			border-bottom: 1px solid #E5E5E5;
-		}
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-		.topBar
-		{
-			border-bottom:1px solid lightGrey;
-			background:#F3F2F2;
-			width:100%;
-			height:100%;
-			padding-left:10px;
-			padding-right:10px;
-		}
+  <ui:with field="resources"
+    type="org.zanata.webtrans.client.resources.Resources" />
+  <ui:style>
+    .editor {
+      background-color: #ffffff;
+      border-bottom: 1px solid #E5E5E5;
+    }
 
-		.iconButton
-		{
-			font-size:20px;
-			cursor:pointer;
-			color:#4E4E4E;
-		}
+    .topBar {
+      border-bottom: 1px solid lightGrey;
+      width: 100%;
+      height: 100%;
+    }
 
-		.iconButton:hover
-		{
-			color:#0085CC;
-		}
-	</ui:style>
+    .iconButton {
+      font-size: 20px;
+      cursor: pointer;
+      color: #4E4E4E;
+    }
 
-			<g:LayoutPanel styleName="translatorEditorContainer">
-				<g:layer top="0" height="3.5em">
-					<g:HorizontalPanel styleName="{style.topBar}" verticalAlignment="ALIGN_MIDDLE">
-						<g:cell>
-							<g:HTMLPanel ui:field="filterPanelContainer"/>		
-						</g:cell>
-						<g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
-							<g:HTMLPanel ui:field="transUnitNavigationContainer"/>
-						</g:cell>
-						<g:cell horizontalAlignment="ALIGN_RIGHT" width="35px">
-							<g:InlineLabel ui:field="refreshCurrentPage" styleName="icon-arrows-cw {style.iconButton}"/>
-						</g:cell>
-					</g:HorizontalPanel>
-				</g:layer>
-				<g:layer top="3.5em" bottom="2em">
-					<g:LayoutPanel ui:field="editor" styleName="{style.editor}"/>
-				</g:layer>
-				<g:layer bottom="0px" height="2em" left="0" right="16px">
-					<g:FlowPanel>
-						<fui:Pager ui:field="pager"/>
-						
-					</g:FlowPanel>
-				</g:layer>
-				<g:layer bottom="0px" height="24px" right="0" width="24px">
-					<g:InlineLabel ui:field="resize" styleName="{style.iconButton}"/>
-				</g:layer>
-			</g:LayoutPanel>
-</ui:UiBinder> 
+    .iconButton:hover {
+      color: #0085CC;
+    }
+  </ui:style>
+
+  <g:LayoutPanel styleName="translatorEditorContainer">
+    <g:layer top="0" height="2.5em">
+      <g:HorizontalPanel styleName="{style.topBar}"
+        verticalAlignment="ALIGN_MIDDLE">
+        <g:cell>
+          <g:HTMLPanel ui:field="filterPanelContainer" />
+        </g:cell>
+        <g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
+          <g:HTMLPanel ui:field="transUnitNavigationContainer" />
+        </g:cell>
+        <g:cell horizontalAlignment="ALIGN_RIGHT" width="35px">
+          <g:InlineLabel ui:field="refreshCurrentPage"
+            styleName="icon-arrows-cw {style.iconButton}" />
+        </g:cell>
+      </g:HorizontalPanel>
+    </g:layer>
+    <g:layer top="2.5em" bottom="2em">
+      <g:LayoutPanel ui:field="editor" styleName="{style.editor}" />
+    </g:layer>
+    <g:layer bottom="0px" height="2em" left="0" right="16px">
+      <g:FlowPanel>
+        <fui:Pager ui:field="pager" />
+
+      </g:FlowPanel>
+    </g:layer>
+    <g:layer bottom="0px" height="24px" right="0" width="24px">
+      <g:InlineLabel ui:field="resize" styleName="{style.iconButton}" />
+    </g:layer>
+  </g:LayoutPanel>
+</ui:UiBinder>

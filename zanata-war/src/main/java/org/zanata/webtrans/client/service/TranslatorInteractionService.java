@@ -34,36 +34,36 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Singleton
-public class TranslatorInteractionService
-{
-   private final Identity identity;
-   private final CachingDispatchAsync dispatcher;
+public class TranslatorInteractionService {
+    private final Identity identity;
+    private final CachingDispatchAsync dispatcher;
 
-   @Inject
-   public TranslatorInteractionService(Identity identity, CachingDispatchAsync dispatcher)
-   {
-      this.identity = identity;
-      this.dispatcher = dispatcher;
-   }
+    @Inject
+    public TranslatorInteractionService(Identity identity,
+            CachingDispatchAsync dispatcher) {
+        this.identity = identity;
+        this.dispatcher = dispatcher;
+    }
 
-   public void transUnitSelected(TransUnit selectedTransUnit)
-   {
-      dispatcher.execute(new TransUnitEditAction(identity.getPerson(), selectedTransUnit.getId()), new NoOpAsyncCallback<NoOpResult>());
-   }
+    public void transUnitSelected(TransUnit selectedTransUnit) {
+        dispatcher
+                .execute(new TransUnitEditAction(identity.getPerson(),
+                        selectedTransUnit.getId()),
+                        new NoOpAsyncCallback<NoOpResult>());
+    }
 
-   public EditorClientId getCurrentEditorClientId()
-   {
-      return identity.getEditorClientId();
-   }
+    public EditorClientId getCurrentEditorClientId() {
+        return identity.getEditorClientId();
+    }
 
-   public void personExit(Person person, TransUnitId selectedTransUnitId)
-   {
-      if (selectedTransUnitId != null)
-      {
-         dispatcher.execute(new TransUnitEditAction(person, selectedTransUnitId), new NoOpAsyncCallback<NoOpResult>());
-      }
-   }
+    public void personExit(Person person, TransUnitId selectedTransUnitId) {
+        if (selectedTransUnitId != null) {
+            dispatcher.execute(new TransUnitEditAction(person,
+                    selectedTransUnitId), new NoOpAsyncCallback<NoOpResult>());
+        }
+    }
 }

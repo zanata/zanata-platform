@@ -1,81 +1,96 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:rich="http://richfaces.org/rich" >
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich">
 
-        <script type="text/javascript">
-            function replaceUnderscores()
-            {
-                var langName = #{rich:element('localeName')}.value;
-                langName = langName.replace('_', '-');
-                #{rich:element('localeName')}.value = langName;
-                validateLangName();
-            }
-        </script>
-        <a4j:jsFunction name="validateLangName" action="#{languageManagerAction.updateLanguage()}"
-                        render="output,localeNameMssgs"/>
+  <script type="text/javascript">
+    function replaceUnderscores() {
+      var langName =
+      #{rich:element('localeName')}
+    .
+      value;
+      langName = langName.replace('_', '-');
+      #{rich:element('localeName')}
+    .
+      value = langName;
+      validateLangName();
+    }
+  </script>
+  <a4j:jsFunction name="validateLangName"
+    action="#{languageManagerAction.updateLanguage()}"
+    render="output,localeNameMssgs"/>
 
-        <h:panelGrid>
-            <s:decorate id="localeField"
-                        template="edit.xhtml">
-                <ui:define name="label">#{messages['jsf.Language']}</ui:define>
-                <h:form>
-                    <rich:autocomplete id="localeNameSuggestion" mode="client" var="result"
-                                       autocompleteMethod="#{languageManagerAction.suggestLocales}"
-                                       fetchValue="#{result.localeId}" width="300" layout="table" value="#{languageManagerAction.language}">
-                        <a4j:ajax event="change" listener="#{languageManagerAction.updateLanguage}" render="output,localeNameMssgs" />
-                        <h:column>
-                            <h:outputText value="#{result.localeId}"/>
-                        </h:column>
-                        <h:column>
-                            <h:outputText value="#{result.retrieveDisplayName()}"/>
-                        </h:column>
-                    </rich:autocomplete>
-                    <h:panelGroup id="localeNameMssgs" style="margin-left: 10px;float:right">
-                        <h:outputText value="#{languageManagerAction.languageNameValidationMessage}"
-                                      rendered="#{not languageManagerAction.language.contains('_')}"
-                                      style="color:#ff0000"/>
-                        <h:panelGroup rendered="#{languageManagerAction.language.contains('_')}">
-                            #{messages['jsf.language.validation.Underscores']}
-                            <a href="#" onclick="replaceUnderscores();">#{messages['jsf.language.validation.ReplaceUnderscores']}</a>
-                        </h:panelGroup>
-                        <h:outputText value="#{languageManagerAction.languageNameWarningMessage}"
-                                      rendered="#{languageManagerAction.languageNameWarningMessage != null}"
-                                      style="display:block; width:198px;color:#D77D00"/>
-                    </h:panelGroup>
-                </h:form>
-            </s:decorate>
-            <s:decorate id="enabledByDefaultField" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
-                <h:selectBooleanCheckbox value="#{languageManagerAction.enabledByDefault}"/>
-            </s:decorate>
-        </h:panelGrid>
+  <h:panelGrid>
+    <s:decorate id="localeField"
+      template="edit.xhtml">
+      <ui:define name="label">#{messages['jsf.Language']}</ui:define>
+      <h:form>
+        <rich:autocomplete id="localeNameSuggestion" mode="client" var="result"
+          autocompleteMethod="#{languageManagerAction.suggestLocales}"
+          fetchValue="#{result.localeId}" width="300" layout="table"
+          value="#{languageManagerAction.language}">
+          <a4j:ajax event="change"
+            listener="#{languageManagerAction.updateLanguage}"
+            render="output,localeNameMssgs"/>
+          <h:column>
+            <h:outputText value="#{result.localeId}"/>
+          </h:column>
+          <h:column>
+            <h:outputText value="#{result.retrieveDisplayName()}"/>
+          </h:column>
+        </rich:autocomplete>
+        <h:panelGroup id="localeNameMssgs"
+          style="margin-left: 10px;float:right">
+          <h:outputText
+            value="#{languageManagerAction.languageNameValidationMessage}"
+            rendered="#{not languageManagerAction.language.contains('_')}"
+            style="color:#ff0000"/>
+          <h:panelGroup
+            rendered="#{languageManagerAction.language.contains('_')}">
+            #{messages['jsf.language.validation.Underscores']}
+            <a href="#"
+              onclick="replaceUnderscores();">#{messages['jsf.language.validation.ReplaceUnderscores']}</a>
+          </h:panelGroup>
+          <h:outputText
+            value="#{languageManagerAction.languageNameWarningMessage}"
+            rendered="#{languageManagerAction.languageNameWarningMessage != null}"
+            style="display:block; width:198px;color:#D77D00"/>
+        </h:panelGroup>
+      </h:form>
+    </s:decorate>
+    <s:decorate id="enabledByDefaultField" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
+      <h:selectBooleanCheckbox
+        value="#{languageManagerAction.enabledByDefault}"/>
+    </s:decorate>
+  </h:panelGrid>
 
-        <div><h:panelGrid id="output" >
-            <s:decorate id="output1" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
-                <h:outputText value="#{languageManagerAction.uLocale.country}" />
-            </s:decorate>
-            <s:decorate id="output2" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.Name']} </ui:define>
-                <h:outputText value="#{languageManagerAction.uLocale.displayName}" />
-            </s:decorate>
-            <s:decorate id="output3" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
-                <h:outputText value="#{languageManagerAction.uLocale.language}" />
-            </s:decorate>
-            <s:decorate id="output4" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.Variant']} </ui:define>
-                <h:outputText value="#{languageManagerAction.uLocale.variant}" />
-            </s:decorate>
-            <s:decorate id="output5" template="display.xhtml">
-                <ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
-                <h:outputText value="#{languageManagerAction.uLocale.getDisplayName(languageManagerAction.uLocale)}" />
-            </s:decorate>
-        </h:panelGrid></div>
+  <div><h:panelGrid id="output">
+    <s:decorate id="output1" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
+      <h:outputText value="#{languageManagerAction.uLocale.country}"/>
+    </s:decorate>
+    <s:decorate id="output2" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.Name']} </ui:define>
+      <h:outputText value="#{languageManagerAction.uLocale.displayName}"/>
+    </s:decorate>
+    <s:decorate id="output3" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
+      <h:outputText value="#{languageManagerAction.uLocale.language}"/>
+    </s:decorate>
+    <s:decorate id="output4" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.Variant']} </ui:define>
+      <h:outputText value="#{languageManagerAction.uLocale.variant}"/>
+    </s:decorate>
+    <s:decorate id="output5" template="display.xhtml">
+      <ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
+      <h:outputText
+        value="#{languageManagerAction.uLocale.getDisplayName(languageManagerAction.uLocale)}"/>
+    </s:decorate>
+  </h:panelGrid></div>
 
 
 </ui:composition>

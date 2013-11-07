@@ -1,0 +1,83 @@
+diff -ru jboss-as-7.2.0.Final/modules/system/layers/base/sun/jdk/main/module.xml jboss-as-7.2.0.Final.zanata/modules/system/layers/base/sun/jdk/main/module.xml
+--- jboss-as-7.2.0.Final/modules/system/layers/base/sun/jdk/main/module.xml	2013-08-07 09:00:18.000000000 +1000
++++ jboss-as-7.2.0.Final.zanata/modules/system/layers/base/sun/jdk/main/module.xml	2013-08-23 16:25:25.551155172 +1000
+@@ -30,6 +30,7 @@
+     <dependencies>
+         <system export="true">
+             <paths>
++                <path name="com/sun/management"/>
+                 <path name="com/sun/script/javascript"/>
+                 <path name="com/sun/image/codec/jpeg"/>
+                 <path name="com/sun/imageio/plugins/bmp"/>
+Only in jboss-as-7.2.0.Final.zanata/modules/system/layers/base/sun/jdk/main: module.xml~
+diff -ru jboss-as-7.2.0.Final/standalone/configuration/standalone.xml jboss-as-7.2.0.Final.zanata/standalone/configuration/standalone.xml
+--- jboss-as-7.2.0.Final/standalone/configuration/standalone.xml	2013-08-07 09:00:10.000000000 +1000
++++ jboss-as-7.2.0.Final.zanata/standalone/configuration/standalone.xml	2013-09-11 09:47:17.613643411 +1000
+@@ -25,6 +25,10 @@
+         <extension module="org.jboss.as.webservices"/>
+         <extension module="org.jboss.as.weld"/>
+     </extensions>
++    <system-properties>
++       <property name="javamelody.storage-directory" value="${user.home}/zanata/stats"/>
++       <property name="hibernate.search.default.indexBase" value="${user.home}/zanata/indexes"/>
++    </system-properties>
+     <management>
+         <security-realms>
+             <security-realm name="ManagementRealm">
+@@ -212,6 +216,12 @@
+             </mail-session>
+         </subsystem>
+         <subsystem xmlns="urn:jboss:domain:naming:1.2">
++            <bindings>
++               <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
++               <simple name="java:global/zanata/security/admin-users" value="admin"/>
++               <simple name="java:global/zanata/files/document-storage-directory" value="${user.home}/zanata/files"/>
++               <simple name="java:global/zanata/email/default-from-address" value="no-reply@mydomain.com"/>
++            </bindings>
+             <remote-naming/>
+         </subsystem>
+         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
+@@ -222,6 +232,16 @@
+         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
+         <subsystem xmlns="urn:jboss:domain:security:1.2">
+             <security-domains>
++                <security-domain name="zanata">
++                    <authentication>
++                        <login-module code="org.zanata.security.ZanataCentralLoginModule" flag="required"/>
++                    </authentication>
++                </security-domain>
++                <security-domain name="zanata.internal">
++                    <authentication>
++                        <login-module code="org.jboss.seam.security.jaas.SeamLoginModule" flag="required"/>
++                    </authentication>
++                </security-domain>
+                 <security-domain name="other" cache-type="default">
+                     <authentication>
+                         <login-module code="Remoting" flag="optional">
+@@ -279,7 +299,7 @@
+             <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
+         </interface>
+         <interface name="public">
+-            <inet-address value="${jboss.bind.address:127.0.0.1}"/>
++            <inet-address value="${jboss.bind.address:0.0.0.0}"/>
+         </interface>
+         <!-- TODO - only show this if the jacorb subsystem is added  -->
+         <interface name="unsecure">
+@@ -287,7 +307,7 @@
+               ~  Used for IIOP sockets in the standard configuration.
+               ~                  To secure JacORB you need to setup SSL 
+               -->
+-            <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
++            <inet-address value="${jboss.bind.address.unsecure:0.0.0.0}"/>
+         </interface>
+     </interfaces>
+     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+@@ -304,4 +324,4 @@
+             <remote-destination host="localhost" port="25"/>
+         </outbound-socket-binding>
+     </socket-binding-group>
+-</server>
+\ No newline at end of file
++</server>
+Only in jboss-as-7.2.0.Final.zanata/standalone/configuration: standalone.xml~
+Only in jboss-as-7.2.0.Final.zanata: zanata-as7.patch

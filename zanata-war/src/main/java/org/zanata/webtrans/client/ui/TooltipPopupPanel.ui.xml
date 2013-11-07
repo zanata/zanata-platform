@@ -1,138 +1,159 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-	<ui:with field="messages"
-		type="org.zanata.webtrans.client.resources.WebTransMessages" />
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-	<ui:style field="style"
-		type="org.zanata.webtrans.client.ui.TooltipPopupPanel.Styles">
-        .transUnitCountTooltip {
-            background-color: #fff;
-            text-align: center;
-            padding: 2px;
-            z-index: 100;
-            box-shadow: 0 1px 2px rgba(0,0,0, 0.2);
-        }
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.ui.TooltipPopupPanel.Styles">
+    .transUnitCountTooltip {
+      background-color: #fff;
+      text-align: center;
+      padding: 2px;
+      z-index: 100;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
 
-        .table {
-            text-align: center;
-            font-size: 12px
-        }
+    .table {
+      text-align: center;
+      font-size: 12px
+    }
 
-        .table td {
-            width: 75px;
-            font-weight: 600;
-        }
+    .table td {
+      width: 75px;
+      font-weight: 600;
+    }
 
-        .topHeader {
-            border: none;
-            color: #4F4F4F;
-            white-space: nowrap;
-            padding: 2px;
-            font-weight: 700;
-        }
+    .topHeader {
+      border: none;
+      color: #4F4F4F;
+      white-space: nowrap;
+      padding: 2px;
+      font-weight: 700;
+    }
 
-        .translated-header {
-            border: none;
-            color: #70a98b;
-            white-space: nowrap;
-            padding: 2px;
-        }
+    .translated-header {
+      border: none;
+      color: #70a98b;
+      white-space: nowrap;
+      padding: 2px;
+    }
 
-        .rejected-header {
-            border: none;
-            color: #e3824e;
-            white-space: nowrap;
-            padding: 2px;
-        }
+    .rejected-header {
+      border: none;
+      color: #e3824e;
+      white-space: nowrap;
+      padding: 2px;
+    }
 
-        .approved-header {
-            border: none;
-            color: #4e9fdd;
-            white-space: nowrap;
-            padding: 2px;
-        }
+    .approved-header {
+      border: none;
+      color: #4e9fdd;
+      white-space: nowrap;
+      padding: 2px;
+    }
 
-        .draft-header {
-            border: none;
-            color: #e0c350;
-            white-space: nowrap;
-            padding: 2px;
-        }
+    .draft-header {
+      border: none;
+      color: #e0c350;
+      white-space: nowrap;
+      padding: 2px;
+    }
 
-        .untranslated-header {
-            border: none;
-            color: #a2b4c3;
-            white-space: nowrap;
-            padding: 2px;
-        }
+    .untranslated-header {
+      border: none;
+      color: #c6d2db;
+      white-space: nowrap;
+      padding: 2px;
+    }
 
-        td.sideHeader {
-            border: none;
-            color: #4F4F4F;
-            white-space: nowrap;
-            width: 40px;
-        }
+    td.sideHeader {
+      border: none;
+      color: #4F4F4F;
+      white-space: nowrap;
+      width: 40px;
+    }
 
-        .total {
-            border: none;
-            color: #4F4F4F;
-        }
+    .total {
+      border: none;
+      color: #4F4F4F;
+    }
 
-        .translated {
-            background: #70a98b;
-            color: #fff;
-        }
+    .translated {
+      background: #70a98b;
+      color: #fff;
+    }
 
-        .approved {
-            background: #4e9fdd;
-            color: #fff;
-        }
+    .approved {
+      background: #4e9fdd;
+      color: #fff;
+    }
 
-        .draft {
-            background: #e0c350;
-            color: #fff;
-        }
+    .draft {
+      background: #e0c350;
+      color: #fff;
+    }
 
-        .untranslated {
-            background: #a2b4c3;
-            color: #fff;
-        }
+    .untranslated {
+      background: #c6d2db;
+      color: #fff;
+    }
 
-    </ui:style>
+  </ui:style>
 
-	<g:HTMLPanel>
-		<g:Grid styleName="{style.table}" cellPadding="2" ui:field="grid">
-			<g:row>
-				<g:cell styleName="{style.sideHeader}"/>
-				<g:cell styleName="{style.approved-header}">Approved</g:cell>
-                <g:cell styleName="{style.translated-header}">Translated</g:cell>
-                <g:cell styleName="{style.draft-header}">Draft</g:cell>
-				<g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
-				<g:cell styleName="{style.topHeader}">Total</g:cell>
+  <g:HTMLPanel>
+    <g:Grid styleName="{style.table}" cellPadding="2" ui:field="grid">
+      <g:row>
+        <g:cell styleName="{style.sideHeader}" />
+        <g:cell styleName="{style.approved-header}">Approved</g:cell>
+        <g:cell styleName="{style.translated-header}">Translated</g:cell>
+        <g:cell styleName="{style.draft-header}">Draft</g:cell>
+        <g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
+        <g:cell styleName="{style.topHeader}">Total</g:cell>
 
-			</g:row>
+      </g:row>
 
-			<g:row>
-				<g:cell styleName="{style.sideHeader}">Words</g:cell>
-				<g:customCell styleName="{style.approved}"><g:InlineLabel ui:field="wordApproved"/></g:customCell>
-                <g:customCell styleName="{style.translated}"><g:InlineLabel ui:field="wordTranslated"/></g:customCell>
-                <g:customCell styleName="{style.draft}" ><g:InlineLabel ui:field="wordDraft"/></g:customCell>
-				<g:customCell styleName="{style.untranslated}"><g:InlineLabel ui:field="wordUntranslated" /></g:customCell>
-				<g:customCell styleName="{style.total}"><g:InlineLabel ui:field="wordTotal"/></g:customCell>
-			</g:row>
+      <g:row>
+        <g:cell styleName="{style.sideHeader}">Words</g:cell>
+        <g:customCell styleName="{style.approved}">
+          <g:InlineLabel ui:field="wordApproved" />
+        </g:customCell>
+        <g:customCell styleName="{style.translated}">
+          <g:InlineLabel ui:field="wordTranslated" />
+        </g:customCell>
+        <g:customCell styleName="{style.draft}">
+          <g:InlineLabel ui:field="wordDraft" />
+        </g:customCell>
+        <g:customCell styleName="{style.untranslated}">
+          <g:InlineLabel ui:field="wordUntranslated" />
+        </g:customCell>
+        <g:customCell styleName="{style.total}">
+          <g:InlineLabel ui:field="wordTotal" />
+        </g:customCell>
+      </g:row>
 
-			<g:row>
-				<g:cell styleName="{style.sideHeader}">Msg</g:cell>
-				<g:customCell styleName="{style.approved}" ><g:InlineLabel ui:field="msgApproved"/></g:customCell>
-                <g:customCell styleName="{style.translated}" ><g:InlineLabel ui:field="msgTranslated"/></g:customCell>
-                <g:customCell styleName="{style.draft}" ><g:InlineLabel ui:field="msgDraft"/></g:customCell>
-				<g:customCell styleName="{style.untranslated}" ><g:InlineLabel ui:field="msgUntranslated"/></g:customCell>
-				<g:customCell styleName="{style.total}"><g:InlineLabel ui:field="msgTotal"/></g:customCell>
-			</g:row>
+      <g:row>
+        <g:cell styleName="{style.sideHeader}">Msg</g:cell>
+        <g:customCell styleName="{style.approved}">
+          <g:InlineLabel ui:field="msgApproved" />
+        </g:customCell>
+        <g:customCell styleName="{style.translated}">
+          <g:InlineLabel ui:field="msgTranslated" />
+        </g:customCell>
+        <g:customCell styleName="{style.draft}">
+          <g:InlineLabel ui:field="msgDraft" />
+        </g:customCell>
+        <g:customCell styleName="{style.untranslated}">
+          <g:InlineLabel ui:field="msgUntranslated" />
+        </g:customCell>
+        <g:customCell styleName="{style.total}">
+          <g:InlineLabel ui:field="msgTotal" />
+        </g:customCell>
+      </g:row>
 
 
-		</g:Grid>
-	</g:HTMLPanel>
+    </g:Grid>
+  </g:HTMLPanel>
 </ui:UiBinder>

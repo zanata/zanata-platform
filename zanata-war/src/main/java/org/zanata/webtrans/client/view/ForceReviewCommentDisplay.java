@@ -26,19 +26,19 @@ import com.google.inject.ImplementedBy;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 @ImplementedBy(ForceReviewCommentWidget.class)
-public interface ForceReviewCommentDisplay extends WidgetDisplay
-{
-   void setListener(Listener listener);
+public interface ForceReviewCommentDisplay extends WidgetDisplay {
+    void setListener(Listener listener);
 
-   void clearInput();
+    void clearInput();
 
-   void hide();
+    void hide();
 
-   void center();
+    void center();
 
-   interface Listener
-   {
+    String getComment();
 
-      void addComment(String content);
-   }
+    interface Listener {
+
+        void addComment(String content);
+    }
 }

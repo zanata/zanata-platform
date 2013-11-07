@@ -24,14 +24,10 @@ import org.zanata.webtrans.client.resources.TableEditorMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.inject.Inject;
 
 /**
@@ -39,85 +35,71 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class FilterViewConfirmationPanel extends PopupPanel implements FilterViewConfirmationDisplay
-{
-   private final Button saveTranslated;
-   private final Button saveFuzzy;
-   private final Button discardChanges;
-   private final Button cancelFilter;
+public class FilterViewConfirmationPanel extends PopupPanel implements
+        FilterViewConfirmationDisplay {
+    private final Button saveTranslated;
+    private final Button saveFuzzy;
+    private final Button discardChanges;
+    private final Button cancelFilter;
 
-   private Listener listener;
+    private Listener listener;
 
-   @Inject
-   public FilterViewConfirmationPanel(TableEditorMessages messages)
-   {
-      super(false, true);
-      FlowPanel panel = new FlowPanel();
-      
-      saveTranslated = new Button(messages.saveAsTranslated());
-      saveFuzzy = new Button(messages.saveAsFuzzy());
-      discardChanges = new Button(messages.discardChanges());
-      cancelFilter = new Button(messages.cancelFilter());
+    @Inject
+    public FilterViewConfirmationPanel(TableEditorMessages messages) {
+        super(false, true);
+        FlowPanel panel = new FlowPanel();
 
-      Label message = new Label(messages.saveChangesConfirmationMessage());
-      message.addStyleName("message");
+        saveTranslated = new Button(messages.saveAsTranslated());
+        saveFuzzy = new Button(messages.saveAsFuzzy());
+        discardChanges = new Button(messages.discardChanges());
+        cancelFilter = new Button(messages.cancelFilter());
 
-      setStyleName("confirmationDialogPanel");
-    
-      panel.add(message);
-      panel.add(saveTranslated);
-      panel.add(saveFuzzy);
-      panel.add(discardChanges);
-      panel.add(cancelFilter);
-      
-      add(panel);
+        Label message = new Label(messages.saveChangesConfirmationMessage());
+        message.addStyleName("message");
 
-      hide();
-   }
+        setStyleName("confirmationDialogPanel");
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-      addListenerToButtons();
-   }
+        panel.add(message);
+        panel.add(saveTranslated);
+        panel.add(saveFuzzy);
+        panel.add(discardChanges);
+        panel.add(cancelFilter);
 
-   private void addListenerToButtons()
-   {
-      saveTranslated.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            listener.saveAsTranslatedAndFilter();
-         }
-      });
-      saveFuzzy.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            listener.saveAsFuzzyAndFilter();
-         }
-      });
-      discardChanges.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            listener.discardChangesAndFilter();
-         }
-      });
-      cancelFilter.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            listener.cancelFilter();
-         }
-      });
-   }
+        add(panel);
+
+        hide();
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+        addListenerToButtons();
+    }
+
+    private void addListenerToButtons() {
+        saveTranslated.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.saveAsTranslatedAndFilter();
+            }
+        });
+        saveFuzzy.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.saveAsFuzzyAndFilter();
+            }
+        });
+        discardChanges.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.discardChangesAndFilter();
+            }
+        });
+        cancelFilter.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.cancelFilter();
+            }
+        });
+    }
 }
-
-
- 

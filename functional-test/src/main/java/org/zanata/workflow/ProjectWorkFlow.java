@@ -26,54 +26,61 @@ import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.util.Constants;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProjectWorkFlow extends AbstractWebWorkFlow
-{
-   public ProjectPage createNewProject(String projectId, String projectName)
-   {
-      ProjectsPage projectsPage = goToHome().goToProjects();
-      List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
-      log.info("current projects: {}", projects);
+public class ProjectWorkFlow extends AbstractWebWorkFlow {
+    public ProjectPage createNewProject(String projectId, String projectName) {
+        ProjectsPage projectsPage = goToHome().goToProjects();
+        List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+        log.info("current projects: {}", projects);
 
-      if (projects.contains(projectName))
-      {
-         log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectId);
-         //since we can't create same project multiple times,
-         //if we run this test more than once manually, we don't want it to fail
-         return projectsPage.goToProject(projectName);
-      }
-      return projectsPage.clickOnCreateProjectLink().inputProjectId(projectId).inputProjectName(projectName).saveProject();
-   }
+        if (projects.contains(projectName)) {
+            log.warn(
+                    "{} has already been created. Presumably you are running test manually and more than once.",
+                    projectId);
+            // since we can't create same project multiple times,
+            // if we run this test more than once manually, we don't want it to
+            // fail
+            return projectsPage.goToProject(projectName);
+        }
+        return projectsPage.clickOnCreateProjectLink()
+                .inputProjectId(projectId).inputProjectName(projectName)
+                .saveProject();
+    }
 
-   /**
-    * By default this will create a podir project version
-    * @param projectName project name
-    * @param projectVersion project version id
-    * @return project version page
-    */
-   public ProjectVersionPage createNewProjectVersion(String projectName, String projectVersion)
-   {
-      ProjectPage projectPage = goToProjectByName(projectName);
-      if (projectPage.getVersions().contains(projectVersion))
-      {
-         log.warn("{} has already been created. Presumably you are running test manually and more than once.", projectVersion);
-         return projectPage.goToVersion(projectVersion);
-      }
-      CreateVersionPage createVersionPage = projectPage.clickCreateVersionLink().inputVersionId(projectVersion);
-      createVersionPage.selectProjectType("Podir");
-      createVersionPage.selectStatus("READONLY");
-      createVersionPage.selectStatus("ACTIVE");
-      return createVersionPage.saveVersion();
-   }
+    /**
+     * By default this will create a podir project version
+     *
+     * @param projectName
+     *            project name
+     * @param projectVersion
+     *            project version id
+     * @return project version page
+     */
+    public ProjectVersionPage createNewProjectVersion(String projectName,
+            String projectVersion) {
+        ProjectPage projectPage = goToProjectByName(projectName);
+        if (projectPage.getVersions().contains(projectVersion)) {
+            log.warn(
+                    "{} has already been created. Presumably you are running test manually and more than once.",
+                    projectVersion);
+            return projectPage.goToVersion(projectVersion);
+        }
+        CreateVersionPage createVersionPage =
+                projectPage.clickCreateVersionLink().inputVersionId(
+                        projectVersion);
+        createVersionPage.selectProjectType("Podir");
+        createVersionPage.selectStatus("READONLY");
+        createVersionPage.selectStatus("ACTIVE");
+        return createVersionPage.saveVersion();
+    }
 
-   public ProjectPage goToProjectByName(String projectName)
-   {
-      ProjectsPage projects = goToHome().goToPage("Projects", ProjectsPage.class);
-      log.info("go to project by name with current projects: {}, name: {}", projects.getProjectNamesOnCurrentPage(), projectName);
-      return projects.goToProject(projectName);
-   }
+    public ProjectPage goToProjectByName(String projectName) {
+        ProjectsPage projects =
+                goToHome().goToPage("Projects", ProjectsPage.class);
+        log.info("go to project by name with current projects: {}, name: {}",
+                projects.getProjectNamesOnCurrentPage(), projectName);
+        return projects.goToProject(projectName);
+    }
 }

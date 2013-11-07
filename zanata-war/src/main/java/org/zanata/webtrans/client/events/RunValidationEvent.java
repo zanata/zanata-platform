@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.events;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -31,72 +31,61 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class RunValidationEvent extends GwtEvent<RunValidationEventHandler>
-{
-   /**
-    * Handler type.
-    */
-   private static Type<RunValidationEventHandler> TYPE;
+public class RunValidationEvent extends GwtEvent<RunValidationEventHandler> {
+    /**
+     * Handler type.
+     */
+    private static Type<RunValidationEventHandler> TYPE;
 
-   /**
-    * Gets the type associated with this event.
-    * 
-    * @return returns the handler type
-    */
-   public static Type<RunValidationEventHandler> getType()
-   {
-      return TYPE != null ? TYPE : (TYPE = new Type<RunValidationEventHandler>());
-   }
+    /**
+     * Gets the type associated with this event.
+     *
+     * @return returns the handler type
+     */
+    public static Type<RunValidationEventHandler> getType() {
+        return TYPE != null ? TYPE : (TYPE =
+                new Type<RunValidationEventHandler>());
+    }
 
-   private String source, target;
-   private boolean fireNotification = true;
-   private ArrayList<HasUpdateValidationWarning> widgetList = new ArrayList<HasUpdateValidationWarning>();
+    private String source, target;
+    private boolean fireNotification = true;
+    private ArrayList<HasUpdateValidationMessage> widgetList =
+            new ArrayList<HasUpdateValidationMessage>();
 
-   public RunValidationEvent(String source, String target, boolean fireNotification)
-   {
-      this.source = source;
-      this.target = target;
-      this.fireNotification = fireNotification;
-   }
+    public RunValidationEvent(String source, String target,
+            boolean fireNotification) {
+        this.source = source;
+        this.target = target;
+        this.fireNotification = fireNotification;
+    }
 
-   @Override
-   public Type<RunValidationEventHandler> getAssociatedType()
-   {
-      return getType();
-   }
+    @Override
+    public Type<RunValidationEventHandler> getAssociatedType() {
+        return getType();
+    }
 
+    @Override
+    protected void dispatch(RunValidationEventHandler handler) {
+        handler.onValidate(this);
+    }
 
-   @Override
-   protected void dispatch(RunValidationEventHandler handler)
-   {
-      handler.onValidate(this);
-   }
+    public String getSourceContent() {
+        return source;
+    }
 
-   public String getSourceContent()
-   {
-      return source;
-   }
+    public String getTarget() {
+        return target;
+    }
 
-   public String getTarget()
-   {
-      return target;
-   }
+    public boolean isFireNotification() {
+        return fireNotification;
+    }
 
-   public boolean isFireNotification()
-   {
-      return fireNotification;
-   }
+    public void addWidget(HasUpdateValidationMessage validationMessagePanel) {
+        widgetList.add(validationMessagePanel);
+    }
 
-   public void addWidget(HasUpdateValidationWarning validationMessagePanel)
-   {
-      widgetList.add(validationMessagePanel);
-   }
-
-   public ArrayList<HasUpdateValidationWarning> getWidgetList()
-   {
-      return widgetList;
-   }
+    public ArrayList<HasUpdateValidationMessage> getWidgetList() {
+        return widgetList;
+    }
 }
-
-
- 

@@ -26,11 +26,12 @@ import javax.annotation.Nonnull;
 import org.zanata.model.HasEntityDates;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface HasTMMetadata extends HasEntityDates
-{
-   String getMetadata(TMMetadataType tmType);
-   void setMetadata(@Nonnull TMMetadataType tmType, String metadata);
+public interface HasTMMetadata extends HasEntityDates {
+    String getMetadata(TMMetadataType tmType);
+
+    void setMetadata(@Nonnull TMMetadataType tmType, String metadata);
 }

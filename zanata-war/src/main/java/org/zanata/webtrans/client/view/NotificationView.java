@@ -22,9 +22,12 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
+import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
 import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
 import org.zanata.webtrans.client.resources.Resources;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.NotificationDetailsBox;
 import org.zanata.webtrans.client.util.DateUtil;
@@ -49,194 +52,173 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class NotificationView extends Composite implements NotificationDisplay
-{
+public class NotificationView extends Composite implements NotificationDisplay {
 
-   private static NotificationPanelUiBinder uiBinder = GWT.create(NotificationPanelUiBinder.class);
+    private static NotificationPanelUiBinder uiBinder = GWT
+            .create(NotificationPanelUiBinder.class);
 
-   interface NotificationPanelUiBinder extends UiBinder<Widget, NotificationView>
-   {
-   }
+    interface NotificationPanelUiBinder extends
+            UiBinder<Widget, NotificationView> {
+    }
 
-   interface Styles extends CssResource
-   {
-      String messageRow();
+    interface Styles extends CssResource {
+        String messageRow();
 
-      String severity();
+        String severity();
 
-      String timeLabel();
+        String timeLabel();
 
-      String inlineLink();
+        String inlineLink();
 
-      String messagePanel();
+        String messagePanel();
 
-      String mainPanel();
+        String mainPanel();
 
-      String link();
+        String link();
 
-      String msgLabel();
+        String msgLabel();
 
-      String disabledInlineLink();
-   }
+        String disabledInlineLink();
+    }
 
-   @UiField
-   VerticalPanel messagePanel;
+    @UiField
+    VerticalPanel messagePanel;
 
-   @UiField
-   Anchor clearLink;
+    @UiField
+    Anchor clearLink;
 
-   @UiField
-   Resources resources;
+    @UiField
+    Resources resources;
 
-   @UiField
-   Styles style;
+    @UiField
+    Styles style;
 
-   @UiField
-   ScrollPanel scrollPanel;
+    @UiField
+    ScrollPanel scrollPanel;
 
-   private int messagesToKeep;
-   private Listener listener;
-   
-   private final NotificationDetailsBox detailBox;
+    private int messagesToKeep;
+    private Listener listener;
 
-   private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
+    private final NotificationDetailsBox detailBox;
 
-   @Inject
-   public NotificationView()
-   {
-      initWidget(uiBinder.createAndBindUi(this));
-      detailBox = new NotificationDetailsBox();
-   }
+    private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
 
-   @UiHandler("clearLink")
-   public void onClearButtonClick(ClickEvent event)
-   {
-      listener.onClearClick();
-   }
+    @Inject
+    public NotificationView(WebTransMessages messages, KeyShortcutPresenter keyShortcutPresenter) {
+        initWidget(uiBinder.createAndBindUi(this));
+        detailBox = new NotificationDetailsBox(messages, keyShortcutPresenter);
+    }
 
-   @Override
-   public void setMessagesToKeep(int count)
-   {
-      messagesToKeep = count;
-   }
+    @UiHandler("clearLink")
+    public void onClearButtonClick(ClickEvent event) {
+        listener.onClearClick();
+    }
 
-   @Override
-   public void clearMessages()
-   {
-      messagePanel.clear();
-   }
+    @Override
+    public void setMessagesToKeep(int count) {
+        messagesToKeep = count;
+    }
 
-   @Override
-   public void appendMessage(final Severity severity, final String summary, final String msg, final boolean displayAsHtml, final InlineLink inlineLink)
-   {
-      HorizontalPanel panel = new HorizontalPanel();
-      panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+    @Override
+    public void clearMessages() {
+        messagePanel.clear();
+    }
 
-      InlineLabel severityImg;
+    @Override
+    public void appendMessage(final NotificationEvent notificationEvent) {
+        HorizontalPanel panel = new HorizontalPanel();
+        panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
-      panel.setWidth("100%");
+        InlineLabel severityImg;
 
-      severityImg = createSeverityImage(severity);
-      panel.add(severityImg);
+        panel.setWidth("100%");
 
-      final String time = "[" + DateUtil.formatTime(new Date()) + "]";
-      Label timeLabel = new Label(time);
-      timeLabel.setStyleName(style.timeLabel());
-      panel.add(timeLabel);
+        severityImg = createSeverityImage(notificationEvent.getSeverity());
+        panel.add(severityImg);
 
-      Label msgLabel = new Label(summary);
-      msgLabel.setStyleName(style.msgLabel());
-      msgLabel.addStyleName("pointer");
-      
-      msgLabel.addClickHandler(new ClickHandler()
-      {
-         @Override
-         public void onClick(ClickEvent event)
-         {
-            detailBox.setMessageDetails(severity, summary, time, msg, displayAsHtml);
-            detailBox.center();
-         }
-      });
-      
-      panel.add(msgLabel);
-      if (inlineLink != null)
-      {
-         inlineLink.setLinkStyle(style.inlineLink());
-         inlineLink.setDisabledStyle(style.disabledInlineLink());
-         panel.add(inlineLink);
-         panel.setCellWidth(inlineLink, "16px");
-      }
+        final String time = "[" + DateUtil.formatTime(new Date()) + "]";
+        Label timeLabel = new Label(time);
+        timeLabel.setStyleName(style.timeLabel());
+        panel.add(timeLabel);
 
-      panel.setCellWidth(severityImg, "20px");
-      panel.setCellWidth(timeLabel, "42px");
-      panel.setCellHorizontalAlignment(msgLabel, HasHorizontalAlignment.ALIGN_LEFT);
-      
-      if (displayOrder == DisplayOrder.ASCENDING)
-      {
-         messagePanel.insert(panel, 0);
+        Label msgLabel = new Label(notificationEvent.getMessage());
+        msgLabel.setStyleName(style.msgLabel());
+        msgLabel.addStyleName("pointer");
 
-         while (messagePanel.getWidgetCount() > messagesToKeep)
-         {
-            messagePanel.remove(messagePanel.getWidgetCount() - 1);
-         }
-         scrollPanel.scrollToTop();
-      }
-      else if (displayOrder == DisplayOrder.DESCENDING)
-      {
-         messagePanel.add(panel);
+        msgLabel.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                detailBox.setMessage(notificationEvent);
+                detailBox.center();
+            }
+        });
+        InlineLink inlineLink = notificationEvent.getInlineLink();
+        panel.add(msgLabel);
+        if (inlineLink != null) {
+            inlineLink.setLinkStyle(style.inlineLink());
+            inlineLink.setDisabledStyle(style.disabledInlineLink());
+            panel.add(inlineLink);
+            panel.setCellWidth(inlineLink, "16px");
+        }
 
-         while (messagePanel.getWidgetCount() > messagesToKeep)
-         {
-            messagePanel.remove(0);
-         }
-         scrollPanel.scrollToBottom();
-      }
+        panel.setCellWidth(severityImg, "20px");
+        panel.setCellWidth(timeLabel, "42px");
+        panel.setCellHorizontalAlignment(msgLabel,
+                HasHorizontalAlignment.ALIGN_LEFT);
 
-      messagePanel.getWidget(messagePanel.getWidgetIndex(panel)).setStyleName(style.messageRow());
-   }
+        if (displayOrder == DisplayOrder.ASCENDING) {
+            messagePanel.insert(panel, 0);
 
-   private InlineLabel createSeverityImage(Severity severity)
-   {
-      InlineLabel severityImg = new InlineLabel();
+            while (messagePanel.getWidgetCount() > messagesToKeep) {
+                messagePanel.remove(messagePanel.getWidgetCount() - 1);
+            }
+            scrollPanel.scrollToTop();
+        } else if (displayOrder == DisplayOrder.DESCENDING) {
+            messagePanel.add(panel);
 
-      severityImg.setStyleName("icon-info-circle-2");
-      severityImg.addStyleName(style.severity());
+            while (messagePanel.getWidgetCount() > messagesToKeep) {
+                messagePanel.remove(0);
+            }
+            scrollPanel.scrollToBottom();
+        }
 
-      if (severity == Severity.Error)
-      {
-         severityImg.addStyleName("severity_error");
-      }
-      else if (severity == Severity.Warning)
-      {
-         severityImg.addStyleName("severity_warning");
-      }
-      else
-      {
-         severityImg.addStyleName("severity_info");
-      }
+        messagePanel.getWidget(messagePanel.getWidgetIndex(panel))
+                .setStyleName(style.messageRow());
+    }
 
-      return severityImg;
-   }
+    private InlineLabel createSeverityImage(Severity severity) {
+        InlineLabel severityImg = new InlineLabel();
 
-   @Override
-   public int getMessageCount()
-   {
-      return messagePanel.getWidgetCount();
-   }
+        severityImg.setStyleName("icon-info-circle-2");
+        severityImg.addStyleName(style.severity());
 
-   @Override
-   public void setMessageOrder(DisplayOrder displayOrder)
-   {
-      this.displayOrder = displayOrder;
-   }
+        if (severity == Severity.Error) {
+            severityImg.addStyleName("severity_error");
+        } else if (severity == Severity.Warning) {
+            severityImg.addStyleName("severity_warning");
+        } else {
+            severityImg.addStyleName("severity_info");
+        }
 
-   @Override
-   public void setListener(Listener listener)
-   {
-      this.listener = listener;
-   }
+        return severityImg;
+    }
+
+    @Override
+    public int getMessageCount() {
+        return messagePanel.getWidgetCount();
+    }
+
+    @Override
+    public void setMessageOrder(DisplayOrder displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 }

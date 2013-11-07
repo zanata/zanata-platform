@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -24,10 +24,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -59,278 +55,307 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  * Default implementation for the
  * {@link org.zanata.rest.service.StatisticsResource} interface. This is a
  * business/REST service.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path("/stats")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 @Name("statisticsServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class StatisticsServiceImpl implements StatisticsResource
-{
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+public class StatisticsServiceImpl implements StatisticsResource {
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In
-   private DocumentDAO documentDAO;
+    @In
+    private DocumentDAO documentDAO;
 
-   @In
-   private LocaleServiceImpl localeServiceImpl;
+    @In
+    private LocaleServiceImpl localeServiceImpl;
 
-   @In
-   private ZPathService zPathService;
+    @In
+    private ZPathService zPathService;
 
-   @In
-   private TranslationStateCache translationStateCacheImpl;
+    @In
+    private TranslationStateCache translationStateCacheImpl;
 
-   @Override
-   public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, boolean includeDetails, boolean includeWordStats, String[] locales)
-   {
-      LocaleId[] localeIds;
+    // TODO Need to refactor this method to get Message statistic by default.
+    // This is to be consistance with UI which uses message stats, and for
+    // calculating remaining hours.
+    @Override
+    public ContainerTranslationStatistics getStatistics(String projectSlug,
+            String iterationSlug, boolean includeDetails,
+            boolean includeWordStats, String[] locales) {
+        LocaleId[] localeIds;
 
-      // if no locales are specified, search in all locales
-      if (locales.length == 0)
-      {
-         List<HLocale> iterationLocales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
-         localeIds = new LocaleId[iterationLocales.size()];
-         for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++)
-         {
-            HLocale loc = iterationLocales.get(i);
-            localeIds[i] = loc.getLocaleId();
-         }
-      }
-      else
-      {
-         localeIds = new LocaleId[locales.length];
-         for (int i = 0; i < locales.length; i++)
-         {
-            localeIds[i] = new LocaleId(locales[i]);
-         }
-      }
-
-      HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-
-      if (iteration == null)
-      {
-         throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
-      }
-
-      Map<String, TransUnitCount> transUnitIterationStats = projectIterationDAO.getAllStatisticsForContainer(iteration.getId());
-      Map<String, TransUnitWords> wordIterationStats = null;
-      if (includeWordStats)
-      {
-         wordIterationStats = projectIterationDAO.getAllWordStatsStatistics(iteration.getId());
-      }
-      ContainerTranslationStatistics iterationStats = new ContainerTranslationStatistics();
-      iterationStats.setId(iterationSlug);
-      iterationStats.addRef(new Link(URI.create(zPathService.generatePathForProjectIteration(iteration)), "statSource", "PROJ_ITER"));
-      long iterationTotalMssgs = projectIterationDAO.getTotalCountForIteration(iteration.getId());
-      long iterationTotalWords = projectIterationDAO.getTotalWordCountForIteration(iteration.getId());
-
-      for (LocaleId locId : localeIds)
-      {
-         // trans unit level stats
-         TransUnitCount count = transUnitIterationStats.get(locId.getId());
-         // Stats might not return anything if nothing is translated
-         if (count == null)
-         {
-            count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
-         }
-
-         HTextFlowTarget target = localeServiceImpl.getLastTranslated(projectSlug, iterationSlug, locId);
-
-         String lastModifiedBy = "";
-         Date lastModifiedDate = null;
-
-         if (target != null)
-         {
-            lastModifiedDate = target.getLastChanged();
-            if (target.getLastModifiedBy() != null)
-            {
-               lastModifiedBy = target.getLastModifiedBy().getAccount().getUsername();
+        // if no locales are specified, search in all locales
+        if (locales.length == 0) {
+            List<HLocale> iterationLocales =
+                    localeServiceImpl.getSupportedLangugeByProjectIteration(
+                            projectSlug, iterationSlug);
+            localeIds = new LocaleId[iterationLocales.size()];
+            for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
+                HLocale loc = iterationLocales.get(i);
+                localeIds[i] = loc.getLocaleId();
             }
-         }
+        } else {
+            localeIds = new LocaleId[locales.length];
+            for (int i = 0; i < locales.length; i++) {
+                localeIds[i] = new LocaleId(locales[i]);
+            }
+        }
 
-         TranslationStatistics transUnitStats = getMessageStats(count, locId, lastModifiedDate, lastModifiedBy);
-         transUnitStats.setRemainingHours(getRemainingHours(count.get(ContentState.NeedReview), count.get(ContentState.New)));
-         iterationStats.addStats(transUnitStats);
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
-         // word level stats
-         if (includeWordStats)
-         {
+        if (iteration == null) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug);
+        }
+
+        Map<String, TransUnitCount> transUnitIterationStats =
+                projectIterationDAO.getAllStatisticsForContainer(iteration
+                        .getId());
+        Map<String, TransUnitWords> wordIterationStats =
+                projectIterationDAO
+                        .getAllWordStatsStatistics(iteration.getId());
+
+        ContainerTranslationStatistics iterationStats =
+                new ContainerTranslationStatistics();
+        iterationStats.setId(iterationSlug);
+        iterationStats.addRef(new Link(URI.create(zPathService
+                .generatePathForProjectIteration(iteration)), "statSource",
+                "PROJ_ITER"));
+        long iterationTotalMssgs =
+                projectIterationDAO
+                        .getTotalCountForIteration(iteration.getId());
+        long iterationTotalWords =
+                projectIterationDAO.getTotalWordCountForIteration(iteration
+                        .getId());
+
+        for (LocaleId locId : localeIds) {
+            // trans unit level stats
+            TransUnitCount count = transUnitIterationStats.get(locId.getId());
+            // Stats might not return anything if nothing is translated
+            if (count == null) {
+                count = new TransUnitCount(0, 0, (int) iterationTotalMssgs);
+            }
+
+            HTextFlowTarget target =
+                    localeServiceImpl.getLastTranslated(projectSlug,
+                            iterationSlug, locId);
+
+            String lastModifiedBy = "";
+            Date lastModifiedDate = null;
+
+            if (target != null) {
+                lastModifiedDate = target.getLastChanged();
+                if (target.getLastModifiedBy() != null) {
+                    lastModifiedBy =
+                            target.getLastModifiedBy().getAccount()
+                                    .getUsername();
+                }
+            }
+
             TransUnitWords wordCount = wordIterationStats.get(locId.getId());
-            if (wordCount == null)
-            {
-               wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
+            if (wordCount == null) {
+                wordCount = new TransUnitWords(0, 0, (int) iterationTotalWords);
             }
 
-            TranslationStatistics wordsStats = getWordsStats(wordCount, locId, lastModifiedDate, lastModifiedBy);
-            wordsStats.setRemainingHours(getRemainingHours(wordCount.get(ContentState.NeedReview), wordCount.get(ContentState.New)));
-            iterationStats.addStats(wordsStats);
-         }
-      }
+            TranslationStatistics transUnitStats =
+                    getMessageStats(count, locId, lastModifiedDate,
+                            lastModifiedBy);
+            transUnitStats.setRemainingHours(getRemainingHours(
+                    wordCount.get(ContentState.NeedReview),
+                    wordCount.get(ContentState.New)));
+            iterationStats.addStats(transUnitStats);
 
-      // TODO Do in a single query
-      if (includeDetails)
-      {
-         for (String docId : iteration.getDocuments().keySet())
-         {
-            iterationStats.addDetailedStats(this.getStatistics(projectSlug, iterationSlug, docId, includeWordStats, locales));
-         }
-      }
-
-      return iterationStats;
-   }
-
-   @Override
-   public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug, String docId, boolean includeWordStats, String[] locales)
-   {
-      LocaleId[] localeIds;
-
-      // if no locales are specified, search in all locales
-      if (locales.length == 0)
-      {
-         List<HLocale> iterationLocales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
-         localeIds = new LocaleId[iterationLocales.size()];
-         for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++)
-         {
-            HLocale loc = iterationLocales.get(i);
-            localeIds[i] = loc.getLocaleId();
-         }
-      }
-      else
-      {
-         localeIds = new LocaleId[locales.length];
-         for (int i = 0; i < locales.length; i++)
-         {
-            localeIds[i] = new LocaleId(locales[i]);
-         }
-      }
-
-      HDocument document = documentDAO.getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
-
-      if (document == null)
-      {
-         throw new NoSuchEntityException(projectSlug + "/" + iterationSlug + "/" + docId);
-      }
-
-      Map<LocaleId, ContainerTranslationStatistics> statsMap = documentDAO.getStatistics(document.getId(), localeIds);
-
-      ContainerTranslationStatistics docStats = new ContainerTranslationStatistics();
-      docStats.setId(docId);
-      docStats.addRef(new Link(URI.create(zPathService.generatePathForDocument(document)), "statSource", "DOC"));
-
-      long docTotalMssgs = documentDAO.getTotalCountForDocument(document);
-
-      long docTotalWords = 0;
-      if (includeWordStats)
-      {
-         docTotalWords = documentDAO.getTotalWordCountForDocument(document);
-      }
-
-      for (LocaleId locale : localeIds)
-      {
-         ContainerTranslationStatistics stats = statsMap.get(locale);
-         
-         // trans unit level stats
-         TranslationStatistics transUnitStats;
-         if (stats == null)
-         {
-            transUnitStats = new TranslationStatistics(new TransUnitCount(0, 0, (int) docTotalMssgs), locale.getId());
-         }
-         else
-         {
-            transUnitStats = stats.getStats(locale.getId(), StatUnit.MESSAGE);
-         }
-         DocumentStatus docStat = translationStateCacheImpl.getDocumentStatus(document.getId(), locale);
-
-         transUnitStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
-         transUnitStats.setLastTranslatedDate(docStat.getLastTranslatedDate());
-         transUnitStats.setLastTranslated(getLastTranslated(docStat.getLastTranslatedDate(), docStat.getLastTranslatedBy()));
-         
-         transUnitStats.setRemainingHours(getRemainingHours(transUnitStats.getDraft(), transUnitStats.getUntranslated()));
-         docStats.addStats(transUnitStats);
-
-         // word level stats
-         if (includeWordStats)
-         {
-            TranslationStatistics wordsStats;
-            if (stats == null)
-            {
-               wordsStats = new TranslationStatistics(new TransUnitWords(0, 0, (int) docTotalWords), locale.getId());
+            // word level stats
+            if (includeWordStats) {
+                TranslationStatistics wordsStats =
+                        getWordsStats(wordCount, locId, lastModifiedDate,
+                                lastModifiedBy);
+                wordsStats.setRemainingHours(getRemainingHours(
+                        wordCount.get(ContentState.NeedReview),
+                        wordCount.get(ContentState.New)));
+                iterationStats.addStats(wordsStats);
             }
-            else
-            {
-               wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
+        }
+
+        // TODO Do in a single query
+        if (includeDetails) {
+            for (String docId : iteration.getDocuments().keySet()) {
+                iterationStats.addDetailedStats(this.getStatistics(projectSlug,
+                        iterationSlug, docId, includeWordStats, locales));
             }
-            
-            wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
-            wordsStats.setLastTranslatedDate(docStat.getLastTranslatedDate());
-            
-            wordsStats.setRemainingHours(getRemainingHours(wordsStats.getDraft(), wordsStats.getUntranslated()));
-            docStats.addStats(wordsStats);
-         }
-      }
+        }
 
-      return docStats;
-   }
+        return iterationStats;
+    }
 
-   private TranslationStatistics getWordsStats(TransUnitWords wordCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
-   {
-      TranslationStatistics stats = new TranslationStatistics(wordCount, locale.getId());
-      stats.setLastTranslatedBy(lastModifiedBy);
-      stats.setLastTranslatedDate(lastChanged);
-      stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
-      
-      return stats;
-   }
+    @Override
+    public ContainerTranslationStatistics getStatistics(String projectSlug,
+            String iterationSlug, String docId, boolean includeWordStats,
+            String[] locales) {
+        LocaleId[] localeIds;
 
-   private TranslationStatistics getMessageStats(TransUnitCount unitCount, LocaleId locale, Date lastChanged, String lastModifiedBy)
-   {
-      TranslationStatistics stats = new TranslationStatistics(unitCount, locale.getId());
-      stats.setLastTranslatedBy(lastModifiedBy);
-      stats.setLastTranslatedDate(lastChanged);
-      stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
-      
-      return stats;
-   }
-   
-   private String getLastTranslated(Date lastChanged, String lastModifiedBy)
-   {
-      StringBuilder result = new StringBuilder();
+        // if no locales are specified, search in all locales
+        if (locales.length == 0) {
+            List<HLocale> iterationLocales =
+                    localeServiceImpl.getSupportedLangugeByProjectIteration(
+                            projectSlug, iterationSlug);
+            localeIds = new LocaleId[iterationLocales.size()];
+            for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
+                HLocale loc = iterationLocales.get(i);
+                localeIds[i] = loc.getLocaleId();
+            }
+        } else {
+            localeIds = new LocaleId[locales.length];
+            for (int i = 0; i < locales.length; i++) {
+                localeIds[i] = new LocaleId(locales[i]);
+            }
+        }
 
-      if (lastChanged != null)
-      {
-         result.append(DateUtil.formatShortDate(lastChanged));
+        HDocument document =
+                documentDAO.getByProjectIterationAndDocId(projectSlug,
+                        iterationSlug, docId);
 
-         if (!StringUtils.isEmpty(lastModifiedBy))
-         {
-            result.append(" by ");
-            result.append(lastModifiedBy);
-         }
-      }
-      return result.toString();
-   }
-   
-   private double getRemainingHours(double fuzzy, double untrans)
-   {
-      double untransHours = untrans / 250.0;
-      double fuzzyHours = fuzzy / 500.0;
-      double remainHours = untransHours + fuzzyHours;
-      return remainHours;
-   }
+        if (document == null) {
+            throw new NoSuchEntityException(projectSlug + "/" + iterationSlug
+                    + "/" + docId);
+        }
 
-   public ContainerTranslationStatistics getDocStatistics(Long documentId, LocaleId localeId)
-   {
-      ContainerTranslationStatistics result = documentDAO.getStatistics(documentId, localeId);
-      
-      TranslationStatistics wordStatistics = result.getStats(localeId.getId(), StatUnit.WORD);
-      wordStatistics.setRemainingHours(getRemainingHours(wordStatistics.getDraft(), wordStatistics.getUntranslated()));
-      
-      TranslationStatistics msgStatistics = result.getStats(localeId.getId(), StatUnit.MESSAGE);
-      msgStatistics.setRemainingHours(getRemainingHours(msgStatistics.getDraft(), msgStatistics.getUntranslated()));
-      
-      return result;
-   }
+        Map<LocaleId, ContainerTranslationStatistics> statsMap =
+                documentDAO.getStatistics(document.getId(), localeIds);
+
+        ContainerTranslationStatistics docStats =
+                new ContainerTranslationStatistics();
+        docStats.setId(docId);
+        docStats.addRef(new Link(URI.create(zPathService
+                .generatePathForDocument(document)), "statSource", "DOC"));
+
+        long docTotalMssgs = documentDAO.getTotalCountForDocument(document);
+
+        long docTotalWords = 0;
+        if (includeWordStats) {
+            docTotalWords = documentDAO.getTotalWordCountForDocument(document);
+        }
+
+        for (LocaleId locale : localeIds) {
+            ContainerTranslationStatistics stats = statsMap.get(locale);
+
+            // trans unit level stats
+            TranslationStatistics transUnitStats;
+            if (stats == null) {
+                transUnitStats =
+                        new TranslationStatistics(new TransUnitCount(0, 0,
+                                (int) docTotalMssgs), locale.getId());
+            } else {
+                transUnitStats =
+                        stats.getStats(locale.getId(), StatUnit.MESSAGE);
+            }
+            DocumentStatus docStat =
+                    translationStateCacheImpl.getDocumentStatus(
+                            document.getId(), locale);
+
+            transUnitStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
+            transUnitStats.setLastTranslatedDate(docStat
+                    .getLastTranslatedDate());
+            transUnitStats.setLastTranslated(getLastTranslated(
+                    docStat.getLastTranslatedDate(),
+                    docStat.getLastTranslatedBy()));
+
+            transUnitStats
+                    .setRemainingHours(getRemainingHours(
+                            transUnitStats.getDraft(),
+                            transUnitStats.getUntranslated()));
+            docStats.addStats(transUnitStats);
+
+            // word level stats
+            if (includeWordStats) {
+                TranslationStatistics wordsStats;
+                if (stats == null) {
+                    wordsStats =
+                            new TranslationStatistics(new TransUnitWords(0, 0,
+                                    (int) docTotalWords), locale.getId());
+                } else {
+                    wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
+                }
+
+                wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
+                wordsStats.setLastTranslatedDate(docStat
+                        .getLastTranslatedDate());
+                wordsStats.setLastTranslated(getLastTranslated(
+                        docStat.getLastTranslatedDate(),
+                        docStat.getLastTranslatedBy()));
+
+                wordsStats.setRemainingHours(getRemainingHours(
+                        wordsStats.getDraft(), wordsStats.getUntranslated()));
+                docStats.addStats(wordsStats);
+            }
+        }
+
+        return docStats;
+    }
+
+    private TranslationStatistics getWordsStats(TransUnitWords wordCount,
+            LocaleId locale, Date lastChanged, String lastModifiedBy) {
+        TranslationStatistics stats =
+                new TranslationStatistics(wordCount, locale.getId());
+        stats.setLastTranslatedBy(lastModifiedBy);
+        stats.setLastTranslatedDate(lastChanged);
+        stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
+
+        return stats;
+    }
+
+    private TranslationStatistics getMessageStats(TransUnitCount unitCount,
+            LocaleId locale, Date lastChanged, String lastModifiedBy) {
+        TranslationStatistics stats =
+                new TranslationStatistics(unitCount, locale.getId());
+        stats.setLastTranslatedBy(lastModifiedBy);
+        stats.setLastTranslatedDate(lastChanged);
+        stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
+
+        return stats;
+    }
+
+    private String getLastTranslated(Date lastChanged, String lastModifiedBy) {
+        StringBuilder result = new StringBuilder();
+
+        if (lastChanged != null) {
+            result.append(DateUtil.formatShortDate(lastChanged));
+
+            if (!StringUtils.isEmpty(lastModifiedBy)) {
+                result.append(" by ");
+                result.append(lastModifiedBy);
+            }
+        }
+        return result.toString();
+    }
+
+    private double getRemainingHours(double fuzzy, double untrans) {
+        double untransHours = untrans / 250.0;
+        double fuzzyHours = fuzzy / 500.0;
+        double remainHours = untransHours + fuzzyHours;
+        return remainHours;
+    }
+
+    public ContainerTranslationStatistics getDocStatistics(Long documentId,
+            LocaleId localeId) {
+        ContainerTranslationStatistics result =
+                documentDAO.getStatistics(documentId, localeId);
+
+        TranslationStatistics wordStatistics =
+                result.getStats(localeId.getId(), StatUnit.WORD);
+
+        double remainingHours =
+                getRemainingHours(wordStatistics.getDraft(),
+                        wordStatistics.getUntranslated());
+
+        wordStatistics.setRemainingHours(remainingHours);
+
+        TranslationStatistics msgStatistics =
+                result.getStats(localeId.getId(), StatUnit.MESSAGE);
+        msgStatistics.setRemainingHours(remainingHours);
+
+        return result;
+    }
 }

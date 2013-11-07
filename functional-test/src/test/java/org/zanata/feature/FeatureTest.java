@@ -6,18 +6,18 @@ import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.IndexPageBuilderExtension;
-import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
 
 /**
- * 
+ *
  * Top level index page.
- * 
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ *
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RunWith(ConcordionRunner.class)
 @Extensions(TimestampFormatterExtension.class)
-public class FeatureTest
-{
-   @Extension
-   public IndexPageBuilderExtension extension = new IndexPageBuilderExtension(null, "Zanata features");
+public class FeatureTest {
+    @Extension
+    public IndexPageBuilderExtension extension = new IndexPageBuilderExtension(
+            null, "Zanata features");
 }

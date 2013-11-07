@@ -1,25 +1,30 @@
 <div id="breadcrumbs_panel" style="white-space:nowrap"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:s="http://jboss.org/schema/seam/taglib"
-    xmlns:rich="http://richfaces.org/rich">
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich">
 
-     <h:form>
-     	<s:link view="/home.xhtml" propagation="none" rendered="#{not empty breadcrumbs.locations}" styleClass="breadcrumbs_home">
-     		<span class="icon-home-1" title="#{messages['jsf.Zanata']}"/>
-		</s:link>
+  <h:form>
+    <s:link view="/home.xhtml" propagation="none"
+      rendered="#{not empty breadcrumbs.locations}"
+      styleClass="breadcrumbs_home">
+      <span class="icon-home-1" title="#{messages['jsf.Zanata']}"/>
+    </s:link>
 
-         <c:forEach items="#{breadcrumbs.locations}" var="breadcrumb">
-	     	<span class="icon-right-open breadcrumbs-seperator"/>
-		    <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}" styleClass="breadcrumbs_link" rendered="#{not empty breadcrumb.location}" >
-                <c:forEach items="#{breadcrumb.params.keySet()}" var="param">
-                    <f:param name="#{param}" value="#{breadcrumb.params.get(param)}" />
-                </c:forEach>
-            </s:link>
-		    <s:span styleClass="breadcrumbs_display" rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
-         </c:forEach>
-	</h:form>
+    <c:forEach items="#{breadcrumbs.locations}" var="breadcrumb">
+      <span class="icon-right-open breadcrumbs-seperator"/>
+      <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}"
+        styleClass="breadcrumbs_link"
+        rendered="#{not empty breadcrumb.location}">
+        <c:forEach items="#{breadcrumb.params.keySet()}" var="param">
+          <f:param name="#{param}" value="#{breadcrumb.params.get(param)}"/>
+        </c:forEach>
+      </s:link>
+      <s:span styleClass="breadcrumbs_display"
+        rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
+    </c:forEach>
+  </h:form>
 </div>

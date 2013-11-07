@@ -4,7 +4,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
@@ -19,51 +18,51 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class EventServiceConnectedHandlerTest
-{
-   private EventServiceConnectedHandler handler;
-   @Mock
-   private ZanataIdentity identity;
-   @Mock
-   private TranslationWorkspaceManager translationWorkspaceManager;
-   @Mock
-   private TranslationWorkspace translationWorkspace;
+public class EventServiceConnectedHandlerTest {
+    private EventServiceConnectedHandler handler;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private TranslationWorkspaceManager translationWorkspaceManager;
+    @Mock
+    private TranslationWorkspace translationWorkspace;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
       handler = SeamAutowire.instance()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .ignoreNonResolvable()
             .autowire(EventServiceConnectedHandler.class);
       // @formatter:on
-   }
+    }
 
-   @Test
-   public void testExecute() throws ActionException
-   {
-      WorkspaceId workspaceId = TestFixture.workspaceId();
-      EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-      EventServiceConnectedAction action = new EventServiceConnectedAction("connectionId");
-      action.setWorkspaceId(workspaceId);
-      action.setEditorClientId(editorClientId);
-      when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId)).thenReturn(translationWorkspace);
+    @Test
+    public void testExecute() throws ActionException {
+        WorkspaceId workspaceId = TestFixture.workspaceId();
+        EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+        EventServiceConnectedAction action =
+                new EventServiceConnectedAction("connectionId");
+        action.setWorkspaceId(workspaceId);
+        action.setEditorClientId(editorClientId);
+        when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))
+                .thenReturn(translationWorkspace);
 
-      handler.execute(action, null);
+        handler.execute(action, null);
 
-      verify(identity).checkLoggedIn();
-      verify(translationWorkspace).onEventServiceConnected(editorClientId, "connectionId");
-   }
+        verify(identity).checkLoggedIn();
+        verify(translationWorkspace).onEventServiceConnected(editorClientId,
+                "connectionId");
+    }
 
-   @Test
-   public void testRollback() throws Exception
-   {
-      handler.rollback(null, null, null);
-   }
+    @Test
+    public void testRollback() throws Exception {
+        handler.rollback(null, null, null);
+    }
 }

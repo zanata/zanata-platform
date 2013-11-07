@@ -24,26 +24,23 @@ package org.zanata.webtrans.shared.rpc;
 import org.zanata.webtrans.shared.model.ReviewComment;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class AddReviewCommentResult implements DispatchResult
-{
-   private static final long serialVersionUID = 1L;
+public class AddReviewCommentResult implements DispatchResult {
+    private static final long serialVersionUID = 1L;
 
-   private ReviewComment comment;
+    private ReviewComment comment;
 
-   @SuppressWarnings("unused")
-   public AddReviewCommentResult()
-   {
-   }
+    @SuppressWarnings("unused")
+    public AddReviewCommentResult() {
+    }
 
-   public AddReviewCommentResult(ReviewComment comment)
-   {
-      this.comment = comment;
-   }
+    public AddReviewCommentResult(ReviewComment comment) {
+        this.comment = comment;
+    }
 
-   public ReviewComment getComment()
-   {
-      return comment;
-   }
+    public ReviewComment getComment() {
+        return comment;
+    }
 }

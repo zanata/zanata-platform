@@ -1,276 +1,321 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:s="http://jboss.org/schema/seam/taglib"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich"
-	xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:richext="http://java.sun.com/jsf/composite/richext"
-	template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  template="../WEB-INF/template/template_2x.xhtml">
 
 
-    <ui:define name="page_title">#{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
+<ui:define
+  name="page_title">#{viewAllStatusAction.projectSlug}:#{viewAllStatusAction.iterationSlug}</ui:define>
 
-    <ui:define name="head">
-        <script type="text/javascript">
-            function submitSearchOnEnter(e)
-            {
-                if(e.keyCode == 13 )
-                {
-                    #{rich:element('searchBtn')}.click();
-                    return false;
-                }
-            }
-        </script>
-    </ui:define>
+<ui:define name="head">
+  <script type="text/javascript">
+    function submitSearchOnEnter(e) {
+      if (e.keyCode == 13) {
+        #{rich:element('searchBtn')}.click();
+        return false;
+      }
+    }
+  </script>
+</ui:define>
 
-    <ui:define name="center_content">
-        <ui:remove>
-            <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests
-                 TODO: Use JSF2 Flash Scope-->
-        </ui:remove>
-        <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
-            <ul id="messages" class="message">
-                <li class="icon-info-circle-2 infomsg">#{flashScope.getAndClearAttribute('message')}</li>
-            </ul>
-        </a4j:outputPanel>
+<ui:define name="center_content">
+  <ui:remove>
+    <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests
+         TODO: Use JSF2 Flash Scope-->
+  </ui:remove>
+  <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
+    <ul id="messages" class="message">
+      <li
+        class="icon-info-circle-2 infomsg">#{flashScope.getAndClearAttribute('message')}</li>
+    </ul>
+  </a4j:outputPanel>
 
-        <ui:include src="/WEB-INF/layout/loading.xhtml">
-            <ui:param name="regionId" value="langTableRegion"/>
-        </ui:include>
+  <ui:include src="/WEB-INF/layout/loading.xhtml">
+    <ui:param name="regionId" value="langTableRegion"/>
+  </ui:include>
 
-			<h:form id="iterationLanguageForm">
-				<a4j:region id="langTableRegion">
-					<s:token allowMultiplePosts="true" />
+  <h:form id="iterationLanguageForm">
+    <a4j:region id="langTableRegion">
+      <s:token allowMultiplePosts="true"/>
 
-					<h:outputText escape="false" value="#{messages['jsf.iteration.ShowAllLocales.title']}" rendered="#{identity.loggedIn}"/>
-					<a4j:commandButton title="#{messages['jsf.RefreshTable']}" action="#{viewAllStatusAction.refreshStatistic}" render="data_table" value="#{messages['jsf.Refresh']}" styleClass="float-right">
-					</a4j:commandButton>
-					<br/><br/>
-					<rich:dataTable id="data_table" width="100%"
-						value="#{viewAllStatusAction.getAllStatus().toArray()}" var="stats"
-						styleClass="iteration_inline_tribes">
-						<rich:column sortBy="#{stats.locale}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.Language']}<richext:columnSorter/></f:facet>
-							<h:outputLink rendered="#{identity.loggedIn}"
-								value="#{request.contextPath}/webtrans/Application.seam"
-								title="#{messages['jsf.iteration.stats.OpenInWebEditor']}" styleClass="table_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<f:param name="locale" value="#{locale.language}" />
-								<h:outputText value="#{stats.locale}" />
-								<richext:spacer width="5"/>
-								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
-							</h:outputLink>
-							<s:fragment rendered="#{not identity.loggedIn}" >
-								<h:outputText value="#{stats.locale}" />
-								<richext:spacer width="5"/>
-								<h:outputText value="#{stats.nativeName}" styleClass="nativeName" />
-							</s:fragment>	
-						</rich:column>
-						<rich:column id="files"
-							rendered="#{identity.loggedIn}"
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
-							<f:facet name="header">#{messages['jsf.Documents']}</f:facet>
-							<s:link view="/iteration/files.xhtml" propagation="none" styleClass="table_icon_link">
-								<f:param name="project" value="#{viewAllStatusAction.projectSlug}" />
-								<f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
-								<f:param name="localeId" value="#{stats.locale}" />
-								<span class="icon-docs icon"/>
-							</s:link>
-                            <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
-                                    title="#{messages['jsf.ExportTMXIter']}"
-                                    onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-                                    value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{stats.locale}">
-                                <span class="icon-export-3 icon"/>
-                            </h:outputLink>
-                            <ui:remove>
-                            </ui:remove>
-						</rich:column>
-						<rich:column
-							styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">
-								<h:panelGroup>
-									<h:outputText value="#{messages['jsf.Statistics']}"/>
-									<br/>
-									<h:selectOneMenu id="statsOption" styleClass="headerInput" value="#{viewAllStatusAction.statsOption}">
-		                            	<f:selectItem itemLabel="#{messages['jsf.ByWords']}" itemValue="WORD"/>
-		                            	<f:selectItem itemLabel="#{messages['jsf.Message']}" itemValue="MESSAGE"/>
-										<a4j:ajax event="change" render="data_table" listener="#{viewAllStatusAction.refreshStatistic}"/>
-				        			</h:selectOneMenu>
-								</h:panelGroup>
-							</f:facet>
-							
-							<ui:param name="tstatus" value="#{stats.stats}" />
-							<ui:include src="../WEB-INF/layout/statsbar.xhtml">
-								<ui:param name="status" value="#{tstatus}" />
-							</ui:include>
-						</rich:column>
-						<rich:column sortBy="#{stats.stats.lastTranslatedDate}" styleClass="#{stats.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
-							<f:facet name="header">#{messages['jsf.LastTranslated']}</f:facet>
-							<h:outputText value=" #{stats.stats.lastTranslated}"/>
-						</rich:column>
+      <h:outputText escape="false"
+        value="#{messages['jsf.iteration.ShowAllLocales.title']}"
+        rendered="#{identity.loggedIn}"/>
+      <a4j:commandButton title="#{messages['jsf.RefreshTable']}"
+        action="#{viewAllStatusAction.refreshStatistic}" render="data_table"
+        value="#{messages['jsf.Refresh']}" styleClass="float-right">
+      </a4j:commandButton>
+      <br/><br/>
+      <rich:dataTable id="data_table" width="100%"
+        value="#{viewAllStatusAction.getAllStatus().toArray()}" var="status"
+        styleClass="iteration_inline_tribes">
+        <rich:column sortBy="#{status.locale}"
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+          <f:facet name="header">#{messages['jsf.Language']}
+            <richext:columnSorter/></f:facet>
+          <h:outputLink rendered="#{identity.loggedIn}"
+            value="#{request.contextPath}/webtrans/Application.seam"
+            title="#{messages['jsf.iteration.stats.OpenInWebEditor']}"
+            styleClass="table_link">
+            <f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+            <f:param name="iteration"
+              value="#{viewAllStatusAction.iterationSlug}"/>
+            <f:param name="localeId" value="#{status.locale}"/>
+            <f:param name="locale" value="#{locale.language}"/>
+            <h:outputText value="#{status.locale}"/>
+            <richext:spacer width="5"/>
+            <h:outputText value="#{status.nativeName}" styleClass="nativeName"/>
+          </h:outputLink>
+          <s:fragment rendered="#{not identity.loggedIn}">
+            <h:outputText value="#{status.locale}"/>
+            <richext:spacer width="5"/>
+            <h:outputText value="#{status.nativeName}" styleClass="nativeName"/>
+          </s:fragment>
+        </rich:column>
+        <rich:column id="files"
+          rendered="#{identity.loggedIn}"
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+          <f:facet name="header">#{messages['jsf.Documents']}</f:facet>
+          <s:link view="/iteration/files.xhtml" propagation="none"
+            styleClass="table_icon_link">
+            <f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+            <f:param name="iteration"
+              value="#{viewAllStatusAction.iterationSlug}"/>
+            <f:param name="localeId" value="#{status.locale}"/>
+            <span class="icon-docs icon"/>
+          </s:link>
+        </rich:column>
+        <rich:column id="export"
+          rendered="#{identity.loggedIn}"
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+          <f:facet name="header">#{messages['jsf.ExportTMX']}</f:facet>
+          <h:outputLink id="exportTMXIterLink" styleClass="table_icon_link"
+            title="#{messages['jsf.iteration.ExportTMX.Language']}"
+            onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+            value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}?locale=#{status.locale}">
+            <span class="icon-download icon"/>
+          </h:outputLink>
+        </rich:column>
+        <rich:column
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
+          <f:facet name="header">
+            <h:panelGroup>
+              <h:outputText value="#{messages['jsf.Statistics']}"/>
+              <br/>
+              <h:selectOneMenu id="statsOption" styleClass="headerInput"
+                value="#{viewAllStatusAction.statsOption}">
+                <f:selectItem itemLabel="#{messages['jsf.ByWords']}"
+                  itemValue="WORD"/>
+                <f:selectItem itemLabel="#{messages['jsf.Message']}"
+                  itemValue="MESSAGE"/>
+                <a4j:ajax event="change" render="data_table"
+                  listener="#{viewAllStatusAction.refreshStatistic}"/>
+              </h:selectOneMenu>
+            </h:panelGroup>
+          </f:facet>
 
-					</rich:dataTable>
-				</a4j:region>
-			</h:form>
-	</ui:define>
+          <ui:param name="tstatus" value="#{status.stats}"/>
+          <ui:include src="../WEB-INF/layout/statsbar.xhtml">
+            <ui:param name="status" value="#{tstatus}"/>
+          </ui:include>
+        </rich:column>
+        <rich:column sortBy="#{status.stats.lastTranslatedDate}"
+          styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''} centered">
+          <f:facet name="header">#{messages['jsf.LastTranslated']}
+            <richext:columnSorter/></f:facet>
+          <h:outputText value="#{status.stats.lastTranslated}"/>
+        </rich:column>
 
-	<ui:define name="right_content">
-		<rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-			<f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-			<s:link styleClass="action_link"
-				rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}"
-				value="#{messages['jsf.EditVersion']}" view="/iteration/edit.xhtml"
-				propagation="none">
-				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
-				<f:param name="slug" value="#{viewAllStatusAction.iterationSlug}" />
-			</s:link>
-            <s:link styleClass="action_link"
-                value="#{messages['jsf.SourceDocuments']}" view="/iteration/source_files.xhtml"
-                propagation="none">
-                <f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
-                <f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}" />
+      </rich:dataTable>
+    </a4j:region>
+  </h:form>
+</ui:define>
+
+<ui:define name="right_content">
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    <s:link styleClass="action_link"
+      rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}"
+      value="#{messages['jsf.EditVersion']}" view="/iteration/edit.xhtml"
+      propagation="none">
+      <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
+      <f:param name="slug" value="#{viewAllStatusAction.iterationSlug}"/>
+    </s:link>
+    <s:link styleClass="action_link"
+      value="#{messages['jsf.SourceDocuments']}"
+      view="/iteration/source_files.xhtml"
+      propagation="none">
+      <f:param name="project" value="#{viewAllStatusAction.projectSlug}"/>
+      <f:param name="iteration" value="#{viewAllStatusAction.iterationSlug}"/>
+    </s:link>
+    <s:link styleClass="action_link"
+      value="#{messages['jsf.ConfigFile']}"
+      title="#{messages['jsf.GenerateProjectConfig']}"
+      action="#{configurationAction.downloadGeneralConfig()}">
+      <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
+      <f:param name="iterationSlug"
+        value="#{viewAllStatusAction.iterationSlug}"/>
+    </s:link>
+    <a4j:outputPanel id="copyTransLink">
+      <s:link styleClass="action_link"
+        value="#{messages['jsf.iteration.CopyTrans']}"
+        title="#{messages['jsf.iteration.CopyTrans.title']}"
+        view="/iteration/copy_trans.xhtml"
+        rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not viewAllStatusAction.copyTransRunning}"
+        disabled="#{viewAllStatusAction.copyTransRunning}">
+        <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
+        <f:param name="iterationSlug"
+          value="#{viewAllStatusAction.iterationSlug}"/>
+      </s:link>
+    </a4j:outputPanel>
+    <s:fragment
+      rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
+      <a href="#" class="action_link"
+        onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
+    </s:fragment>
+    <h:outputLink id="exportTMXIterLink" styleClass="action_link"
+      onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+      value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}">
+      <h:outputText value="#{messages['jsf.iteration.ExportTMXIter']}"/>
+    </h:outputLink>
+
+  </rich:panel>
+
+  <rich:panel
+    rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">
+    <f:facet name="header">#{messages['jsf.JoinedGroups']}</f:facet>
+    <ui:repeat value="#{viewAllStatusAction.projectIteration.groups.toArray()}"
+      var="group" styleClass="breadcrumbs">
+      <s:link view="/version-group/version_group.xhtml" propagation="none"
+        value="#{group.name}" styleClass="action_link">
+        <f:param name="versionGroupSlug" value="#{group.slug}"/>
+      </s:link>
+    </ui:repeat>
+  </rich:panel>
+
+  <h:form>
+    <ui:param name="pHandle"
+      value="#{viewAllStatusAction.copyTransProcessHandle}"/>
+    <ui:param name="copyTransRunning"
+      value="#{viewAllStatusAction.copyTransRunning}"/>
+
+    <a4j:outputPanel id="copyTransIndicator" layout="block"
+      rendered="#{identity.loggedIn}">
+
+      <a4j:outputPanel rendered="#{copyTransRunning}">
+        #{messages['jsf.iteration.CopyTrans.inProgress']}
+      </a4j:outputPanel>
+
+      <!-- Using js function due to reRenderAfterComplete not working properly. -->
+      <a4j:jsFunction name="reRenderAfterCopyTrans"
+        render="copyTransIndicator,copyTransLink,blah" limitRender="true"/>
+      <rich:progressBar id="copyTransProgressBar"
+        mode="ajax"
+        value="#{viewAllStatusAction.copyTransProgress}"
+        minValue="0"
+        maxValue="#{viewAllStatusAction.copyTransMaxProgress}"
+        interval="2000"
+        render="progressMssgs"
+        reRenderAfterComplete="copyTransIndicator,copyTransLink"
+        rendered="#{copyTransRunning}"
+        enabled="#{copyTransRunning}"
+        oncomplete="reRenderAfterCopyTrans()">
+      </rich:progressBar>
+      <a4j:outputPanel>
+        #{viewAllStatusAction.copyTransStatusMessage}
+      </a4j:outputPanel>
+      <a4j:outputPanel id="progressMssgs"
+        ajaxRendered="true"
+        layout="block"
+        rendered="#{copyTransRunning}">
+        <s:div style="text-align:right;"
+          rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
+          <s:button value="Cancel"
+            action="#{viewAllStatusAction.cancelCopyTrans}"/>
+        </s:div>
+        <h:outputText value="#{messages['jsf.iteration.CopyTrans.started']}"/>
+        <br/>
+        <h:outputText
+          value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
+        <br/>
+        <h:outputText
+          value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>
+      </a4j:outputPanel>
+    </a4j:outputPanel>
+
+  </h:form>
+
+  <rich:popupPanel id="versionSearchPanel" width="530" height="440"
+    rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
+    <h:form>
+      <h1>#{messages['jsf.group.FindGroup']}</h1>
+
+      <p>
+        <h:inputText value="#{viewAllStatusAction.searchTerm}"
+          onkeydown="return submitSearchOnEnter(event)"/>
+        <a4j:commandButton id="searchBtn"
+          value="#{messages['jsf.Search']}"
+          action="#{viewAllStatusAction.searchGroup}"
+          render="searchResults" status="searchStatus"/>
+
+        <h:commandButton value="#{messages['jsf.Close']}"
+          onclick="#{rich:component('versionSearchPanel')}.hide(); return false;"/>
+
+      </p>
+    </h:form>
+    <a4j:status id="searchStatus" startText="Searching..." stopText=""/>
+    <h:form id="searchResults">
+      <h:outputText id="noResultsMessage"
+        rendered="#{empty viewAllStatusAction.searchResults}"
+        value="#{messages['jsf.NoResultToDisplay']}"/>
+      <a4j:outputPanel layout="block" style="overflow:auto;height:320px"
+        rendered="#{not empty viewAllStatusAction.searchResults}">
+        <rich:dataTable id="resultTable"
+          value="#{viewAllStatusAction.searchResults}" var="group">
+
+          <rich:column sortBy="#{group.name}">
+            <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
+            #{group.name}
+          </rich:column>
+          <rich:column>
+            <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+            #{group.description}
+          </rich:column>
+
+          <rich:column styleClass="centered">
+            <f:facet name="header">
+              <h:outputText value="#{messages['jsf.Actions']}"/>
+            </f:facet>
+
+            <s:link view="/iteration/request_to_join_group.xhtml"
+              rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+              title="#{messages['jsf.SelectGroup']}"
+              value="#{messages['jsf.Select']}" propagation="none"
+              styleClass="button">
+              <f:param name="emailType" value="request_to_join_group"/>
+              <f:param name="versionGroupSlug" value="#{group.slug}"/>
+              <f:param name="projectSlug"
+                value="#{viewAllStatusAction.projectSlug}"/>
+              <f:param name="iterationSlug"
+                value="#{viewAllStatusAction.projectIteration.slug}"/>
+
             </s:link>
-			<s:link styleClass="action_link" 
-				value="#{messages['jsf.ConfigFile']}"
-				title="#{messages['jsf.GenerateProjectConfig']}"
-                action="#{configurationAction.getData()}">
-				<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
-				<f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
-			</s:link>
-            <a4j:outputPanel id="copyTransLink">
-                <s:link styleClass="action_link"
-                        value="#{messages['jsf.iteration.CopyTrans']}"
-                        title="#{messages['jsf.iteration.CopyTrans.title']}"
-                        view="/iteration/copy_trans.xhtml"
-                        rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans') and not viewAllStatusAction.copyTransRunning}"
-                        disabled="#{viewAllStatusAction.copyTransRunning}">
-                    <f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
-                    <f:param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}"/>
-                </s:link>
-            </a4j:outputPanel>
-            <s:fragment rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
-                <a href="#" class="action_link" onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
-            </s:fragment>
-		   <h:outputLink id="exportTMXIterLink" styleClass="action_link"
-		         onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-		         value="#{request.contextPath}/rest/tm/projects/#{viewAllStatusAction.projectSlug}/iterations/#{viewAllStatusAction.iterationSlug}">
-		         <h:outputText value="#{messages['jsf.ExportTMXIter']}"/>
-		   </h:outputLink>
-			   
-		</rich:panel>
 
-		<rich:panel rendered="#{not viewAllStatusAction.projectIteration.groups.isEmpty()}">
-			<f:facet name="header">#{messages['jsf.JoinedGroups']}</f:facet>
-			<ui:repeat value="#{viewAllStatusAction.projectIteration.groups.toArray()}" var="group" styleClass="breadcrumbs">
-				<s:link view="/version-group/version_group.xhtml" propagation="none" value="#{group.name}" styleClass="action_link">
-                   <f:param name="versionGroupSlug" value="#{group.slug}" />
-               </s:link>
-			</ui:repeat>	
-		</rich:panel>
+            <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
+              rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}"/>
 
-        <h:form>
-            <ui:param name="pHandle" value="#{viewAllStatusAction.copyTransProcessHandle}"/>
-            <ui:param name="copyTransRunning" value="#{viewAllStatusAction.copyTransRunning}"/>
-
-            <a4j:outputPanel id="copyTransIndicator" layout="block" rendered="#{identity.loggedIn}">
-
-                <a4j:outputPanel rendered="#{copyTransRunning}">
-                    #{messages['jsf.iteration.CopyTrans.inProgress']}
-                </a4j:outputPanel>
-
-                <!-- Using js function due to reRenderAfterComplete not working properly. -->
-                <a4j:jsFunction name="reRenderAfterCopyTrans" render="copyTransIndicator,copyTransLink,blah" limitRender="true"/>
-                <rich:progressBar id="copyTransProgressBar"
-                                  mode="ajax"
-                                  value="#{viewAllStatusAction.copyTransProgress}"
-                                  minValue="0"
-                                  maxValue="#{viewAllStatusAction.copyTransMaxProgress}"
-                                  interval="2000"
-                                  render="progressMssgs"
-                                  reRenderAfterComplete="copyTransIndicator,copyTransLink"
-                                  rendered="#{copyTransRunning}"
-                                  enabled="#{copyTransRunning}"
-                                  oncomplete="reRenderAfterCopyTrans()">
-                </rich:progressBar>
-                <a4j:outputPanel>
-                    #{viewAllStatusAction.copyTransStatusMessage}
-                </a4j:outputPanel>
-                <a4j:outputPanel id="progressMssgs"
-                                 ajaxRendered="true"
-                                 layout="block"
-                                 rendered="#{copyTransRunning}">
-                    <s:div style="text-align:right;" rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}">
-                        <s:button value="Cancel" action="#{viewAllStatusAction.cancelCopyTrans}" />
-                    </s:div>
-                    #{messages['jsf.iteration.CopyTrans.started']}
-                    <br/>
-                    #{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}
-                    <br/>
-                    #{messages['jsf.iteration.CopyTrans.processedDocuments']}
-                </a4j:outputPanel>
-            </a4j:outputPanel>
-
-        </h:form>
-
-        <rich:popupPanel id="versionSearchPanel" width="530" height="440" rendered="#{identity.loggedIn and s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
-	        <h:form>
-	            <h1>#{messages['jsf.group.FindGroup']}</h1>
-	            <p>
-	                <h:inputText value="#{viewAllStatusAction.searchTerm}"
-	                             onkeydown="return submitSearchOnEnter(event)"/>
-	                <a4j:commandButton id="searchBtn"
-	                                   value="#{messages['jsf.Search']}"
-	                                   action="#{viewAllStatusAction.searchGroup}"
-	                                   render="searchResults" status="searchStatus" />
-	
-	                <h:commandButton value="#{messages['jsf.Close']}"
-	                                   onclick="#{rich:component('versionSearchPanel')}.hide(); return false;" />
-	
-	            </p>
-	        </h:form>
-	        <a4j:status id="searchStatus" startText="Searching..." stopText="" />
-            <h:form id="searchResults">
-                <h:outputText id="noResultsMessage" rendered="#{empty viewAllStatusAction.searchResults}" value="#{messages['jsf.NoResultToDisplay']}" />
-                <a4j:outputPanel layout="block" style="overflow:auto;height:320px" rendered="#{not empty viewAllStatusAction.searchResults}">
-                    <rich:dataTable id="resultTable" value="#{viewAllStatusAction.searchResults}" var="group">
-
-                        <rich:column sortBy="#{group.name}">
-                            <f:facet name="header">#{messages['jsf.GroupName']}</f:facet>
-                            #{group.name}
-                        </rich:column>
-                        <rich:column>
-                            <f:facet name="header">#{messages['jsf.Description']}</f:facet>
-                            #{group.description}
-                        </rich:column>
-
-                        <rich:column styleClass="centered">
-                            <f:facet name="header">
-                                <h:outputText value="#{messages['jsf.Actions']}"/>
-                            </f:facet>
-
-                            <s:link view="/iteration/request_to_join_group.xhtml"
-                                    rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
-                                    title="#{messages['jsf.SelectGroup']}" value="#{messages['jsf.Select']}" propagation="none" styleClass="button">
-                            		<f:param name="emailType" value="request_to_join_group"/>
-                            		<f:param name="versionGroupSlug" value="#{group.slug}"/>
-                            		<f:param name="projectSlug" value="#{viewAllStatusAction.projectSlug}"/>
-                            		<f:param name="iterationSlug" value="#{viewAllStatusAction.projectIteration.slug}"/>
-                            		
-                            </s:link>
-
-                            <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                                          rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}" />
-
-                        </rich:column>
-                    </rich:dataTable>
-                </a4j:outputPanel>
-            </h:form>
-        </rich:popupPanel>
-	</ui:define>
+          </rich:column>
+        </rich:dataTable>
+      </a4j:outputPanel>
+    </h:form>
+  </rich:popupPanel>
+</ui:define>
 
 </ui:composition>

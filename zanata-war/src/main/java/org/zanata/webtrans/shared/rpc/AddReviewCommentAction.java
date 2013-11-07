@@ -25,40 +25,37 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class AddReviewCommentAction extends AbstractWorkspaceAction<AddReviewCommentResult>
-{
-   private static final long serialVersionUID = 1L;
+public class AddReviewCommentAction extends
+        AbstractWorkspaceAction<AddReviewCommentResult> {
+    private static final long serialVersionUID = 1L;
 
-   private String content;
-   private DocumentId documentId;
-   private TransUnitId transUnitId;
+    private String content;
+    private DocumentId documentId;
+    private TransUnitId transUnitId;
 
-   @SuppressWarnings("unused")
-   public AddReviewCommentAction()
-   {
-   }
+    @SuppressWarnings("unused")
+    public AddReviewCommentAction() {
+    }
 
-   public AddReviewCommentAction(TransUnitId transUnitId, String content, DocumentId id)
-   {
-      this.transUnitId = transUnitId;
-      this.content = content;
-      documentId = id;
-   }
+    public AddReviewCommentAction(TransUnitId transUnitId, String content,
+            DocumentId id) {
+        this.transUnitId = transUnitId;
+        this.content = content;
+        documentId = id;
+    }
 
-   public String getContent()
-   {
-      return content;
-   }
+    public String getContent() {
+        return content;
+    }
 
-   public TransUnitId getTransUnitId()
-   {
-      return transUnitId;
-   }
+    public TransUnitId getTransUnitId() {
+        return transUnitId;
+    }
 
-   public DocumentId getDocumentId()
-   {
-      return documentId;
-   }
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 }

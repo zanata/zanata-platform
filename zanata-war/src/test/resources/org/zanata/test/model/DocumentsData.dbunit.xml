@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
 <dataset>
-	<HProject defaultProjectType="Gettext" 
-	    versionNum="1"
-	    id="1"
-		creationDate="2009-09-01 20:30:16"
-		lastChanged="2009-09-01 20:30:16" 
-		slug="sample-project" 
-		description="An example Project"
-		homeContent=""
-		name="Sample Project"
- 	    overrideLocales="FALSE"
- 	    overrideValidations="FALSE"
-        restrictedByRoles="FALSE"
- 	    status="A"
-	/>
-	<!-- Tell DbUnit to delete any existing documents -->
-	<HDocument />
+  <HProject defaultProjectType="Gettext"
+    versionNum="1"
+    id="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    slug="sample-project"
+    description="An example Project"
+    homeContent=""
+    name="Sample Project"
+    overrideLocales="FALSE"
+    restrictedByRoles="FALSE"
+    status="A"
+    />
+  <!-- Tell DbUnit to delete any existing documents -->
+  <HDocument />
 </dataset>

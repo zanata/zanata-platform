@@ -29,95 +29,84 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class TransMemoryQuery implements IsSerializable
-{
-   private SearchType searchType;
-   private List<String> queries;
+public class TransMemoryQuery implements IsSerializable {
+    private SearchType searchType;
+    private List<String> queries;
 
-   @SuppressWarnings("unused")
-   private TransMemoryQuery()
-   {
-   }
+    @SuppressWarnings("unused")
+    private TransMemoryQuery() {
+    }
 
-   public TransMemoryQuery(String query, SearchType searchType)
-   {
-      this.searchType = searchType;
-      this.queries = new ArrayList<String>(1);
-      this.queries.add(query);
-      if (searchType == SearchType.FUZZY_PLURAL)
-      {
-         throw new RuntimeException("Can't use FUZZY_PLURAL SearchType with a single query string");
-      }
-   }
+    public TransMemoryQuery(String query, SearchType searchType) {
+        this.searchType = searchType;
+        this.queries = new ArrayList<String>(1);
+        this.queries.add(query);
+        if (searchType == SearchType.FUZZY_PLURAL) {
+            throw new RuntimeException(
+                    "Can't use FUZZY_PLURAL SearchType with a single query string");
+        }
+    }
 
-   public TransMemoryQuery(List<String> queries, SearchType searchType)
-   {
-      this.searchType = searchType;
-      this.queries = queries;
-      if (searchType != SearchType.FUZZY_PLURAL)
-      {
-         throw new RuntimeException("SearchType must be FUZZY_PLURAL when using multiple query strings");
-      }
-   }
+    public TransMemoryQuery(List<String> queries, SearchType searchType) {
+        this.searchType = searchType;
+        this.queries = queries;
+        if (searchType != SearchType.FUZZY_PLURAL) {
+            throw new RuntimeException(
+                    "SearchType must be FUZZY_PLURAL when using multiple query strings");
+        }
+    }
 
-   public List<String> getQueries()
-   {
-      return queries;
-   }
+    public List<String> getQueries() {
+        return queries;
+    }
 
-   public SearchType getSearchType()
-   {
-      return searchType;
-   }
+    public SearchType getSearchType() {
+        return searchType;
+    }
 
-   @Override
-   public String toString()
-   {
-      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + (queries) + "]";
-      //      return "TransMemoryQuery [searchType=" + searchType + ", queries=" + ShortString.shorten(queries) + "]";
-   }
+    @Override
+    public String toString() {
+        return "TransMemoryQuery [searchType=" + searchType + ", queries="
+                + (queries) + "]";
+        // return "TransMemoryQuery [searchType=" + searchType + ", queries=" +
+        // ShortString.shorten(queries) + "]";
+    }
 
-   @Override
-   public int hashCode()
-   {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((queries == null) ? 0 : queries.hashCode());
-      result = prime * result + ((searchType == null) ? 0 : searchType.hashCode());
-      return result;
-   }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((queries == null) ? 0 : queries.hashCode());
+        result =
+                prime * result
+                        + ((searchType == null) ? 0 : searchType.hashCode());
+        return result;
+    }
 
-   @Override
-   public boolean equals(Object obj)
-   {
-      if (this == obj)
-      {
-         return true;
-      }
-      if (obj == null)
-      {
-         return false;
-      }
-      if (!(obj instanceof TransMemoryQuery))
-      {
-         return false;
-      }
-      TransMemoryQuery other = (TransMemoryQuery) obj;
-      if (queries == null)
-      {
-         if (other.queries != null)
-         {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
-         }
-      }
-      else if (!queries.equals(other.queries))
-      {
-         return false;
-      }
-      return searchType == other.searchType;
-   }
+        }
+        if (!(obj instanceof TransMemoryQuery)) {
+            return false;
+        }
+        TransMemoryQuery other = (TransMemoryQuery) obj;
+        if (queries == null) {
+            if (other.queries != null) {
+                return false;
+            }
+        } else if (!queries.equals(other.queries)) {
+            return false;
+        }
+        return searchType == other.searchType;
+    }
 
 }

@@ -31,50 +31,47 @@ import org.testng.annotations.Test;
 import org.zanata.exception.ChunkUploadException;
 
 @Test(groups = { "unit-tests" })
-public class TranslationDocumentUploadTest extends DocumentUploadTest
-{
+public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
-   private static final String ANY_LOCALE = "es";
-   private static final String ANY_MERGETYPE = "auto";
+    private static final String ANY_LOCALE = "es";
+    private static final String ANY_MERGETYPE = "auto";
 
-   @Mock DocumentUploadUtil documentUploadUtil;
+    @Mock
+    DocumentUploadUtil documentUploadUtil;
 
-   private TranslationDocumentUpload transUpload;
+    private TranslationDocumentUpload transUpload;
 
+    @BeforeMethod
+    public void beforeTest() {
+        MockitoAnnotations.initMocks(this);
+        seam.reset();
+        seam.ignoreNonResolvable()
+                .use("documentUploadUtil", documentUploadUtil).allowCycles();
 
-   @BeforeMethod
-   public void beforeTest()
-   {
-      MockitoAnnotations.initMocks(this);
-      seam.reset();
-      seam.ignoreNonResolvable()
-            .use("documentUploadUtil", documentUploadUtil)
-            .allowCycles();
+        transUpload = seam.autowire(TranslationDocumentUpload.class);
+    }
 
-      transUpload = seam.autowire(TranslationDocumentUpload.class);
-   }
+    @AfterMethod
+    public void clearResponse() {
+        response = null;
+    }
 
-   @AfterMethod
-   public void clearResponse()
-   {
-      response = null;
-   }
+    public void checksValidityAndFailsIfNotValid() {
+        conf = defaultUpload().build();
+        doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
+                documentUploadUtil).failIfUploadNotValid(conf.id,
+                conf.uploadForm);
+        response =
+                transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE,
+                        ANY_MERGETYPE, conf.uploadForm);
+        assertResponseHasStatus(NOT_ACCEPTABLE);
+        assertResponseHasErrorMessage("Test message");
+        assertUploadTerminated();
+    }
 
-   public void checksValidityAndFailsIfNotValid()
-   {
-      conf = defaultUpload().build();
-      doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message"))
-            .when(documentUploadUtil).failIfUploadNotValid(conf.id, conf.uploadForm);
-      response = transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE, ANY_MERGETYPE, conf.uploadForm);
-      assertResponseHasStatus(NOT_ACCEPTABLE);
-      assertResponseHasErrorMessage("Test message");
-      assertUploadTerminated();
-   }
-
-   // TODO damason: test failure when document does not exist
-   // TODO damason: test failure if type is not po or adapter type
-   // TODO damason: test failure if lacking translation upload permission
-   // TODO damason: test basic translation upload successful
-
+    // TODO damason: test failure when document does not exist
+    // TODO damason: test failure if type is not po or adapter type
+    // TODO damason: test failure if lacking translation upload permission
+    // TODO damason: test basic translation upload successful
 
 }

@@ -41,166 +41,179 @@ import org.zanata.webtrans.shared.validation.action.NewlineLeadTrailValidation;
  *
  **/
 @Test(groups = { "unit-tests" })
-public class NewlineLeadTrailValidationTests
-{
-   private NewlineLeadTrailValidation newlineLeadTrailValidation;
+public class NewlineLeadTrailValidationTests {
+    private NewlineLeadTrailValidation newlineLeadTrailValidation;
 
-   private ValidationMessages messages;
+    private ValidationMessages messages;
 
-   @BeforeMethod
-   public void init() throws IOException
-   {
-      messages = Gwti18nReader.create(ValidationMessages.class);
+    @BeforeMethod
+    public void init() throws IOException {
+        messages = Gwti18nReader.create(ValidationMessages.class);
 
-      newlineLeadTrailValidation = new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
-      newlineLeadTrailValidation.getValidationInfo().setEnabled(true);
-   }
+        newlineLeadTrailValidation =
+                new NewlineLeadTrailValidation(ValidationId.NEW_LINE, messages);
+        newlineLeadTrailValidation.getRules().setEnabled(true);
+    }
 
-   @Test
-   public void idIsSet()
-   {
-      assertThat(newlineLeadTrailValidation.getId(), is(ValidationId.NEW_LINE));
-   }
+    @Test
+    public void idIsSet() {
+        assertThat(newlineLeadTrailValidation.getId(),
+                is(ValidationId.NEW_LINE));
+    }
 
-   @Test
-   public void noNewlinesBothMatch()
-   {
-      String source = "String without newlines";
-      String target = "Different newline-devoid string";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void noNewlinesBothMatch() {
+        String source = "String without newlines";
+        String target = "Different newline-devoid string";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(errorList.size(), is(0));
-   }
+        assertThat(errorList.size(), is(0));
+    }
 
-   @Test
-   public void bothNewlinesBothMatch()
-   {
-      String source = "\nString with both newlines\n";
-      String target = "\nDifferent newline-infested string\n";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void bothNewlinesBothMatch() {
+        String source = "\nString with both newlines\n";
+        String target = "\nDifferent newline-infested string\n";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      assertThat(errorList.size(), is(0));
-   }
+        assertThat(errorList.size(), is(0));
+    }
 
-   @Test
-   public void internalNewlineAdded()
-   {
-      String source = "String without an internal newline.";
-      String target = "Different string \n containing a newline";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void internalNewlineAdded() {
+        String source = "String without an internal newline.";
+        String target = "Different string \n containing a newline";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItem(messages.linesAdded(1, 2)));
-      assertThat(errorList.size(), is(1));
-   }
+        assertThat(errorList, hasItem(messages.linesAdded(1, 2)));
+        assertThat(errorList.size(), is(1));
+    }
 
-   @Test
-   public void internalNewlineRemoved()
-   {
-      String source = "String with an \n internal newline.";
-      String target = "Different string lacking the newline";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void internalNewlineRemoved() {
+        String source = "String with an \n internal newline.";
+        String target = "Different string lacking the newline";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItem(messages.linesRemoved(2, 1)));
-      assertThat(errorList.size(), is(1));
-   }
+        assertThat(errorList, hasItem(messages.linesRemoved(2, 1)));
+        assertThat(errorList.size(), is(1));
+    }
 
-   @Test
-   public void missingLeadingNewline()
-   {
-      String source = "\nTesting string with leading new line";
-      String target = "Different string with the newline removed";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void missingLeadingNewline() {
+        String source = "\nTesting string with leading new line";
+        String target = "Different string with the newline removed";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.linesRemoved(2, 1)));
-      assertThat(errorList.size(), is(2));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineMissing(),
+                        messages.linesRemoved(2, 1)));
+        assertThat(errorList.size(), is(2));
+    }
 
-   @Test
-   public void addedLeadingNewline()
-   {
-      String source = "Testing string without a leading new line";
-      String target = "\nDifferent string with a leading newline added";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void addedLeadingNewline() {
+        String source = "Testing string without a leading new line";
+        String target = "\nDifferent string with a leading newline added";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.linesAdded(1, 2)));
-      assertThat(errorList.size(), is(2));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineAdded(),
+                        messages.linesAdded(1, 2)));
+        assertThat(errorList.size(), is(2));
+    }
 
-   @Test
-   public void missingTrailingNewline()
-   {
-      String source = "Testing string with trailing new line\n";
-      String target = "Different string with the newline removed";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void missingTrailingNewline() {
+        String source = "Testing string with trailing new line\n";
+        String target = "Different string with the newline removed";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.trailingNewlineMissing(), messages.linesRemoved(2, 1)));
-      assertThat(errorList.size(), is(2));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.trailingNewlineMissing(),
+                        messages.linesRemoved(2, 1)));
+        assertThat(errorList.size(), is(2));
+    }
 
-   @Test
-   public void addedTrailingNewline()
-   {
-      String source = "Testing string without a trailing new line";
-      String target = "Different string with a trailing newline added\n";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void addedTrailingNewline() {
+        String source = "Testing string without a trailing new line";
+        String target = "Different string with a trailing newline added\n";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.trailingNewlineAdded(), messages.linesAdded(1, 2)));
-      assertThat(errorList.size(), is(2));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.trailingNewlineAdded(),
+                        messages.linesAdded(1, 2)));
+        assertThat(errorList.size(), is(2));
+    }
 
-   @Test
-   public void addedBothNewlines()
-   {
-      String source = "Testing string with no newlines";
-      String target = "\nDifferent string with both added\n";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void addedBothNewlines() {
+        String source = "Testing string with no newlines";
+        String target = "\nDifferent string with both added\n";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineAdded(), messages.linesAdded(1, 3)));
-      assertThat(errorList.size(), is(3));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineAdded(),
+                        messages.trailingNewlineAdded(),
+                        messages.linesAdded(1, 3)));
+        assertThat(errorList.size(), is(3));
+    }
 
-   @Test
-   public void missingBothNewlines()
-   {
-      String source = "\nString with both newlines\n";
-      String target = "Other string with no newlines";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void missingBothNewlines() {
+        String source = "\nString with both newlines\n";
+        String target = "Other string with no newlines";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineMissing(), messages.linesRemoved(3, 1)));
-      assertThat(errorList.size(), is(3));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineMissing(),
+                        messages.trailingNewlineMissing(),
+                        messages.linesRemoved(3, 1)));
+        assertThat(errorList.size(), is(3));
+    }
 
-   @Test
-   public void addedAndMissing1()
-   {
-      String source = "\nString with only leading newline";
-      String target = "Other string with newline trailing\n";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
+    @Test
+    public void addedAndMissing1() {
+        String source = "\nString with only leading newline";
+        String target = "Other string with newline trailing\n";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
 
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineMissing(), messages.trailingNewlineAdded()));
-      assertThat(errorList.size(), is(2));
-   }
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineMissing(),
+                        messages.trailingNewlineAdded()));
+        assertThat(errorList.size(), is(2));
+    }
 
-   @Test
-   public void addedAndMissing2()
-   {
-      String source = "String with trailing newline\n";
-      String target = "\nOther string with newline leading";
-      List<String> errorList = newlineLeadTrailValidation.validate(source, target);
-      
-      assertThat(errorList, hasItems(messages.leadingNewlineAdded(), messages.trailingNewlineMissing()));
-      assertThat(errorList.size(), is(2));
-   }
+    @Test
+    public void addedAndMissing2() {
+        String source = "String with trailing newline\n";
+        String target = "\nOther string with newline leading";
+        List<String> errorList =
+                newlineLeadTrailValidation.validate(source, target);
+
+        assertThat(
+                errorList,
+                hasItems(messages.leadingNewlineAdded(),
+                        messages.trailingNewlineMissing()));
+        assertThat(errorList.size(), is(2));
+    }
 }
-
-
- 

@@ -1,62 +1,67 @@
 <?xml version="1.0" ?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
-	<display-name>Zanata WebTrans GWT Application (dummy mode)</display-name>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+  <display-name>Zanata WebTrans GWT Application (dummy mode)</display-name>
 
-    <filter>
-         <filter-name>gwtCacheControlFilter</filter-name>
-         <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
-    </filter>
+  <filter-mapping>
+    <filter-name>MDCInsertingServletFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
-    <filter-mapping>
-         <filter-name>gwtCacheControlFilter</filter-name>
-         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+  <filter>
+    <filter-name>gwtCacheControlFilter</filter-name>
+    <filter-class>org.zanata.servlet.GWTCacheControlFilter</filter-class>
+  </filter>
 
-	<servlet>
-		<servlet-name>EventService</servlet-name>
-		<servlet-class>
-			de.novanic.eventservice.service.EventServiceImpl
-	  </servlet-class>
-	</servlet>
+  <filter-mapping>
+    <filter-name>gwtCacheControlFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
-	<servlet-mapping>
-		<servlet-name>EventService</servlet-name>
-		<url-pattern>/webtrans/gwteventservice</url-pattern>
-	</servlet-mapping>
+  <servlet>
+    <servlet-name>EventService</servlet-name>
+    <servlet-class>
+      de.novanic.eventservice.service.EventServiceImpl
+    </servlet-class>
+  </servlet>
 
-	<servlet>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>remoteLoggerServiceImpl</servlet-name>
-		<url-pattern>/webtrans/gwt-log</url-pattern>
-	</servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>EventService</servlet-name>
+    <url-pattern>/webtrans/gwteventservice</url-pattern>
+  </servlet-mapping>
 
-	<servlet>
-	  <servlet-name>jUnitHostImpl</servlet-name>
-	  <servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	  <servlet-name>jUnitHostImpl</servlet-name>
-	  <url-pattern>/webtrans/junithost/*</url-pattern>
-	</servlet-mapping>
+  <servlet>
+    <servlet-name>remoteLoggerServiceImpl</servlet-name>
+    <servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>remoteLoggerServiceImpl</servlet-name>
+    <url-pattern>/webtrans/gwt-log</url-pattern>
+  </servlet-mapping>
 
-	<servlet>
-	  <servlet-name>remoteLoggingService</servlet-name>
-	  <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	  <servlet-name>remoteLoggingService</servlet-name>
-	  <url-pattern>/webtrans/logging</url-pattern>
-	</servlet-mapping>
+  <servlet>
+    <servlet-name>jUnitHostImpl</servlet-name>
+    <servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>jUnitHostImpl</servlet-name>
+    <url-pattern>/webtrans/junithost/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>remoteLoggingService</servlet-name>
+    <servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>remoteLoggingService</servlet-name>
+    <url-pattern>/webtrans/logging</url-pattern>
+  </servlet-mapping>
 
 
-	<welcome-file-list>
-		<welcome-file>/webtrans/Application.html</welcome-file>
-	</welcome-file-list>
+  <welcome-file-list>
+    <welcome-file>/webtrans/Application.html</welcome-file>
+  </welcome-file-list>
 
 </web-app>

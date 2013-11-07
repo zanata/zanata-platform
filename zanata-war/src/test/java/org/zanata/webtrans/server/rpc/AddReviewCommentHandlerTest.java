@@ -34,131 +34,181 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.service.SecurityService;
-import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
+import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class AddReviewCommentHandlerTest
-{
-   private AddReviewCommentHandler handler;
+public class AddReviewCommentHandlerTest {
+    private AddReviewCommentHandler handler;
 
-   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-   private org.zanata.service.SecurityService securityServiceImpl;
-   @Mock
-   private org.zanata.dao.TextFlowTargetDAO textFlowTargetDAO;
-   @Mock
-   private org.zanata.model.HAccount authenticatedAccount;
-   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-   private HTextFlowTarget hTextFlowTarget;
-   @Mock
-   private HPerson hPerson;
-   @Mock
-   private HTextFlowTargetReviewComment hReviewComment;
-   private DocumentId documentId = new DocumentId(1L, "my/doc");
-   @Mock
-   private TransUnitTransformer transUnitTransformer;
-   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-   private HTextFlow hTextFlow;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private org.zanata.service.SecurityService securityServiceImpl;
+    @Mock
+    private org.zanata.dao.TextFlowTargetDAO textFlowTargetDAO;
+    @Mock
+    private org.zanata.model.HAccount authenticatedAccount;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private HTextFlowTarget hTextFlowTarget;
+    @Mock
+    private HPerson hPerson;
+    @Mock
+    private HTextFlowTargetReviewComment hReviewComment;
+    private DocumentId documentId = new DocumentId(1L, "my/doc");
+    @Mock
+    private TransUnitTransformer transUnitTransformer;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private HTextFlow hTextFlow;
+    @Mock
+    private LocaleService localeService;
+    @Mock
+    private TranslationWorkspaceManager translationWorkspaceManager;
+    @Mock
+    private TranslationWorkspace workspace;
+    @Mock
+    private ZanataIdentity identity;
+    @Mock
+    private HProject hProject;
 
-   @BeforeMethod
-   public void setUp() throws Exception
-   {
-      MockitoAnnotations.initMocks(this);
-      // @formatter:off
-      handler = SeamAutowire.instance().reset()
-            .use("securityServiceImpl", securityServiceImpl)
-            .use("textFlowTargetDAO", textFlowTargetDAO)
-            .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
-            .use("transUnitTransformer", transUnitTransformer)
-            .autowire(AddReviewCommentHandler.class);
-      // @formatter:on
-   }
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        handler =
+                SeamAutowire
+                        .instance()
+                        .reset()
+                        .use("securityServiceImpl", securityServiceImpl)
+                        .use("textFlowTargetDAO", textFlowTargetDAO)
+                        .use(JpaIdentityStore.AUTHENTICATED_USER,
+                                authenticatedAccount)
+                        .use("transUnitTransformer", transUnitTransformer)
+                        .use("localeServiceImpl", localeService)
+                        .use("translationWorkspaceManager",
+                                translationWorkspaceManager)
+                        .use("identity", identity)
+                        .autowire(AddReviewCommentHandler.class);
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void testExecuteWithBlankComment() throws ActionException
-   {
-      String blankComment = "   \t \n";
-      AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), blankComment, documentId);
+    @Test(expectedExceptions = ActionException.class)
+    public void testExecuteWithBlankComment() throws ActionException {
+        String blankComment = "   \t \n";
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(new TransUnitId(1L), blankComment,
+                        documentId);
 
-      handler.execute(action, null);
-   }
+        handler.execute(action, null);
+    }
 
-   @Test
-   public void testExecute() throws Exception
-   {
-      // Given: we want to add comment to trans unit id 2 and locale id DE
-      String commentContent = "new comment";
-      TransUnitId transUnitId = new TransUnitId(2L);
-      HLocale hLocale = new HLocale(LocaleId.DE);
-      AddReviewCommentAction action = new AddReviewCommentAction(transUnitId, commentContent, documentId);
-      when(authenticatedAccount.getPerson()).thenReturn(hPerson);
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(hLocale);
-      when(textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
-      when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
-      when(hTextFlowTarget.getTextFlow()).thenReturn(hTextFlow);
-      when(transUnitTransformer.transform(hTextFlow, hTextFlowTarget, hLocale)).thenReturn(TestFixture.makeTransUnit(transUnitId.getId()));
-      when(hTextFlowTarget.addReviewComment(commentContent, hPerson)).thenReturn(hReviewComment);
-      when(hReviewComment.getId()).thenReturn(1L);
+    @Test
+    public void testExecute() throws Exception {
+        // Given: we want to add comment to trans unit id 2 and locale id DE
+        String commentContent = "new comment";
+        TransUnitId transUnitId = new TransUnitId(2L);
+        HLocale hLocale = new HLocale(LocaleId.DE);
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(transUnitId, commentContent,
+                        documentId);
+        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+        when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId()))
+                .thenReturn(hProject);
+        when(
+                translationWorkspaceManager.getOrRegisterWorkspace(action
+                        .getWorkspaceId())).thenReturn(workspace);
+        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+                .thenReturn(hLocale);
+        when(
+                textFlowTargetDAO.getTextFlowTarget(transUnitId.getValue(),
+                        hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
+        when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
+        when(hTextFlowTarget.getTextFlow()).thenReturn(hTextFlow);
+        when(
+                transUnitTransformer.transform(hTextFlow, hTextFlowTarget,
+                        hLocale)).thenReturn(
+                TestFixture.makeTransUnit(transUnitId.getId()));
+        when(hTextFlowTarget.addReviewComment(commentContent, hPerson))
+                .thenReturn(hReviewComment);
+        when(hReviewComment.getId()).thenReturn(1L);
 
-      // When:
-      AddReviewCommentResult result = handler.execute(action, null);
+        // When:
+        AddReviewCommentResult result = handler.execute(action, null);
 
-      // Then:
-      InOrder inOrder = Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget);
-      inOrder.verify(textFlowTargetDAO).getTextFlowTarget(transUnitId.getValue(), hLocale.getLocaleId());
-      inOrder.verify(hTextFlowTarget).addReviewComment(commentContent, hPerson);
-      inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
-      inOrder.verify(textFlowTargetDAO).flush();
+        // Then:
+        InOrder inOrder =
+                Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget, workspace,
+                        securityServiceImpl, identity);
+        inOrder.verify(securityServiceImpl).checkWorkspaceStatus(
+                action.getWorkspaceId());
+        inOrder.verify(textFlowTargetDAO).getTextFlowTarget(
+                transUnitId.getValue(), hLocale.getLocaleId());
+        inOrder.verify(identity).checkPermission("review-comment", hLocale,
+                hProject);
+        inOrder.verify(hTextFlowTarget).addReviewComment(commentContent,
+                hPerson);
+        inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
+        inOrder.verify(textFlowTargetDAO).flush();
+        inOrder.verify(workspace).publish(isA(TransUnitUpdated.class));
 
-      assertThat(result.getComment().getId(), Matchers.equalTo(new ReviewCommentId(1L)));
-   }
+        assertThat(result.getComment().getId(),
+                Matchers.equalTo(new ReviewCommentId(1L)));
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void testExecuteWhenTargetIsNull() throws Exception
-   {
-      // Given: we want to add comment to trans unit id 1 and locale id DE but target is null
-      String commentContent = "new comment";
-      AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), commentContent, documentId);
-      when(authenticatedAccount.getPerson()).thenReturn(hPerson);
-      when(hPerson.getName()).thenReturn("John Smith");
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(new HLocale(LocaleId.DE));
-      when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(null);
+    @Test(expectedExceptions = ActionException.class)
+    public void testExecuteWhenTargetIsNull() throws Exception {
+        // Given: we want to add comment to trans unit id 1 and locale id DE but
+        // target is null
+        String commentContent = "new comment";
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(new TransUnitId(1L), commentContent,
+                        documentId);
+        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+        when(hPerson.getName()).thenReturn("John Smith");
+        when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(
+                null);
 
-      // When:
-      handler.execute(action, null);
-   }
+        // When:
+        handler.execute(action, null);
+    }
 
-   @Test(expectedExceptions = ActionException.class)
-   public void testExecuteWhenTargetIsUntranslated() throws Exception
-   {
-      // Given: we want to add comment to trans unit id 1 and locale id DE but target is new
-      String commentContent = "new comment";
-      AddReviewCommentAction action = new AddReviewCommentAction(new TransUnitId(1L), commentContent, documentId);
-      when(authenticatedAccount.getPerson()).thenReturn(hPerson);
-      when(hPerson.getName()).thenReturn("John Smith");
-      when(securityServiceImpl.checkPermission(action, SecurityService.TranslationAction.MODIFY).getLocale()).thenReturn(new HLocale(LocaleId.DE));
-      when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(hTextFlowTarget);
-      when(hTextFlowTarget.getState()).thenReturn(ContentState.New);
+    @Test(expectedExceptions = ActionException.class)
+    public void testExecuteWhenTargetIsUntranslated() throws Exception {
+        // Given: we want to add comment to trans unit id 1 and locale id DE but
+        // target is new
+        String commentContent = "new comment";
+        AddReviewCommentAction action =
+                new AddReviewCommentAction(new TransUnitId(1L), commentContent,
+                        documentId);
+        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        when(authenticatedAccount.getPerson()).thenReturn(hPerson);
+        when(hPerson.getName()).thenReturn("John Smith");
+        when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(
+                hTextFlowTarget);
+        when(hTextFlowTarget.getState()).thenReturn(ContentState.New);
 
-      // When:
-      handler.execute(action, null);
-   }
+        // When:
+        handler.execute(action, null);
+    }
 }

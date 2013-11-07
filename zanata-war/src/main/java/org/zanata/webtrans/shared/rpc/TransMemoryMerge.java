@@ -28,67 +28,61 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.google.common.base.Objects;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitResult>
-{
-   private static final long serialVersionUID = 1L;
-   private int thresholdPercent;
-   private List<TransUnitUpdateRequest> updateRequests;
-   private MergeRule differentProjectRule;
-   private MergeRule differentDocumentRule;
-   private MergeRule differentContextRule;
-   private MergeRule importedMatchRule;
+public class TransMemoryMerge extends
+        AbstractWorkspaceAction<UpdateTransUnitResult> {
+    private static final long serialVersionUID = 1L;
+    private int thresholdPercent;
+    private List<TransUnitUpdateRequest> updateRequests;
+    private MergeRule differentProjectRule;
+    private MergeRule differentDocumentRule;
+    private MergeRule differentContextRule;
+    private MergeRule importedMatchRule;
 
-   @SuppressWarnings("unused")
-   TransMemoryMerge()
-   {
-   }
+    @SuppressWarnings("unused")
+    TransMemoryMerge() {
+    }
 
-   public TransMemoryMerge(int threshold, List<TransUnitUpdateRequest> updateRequests, MergeOptions mergeOptions)
-   {
-      thresholdPercent = threshold;
-      this.updateRequests = updateRequests;
-      this.differentProjectRule = mergeOptions.getDifferentProject();
-      this.differentDocumentRule = mergeOptions.getDifferentDocument();
-      this.differentContextRule = mergeOptions.getDifferentResId();
-      this.importedMatchRule = mergeOptions.getImportedMatch();
-   }
+    public TransMemoryMerge(int threshold,
+            List<TransUnitUpdateRequest> updateRequests,
+            MergeOptions mergeOptions) {
+        thresholdPercent = threshold;
+        this.updateRequests = updateRequests;
+        this.differentProjectRule = mergeOptions.getDifferentProject();
+        this.differentDocumentRule = mergeOptions.getDifferentDocument();
+        this.differentContextRule = mergeOptions.getDifferentResId();
+        this.importedMatchRule = mergeOptions.getImportedMatch();
+    }
 
-   public int getThresholdPercent()
-   {
-      return thresholdPercent;
-   }
+    public int getThresholdPercent() {
+        return thresholdPercent;
+    }
 
-   public MergeRule getDifferentProjectRule()
-   {
-      return differentProjectRule;
-   }
+    public MergeRule getDifferentProjectRule() {
+        return differentProjectRule;
+    }
 
-   public MergeRule getDifferentDocumentRule()
-   {
-      return differentDocumentRule;
-   }
+    public MergeRule getDifferentDocumentRule() {
+        return differentDocumentRule;
+    }
 
-   public MergeRule getDifferentContextRule()
-   {
-      return differentContextRule;
-   }
+    public MergeRule getDifferentContextRule() {
+        return differentContextRule;
+    }
 
-   public MergeRule getImportedMatchRule()
-   {
-      return importedMatchRule;
-   }
+    public MergeRule getImportedMatchRule() {
+        return importedMatchRule;
+    }
 
-   public List<TransUnitUpdateRequest> getUpdateRequests()
-   {
-      return updateRequests;
-   }
+    public List<TransUnitUpdateRequest> getUpdateRequests() {
+        return updateRequests;
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
+    @Override
+    public String toString() {
+        // @formatter:off
       return Objects.toStringHelper(this).
             add("thresholdPercent", thresholdPercent).
             add("updateRequests", updateRequests).
@@ -98,5 +92,5 @@ public class TransMemoryMerge extends AbstractWorkspaceAction<UpdateTransUnitRes
             add("importedMatchRule", getImportedMatchRule()).
             toString();
       // @formatter:on
-   }
+    }
 }

@@ -22,90 +22,82 @@ import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.resources.ValidationMessages;
-import org.zanata.webtrans.client.ui.HasUpdateValidationWarning;
+import org.zanata.webtrans.client.ui.HasUpdateValidationMessage;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
+import org.zanata.webtrans.shared.model.ValidationDisplayRules;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Test(groups = "unit-tests")
-public class ValidationServiceTest
-{
-   public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
-   private ValidationService service;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private TableEditorMessages messages;
-   
-   private ValidationMessages validationMessages;
-   @Mock
-   private HasUpdateValidationWarning validationMessagePanel;
-   
-   @Mock
-   private UserConfigHolder configHolder;
+public class ValidationServiceTest {
+    public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
+    private ValidationService service;
+    @Mock
+    private EventBus eventBus;
 
-   @BeforeMethod
-   public void beforeMethod() throws IOException
-   {
-      MockitoAnnotations.initMocks(this);
+    private ValidationMessages validationMessages;
 
-      validationMessages = Gwti18nReader.create(ValidationMessages.class);
+    @Mock
+    private HasUpdateValidationMessage validationMessagePanel;
 
-      service = new ValidationService(eventBus, messages, validationMessages, configHolder);
-      ValidationFactory validationFactory = new ValidationFactory(validationMessages);
+    @Mock
+    private UserConfigHolder configHolder;
 
-      Collection<ValidationAction> validationList = validationFactory.getAllValidationActions().values();
-      Map<ValidationId, ValidationInfo> validationInfoList = new HashMap<ValidationId, ValidationInfo>();
-      
-      for (ValidationAction action : validationList)
-      {
-         action.getValidationInfo().setEnabled(true);
-         validationInfoList.put(action.getId(), action.getValidationInfo());
-      }
-      service.setValidationRules(validationInfoList);
+    @BeforeMethod
+    public void beforeMethod() throws IOException {
+        MockitoAnnotations.initMocks(this);
 
-      when(messages.notifyValidationError()).thenReturn("validation error");
-      verify(eventBus).addHandler(RunValidationEvent.getType(), service);
-   }
+        validationMessages = Gwti18nReader.create(ValidationMessages.class);
 
-   @Test
-   public void onValidate()
-   {
-      RunValidationEvent event = new RunValidationEvent("source", "target %s", false);
-      event.addWidget(validationMessagePanel);
-      ArrayList<String> errors = Lists.newArrayList(validationMessages.varsAdded(Arrays.asList("%s")), validationMessages.varsAdded(Arrays.asList("%s")));
+        service =
+                new ValidationService(eventBus, validationMessages,
+                        configHolder);
+        ValidationFactory validationFactory =
+                new ValidationFactory(validationMessages);
 
-      service.onValidate(event);
+        Collection<ValidationAction> validationList =
+                validationFactory.getAllValidationActions().values();
+        Map<ValidationId, State> validationStatesMap =
+                new HashMap<ValidationId, State>();
 
-      verify(validationMessagePanel).updateValidationWarning(errors);
-   }
+        for (ValidationAction action : validationList) {
+            action.getRules().setEnabled(true);
+            validationStatesMap.put(action.getId(), action.getState());
+        }
+        service.setValidationRules(validationStatesMap);
 
-   @Test
-   public void canUpdateValidatorStatus()
-   {
-      service.updateStatus(VAL_KEY, false, true);
+        verify(eventBus).addHandler(RunValidationEvent.getType(), service);
+    }
 
-      ValidationAction validationAction = service.getValidationMap().get(VAL_KEY);
+    @Test
+    public void canUpdateValidatorStatus() {
+        service.updateStatus(VAL_KEY, false, true);
 
-      assertThat(validationAction.getValidationInfo().isEnabled(), Matchers.equalTo(false));
-      verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
-   }
+        ValidationAction validationAction =
+                service.getValidationMap().get(VAL_KEY);
 
-   @Test
-   public void canGetValidationList()
-   {
-      List<ValidationAction> validationList = new ArrayList<ValidationAction>(service.getValidationMap().values());
-      
-      assertThat(validationList.size(), Matchers.equalTo(7));
-   }
+        assertThat(validationAction.getRules().isEnabled(),
+                Matchers.equalTo(false));
+        verify(eventBus).fireEvent(RequestValidationEvent.EVENT);
+    }
+
+    @Test
+    public void canGetValidationList() {
+        List<ValidationAction> validationList =
+                new ArrayList<ValidationAction>(service.getValidationMap()
+                        .values());
+
+        assertThat(validationList.size(), Matchers.equalTo(7));
+    }
 
 }

@@ -1,360 +1,407 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:a4j="http://richfaces.org/a4j"
-                xmlns:richext="http://java.sun.com/jsf/composite/richext"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:richext="http://java.sun.com/jsf/composite/richext"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="../WEB-INF/template/template_2x.xhtml">
 
-    <ui:define name="head">
-        <script type="text/javascript">
-            function openUploadDocPanel() {
-                #{rich:component('uploadDocPanel')}.show();
-                checkIfGeneralFileSelected()
-                return false;
-            }
+<ui:define name="head">
+  <script type="text/javascript">
+    function openUploadDocPanel() {
+      #{rich:component('uploadDocPanel')}
+    .
+      show();
+      checkIfGeneralFileSelected()
+      return false;
+    }
 
-            function openUploadPanel(docId) {
-                #{rich:element('uploadPanelHeader')}.innerHTML = '#{messages['jsf.iteration.files.UploadDocument']}: ' + docId;
-                #{rich:element('uploadDocId')}.value = docId;
-                #{rich:component('uploadPanel')}.show();
-                checkIfSpecificFileSelected();
-            }
+    function openUploadPanel(docId) {
+      #{rich:element('uploadPanelHeader')}
+    .
+      innerHTML = '#{messages['jsf.iteration.files.UploadDocument']}: ' + docId;
+      #{rich:element('uploadDocId')}
+    .
+      value = docId;
+      #{rich:component('uploadPanel')}
+    .
+      show();
+      checkIfSpecificFileSelected();
+    }
 
-            function hideUploadPanel() {
-                #{rich:component('uploadPanel')}.hide();
-                return false;
-            }
+    function hideUploadPanel() {
+      #{rich:component('uploadPanel')}
+    .
+      hide();
+      return false;
+    }
 
-            function hideDocUploadPanel() {
-                #{rich:component('uploadDocPanel')}.hide();
-                return false;
-            }
+    function hideDocUploadPanel() {
+      #{rich:component('uploadDocPanel')}
+    .
+      hide();
+      return false;
+    }
 
-            function focusNameFilterInput() {
-                #{rich:element('name_filter_input')}.focus();
-            }
+    function focusNameFilterInput() {
+      #{rich:element('name_filter_input')}
+    .
+      focus();
+    }
 
-            function checkIfFileSelected(fileInput, submitButton) {
-                var noFileSelected = fileInput.value === undefined || fileInput.value === "";
-                submitButton.disabled = noFileSelected;
-            }
+    function checkIfFileSelected(fileInput, submitButton) {
+      var noFileSelected = fileInput.value === undefined ||
+        fileInput.value === "";
+      submitButton.disabled = noFileSelected;
+    }
 
-            function checkIfSpecificFileSelected() {
-                checkIfFileSelected(#{rich:element('specificDocFileInput')},
-                                    #{rich:element('specificDocSubmitUploadButton')});
-            }
+    function checkIfSpecificFileSelected() {
+      checkIfFileSelected(#{rich:element('specificDocFileInput')},
+        #{rich:element('specificDocSubmitUploadButton')});
+    }
 
-            function checkIfGeneralFileSelected() {
-                var fileInput = #{rich:element('generalDocFileUpload')};
-                var submitButton = #{rich:element('generalDocSubmitUploadButton')};
-                var errorMessage = document.getElementById('invalidFilenameError');
-                checkIfFileSelected(fileInput, submitButton);
-                var fileName = fileInput.value;
-                var hasSemicolon = fileName !== undefined &amp;&amp; fileName.lastIndexOf(';') !== -1;
-                if (hasSemicolon) {
-                    errorMessage.style.display = '';
-                    submitButton.disabled = true;
-                } else {
-                    errorMessage.style.display = 'none';
-                }
-            }
+    function checkIfGeneralFileSelected() {
+      var fileInput = #{rich:element('generalDocFileUpload')};
+      var submitButton = #{rich:element('generalDocSubmitUploadButton')};
+      var errorMessage = document.getElementById('invalidFilenameError');
+      checkIfFileSelected(fileInput, submitButton);
+      var fileName = fileInput.value;
+      var hasSemicolon = fileName !== undefined &amp;&amp;
+        fileName.lastIndexOf(';') !== -1;
+      if (hasSemicolon) {
+        errorMessage.style.display = '';
+        submitButton.disabled = true;
+      } else {
+        errorMessage.style.display = 'none';
+      }
+    }
 
-        </script>
-    </ui:define>
+  </script>
+</ui:define>
 
-    <ui:define name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
-    <ui:define name="center_content">
-        <h:form onkeydown="if(event.keyCode==13) { return false;}">
-            <s:token allowMultiplePosts="true"/>
-            <s:div style="text-align:center">
-                <rich:dataScroller id="data_table_scroller" for="data_table"
-                                   fastControls="hide"
-                                   rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
-                    <f:facet name="first">
-                        <h:outputText value="#{messages['jsf.pager.NextPage']}" style="font-size: 0.8em"/>
-                    </f:facet>
-                    <f:facet name="previous">
-                        <h:outputText value="#{messages['jsf.pager.PreviousPage']}" style="font-size: 0.8em"/>
-                    </f:facet>
-                    <f:facet name="next">
-                        <h:outputText value="" styleClass="icon-right-open-1"/>
-                    </f:facet>
-                    <f:facet name="fastforward">
-                        <h:outputText value="" styleClass="icon-fast-fw-1"/>
-                    </f:facet>
-                    <f:facet name="last">
-                        <h:outputText value="" styleClass="icon-to-end"/>
-                    </f:facet>
+<ui:define
+  name="page_title">#{projectIterationFilesAction.projectSlug}:#{projectIterationFilesAction.iterationSlug} - #{messages['jsf.SourceDocuments']}</ui:define>
+<ui:define name="center_content">
+  <h:form id="iterationDocumentsForm"
+    onkeydown="if(event.keyCode==13) { return false;}">
+    <s:token allowMultiplePosts="true"/>
+    <s:div style="text-align:center">
+      <rich:dataScroller id="data_table_scroller" for="data_table"
+        fastControls="hide"
+        rendered="#{projectIterationFilesAction.iterationDocuments.size() > 20}">
+        <f:facet name="first">
+          <h:outputText value="#{messages['jsf.pager.NextPage']}"
+            style="font-size: 0.8em"/>
+        </f:facet>
+        <f:facet name="previous">
+          <h:outputText value="#{messages['jsf.pager.PreviousPage']}"
+            style="font-size: 0.8em"/>
+        </f:facet>
+        <f:facet name="next">
+          <h:outputText value="" styleClass="icon-right-open-1"/>
+        </f:facet>
+        <f:facet name="fastforward">
+          <h:outputText value="" styleClass="icon-fast-fw-1"/>
+        </f:facet>
+        <f:facet name="last">
+          <h:outputText value="" styleClass="icon-to-end"/>
+        </f:facet>
 
-                    <f:facet name="first_disabled">
-                        <h:outputText value="" styleClass="icon-to-start"/>
-                    </f:facet>
-                    <f:facet name="previous_disabled">
-                        <h:outputText value="" styleClass="icon-left-open"/>
-                    </f:facet>
-                    <f:facet name="next_disabled">
-                        <h:outputText value="" styleClass="icon-right-open-1"/>
-                    </f:facet>
-                    <f:facet name="fastforward_disabled">
-                        <h:outputText value="" styleClass="icon-fast-fw-1"/>
-                    </f:facet>
-                    <f:facet name="last_disabled">
-                        <h:outputText value="" styleClass="icon-to-end"/>
-                    </f:facet>
-                </rich:dataScroller>
-            </s:div>
-            <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
-                          rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
-            <rich:dataTable id="data_table" width="100%" value="#{projectIterationFilesAction.iterationDocuments}"
-                            var="doc"
-                            styleClass="iteration_inline_tribes"
-                            rows="20"
-                            rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
-                <rich:column sortOrder="ascending"
-                             styleClass="wrapped">
-                    <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
-                    #{doc.path}
-                </rich:column>
-                <rich:column filterValue="#{projectIterationFilesAction.documentNameFilter}" 
-                			 filterExpression="#{fn:containsIgnoreCase(doc.name, projectIterationFilesAction.documentNameFilter)}"
-                             styleClass="wrapped">
-                    <f:facet name="header">
-                        <h:panelGroup>
-                            <h:outputText value="#{messages['jsf.Name']}"/>
-                            <br/>
-                            <h:inputText value="#{projectIterationFilesAction.documentNameFilter}"
-                                         id="name_filter_input" styleClass="filter_input">
-                                <a4j:ajax event="keyup" render="data_table,data_table_scroller"
-                                             execute="@this"
-                                             oncomplete="focusNameFilterInput()">
-                                    <a4j:attachQueue ignoreDupResponses="true" requestDelay="700" />
-                                </a4j:ajax>
-                            </h:inputText>
-                        </h:panelGroup>
-                    </f:facet>
-                    <h:outputText value="#{doc.name}"/>
-                </rich:column>
+        <f:facet name="first_disabled">
+          <h:outputText value="" styleClass="icon-to-start"/>
+        </f:facet>
+        <f:facet name="previous_disabled">
+          <h:outputText value="" styleClass="icon-left-open"/>
+        </f:facet>
+        <f:facet name="next_disabled">
+          <h:outputText value="" styleClass="icon-right-open-1"/>
+        </f:facet>
+        <f:facet name="fastforward_disabled">
+          <h:outputText value="" styleClass="icon-fast-fw-1"/>
+        </f:facet>
+        <f:facet name="last_disabled">
+          <h:outputText value="" styleClass="icon-to-end"/>
+        </f:facet>
+      </rich:dataScroller>
+    </s:div>
+    <h:outputText value="#{messages['jsf.iteration.files.NoFiles']}"
+      rendered="#{projectIterationFilesAction.iterationDocuments.size() == 0}"/>
+    <rich:dataTable id="data_table" width="100%"
+      value="#{projectIterationFilesAction.iterationDocuments}"
+      var="doc"
+      styleClass="iteration_inline_tribes"
+      rows="20"
+      rendered="#{projectIterationFilesAction.iterationDocuments.size() gt 0}">
+      <rich:column sortOrder="ascending"
+        styleClass="wrapped">
+        <f:facet name="header">#{messages['jsf.iteration.files.Path']}</f:facet>
+        #{doc.path}
+      </rich:column>
+      <rich:column
+        filterValue="#{projectIterationFilesAction.documentNameFilter}"
+        filterExpression="#{fn:containsIgnoreCase(doc.name, projectIterationFilesAction.documentNameFilter)}"
+        styleClass="wrapped">
+        <f:facet name="header">
+          <h:panelGroup>
+            <h:outputText value="#{messages['jsf.Name']}"/>
+            <br/>
+            <h:inputText
+              value="#{projectIterationFilesAction.documentNameFilter}"
+              id="name_filter_input" styleClass="filter_input">
+              <a4j:ajax event="keyup" render="data_table,data_table_scroller"
+                execute="@this"
+                oncomplete="focusNameFilterInput()">
+                <a4j:attachQueue ignoreDupResponses="true" requestDelay="700"/>
+              </a4j:ajax>
+            </h:inputText>
+          </h:panelGroup>
+        </f:facet>
+        <h:outputText value="#{doc.name}"/>
+      </rich:column>
 
-                <rich:column>
-                    <f:facet name="header">
-                        #{messages['jsf.iteration.files.Download']}
-                    </f:facet>
-                    <h:outputLink styleClass="table_link"
-                            rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
-                            value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
-                    </h:outputLink>
-                    <h:outputLink styleClass="table_link"
-                            rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
-                            value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/offlinepot">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{messages['jsf.iteration.files.dotofflinepot']}"
-                                      title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}"/>
-                    </h:outputLink>
-                    <h:outputText value="&#160;&#160;&#160;" />
-                    <h:outputLink rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}" styleClass="table_link" 
-                    		value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
-                        <f:param name="docId" value="#{doc.docId}"/>
-                        <h:outputText value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
-                    </h:outputLink>
-                </rich:column>
+      <rich:column>
+        <f:facet name="header">
+          #{messages['jsf.iteration.files.Download']}
+        </f:facet>
+        <h:outputLink styleClass="table_link"
+          rendered="#{projectIterationFilesAction.isPoDocument(doc.docId)}"
+          value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/pot">
+          <f:param name="docId" value="#{doc.docId}"/>
+          <h:outputText value="#{messages['jsf.iteration.files.dotpot']}"/>
+        </h:outputLink>
+        <h:outputLink styleClass="table_link"
+          rendered="#{!projectIterationFilesAction.isPoDocument(doc.docId)}"
+          value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/offlinepot">
+          <f:param name="docId" value="#{doc.docId}"/>
+          <h:outputText value="#{messages['jsf.iteration.files.dotofflinepot']}"
+            title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}"/>
+        </h:outputLink>
+        <h:outputText value="&#160;&#160;&#160;"/>
+        <h:outputLink
+          rendered="#{projectIterationFilesAction.hasOriginal(doc.path, doc.name)}"
+          styleClass="table_link"
+          value="#{request.contextPath}/rest/file/source/#{projectIterationFilesAction.projectSlug}/#{projectIterationFilesAction.iterationSlug}/raw">
+          <f:param name="docId" value="#{doc.docId}"/>
+          <h:outputText
+            value="#{projectIterationFilesAction.extensionOf(doc.path, doc.name)}"/>
+        </h:outputLink>
+      </rich:column>
 
-                <rich:column rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-                    <f:facet name="header">
-                        #{messages['jsf.Upload']}
-                    </f:facet>
-                    <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;" class="table_link">
-                        #{messages['jsf.Upload']}
-                    </a>
-                </rich:column>
+      <rich:column
+        rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+        <f:facet name="header">
+          #{messages['jsf.Upload']}
+        </f:facet>
+        <a href="#" onclick="openUploadPanel('#{doc.docId}'); return false;"
+          class="table_link">
+          #{messages['jsf.Upload']}
+        </a>
+      </rich:column>
 
-                <rich:column rendered="#{projectIterationFilesAction.documentRemovalAllowed}" styleClass="centered">
-                    <f:facet name="header">
-                        #{messages['jsf.Actions']}
-                    </f:facet>
-                    <h:commandButton value="#{messages['jsf.Delete']}"
-                                     action="#{projectIterationFilesAction.deleteDocument(doc)}"
-                                     onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')"/>
-                </rich:column>
+      <rich:column
+        rendered="#{projectIterationFilesAction.documentRemovalAllowed}"
+        styleClass="centered">
+        <f:facet name="header">
+          #{messages['jsf.Actions']}
+        </f:facet>
+        <h:commandButton value="#{messages['jsf.Delete']}"
+          action="#{projectIterationFilesAction.deleteDocument(doc)}"
+          onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')"/>
+      </rich:column>
 
-                <!-- TODO show stats for document across locales -->
+      <!-- TODO show stats for document across locales -->
 
-            </rich:dataTable>
-        </h:form>
+    </rich:dataTable>
+  </h:form>
 
-        <ui:remove>
-          <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
-        </ui:remove>
-        <rich:popupPanel id="downloadProgressPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}">
+  <ui:remove>
+    <!-- This panel does not appear ever to be shown. Remove in separate commit. -->
+  </ui:remove>
+  <rich:popupPanel id="downloadProgressPanel"
+    moveable="#{false}"
+    resizeable="#{false}"
+    autosized="#{true}">
 
-            <f:facet name="header">
-                <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
-            </f:facet>
-            <h:form>
-                <rich:progressBar id="downloadProgressBar"
-                                  value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
-                                  interval="500"
-                                  label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
-                                  minValue="-1"
-                                  maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
-                                  enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
-                                  ignoreDupResponses="true"
-                                  reRenderAfterComplete="downloadProgressBar">
-                    <f:facet name="complete">
-                        <script type="text/javascript">
-                            #{rich:component('downloadProgressPanel')}.hide();
-                            window.location = "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
-                        </script>
-                    </f:facet>
-                </rich:progressBar>
+    <f:facet name="header">
+      <h:outputText value="#{messages['jsf.iteration.files.ProcessDlgTitle']}"/>
+    </f:facet>
+    <h:form>
+      <rich:progressBar id="downloadProgressBar"
+        value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
+        interval="500"
+        label="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress} of #{projectIterationZipFileAction.zipFilePrepHandle.maxProgress}"
+        minValue="-1"
+        maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
+        enabled="#{projectIterationZipFileAction.zipFilePrepHandle.inProgress}"
+        ignoreDupResponses="true"
+        reRenderAfterComplete="downloadProgressBar">
+        <f:facet name="complete">
+          <script type="text/javascript">
+            #{rich:component('downloadProgressPanel')}.hide();
+            window.location =
+              "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.downloadId}";
+          </script>
+        </f:facet>
+      </rich:progressBar>
 
-                <div align="right">
-                    <a4j:commandButton id="closeProgressPanelButton"
-                                       action="#{projectIterationZipFileAction.cancelFileDownload}"
-                                       value="#{messages['jsf.Cancel']}"
-                                       render="downloadProgressBar">
-                        <rich:componentControl for="downloadProgressPanel" operation="hide" event="onclick"/>
-                    </a4j:commandButton>
-                </div>
-            </h:form>
-         </rich:popupPanel>
+      <div align="right">
+        <a4j:commandButton id="closeProgressPanelButton"
+          action="#{projectIterationZipFileAction.cancelFileDownload}"
+          value="#{messages['jsf.Cancel']}"
+          render="downloadProgressBar">
+          <rich:componentControl for="downloadProgressPanel" operation="hide"
+            event="onclick"/>
+        </a4j:commandButton>
+      </div>
+    </h:form>
+  </rich:popupPanel>
 
 
-    </ui:define>
+</ui:define>
 
-    <ui:define name="right_content">
+<ui:define name="right_content">
 
-        <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-            <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-            <h:form>
+  <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    <h:form id="uploadSidebar">
 
-                <a4j:commandLink styleClass="action_link"
-                                 rendered="#{projectIterationFilesAction.documentUploadAllowed}"
-                                 value="#{messages['jsf.iteration.files.UploadDocument']}"
-                                 title="#{messages['jsf.SupportedUploadFormats']}"
-                                 onclick="openUploadDocPanel()"/>
-            </h:form>
-        </rich:panel>
+      <a4j:commandLink id="uploadDocumentButton"
+        styleClass="action_link"
+        rendered="#{projectIterationFilesAction.documentUploadAllowed}"
+        value="#{messages['jsf.iteration.files.UploadDocument']}"
+        title="#{messages['jsf.SupportedUploadFormats']}"
+        onclick="openUploadDocPanel()"/>
+    </h:form>
+  </rich:panel>
 
-        <!-- uploads a new version of an existing source document -->
-        <rich:popupPanel id="uploadPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}"
-                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-            <f:facet name="header">
-                <h:outputText id="uploadPanelHeader"/>
-            </f:facet>
-            <h:form id="uploadForm" enctype="multipart/form-data">
-                <s:fileUpload id="specificDocFileInput"
-                              accept="*"
-                              onchange="checkIfSpecificFileSelected();"
-                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
-                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
-                <h:inputHidden id="uploadDocId" value="#{projectIterationFilesAction.documentFileUpload.docId}"/>
-                <br/>
-                <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
-                    <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
-                                   var="locale"
-                                   label="#{locale.retrieveNativeName()}"
-                                   itemValue="#{locale.localeId.toString()}"
-                                   escape="true"/>
-                    <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
-                </h:selectOneMenu>
-                <br/>
-                <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
-                                       switchType="client"
-                                       expanded="false">
-                    <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
-                    <br/>
-                    <h:inputTextarea id="adapterParams"
-                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
-                    <br />
-                    <a target="_blank"
-                       href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
-                      #{messages['jsf.iteration.files.CustomParams.linkText']}
-                    </a>
-                </rich:collapsiblePanel>
-                <div align="right">
-                    <h:commandButton id="specificDocSubmitUploadButton"
-                                     value="#{messages['jsf.Upload']}"
-                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
-                    <h:commandButton value="#{messages['jsf.Cancel']}"
-                                     onclick="return hideUploadPanel();"/>
-                </div>
-            </h:form>
-        </rich:popupPanel>
+  <!-- uploads a new version of an existing source document -->
+  <rich:popupPanel id="uploadPanel"
+    moveable="#{false}"
+    resizeable="#{false}"
+    autosized="#{true}"
+    rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+    <f:facet name="header">
+      <h:outputText id="uploadPanelHeader"/>
+    </f:facet>
+    <h:form id="uploadForm" enctype="multipart/form-data">
+      <s:fileUpload id="specificDocFileInput"
+        accept="*"
+        onchange="checkIfSpecificFileSelected();"
+        data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
+        fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+      <h:inputHidden id="uploadDocId"
+        value="#{projectIterationFilesAction.documentFileUpload.docId}"/>
+      <br/>
+      <h:selectOneMenu
+        value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+        <s:selectItems
+          value="#{projectIterationFilesAction.availableSourceLocales}"
+          var="locale"
+          label="#{locale.retrieveNativeName()}"
+          itemValue="#{locale.localeId.toString()}"
+          escape="true"/>
+        <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
+      </h:selectOneMenu>
+      <br/>
+      <rich:collapsiblePanel
+        header="#{messages['jsf.iteration.files.CustomParams']}"
+        switchType="client"
+        expanded="false">
+        <h:outputLabel for="adapterParams"
+          value="#{messages['jsf.iteration.files.CustomParams.description']}"/>
+        <br/>
+        <h:inputTextarea id="adapterParams"
+          value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
+        <br/>
+        <a target="_blank"
+          href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
+          #{messages['jsf.iteration.files.CustomParams.linkText']}
+        </a>
+      </rich:collapsiblePanel>
 
-        <!-- upload a new or existing source document (overwrites document with same name and path) -->
-        <rich:popupPanel id="uploadDocPanel"
-                         moveable="#{false}"
-                         resizeable="#{false}"
-                         autosized="#{true}"
-                         rendered="#{projectIterationFilesAction.documentUploadAllowed}">
-            <f:facet name="header">
-                <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
-            </f:facet>
-            <h:form id="uploadDocForm" enctype="multipart/form-data">
-                <s:fileUpload id="generalDocFileUpload"
-                              accept="*"
-                              onchange="checkIfGeneralFileSelected();"
-                              data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
-                              fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
-                <div id="invalidFilenameError" style="display: none;
+      <div align="right">
+        <h:commandButton id="specificDocSubmitUploadButton"
+          value="#{messages['jsf.Upload']}"
+          action="#{projectIterationFilesAction.uploadDocumentFile}"/>
+        <h:commandButton value="#{messages['jsf.Cancel']}"
+          onclick="return hideUploadPanel();"/>
+      </div>
+    </h:form>
+  </rich:popupPanel>
+
+  <!-- upload a new or existing source document (overwrites document with same name and path) -->
+  <rich:popupPanel id="uploadDocPanel"
+    moveable="#{false}"
+    resizeable="#{false}"
+    autosized="#{true}"
+    rendered="#{projectIterationFilesAction.documentUploadAllowed}">
+    <f:facet name="header">
+      <h:outputText value="#{messages['jsf.iteration.files.UploadDocument']}"/>
+    </f:facet>
+    <h:form id="uploadDocForm" enctype="multipart/form-data">
+      <s:fileUpload id="generalDocFileUpload"
+        accept="*"
+        onchange="checkIfGeneralFileSelected();"
+        data="#{projectIterationFilesAction.documentFileUpload.fileContents}"
+        fileName="#{projectIterationFilesAction.documentFileUpload.fileName}"/>
+
+      <div id="invalidFilenameError" style="display: none;
                                                       color: red;
                                                       padding: 5px;
                                                       margin-bottom: 5px;">
-                    #{messages['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
-                </div>
-                <div>
-                    <h:outputLabel for="docPath" value="#{messages['jsf.iteration.files.DocumentPath']}"/>
-                    <h:inputText id="docPath"
-                                 value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
-                    </h:inputText>
-                </div>
-                <div>
-                    <h:selectOneMenu value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
-                        <s:selectItems value="#{projectIterationFilesAction.availableSourceLocales}"
-                                       var="locale"
-                                       label="#{locale.retrieveNativeName()}"
-                                       itemValue="#{locale.localeId.toString()}"
-                                       escape="true"/>
-                        <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
-                    </h:selectOneMenu>
-                </div>
-                <rich:collapsiblePanel header="#{messages['jsf.iteration.files.CustomParams']}"
-                                       switchType="client"
-                                       expanded="false">
-                    <h:outputLabel for="adapterParams" value="#{messages['jsf.iteration.files.CustomParams.description']}" />
-                    <br/>
-                    <h:inputTextarea id="adapterParams"
-                                     value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
-                    <br />
-                    <a target="_blank"
-                       href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
-                      #{messages['jsf.iteration.files.CustomParams.linkText']}
-                    </a>
-                </rich:collapsiblePanel>
-                <div align="right">
-                    <h:commandButton id="generalDocSubmitUploadButton"
-                                     value="#{messages['jsf.Upload']}"
-                                     action="#{projectIterationFilesAction.uploadDocumentFile}"/>
-                    <h:commandButton value="#{messages['jsf.Cancel']}"
-                                     onclick="return hideDocUploadPanel();"/>
-                </div>
-            </h:form>
-        </rich:popupPanel>
+        #{messages['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
+      </div>
+      <div>
+        <h:outputLabel for="docPath"
+          value="#{messages['jsf.iteration.files.DocumentPath']}"/>
+        <h:inputText id="docPath"
+          value="#{projectIterationFilesAction.documentFileUpload.documentPath}">
+        </h:inputText>
+      </div>
+      <div>
+        <h:selectOneMenu
+          value="#{projectIterationFilesAction.documentFileUpload.sourceLang}">
+          <s:selectItems
+            value="#{projectIterationFilesAction.availableSourceLocales}"
+            var="locale"
+            label="#{locale.retrieveNativeName()}"
+            itemValue="#{locale.localeId.toString()}"
+            escape="true"/>
+          <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
+        </h:selectOneMenu>
+      </div>
+      <rich:collapsiblePanel
+        header="#{messages['jsf.iteration.files.CustomParams']}"
+        switchType="client"
+        expanded="false">
+        <h:outputLabel for="adapterParams"
+          value="#{messages['jsf.iteration.files.CustomParams.description']}"/>
+        <br/>
+        <h:inputTextarea id="adapterParams"
+          value="#{projectIterationFilesAction.documentFileUpload.adapterParams}"/>
+        <br/>
+        <a target="_blank"
+          href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
+          #{messages['jsf.iteration.files.CustomParams.linkText']}
+        </a>
+      </rich:collapsiblePanel>
 
-    </ui:define>
+      <div align="right">
+        <h:commandButton id="generalDocSubmitUploadButton"
+          value="#{messages['jsf.Upload']}"
+          action="#{projectIterationFilesAction.uploadDocumentFile}"/>
+        <h:commandButton id="generalDocCancelUploadButton"
+          value="#{messages['jsf.Cancel']}"
+          onclick="return hideDocUploadPanel();"/>
+      </div>
+    </h:form>
+  </rich:popupPanel>
+
+</ui:define>
 
 </ui:composition>

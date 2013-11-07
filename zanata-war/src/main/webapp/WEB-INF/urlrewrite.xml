@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
-        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+  "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
 
 <urlrewrite>
 
@@ -17,13 +17,13 @@
     <from>.*</from>
     <to last="true" type="temporary-redirect">/robots.txt</to>
   </rule>
-  
+
   <!-- Dashboard Rules -->
   <rule>
     <from casesensitive="true">^/dashboard/?(\?.*)?$</from>
     <to last="true">/dashboard/home.seam$1</to>
   </rule>
-  
+
   <!-- Admin Rules -->
   <rule>
     <from casesensitive="true">^/admin/([^/\?\.]+)(\?.*)?$</from>
@@ -41,15 +41,19 @@
     <from casesensitive="true">^/language/list(.+)?$</from>
     <to last="true">/language/home.seam$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/language/join/(.+)$</from>
-    <to last="true">/language/request_to_join_update_role.seam\?emailType=request_to_join_update_role_language&amp;id=$1</to>
+    <to
+      last="true">/language/request_to_join_update_role.seam\?emailType=request_to_join_update_role_language&amp;id=$1
+    </to>
   </rule>
 
   <rule>
     <from casesensitive="true">/language/contact/(.+)$</from>
-    <to last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1</to>
+    <to
+      last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1
+    </to>
   </rule>
 
   <!-- Project Rules -->
@@ -70,50 +74,70 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/copy_trans_opts/?(\?.*)?$</from>
+    <from
+      casesensitive="true">^/project/view/([^/]+)/copy_trans_opts/?(\?.*)?$
+    </from>
     <to last="true">/project/copy_trans_options.seam\?projectSlug=$1</to>
   </rule>
-  
+
   <!-- Project Iteration Rules -->
   <rule>
-  	<from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
-  	<to last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+    <from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
+    <to last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2
+    </to>
   </rule>
 
   <rule>
-    <from casesensitive="true">^/iteration/source_files/([^/]+)/([^/]+)/?$</from>
-    <to last="true">/iteration/source_files.seam\?project=$1&amp;iteration=$2</to>
+    <from casesensitive="true">^/iteration/source_files/([^/]+)/([^/]+)/?$
+    </from>
+    <to last="true">/iteration/source_files.seam\?project=$1&amp;iteration=$2
+    </to>
   </rule>
 
   <rule>
-    <from casesensitive="true">^/iteration/files/([^/]+)/([^/]+)/([^/]+)/?$</from>
-    <to last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3</to>
-  </rule>
-  
-  <rule>
-  	<from casesensitive="true">^/iteration/edit/([^/]+)/(.+)$</from>
-  	<to last="true">/iteration/edit.seam\?projectSlug=$1&amp;slug=$2</to>
+    <from casesensitive="true">^/iteration/files/([^/]+)/([^/]+)/([^/]+)/?$
+    </from>
+    <to
+      last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3
+    </to>
   </rule>
 
   <rule>
-    <from casesensitive="true">^/iteration/request_join_group/([^/]+)/([^/]+)/([^/]+)/?$</from>
-    <to last="true">/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3</to>
+    <from casesensitive="true">^/iteration/edit/([^/]+)/(.+)$</from>
+    <to last="true">/iteration/edit.seam\?projectSlug=$1&amp;slug=$2</to>
+  </rule>
+
+  <rule>
+    <from
+      casesensitive="true">^/iteration/request_join_group/([^/]+)/([^/]+)/([^/]+)/?$
+    </from>
+    <to
+      last="true">/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3
+    </to>
   </rule>
 
   <rule>
     <from casesensitive="true">^/iteration/copytrans/([^/]+)/(.+)$</from>
-    <to last="true">/iteration/copy_trans.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+    <to
+      last="true">/iteration/copy_trans.seam\?projectSlug=$1&amp;iterationSlug=$2
+    </to>
   </rule>
 
   <!-- zanata.xml -->
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/config/?$</from>
-    <to last="true">/project/project.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData</to>
+    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/config/?$
+    </from>
+    <to
+      last="true">/project/project.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData
+    </to>
   </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/stats/?$</from>
-    <to last="true">/project/iteration_status.seam\?projectSlug=$1&amp;iterationSlug=$2</to>
+    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/stats/?$
+    </from>
+    <to
+      last="true">/project/iteration_status.seam\?projectSlug=$1&amp;iterationSlug=$2
+    </to>
   </rule>
 
   <rule>
@@ -135,7 +159,7 @@
 
   <rule>
     <from casesensitive="true">^/account/sign_in(.+)?$</from>
-    <to last="true">/account/login_input.seam$1</to>
+    <to last="true">/account/login.seam$1</to>
   </rule>
 
   <rule>
@@ -166,7 +190,7 @@
     <from casesensitive="true">^/account/validate_email/([^?]+)(.*)$</from>
     <to last="true">/account/email_validation.seam\?key=$1</to>
   </rule>
- 
+
   <rule>
     <from casesensitive="true">^/account/changepassword(.+)?$</from>
     <to last="true">/account/changepassword.seam$1</to>
@@ -181,12 +205,12 @@
     <from casesensitive="true">^/account/password_reset/(.+)$</from>
     <to last="true">/account/password_reset.seam\?key=$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/account/inactive(.+)?$</from>
     <to last="true">/account/inactive_account.seam$1</to>
   </rule>
-  
+
   <!-- Profile -->
   <rule>
     <from casesensitive="true">^/profile/edit(.+)?$</from>
@@ -231,7 +255,7 @@
     <from casesensitive="true">^/help/view(.+)?$</from>
     <to last="true">/help/view.seam$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/help/contact(.+)?$</from>
     <!-- TODO need to make this smart enough to deal with any query parameters...
@@ -261,21 +285,21 @@
   <rule>
     <from casesensitive="true">^/rest/$</from>
     <to last="true">/rest/index.xrd</to>
-  </rule>  
+  </rule>
 
   <rule>
     <from casesensitive="true">^/rest/(.+)$</from>
     <to last="true">/seam/resource/restv1/$1</to>
   </rule>
-  
+
   <!-- Version group -->
-  
+
   <rule>
     <from casesensitive="true">^/version-group/create(.+)$</from>
     <to last="true">/version-group/create_version_group.seam?$1</to>
   </rule>
-  
-  
+
+
   <rule>
     <from casesensitive="true">^/version-group/list(.+)?$</from>
     <to last="true">/version-group/home.seam$1</to>
@@ -283,46 +307,50 @@
 
   <rule>
     <from casesensitive="true">^/version-group/view/([^/]+)/?(\?(.*))?$</from>
-    <to last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$3</to>
+    <to
+      last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$3
+    </to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/version-group/edit(.+)$</from>
     <to last="true">/version-group/edit.seam?$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/version-group/maintainer/(.+)?$</from>
     <to last="true">/version-group/assign_maintainer.seam$1</to>
   </rule>
-  
-   <rule>
+
+  <rule>
     <from casesensitive="true">^/version-group/join/(.+)$</from>
-    <to last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1</to>
+    <to
+      last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1
+    </to>
   </rule>
-  
+
   <!-- Glossary -->
-<!--   <rule> -->
-<!--     <from casesensitive="true">^/glossary/view(.+)?$</from> -->
-<!--     <to last="true">/glossary/view.seam$1</to> -->
-<!--   </rule> -->
-  
+  <!--   <rule> -->
+  <!--     <from casesensitive="true">^/glossary/view(.+)?$</from> -->
+  <!--     <to last="true">/glossary/view.seam$1</to> -->
+  <!--   </rule> -->
+
   <!--  Editor workspace redirection from Application.html to Application.seam -->
   <rule>
     <from casesensitive="true">^/webtrans/Application.html(.*)$</from>
     <to last="true">/webtrans/Application.seam$1</to>
   </rule>
-  
+
   <rule>
     <from casesensitive="true">^/webtrans/translate(.*)$</from>
     <to last="true">/webtrans/Application.seam$1</to>
   </rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/dashboard/home.seam(.+)?$</from>
     <to>$1/dashboard/$2</to>
   </outbound-rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/admin/(.+).seam(.*)$</from>
     <to>$1/admin/$2$3</to>
@@ -380,10 +408,17 @@
     <from>^(/.+)?/project/home.seam(.+)?$</from>
     <to>$1/project/list$2</to>
   </outbound-rule>
+
+  <!-- repeated to handle either param order (there should be a better way to do this) -->
   <outbound-rule>
     <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/view/$2/$3?$5</to>
   </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/iteration/view.seam\?iterationSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)(&amp;(.+))?$</from>
+    <to>$1/iteration/view/$3/$2?$5</to>
+  </outbound-rule>
+
   <outbound-rule>
     <from>^(/.+)?/iteration/source_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
     <to>$1/iteration/source_files/$2/$3?$5</to>
@@ -453,17 +488,17 @@
     <from>^(/.+)?/account/inactive_account.seam(.+)?$</from>
     <to>$1/account/inactive$2</to>
   </outbound-rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/version-group/home.seam(.+)?$</from>
     <to>$1/version-group/list$2</to>
   </outbound-rule>
-  
-   <outbound-rule>
+
+  <outbound-rule>
     <from>^(/.+)?/version-group/create_version_group.seam(.+)?$</from>
     <to>$1/version-group/create/$2</to>
   </outbound-rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/version-group/version_group.seam\?versionGroupSlug=(.+)$</from>
     <to>$1/version-group/view/$2</to>
@@ -481,12 +516,12 @@
     <from>^(/.+)?/version-group/request_to_join.seam\?emailType=(.+)&amp;versionGroupSlug=(.+)</from>
     <to>$1/version-group/join/$3</to>
   </outbound-rule>
-  
-<!--   <outbound-rule> -->
-<!--     <from>^(/.+)?/glossary/view.seam(.+)?$</from> -->
-<!--     <to>$1/glossary/view$2</to> -->
-<!--   </outbound-rule> -->
-  
+
+  <!--   <outbound-rule> -->
+  <!--     <from>^(/.+)?/glossary/view.seam(.+)?$</from> -->
+  <!--     <to>$1/glossary/view$2</to> -->
+  <!--   </outbound-rule> -->
+
   <outbound-rule>
     <from>^(/.+)?/profile/edit.seam(.+)?$</from>
     <to>$1/profile/edit$2</to>
@@ -513,15 +548,15 @@
   </outbound-rule>
 
   <outbound-rule>
-      <from>^(/.+)?/tm/create.seam(.+)?$</from>
-      <to>$1/tm/create$2</to>
+    <from>^(/.+)?/tm/create.seam(.+)?$</from>
+    <to>$1/tm/create$2</to>
   </outbound-rule>
 
   <outbound-rule>
     <from>^(/.+)?/home.seam(.+)?$</from>
     <to>$1/$2</to>
   </outbound-rule>
-  
+
   <outbound-rule>
     <from>^(/.+)?/help/view.seam(.+)?$</from>
     <to>$1/help/view$2</to>
@@ -531,22 +566,22 @@
     <from>^(/.+)?/error.seam(.+)?$</from>
     <to>$1/error$2</to>
   </outbound-rule>
-  
+
   <!--  Editor workspace redirection from Application.html to Application.seam -->
   <outbound-rule>
     <from>^(/.+)?/webtrans/Application.seam(.*)$</from>
     <to>$1/webtrans/translate$2</to>
   </outbound-rule>
-  
+
   <!-- Removing .seam from rest url  -->
   <outbound-rule>
-  	<from>^(/.+)?/rest/file/translation/(.+).seam(.+)$</from>
-  	<to>$1/rest/file/translation/$2$3</to>
+    <from>^(/.+)?/rest/file/translation/(.+).seam(.+)$</from>
+    <to>$1/rest/file/translation/$2$3</to>
   </outbound-rule>
-  
+
   <outbound-rule>
-  	<from>^(/.+)?/rest/file/source/(.+).seam(.+)$</from>
-  	<to>$1/rest/file/source/$2$3</to>
+    <from>^(/.+)?/rest/file/source/(.+).seam(.+)$</from>
+    <to>$1/rest/file/source/$2$3</to>
   </outbound-rule>
 
   <outbound-rule>
@@ -555,4 +590,3 @@
   </outbound-rule>
 
 </urlrewrite>
-

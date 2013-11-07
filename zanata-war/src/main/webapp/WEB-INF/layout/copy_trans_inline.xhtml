@@ -1,118 +1,136 @@
 <s:div xmlns:s="http://jboss.org/schema/seam/taglib"
-       xmlns:ui="http://java.sun.com/jsf/facelets"
-       xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:rich="http://richfaces.org/rich"
-       xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j">
 
-    <script type="text/javascript">
-        function actionSelected(radio, cellId)
-        {
-            var cell = jQuery('#' + cellId);
-            var radioButton = jQuery(radio);
+  <script type="text/javascript">
+    function actionSelected(radio, cellId) {
+      var cell = jQuery('#' + cellId);
+      var radioButton = jQuery(radio);
 
-            if( radioButton.val() == 'REJECT' )
-            {
-                jQuery(cell).attr('class', 'reject_action');
-                jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.reject']}");
-            }
-            else if( radioButton.val() == 'DOWNGRADE_TO_FUZZY' )
-            {
-                jQuery(cell).attr('class', 'downgrade_action');
-                jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.downgradeToFuzzy']}");
-            }
-            else if( radioButton.val() == 'IGNORE' )
-            {
-                jQuery(cell).attr('class', 'ignore_action');
-                jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.ignore']}");
-            }
-            else
-            {
-                jQuery(cell).attr('class', '');
-                jQuery(cell).html('');
-            }
-        }
+      if (radioButton.val() == 'REJECT') {
+        jQuery(cell).attr('class', 'reject_action');
+        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.reject']}");
+      }
+      else if (radioButton.val() == 'DOWNGRADE_TO_FUZZY') {
+        jQuery(cell).attr('class', 'downgrade_action');
+        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.downgradeToFuzzy']}");
+      }
+      else if (radioButton.val() == 'IGNORE') {
+        jQuery(cell).attr('class', 'ignore_action');
+        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.ignore']}");
+      }
+      else {
+        jQuery(cell).attr('class', '');
+        jQuery(cell).html('');
+      }
+    }
 
-        // initialize selected option colours
-        jQuery( function() {
-            actionSelected(jQuery("input[name='#{rich:clientId('projectMismatchAction')}']:checked"), 'projectMismatchCell');
-            actionSelected(jQuery("input[name='#{rich:clientId('contextMismatchAction')}']:checked"), 'contextMismatchCell');
-            actionSelected(jQuery("input[name='#{rich:clientId('documentIdMismatchAction')}']:checked"), 'documentIdMismatchCell');
-        });
-    </script>
+    // initialize selected option colours
+    jQuery(function () {
+      actionSelected(jQuery("input[name='#{rich:clientId('projectMismatchAction')}']:checked"),
+        'projectMismatchCell');
+      actionSelected(jQuery("input[name='#{rich:clientId('contextMismatchAction')}']:checked"),
+        'contextMismatchCell');
+      actionSelected(jQuery("input[name='#{rich:clientId('documentIdMismatchAction')}']:checked"),
+        'documentIdMismatchCell');
+    });
+  </script>
 
-    <!-- Simply needed to load jQuery -->
-    <rich:jQuery query="jquery" />
+  <!-- Simply needed to load jQuery -->
+  <rich:jQuery query="jquery"/>
 
-    <a4j:outputPanel id="copyTransOptionsPanel">
-        <rich:panel>
+  <a4j:outputPanel id="copyTransOptionsPanel">
+    <rich:panel>
 
-            <table border="0" class="copy_trans_options_table" width="100%" cellspacing="3px">
-                <tr>
-                    <th>#{messages['jsf.iteration.CopyTrans.Condition']}</th>
-                    <th colspan="2">#{messages['jsf.iteration.CopyTrans.Action']}</th>
-                </tr>
-                <tr>
-                    <td width="25%">1. #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
-                    <td class="reject_action" width="15%">
-                        #{messages['jsf.iteration.CopyTrans.Action.reject']}
-                    </td>
-                    <td width="60%">
-                    </td>
-                </tr>
-                <tr>
-                    <td>2. #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
-                    <td id="contextMismatchCell">
-                    </td>
-                    <td>
-                        <h:selectOneRadio id="contextMismatchAction"
-                                          value="#{copyTransOptionsModel.contextMismatchAction}"
-                                          onchange="actionSelected(this, 'contextMismatchCell');">
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
-                        </h:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3. #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
-                    <td id="projectMismatchCell">
-                    </td>
-                    <td>
-                        <h:selectOneRadio id="projectMismatchAction"
-                                          value="#{copyTransOptionsModel.projectMismatchAction}"
-                                          onchange="actionSelected(this, 'projectMismatchCell');">
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
-                        </h:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4. #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
-                    <td id="documentIdMismatchCell">
-                    </td>
-                    <td>
-                        <h:selectOneRadio id="documentIdMismatchAction"
-                                          value="#{copyTransOptionsModel.docIdMismatchAction}"
-                                          onchange="actionSelected(this, 'documentIdMismatchCell');">
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}" itemValue="REJECT"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}" itemValue="DOWNGRADE_TO_FUZZY"/>
-                            <f:selectItem itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}" itemValue="IGNORE"/>
-                        </h:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td>5. #{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
-                    <td class="translated_action">
-                        #{messages['jsf.Translated']}
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-            </table>
+      <table border="0" class="copy_trans_options_table" width="100%"
+        cellspacing="3px">
+        <tr>
+          <th>#{messages['jsf.iteration.CopyTrans.Condition']}</th>
+          <th colspan="2">#{messages['jsf.iteration.CopyTrans.Action']}</th>
+        </tr>
+        <tr>
+          <td
+            width="25%">1. #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
+          <td class="reject_action" width="15%">
+            #{messages['jsf.iteration.CopyTrans.Action.reject']}
+          </td>
+          <td width="60%">
+          </td>
+        </tr>
+        <tr>
+          <td>2. #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
+          <td id="contextMismatchCell">
+          </td>
+          <td>
+            <h:selectOneRadio id="contextMismatchAction"
+              value="#{copyTransOptionsModel.contextMismatchAction}"
+              onchange="actionSelected(this, 'contextMismatchCell');">
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
+                itemValue="REJECT"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
+                itemValue="DOWNGRADE_TO_FUZZY"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
+                itemValue="IGNORE"/>
+            </h:selectOneRadio>
+          </td>
+        </tr>
+        <tr>
+          <td>3. #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
+          <td id="projectMismatchCell">
+          </td>
+          <td>
+            <h:selectOneRadio id="projectMismatchAction"
+              value="#{copyTransOptionsModel.projectMismatchAction}"
+              onchange="actionSelected(this, 'projectMismatchCell');">
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
+                itemValue="REJECT"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
+                itemValue="DOWNGRADE_TO_FUZZY"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
+                itemValue="IGNORE"/>
+            </h:selectOneRadio>
+          </td>
+        </tr>
+        <tr>
+          <td>4. #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
+          <td id="documentIdMismatchCell">
+          </td>
+          <td>
+            <h:selectOneRadio id="documentIdMismatchAction"
+              value="#{copyTransOptionsModel.docIdMismatchAction}"
+              onchange="actionSelected(this, 'documentIdMismatchCell');">
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
+                itemValue="REJECT"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
+                itemValue="DOWNGRADE_TO_FUZZY"/>
+              <f:selectItem
+                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
+                itemValue="IGNORE"/>
+            </h:selectOneRadio>
+          </td>
+        </tr>
+        <tr>
+          <td>5. #{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
+          <td class="translated_action">
+            #{messages['jsf.Translated']}
+          </td>
+          <td>
+          </td>
+        </tr>
+      </table>
 
-        </rich:panel>
-    </a4j:outputPanel>
+    </rich:panel>
+  </a4j:outputPanel>
 
 </s:div>

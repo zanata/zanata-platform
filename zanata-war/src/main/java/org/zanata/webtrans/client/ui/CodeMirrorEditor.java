@@ -18,268 +18,244 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CodeMirrorEditor extends Composite implements TextAreaWrapper
-{
-   private static CodeMirrorEditorUiBinder ourUiBinder = GWT.create(CodeMirrorEditorUiBinder.class);
+public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
+    private static CodeMirrorEditorUiBinder ourUiBinder = GWT
+            .create(CodeMirrorEditorUiBinder.class);
 
-   @UiField
-   TextAreaElement textArea;
+    @UiField
+    TextAreaElement textArea;
 
-   private JavaScriptObject codeMirror;
-   private boolean valueChangeHandlerInitialized;
-   private boolean editing;
-   private final Command onFocusCallback;
+    private JavaScriptObject codeMirror;
+    private boolean valueChangeHandlerInitialized;
+    private boolean editing;
+    private final Command onFocusCallback;
 
+    public CodeMirrorEditor(Command onFocusCallback) {
+        this.onFocusCallback = onFocusCallback;
+        initWidget(ourUiBinder.createAndBindUi(this));
+    }
 
-   public CodeMirrorEditor(Command onFocusCallback)
-   {
-      this.onFocusCallback = onFocusCallback;
-      initWidget(ourUiBinder.createAndBindUi(this));
-   }
+    // see http://codemirror.net/doc/manual.html#usage
+    private native JavaScriptObject initCodeMirror(TextAreaElement element) /*-{
+    var self = this;
 
-   // see http://codemirror.net/doc/manual.html#usage
-   private native JavaScriptObject initCodeMirror(Element element) /*-{
-      var self = this;
+    var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
+      lineNumbers : true,
+      lineWrapping : true,
+      disableSpellcheck : false,
+      mode : "visibleSpace",
+      value : element.value
+    });
+    codeMirrorEditor.on("focus", function() {
+      self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
+    });
 
-      var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
-         lineNumbers: true,
-         lineWrapping: true,
-         disableSpellcheck: false,
-         mode: "visibleSpace",
-         value: element.value,
-         onFocus: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onFocus()();
-         },
-         onBlur: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onBlur()();
-         },
-         onChange: function() {
-            self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
-         }
+    codeMirrorEditor.on("blur", function() {
+      self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onBlur()();
+    });
 
-      });
+    codeMirrorEditor.on("change", function() {
+      self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
+    });
 
-      return codeMirrorEditor;
+    return codeMirrorEditor;
 
-   }-*/;
+    }-*/;
 
-   @Override
-   public void setText(String text)
-   {
-      if (codeMirror == null)
-      {
-         textArea.setValue(text);
-         codeMirror = initCodeMirror(getElement());
-      }
-      setCodeMirrorContent(text);
-   }
+    @Override
+    public void setText(String text) {
+        if (codeMirror == null) {
+            textArea.setValue(text);
+            codeMirror = initCodeMirror(textArea);
+        }
+        setCodeMirrorContent(text);
+    }
 
-   @Override
-   public String getText()
-   {
-      return getCodeMirrorContent();
-   }
+    @Override
+    public String getText() {
+        return getCodeMirrorContent();
+    }
 
-   @Override
-   protected void onLoad()
-   {
-      super.onLoad();
-      if (codeMirror == null)
-      {
-         codeMirror = initCodeMirror(getElement());
-      }
-   }
+    @Override
+    protected void onLoad() {
+        super.onLoad();
+        if (codeMirror == null) {
+            codeMirror = initCodeMirror(textArea);
+        }
+    }
 
-   // callback function for the code mirror instance. Gets called when code mirror editor is on focus.
-   private void onFocus()
-   {
-      if (!editing)
-      {
-         editing = true;
-         // this is to ensure row selection (on right click)
-         onFocusCallback.execute();
-      }
-   }
+    // callback function for the code mirror instance. Gets called when code
+    // mirror editor is on focus.
+    private void onFocus() {
+        if (!editing) {
+            editing = true;
+            // this is to ensure row selection (on right click)
+            onFocusCallback.execute();
+        }
+    }
 
-   // callback function for the code mirror instance. Gets called when code mirror editor is on blur.
-   private void onBlur()
-   {
-      NativeEvent blurEvent = Document.get().createBlurEvent();
-      BlurEvent.fireNativeEvent(blurEvent, this, this.getElement());
-   }
+    // callback function for the code mirror instance. Gets called when code
+    // mirror editor is on blur.
+    private void onBlur() {
+        NativeEvent blurEvent = Document.get().createBlurEvent();
+        BlurEvent.fireNativeEvent(blurEvent, this, this.getElement());
+    }
 
-   // callback function for the code mirror instance. Gets called when code mirror editor content has changed.
-   private void onChange()
-   {
-      ValueChangeEvent.fire(this, getCodeMirrorContent());
-   }
+    // callback function for the code mirror instance. Gets called when code
+    // mirror editor content has changed.
+    private void onChange() {
+        ValueChangeEvent.fire(this, getCodeMirrorContent());
+    }
 
-   private native String getCodeMirrorContent() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      return editor.getValue();
-   }-*/;
+    private native String getCodeMirrorContent() /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    return editor.getValue();
+    }-*/;
 
-   private native void setCodeMirrorContent(String text) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      if (editor)
-      {
-         editor.setValue(text);
-      }
-   }-*/;
+    private native void setCodeMirrorContent(String text) /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    if (editor) {
+      editor.setValue(text);
+    }
+    }-*/;
 
-   private native void focusEditor() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      editor.focus();
-   }-*/;
+    private native void focusEditor() /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    editor.focus();
+    }-*/;
 
-   @Override
-   public void setReadOnly(boolean readOnly)
-   {
-      if (readOnly)
-      {
-         setEditorOption("readOnly", "nocursor");
-      }
-      else
-      {
-         setEditorOption("readOnly", "false");
-      }
-   }
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        if (readOnly) {
+            setEditorOption("readOnly", "nocursor");
+        } else {
+            setEditorOption("readOnly", "false");
+        }
+    }
 
-   private native void setEditorOption(String option, String value) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      if (editor)
-      {
-         editor.setOption(option, value);
-      }
-   }-*/;
+    private native void setEditorOption(String option, String value) /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    if (editor) {
+      editor.setOption(option, value);
+    }
+    }-*/;
 
-   private native String getEditorOption(String option, String defaultValue) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      if (editor)
-      {
-         return '' + editor.getOption(option);
-      }
-      return defaultValue;
-   }-*/;
+    private native String getEditorOption(String option, String defaultValue) /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    if (editor) {
+      return '' + editor.getOption(option);
+    }
+    return defaultValue;
+    }-*/;
 
-   @Override
-   public boolean isReadOnly()
-   {
-      return Boolean.parseBoolean(getEditorOption("readOnly", "false"));
-   }
+    @Override
+    public boolean isReadOnly() {
+        return Boolean.parseBoolean(getEditorOption("readOnly", "false"));
+    }
 
-   @Override
-   public int getCursorPos()
-   {
-      return getCodeMirrorCursorPos();
-   }
+    @Override
+    public int getCursorPos() {
+        return getCodeMirrorCursorPos();
+    }
 
-   private native int getCodeMirrorCursorPos() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      var pos = editor.getCursor();
-      return editor.indexFromPos(pos);
-   }-*/;
+    private native int getCodeMirrorCursorPos() /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    var pos = editor.getCursor();
+    return editor.indexFromPos(pos);
+    }-*/;
 
-   @Override
-   public void setCursorPos(int pos)
-   {
-      setCodeMirrorCursorPos(pos);
-   }
+    @Override
+    public void setCursorPos(int pos) {
+        setCodeMirrorCursorPos(pos);
+    }
 
-   private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      var pos = editor.posFromIndex(cursorIndex);
-      editor.setCursor(pos);
-   }-*/;
+    private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    var pos = editor.posFromIndex(cursorIndex);
+    editor.setCursor(pos);
+    }-*/;
 
-   @Override
-   public void highlight(String term)
-   {
-      if (!Strings.isNullOrEmpty(term))
-      {
-         codeMirrorHighlight(term);
-      }
-   }
+    @Override
+    public void highlight(String term) {
+        if (!Strings.isNullOrEmpty(term)) {
+            codeMirrorHighlight(term);
+        }
+    }
 
-   private native void codeMirrorHighlight(String term) /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
-      var searchCursor = editor.getSearchCursor(term, {line: 0, ch: 0}, true);
-      while(searchCursor.findNext())
-      {
-         editor.markText(searchCursor.from(), searchCursor.to(), "CodeMirror-searching");
-      }
-   }-*/;
+    private native void codeMirrorHighlight(String term) /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    var searchCursor = editor.getSearchCursor(term, {
+      line : 0,
+      ch : 0
+    }, true);
+    while (searchCursor.findNext()) {
+      editor.markText(searchCursor.from(), searchCursor.to(),
+          "CodeMirror-searching");
+    }
+    }-*/;
 
-   @Override
-   public void refresh()
-   {
-      refreshCodeMirror();
-   }
+    @Override
+    public void refresh() {
+        refreshCodeMirror();
+    }
 
-   private native void refreshCodeMirror() /*-{
-      var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
+    private native void refreshCodeMirror() /*-{
+    var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
 
-      if (editor)
-      {
-         editor.refresh();
-      }
-   }-*/;
+    if (editor) {
+      editor.refresh();
+    }
+    }-*/;
 
-   @Override
-   public HandlerRegistration addChangeHandler(ChangeHandler handler) {
-      return addDomHandler(handler, ChangeEvent.getType());
-   }
+    @Override
+    public HandlerRegistration addChangeHandler(ChangeHandler handler) {
+        return addDomHandler(handler, ChangeEvent.getType());
+    }
 
-   @Override
-   public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-      // Initialization code
-      if (!valueChangeHandlerInitialized) {
-         valueChangeHandlerInitialized = true;
-         addChangeHandler(new ChangeHandler()
-         {
-            public void onChange(ChangeEvent event)
-            {
-               ValueChangeEvent.fire(CodeMirrorEditor.this, getText());
-            }
-         });
-      }
-      return addHandler(handler, ValueChangeEvent.getType());
-   }
+    @Override
+    public HandlerRegistration addValueChangeHandler(
+            ValueChangeHandler<String> handler) {
+        // Initialization code
+        if (!valueChangeHandlerInitialized) {
+            valueChangeHandlerInitialized = true;
+            addChangeHandler(new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    ValueChangeEvent.fire(CodeMirrorEditor.this, getText());
+                }
+            });
+        }
+        return addHandler(handler, ValueChangeEvent.getType());
+    }
 
-   @Override
-   public void setEditing(boolean isEditing)
-   {
-      // if set for editing and is not already editing, we want to focus code mirror editor
-      if (isEditing && !editing)
-      {
-         focusEditor();
-      }
-      editing = isEditing;
-   }
+    @Override
+    public void setEditing(boolean isEditing) {
+        // if set for editing and is not already editing, we want to focus code
+        // mirror editor
+        if (isEditing && !editing) {
+            focusEditor();
+        }
+        editing = isEditing;
+    }
 
-   @Override
-   public boolean isEditing()
-   {
-      return editing;
-   }
+    @Override
+    public boolean isEditing() {
+        return editing;
+    }
 
-   @Override
-   public HandlerRegistration addBlurHandler(BlurHandler handler)
-   {
-      return addHandler(handler, BlurEvent.getType());
-   }
+    @Override
+    public HandlerRegistration addBlurHandler(BlurHandler handler) {
+        return addHandler(handler, BlurEvent.getType());
+    }
 
-   @Override
-   public HandlerRegistration addFocusHandler(FocusHandler handler)
-   {
-      return addHandler(handler, FocusEvent.getType());
-   }
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+        return addHandler(handler, FocusEvent.getType());
+    }
 
-   interface CodeMirrorEditorUiBinder extends UiBinder<Widget, CodeMirrorEditor>
-   {
-   }
+    interface CodeMirrorEditorUiBinder extends
+            UiBinder<Widget, CodeMirrorEditor> {
+    }
 }

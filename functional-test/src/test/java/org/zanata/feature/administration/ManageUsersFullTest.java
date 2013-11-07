@@ -23,39 +23,44 @@ package org.zanata.feature.administration;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.hamcrest.Matchers;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ManageUsersFullTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(ResetDatabaseRule.Config.Empty);
-   private HomePage homePage;
+public class ManageUsersFullTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.Empty);
+    private DashboardPage dashboardPage;
 
-   @Before
-   public void before()
-   {
-      homePage = new LoginWorkFlow().signIn("admin", "admin");
-   }
+    @Before
+    public void before() {
+        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+    }
 
-   @Test
-   public void changeAUsersUsername()
-   {
-      String username = "administratornamechange";
-      ManageUserPage manageUserPage = homePage.goToAdministration().goToManageUserPage();
+    @Test
+    public void changeAUsersUsername() {
+        String username = "administratornamechange";
+        ManageUserPage manageUserPage =
+                dashboardPage.goToAdministration().goToManageUserPage();
 
-      ManageUserAccountPage manageUserAccountPage = manageUserPage.editUserAccount("admin");
-      manageUserPage = manageUserAccountPage.clearFields().enterUsername(username).saveUser();
-      assertThat("Administrator is displayed", manageUserPage.getUserList(), Matchers.hasItem(username));
-   }
+        ManageUserAccountPage manageUserAccountPage =
+                manageUserPage.editUserAccount("admin");
+        manageUserPage =
+                manageUserAccountPage.clearFields().enterUsername(username)
+                        .saveUser();
+        assertThat("Administrator is displayed", manageUserPage.getUserList(),
+                Matchers.hasItem(username));
+    }
 
 }

@@ -30,94 +30,77 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.ScrollableResults;
 
 @Slf4j
-class ScrollableResultsIterator implements Iterator<Object[]>, Closeable
-{
-   private boolean closed;
-   private Object[] nextRow = null;
-   private final ScrollableResults scrollableResults;
+class ScrollableResultsIterator implements Iterator<Object[]>, Closeable {
+    private boolean closed;
+    private Object[] nextRow = null;
+    private final ScrollableResults scrollableResults;
 
-   public ScrollableResultsIterator(ScrollableResults scrollableResults)
-   {
-      this.scrollableResults = scrollableResults;
-   }
+    public ScrollableResultsIterator(ScrollableResults scrollableResults) {
+        this.scrollableResults = scrollableResults;
+    }
 
-   @Override
-   public void close()
-   {
-      if (!closed)
-      {
-         scrollableResults.close();
-         closed = true;
-      }
-   }
+    @Override
+    public void close() {
+        if (!closed) {
+            scrollableResults.close();
+            closed = true;
+        }
+    }
 
-   @Override
-   protected void finalize() throws Throwable
-   {
-      close();
-   }
+    @Override
+    protected void finalize() throws Throwable {
+        close();
+    }
 
-   @Override
-   public boolean hasNext()
-   {
-      try
-      {
-         if (nextRow != null)
-         {
-            return true;
-         }
-         if (closed)
-         {
-            return false;
-         }
-         if (scrollableResults.next())
-         {
-            nextRow = scrollableResults.get();
-            return true;
-         }
-         else
-         {
-            close();
-            return false;
-         }
-      }
-      catch (RuntimeException e)
-      {
-         // UGLY hack to work around https://hibernate.atlassian.net/browse/HHH-2811
-         if (e.getMessage() != null &&
-               (e.getMessage().contains("could not perform sequential read of results (forward)") ||
-                e.getMessage().contains("could not doAfterTransactionCompletion sequential read of results (forward)")))
-         {
-            log.debug("assuming empty ResultSet", e);
-            close();
-            return false;
-         }
-         else
-         {
-            throw e;
-         }
-      }
-   }
+    @Override
+    public boolean hasNext() {
+        try {
+            if (nextRow != null) {
+                return true;
+            }
+            if (closed) {
+                return false;
+            }
+            if (scrollableResults.next()) {
+                nextRow = scrollableResults.get();
+                return true;
+            } else {
+                close();
+                return false;
+            }
+        } catch (RuntimeException e) {
+            // UGLY hack to work around
+            // https://hibernate.atlassian.net/browse/HHH-2811
+            if (e.getMessage() != null
+                    && (e.getMessage()
+                            .contains(
+                                    "could not perform sequential read of results (forward)") || e
+                            .getMessage()
+                            .contains(
+                                    "could not doAfterTransactionCompletion sequential read of results (forward)"))) {
+                log.debug("assuming empty ResultSet", e);
+                close();
+                return false;
+            } else {
+                throw e;
+            }
+        }
+    }
 
-   @Override
-   public Object[] next()
-   {
-      if (hasNext())
-      {
-         Object[] next = nextRow;
-         nextRow = null;
-         return next;
-      }
-      else
-      {
-         throw new NoSuchElementException();
-      }
-   }
+    @Override
+    public Object[] next() {
+        if (hasNext()) {
+            Object[] next = nextRow;
+            nextRow = null;
+            return next;
+        } else {
+            throw new NoSuchElementException();
+        }
+    }
 
-   @Override
-   public void remove()
-   {
-      throw new UnsupportedOperationException();
-   }
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 
 }

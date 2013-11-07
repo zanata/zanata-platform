@@ -8,45 +8,44 @@ import org.zanata.common.ContentState;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 /**
-* @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
-public interface TransMemoryDetailsDisplay extends WidgetDisplay
-{
-   void hide();
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public interface TransMemoryDetailsDisplay extends WidgetDisplay {
+    void hide();
 
-   void show();
+    void show();
 
-   int getSelectedDocumentIndex();
+    int getSelectedDocumentIndex();
 
-   void clearDocs();
+    void clearDocs();
 
-   void addDoc(String text);
+    void addDoc(String text);
 
-   void setSourceComment(String sourceComment);
+    void setSourceComment(String sourceComment);
 
-   void setTargetComment(String targetComment);
+    void setTargetComment(String targetComment);
 
-   void setProjectIterationName(String projectIterationName);
+    void setProjectIterationName(String projectIterationName);
 
-   void setDocumentName(String documentName);
+    void setDocumentName(String documentName);
 
-   void setLastModified(String lastModifiedBy, Date lastModifiedDate);
+    void setLastModified(String lastModifiedBy, Date lastModifiedDate);
 
-   void clearSourceAndTarget();
+    void clearSourceAndTarget();
 
-   void setSource(List<String> sourceContents);
+    void setSource(List<String> sourceContents);
 
-   void setTarget(List<String> targetContents);
+    void setTarget(List<String> targetContents);
 
-   void setListener(Listener listener);
+    void setListener(Listener listener);
 
-   interface Listener
-   {
+    interface Listener {
 
-      void dismissTransMemoryDetails();
+        void dismissTransMemoryDetails();
 
-      void onDocumentListBoxChanged();
-   }
+        void onDocumentListBoxChanged();
+    }
 
-   void setState(ContentState state);
+    void setState(ContentState state);
 }

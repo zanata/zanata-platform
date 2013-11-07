@@ -21,124 +21,107 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class NewlineLeadTrailValidation extends AbstractValidationAction
-{
-   public NewlineLeadTrailValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.newLineValidatorDesc(), new ValidationInfo(true), messages);
-   }
+public class NewlineLeadTrailValidation extends AbstractValidationAction {
+    public NewlineLeadTrailValidation(ValidationId id,
+            ValidationMessages messages) {
+        super(id, messages.newLineValidatorDesc(), messages);
+    }
 
-   public NewlineLeadTrailValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
-   }
+    private final static String leadNewlineRegex = "^\n";
+    private final static String endNewlineRegex = "\n$";
+    private final static String newlineRegex = "\n";
 
-   private final static String leadNewlineRegex = "^\n";
-   private final static String endNewlineRegex = "\n$";
-   private final static String newlineRegex = "\n";
+    private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
+    private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
 
-   private final static RegExp leadRegExp = RegExp.compile(leadNewlineRegex);
-   private final static RegExp endRegExp = RegExp.compile(endNewlineRegex);
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-   @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
-   {
-      if (notShareLeading(source, target))
-      {
-         errorList.add(getMessages().leadingNewlineMissing());
-      }
+        if (notShareLeading(source, target)) {
+            errors.add(getMessages().leadingNewlineMissing());
+        }
 
-      if (notShareLeading(target, source))
-      {
-         errorList.add(getMessages().leadingNewlineAdded());
-      }
+        if (notShareLeading(target, source)) {
+            errors.add(getMessages().leadingNewlineAdded());
+        }
 
-      if (notShareTrailing(source, target))
-      {
-         errorList.add(getMessages().trailingNewlineMissing());
-      }
+        if (notShareTrailing(source, target)) {
+            errors.add(getMessages().trailingNewlineMissing());
+        }
 
-      if (notShareTrailing(target, source))
-      {
-         errorList.add(getMessages().trailingNewlineAdded());
-      }
+        if (notShareTrailing(target, source)) {
+            errors.add(getMessages().trailingNewlineAdded());
+        }
 
-      int sourceLines = 1 + countNewlines(source);
-      int targetLines = 1 + countNewlines(target);
-      if (sourceLines < targetLines)
-      {
-         errorList.add(getMessages().linesAdded(sourceLines, targetLines));
-      }
+        int sourceLines = 1 + countNewlines(source);
+        int targetLines = 1 + countNewlines(target);
+        if (sourceLines < targetLines) {
+            errors.add(getMessages().linesAdded(sourceLines, targetLines));
+        }
 
-      if (targetLines < sourceLines)
-      {
-         errorList.add(getMessages().linesRemoved(sourceLines, targetLines));
-      }
-   }
+        if (targetLines < sourceLines) {
+            errors.add(getMessages().linesRemoved(sourceLines, targetLines));
+        }
 
-   private boolean notShareTrailing(String source, String target)
-   {
-      return !shareTrailing(source, target);
-   }
+        return errors;
+    }
 
-   private boolean notShareLeading(String source, String target)
-   {
-      return !shareLeading(source, target);
-   }
+    private boolean notShareTrailing(String source, String target) {
+        return !shareTrailing(source, target);
+    }
 
-   /**
-    * @return false if base has a leading newline and test does not, true
-    *         otherwise
-    */
-   private boolean shareLeading(String base, String test)
-   {
-      if (leadRegExp.test(base))
-      {
-         return leadRegExp.test(test);
-      }
-      // no newline so can't fail
-      return true;
-   }
+    private boolean notShareLeading(String source, String target) {
+        return !shareLeading(source, target);
+    }
 
-   /**
-    * @return false if base has a trailing newline and test does not, true
-    *         otherwise
-    */
-   private boolean shareTrailing(String base, String test)
-   {
-      if (endRegExp.test(base))
-      {
-         return endRegExp.test(test);
-      }
-      // no newline so can't fail
-      return true;
-   }
+    /**
+     * @return false if base has a leading newline and test does not, true
+     *         otherwise
+     */
+    private boolean shareLeading(String base, String test) {
+        if (leadRegExp.test(base)) {
+            return leadRegExp.test(test);
+        }
+        // no newline so can't fail
+        return true;
+    }
 
-   private int countNewlines(String string)
-   {
-      RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+    /**
+     * @return false if base has a trailing newline and test does not, true
+     *         otherwise
+     */
+    private boolean shareTrailing(String base, String test) {
+        if (endRegExp.test(base)) {
+            return endRegExp.test(test);
+        }
+        // no newline so can't fail
+        return true;
+    }
 
-      int count = 0;
-      MatchResult matchResult = newlineRegExp.exec(string);
-      while (matchResult != null)
-      {
-         count++;
-         matchResult = newlineRegExp.exec(string);
-      }
-      return count;
-   }
+    private int countNewlines(String string) {
+        RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
+
+        int count = 0;
+        MatchResult matchResult = newlineRegExp.exec(string);
+        while (matchResult != null) {
+            count++;
+            matchResult = newlineRegExp.exec(string);
+        }
+        return count;
+    }
 }

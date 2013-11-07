@@ -32,209 +32,190 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 /**
- * This class is immutable and all the mutator methods will return a new instance of it.
- * This is so that it can be shared by multiple objects to keep track of states easily.
+ * This class is immutable and all the mutator methods will return a new
+ * instance of it. This is so that it can be shared by multiple objects to keep
+ * track of states easily.
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class GetTransUnitActionContext
-{
-   private DocumentInfo document;
-   private String findMessage;
-   private int offset = 0;
-   private int count = 5; //this should be set to UserConfigHolder.getPageSize()
-   private boolean filterTranslated;
-   private boolean filterFuzzy;
-   private boolean filterUntranslated;
-   private boolean filterApproved;
-   private boolean filterRejected;
-   private boolean filterHasError;
-   private TransUnitId targetTransUnitId;
-   private List<ValidationId> validationIds;
+public class GetTransUnitActionContext {
+    private DocumentInfo document;
+    private String findMessage;
+    private int offset = 0;
+    private int count = 5; // this should be set to
+                           // UserConfigHolder.getPageSize()
+    private boolean filterTranslated;
+    private boolean filterFuzzy;
+    private boolean filterUntranslated;
+    private boolean filterApproved;
+    private boolean filterRejected;
+    private boolean filterHasError;
+    private TransUnitId targetTransUnitId;
+    private List<ValidationId> validationIds;
 
-   public GetTransUnitActionContext(DocumentInfo document)
-   {
-      this.document = document;
-   }
+    public GetTransUnitActionContext(DocumentInfo document) {
+        this.document = document;
+    }
 
-   private GetTransUnitActionContext(GetTransUnitActionContext other)
-   {
-      document = other.getDocument();
-      findMessage = other.getFindMessage();
-      offset = other.getOffset();
-      count = other.getCount();
-      filterTranslated = other.isFilterTranslated();
-      filterFuzzy = other.isFilterFuzzy();
-      filterUntranslated = other.isFilterUntranslated();
-      filterApproved = other.isFilterApproved();
-      filterRejected = other.isFilterRejected();
-      filterHasError = other.isFilterHasError();
-      targetTransUnitId = other.getTargetTransUnitId();
-      validationIds = other.getValidationIds();
-   }
+    private GetTransUnitActionContext(GetTransUnitActionContext other) {
+        document = other.getDocument();
+        findMessage = other.getFindMessage();
+        offset = other.getOffset();
+        count = other.getCount();
+        filterTranslated = other.isFilterTranslated();
+        filterFuzzy = other.isFilterFuzzy();
+        filterUntranslated = other.isFilterUntranslated();
+        filterApproved = other.isFilterApproved();
+        filterRejected = other.isFilterRejected();
+        filterHasError = other.isFilterHasError();
+        targetTransUnitId = other.getTargetTransUnitId();
+        validationIds = other.getValidationIds();
+    }
 
-   public DocumentInfo getDocument()
-   {
-      return document;
-   }
+    public DocumentInfo getDocument() {
+        return document;
+    }
 
-   public GetTransUnitActionContext changeDocument(DocumentInfo document)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.document = document;
-      return result;
-   }
+    public GetTransUnitActionContext changeDocument(DocumentInfo document) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.document = document;
+        return result;
+    }
 
-   public String getFindMessage()
-   {
-      return findMessage;
-   }
+    public String getFindMessage() {
+        return findMessage;
+    }
 
-   public GetTransUnitActionContext changeFindMessage(String findMessage)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.findMessage = findMessage;
-      return result;
-   }
+    public GetTransUnitActionContext changeFindMessage(String findMessage) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.findMessage = findMessage;
+        return result;
+    }
 
-   public boolean isFilterTranslated()
-   {
-      return filterTranslated;
-   }
+    public boolean isFilterTranslated() {
+        return filterTranslated;
+    }
 
-   public GetTransUnitActionContext changeFilterTranslated(boolean filterTranslated)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterTranslated = filterTranslated;
-      return result;
-   }
+    public GetTransUnitActionContext changeFilterTranslated(
+            boolean filterTranslated) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterTranslated = filterTranslated;
+        return result;
+    }
 
-   public boolean isFilterFuzzy()
-   {
-      return filterFuzzy;
-   }
+    public boolean isFilterFuzzy() {
+        return filterFuzzy;
+    }
 
-   public GetTransUnitActionContext changeFilterFuzzy(boolean filterFuzzy)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterFuzzy = filterFuzzy;
-      return result;
-   }
+    public GetTransUnitActionContext changeFilterFuzzy(boolean filterFuzzy) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterFuzzy = filterFuzzy;
+        return result;
+    }
 
-   public boolean isFilterUntranslated()
-   {
-      return filterUntranslated;
-   }
-   
-   public boolean isFilterApproved()
-   {
-      return filterApproved;
-   }
-   
-   public boolean isFilterRejected()
-   {
-      return filterRejected;
-   }
+    public boolean isFilterUntranslated() {
+        return filterUntranslated;
+    }
 
-   public GetTransUnitActionContext changeFilterUntranslated(boolean filterUntranslated)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterUntranslated = filterUntranslated;
-      return result;
-   }
-   
-   public GetTransUnitActionContext changeFilterApproved(boolean filterApproved)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterApproved = filterApproved;
-      return result;
-   }
-   
-   public GetTransUnitActionContext changeFilterRejected(boolean filterRejected)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterRejected = filterRejected;
-      return result;
-   }
+    public boolean isFilterApproved() {
+        return filterApproved;
+    }
 
-   public boolean isFilterHasError()
-   {
-      return filterHasError;
-   }
+    public boolean isFilterRejected() {
+        return filterRejected;
+    }
 
-   public GetTransUnitActionContext changeFilterHasError(boolean filterHasError)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterHasError = filterHasError;
-      return result;
-   }
+    public GetTransUnitActionContext changeFilterUntranslated(
+            boolean filterUntranslated) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterUntranslated = filterUntranslated;
+        return result;
+    }
 
-   public TransUnitId getTargetTransUnitId()
-   {
-      return targetTransUnitId;
-   }
+    public GetTransUnitActionContext
+            changeFilterApproved(boolean filterApproved) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterApproved = filterApproved;
+        return result;
+    }
 
-   public GetTransUnitActionContext changeTargetTransUnitId(TransUnitId targetTransUnitId)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.targetTransUnitId = targetTransUnitId;
-      return result;
-   }
+    public GetTransUnitActionContext
+            changeFilterRejected(boolean filterRejected) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterRejected = filterRejected;
+        return result;
+    }
 
-   public int getOffset()
-   {
-      return offset;
-   }
+    public boolean isFilterHasError() {
+        return filterHasError;
+    }
 
-   public GetTransUnitActionContext changeOffset(int offset)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.offset = offset;
-      return result;
-   }
+    public GetTransUnitActionContext
+            changeFilterHasError(boolean filterHasError) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterHasError = filterHasError;
+        return result;
+    }
 
-   public int getCount()
-   {
-      return count;
-   }
+    public TransUnitId getTargetTransUnitId() {
+        return targetTransUnitId;
+    }
 
-   public GetTransUnitActionContext changeCount(int count)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.count = count;
-      return result;
-   }
+    public GetTransUnitActionContext changeTargetTransUnitId(
+            TransUnitId targetTransUnitId) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.targetTransUnitId = targetTransUnitId;
+        return result;
+    }
 
-   public List<ValidationId> getValidationIds()
-   {
-      return validationIds;
-   }
+    public int getOffset() {
+        return offset;
+    }
 
-   public GetTransUnitActionContext changeValidationIds(List<ValidationId> validationIds)
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.validationIds = validationIds;
-      return result;
-   }
+    public GetTransUnitActionContext changeOffset(int offset) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.offset = offset;
+        return result;
+    }
 
-   public GetTransUnitActionContext setAcceptAll()
-   {
-      GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-      result.filterTranslated = false;
-      result.filterFuzzy = false;
-      result.filterHasError = false;
-      result.filterUntranslated = false;
-      result.filterApproved = false;
-      result.filterRejected = false;
-      result.findMessage = null;
-      return result;
-   }
+    public int getCount() {
+        return count;
+    }
 
-   @Override
-   public String toString()
-   {
-      // @formatter:off
-      return Objects.toStringHelper(this).
+    public GetTransUnitActionContext changeCount(int count) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.count = count;
+        return result;
+    }
+
+    public List<ValidationId> getValidationIds() {
+        return validationIds;
+    }
+
+    public GetTransUnitActionContext changeValidationIds(
+            List<ValidationId> validationIds) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.validationIds = validationIds;
+        return result;
+    }
+
+    public GetTransUnitActionContext setAcceptAll() {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.filterTranslated = false;
+        result.filterFuzzy = false;
+        result.filterHasError = false;
+        result.filterUntranslated = false;
+        result.filterApproved = false;
+        result.filterRejected = false;
+        result.findMessage = null;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        // @formatter:off
+        return Objects.toStringHelper(this).
             add("document", document).
             add("findMessage", findMessage).
             add("offset", offset).
@@ -247,33 +228,38 @@ public class GetTransUnitActionContext
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             toString();
-      // @formatter:on
-   }
+        // @formatter:on
+    }
 
-   /**
-    * Detects whether context has changed so that we need to reload translation unit list
-    * @param newContext new context compare to current
-    * @return true if we should reload list
-    */
-   public boolean needReloadList(GetTransUnitActionContext newContext)
-   {
-      return needReloadNavigationIndex(newContext) || count != newContext.count;
-   }
+    /**
+     * Detects whether context has changed so that we need to reload translation
+     * unit list
+     *
+     * @param newContext
+     *            new context compare to current
+     * @return true if we should reload list
+     */
+    public boolean needReloadList(GetTransUnitActionContext newContext) {
+        return needReloadNavigationIndex(newContext)
+                || count != newContext.count;
+    }
 
-   /**
-    * Detects whether context has changed so that we need to reload navigation indexes
-    * @param newContext new context compare to current
-    * @return true if we should reload navigation index
-    */
-   public boolean needReloadNavigationIndex(GetTransUnitActionContext newContext)
-   {
-      if (this == newContext)
-      {
-         return false;
-      }
+    /**
+     * Detects whether context has changed so that we need to reload navigation
+     * indexes
+     *
+     * @param newContext
+     *            new context compare to current
+     * @return true if we should reload navigation index
+     */
+    public boolean needReloadNavigationIndex(
+            GetTransUnitActionContext newContext) {
+        if (this == newContext) {
+            return false;
+        }
 
-      // @formatter:off
-      return filterFuzzy != newContext.filterFuzzy
+        // @formatter:off
+        return filterFuzzy != newContext.filterFuzzy
             || filterTranslated != newContext.filterTranslated
             || filterUntranslated != newContext.filterUntranslated
             || filterApproved != newContext.filterApproved
@@ -282,44 +268,40 @@ public class GetTransUnitActionContext
             || offset != newContext.offset
             || !document.equals(newContext.document)
             || !Objects.equal(findMessage, newContext.findMessage);
-      // @formatter:on
-   }
+        // @formatter:on
+    }
 
-   public boolean acceptAll()
-   {
-      boolean messageFilterAcceptAll = filterHasError == filterFuzzy 
-            && filterFuzzy == filterTranslated 
-            && filterTranslated == filterUntranslated
-            && filterUntranslated == filterHasError
-            && filterHasError == filterApproved
-            && filterApproved == filterRejected;
+    public boolean acceptAll() {
+        boolean messageFilterAcceptAll =
+                filterHasError == filterFuzzy
+                        && filterFuzzy == filterTranslated
+                        && filterTranslated == filterUntranslated
+                        && filterUntranslated == filterHasError
+                        && filterHasError == filterApproved
+                        && filterApproved == filterRejected;
 
-      return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
-   }
+        return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
+    }
 
-   public ContentStateGroup getCurrentFilterStates()
-   {
-      return filterStatesFromCheckboxStates(getCheckboxStates());
-   }
+    public ContentStateGroup getCurrentFilterStates() {
+        return filterStatesFromCheckboxStates(getCheckboxStates());
+    }
 
-   private ContentStateGroup getCheckboxStates()
-   {
-      ContentStateGroup checkboxStates = ContentStateGroup.builder()
-            .includeNew(filterUntranslated)
-            .includeFuzzy(filterFuzzy)
-            .includeTranslated(filterTranslated)
-            .includeApproved(filterApproved)
-            .includeRejected(filterRejected)
-            .build();
-      return checkboxStates;
-   }
+    private ContentStateGroup getCheckboxStates() {
+        ContentStateGroup checkboxStates =
+                ContentStateGroup.builder().includeNew(filterUntranslated)
+                        .includeFuzzy(filterFuzzy)
+                        .includeTranslated(filterTranslated)
+                        .includeApproved(filterApproved)
+                        .includeRejected(filterRejected).build();
+        return checkboxStates;
+    }
 
-   private static ContentStateGroup filterStatesFromCheckboxStates(ContentStateGroup filterStates)
-   {
-      if (filterStates.hasNoStates())
-      {
-         filterStates = ContentStateGroup.builder().addAll().build();
-      }
-      return filterStates;
-   }
+    private static ContentStateGroup filterStatesFromCheckboxStates(
+            ContentStateGroup filterStates) {
+        if (filterStates.hasNoStates()) {
+            filterStates = ContentStateGroup.builder().addAll().build();
+        }
+        return filterStates;
+    }
 }

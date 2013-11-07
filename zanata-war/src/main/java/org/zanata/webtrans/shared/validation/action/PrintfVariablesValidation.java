@@ -25,97 +25,100 @@ import java.util.List;
 
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class PrintfVariablesValidation extends AbstractValidationAction
-{
-   private static final String GLOBAL_FLAG = "g";
+public class PrintfVariablesValidation extends AbstractValidationAction {
+    private static final String GLOBAL_FLAG = "g";
 
-   // derived from translate toolkit printf style variable matching regex. See:
-   // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
-   private static final String VAR_REGEX = "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
+    // derived from translate toolkit printf style variable matching regex. See:
+    // http://translate.svn.sourceforge.net/viewvc/translate/src/trunk/translate/filters/checks.py?revision=17978&view=markup
+    private static final String VAR_REGEX =
+            "%((?:\\d+\\$|\\(\\w+\\))?[+#-]*(\\d+)?(\\.\\d+)?(hh|h|ll|l|L|z|j|t)?[\\w%])";
 
-   public PrintfVariablesValidation(ValidationId id, ValidationMessages messages)
-   {
-      super(id, messages.printfVariablesValidatorDesc(), new ValidationInfo(true), messages);
-   }
-   
-   public PrintfVariablesValidation(ValidationId id)
-   {
-      super(id, null, new ValidationInfo(true), null);
-   }
+    public PrintfVariablesValidation(ValidationId id,
+            ValidationMessages messages) {
+        this(id, messages.printfVariablesValidatorDesc(), messages);
+    }
 
-   public PrintfVariablesValidation(ValidationId id, String description, ValidationMessages messages, boolean enabled)
-   {
-      super(id, description, new ValidationInfo(enabled), messages);
-   }
+    public PrintfVariablesValidation(ValidationId id, String description,
+            ValidationMessages messages) {
+        super(id, description, messages);
+    }
 
-   @Override
-   public void doValidate(ArrayList<String> errorList, String source, String target)
-   {
-      ArrayList<String> sourceVars = findVars(source);
-      ArrayList<String> targetVars = findVars(target);
+    @Override
+    public List<String> doValidate(String source, String target) {
+        ArrayList<String> errors = new ArrayList<String>();
 
-      findMissingVariables(errorList, sourceVars, targetVars);
-      findAddedVariables(errorList, sourceVars, targetVars);
-   }
+        ArrayList<String> sourceVars = findVars(source);
+        ArrayList<String> targetVars = findVars(target);
 
-   protected void findMissingVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
-   {
-      List<String> missing = listMissing(sourceVars, targetVars);
-      if (!missing.isEmpty())
-      {
-         errorList.add(getMessages().varsMissing(missing));
-      }
-   }
+        String message = findMissingVariables(sourceVars, targetVars);
+        if (!Strings.isNullOrEmpty(message)) {
+            errors.add(message);
+        }
+        message = findAddedVariables(sourceVars, targetVars);
+        if (!Strings.isNullOrEmpty(message)) {
+            errors.add(message);
+        }
 
-   protected void findAddedVariables(ArrayList<String> errorList, ArrayList<String> sourceVars, ArrayList<String> targetVars)
-   {
-      // missing from source = added
-      List<String> added = listMissing(targetVars, sourceVars);
-      if (!added.isEmpty())
-      {
-         errorList.add(getMessages().varsAdded(added));
-      }
-   }
+        return errors;
+    }
 
-   private List<String> listMissing(ArrayList<String> baseVars, ArrayList<String> testVars)
-   {
-      ArrayList<String> remainingVars = Lists.newArrayList(testVars);
+    protected String findMissingVariables(ArrayList<String> sourceVars,
+            ArrayList<String> targetVars) {
+        List<String> missing = listMissing(sourceVars, targetVars);
 
-      ArrayList<String> unmatched = Lists.newArrayList();
+        if (!missing.isEmpty()) {
+            return getMessages().varsMissing(missing);
+        }
 
-      for (String var : baseVars)
-      {
-         if (!remainingVars.remove(var))
-         {
-            unmatched.add(var);
-         }
-      }
-      return unmatched;
-   }
+        return null;
+    }
 
-   protected ArrayList<String> findVars(String inString)
-   {
-      ArrayList<String> vars = new ArrayList<String>();
-      // compile each time to reset index
-      RegExp varRegExp = RegExp.compile(VAR_REGEX, GLOBAL_FLAG);
-      MatchResult result = varRegExp.exec(inString);
-      while (result != null)
-      {
-         vars.add(result.getGroup(0));
-         result = varRegExp.exec(inString);
-      }
-      return vars;
-   }
+    protected String findAddedVariables(ArrayList<String> sourceVars,
+            ArrayList<String> targetVars) {
+        // missing from source = added
+        List<String> added = listMissing(targetVars, sourceVars);
+        if (!added.isEmpty()) {
+            return getMessages().varsAdded(added);
+        }
+
+        return null;
+    }
+
+    private List<String> listMissing(ArrayList<String> baseVars,
+            ArrayList<String> testVars) {
+        ArrayList<String> remainingVars = Lists.newArrayList(testVars);
+
+        ArrayList<String> unmatched = Lists.newArrayList();
+
+        for (String var : baseVars) {
+            if (!remainingVars.remove(var)) {
+                unmatched.add(var);
+            }
+        }
+        return unmatched;
+    }
+
+    protected ArrayList<String> findVars(String inString) {
+        ArrayList<String> vars = new ArrayList<String>();
+        // compile each time to reset index
+        RegExp varRegExp = RegExp.compile(VAR_REGEX, GLOBAL_FLAG);
+        MatchResult result = varRegExp.exec(inString);
+        while (result != null) {
+            vars.add(result.getGroup(0));
+            result = varRegExp.exec(inString);
+        }
+        return vars;
+    }
 }

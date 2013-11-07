@@ -6,563 +6,567 @@ import com.google.gwt.i18n.client.Messages;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
-public interface WebTransMessages extends Messages
-{
-   @DefaultMessage("Save")
-   String save();
-   
-   @DefaultMessage("OK")
-   String ok();
+public interface WebTransMessages extends Messages {
+    @DefaultMessage("Save")
+    String save();
 
-   @DefaultMessage("Cancel")
-   String cancel();
+    @DefaultMessage("OK")
+    String ok();
 
-   @DefaultMessage("(No Content)")
-   String noContent();
+    @DefaultMessage("Cancel")
+    String cancel();
 
-   @DefaultMessage("{0}% ({1,number,#.#}hrs) {2}")
-   String statusBarPercentageHrs(double approved, double remainingHours, String by);
+    @DefaultMessage("(No Content)")
+    String noContent();
 
-   @DefaultMessage("{0,number,#.#}")
-   String statusBarLabelHours(double remainingHours);
+    @DefaultMessage("{0}% ({1}hrs) {2}")
+    String statusBarPercentageHrs(String approved, String remainingHours,
+            String by);
 
-   @DefaultMessage("{0}%")
-   String statusBarLabelPercentage(double approved);
+    @DefaultMessage("{0}")
+    String statusBarLabelHours(String remainingHours);
 
-   @DefaultMessage("http://zanata.org/")
-   String hrefHelpLink();
+    @DefaultMessage("http://zanata.org/")
+    String hrefHelpLink();
 
-   @DefaultMessage("{0} to {1} - Zanata Web Translation")
-   String windowTitle(String workspaceName, String localeName);
+    @DefaultMessage("{0} to {1} - Zanata Web Translation")
+    String windowTitle(String workspaceName, String localeName);
 
-   @DefaultMessage("{0} to {1} - {2}")
-   String windowTitle2(String workspaceName, String localeName, String title);
+    @DefaultMessage("{0} to {1} - {2}")
+    String windowTitle2(String workspaceName, String localeName, String title);
 
-   @DefaultMessage("First Page")
-   String firstPage();
+    @DefaultMessage("First Page")
+    String firstPage();
 
-   @DefaultMessage("Previous Page")
-   String prevPage();
+    @DefaultMessage("Previous Page")
+    String prevPage();
 
-   @DefaultMessage("Next Page")
-   String nextPage();
+    @DefaultMessage("Next Page")
+    String nextPage();
 
-   @DefaultMessage("Last Page")
-   String lastPage();
+    @DefaultMessage("Last Page")
+    String lastPage();
 
-   @DefaultMessage("Show Translation Suggestions")
-   String showTranslationMemoryPanel();
+    @DefaultMessage("Show Translation Suggestions")
+    String showTranslationMemoryPanel();
 
-   @DefaultMessage("Show Glossary Suggestions")
-   String showGlossaryPanel();
+    @DefaultMessage("Show Glossary Suggestions")
+    String showGlossaryPanel();
 
-   @DefaultMessage("Chat room")
-   String chatRoom();
+    @DefaultMessage("Chat room")
+    String chatRoom();
 
-   @DefaultMessage("Hide Translation Memory and Glossary")
-   String hideSouthPanel();
+    @DefaultMessage("Hide Translation Memory and Glossary")
+    String hideSouthPanel();
 
-   @DefaultMessage("Restore Translation Memory and Glossary")
-   String restoreSouthPanel();
+    @DefaultMessage("Restore Translation Memory and Glossary")
+    String restoreSouthPanel();
 
-   @DefaultMessage("Load")
-   String load();
+    @DefaultMessage("Load")
+    String load();
 
-   @DefaultMessage("Restore Defaults")
-   String restoreDefaults();
+    @DefaultMessage("Restore Defaults")
+    String restoreDefaults();
 
-   @DefaultMessage("Loading")
-   String loading();
+    @DefaultMessage("Loading")
+    String loading();
 
-   @DefaultMessage("Failed to load document from Server")
-   String loadDocFailed();
+    @DefaultMessage("Failed to load document from Server")
+    String loadDocFailed();
 
-   @DefaultMessage("Path")
-   String columnHeaderPath();
+    @DefaultMessage("Path")
+    String columnHeaderPath();
 
-   @DefaultMessage("Document")
-   String columnHeaderDocument();
+    @DefaultMessage("Document")
+    String columnHeaderDocument();
 
-   @DefaultMessage("Statistic")
-   String columnHeaderStatistic();
+    @DefaultMessage("Statistic")
+    String columnHeaderStatistic();
 
-   @DefaultMessage("Complete")
-   String columnHeaderComplete();
+    @DefaultMessage("Complete")
+    String columnHeaderComplete();
 
-   @DefaultMessage("Incomplete")
-   String columnHeaderIncomplete();
+    @DefaultMessage("Incomplete")
+    String columnHeaderIncomplete();
 
-   @DefaultMessage("Remaining hours")
-   String columnHeaderRemaining();
+    @DefaultMessage("Remaining hours")
+    String columnHeaderRemaining();
 
-   @DefaultMessage("Last Upload")
-   String columnHeaderLastUpload();
+    @DefaultMessage("Last Upload")
+    String columnHeaderLastUpload();
 
-   @DefaultMessage("Last Translated")
-   String columnHeaderLastTranslated();
-   
-   @DefaultMessage("Actions")
-   String columnHeaderAction();
+    @DefaultMessage("Last Translated")
+    String columnHeaderLastTranslated();
 
-   @DefaultMessage("No document selected")
-   String noDocumentSelected();
+    @DefaultMessage("Actions")
+    String columnHeaderAction();
 
-   @DefaultMessage("Project-wide Search & Replace")
-   String projectWideSearchAndReplace();
-   
-   @DefaultMessage("Document List")
-   String documentListTitle();
+    @DefaultMessage("No document selected")
+    String noDocumentSelected();
 
-   @DefaultMessage("{0} has quit workspace")
-   String hasQuitWorkspace(String user);
+    @DefaultMessage("Project-wide Search & Replace")
+    String projectWideSearchAndReplace();
 
-   @DefaultMessage("{0} has joined workspace")
-   String hasJoinedWorkspace(String user);
+    @DefaultMessage("Document List")
+    String documentListTitle();
 
-   @DefaultMessage("Searching")
-   String searching();
+    @DefaultMessage("{0} has quit workspace")
+    String hasQuitWorkspace(String user);
 
-   @DefaultMessage("Search found results in {0} documents")
-   @AlternateMessage({ "one", "Search found results in 1 document" })
-   String searchFoundResultsInDocuments(@PluralCount int numDocs);
+    @DefaultMessage("{0} has joined workspace")
+    String hasJoinedWorkspace(String user);
 
-   @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
-   @AlternateMessage({
-      "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
-      "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"})
-   String showingResultsForProjectWideSearch(String searchString, @PluralCount int textFlows, @PluralCount int documents);
+    @DefaultMessage("Searching")
+    String searching();
 
-   @DefaultMessage("Search \"{0}\" returned no results")
-   String searchForPhraseReturnedNoResults(String searchString);
+    @DefaultMessage("Search found results in {0} documents")
+    @AlternateMessage({ "one", "Search found results in 1 document" })
+    String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
-   @DefaultMessage("There are no search results to display")
-   String noSearchResults();
+    @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
+    @AlternateMessage({ "one|one",
+            "Showing results for search \"{0}\" (1 text flow in 1 document)",
+            "other|one",
+            "Showing results for search \"{0}\" ({1} text flows in 1 document)" })
+            String showingResultsForProjectWideSearch(String searchString,
+                    @PluralCount int textFlows, @PluralCount int documents);
 
-   @DefaultMessage("Search failed")
-   String searchFailed();
+    @DefaultMessage("Search \"{0}\" returned no results")
+    String searchForPhraseReturnedNoResults(String searchString);
 
-   @DefaultMessage("Preview")
-   String fetchPreview();
+    @DefaultMessage("There are no search results to display")
+    String noSearchResults();
 
-   @DefaultMessage("Hide preview")
-   String hidePreview();
+    @DefaultMessage("Search failed")
+    String searchFailed();
 
-   @DefaultMessage("Preview replacement in all selected text flows.")
-   String previewSelectedDescription();
+    @DefaultMessage("Preview")
+    String fetchPreview();
 
-   @DefaultMessage("Select text flows to enable preview.")
-   String previewSelectedDisabledDescription();
+    @DefaultMessage("Hide preview")
+    String hidePreview();
 
-   @DefaultMessage("Previewing")
-   String fetchingPreview();
+    @DefaultMessage("Preview replacement in all selected text flows.")
+    String previewSelectedDescription();
 
-   @DefaultMessage("Fetched preview")
-   String fetchedPreview();
+    @DefaultMessage("Select text flows to enable preview.")
+    String previewSelectedDisabledDescription();
 
-   @DefaultMessage("Failed to fetch preview")
-   String previewFailed();
+    @DefaultMessage("Previewing")
+    String fetchingPreview();
 
-   @DefaultMessage("Replace")
-   String replace();
+    @DefaultMessage("Fetched preview")
+    String fetchedPreview();
 
-   @DefaultMessage("Replace text in all selected text flows.")
-   String replaceSelectedDescription();
+    @DefaultMessage("Failed to fetch preview")
+    String previewFailed();
 
-   @DefaultMessage("Select text flows and view preview to enable replace.")
-   String replaceSelectedDisabledDescription();
+    @DefaultMessage("Replace")
+    String replace();
 
-   @DefaultMessage("Preview is required before replacing text")
-   String previewRequiredBeforeReplace();
+    @DefaultMessage("Replace text in all selected text flows.")
+    String replaceSelectedDescription();
 
-   @DefaultMessage("Replacing")
-   String replacing();
+    @DefaultMessage("Select text flows and view preview to enable replace.")
+    String replaceSelectedDisabledDescription();
 
-   @DefaultMessage("Replaced")
-   String replaced();
+    @DefaultMessage("Preview is required before replacing text")
+    String previewRequiredBeforeReplace();
 
-   @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} row {3} (\"{4}...\")")
-   String replacedTextInOneTextFlow(String searchText, String replacement, String docName, int oneBasedRowIndex, String truncatedText);
+    @DefaultMessage("Replacing")
+    String replacing();
 
-   @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
-   @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
-   String replacedTextInMultipleTextFlows(String searchText, String replacement, @PluralCount int numFlows);
+    @DefaultMessage("Replaced")
+    String replaced();
 
-   @DefaultMessage("Successfully replaced text")
-   String replacedTextSuccess();
+    @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} row {3} (\"{4}...\")")
+            String replacedTextInOneTextFlow(String searchText,
+                    String replacement, String docName, int oneBasedRowIndex,
+                    String truncatedText);
 
-   @DefaultMessage("Replace text failed")
-   String replaceTextFailure();
+    @DefaultMessage("Replaced \"{0}\" with \"{1}\" in {2} text flows")
+    @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
+            String replacedTextInMultipleTextFlows(String searchText,
+                    String replacement, @PluralCount int numFlows);
 
-   @DefaultMessage("No replacement text has been entered")
-   String noReplacementPhraseEntered();
+    @DefaultMessage("Successfully replaced text")
+    String replacedTextSuccess();
 
-   @DefaultMessage("No replacements to make")
-   String noReplacementsToMake();
+    @DefaultMessage("Replace text failed in text flow {0}, error message: {1}")
+    String replaceTextFailureWithMessage(String id, String errorMessage);
 
-   @DefaultMessage("You have no access to modify translations")
-   String youAreNotAllowedToModifyTranslations();
+    @DefaultMessage("Replace text failed")
+    String replaceTextFailure();
 
-   @DefaultMessage("View in editor")
-   String viewDocInEditor();
+    @DefaultMessage("No replacement text has been entered")
+    String noReplacementPhraseEntered();
 
-   @DefaultMessage("Show this document in editor view")
-   String viewDocInEditorDetailed();
+    @DefaultMessage("No replacements to make")
+    String noReplacementsToMake();
 
-   @DefaultMessage("Search document in editor")
-   String searchDocInEditor();
+    @DefaultMessage("You have no access to modify translations")
+    String youAreNotAllowedToModifyTranslations();
 
-   @DefaultMessage("Show this document in the editor with the current search active")
-   String searchDocInEditorDetailed();
+    @DefaultMessage("View in editor")
+    String viewDocInEditor();
 
-   @DefaultMessage("Index")
-   String rowIndex();
+    @DefaultMessage("Show this document in editor view")
+    String viewDocInEditorDetailed();
 
-   @DefaultMessage("Source")
-   String source();
+    @DefaultMessage("Search document in editor")
+    String searchDocInEditor();
 
-   @DefaultMessage("Target")
-   String target();
+    @DefaultMessage("Show this document in the editor with the current search active")
+            String searchDocInEditorDetailed();
 
-   @DefaultMessage("Actions")
-   String actions();
+    @DefaultMessage("Index")
+    String rowIndex();
 
-   @DefaultMessage("Undo")
-   String undo();
+    @DefaultMessage("Source")
+    String source();
 
-   @DefaultMessage("Undoing")
-   String undoInProgress();
+    @DefaultMessage("Target")
+    String target();
 
-   @DefaultMessage("Undo replacement failed")
-   String undoReplacementFailure();
+    @DefaultMessage("Actions")
+    String actions();
 
-   @DefaultMessage("Undo successful")
-   String undoSuccess();
+    @DefaultMessage("Undo")
+    String undo();
 
-   // @formatter:off
-   @Description("Message for unsuccessful undo")
-   @DefaultMessage("{0} items can not be undone. {1} items are reverted")
-   @AlternateMessage({
-         "one|=0", "Item can not be undone",
-         "other|=0", "Items can not be undone"
-   })
-   String undoUnsuccessful(@PluralCount int unsuccessfulCount, @PluralCount int successfulCount);
-   // @formatter:on
+    @DefaultMessage("Undoing")
+    String undoInProgress();
 
-   @DefaultMessage("Undo failed")
-   String undoFailure();
+    @DefaultMessage("Undo replacement failed")
+    String undoReplacementFailure();
 
-   @DefaultMessage("Undo not possible in read-only workspace")
-   String cannotUndoInReadOnlyMode();
+    @DefaultMessage("Undo successful")
+    String undoSuccess();
 
-   @DefaultMessage("Select entire document")
-   String selectAllInDocument();
+    @Description("Message for unsuccessful undo")
+    @DefaultMessage("{0} items can not be undone. {1} items are reverted")
+    @AlternateMessage({
+        // @formatter:off
+        "one|=0", "Item can not be undone",
+        "other|=0", "Items can not be undone"
+        // @formatter:on
+            })
+    String undoUnsuccessful(@PluralCount int unsuccessfulCount,
+        @PluralCount int successfulCount);
 
-   @DefaultMessage("Select or deselect all matching text flows in this document")
-   String selectAllInDocumentDetailed();
+    @DefaultMessage("Undo failed")
+    String undoFailure();
 
-   @DefaultMessage("No text flows selected")
-   String noTextFlowsSelected();
+    @DefaultMessage("Undo not possible in read-only workspace")
+    String cannotUndoInReadOnlyMode();
 
-   @DefaultMessage("{0} text flows selected")
-   @AlternateMessage({ "one", "1 text flow selected" })
-   String numTextFlowsSelected(@PluralCount int selectedFlows);
+    @DefaultMessage("Select entire document")
+    String selectAllInDocument();
 
-   @DefaultMessage("Notification")
-   String notification();
+    @DefaultMessage("Select or deselect all matching text flows in this document")
+            String selectAllInDocumentDetailed();
 
-   @DefaultMessage("Available Keyboard Shortcuts")
-   String availableKeyShortcutsTitle();
+    @DefaultMessage("No text flows selected")
+    String noTextFlowsSelected();
 
-   @DefaultMessage("Select text flows in all documents")
-   String selectAllTextFlowsKeyShortcut();
+    @DefaultMessage("{0} text flows selected")
+    @AlternateMessage({ "one", "1 text flow selected" })
+    String numTextFlowsSelected(@PluralCount int selectedFlows);
 
-   @DefaultMessage("Focus search phrase")
-   String focusSearchPhraseKeyShortcut();
+    @DefaultMessage("Notification")
+    String notification();
 
-   @DefaultMessage("Focus replacement phrase")
-   String focusReplacementPhraseKeyShortcut();
+    @DefaultMessage("Available Keyboard Shortcuts")
+    String availableKeyShortcutsTitle();
 
-   @DefaultMessage("Show available shortcuts")
-   String showAvailableKeyShortcuts();
+    @DefaultMessage("Select text flows in all documents")
+    String selectAllTextFlowsKeyShortcut();
 
-   @DefaultMessage("Application")
-   String applicationScope();
+    @DefaultMessage("Focus search phrase")
+    String focusSearchPhraseKeyShortcut();
 
-   @DefaultMessage("Editing text")
-   String editScope();
+    @DefaultMessage("Focus replacement phrase")
+    String focusReplacementPhraseKeyShortcut();
 
-   @DefaultMessage("Editor navigation")
-   String navigationScope();
+    @DefaultMessage("Show available shortcuts")
+    String showAvailableKeyShortcuts();
 
-   @DefaultMessage("Translation memory")
-   String tmScope();
+    @DefaultMessage("Application")
+    String applicationScope();
 
-   @DefaultMessage("Glossary")
-   String glossaryScope();
+    @DefaultMessage("Editing text")
+    String editScope();
 
-   @DefaultMessage("Toggle individual row action buttons (changes for next search)")
-   String toggleRowActionButtons();
+    @DefaultMessage("Editor navigation")
+    String navigationScope();
 
-   @DefaultMessage("Replace text in selected rows")
-   String replaceSelectedKeyShortcut();
+    @DefaultMessage("Translation memory")
+    String tmScope();
 
-   @DefaultMessage("Show document list")
-   String showDocumentListKeyShortcut();
+    @DefaultMessage("Glossary")
+    String glossaryScope();
 
-   @DefaultMessage("Show editor view")
-   String showEditorKeyShortcut();
+    @DefaultMessage("Toggle individual row action buttons (changes for next search)")
+            String toggleRowActionButtons();
 
-   @DefaultMessage("Show project-wide search view")
-   String showProjectWideSearch();
+    @DefaultMessage("Replace text in selected rows")
+    String replaceSelectedKeyShortcut();
 
-   @DefaultMessage("Warning! This is a public channel")
-   String thisIsAPublicChannel();
+    @DefaultMessage("Show document list")
+    String showDocumentListKeyShortcut();
 
-   @DefaultMessage("Only show documents that contain the search text with matching case")
-   String docListFilterCaseSensitiveDescription();
+    @DefaultMessage("Show editor view")
+    String showEditorKeyShortcut();
 
-   @DefaultMessage("Only show documents with full path and name in the search text")
-   String docListFilterExactMatchDescription();
+    @DefaultMessage("Show project-wide search view")
+    String showProjectWideSearch();
 
-   @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
-   String docListFilterDescription();
+    @DefaultMessage("Warning! This is a public channel")
+    String thisIsAPublicChannel();
 
-   @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
-   String requirePreviewDescription();
+    @DefaultMessage("Only show documents that contain the search text with matching case")
+            String docListFilterCaseSensitiveDescription();
 
-   @DefaultMessage("Navigate to next row")
-   String navigateToNextRow();
-   
-   @DefaultMessage("Navigate to previous row")
-   String navigateToPreviousRow();
+    @DefaultMessage("Only show documents with full path and name in the search text")
+            String docListFilterExactMatchDescription();
 
-   @DefaultMessage("Open editor in selected row")
-   String openEditorInSelectedRow();
+    @DefaultMessage("Enter text to filter the document list. Use commas (,) to separate multiple searches")
+            String docListFilterDescription();
 
-   @DefaultMessage("Close keyboard shortcuts list")
-   String closeShortcutView();
-   
-   @DefaultMessage("Search translation memory")
-   String searchTM();
+    @DefaultMessage("Disable 'Replace' button until previews have been generated for all selected text flows")
+            String requirePreviewDescription();
 
-   @DefaultMessage("Search glossary")
-   String searchGlossary();
+    @DefaultMessage("Navigate to next row")
+    String navigateToNextRow();
 
-   @DefaultMessage("Chat")
-   String chatScope();
+    @DefaultMessage("Navigate to previous row")
+    String navigateToPreviousRow();
 
-   @DefaultMessage("Publish chat content")
-   String publishChatContent();
+    @DefaultMessage("Open editor in selected row")
+    String openEditorInSelectedRow();
 
-   @DefaultMessage("Version")
-   String versionNumber();
+    @DefaultMessage("Close keyboard shortcuts list")
+    String closeShortcutView();
 
-   @DefaultMessage("User")
-   String modifiedBy();
+    @DefaultMessage("Search translation memory")
+    String searchTM();
 
-   @DefaultMessage("Date")
-   String modifiedDate();
+    @DefaultMessage("Search glossary")
+    String searchGlossary();
 
-   @DefaultMessage("Paste into Editor")
-   String pasteIntoEditor();
+    @DefaultMessage("Chat")
+    String chatScope();
 
-   @DefaultMessage("Translation History")
-   String translationHistory();
+    @DefaultMessage("Publish chat content")
+    String publishChatContent();
 
-   @Description("Tab text for translation history comparison")
-   @DefaultMessage("Compare ver. {0} and {1}")
-   String translationHistoryComparison(String versionOne, String versionTwo);
+    @DefaultMessage("Version")
+    String versionNumber();
 
-   @DefaultMessage("Select 2 entries to compare")
-   String translationHistoryComparisonTitle();
+    @DefaultMessage("User")
+    String modifiedBy();
 
-   @Description("latest version in translation history")
-   @DefaultMessage("Latest")
-   String latest();
+    @DefaultMessage("Date")
+    String modifiedDate();
 
-   @Description("current unsaved value in editor for translation history display")
-   @DefaultMessage("Unsaved")
-   String unsaved();
+    @DefaultMessage("Paste into Editor")
+    String pasteIntoEditor();
 
-   @DefaultMessage("Flip entries")
-   String flipComparingEntries();
+    @DefaultMessage("Translation History")
+    String translationHistory();
 
+    @Description("Tab text for translation history comparison")
+    @DefaultMessage("Compare ver. {0} and {1}")
+    String translationHistoryComparison(String versionOne, String versionTwo);
 
-   @DefaultMessage("Workspace is set to read only")
-   String notifyReadOnlyWorkspace();
+    @DefaultMessage("Select 2 entries to compare")
+    String translationHistoryComparisonTitle();
 
-   @DefaultMessage("Workspace is set to edit mode")
-   String notifyEditableWorkspace();
+    @Description("latest version in translation history")
+    @DefaultMessage("Latest")
+    String latest();
 
+    @Description("current unsaved value in editor for translation history display")
+    @DefaultMessage("Unsaved")
+            String unsaved();
 
-   @DefaultMessage("Close")
-   String close();
+    @DefaultMessage("Flip entries")
+    String flipComparingEntries();
 
-   @DefaultMessage("Options")
-   String options();
+    @DefaultMessage("Workspace is set to read only")
+    String notifyReadOnlyWorkspace();
 
-   @DefaultMessage("Editor options")
-   String editorOptions();
+    @DefaultMessage("Workspace is set to edit mode")
+    String notifyEditableWorkspace();
 
-   @DefaultMessage("Validation options")
-   String validationOptions();
+    @DefaultMessage("Close")
+    String close();
 
-   @DefaultMessage("Run validation")
-   String runValidation();
+    @DefaultMessage("Options")
+    String options();
 
-   @DefaultMessage("Navigation key/button")
-   String navOption();
+    @DefaultMessage("Editor options")
+    String editorOptions();
 
-   @DefaultMessage("Page size")
-   String pageSize(); 
+    @DefaultMessage("Validation options")
+    String validationOptions();
 
-   @DefaultMessage("Read only")
-   String readOnly();
+    @DefaultMessage("Run validation")
+    String runValidation();
 
-   @DefaultMessage("Advanced user configuration")
-   String otherConfiguration();
+    @DefaultMessage("Navigation key/button")
+    String navOption();
 
-   @DefaultMessage("When unexpected error happens, a popup window will display and show it")
-   String showErrorsTooltip();
+    @DefaultMessage("Page size")
+    String pageSize();
 
-   @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
-   String useCodeMirrorEditorTooltip();
+    @DefaultMessage("Read only")
+    String readOnly();
 
-   @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
-   String showSaveApprovedWarningTooltip();
+    @DefaultMessage("Advanced user configuration")
+    String otherConfiguration();
 
-   @DefaultMessage("Go to this entry")
-   String goToThisEntry();
+    @DefaultMessage("When unexpected error happens, a popup window will display and show it")
+            String showErrorsTooltip();
 
-   @DefaultMessage("Style")
-   String style();
+    @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
+            String useCodeMirrorEditorTooltip();
 
-   @DefaultMessage("Description")
-   String description();
+    @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
+            String showSaveApprovedWarningTooltip();
 
-   @DefaultMessage("Blue color")
-   String blueColor();
+    @DefaultMessage("Go to this entry")
+    String goToThisEntry();
 
-   @DefaultMessage("Red color + crossed out")
-   String redColorCrossedOut();
+    @DefaultMessage("Style")
+    String style();
 
-   @DefaultMessage("Plain text")
-   String plainText();
+    @DefaultMessage("Description")
+    String description();
 
-   @DefaultMessage("Text contain in result but not in search term")
-   String tmInsertTagDesc();
+    @DefaultMessage("Blue color")
+    String blueColor();
 
-   @DefaultMessage("Text contain in search term but not in result")
-   String tmDelTagDesc();
+    @DefaultMessage("Red color + crossed out")
+    String redColorCrossedOut();
 
-   @DefaultMessage("Text contain in both search term and result")
-   String tmPlainTextDesc();
+    @DefaultMessage("Plain text")
+    String plainText();
 
-   @DefaultMessage("New replacement text ")
-   String searchReplaceInsertTagDesc();
+    @DefaultMessage("Text contain in result but not in search term")
+    String tmInsertTagDesc();
 
-   @DefaultMessage("Old text to be replaced")
-   String searchReplaceDelTagDesc();
+    @DefaultMessage("Text contain in search term but not in result")
+    String tmDelTagDesc();
 
-   @DefaultMessage("No changes")
-   String searchReplacePlainTextDesc();
+    @DefaultMessage("Text contain in both search term and result")
+    String tmPlainTextDesc();
 
-   @DefaultMessage("Color legend")
-   String colorLegend();
+    @DefaultMessage("New replacement text ")
+    String searchReplaceInsertTagDesc();
 
-   @DefaultMessage("Concurrent edit detected. Reset value for current row.")
-   String concurrentEdit();
+    @DefaultMessage("Old text to be replaced")
+    String searchReplaceDelTagDesc();
 
-   @DefaultMessage("Other user has saved a newer version (Latest) while you are editing (Unsaved). Please resolve conflicts.")
-   String concurrentEditTitle();
+    @DefaultMessage("No changes")
+    String searchReplacePlainTextDesc();
 
-   @DefaultMessage("Editor")
-   String editor();
+    @DefaultMessage("Color legend")
+    String colorLegend();
 
-   @DefaultMessage("Words")
-   String byWords();
+    @DefaultMessage("Concurrent edit detected. Reset value for current row.")
+    String concurrentEdit();
 
-   @DefaultMessage("Message")
-   String byMessage();
+    @DefaultMessage("Other user has saved a newer version (Latest) while you are editing (Unsaved). Please resolve conflicts.")
+            String concurrentEditTitle();
 
-   @DefaultMessage("Refresh current page")
-   String refreshCurrentPage();
+    @DefaultMessage("Editor")
+    String editor();
 
-   @DefaultMessage("Enable spell check in editor (Firefox only)")
-   String spellCheckTooltip();
+    @DefaultMessage("Words")
+    String byWords();
 
-   @DefaultMessage("Translation Memory (TM) options")
-   String transMemoryOption();
+    @DefaultMessage("Messages")
+    String byMessage();
 
-   @DefaultMessage("Display configuration")
-   String displayConfiguration();
+    @DefaultMessage("Refresh current page")
+    String refreshCurrentPage();
 
-   @DefaultMessage("Configure how you want your editor to look like")
-   String displayConfigurationTooltip();
+    @DefaultMessage("Enable spell check in editor (Firefox only)")
+    String spellCheckTooltip();
 
-   @DefaultMessage("Display optional Trans Unit Details")
-   String showTransUnitDetails();
+    @DefaultMessage("Translation Memory (TM) options")
+    String transMemoryOption();
 
-   @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
-   String showTransUnitDetailsTooltip();
-   
-   @DefaultMessage("Enable Reference for Source Language")
-   String enableReferenceForSourceLang();
+    @DefaultMessage("Display configuration")
+    String displayConfiguration();
 
-   @DefaultMessage("Enable the drop-down list where a reference in another language can be selected")
-   String enableReferenceForSourceLangTooltip();
+    @DefaultMessage("Enable Reference for Source Language")
+    String enableReferenceForSourceLang();
 
-   @DefaultMessage("Download All Files")
-   String downloadAllFiles();
+    @DefaultMessage("Configure how you want your editor to look like")
+    String displayConfigurationTooltip();
 
-   @DefaultMessage("Your download will be prepared and may take a few minutes to complete. Is this ok?")
-   String prepareDownloadConfirmation();
-   
-   @DefaultMessage("Download files (zip)")
-   String downloadAllAsZip();
+    @DefaultMessage("Display optional Trans Unit Details")
+    String showTransUnitDetails();
 
-   @DefaultMessage("Download all translated files.")
-   String downloadAllAsZipDescription();
+    @DefaultMessage("Only display Translation Unit Details when there is meta data otherwise hide it")
+            String showTransUnitDetailsTooltip();
 
-   @DefaultMessage("Download files (offline po zip)")
-   String downloadAllAsOfflinePoZip();
+    @DefaultMessage("Download All Files")
+    String downloadAllFiles();
 
-   @DefaultMessage("Download all translated files in po format for offline translation.")
-   String downloadAllAsOfflinePoZipDescription();
+    @DefaultMessage("Your download will be prepared and may take a few minutes to complete. Is this ok?")
+            String prepareDownloadConfirmation();
 
-   @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
-   String projectTypeNotSet();
+    @DefaultMessage("Download files (zip)")
+    String downloadAllAsZip();
 
-   @DefaultMessage("Run validation on documents in this page")
-   String documentValidationTitle();
+    @DefaultMessage("Download all translated files.")
+    String downloadAllAsZipDescription();
 
-   @DefaultMessage("Has validation errors - {0}")
-   String hasValidationErrors(String docName);
+    @DefaultMessage("Download files (offline po zip)")
+    String downloadAllAsOfflinePoZip();
 
-   @DefaultMessage("Last run: {0}")
-   String lastValidationRun(String completeTime);
+    @DefaultMessage("Download all translated files in po format for offline translation.")
+            String downloadAllAsOfflinePoZipDescription();
 
-   @DefaultMessage("Upload document to merge/override translation")
-   String uploadButtonTitle();
-   
-   @DefaultMessage("Download document with extension {0}")
-   String downloadFileTitle(String key);
+    @DefaultMessage("The project type for this iteration has not been set. Contact the project maintainer.")
+            String projectTypeNotSet();
 
-   @DefaultMessage("Comment")
-   String reviewComment();
+    @DefaultMessage("Run validation on documents in this page")
+    String documentValidationTitle();
 
-   @DefaultMessage("You")
-   String you();
+    @DefaultMessage("Has validation errors - {0}")
+    String hasValidationErrors(String docName);
 
-   @DefaultMessage("Compare")
-   String compare();
+    @DefaultMessage("Last run: {0}")
+    String lastValidationRun(String completeTime);
 
-   @DefaultMessage("Remove from comparison")
-   String removeFromComparison();
+    @DefaultMessage("Upload document to merge/override translation")
+    String uploadButtonTitle();
 
-   @DefaultMessage("Why is this translation rejected?")
-   String rejectCommentTitle();
+    @DefaultMessage("Download document with extension {0}")
+    String downloadFileTitle(String key);
 
-   @DefaultMessage("Confirm rejection")
-   String confirmRejection();
+    @DefaultMessage("Comment")
+    String reviewComment();
+
+    @DefaultMessage("You")
+    String you();
+
+    @DefaultMessage("Compare")
+    String compare();
+
+    @DefaultMessage("Remove from comparison")
+    String removeFromComparison();
+
+    @DefaultMessage("Why is this translation rejected?")
+    String rejectCommentTitle();
+
+    @DefaultMessage("Confirm rejection (ctrl + enter)")
+    String confirmRejection();
+
+    @DefaultMessage("More details")
+    String moreDetais();
 }

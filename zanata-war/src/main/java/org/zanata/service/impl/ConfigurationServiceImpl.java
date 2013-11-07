@@ -20,10 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang.StringUtils.join;
+
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -33,128 +34,188 @@ import org.zanata.common.Namespaces;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 
 @Name("configurationServiceImpl")
 @Scope(ScopeType.STATELESS)
-public class ConfigurationServiceImpl implements ConfigurationService
-{
-   private static final String FILE_NAME = "zanata.xml";
+public class ConfigurationServiceImpl implements ConfigurationService {
+    private static final String FILE_NAME = "zanata.xml";
 
-   private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
-   
-   @In
-   private LocaleService localeServiceImpl;
+    private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
-   
-   @In
-   private ApplicationConfiguration applicationConfiguration;
+    @In
+    private LocaleService localeServiceImpl;
 
-   @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo)
-   {
-      return getConfigurationFileContents(projectSlug, iterationSlug, useOfflinePo, applicationConfiguration.getServerPath());
-   }
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo)
-   {
-      return getConfigurationFileContents(projectSlug, iterationSlug, locale, useOfflinePo, applicationConfiguration.getServerPath());
-   }
+    @In
+    private ApplicationConfiguration applicationConfiguration;
 
-   @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, boolean useOfflinePo, String serverPath)
-   {
-      return getConfigurationFileContents(projectSlug, iterationSlug, null, useOfflinePo, serverPath);
-   }
+    @Override
+    public String getGeneralConfig(String projectSlug, String versionSlug) {
+        return new ConfigBuilder(projectSlug, versionSlug).getConfig();
+    }
 
-   @Override
-   public String getConfigurationFileContents(String projectSlug, String iterationSlug, HLocale locale, boolean useOfflinePo, String serverPath)
-   {
-      HProjectIteration projectIteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-      ProjectType projectType = projectIteration.getProjectType();
+    @Override
+    public String getSingleLocaleConfig(String projectSlug, String versionSlug,
+            HLocale locale) {
+        return new SingleLocaleConfigBuilder(projectSlug, versionSlug, locale)
+                .getConfig();
+    }
 
-      StringBuilder var = new StringBuilder(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<config xmlns=\"" + Namespaces.ZANATA_CONFIG + "\">\n");
-      var.append("  <url>").append(serverPath).append("/</url>\n");
-      var.append("  <project>").append(projectSlug).append("</project>\n");
-      var.append("  <project-version>").append(iterationSlug).append("</project-version>\n");
-      if (useOfflinePo)
-      {
-         // FIXME this comment could be localized
-         var.append("  <!-- NB project-type set to 'offlinepo' to allow offline po translation\n")
-            .append("       from non-po documents, project-type on server is '")
-            .append(String.valueOf(projectType).toLowerCase()).append("' -->\n")
-            .append("  <project-type>").append(PROJECT_TYPE_OFFLINE_PO).append("</project-type>\n");
-      }
-      else if ( projectType != null )
-      {
-         if( projectType == ProjectType.Gettext )
-         {
-            // FIXME this comment could be localized
-            var.append("  <!-- NB project-type set to 'podir' to allow uploads, but original was 'gettext' -->\n");
-            var.append("  <project-type>").append(ProjectType.Podir.toString().toLowerCase()).append("</project-type>\n");
-         }
-         else
-         {
-            var.append("  <project-type>").append(projectType.toString().toLowerCase()).append("</project-type>\n");
-         }
-      }
-      else
-      {
-         var.append("  <!--<project-type>");
-         var.append(StringUtils.join(ProjectType.values(), "|").toLowerCase());
-         var.append("</project-type>-->\n");
-      }
-      var.append("\n");
+    @Override
+    public String getConfigForOfflineTranslation(String projectSlug,
+            String versionSlug, HLocale locale) {
+        return new OfflineTranslationConfigBuilder(projectSlug, versionSlug,
+                locale).getConfig();
+    }
 
-      List<HLocale> locales;
-      if (locale == null)
-      {
-         locales = localeServiceImpl.getSupportedLangugeByProjectIteration(projectSlug, iterationSlug);
-      }
-      else
-      {
-         locales = new ArrayList<HLocale>();
-         locales.add(locale);
-      }
-      HLocale source = localeServiceImpl.getSourceLocale(projectSlug, iterationSlug);
+    @Override
+    public String getConfigurationFileName() {
+        return FILE_NAME;
+    }
 
-      if(locales!=null)
-      {
-         boolean first=true;
-         for(HLocale op: locales)
-         {
-            if(!op.equals(source))
-            {
-               if (first)
-               {
-                  var.append("  <locales>\n");
-               }
-               var.append("    <locale>").append(op.getLocaleId().getId()).append("</locale>\n");
-               first = false;
+    private class ConfigBuilder {
+
+        private final String projectSlug;
+        private final String versionSlug;
+
+        private StringBuilder doc;
+
+        public ConfigBuilder(String projectSlug, String versionSlug) {
+            this.projectSlug = projectSlug;
+            this.versionSlug = versionSlug;
+        }
+
+        public String getConfig() {
+            doc =
+                    new StringBuilder(
+                            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+                                    + "<config xmlns=\""
+                                    + Namespaces.ZANATA_CONFIG + "\">")
+                            .append(indent(tag("url",
+                                    applicationConfiguration.getServerPath()
+                                            + "/")))
+                            .append("\n")
+                            .append(indent(tag("project", projectSlug)))
+                            .append("\n")
+                            .append(indent(tag("project-version", versionSlug)))
+                            .append("\n")
+                            .append(makeProjectTypeSection(getProjectType()))
+                            .append("\n");
+            appendLocalesIfPresent();
+            doc.append("\n").append("</config>\n");
+            return doc.toString();
+        }
+
+        protected String indent(String line) {
+            return "  " + line;
+        }
+
+        protected String tag(String tagName, String content) {
+            return "<" + tagName + ">" + content + "</" + tagName + ">";
+        }
+
+        protected String makeProjectTypeSection(ProjectType projectType) {
+            if (projectType != null) {
+                return indent(tag("project-type", projectType.toString()
+                        .toLowerCase()));
+            } else {
+                return indent(comment(tag("project-type",
+                        join(ProjectType.values(), "|").toLowerCase())));
             }
-         }
-         if (!first)
-         {
-            var.append("  </locales>\n\n");
-         }
-      }
+        }
 
-      var.append("</config>\n");
+        private String comment(String content) {
+            return "<!-- " + content + " -->";
+        }
 
-      return var.toString();
-   }
+        private ProjectType getProjectType() {
+            return projectIterationDAO.getBySlug(projectSlug, versionSlug)
+                    .getProjectType();
+        }
 
-   @Override
-   public String getConfigurationFileName()
-   {
-      return FILE_NAME;
-   }
+        private void appendLocalesIfPresent() {
+            List<HLocale> locales = getLocalesToAppend();
+            if (!locales.isEmpty()) {
+                appendLocales(locales);
+            }
+        }
+
+        private List<HLocale> getLocalesToAppend() {
+            return removeSourceLocale(getAllLocales());
+        }
+
+        private List<HLocale> removeSourceLocale(List<HLocale> locales) {
+            HLocale source =
+                    localeServiceImpl.getSourceLocale(projectSlug, versionSlug);
+            locales.remove(source);
+            return locales;
+        }
+
+        protected List<HLocale> getAllLocales() {
+            return localeServiceImpl.getSupportedLangugeByProjectIteration(
+                    projectSlug, versionSlug);
+        }
+
+        private void appendLocales(List<HLocale> locales) {
+            doc.append("\n").append(indent("<locales>\n"));
+            for (HLocale locale : locales) {
+                doc.append(
+                        indent(indent(tag("locale", locale.getLocaleId()
+                                .getId())))).append("\n");
+            }
+            doc.append(indent("</locales>\n"));
+        }
+
+    }
+
+    private class SingleLocaleConfigBuilder extends ConfigBuilder {
+
+        private final HLocale locale;
+
+        public SingleLocaleConfigBuilder(String projectSlug,
+                String versionSlug, HLocale locale) {
+            super(projectSlug, versionSlug);
+            this.locale = locale;
+        }
+
+        @Override
+        protected List<HLocale> getAllLocales() {
+            return newArrayList(locale);
+        }
+    }
+
+    private class OfflineTranslationConfigBuilder extends
+            SingleLocaleConfigBuilder {
+
+        public OfflineTranslationConfigBuilder(String projectSlug,
+                String versionSlug, HLocale locale) {
+            super(projectSlug, versionSlug, locale);
+        }
+
+        @Override
+        protected String makeProjectTypeSection(ProjectType projectType) {
+            if (projectType == ProjectType.Podir) {
+                return super.makeProjectTypeSection(projectType);
+            }
+
+            if (projectType == ProjectType.Gettext) {
+                return "  <!-- NB project-type set to 'podir' to allow offline translations to be\n"
+                        + "       uploaded, but original was 'gettext' -->\n"
+                        + indent(tag("project-type", ProjectType.Podir
+                                .toString().toLowerCase()));
+            }
+
+            return "  <!-- NB project-type set to 'offlinepo' to allow offline po translation\n"
+                    + "       from non-po documents, project-type on server is '"
+                    + String.valueOf(projectType).toLowerCase()
+                    + "' -->\n"
+                    + indent(tag("project-type", PROJECT_TYPE_OFFLINE_PO));
+        }
+
+    }
 
 }

@@ -20,40 +20,56 @@
  */
 package org.zanata.rest.compat;
 
+import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.dto.VersionInfo;
+import org.zanata.rest.ResourceRequest;
 
-import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+public class VersionRawCompatibilityITCase extends RestTest {
 
-public class VersionRawCompatibilityITCase extends RestTest
-{
+    @Override
+    protected void prepareDBUnitOperations() {
+    }
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-   }
+    /**
+     * JSON is the default return type if no header is passed to REST service.
+     * @see org.zanata.rest.service.VersionResource
+     */
+    @Test
+    @RunAsClient
+    public void getVersionXml() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.accept("application/vnd.zanata.Version+xml");
+            }
 
-   @Test
-   @RunAsClient
-   public void getVersionXml() throws Exception
-   {
-      new ResourceRequest(getRestEndpointUrl("/version"), "GET")
-      {
-         @Override
-         protected void prepareRequest(ClientRequest request)
-         {
-         }
-         
-         @Override
-         protected void onResponse(ClientResponse response)
-         {
-            assertJsonUnmarshal(response, VersionInfo.class);
-         }
-      }.run();
-   }
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertJaxbUnmarshal(response, VersionInfo.class);
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void getVersionJson() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.accept("application/vnd.zanata.Version+json");
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertJsonUnmarshal(response, VersionInfo.class);
+            }
+        }.run();
+    }
 }

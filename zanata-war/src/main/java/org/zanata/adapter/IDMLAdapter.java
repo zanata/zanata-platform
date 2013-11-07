@@ -25,17 +25,15 @@ import net.sf.okapi.filters.idml.IDMLFilter;
 /**
  * Adapter to handle Adobe InDesign IDML.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class IDMLAdapter extends GenericOkapiFilterAdapter
-{
-   public IDMLAdapter()
-   {
-      super(prepareFilter(), IdSource.contentHash, true);
-   }
+public class IDMLAdapter extends GenericOkapiFilterAdapter {
+    public IDMLAdapter() {
+        super(prepareFilter(), IdSource.contentHash, true);
+    }
 
-   private static IDMLFilter prepareFilter()
-   {
-      return new IDMLFilter();
-   }
+    private static IDMLFilter prepareFilter() {
+        return new IDMLFilter();
+    }
 }

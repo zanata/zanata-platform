@@ -1,39 +1,42 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <ui:with field="messages" type="org.zanata.webtrans.client.resources.WebTransMessages" />
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-    <ui:style field="style" type="org.zanata.webtrans.client.view.TransUnitsTableView.Styles">
-        .oddRow {
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.view.TransUnitsTableView.Styles">
+    .oddRow {
 
-        }
+    }
 
-        .evenRow {
-            /* background-color: #F3F7FB; */
-        }
+    .evenRow {
+      /* background-color: #F3F7FB; */
+    }
 
-        .cellFormat {
-            border-bottom: 1px solid silver;
-        }
-        
-        .table {
-            border-collapse: collapse;
-            /* setting width to 99% to leave some space from the scroll bar */
-            width: 99%;
-            margin: 0 5px;
-            table-layout: fixed;
-        }
+    .cellFormat {
+      border-bottom: 1px solid silver;
+    }
 
-        .noContent {
-            text-align: center;
-            font-style: italic;
-            color: grey;
-            font-size: 1.5em;
-        }
-       
-    </ui:style>
+    .table {
+      border-collapse: collapse;
+      /* setting width to 99% to leave some space from the scroll bar */
+      width: 99%;
+      margin: 0 5px;
+      table-layout: fixed;
+    }
 
-        <g:ScrollPanel ui:field="root">
-            <g:Grid ui:field="transUnitTable" styleName="{style.table} transUnitTable"/>
-        </g:ScrollPanel>
+    .noContent {
+      text-align: center;
+      font-style: italic;
+      color: grey;
+      font-size: 1.5em;
+    }
+
+  </ui:style>
+
+  <g:ScrollPanel ui:field="root">
+    <g:Grid ui:field="transUnitTable"
+      styleName="{style.table} transUnitTable" />
+  </g:ScrollPanel>
 </ui:UiBinder>

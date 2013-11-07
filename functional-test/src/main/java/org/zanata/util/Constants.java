@@ -22,39 +22,32 @@ package org.zanata.util;
 
 import com.google.common.base.Objects;
 
-public enum Constants
-{
-   // constants used by page and workflow objects
-   propFile("setup.properties"),
-   zanataInstance("zanata.instance.url"),
-   projectsLink("Projects"),
-   webDriverType("webdriver.type"),
-   chrome, firefox, htmlUnit,
-   sampleProjects("zanata.sample.projects.basedir"),
-   zanataApiKey("zanata.apikey");
+public enum Constants {
+    // constants used by page and workflow objects
+    propFile("setup.properties"), zanataInstance("zanata.instance.url"),
+    projectsLink("Projects"), webDriverType("webdriver.type"), chrome, firefox,
+    htmlUnit, sampleProjects("zanata.sample.projects.basedir"), zanataApiKey(
+            "zanata.apikey");
 
-   public static final int FIFTY_SEC = 50000;
-   private String value;
+    public static final int FIFTY_SEC = 50000;
+    private String value;
 
-   private Constants(String value)
-   {
-      this.value = value;
-   }
+    private Constants(String value) {
+        this.value = value;
+    }
 
-   private Constants()
-   {
-      this(null);
-      value = name();
-   }
+    private Constants() {
+        this(null);
+        value = name();
+    }
 
-   @Override
-   public String toString()
-   {
-      return Objects.toStringHelper(this).add("name", name()).add("value", value).toString();
-   }
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("name", name())
+                .add("value", value).toString();
+    }
 
-   public String value()
-   {
-      return value;
-   }
+    public String value() {
+        return value;
+    }
 }

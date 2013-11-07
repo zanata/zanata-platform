@@ -71,350 +71,334 @@ import static org.zanata.webtrans.client.events.NotificationEvent.Severity.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-// @formatter:off
-public class TransUnitsTablePresenter extends WidgetPresenter<TransUnitsTableDisplay> implements
-      TransUnitSelectionHandler,
-      FilterViewEventHandler,
-      FilterViewConfirmationDisplay.Listener,
-      NavigationService.PageDataChangeListener,
-      TransUnitsTableDisplay.Listener,
-      TableRowSelectedEventHandler,
-      LoadingEventHandler,
-      RefreshPageEventHandler, UserConfigChangeHandler,
-      RequestPageValidationHandler
-// @formatter:on
-{
+public class TransUnitsTablePresenter extends
+        WidgetPresenter<TransUnitsTableDisplay> implements
+        TransUnitSelectionHandler, FilterViewEventHandler,
+        FilterViewConfirmationDisplay.Listener,
+        NavigationService.PageDataChangeListener,
+        TransUnitsTableDisplay.Listener, TableRowSelectedEventHandler,
+        LoadingEventHandler, RefreshPageEventHandler, UserConfigChangeHandler,
+        RequestPageValidationHandler {
 
-   private final TransUnitsTableDisplay display;
-   private final TranslationHistoryPresenter translationHistoryPresenter;
-   private final WebTransMessages messages;
-   private final EventBus eventBus;
-   private final NavigationService navigationService;
-   private final SourceContentsPresenter sourceContentsPresenter;
-   private final TargetContentsPresenter targetContentsPresenter;
-   private final TranslatorInteractionService translatorService;
+    private final TransUnitsTableDisplay display;
+    private final TranslationHistoryPresenter translationHistoryPresenter;
+    private final WebTransMessages messages;
+    private final EventBus eventBus;
+    private final NavigationService navigationService;
+    private final SourceContentsPresenter sourceContentsPresenter;
+    private final TargetContentsPresenter targetContentsPresenter;
+    private final TranslatorInteractionService translatorService;
 
-   private final UserOptionsService userOptionsService;
+    private final UserOptionsService userOptionsService;
 
-   // state we need to keep track of
-   private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
-   // In case of cancelling a filter
-   private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT;
-   private TransUnitId selectedId;
-   private String findMessage;
+    // state we need to keep track of
+    private FilterViewEvent filterOptions = FilterViewEvent.DEFAULT;
+    // In case of cancelling a filter
+    private FilterViewEvent previousFilterOptions = FilterViewEvent.DEFAULT;
+    private TransUnitId selectedId;
+    private String findMessage;
 
+    @Inject
+    public TransUnitsTablePresenter(TransUnitsTableDisplay display,
+            EventBus eventBus, NavigationService navigationService,
+            SourceContentsPresenter sourceContentsPresenter,
+            TargetContentsPresenter targetContentsPresenter,
+            TranslatorInteractionService translatorService,
+            TranslationHistoryPresenter translationHistoryPresenter,
+            WebTransMessages messages, UserOptionsService userOptionsService) {
+        super(display, eventBus);
+        this.display = display;
+        this.translationHistoryPresenter = translationHistoryPresenter;
+        this.messages = messages;
+        this.display.setRowSelectionListener(this);
 
-   @Inject
-   // @formatter:off
-   public TransUnitsTablePresenter(TransUnitsTableDisplay display, EventBus eventBus, NavigationService navigationService,
-                                   SourceContentsPresenter sourceContentsPresenter,
-                                   TargetContentsPresenter targetContentsPresenter,
-                                   TranslatorInteractionService translatorService,
-                                   TranslationHistoryPresenter translationHistoryPresenter,
-                                   WebTransMessages messages, UserOptionsService userOptionsService)
-   // @formatter:on
-   {
-      super(display, eventBus);
-      this.display = display;
-      this.translationHistoryPresenter = translationHistoryPresenter;
-      this.messages = messages;
-      this.display.setRowSelectionListener(this);
+        this.display.addFilterConfirmationHandler(this);
+        this.eventBus = eventBus;
+        this.navigationService = navigationService;
+        navigationService.addPageDataChangeListener(this);
+        this.sourceContentsPresenter = sourceContentsPresenter;
+        this.targetContentsPresenter = targetContentsPresenter;
+        this.translatorService = translatorService;
+        this.userOptionsService = userOptionsService;
+    }
 
-      this.display.addFilterConfirmationHandler(this);
-      this.eventBus = eventBus;
-      this.navigationService = navigationService;
-      navigationService.addPageDataChangeListener(this);
-      this.sourceContentsPresenter = sourceContentsPresenter;
-      this.targetContentsPresenter = targetContentsPresenter;
-      this.translatorService = translatorService;
-      this.userOptionsService = userOptionsService;
-   }
+    @Override
+    protected void onBind() {
+        registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
+        registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(),
+                this));
+        registerHandler(eventBus.addHandler(TableRowSelectedEvent.TYPE, this));
+        registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
+        registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
+        registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
+        registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE,
+                this));
 
-   @Override
-   protected void onBind()
-   {
-      registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
-      registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(), this));
-      registerHandler(eventBus.addHandler(TableRowSelectedEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(LoadingEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(RefreshPageEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
-      registerHandler(eventBus.addHandler(RequestPageValidationEvent.TYPE, this));
+        display.setThemes(userOptionsService.getConfigHolder().getState()
+                .getDisplayTheme().name());
+    }
 
-      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
-   }
+    @Override
+    protected void onUnbind() {
+    }
 
-   @Override
-   protected void onUnbind()
-   {
-   }
+    @Override
+    protected void onRevealDisplay() {
+    }
 
-   @Override
-   protected void onRevealDisplay()
-   {
-   }
+    @Override
+    public void onTransUnitSelected(TransUnitSelectionEvent event) {
+        TransUnit selection = event.getSelection();
+        selectedId = selection.getId();
+        Log.debug("selected id: " + selectedId);
+        sourceContentsPresenter.setSelectedSource(selectedId);
+        targetContentsPresenter.setSelected(selectedId);
+        display.ensureVisible(targetContentsPresenter.getCurrentDisplay());
+        translatorService.transUnitSelected(selection);
+    }
 
-   @Override
-   public void onTransUnitSelected(TransUnitSelectionEvent event)
-   {
-      TransUnit selection = event.getSelection();
-      selectedId = selection.getId();
-      Log.debug("selected id: " + selectedId);
-      sourceContentsPresenter.setSelectedSource(selectedId);
-      targetContentsPresenter.setSelected(selectedId);
-      display.ensureVisible(targetContentsPresenter.getCurrentDisplay());
-      translatorService.transUnitSelected(selection);
-   }
+    public void goToPage(int pageNumber) {
+        targetContentsPresenter.savePendingChangesIfApplicable();
+        navigationService.gotoPage(pageNumber - 1);
+    }
 
-   public void goToPage(int pageNumber)
-   {
-      targetContentsPresenter.savePendingChangesIfApplicable();
-      navigationService.gotoPage(pageNumber - 1);
-   }
+    @Override
+    public void onFilterView(FilterViewEvent event) {
+        previousFilterOptions = filterOptions;
+        filterOptions = event;
 
-   @Override
-   public void onFilterView(FilterViewEvent event)
-   {
-      previousFilterOptions = filterOptions;
-      filterOptions = event;
+        if (!event.isCancelFilter()) {
+            if (targetContentsPresenter.currentEditorContentHasChanged()) {
+                display.showFilterConfirmation();
+            } else {
+                hideFilterConfirmationAndDoFiltering();
+            }
+        }
+    }
 
-      if (!event.isCancelFilter())
-      {
-         if (targetContentsPresenter.currentEditorContentHasChanged())
-         {
-            display.showFilterConfirmation();
-         }
-         else
-         {
-            hideFilterConfirmationAndDoFiltering();
-         }
-      }
-   }
+    private void hideFilterConfirmationAndDoFiltering() {
+        display.hideFilterConfirmation();
+        navigationService.execute(filterOptions);
+    }
 
-   private void hideFilterConfirmationAndDoFiltering()
-   {
-      display.hideFilterConfirmation();
-      navigationService.execute(filterOptions);
-   }
+    @Override
+    public void saveAsTranslatedAndFilter() {
+        saveAndFilter(ContentState.Translated);
+    }
 
-   @Override
-   public void saveAsTranslatedAndFilter()
-   {
-      saveAndFilter(ContentState.Translated);
-   }
+    @Override
+    public void saveAsFuzzyAndFilter() {
+        saveAndFilter(ContentState.NeedReview);
+    }
 
-   @Override
-   public void saveAsFuzzyAndFilter()
-   {
-      saveAndFilter(ContentState.NeedReview);
-   }
+    private void saveAndFilter(ContentState status) {
+        if (targetContentsPresenter.getCurrentTransUnitIdOrNull() == null) {
+            return;
+        }
+        targetContentsPresenter.saveCurrentIfValid(status);
+        hideFilterConfirmationAndDoFiltering();
+    }
 
-   private void saveAndFilter(ContentState status)
-   {
-      if (targetContentsPresenter.getCurrentTransUnitIdOrNull() == null)
-      {
-         return;
-      }
-      targetContentsPresenter.saveCurrent(status);
-      hideFilterConfirmationAndDoFiltering();
-   }
+    @Override
+    public void discardChangesAndFilter() {
+        targetContentsPresenter.onCancel(targetContentsPresenter
+                .getCurrentTransUnitIdOrNull());
+        hideFilterConfirmationAndDoFiltering();
+    }
 
-   @Override
-   public void discardChangesAndFilter()
-   {
-      targetContentsPresenter.onCancel(targetContentsPresenter.getCurrentTransUnitIdOrNull());
-      hideFilterConfirmationAndDoFiltering();
-   }
+    @Override
+    public void cancelFilter() {
+        eventBus.fireEvent(new FilterViewEvent(previousFilterOptions
+                .isFilterTranslated(), previousFilterOptions.isFilterFuzzy(),
+                previousFilterOptions.isFilterUntranslated(),
+                previousFilterOptions.isFilterApproved(), previousFilterOptions
+                        .isFilterRejected(), previousFilterOptions
+                        .isFilterHasError(), true));
+        display.hideFilterConfirmation();
+    }
 
-   @Override
-   public void cancelFilter()
-   {
-      eventBus.fireEvent(new FilterViewEvent(previousFilterOptions.isFilterTranslated(), previousFilterOptions.isFilterFuzzy(), previousFilterOptions.isFilterUntranslated(), previousFilterOptions.isFilterApproved(), previousFilterOptions.isFilterRejected(), previousFilterOptions.isFilterHasError(), true, previousFilterOptions.getEnabledValidationIds()));
-      display.hideFilterConfirmation();
-   }
+    @Override
+    public void showDataForCurrentPage(List<TransUnit> transUnits) {
+        sourceContentsPresenter.showData(transUnits);
+        targetContentsPresenter.showData(transUnits);
+        display.buildTable(sourceContentsPresenter.getDisplays(),
+                targetContentsPresenter.getDisplays());
+    }
 
-   @Override
-   public void showDataForCurrentPage(List<TransUnit> transUnits)
-   {
-      sourceContentsPresenter.showData(transUnits);
-      targetContentsPresenter.showData(transUnits);
-      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
-   }
+    @Override
+    public void onRefreshPage(RefreshPageEvent event) {
+        if (event == RefreshPageEvent.REFRESH_CODEMIRROR_EVENT) {
+            display.delayRefresh();
+        } else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT) {
+            buildTableForEditor();
+        }
+    }
 
-   @Override
-   public void onRefreshPage(RefreshPageEvent event)
-   {
-      if (event == RefreshPageEvent.REFRESH_CODEMIRROR_EVENT)
-      {
-         display.delayRefresh();
-      }
-      else if (event == RefreshPageEvent.REDRAW_PAGE_EVENT)
-      {
-         buildTableForEditor();
-      }
-   }
+    private void buildTableForEditor() {
+        targetContentsPresenter.savePendingChangesIfApplicable();
+        List<TransUnit> currentPageValues =
+                navigationService.getCurrentPageValues();
+        sourceContentsPresenter.showData(currentPageValues);
+        targetContentsPresenter.showData(currentPageValues);
+        TransUnitId currentSelected =
+                sourceContentsPresenter.getCurrentTransUnitIdOrNull();
+        if (currentSelected != null) {
+            sourceContentsPresenter.setSelectedSource(currentSelected);
+            targetContentsPresenter.setSelected(currentSelected);
+        }
+        display.buildTable(sourceContentsPresenter.getDisplays(),
+                targetContentsPresenter.getDisplays());
+    }
 
-   private void buildTableForEditor()
-   {
-      targetContentsPresenter.savePendingChangesIfApplicable();
-      List<TransUnit> currentPageValues = navigationService.getCurrentPageValues();
-      sourceContentsPresenter.showData(currentPageValues);
-      targetContentsPresenter.showData(currentPageValues);
-      TransUnitId currentSelected = sourceContentsPresenter.getCurrentTransUnitIdOrNull();
-      if (currentSelected != null)
-      {
-         sourceContentsPresenter.setSelectedSource(currentSelected);
-         targetContentsPresenter.setSelected(currentSelected);
-      }
-      display.buildTable(sourceContentsPresenter.getDisplays(), targetContentsPresenter.getDisplays());
-   }
+    @Override
+    public void refreshRow(TransUnit updatedTransUnit,
+            EditorClientId editorClientId,
+            TransUnitUpdated.UpdateType updateType) {
 
-   @Override
-   public void refreshRow(TransUnit updatedTransUnit, EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
-   {
+        if (updateFromCurrentUsersEditorSave(editorClientId, updateType)) {
+            // the TransUnitUpdatedEvent is from current user's save action.
+            // Ignored.
+            return;
+        }
+        if (updateType == TransUnitUpdated.UpdateType.AddComment) {
+            targetContentsPresenter.updateCommentCount(
+                    updatedTransUnit.getId(),
+                    updatedTransUnit.getCommentsCount());
+            return;
+        }
 
-      if (updateFromCurrentUsersEditorSave(editorClientId, updateType))
-      {
-         // the TransUnitUpdatedEvent is from current user's save action.
-         // Ignored.
-         return;
-      }
-      if (updateType == TransUnitUpdated.UpdateType.AddComment)
-      {
-         targetContentsPresenter.updateCommentCount(updatedTransUnit.getId(), updatedTransUnit.getCommentsCount());
-         return;
-      }
+        if (Objects.equal(selectedId, updatedTransUnit.getId())
+                && !Objects.equal(editorClientId,
+                        translatorService.getCurrentEditorClientId())) {
+            // updatedTU is our active row but done by another user
+            eventBus.fireEvent(new NotificationEvent(Error, messages
+                    .concurrentEdit()));
+            if (targetContentsPresenter.currentEditorContentHasChanged()) {
+                translationHistoryPresenter.popupAndShowLoading(messages
+                        .concurrentEditTitle());
+                TransHistoryItem latest =
+                        new TransHistoryItem(updatedTransUnit.getVerNum()
+                                .toString(), updatedTransUnit.getTargets(),
+                                updatedTransUnit.getStatus(),
+                                updatedTransUnit.getLastModifiedBy(),
+                                updatedTransUnit.getLastModifiedTime());
+                translationHistoryPresenter.displayEntries(latest,
+                        Collections.<TransHistoryItem> emptyList(),
+                        Collections.<ReviewComment> emptyList());
+            }
+        }
+        targetContentsPresenter.updateRow(updatedTransUnit);
+    }
 
-      if (Objects.equal(selectedId, updatedTransUnit.getId()) && !Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()))
-      {
-         // updatedTU is our active row but done by another user
-         eventBus.fireEvent(new NotificationEvent(Error, messages.concurrentEdit()));
-         if (targetContentsPresenter.currentEditorContentHasChanged())
-         {
-            translationHistoryPresenter.popupAndShowLoading(messages.concurrentEditTitle());
-            TransHistoryItem latest = new TransHistoryItem(updatedTransUnit.getVerNum().toString(), updatedTransUnit.getTargets(), updatedTransUnit.getStatus(), updatedTransUnit.getLastModifiedBy(), updatedTransUnit.getLastModifiedTime());
-            translationHistoryPresenter.displayEntries(latest, Collections.<TransHistoryItem> emptyList(), Collections.<ReviewComment>emptyList());
-         }
-      }
-      targetContentsPresenter.updateRow(updatedTransUnit);
-   }
+    // update type is web editor save or web editor save fuzzy and coming from
+    // current user
+    private boolean updateFromCurrentUsersEditorSave(
+            EditorClientId editorClientId,
+            TransUnitUpdated.UpdateType updateType) {
+        return Objects.equal(editorClientId,
+                translatorService.getCurrentEditorClientId())
+                && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+    }
 
-   // update type is web editor save or web editor save fuzzy and coming from
-   // current user
-   private boolean updateFromCurrentUsersEditorSave(EditorClientId editorClientId, TransUnitUpdated.UpdateType updateType)
-   {
-      return Objects.equal(editorClientId, translatorService.getCurrentEditorClientId()) && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
-   }
+    @Override
+    public void highlightSearch(String findMessage) {
+        this.findMessage = findMessage;
+        sourceContentsPresenter.highlightSearch(findMessage);
+        targetContentsPresenter.highlightSearch(findMessage);
+    }
 
-   @Override
-   public void highlightSearch(String findMessage)
-   {
-      this.findMessage = findMessage;
-      sourceContentsPresenter.highlightSearch(findMessage);
-      targetContentsPresenter.highlightSearch(findMessage);
-   }
+    @Override
+    public void refreshView() {
+        List<TargetContentsDisplay> targetContentsDisplays =
+                targetContentsPresenter.getDisplays();
+        List<SourceContentsDisplay> sourceContentsDisplays =
+                sourceContentsPresenter.getDisplays();
+        for (int i = 0; i < targetContentsDisplays.size(); i++) {
+            TargetContentsDisplay targetDisplay = targetContentsDisplays.get(i);
+            SourceContentsDisplay sourceDisplay = sourceContentsDisplays.get(i);
+            targetDisplay.refresh();
+            sourceDisplay.refresh();
+            if (!Strings.isNullOrEmpty(findMessage)) {
+                targetDisplay.highlightSearch(findMessage);
+                sourceDisplay.highlightSearch(findMessage);
+            }
+        }
+    }
 
-   @Override
-   public void refreshView()
-   {
-      List<TargetContentsDisplay> targetContentsDisplays = targetContentsPresenter.getDisplays();
-      List<SourceContentsDisplay> sourceContentsDisplays = sourceContentsPresenter.getDisplays();
-      for (int i = 0; i < targetContentsDisplays.size(); i++)
-      {
-         TargetContentsDisplay targetDisplay = targetContentsDisplays.get(i);
-         SourceContentsDisplay sourceDisplay = sourceContentsDisplays.get(i);
-         targetDisplay.refresh();
-         sourceDisplay.refresh();
-         if (!Strings.isNullOrEmpty(findMessage))
-         {
-            targetDisplay.highlightSearch(findMessage);
-            sourceDisplay.highlightSearch(findMessage);
-         }
-      }
-   }
+    @Override
+    public void onRowSelected(int rowIndexOnPage) {
+        onRowSelected(rowIndexOnPage, false);
+    }
 
-   @Override
-   public void onRowSelected(int rowIndexOnPage)
-   {
-      onRowSelected(rowIndexOnPage, false);
-   }
+    @Override
+    public void onTableRowSelected(TableRowSelectedEvent event) {
+        TransUnitId selectedId = event.getSelectedId();
+        int rowIndex = navigationService.findRowIndexById(selectedId);
+        if (rowIndex != NavigationService.UNDEFINED) {
+            onRowSelected(rowIndex, event.isSuppressSavePending());
+        }
+    }
 
-   @Override
-   public void onTableRowSelected(TableRowSelectedEvent event)
-   {
-      TransUnitId selectedId = event.getSelectedId();
-      int rowIndex = navigationService.findRowIndexById(selectedId);
-      if (rowIndex != NavigationService.UNDEFINED)
-      {
-         onRowSelected(rowIndex, event.isSuppressSavePending());
-      }
-   }
+    private void onRowSelected(int rowIndexOnPage, boolean suppressSavePending) {
+        if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage) {
+            Log.info("current row:"
+                    + navigationService.getCurrentRowIndexOnPage()
+                    + " rowSelected:" + rowIndexOnPage);
+            if (!suppressSavePending) {
+                targetContentsPresenter.savePendingChangesIfApplicable();
+            }
+            navigationService.selectByRowIndex(rowIndexOnPage);
+            display.applySelectedStyle(rowIndexOnPage);
+        }
+    }
 
-   private void onRowSelected(int rowIndexOnPage, boolean suppressSavePending)
-   {
-      if (navigationService.getCurrentRowIndexOnPage() != rowIndexOnPage)
-      {
-         Log.info("current row:" + navigationService.getCurrentRowIndexOnPage() + " rowSelected:" + rowIndexOnPage);
-         if (!suppressSavePending)
-         {
-            targetContentsPresenter.savePendingChangesIfApplicable();
-         }
-         navigationService.selectByRowIndex(rowIndexOnPage);
-         display.applySelectedStyle(rowIndexOnPage);
-      }
-   }
+    @Override
+    public void onLoading(LoadingEvent event) {
+        if (event == LoadingEvent.START_EVENT) {
+            display.showLoading(true);
+        } else if (event == LoadingEvent.FINISH_EVENT) {
+            display.showLoading(false);
+        }
+    }
 
-   @Override
-   public void onLoading(LoadingEvent event)
-   {
-      if (event == LoadingEvent.START_EVENT)
-      {
-         display.showLoading(true);
-      }
-      else if (event == LoadingEvent.FINISH_EVENT)
-      {
-         display.showLoading(false);
-      }
-   }
+    /**
+     * For testing only. Will not work in GWT compiled mode.
+     * @param selectedId
+     *            current selected id
+     */
+    protected void setStateForTesting(TransUnitId selectedId) {
+        if (!GWT.isClient()) {
+            this.selectedId = selectedId;
+        }
+    }
 
-   /**
-    * For testing only. Will not work in GWT compiled mode.
-    * 
-    * @param selectedId current selected id
-    */
-   protected void setStateForTesting(TransUnitId selectedId)
-   {
-      if (!GWT.isClient())
-      {
-         this.selectedId = selectedId;
-      }
-   }
+    @Override
+    public void onUserConfigChanged(UserConfigChangeEvent event) {
+        display.setThemes(userOptionsService.getConfigHolder().getState()
+                .getDisplayTheme().name());
+    }
 
-   @Override
-   public void onUserConfigChanged(UserConfigChangeEvent event)
-   {
-      display.setThemes(userOptionsService.getConfigHolder().getState().getDisplayTheme().name());
-   }
+    @Override
+    public void onRequestPageValidation(RequestPageValidationEvent event) {
+        List<SourceContentsDisplay> sourceDisplays =
+                sourceContentsPresenter.getDisplays();
+        List<TargetContentsDisplay> targetDisplays =
+                targetContentsPresenter.getDisplays();
 
-   @Override
-   public void onRequestPageValidation(RequestPageValidationEvent event)
-   {
-      List<SourceContentsDisplay> sourceDisplays = sourceContentsPresenter.getDisplays();
-      List<TargetContentsDisplay> targetDisplays = targetContentsPresenter.getDisplays();
+        for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++) {
+            SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
+            TargetContentsDisplay targetDisplay = targetDisplays.get(i);
 
-      for (int i = 0; i < sourceContentsPresenter.getDisplays().size(); i++)
-      {
-         SourceContentsDisplay sourceDisplay = sourceDisplays.get(i);
-         TargetContentsDisplay targetDisplay = targetDisplays.get(i);
+            String source =
+                    sourceDisplay.getSourcePanelList().get(0).getSource();
+            String target = targetDisplay.getEditors().get(0).getText();
 
-         String source = sourceDisplay.getSourcePanelList().get(0).getSource();
-         String target = targetDisplay.getEditors().get(0).getText();
+            RunValidationEvent runValidationEvent =
+                    new RunValidationEvent(source, target, false);
 
-         RunValidationEvent runValidationEvent = new RunValidationEvent(source, target, false);
+            runValidationEvent.addWidget(targetDisplay);
 
-         runValidationEvent.addWidget(targetDisplay);
-
-         eventBus.fireEvent(runValidationEvent);
-      }
-   }
+            eventBus.fireEvent(runValidationEvent);
+        }
+    }
 }

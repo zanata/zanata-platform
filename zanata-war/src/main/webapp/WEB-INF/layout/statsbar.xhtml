@@ -1,51 +1,65 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:rich="http://richfaces.org/rich"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
-	<ui:param name="approved" value="#{status.approved}" />
-	<ui:param name="translated" value="#{status.translatedOnly}" />
-	<ui:param name="draft" value="#{status.draft}" />
-	<ui:param name="untranslated" value="#{status.untranslated}" />
 
-	<ui:param name="total" value="#{status.total}" />
-	
-    <ui:param name="wApproved" value="#{total == 0 ? 0 : 110 * approved / total}" />
-    <ui:param name="wTranslated" value="#{total == 0 ? 0 : 110 * translated / total}" />
-    <ui:param name="wDraft" value="#{total == 0 ? 0 : 110 * draft / total}" />
-    <ui:param name="wUntranslated" value="#{total == 0 ? 0 : 110 * untranslated / total}" />
-    
-	 <s:fragment rendered="#{status.total > 0}">
-     <ui:remove>
-       <!-- FIXME this string should be localized as a whole, but stats values are not inserted
-                  properly when it is used as-is in a message string. Similar for the hours suffix below
+  <ui:param name="approved" value="#{status.approved}"/>
+  <ui:param name="translated" value="#{status.translatedOnly}"/>
+  <ui:param name="draft" value="#{status.draft}"/>
+  <ui:param name="untranslated" value="#{status.untranslated}"/>
 
-                  This can probably be done like this http://blog.lunatech.com/2009/05/12/localised-attribute-values-jsf-and-seam
-                  using either params or their other method
-                   -->
-     </ui:remove>
-	 <div title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Approved']} #{approved}, #{messages['jsf.stats.Translated']} #{translated}, #{messages['jsf.stats.Draft']} #{draft}, #{messages['jsf.stats.Untranslated']} #{untranslated}" class="translationStatusDiv">
-        <div class="translationStatusBar statusBar_approved" style="width:#{wApproved}px;"></div>
-        <div class="translationStatusBar statusBar_translated" style="width:#{wTranslated}px;"></div>
-        <div class="translationStatusBar statusBar_draft" style="width:#{wDraft}px;"></div>
-        <div class="translationStatusBar statusBar_untranslated" style="width:#{wUntranslated}px;"></div>
+  <ui:param name="total" value="#{status.total}"/>
+
+  <ui:param name="wApproved"
+    value="#{total == 0 ? 0 : 110 * approved / total}"/>
+  <ui:param name="wTranslated"
+    value="#{total == 0 ? 0 : 110 * translated / total}"/>
+  <ui:param name="wDraft" value="#{total == 0 ? 0 : 110 * draft / total}"/>
+  <ui:param name="wUntranslated"
+    value="#{total == 0 ? 0 : 110 * untranslated / total}"/>
+
+  <s:fragment rendered="#{status.total > 0}">
+    <ui:remove>
+      <!-- FIXME this string should be localized as a whole, but stats values are not inserted
+                 properly when it is used as-is in a message string. Similar for the hours suffix below
+
+                 This can probably be done like this http://blog.lunatech.com/2009/05/12/localised-attribute-values-jsf-and-seam
+                 using either params or their other method
+                  -->
+    </ui:remove>
+
+    <div
+      title="#{messages['jsf.stats.Total']} #{status.total}, #{messages['jsf.stats.Approved']} #{approved}, #{messages['jsf.stats.Translated']} #{translated}, #{messages['jsf.stats.Draft']} #{draft}, #{messages['jsf.stats.Untranslated']} #{untranslated}"
+      class="translationStatusDiv">
+      <div class="translationStatusBar statusBar_approved"
+        style="width:#{wApproved}px;"></div>
+      <div class="translationStatusBar statusBar_translated"
+        style="width:#{wTranslated}px;"></div>
+      <div class="translationStatusBar statusBar_draft"
+        style="width:#{wDraft}px;"></div>
+      <div class="translationStatusBar statusBar_untranslated"
+        style="width:#{wUntranslated}px;"></div>
 
         <span class="statusBar_percentage">
-	        <h:outputText value="#{status.percentTranslated/100}" rendered="#{status.total > 0}">
-	            <f:convertNumber type="percent" />
-	        </h:outputText> 
-	        (<h:outputText value="#{status.remainingHours}">
-	        	<f:convertNumber maxFractionDigits="1"/>
-	        </h:outputText>#{messages['jsf.stats.ShortHoursSuffix']})
+
+          <h:outputText
+            value="#{statisticBar.formatPercentage(status.percentTranslated)}%"
+            rendered="#{status.total > 0}"/>
+          (
+          <h:outputText
+            value="#{statisticBar.formatHours(status.remainingHours)}"/>
+          #{messages['jsf.stats.ShortHoursSuffix']}
+          )
         </span>
     </div>
-    </s:fragment>
+  </s:fragment>
 
-    <s:fragment rendered="#{status.total eq 0}">
-        <div class="statusBar_noContent">
-            <h:outputText value="#{messages['jsf.NoContent']}"/> 
-        </div>
-    </s:fragment>
+  <s:fragment rendered="#{status.total eq 0}">
+    <div class="statusBar_noContent">
+      <h:outputText value="#{messages['jsf.NoContent']}"/>
+    </div>
+  </s:fragment>
 </div>

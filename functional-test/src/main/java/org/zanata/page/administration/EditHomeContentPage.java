@@ -29,48 +29,43 @@ import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class EditHomeContentPage extends BasePage {
 
-   @FindBy(className = "html.CSS1Compat")
-   private WebElement textEdit;
+    @FindBy(className = "html.CSS1Compat")
+    private WebElement textEdit;
 
-   @FindBy(id = "homeContentForm:update")
-   private WebElement updateButton;
+    @FindBy(id = "homeContentForm:update")
+    private WebElement updateButton;
 
-   @FindBy(id = "homeContentForm:cancel")
-   private WebElement cancelButton;
+    @FindBy(id = "homeContentForm:cancel")
+    private WebElement cancelButton;
 
-   public EditHomeContentPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    public EditHomeContentPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   public EditHomeContentPage enterText(String text)
-   {
-      waitForTenSec().until(new Function<WebDriver, WebElement>()
-      {
-         @Override
-         public WebElement apply(WebDriver driver)
-         {
-            return getDriver().findElement(By.className("html.CSS1Compat"));
-         }
-      });
-      textEdit.click();
-      textEdit.sendKeys(text);
-      return new EditHomeContentPage(getDriver());
-   }
+    public EditHomeContentPage enterText(String text) {
+        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return getDriver().findElement(By.className("html.CSS1Compat"));
+            }
+        });
+        textEdit.click();
+        textEdit.sendKeys(text);
+        return new EditHomeContentPage(getDriver());
+    }
 
-   public HomePage update()
-   {
-      updateButton.click();
-      return new HomePage(getDriver());
-   }
+    public HomePage update() {
+        updateButton.click();
+        return new HomePage(getDriver());
+    }
 
-   public HomePage cancelUpdate()
-   {
-      updateButton.click();
-      return new HomePage(getDriver());
-   }
+    public HomePage cancelUpdate() {
+        updateButton.click();
+        return new HomePage(getDriver());
+    }
 }

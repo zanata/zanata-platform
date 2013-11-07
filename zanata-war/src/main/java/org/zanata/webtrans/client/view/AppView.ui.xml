@@ -1,128 +1,116 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:f="urn:import:org.zanata.webtrans.client"
-	xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-    ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-    ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
-    ui:generateLocales="en">
-	
-	<ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
-		.rootContainer
-		{
-			width:100%;
-			min-width:960px;
-			background-color:#FFFFFF;
-			height:100%;
-		}
-		
-		.contentBody
-		{
-			margin:5px 25px 3px 25px;
-		}
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:f="urn:import:org.zanata.webtrans.client"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+  ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+  ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
+  ui:generateLocales="en">
 
-		.topPanel-Workspace {
-			font-size: 1.1em;
-			color: #595959;
-			padding:2px;
-			overflow:hidden;
-			text-overflow:ellipsis;
-		}
+  <ui:style type="org.zanata.webtrans.client.view.AppView.Styles">
+    .rootContainer {
+      width: 100%;
+      min-width: 960px;
+      background-color: #FFFFFF;
+      height: 100%;
+    }
 
-		.translationStats {
-			width: 140px;
-			height: 1.2em;
-			color: #595959;
-			cursor:pointer;
-		}
-		
-		.topMenuButton
-		{
-            cursor: pointer;
-            font-size:20px;
-            color:#4E4E4E;
-		}
-		
-		.highlightedTab
-		{
-			color:#FF4500;
-		}
-		
-		.topMenuButton:hover
-		{
-            color:#0085CC;
-		}
-		
-		.readonly_label
-		{
-			font-size:14px;
-			font-weight:bold;
-			color:#B62918;
-			font-style:normal;
-		}
-		
-		.selectedTab, .selectedTab:hover
-		{
-			color:#0085CC;
-			opacity:1;
-		}
-		
-		.disableTab, .disableTab:hover
-		{
-			color:#777;
-			cursor:default;
-			opacity:0.5;
-		}
-		
-		.fixedLayout
-		{
-			table-layout:fixed;
-		}
-		
-	</ui:style>
-	<g:LayoutPanel stylePrimaryName="{style.rootContainer}" ui:field="rootContainer">
-		<g:layer top="0px" height="25px">
-			<g:LayoutPanel styleName="subHeader">
-				<g:layer left="5px" right="5px">
-					<g:HorizontalPanel width="100%" height="100%" verticalAlignment="ALIGN_MIDDLE" styleName="{style.fixedLayout}">
-						<g:cell>
-							<g:HTMLPanel styleName="{style.topPanel-Workspace}">
-								<nobr>
-									<g:InlineLabel ui:field="readOnlyLabel" styleName="{style.readonly_label}"/>
-									<fui:Breadcrumb ui:field="projectLink" />
-									<fui:Breadcrumb ui:field="versionLink" />
-									<fui:Breadcrumb ui:field="filesLink" />
-									<fui:Breadcrumb ui:field="selectedDocumentSpan" />
-								</nobr>
-							</g:HTMLPanel>
-						</g:cell>
-						<g:cell width="250px">
-	                    	 <fui:TransUnitCountBar ui:field="translationStatsBar" styleName="{style.translationStats}"/>
-	                    </g:cell>
-	                    <g:cell verticalAlignment="ALIGN_MIDDLE" width="112px" horizontalAlignment="ALIGN_RIGHT">
-	                    	<g:HTMLPanel>
-		                    	<g:InlineLabel styleName="icon-list {style.topMenuButton}" ui:field="documentListTab"/>
-								<g:InlineLabel styleName="icon-edit {style.topMenuButton}" ui:field="editorTab"/>
-								<g:InlineLabel styleName="icon-search {style.topMenuButton}" ui:field="searchAndReplaceTab"/>
-		                    	<g:InlineLabel ui:field="keyShortcuts" styleName="icon-keyboard {style.topMenuButton}"/>
-							</g:HTMLPanel>
-	                    </g:cell>
-					</g:HorizontalPanel>
-				</g:layer>
-			</g:LayoutPanel>
-		</g:layer>
-		
-		<g:layer top="25px" bottom="0px" left='0px' right='0px' >
-				<g:LayoutPanel ui:field="contentContainer">
-					<g:layer top="0px" bottom="3px" left="5px" right="25px">
-						<g:TabLayoutPanel ui:field="content" barHeight="0" barUnit='PX' />
-					</g:layer>
-				</g:LayoutPanel>
-		</g:layer>
-		
-		<g:layer right="0" width="24px" top="25px" bottom="10px">
-			<g:LayoutPanel ui:field="sideMenuContainer"/>
-		</g:layer>
-		
-	</g:LayoutPanel>
+    .topPanel-Workspace {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .translationStats {
+      width: 230px;
+      height: 1.2em;
+      color: #595959;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .topMenuButton {
+      cursor: pointer;
+      font-size: 20px;
+      color: #4E4E4E;
+    }
+
+    .highlightedTab {
+      color: #FF4500;
+    }
+
+    .topMenuButton:hover {
+      color: #0085CC;
+    }
+
+    .readonly_label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #B62918;
+      font-style: normal;
+    }
+
+    .selectedTab, .selectedTab:hover {
+      color: #0085CC;
+      opacity: 1;
+    }
+
+    .disableTab, .disableTab:hover {
+      color: #777;
+      cursor: default;
+      opacity: 0.5;
+    }
+
+    .content {
+      height: 100%;
+      margin: 0 2em 0 0.1em;
+    }
+
+  </ui:style>
+  <g:LayoutPanel stylePrimaryName="{style.rootContainer}"
+    ui:field="rootContainer">
+    <g:layer top="0px" height="1.8em" left="0.5em" right="0.5em">
+      <g:HTMLPanel styleName="new-zanata">
+        <ul class="list--horizontal">
+          <li class="{style.topPanel-Workspace}">
+            <nobr>
+              <g:InlineLabel ui:field="readOnlyLabel"
+                styleName="{style.readonly_label}" />
+              <fui:Breadcrumb ui:field="projectLink" />
+              <fui:Breadcrumb ui:field="versionLink" />
+              <fui:Breadcrumb ui:field="filesLink" />
+              <fui:Breadcrumb ui:field="selectedDocumentSpan" />
+            </nobr>
+          </li>
+          <li style="float:right">
+            <fui:TransUnitCountBar ui:field="translationStatsBar"
+              styleName="{style.translationStats}" />
+            <g:InlineLabel styleName="icon-list {style.topMenuButton}"
+              ui:field="documentListTab" />
+            <g:InlineLabel styleName="icon-edit {style.topMenuButton}"
+              ui:field="editorTab" />
+            <g:InlineLabel styleName="icon-search {style.topMenuButton}"
+              ui:field="searchAndReplaceTab" />
+            <g:InlineLabel ui:field="keyShortcuts"
+              styleName="icon-keyboard {style.topMenuButton}" />
+          </li>
+        </ul>
+      </g:HTMLPanel>
+    </g:layer>
+
+    <g:layer top="25px" bottom="0px" left='0.5em' right='0.5em'>
+      <g:HTMLPanel ui:field="contentContainer">
+        <div class="new-zanata">
+          <fui:UnorderedListWidget ui:field="notifications"
+            styleName="list--no-bullets l--push-right-1" />
+        </div>
+        <g:TabLayoutPanel ui:field="content" styleName="{style.content}"
+          barHeight="0" barUnit='PX' />
+      </g:HTMLPanel>
+    </g:layer>
+
+    <g:layer right="0" width="24px" top="25px" bottom="10px">
+      <g:LayoutPanel ui:field="sideMenuContainer" />
+    </g:layer>
+
+  </g:LayoutPanel>
 </ui:UiBinder>

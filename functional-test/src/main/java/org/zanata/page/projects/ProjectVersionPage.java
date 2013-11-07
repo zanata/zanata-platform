@@ -23,7 +23,9 @@ package org.zanata.page.projects;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,76 +36,89 @@ import org.zanata.page.webtrans.DocumentsViewPage;
 import java.util.List;
 
 @Slf4j
-public class ProjectVersionPage extends BasePage
-{
-   @FindBy(id = "iterationLanguageForm:data_table:tb")
-   private WebElement localeTableTBody;
+public class ProjectVersionPage extends BasePage {
+    @FindBy(id = "iterationLanguageForm:data_table:tb")
+    private WebElement localeTableTBody;
 
-   public ProjectVersionPage(final WebDriver driver)
-   {
-      super(driver);
-   }
+    @FindBy(linkText = "Source Documents")
+    private WebElement sourceDocumentsButton;
 
-   @SuppressWarnings("unused")
-   public List<String> getTranslatableLocales()
-   {
-      List<WebElement> tableRows = getLocaleTableRows();
-      List<String> rows = Lists.transform(tableRows, new Function<WebElement, String>()
-      {
-         @Override
-         public String apply(WebElement tr)
-         {
-            log.debug("table row: {}", tr.getText());
-            List<WebElement> links = tr.findElements(By.tagName("a"));
-            return getLocaleLinkText(links.get(0));
-         }
-      });
+    @FindBy(linkText = "Edit Version")
+    private WebElement editVersionButton;
 
-      return ImmutableList.copyOf(rows);
-   }
+    public ProjectVersionPage(final WebDriver driver) {
+        super(driver);
+    }
 
-   private List<WebElement> getLocaleTableRows()
-   {
-      return localeTableTBody.findElements(By.tagName("tr"));
-   }
+    public String getVersionId() {
+        return getLastBreadCrumbText();
+    }
 
-   @SuppressWarnings("unused")
-   public List<String> getTranslatableLanguages()
-   {
-      List<WebElement> tableRows = getLocaleTableRows();
-      List<String> rows = Lists.transform(tableRows, new Function<WebElement, String>()
-      {
-         @Override
-         public String apply(WebElement tr)
-         {
-            log.debug("table row: {}", tr.getText());
-            WebElement nativeName = tr.findElement(By.className("nativeName"));
-            return nativeName.getText();
-         }
-      });
+    @SuppressWarnings("unused")
+    public List<String> getTranslatableLocales() {
+        List<WebElement> tableRows = getLocaleTableRows();
+        List<String> rows =
+                Lists.transform(tableRows, new Function<WebElement, String>() {
+                    @Override
+                    public String apply(WebElement tr) {
+                        log.debug("table row: {}", tr.getText());
+                        List<WebElement> links =
+                                tr.findElements(By.tagName("a"));
+                        return getLocaleLinkText(links.get(0));
+                    }
+                });
 
-      return ImmutableList.copyOf(rows);
-   }
+        return ImmutableList.copyOf(rows);
+    }
 
-   private static String getLocaleLinkText(WebElement languageLink)
-   {
-      String nativeName = languageLink.findElement(By.className("nativeName")).getText();
-      return languageLink.getText().replace(nativeName, "");
-   }
+    private List<WebElement> getLocaleTableRows() {
+        return localeTableTBody.findElements(By.tagName("tr"));
+    }
 
-   public DocumentsViewPage translate(String locale)
-   {
-      List<WebElement> localeTableRows = getLocaleTableRows();
-      for (WebElement tableRow : localeTableRows)
-      {
-         List<WebElement> links = tableRow.findElements(By.tagName("a"));
-         WebElement localeCell = links.get(0);
-         if (getLocaleLinkText(localeCell).equals(locale))
-         {
-            localeCell.click();
-            return new DocumentsViewPage(getDriver());
-         }
-      }
-      throw new IllegalArgumentException("can not translate locale: " + locale);
-   }
+    @SuppressWarnings("unused")
+    public List<String> getTranslatableLanguages() {
+        List<WebElement> tableRows = getLocaleTableRows();
+        List<String> rows =
+                Lists.transform(tableRows, new Function<WebElement, String>() {
+                    @Override
+                    public String apply(WebElement tr) {
+                        log.debug("table row: {}", tr.getText());
+                        WebElement nativeName =
+                                tr.findElement(By.className("nativeName"));
+                        return nativeName.getText();
+                    }
+                });
+
+        return ImmutableList.copyOf(rows);
+    }
+
+    private static String getLocaleLinkText(WebElement languageLink) {
+        String nativeName =
+                languageLink.findElement(By.className("nativeName")).getText();
+        return languageLink.getText().replace(nativeName, "");
+    }
+
+    public DocumentsViewPage translate(String locale) {
+        List<WebElement> localeTableRows = getLocaleTableRows();
+        for (WebElement tableRow : localeTableRows) {
+            List<WebElement> links = tableRow.findElements(By.tagName("a"));
+            WebElement localeCell = links.get(0);
+            if (getLocaleLinkText(localeCell).equals(locale)) {
+                localeCell.click();
+                return new DocumentsViewPage(getDriver());
+            }
+        }
+        throw new IllegalArgumentException("can not translate locale: "
+                + locale);
+    }
+
+    public ProjectSourceDocumentsPage goToSourceDocuments() {
+        sourceDocumentsButton.click();
+        return new ProjectSourceDocumentsPage(getDriver());
+    }
+
+    public CreateVersionPage clickEditVersion() {
+        editVersionButton.click();
+        return new CreateVersionPage(getDriver());
+    }
 }

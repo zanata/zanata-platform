@@ -26,63 +26,56 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GlossaryResultItem extends SearchResultItem implements IsSerializable
-{
-   private String source;
-   private String target;
-   private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+public class GlossaryResultItem extends SearchResultItem implements
+        IsSerializable {
+    private String source;
+    private String target;
+    private ArrayList<Long> sourceIdList = new ArrayList<Long>();
 
+    // for GWT
+    @SuppressWarnings("unused")
+    private GlossaryResultItem() {
+    }
 
-   // for GWT
-   @SuppressWarnings("unused")
-   private GlossaryResultItem()
-   {
-   }
+    /**
+     * @param source
+     * @param target
+     * @param relevanceScore
+     * @param similarityPercent
+     */
+    public GlossaryResultItem(String source, String target,
+            double relevanceScore, double similarityPercent) {
+        super(relevanceScore, similarityPercent);
+        this.source = source;
+        this.target = target;
+    }
 
-   /**
-    * @param source
-    * @param target
-    * @param relevanceScore
-    * @param similarityPercent
-    */
-   public GlossaryResultItem(String source, String target, double relevanceScore, double similarityPercent)
-   {
-      super(relevanceScore, similarityPercent);
-      this.source = source;
-      this.target = target;
-   }
+    public String getSource() {
+        return source;
+    }
 
-   public String getSource()
-   {
-      return source;
-   }
+    public void setSource(String source) {
+        this.source = source;
+    }
 
-   public void setSource(String source)
-   {
-      this.source = source;
-   }
+    public String getTarget() {
+        return target;
+    }
 
-   public String getTarget()
-   {
-      return target;
-   }
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
-   public void setTarget(String target)
-   {
-      this.target = target;
-   }
+    public ArrayList<Long> getSourceIdList() {
+        return sourceIdList;
+    }
 
-   public ArrayList<Long> getSourceIdList()
-   {
-      return sourceIdList;
-   }
-
-   public void addSourceId(Long sourceId)
-   {
-      this.sourceIdList.add(sourceId);
-   }
+    public void addSourceId(Long sourceId) {
+        this.sourceIdList.add(sourceId);
+    }
 
 }

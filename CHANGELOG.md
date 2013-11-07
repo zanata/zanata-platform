@@ -1,12 +1,29 @@
 # Zanata change log summary
 
 ## zanata-3.0.0
- * Add descriptions on project type selectors
- * Allow adapter parameters to be set on source document upload
- * Add attention key shortcut: Alt+X
- * Add attention shortcut to copy from source: Alt+X,G
- * Move raw document storage to file system
- * Implement virus scanning using ClamAV (clamdscan)
+ * File upload
+  * Move raw document storage to file system
+  * Implement virus scanning using ClamAV (clamdscan)
+  * Add descriptions on project type selectors
+  * Allow adapter parameters to be set on source document upload
+ * Editor improvements
+  * Add attention key shortcut: Alt+X
+  * Add attention shortcut to copy from source: Alt+X,G
+ * TMX import/export
+  * Allow users to export translations to TMX (from Project/Version pages)
+  * Allow admins to export **all** project translations to TMX (from Projects page)
+  * Allow admins to import and export TMX translation memories (from Admin pages)
+  * Imported TMX shown in translation memory search results
+ * Translation review/approval
+  * Coordinators can assign reviewers for their languages
+  * Project maintainers can require review for translations in their projects
+  * Reviewers can approve or reject translations
+  * Translators and reviewers can add comments to translations
+ * New visual style for Zanata
+ * Add Zanata dashboard
+  * Recent translation/review activity
+  * List of maintained projects
+ * Upgrade platform to JBoss EAP 6.1
 
 ## zanata-2.3.1
  * Bug fixes:
@@ -112,7 +129,7 @@
  * Project/project iteration status changes: ACTIVE, READONLY, and OBSOLETE
  * Allow readonly access to retired project/project iteration: https://bugzilla.redhat.com/show_bug.cgi?id=755759
  * Implement filter messages in the editor by translation status: https://bugzilla.redhat.com/show_bug.cgi?id=773459
- * Implement validation in editor: 
+ * Implement validation in editor:
   * Newline validation on leading and trailing string: https://bugzilla.redhat.com/show_bug.cgi?id=768802
   * Variables to be checked for consistency: https://bugzilla.redhat.com/show_bug.cgi?id=769471
   * XML and HTML tags to be checked for completeness: https://bugzilla.redhat.com/show_bug.cgi?id=756235
@@ -127,7 +144,7 @@
  * Add automated compatibility tests with previous versions of the Zanata java client classes
  * Redirect to previous page after sign in
  * Several UI updates and changes
- * Bug fixes: 
+ * Bug fixes:
   * Rapid key navigation causes backlog of TM queries: https://bugzilla.redhat.com/show_bug.cgi?id=785034
   * Long strings slow down the operation: https://bugzilla.redhat.com/show_bug.cgi?id=750956
   * "Participants" information is incorrect.: https://bugzilla.redhat.com/show_bug.cgi?id=756292
@@ -163,7 +180,7 @@
  * Bugfix: 'J' and 'K' navigation keys trigger when entering text in the TM search box: https://bugzilla.redhat.com/show_bug.cgi?id=754637
  * Bugfix: Not able to work in parallel on the same workbench: https://bugzilla.redhat.com/show_bug.cgi?id=756293
  * Show progress during re-index operations; avoid timeout for large databases: https://bugzilla.redhat.com/show_bug.cgi?id=747836
- 
+
 ## zanata-1.4.2
  * Language team coordinator: https://bugzilla.redhat.com/show_bug.cgi?id=742083
   * Users now have to ask before joining a language team

@@ -1,49 +1,28 @@
 package org.zanata.rest.service;
 
-
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.seam.annotations.Name;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
 
-
 @Name("versionService")
-@Path(VersionService.SERVICE_PATH)
-public class VersionService implements VersionResource
-{
-   public static final String SERVICE_PATH = "/version";
-   
-   private final VersionInfo version;
+@Path(VersionResource.SERVICE_PATH)
+public class VersionService implements VersionResource {
 
-   public VersionService()
-   {
-      this(VersionUtility.getAPIVersionInfo());
-   }
+    private final VersionInfo version;
 
-   VersionService(VersionInfo ver)
-   {
-      this.version = ver;
-   }
-   
-   /**
-    * Retrieve Version information for the application.
-    * 
-    * @return The following response status codes will be returned from this operation:<br>
-    * OK(200) - Response with the system's version information in the content.<br>
-    * INTERNAL SERVER ERROR(500) - If there is an unexpected error in the server while performing this operation.
-    */
-   @Override
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
-   @TypeHint(VersionInfo.class)
-   public Response get()
-   {
-      return Response.ok(version).build();
-   }
+    public VersionService() {
+        this(VersionUtility.getAPIVersionInfo());
+    }
+
+    VersionService(VersionInfo ver) {
+        this.version = ver;
+    }
+
+    @Override
+    public Response get() {
+        return Response.ok(version).build();
+    }
 }

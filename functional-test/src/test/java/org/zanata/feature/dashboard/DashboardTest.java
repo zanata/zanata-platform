@@ -20,8 +20,6 @@
  */
 package org.zanata.feature.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -31,66 +29,57 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class, CustomResourceExtension.class })
+@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
+        CustomResourceExtension.class })
 @Category(ConcordionTest.class)
-@Slf4j
-public class DashboardTest
-{
-   @ClassRule
-   public static ResetDatabaseRule rule = new ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter, ResetDatabaseRule.Config.WithData);
+public class DashboardTest {
+    @ClassRule
+    public static ResetDatabaseRule rule = new ResetDatabaseRule(
+            ResetDatabaseRule.Config.WithData);
 
-   private HomePage homePage;
+    private DashboardPage dashboardPage;
 
-   public boolean signInAs(String username, String password)
-   {
-      homePage = new LoginWorkFlow().signIn(username, password);
+    public boolean signInAs(String username, String password) {
+        dashboardPage = new LoginWorkFlow().signIn(username, password);
 
-      return homePage.hasLoggedIn();
-   }
+        return dashboardPage.hasLoggedIn();
+    }
 
-   public boolean hasMyActivitiesSection()
-   {
-      return homePage.containActivityListSection();
-   }
+    public boolean hasMyActivitiesSection() {
+        return dashboardPage.containActivityListSection();
+    }
 
-   public boolean hasMaintainedProjectsSection()
-   {
-      return homePage.containMyMaintainedProjectsSection();
-   }
+    public boolean hasMaintainedProjectsSection() {
+        return dashboardPage.containMyMaintainedProjectsSection();
+    }
 
-   public void gotoDashboard()
-   {
-      new BasicWorkFlow().goToHome();
-   }
+    public void gotoDashboard() {
+        dashboardPage = new BasicWorkFlow().goToDashboard();
+    }
 
-   public boolean myActivitiesListNotEmpty()
-   {
-      return !homePage.getMyActivityList().isEmpty();
-   }
-   
-   public int myActivitiesCount()
-   {
-      return homePage.getMyActivityList().size();
-   }
-   
-   public boolean myActivitiesCountIsMoreThan(int compareTo)
-   {
-      return homePage.getMyActivityList().size() > compareTo;
-   }
+    public boolean myActivitiesListNotEmpty() {
+        return !dashboardPage.getMyActivityList().isEmpty();
+    }
 
-   public boolean maintainedProjectNotEmpty()
-   {
-      return !homePage.getMyMaintainedProject().isEmpty();
-   }
-   
-   public void clickMoreActivity()
-   {
-      homePage.clickMoreActivity();
-   }
+    public int myActivitiesCount() {
+        return dashboardPage.getMyActivityList().size();
+    }
+
+    public boolean myActivitiesCountIsMoreThan(int compareTo) {
+        return dashboardPage.getMyActivityList().size() > compareTo;
+    }
+
+    public boolean maintainedProjectNotEmpty() {
+        return !dashboardPage.getMyMaintainedProject().isEmpty();
+    }
+
+    public void clickMoreActivity() {
+        dashboardPage.clickMoreActivity();
+    }
 }

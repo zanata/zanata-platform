@@ -10,116 +10,89 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
-import org.zanata.ApplicationConfiguration;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.process.IterationZipFileBuildProcess;
-import org.zanata.process.IterationZipFileBuildProcessHandle;
-import org.zanata.process.ProcessHandle;
-import org.zanata.service.ProcessManagerService;
+import org.zanata.service.AsyncTaskManagerService;
 
 @Name("projectIterationZipFileAction")
 @Scope(ScopeType.CONVERSATION)
-public class ProjectIterationZipFileAction implements Serializable
-{
+public class ProjectIterationZipFileAction implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-   @In
-   private ProjectIterationDAO projectIterationDAO;
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-   @In
-   ProcessManagerService processManagerServiceImpl;
+    @In
+    AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
-   @In
-   private ApplicationConfiguration applicationConfiguration;
+    private String projectSlug;
 
-   private String projectSlug;
+    private String iterationSlug;
 
-   private String iterationSlug;
+    private String localeId;
 
-   private String localeId;
+    private AsyncTaskHandle<String> zipFilePrepHandle;
 
-   private ProcessHandle zipFilePrepHandle;
+    @Begin(join = true)
+    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
+    public
+            void prepareIterationZipFile(boolean isPoProject) {
+        if (this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone()) {
+            // Cancel any other processes for this conversation
+            this.zipFilePrepHandle.forceCancel();
+        }
 
-   @Begin(join = true)
-   @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
-   public void prepareIterationZipFile(boolean offlinePo)
-   {
-      if( this.zipFilePrepHandle != null && this.zipFilePrepHandle.isInProgress() )
-      {
-         // Cancel any other processes
-         this.zipFilePrepHandle.stop();
-      }
+        // Start a zip file task
+        ZipFileBuildTask task =
+                new ZipFileBuildTask(projectSlug, iterationSlug, localeId,
+                        Identity.instance().getCredentials().getUsername(),
+                        isPoProject);
 
-      // Build a background process Handle
-      IterationZipFileBuildProcessHandle processHandle =
-            new IterationZipFileBuildProcessHandle();
-      this.zipFilePrepHandle = processHandle;
-      processHandle.setProjectSlug( this.projectSlug );
-      processHandle.setIterationSlug( this.iterationSlug );
-      processHandle.setLocaleId( this.localeId );
-      processHandle.setOfflinePo(offlinePo);
-      processHandle.setInitiatingUserName( Identity.instance().getCredentials().getUsername() );
-      processHandle.setServerPath(applicationConfiguration.getServerPath()); // This needs to be done here as the server
-                                                                             // path may not be available when running
-                                                                             // asynchronously
+        String taskId = asyncTaskManagerServiceImpl.startTask(task);
+        zipFilePrepHandle = asyncTaskManagerServiceImpl.getHandle(taskId);
+    }
 
-      // Fire the zip file building process and wait until it is ready to return
-      this.processManagerServiceImpl.startProcess( new IterationZipFileBuildProcess(), processHandle );
-      processHandle.waitUntilReady();
-   }
+    @End
+    public void cancelFileDownload() {
+        this.zipFilePrepHandle.cancel();
+    }
 
-   @End
-   public void cancelFileDownload()
-   {
-      if( this.zipFilePrepHandle.isInProgress() )
-      {
-         this.zipFilePrepHandle.stop();
-      }
-   }
+    public Object getProjectIteration() {
+        return this.projectIterationDAO.getBySlug(this.projectSlug,
+                this.iterationSlug);
+    }
 
-   public Object getProjectIteration()
-   {
-      return this.projectIterationDAO.getBySlug(this.projectSlug, this.iterationSlug);
-   }
+    public String getProjectSlug() {
+        return projectSlug;
+    }
 
-   public String getProjectSlug()
-   {
-      return projectSlug;
-   }
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
+    }
 
-   public void setProjectSlug(String projectSlug)
-   {
-      this.projectSlug = projectSlug;
-   }
+    public String getIterationSlug() {
+        return iterationSlug;
+    }
 
-   public String getIterationSlug()
-   {
-      return iterationSlug;
-   }
+    public void setIterationSlug(String iterationSlug) {
+        this.iterationSlug = iterationSlug;
+    }
 
-   public void setIterationSlug(String iterationSlug)
-   {
-      this.iterationSlug = iterationSlug;
-   }
+    public String getLocaleId() {
+        return localeId;
+    }
 
-   public String getLocaleId()
-   {
-      return localeId;
-   }
+    public void setLocaleId(String localeId) {
+        this.localeId = localeId;
+    }
 
-   public void setLocaleId(String localeId)
-   {
-      this.localeId = localeId;
-   }
+    public AsyncTaskHandle<String> getZipFilePrepHandle() {
+        return zipFilePrepHandle;
+    }
 
-   public ProcessHandle getZipFilePrepHandle()
-   {
-      return zipFilePrepHandle;
-   }
-
-   public void setZipFilePrepHandle(ProcessHandle zipFilePrepHandle)
-   {
-      this.zipFilePrepHandle = zipFilePrepHandle;
-   }
+    public void setZipFilePrepHandle(AsyncTaskHandle<String> zipFilePrepHandle) {
+        this.zipFilePrepHandle = zipFilePrepHandle;
+    }
 }

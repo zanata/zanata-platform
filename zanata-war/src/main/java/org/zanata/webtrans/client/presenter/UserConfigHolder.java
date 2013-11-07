@@ -33,423 +33,366 @@ import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.inject.Singleton;
 
-
 @Singleton
-public class UserConfigHolder
-{
-   public static final Predicate<ContentState> INCOMPLETE_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New || contentState.isRejectedOrFuzzy();
-      }
-   };
-   public static final Predicate<ContentState> DRAFT_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState.isRejectedOrFuzzy();
-      }
-   };
-   public static final Predicate<ContentState> NEW_PREDICATE = new Predicate<ContentState>()
-   {
-      @Override
-      public boolean apply(ContentState contentState)
-      {
-         return contentState == ContentState.New;
-      }
-   };
-   private ConfigurationState state;
+public class UserConfigHolder {
+    public static final Predicate<ContentState> INCOMPLETE_PREDICATE =
+            new Predicate<ContentState>() {
+                @Override
+                public boolean apply(ContentState contentState) {
+                    return contentState == ContentState.New
+                            || contentState.isRejectedOrFuzzy();
+                }
+            };
+    public static final Predicate<ContentState> DRAFT_PREDICATE =
+            new Predicate<ContentState>() {
+                @Override
+                public boolean apply(ContentState contentState) {
+                    return contentState.isRejectedOrFuzzy();
+                }
+            };
+    public static final Predicate<ContentState> NEW_PREDICATE =
+            new Predicate<ContentState>() {
+                @Override
+                public boolean apply(ContentState contentState) {
+                    return contentState == ContentState.New;
+                }
+            };
+    private ConfigurationState state;
 
-   public static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
-   public static final int DEFAULT_EDITOR_PAGE_SIZE = 25;
-   public static final boolean DEFAULT_SHOW_ERROR = false;
-   public static final boolean DEFAULT_SHOW_SAVE_APPROVED_WARNING = true;
-   public static final boolean DEFAULT_FILTER = false;
-   public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
-   public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
-   public static final boolean DEFAULT_USE_CODE_MIRROR = true;
-   public static final boolean DEFAULT_SPELL_CHECK = true;
-   public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
-   public static final boolean DEFAULT_SHOW_PANEL = true;
-   public static final String DEFAULT_SELECTED_REFERENCE = "none"; 
+    public static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;
+    public static final int DEFAULT_EDITOR_PAGE_SIZE = 25;
+    public static final boolean DEFAULT_SHOW_ERROR = false;
+    public static final boolean DEFAULT_SHOW_SAVE_APPROVED_WARNING = true;
+    public static final boolean DEFAULT_FILTER = false;
+    public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
+    public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
+    public static final boolean DEFAULT_USE_CODE_MIRROR = true;
+    public static final boolean DEFAULT_SPELL_CHECK = true;
+    public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
+    public static final boolean DEFAULT_SHOW_PANEL = true;
+    public static final String DEFAULT_SELECTED_REFERENCE = "none"; 
 
-   public UserConfigHolder()
-   {
-      // default state
-      state = new ConfigurationState();
-      state.displayButtons = DEFAULT_DISPLAY_BUTTONS;
-      state.enterSavesApproved = DEFAULT_ENTER_SAVES_APPROVED;
-      state.editorPageSize = DEFAULT_EDITOR_PAGE_SIZE;
-      state.documentListPageSize = DEFAULT_DOC_LIST_PAGE_SIZE;
-      state.navOption = NavOption.FUZZY_UNTRANSLATED;
-      state.showError = DEFAULT_SHOW_ERROR;
-      state.useCodeMirrorEditor = DEFAULT_USE_CODE_MIRROR;
-      state.showSaveApprovedWarning = DEFAULT_SHOW_SAVE_APPROVED_WARNING;
-      state.transMemoryDisplayMode = DEFAULT_TM_DISPLAY_MODE;
+    public UserConfigHolder() {
+        // default state
+        state = new ConfigurationState();
+        state.displayButtons = DEFAULT_DISPLAY_BUTTONS;
+        state.enterSavesApproved = DEFAULT_ENTER_SAVES_APPROVED;
+        state.editorPageSize = DEFAULT_EDITOR_PAGE_SIZE;
+        state.documentListPageSize = DEFAULT_DOC_LIST_PAGE_SIZE;
+        state.navOption = NavOption.FUZZY_UNTRANSLATED;
+        state.showError = DEFAULT_SHOW_ERROR;
+        state.useCodeMirrorEditor = DEFAULT_USE_CODE_MIRROR;
+        state.showSaveApprovedWarning = DEFAULT_SHOW_SAVE_APPROVED_WARNING;
+        state.transMemoryDisplayMode = DEFAULT_TM_DISPLAY_MODE;
 
-      state.filterByFuzzy = DEFAULT_FILTER;
-      state.filterByTranslated = DEFAULT_FILTER;
-      state.filterByUntranslated = DEFAULT_FILTER;
-      state.filterByApproved = DEFAULT_FILTER;
-      state.filterByRejected = DEFAULT_FILTER;
-      state.filterByHasError = DEFAULT_FILTER;
+        state.filterByFuzzy = DEFAULT_FILTER;
+        state.filterByTranslated = DEFAULT_FILTER;
+        state.filterByUntranslated = DEFAULT_FILTER;
+        state.filterByApproved = DEFAULT_FILTER;
+        state.filterByRejected = DEFAULT_FILTER;
+        state.filterByHasError = DEFAULT_FILTER;
 
-      state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
+        state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
 
-      state.showTMPanel = DEFAULT_SHOW_PANEL;
-      state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
-      state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
-      state.selectedReferenceForSourceLang = DEFAULT_SELECTED_REFERENCE;
-      state.displayTheme = ThemesOption.THEMES_DEFAULT;
-      state.enabledValidationIds = new ArrayList<ValidationId>();
-   }
+        state.showTMPanel = DEFAULT_SHOW_PANEL;
+        state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
+        state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
+        state.selectedReferenceForSourceLang = DEFAULT_SELECTED_REFERENCE;
+        state.displayTheme = ThemesOption.THEMES_DEFAULT;
+        state.enabledValidationIds = new ArrayList<ValidationId>();
+    }
 
-   public void setEnterSavesApproved(boolean enterSavesApproved)
-   {
-      state = new ConfigurationState(state);
-      state.enterSavesApproved = enterSavesApproved;
-   }
+    public void setEnterSavesApproved(boolean enterSavesApproved) {
+        state = new ConfigurationState(state);
+        state.enterSavesApproved = enterSavesApproved;
+    }
 
-   public void setDisplayButtons(boolean displayButtons)
-   {
-      state = new ConfigurationState(state);
-      state.displayButtons = displayButtons;
-   }
+    public void setDisplayButtons(boolean displayButtons) {
+        state = new ConfigurationState(state);
+        state.displayButtons = displayButtons;
+    }
 
-   public void setNavOption(NavOption navOption)
-   {
-      state = new ConfigurationState(state);
-      state.navOption = navOption;
-   }
+    public void setNavOption(NavOption navOption) {
+        state = new ConfigurationState(state);
+        state.navOption = navOption;
+    }
 
-   public Predicate<ContentState> getContentStatePredicate()
-   {
-      if (state.getNavOption() == NavOption.FUZZY_UNTRANSLATED)
-      {
-         return INCOMPLETE_PREDICATE;
-      }
-      else if (state.getNavOption() == NavOption.FUZZY)
-      {
-         return DRAFT_PREDICATE;
-      }
-      else
-      {
-         return NEW_PREDICATE;
-      }
-   }
+    public Predicate<ContentState> getContentStatePredicate() {
+        if (state.getNavOption() == NavOption.FUZZY_UNTRANSLATED) {
+            return INCOMPLETE_PREDICATE;
+        } else if (state.getNavOption() == NavOption.FUZZY) {
+            return DRAFT_PREDICATE;
+        } else {
+            return NEW_PREDICATE;
+        }
+    }
 
-   public void setEditorPageSize(int editorPageSize)
-   {
-      state = new ConfigurationState(state);
-      state.editorPageSize = editorPageSize;
-   }
+    public void setEditorPageSize(int editorPageSize) {
+        state = new ConfigurationState(state);
+        state.editorPageSize = editorPageSize;
+    }
 
-   public void setDocumentListPageSize(int documentListPageSize)
-   {
-      state = new ConfigurationState(state);
-      state.documentListPageSize = documentListPageSize;
-   }
+    public void setDocumentListPageSize(int documentListPageSize) {
+        state = new ConfigurationState(state);
+        state.documentListPageSize = documentListPageSize;
+    }
 
-   public ConfigurationState getState()
-   {
-      return state;
-   }
+    public ConfigurationState getState() {
+        return state;
+    }
 
-   /**
-    * Sets all properties of the given state into this holder.
-    *
-    * @param state configuration state holder
-    */
-   public void setState( ConfigurationState state )
-   {
-      this.state = new ConfigurationState(state);
-   }
+    /**
+     * Sets all properties of the given state into this holder.
+     *
+     * @param state
+     *            configuration state holder
+     */
+    public void setState(ConfigurationState state) {
+        this.state = new ConfigurationState(state);
+    }
 
-   public void setShowError(boolean showError)
-   {
-      state = new ConfigurationState(state);
-      state.showError = showError;
-   }
+    public void setShowError(boolean showError) {
+        state = new ConfigurationState(state);
+        state.showError = showError;
+    }
 
-   public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor)
-   {
-      state = new ConfigurationState(state);
-      state.useCodeMirrorEditor = useCodeMirrorEditor;
-   }
+    public void setUseCodeMirrorEditor(boolean useCodeMirrorEditor) {
+        state = new ConfigurationState(state);
+        state.useCodeMirrorEditor = useCodeMirrorEditor;
+    }
 
-   public void setFilterByUntranslated(boolean filterByUntranslated)
-   {
-      state = new ConfigurationState(state);
-      state.filterByUntranslated = filterByUntranslated;
-   }
+    public void setFilterByUntranslated(boolean filterByUntranslated) {
+        state = new ConfigurationState(state);
+        state.filterByUntranslated = filterByUntranslated;
+    }
 
-   public void setFilterByFuzzy(boolean filterByFuzzy)
-   {
-      state = new ConfigurationState(state);
-      state.filterByFuzzy = filterByFuzzy;
-   }
+    public void setFilterByFuzzy(boolean filterByFuzzy) {
+        state = new ConfigurationState(state);
+        state.filterByFuzzy = filterByFuzzy;
+    }
 
-   public void setFilterByTranslated(boolean filterByTranslated)
-   {
-      state = new ConfigurationState(state);
-      state.filterByTranslated = filterByTranslated;
-   }
+    public void setFilterByTranslated(boolean filterByTranslated) {
+        state = new ConfigurationState(state);
+        state.filterByTranslated = filterByTranslated;
+    }
+
+    public void setFilterByApproved(Boolean filterByApproved) {
+        state = new ConfigurationState(state);
+        state.filterByApproved = filterByApproved;
+    }
+
+    public void setFilterByRejected(Boolean filterByRejected) {
+        state = new ConfigurationState(state);
+        state.filterByRejected = filterByRejected;
+    }
+
+    public void setFilterByHasError(boolean filterByHasError) {
+        state = new ConfigurationState(state);
+        state.filterByHasError = filterByHasError;
+    }
+
+    public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning) {
+        state = new ConfigurationState(state);
+        state.showSaveApprovedWarning = showSaveApprovedWarning;
+    }
+
+    public void setSpellCheckEnabled(boolean spellCheckEnabled) {
+        state = new ConfigurationState(state);
+        state.spellCheckEnabled = spellCheckEnabled;
+    }
+
+    public void setTMDisplayMode(DiffMode diffMode) {
+        state = new ConfigurationState(state);
+        state.transMemoryDisplayMode = diffMode;
+    }
+
+    public void setDisplayTheme(ThemesOption theme) {
+        state = new ConfigurationState(state);
+        state.displayTheme = theme;
+    }
+
+    public void setShowTMPanel(boolean show) {
+        state = new ConfigurationState(state);
+        state.showTMPanel = show;
+    }
    
-   public void setFilterByApproved(Boolean filterByApproved)
-   {
-      state = new ConfigurationState(state);
-      state.filterByApproved = filterByApproved;
-   }
-   
-   public void setFilterByRejected(Boolean filterByRejected)
-   {
-      state = new ConfigurationState(state);
-      state.filterByRejected = filterByRejected;
-   }
+    public void setSelectedReferenceForSourceLang(String selected) {
+        state = new ConfigurationState(state);
+        state.selectedReferenceForSourceLang = selected;
+    }
 
-   public void setFilterByHasError(boolean filterByHasError)
-   {
-      state = new ConfigurationState(state);
-      state.filterByHasError = filterByHasError;
-   }
+    public void setShowGlossaryPanel(boolean show) {
+        state = new ConfigurationState(state);
+        state.showGlossaryPanel = show;
+    }
 
-   public void setShowSaveApprovedWarning(boolean showSaveApprovedWarning)
-   {
-      state = new ConfigurationState(state);
-      state.showSaveApprovedWarning = showSaveApprovedWarning;
-   }
+    public void setShowOptionalTransUnitDetails(boolean show) {
+        state = new ConfigurationState(state);
+        state.showOptionalTransUnitDetails = show;
+    }
 
-   public void setSpellCheckEnabled(boolean spellCheckEnabled)
-   {
-      state = new ConfigurationState(state);
-      state.spellCheckEnabled = spellCheckEnabled;
-   }
+    public void
+            setEnabledValidationIds(List<ValidationId> enabledValidationIds) {
+        state = new ConfigurationState(state);
+        state.enabledValidationIds = enabledValidationIds;
+    }
 
-   public void setTMDisplayMode(DiffMode diffMode)
-   {
-      state = new ConfigurationState(state);
-      state.transMemoryDisplayMode = diffMode;
-   }
+    public boolean isAcceptAllStatus() {
+        return state.isFilterByTranslated() == state.isFilterByFuzzy()
+                && state.isFilterByUntranslated() == state.isFilterByFuzzy()
+                && state.isFilterByHasError() == state.isFilterByFuzzy()
+                && state.isFilterByApproved() == state.isFilterByFuzzy()
+                && state.isFilterByRejected() == state.isFilterByFuzzy();
+    }
 
-   public void setDisplayTheme(ThemesOption theme)
-   {
-      state = new ConfigurationState(state);
-      state.displayTheme = theme;
-   }
+    /**
+     * Immutable object represents configuration state
+     */
+    public static class ConfigurationState implements IsSerializable {
+        private boolean enterSavesApproved;
+        private boolean displayButtons;
+        private int editorPageSize;
+        private int documentListPageSize;
+        private NavOption navOption;
+        private boolean showError;
+        private boolean useCodeMirrorEditor;
 
-   public void setShowTMPanel(boolean show)
-   {
-      state = new ConfigurationState(state);
-      state.showTMPanel = show;
-   }
+        private boolean filterByUntranslated;
+        private boolean filterByFuzzy;
+        private boolean filterByTranslated;
+        private boolean filterByApproved;
+        private boolean filterByRejected;
+        private boolean filterByHasError;
+        private String selectedReferenceForSourceLang;
 
-   public void setShowGlossaryPanel(boolean show)
-   {
-      state = new ConfigurationState(state);
-      state.showGlossaryPanel = show;
-   }
+        private boolean showSaveApprovedWarning;
+        private boolean spellCheckEnabled;
+        private DiffMode transMemoryDisplayMode;
+        private ThemesOption displayTheme;
 
-   public void setShowOptionalTransUnitDetails(boolean show)
-   {
-      state = new ConfigurationState(state);
-      state.showOptionalTransUnitDetails = show;
-   }
-   
-   public void setSelectedReferenceForSourceLang(String selected)
-   {
-      state = new ConfigurationState(state);
-      state.selectedReferenceForSourceLang = selected;
-   }
+        private boolean showTMPanel;
+        private boolean showGlossaryPanel;
+        private boolean showOptionalTransUnitDetails;
 
-   public void setEnabledValidationIds(List<ValidationId> enabledValidationIds)
-   {
-      state = new ConfigurationState(state);
-      state.enabledValidationIds = enabledValidationIds;
-   }
+        private List<ValidationId> enabledValidationIds;
 
-   public boolean isAcceptAllStatus()
-   {
-      return state.isFilterByTranslated() == state.isFilterByFuzzy() 
-            && state.isFilterByUntranslated() == state.isFilterByFuzzy()
-            && state.isFilterByHasError() == state.isFilterByFuzzy()
-            && state.isFilterByApproved() == state.isFilterByFuzzy()
-            && state.isFilterByRejected() == state.isFilterByFuzzy();
-   }
+        // Needed for GWT serialization
+        private ConfigurationState() {
+        }
 
-   /**
-    * Immutable object represents configuration state
-    */
-   public static class ConfigurationState implements IsSerializable
-   {
-      private boolean enterSavesApproved;
-      private boolean displayButtons;
-      private int editorPageSize;
-      private int documentListPageSize;
-      private NavOption navOption;
-      private boolean showError;
-      private boolean useCodeMirrorEditor;
+        private ConfigurationState(ConfigurationState old) {
+            this.enterSavesApproved = old.isEnterSavesApproved();
+            this.displayButtons = old.isDisplayButtons();
+            this.editorPageSize = old.getEditorPageSize();
+            this.documentListPageSize = old.getDocumentListPageSize();
+            this.navOption = old.getNavOption();
+            this.showError = old.isShowError();
+            this.useCodeMirrorEditor = old.isUseCodeMirrorEditor();
+            this.filterByUntranslated = old.isFilterByUntranslated();
+            this.filterByFuzzy = old.isFilterByFuzzy();
+            this.filterByTranslated = old.isFilterByTranslated();
+            this.filterByApproved = old.isFilterByApproved();
+            this.filterByRejected = old.isFilterByRejected();
+            this.filterByHasError = old.isFilterByHasError();
+            this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
+            this.spellCheckEnabled = old.isSpellCheckEnabled();
+            this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
+            this.displayTheme = old.getDisplayTheme();
+            this.showTMPanel = old.isShowTMPanel();
+            this.showGlossaryPanel = old.isShowGlossaryPanel();
+            this.showOptionalTransUnitDetails =
+                    old.isShowOptionalTransUnitDetails();
+            this.enabledValidationIds = old.getEnabledValidationIds();
+            this.selectedReferenceForSourceLang =
+                    old.getSelectedReferenceForSourceLang();
+        }
 
-      private boolean filterByUntranslated;
-      private boolean filterByFuzzy;
-      private boolean filterByTranslated;
-      private boolean filterByApproved;
-      private boolean filterByRejected;
-      private boolean filterByHasError;
+        public boolean isEnterSavesApproved() {
+            return enterSavesApproved;
+        }
 
-      private boolean showSaveApprovedWarning;
-      private boolean spellCheckEnabled;
-      private DiffMode transMemoryDisplayMode;
-      private ThemesOption displayTheme;
+        public boolean isDisplayButtons() {
+            return displayButtons;
+        }
 
-      private boolean showTMPanel;
-      private boolean showGlossaryPanel;
-      private boolean showOptionalTransUnitDetails;
-      private String selectedReferenceForSourceLang;
+        public int getEditorPageSize() {
+            return editorPageSize;
+        }
 
-      private List<ValidationId> enabledValidationIds;
+        public int getDocumentListPageSize() {
+            return documentListPageSize;
+        }
 
-      // Needed for GWT serialization
-      private ConfigurationState()
-      {
-      }
+        public NavOption getNavOption() {
+            return navOption;
+        }
 
-      private ConfigurationState(ConfigurationState old)
-      {
-         this.enterSavesApproved = old.isEnterSavesApproved();
-         this.displayButtons = old.isDisplayButtons();
-         this.editorPageSize = old.getEditorPageSize();
-         this.documentListPageSize = old.getDocumentListPageSize();
-         this.navOption = old.getNavOption();
-         this.showError = old.isShowError();
-         this.useCodeMirrorEditor = old.isUseCodeMirrorEditor();
-         this.filterByUntranslated = old.isFilterByUntranslated();
-         this.filterByFuzzy = old.isFilterByFuzzy();
-         this.filterByTranslated = old.isFilterByTranslated();
-         this.filterByApproved = old.isFilterByApproved();
-         this.filterByRejected = old.isFilterByRejected();
-         this.filterByHasError = old.isFilterByHasError();
-         this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
-         this.spellCheckEnabled = old.isSpellCheckEnabled();
-         this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
-         this.displayTheme = old.getDisplayTheme();
-         this.showTMPanel = old.isShowTMPanel();
-         this.showGlossaryPanel = old.isShowGlossaryPanel();
-         this.showOptionalTransUnitDetails = old.isShowOptionalTransUnitDetails();
-         this.enabledValidationIds = old.getEnabledValidationIds();
-         this.selectedReferenceForSourceLang = old.getSelectedReferenceForSourceLang();
-      }
+        public boolean isShowError() {
+            return showError;
+        }
 
-      public boolean isEnterSavesApproved()
-      {
-         return enterSavesApproved;
-      }
+        public boolean isUseCodeMirrorEditor() {
+            return useCodeMirrorEditor;
+        }
 
-      public boolean isDisplayButtons()
-      {
-         return displayButtons;
-      }
+        public boolean isFilterByUntranslated() {
+            return filterByUntranslated;
+        }
 
-      public int getEditorPageSize()
-      {
-         return editorPageSize;
-      }
+        public boolean isFilterByFuzzy() {
+            return filterByFuzzy;
+        }
 
-      public int getDocumentListPageSize()
-      {
-         return documentListPageSize;
-      }
+        public boolean isFilterByTranslated() {
+            return filterByTranslated;
+        }
 
-      public NavOption getNavOption()
-      {
-         return navOption;
-      }
+        public boolean isFilterByApproved() {
+            return filterByApproved;
+        }
 
-      public boolean isShowError()
-      {
-         return showError;
-      }
+        public boolean isFilterByRejected() {
+            return filterByRejected;
+        }
 
-      public boolean isUseCodeMirrorEditor()
-      {
-         return useCodeMirrorEditor;
-      }
+        public boolean isFilterByHasError() {
+            return filterByHasError;
+        }
 
-      public boolean isFilterByUntranslated()
-      {
-         return filterByUntranslated;
-      }
+        public boolean isShowSaveApprovedWarning() {
+            return showSaveApprovedWarning;
+        }
 
-      public boolean isFilterByFuzzy()
-      {
-         return filterByFuzzy;
-      }
+        public boolean isSpellCheckEnabled() {
+            return spellCheckEnabled;
+        }
 
-      public boolean isFilterByTranslated()
-      {
-         return filterByTranslated;
-      }
+        public DiffMode getTransMemoryDisplayMode() {
+            return transMemoryDisplayMode;
+        }
       
-      public boolean isFilterByApproved()
-      {
-         return filterByApproved;
-      }
-      
-      public boolean isFilterByRejected()
-      {
-         return filterByRejected;
-      }
+        public String getSelectedReferenceForSourceLang() {
+            return selectedReferenceForSourceLang;
+        }
 
-      public boolean isFilterByHasError()
-      {
-         return filterByHasError;
-      }
+        public ThemesOption getDisplayTheme() {
+            return displayTheme;
+        }
 
-      public boolean isShowSaveApprovedWarning()
-      {
-         return showSaveApprovedWarning;
-      }
+        public boolean isShowTMPanel() {
+            return showTMPanel;
+        }
 
-      public boolean isSpellCheckEnabled()
-      {
-         return spellCheckEnabled;
-      }
+        public boolean isShowGlossaryPanel() {
+            return showGlossaryPanel;
+        }
 
-      public DiffMode getTransMemoryDisplayMode()
-      {
-         return transMemoryDisplayMode;
-      }
+        public boolean isShowOptionalTransUnitDetails() {
+            return showOptionalTransUnitDetails;
+        }
 
-      public ThemesOption getDisplayTheme()
-      {
-         return displayTheme;
-      }
-
-      public boolean isShowTMPanel()
-      {
-         return showTMPanel;
-      }
-
-      public boolean isShowGlossaryPanel()
-      {
-         return showGlossaryPanel;
-      }
-
-      public boolean isShowOptionalTransUnitDetails()
-      {
-         return showOptionalTransUnitDetails;
-      }
-      
-      public String getSelectedReferenceForSourceLang()
-      {
-         return selectedReferenceForSourceLang;
-      }
-
-      public List<ValidationId> getEnabledValidationIds()
-      {
-         return enabledValidationIds;
-      }
-   }
+        public List<ValidationId> getEnabledValidationIds() {
+            return enabledValidationIds;
+        }
+    }
 }

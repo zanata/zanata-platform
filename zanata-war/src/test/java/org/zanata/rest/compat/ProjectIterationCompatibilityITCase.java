@@ -27,7 +27,6 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.provider.DBUnitProvider;
 import org.zanata.apicompat.rest.client.IProjectIterationResource;
 import org.zanata.apicompat.rest.dto.ProjectIteration;
 
@@ -35,49 +34,53 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
-public class ProjectIterationCompatibilityITCase extends RestTest
-{
+public class ProjectIterationCompatibilityITCase extends RestTest {
 
-   @Override
-   protected void prepareDBUnitOperations()
-   {
-      addBeforeTestOperation(new DataSetOperation("org/zanata/test/model/ProjectsData.dbunit.xml", DatabaseOperation.CLEAN_INSERT));
-   }
-   
-   @Test
-   @RunAsClient
-   public void getXmlProjectIteration() throws Exception
-   {
-      IProjectIterationResource iterationClient = super.createProxy( createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/1.0");
-      ClientResponse<ProjectIteration> response = iterationClient.get();
-      
-      assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-      
-      ProjectIteration it = response.getEntity();
-      assertThat(it.getId(), is("1.0"));
-   }
-   
-   @Test
-   @RunAsClient
-   public void putXmlProjectIteration() throws Exception
-   {
-      ProjectIteration newIteration = new ProjectIteration("new-iteration");
-      
-      IProjectIterationResource iterationClient = super.createProxy( createClientProxyFactory(ADMIN, ADMIN_KEY),
-            IProjectIterationResource.class, "/projects/p/sample-project/iterations/i/" + newIteration.getId());
-      ClientResponse response = iterationClient.put(newIteration);
-      
-      assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-      response.releaseConnection();
-      
-      // Retreive it again
-      ClientResponse<ProjectIteration> getResponse = iterationClient.get();
-      
-      assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-      
-      ProjectIteration it = getResponse.getEntity();
-      assertThat(it.getId(), is("new-iteration"));
-   }
+    @Override
+    protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+    }
+
+    @Test
+    @RunAsClient
+    public void getXmlProjectIteration() throws Exception {
+        IProjectIterationResource iterationClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IProjectIterationResource.class,
+                        "/projects/p/sample-project/iterations/i/1.0");
+        ClientResponse<ProjectIteration> response = iterationClient.get();
+
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+
+        ProjectIteration it = response.getEntity();
+        assertThat(it.getId(), is("1.0"));
+    }
+
+    @Test
+    @RunAsClient
+    public void putXmlProjectIteration() throws Exception {
+        ProjectIteration newIteration = new ProjectIteration("new-iteration");
+
+        IProjectIterationResource iterationClient =
+                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
+                        IProjectIterationResource.class,
+                        "/projects/p/sample-project/iterations/i/"
+                                + newIteration.getId());
+        ClientResponse response = iterationClient.put(newIteration);
+
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        response.releaseConnection();
+
+        // Retreive it again
+        ClientResponse<ProjectIteration> getResponse = iterationClient.get();
+
+        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+
+        ProjectIteration it = getResponse.getEntity();
+        assertThat(it.getId(), is("new-iteration"));
+    }
 
 }

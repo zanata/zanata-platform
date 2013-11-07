@@ -30,8 +30,7 @@ class TranslationMergeServiceServerNullTest {
         mergeService = new TranslationMergeServiceFactory().getMergeService(context)
     }
 
-    Result merge(String contentFromClient, String stateFromClient)
-    {
+    Result merge(String contentFromClient, String stateFromClient) {
         def client = new TextFlowTarget(contents: [contentFromClient], state: ContentState.valueOf(stateFromClient))
 
         def changed = mergeService.merge(client, null, Collections.emptySet())
@@ -45,8 +44,7 @@ class TranslationMergeServiceServerNullTest {
         (contents.isEmpty()) ? null : contents[0]
     }
 
-    class Result
-    {
+    class Result {
         boolean changed
         String endContent
         int endVersion

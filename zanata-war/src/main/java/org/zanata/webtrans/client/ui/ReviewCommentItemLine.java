@@ -32,40 +32,41 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 
-public class ReviewCommentItemLine extends Composite
-{
-   private static ReviewCommentItemLineUiBinder ourUiBinder = GWT.create(ReviewCommentItemLineUiBinder.class);
-   private static ReviewCommentItemTemplate template = GWT.create(ReviewCommentItemTemplate.class);
+public class ReviewCommentItemLine extends Composite {
+    private static ReviewCommentItemLineUiBinder ourUiBinder = GWT
+            .create(ReviewCommentItemLineUiBinder.class);
+    private static ReviewCommentItemTemplate template = GWT
+            .create(ReviewCommentItemTemplate.class);
 
-   @UiField(provided = true)
-   InlineHTML heading;
-   @UiField(provided = true)
-   InlineHTML commentContent;
-   @UiField(provided = true)
-   InlineHTML commentTime;
+    @UiField(provided = true)
+    InlineHTML heading;
+    @UiField(provided = true)
+    InlineHTML commentContent;
+    @UiField(provided = true)
+    InlineHTML commentTime;
 
-   public ReviewCommentItemLine(ReviewComment comment)
-   {
-      heading = new InlineHTML(template.heading(comment.getCommenterName()));
-      commentContent = new InlineHTML(template.content(comment.getComment()));
-      commentTime = new InlineHTML(template.timestamp(DateUtil.formatShortDate(comment.getCreationDate())));
+    public ReviewCommentItemLine(ReviewComment comment) {
+        heading = new InlineHTML(template.heading(comment.getCommenterName()));
+        commentContent = new InlineHTML(template.content(comment.getComment()));
+        commentTime =
+                new InlineHTML(template.timestamp(DateUtil
+                        .formatShortDate(comment.getCreationDate())));
 
-      initWidget(ourUiBinder.createAndBindUi(this));
-   }
+        initWidget(ourUiBinder.createAndBindUi(this));
+    }
 
-   interface ReviewCommentItemLineUiBinder extends UiBinder<HTMLPanel, ReviewCommentItemLine>
-   {
-   }
+    interface ReviewCommentItemLineUiBinder extends
+            UiBinder<HTMLPanel, ReviewCommentItemLine> {
+    }
 
-   interface ReviewCommentItemTemplate extends SafeHtmlTemplates
-   {
-      @Template("<div class='txt--meta'>{0} left a comment</div>")
-      SafeHtml heading(String person);
+    interface ReviewCommentItemTemplate extends SafeHtmlTemplates {
+        @Template("<div class='txt--meta'>{0} left a comment</div>")
+        SafeHtml heading(String person);
 
-      @Template("<div class='l--pad-v-half'>{0}</div>")
-      SafeHtml content(String comment);
+        @Template("<div class='l--pad-v-half'>{0}</div>")
+        SafeHtml content(String comment);
 
-      @Template("<ul class='txt--meta list--horizontal'><li>{0}</li></ul>")
-      SafeHtml timestamp(String commentTime);
-   }
+        @Template("<ul class='txt--meta list--horizontal'><li>{0}</li></ul>")
+        SafeHtml timestamp(String commentTime);
+    }
 }

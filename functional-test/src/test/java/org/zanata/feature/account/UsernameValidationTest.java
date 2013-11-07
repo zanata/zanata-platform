@@ -36,54 +36,84 @@ import org.zanata.workflow.BasicWorkFlow;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-public class UsernameValidationTest
-{
-   @ClassRule
-   public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+public class UsernameValidationTest {
+    @ClassRule
+    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
-   @DataPoint public static String INVALID_PIPE = "user|name";
-   @DataPoint public static String INVALID_SLASH = "user/name";
-   @DataPoint public static String INVALID_BACKSLASH = "user\\name";
-   @DataPoint public static String INVALID_PLUS = "user+name";
-   @DataPoint public static String INVALID_ASTERISK = "user*name";
-   @DataPoint public static String INVALID_LEFT_PARENTHESES = "user(name";
-   @DataPoint public static String INVALID_RIGHT_PARENTHESES = "user)name";
-   @DataPoint public static String INVALID_DOLLAR = "user$name";
-   @DataPoint public static String INVALID_LEFT_BRACKET = "user[name";
-   @DataPoint public static String INVALID_RIGHT_BRACKET = "user]name";
-   @DataPoint public static String INVALID_COLON = "user:name";
-   @DataPoint public static String INVALID_SEMICOLON = "user;name";
-   @DataPoint public static String INVALID_APOSTROPHE = "user'name";
-   @DataPoint public static String INVALID_COMMA = "user,name";
-   @DataPoint public static String INVALID_QUESTION_MARK = "user?name";
-   @DataPoint public static String INVALID_EXCLAMATION_MARK = "user!name";
-   @DataPoint public static String INVALID_AMPERSAT = "user@name";
-   @DataPoint public static String INVALID_HASH = "user#name";
-   @DataPoint public static String INVALID_PERCENT = "user%name";
-   @DataPoint public static String INVALID_CARAT = "user^name";
-   @DataPoint public static String INVALID_EQUALS = "user=name";
-   @DataPoint public static String INVALID_PERIOD = "user.name";
-   @DataPoint public static String INVALID_LEFT_BRACE = "user{name";
-   @DataPoint public static String INVALID_RIGHT_BRACE = "user}name";
-   @DataPoint public static String INVALID_CAPITAL_A = "userAname";
-   @DataPoint public static String INVALID_CAPITAL_Z = "userZname";
+    @DataPoint
+    public static String INVALID_PIPE = "user|name";
+    @DataPoint
+    public static String INVALID_SLASH = "user/name";
+    @DataPoint
+    public static String INVALID_BACKSLASH = "user\\name";
+    @DataPoint
+    public static String INVALID_PLUS = "user+name";
+    @DataPoint
+    public static String INVALID_ASTERISK = "user*name";
+    @DataPoint
+    public static String INVALID_LEFT_PARENTHESES = "user(name";
+    @DataPoint
+    public static String INVALID_RIGHT_PARENTHESES = "user)name";
+    @DataPoint
+    public static String INVALID_DOLLAR = "user$name";
+    @DataPoint
+    public static String INVALID_LEFT_BRACKET = "user[name";
+    @DataPoint
+    public static String INVALID_RIGHT_BRACKET = "user]name";
+    @DataPoint
+    public static String INVALID_COLON = "user:name";
+    @DataPoint
+    public static String INVALID_SEMICOLON = "user;name";
+    @DataPoint
+    public static String INVALID_APOSTROPHE = "user'name";
+    @DataPoint
+    public static String INVALID_COMMA = "user,name";
+    @DataPoint
+    public static String INVALID_QUESTION_MARK = "user?name";
+    @DataPoint
+    public static String INVALID_EXCLAMATION_MARK = "user!name";
+    @DataPoint
+    public static String INVALID_AMPERSAT = "user@name";
+    @DataPoint
+    public static String INVALID_HASH = "user#name";
+    @DataPoint
+    public static String INVALID_PERCENT = "user%name";
+    @DataPoint
+    public static String INVALID_CARAT = "user^name";
+    @DataPoint
+    public static String INVALID_EQUALS = "user=name";
+    @DataPoint
+    public static String INVALID_PERIOD = "user.name";
+    @DataPoint
+    public static String INVALID_LEFT_BRACE = "user{name";
+    @DataPoint
+    public static String INVALID_RIGHT_BRACE = "user}name";
+    @DataPoint
+    public static String INVALID_CAPITAL_A = "userAname";
+    @DataPoint
+    public static String INVALID_CAPITAL_Z = "userZname";
 
-   @Before
-   public void setUp()
-   {
-      new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-   }
+    @Before
+    public void setUp() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    }
 
-   @Theory
-   public void usernameCharacterValidation(String username)
-   {
-      String errorMsg = "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
-      RegisterPage registerPage = new BasicWorkFlow().goToHome().goToRegistration();
-      registerPage = registerPage.enterUserName(username).clickTerms();
-      assertThat("Validation errors are shown", registerPage.getErrors(), Matchers.hasItem(errorMsg));
-   }
+    @Theory
+    public void usernameCharacterValidation(String username) {
+        String errorMsg =
+                "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
+        RegisterPage registerPage =
+                new BasicWorkFlow().goToHome().goToRegistration();
+        registerPage = registerPage.enterUserName(username);
+        registerPage.defocus();
+
+        assertThat("Validation errors are shown",
+                registerPage.waitForFieldErrors(),
+                Matchers.hasItem(errorMsg));
+    }
 }

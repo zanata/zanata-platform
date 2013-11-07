@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.faces.event.ValueChangeEvent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -52,222 +53,213 @@ import org.zanata.service.impl.EmailChangeService;
 
 @Name("profileAction")
 @Scope(ScopeType.PAGE)
-public class ProfileAction implements Serializable
-{
-   /**
-    * 
+public class ProfileAction implements Serializable {
+    /**
+    *
     */
-   private static final long serialVersionUID = 1L;
-   private String name;
-   private String email;
-   private String username;
-   private String activationKey;
-   private boolean valid;
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private String email;
+    private String username;
+    private String activationKey;
+    private boolean valid;
+    private boolean newUser;
 
-   @In
-   ApplicationConfiguration applicationConfiguration;
-   
-   @Logger
-   Log log;
+    @In
+    ApplicationConfiguration applicationConfiguration;
 
-   @In
-   ZanataIdentity identity;
+    @Logger
+    Log log;
 
-   @In
-   ZanataJpaIdentityStore identityStore;
+    @In
+    ZanataIdentity identity;
 
-   @In
-   private ZanataOpenId zanataOpenId;
+    @In
+    ZanataJpaIdentityStore identityStore;
 
-   @In(create = true)
-   private Renderer renderer;
+    @In
+    private ZanataOpenId zanataOpenId;
 
-   @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-   HAccount authenticatedAccount;
+    @In(create = true)
+    private Renderer renderer;
 
-   @In
-   PersonDAO personDAO;
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    HAccount authenticatedAccount;
 
-   @In
-   AccountDAO accountDAO;
+    @In
+    PersonDAO personDAO;
 
-   @In
-   RegisterService registerServiceImpl;
-   
-   @In
-   EmailChangeService emailChangeService;
+    @In
+    AccountDAO accountDAO;
 
-   private void validateEmail(String email)
-   {
-      HPerson person = personDAO.findByEmail(email);
-      
-      if( person != null && !person.getAccount().equals( authenticatedAccount ) )
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("email", "This email address is already taken");
-      }
-   }
+    @In
+    RegisterService registerServiceImpl;
 
-   private void validateUsername()
-   {
-      HAccount account = accountDAO.getByUsername(this.username);
+    @In
+    EmailChangeService emailChangeService;
 
-      if( account != null && !account.equals( authenticatedAccount ) )
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("username", "This username is already taken");
-      }
-   }
+    private void validateEmail(String email) {
+        HPerson person = personDAO.findByEmail(email);
 
-   @Create
-   public void onCreate()
-   {
-      username = identity.getCredentials().getUsername();
-      if (identityStore.isNewUser(username))
-      {
-         name = identity.getCredentials().getUsername();
-         String domain = applicationConfiguration.getDomainName();
-         if( domain == null )
-         {
-            email = "";
-         }
-         else 
-         {
-            if( applicationConfiguration.isOpenIdAuth() )
-            {
-               email = zanataOpenId.getAuthResult().getEmail();
+        if (person != null && !person.getAccount().equals(authenticatedAccount)) {
+            valid = false;
+            FacesMessages.instance().addToControl("email",
+                    "This email address is already taken");
+        }
+    }
+
+    private void validateUsername(String username) {
+        HAccount account = accountDAO.getByUsername(username);
+
+        if (account != null && !account.equals(authenticatedAccount)) {
+            valid = false;
+            FacesMessages.instance().addToControl("username",
+                    "This username is already taken");
+        }
+    }
+
+    @Create
+    public void onCreate() {
+        if (identity.getCredentials().getAuthType() != AuthenticationType.OPENID) {
+            // Open id user names are url's so they don't make good defaults
+            username = identity.getCredentials().getUsername();
+        }
+        newUser = identityStore.isNewUser(username);
+        if (newUser) {
+            String domain = applicationConfiguration.getDomainName();
+            if (domain == null) {
+                email = "";
+            } else {
+                if (applicationConfiguration.isOpenIdAuth()) {
+                    email = zanataOpenId.getAuthResult().getEmail();
+                } else {
+                    email =
+                            identity.getCredentials().getUsername() + "@"
+                                    + domain;
+                }
             }
-            else
-            {
-               email = identity.getCredentials().getUsername() + "@" + domain;
+        } else {
+            HPerson person =
+                    personDAO.findById(
+                            authenticatedAccount.getPerson().getId(), false);
+            name = person.getName();
+            email = person.getEmail();
+            authenticatedAccount.getPerson().setName(this.name);
+            authenticatedAccount.getPerson().setEmail(this.email);
+        }
+    }
+
+    @NotEmpty
+    @Size(min = 2, max = 80)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.validateEmail(email);
+        this.email = email;
+    }
+
+    @NotEmpty
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-z\\d_]{3,20}$",
+            message = "{validation.username.constraints}")
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        validateUsername(username);
+    }
+
+    public String getActivationKey() {
+        return activationKey;
+    }
+
+    public void setActivationKey(String keyHash) {
+        this.activationKey = keyHash;
+    }
+
+    @Transactional
+    public String edit() {
+        this.valid = true;
+        validateEmail(this.email);
+        validateUsername(username);
+
+        if (!this.isValid()) {
+            return null;
+        }
+
+        if (authenticatedAccount != null) {
+            HPerson person =
+                    personDAO.findById(
+                            authenticatedAccount.getPerson().getId(), true);
+            person.setName(this.name);
+            personDAO.makePersistent(person);
+            personDAO.flush();
+            authenticatedAccount.getPerson().setName(this.name);
+            log.debug("updated successfully");
+            if (!authenticatedAccount.getPerson().getEmail().equals(this.email)) {
+                activationKey =
+                        emailChangeService.generateActivationKey(person,
+                                this.email);
+                renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
+                FacesMessages
+                        .instance()
+                        .add("You will soon receive an email with a link to activate your email account change.");
             }
-         }
-      }
-      else
-      {
-         HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), false);
-         name = person.getName();
-         email = person.getEmail();
-         authenticatedAccount.getPerson().setName(this.name);
-         authenticatedAccount.getPerson().setEmail(this.email);
-      }
-   }
 
-   @NotEmpty
-   @Size(min = 2, max = 80)
-   public String getName()
-   {
-      return name;
-   }
+            return "updated";
+        } else {
 
-   public void setName(String name)
-   {
-      this.name = name;
-   }
+            String key;
+            if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS
+                    || identity.getCredentials().getAuthType() == AuthenticationType.JAAS) {
+                key =
+                        registerServiceImpl.register(this.username,
+                                this.username, this.email);
+            } else {
+                key =
+                        registerServiceImpl.register(this.username,
+                                zanataOpenId.getAuthResult()
+                                        .getAuthenticatedId(),
+                                AuthenticationType.OPENID, this.name,
+                                this.email);
+            }
+            setActivationKey(key);
+            renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
+            FacesMessages
+                    .instance()
+                    .add("You will soon receive an email with a link to activate your account.");
 
-   @Email
-   public String getEmail()
-   {
-      return email;
-   }
+            return "home";
+        }
+    }
 
-   public void setEmail(String email)
-   {
-      this.validateEmail(email);
-      this.email = email;
-   }
+    public String cancel() {
+        if (identityStore.isNewUser(username)) {
+            return "home";
+        }
+        return "view";
+    }
 
-   @NotEmpty
-   @Size(min = 3, max = 20)
-   @Pattern(regexp = "^[a-z\\d_]{3,20}$")
-   public String getUsername()
-   {
-      return username;
-   }
+    public boolean isValid() {
+        return valid;
+    }
 
-   public void setUsername(String username)
-   {
-      this.username = username;
-      validateUsername();
-   }
-
-   public String getActivationKey()
-   {
-      return activationKey;
-   }
-
-   public void setActivationKey(String keyHash)
-   {
-      this.activationKey = keyHash;
-   }
-
-   @Transactional
-   public String edit()
-   {
-      this.valid = true;
-      validateEmail(this.email);
-      validateUsername();
-
-      if( !this.isValid() )
-      {
-         return null;
-      }
-
-      if (authenticatedAccount != null)
-      {
-         HPerson person = personDAO.findById(authenticatedAccount.getPerson().getId(), true);
-         person.setName(this.name);
-         personDAO.makePersistent(person);
-         personDAO.flush();
-         authenticatedAccount.getPerson().setName(this.name);
-         log.debug("updated successfully");
-         if (!authenticatedAccount.getPerson().getEmail().equals(this.email))
-         {
-            activationKey = emailChangeService.generateActivationKey(person, this.email);
-            renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
-            FacesMessages.instance().add("You will soon receive an email with a link to activate your email account change.");
-         }
-
-         return "updated";
-      }
-      else
-      {
-
-         String key;
-         if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS || identity.getCredentials().getAuthType() == AuthenticationType.JAAS)
-         {
-            key = registerServiceImpl.register(this.username, this.username, this.email);
-         }
-         else
-         {
-            key = registerServiceImpl.register(this.username, zanataOpenId.getAuthResult().getAuthenticatedId(),
-                  AuthenticationType.OPENID, this.name, this.email);
-         }
-         setActivationKey(key);
-         renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
-         FacesMessages.instance().add("You will soon receive an email with a link to activate your account.");
-
-         return "home";
-      }
-   }
-
-   public String cancel()
-   {
-      if (identityStore.isNewUser(username))
-      {
-         return "home";
-      }
-      return "view";
-   }
-
-   public boolean isValid()
-   {
-      return valid;
-   }
-
-   public boolean isNewUser()
-   {
-      return identityStore.isNewUser(username);
-   }
+    public boolean isNewUser() {
+        // in case someone else has registered in the middle
+        return newUser || identityStore.isNewUser(username);
+    }
 
 }

@@ -1,481 +1,530 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.zanata</groupId>
-        <artifactId>server</artifactId>
-        <version>3.0.0-alpha-2-SNAPSHOT</version>
-    </parent>
-    <artifactId>functional-test</artifactId>
-    <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
-    <!--<packaging>pom</packaging>-->
-    <name>functional-test</name>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>server</artifactId>
+    <version>3.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>functional-test</artifactId>
+  <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
+  <!--<packaging>pom</packaging>-->
+  <name>functional-test</name>
 
-    <properties>
-        <selenium.version>2.26.0</selenium.version>
+  <properties>
+    <selenium.version>2.26.0</selenium.version>
 
-        <!--Cargo Settings -->
-        <cargo.wait>false</cargo.wait>
-        <cargo.host>localhost</cargo.host>
-        <cargo.container>jboss71x</cargo.container>
-        <cargo.servlet.port>9898</cargo.servlet.port>
-        <!--<cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>-->
-        <!--<cargo.installation>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</cargo.installation>-->
-        <cargo.installation>http://download.jboss.org/jbosseap/6/jboss-eap-6.1.0.Alpha/jboss-eap-6.1.0.Alpha.zip</cargo.installation>
-        <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
-        <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-        <cargo.install.relative.to.container.home>../../cargo/installs/jboss-eap-6.1.0.Alpha/jboss-eap-6.1</cargo.install.relative.to.container.home>
-        <context.path>zanata</context.path>
+    <!--Cargo Settings -->
+    <cargo.wait>false</cargo.wait>
+    <cargo.host>localhost</cargo.host>
+    <cargo.container>jboss71x</cargo.container>
+    <cargo.servlet.port>9898</cargo.servlet.port>
+    <!--<cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>-->
+    <!--<cargo.installation>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</cargo.installation>-->
+    <cargo.installation>http://download.jboss.org/jbosseap/6/jboss-eap-6.1.0.Alpha/jboss-eap-6.1.0.Alpha.zip</cargo.installation>
+    <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
+    <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
+    <cargo.install.relative.to.container.home>../../cargo/installs/jboss-eap-6.1.0.Alpha/jboss-eap-6.1</cargo.install.relative.to.container.home>
+    <context.path>zanata</context.path>
 
-        <!--data source-->
-        <jdbc.groupId>com.h2database</jdbc.groupId>
-        <jdbc.artifactId>h2</jdbc.artifactId>
-        <!-- This version must match the version used in JBoss. -->
-        <jdbc.version>1.3.168</jdbc.version>
+    <!--data source-->
+    <jdbc.groupId>com.h2database</jdbc.groupId>
+    <jdbc.artifactId>h2</jdbc.artifactId>
+    <!-- This version must match the version used in JBoss. -->
+    <jdbc.version>1.3.168</jdbc.version>
 
-        <ds.jndi.name>zanataDatasource</ds.jndi.name>
-        <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
-        <ds.driver.class>org.h2.Driver</ds.driver.class>
-        <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
-        <ds.username>sa</ds.username>
-        <ds.password />
+    <ds.jndi.name>zanataDatasource</ds.jndi.name>
+    <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
+    <ds.driver.class>org.h2.Driver</ds.driver.class>
+    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE</ds.connection.url>
+    <ds.username>sa</ds.username>
+    <ds.password />
 
-        <!--target zanata instance-->
-        <zanata.target.version>${project.parent.version}</zanata.target.version>
-        <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war</zanata.target.war>
-        <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
-        <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
-        <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
+    <!--target zanata instance-->
+    <zanata.target.version>${project.parent.version}</zanata.target.version>
+    <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war</zanata.target.war>
+    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
+    <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
+    <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
 
-        <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
-        <!-- below path is specific to pahuang's machine. It needs be downloaded from http://code.google.com/p/chromedriver/downloads/list-->
-        <webdriver.chrome.driver>/NotBackedUp/tools/chromedriver</webdriver.chrome.driver>
-        <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
-        <!-- this decides what web driver type we intended to use-->
-        <webdriver.type>chrome</webdriver.type>
-        <webdriver.display>:0</webdriver.display>
-        <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
+    <webdriver.log.file>${project.build.directory}/browser_console.log</webdriver.log.file>
+    <!-- below path is specific to pahuang's machine. It needs be downloaded from http://code.google.com/p/chromedriver/downloads/list-->
+    <webdriver.chrome.driver>/NotBackedUp/tools/chromedriver</webdriver.chrome.driver>
+    <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
+    <!-- this decides what web driver type we intended to use-->
+    <webdriver.type>chrome</webdriver.type>
+    <webdriver.display>:0</webdriver.display>
+    <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
 
-        <!-- this is the path we store H2 backup script which will be used to reset database state -->
-        <zanata.database.backup>${project.build.directory}/zanata.database.backup.sql</zanata.database.backup>
+    <!-- this is the path we store H2 backup script which will be used to reset database state -->
+    <zanata.database.backup>${project.build.directory}/zanata.database.backup.sql</zanata.database.backup>
 
-        <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
-        <cargo.debug.jvm.args> -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787 -Xnoagent -Djava.compiler=NONE</cargo.debug.jvm.args>
-        <!-- this property can be used to control what test needs to be run by failsafe -->
-        <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
-    </properties>
+    <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
+    <cargo.debug.jvm.args>
+      -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
+      -Xnoagent -Djava.compiler=NONE
+    </cargo.debug.jvm.args>
+    <!-- this property can be used to control what test needs to be run by failsafe -->
+    <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
+    <document.storage.directory>${project.build.directory}/zanata-documents</document.storage.directory>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-all</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xml-apis</artifactId>
-                    <groupId>xml-apis</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xercesImpl</artifactId>
-                    <groupId>xerces</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-api</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-firefox-driver</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-htmlunit-driver</artifactId>
+      <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xml-apis</artifactId>
+          <groupId>xml-apis</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-remote-driver</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-support</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.concordion</groupId>
-            <artifactId>concordion</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.concordion</groupId>
-            <artifactId>concordion-extensions</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.concordion</groupId>
+      <artifactId>concordion</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.concordion</groupId>
+      <artifactId>concordion-extensions</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
 
-        <!-- cargo needs these-->
-        <!-- we need to include a newer version of hibernate and replace the ones come with JBoss EAP6-alpha -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>${hibernate.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>${hibernate.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-infinispan</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>${hibernate.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>${hibernate.scope}</scope>
-        </dependency>
+    <!-- cargo needs these-->
+    <!-- we need to include a newer version of hibernate and replace the ones come with JBoss EAP6-alpha -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-infinispan</artifactId>
+      <version>${hibernate.version}</version>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+      <version>${hibernate.version}</version>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>${jdbc.groupId}</groupId>
-            <artifactId>${jdbc.artifactId}</artifactId>
-            <version>${jdbc.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>${jdbc.groupId}</groupId>
+      <artifactId>${jdbc.artifactId}</artifactId>
+      <version>${jdbc.version}</version>
+    </dependency>
 
-    <profiles>
-        <profile>
-            <id>run-functional-test</id>
-            <activation>
-                <file>
-                    <exists>${zanata.target.war}</exists>
-                </file>
-                <property>
-                    <name>functional-test</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <version>1.3.1</version>
-                        <configuration>
-                            <wait>${cargo.wait}</wait>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
 
-                            <container>
-                                <containerId>${cargo.container}</containerId>
-                                <type>installed</type>
+  </dependencies>
 
-                                <!--if install from url-->
-                                <zipUrlInstaller>
-                                    <url>${cargo.installation}</url>
-                                    <downloadDir>${user.home}/Downloads</downloadDir>
-                                    <extractDir>${cargo.extract.dir}</extractDir>
-                                </zipUrlInstaller>
-
-                                <output>${project.build.directory}/container.log</output>
-                                <append>false</append>
-                                <log>${project.build.directory}/cargo.log</log>
-
-                                <systemProperties>
-                                    <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
-                                    <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
-                                    <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
-                                </systemProperties>
-                            </container>
-
-                            <deployables>
-                                <deployable>
-                                    <!--<groupId>${project.groupId}</groupId>-->
-                                    <!--<artifactId>zanata-war</artifactId>-->
-                                    <type>war</type>
-                                    <location>${zanata.target.war}</location>
-                                    <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                                    <pingTimeout>60000</pingTimeout>
-                                    <properties>
-                                        <context>${context.path}</context>
-                                    </properties>
-                                </deployable>
-
-                            </deployables>
-
-                            <configuration>
-                                <type>standalone</type>
-                                <home>${cargo.container.home}</home>
-
-                                <configfiles>
-                                    <configfile>
-                                        <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
-                                        <todir>deployments</todir>
-                                    </configfile>
-                                    <!-- see above zipUrlInstaller/extractDir-->
-                                    <!-- cargo will force todir and tofile to be relative to container home directory -->
-                                    <!-- enable javamelody -->
-                                    <configfile>
-                                        <file>${project.basedir}/src/test/resources/as7module/sun/module.xml</file>
-                                        <todir>${cargo.install.relative.to.container.home}/modules/system/layers/base/sun/jdk/main</todir>
-                                    </configfile>
-
-                                    <!-- security and jndi for properties -->
-                                    <configfile>
-                                        <file>${project.build.testOutputDirectory}/conf/standalone.xml</file>
-                                        <todir>configuration</todir>
-                                    </configfile>
-
-                                </configfiles>
-
-                                <files>
-                                    <!-- this is a hack to upgrade eap6-alpa's hibernate version-->
-                                    <file>
-                                        <!-- copy in the new jar and override the old one (this is ugly but inside cargo not much option we have -->
-                                        <file>${settings.localRepository}/org/hibernate/hibernate-core/${hibernate.version}/hibernate-core-${hibernate.version}.jar</file>
-                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-core-4.2.0.CR1.jar</tofile>
-                                    </file>
-                                    <file>
-                                        <file>${settings.localRepository}/org/hibernate/hibernate-entitymanager/${hibernate.version}/hibernate-entitymanager-${hibernate.version}.jar</file>
-                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-entitymanager-4.2.0.CR1.jar</tofile>
-                                    </file>
-                                    <file>
-                                        <file>${settings.localRepository}/org/hibernate/hibernate-infinispan/${hibernate.version}/hibernate-infinispan-${hibernate.version}.jar</file>
-                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-infinispan-4.2.0.CR1.jar</tofile>
-                                    </file>
-                                    <file>
-                                        <file>${settings.localRepository}/org/hibernate/hibernate-envers/${hibernate.version}/hibernate-envers-${hibernate.version}.jar</file>
-                                        <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/envers/main/hibernate-envers-4.2.0.CR1.jar</tofile>
-                                    </file>
-                                </files>
-
-                                <properties>
-                                    <cargo.jboss.configuration>default</cargo.jboss.configuration>
-                                    <cargo.hostname>${cargo.host}</cargo.hostname>
-                                    <cargo.servlet.port>9898</cargo.servlet.port>
-
-                                    <cargo.jvmargs>
-                                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                                        -XX:PermSize=512m -XX:MaxPermSize=1024 -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled ${cargo.debug.jvm.args}
-                                    </cargo.jvmargs>
-                                </properties>
-                            </configuration>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>cargo-start</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>cargo-stop</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.11</version>
-                        <executions>
-                            <execution>
-                                <id>integration-test</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>verify</id>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                            <printSummary>true</printSummary>
-                            <runOrder>alphabetical</runOrder>
-                            <!--<forkMode>always</forkMode>-->
-                            <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
-                            <includes>
-                                <include>${include.test.patterns}</include>
-                                <!--index page-->
-                                <include>**/FeatureTest.java</include>
-                            </includes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <build>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.sql</include>
-                    <include>**/log4j.xml</include>
-                    <include>**/zanata-ds.xml</include>
-                    <include>conf/standalone.xml</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources/zanata-user-config</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>sample-projects</directory>
-                <targetPath>${zanata.sample.projects.basedir}</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/zanata.xml</include>
-                    <include>**/pom.xml</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>sample-projects</directory>
-                <targetPath>${zanata.sample.projects.basedir}</targetPath>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>**/zanata.xml</exclude>
-                    <exclude>**/pom.xml</exclude>
-                </excludes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources/concordion</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-            </testResource>
-        </testResources>
+  <profiles>
+    <profile>
+      <id>run-functional-test</id>
+      <activation>
+        <file>
+          <exists>${zanata.target.war}</exists>
+        </file>
+        <property>
+          <name>functional-test</name>
+        </property>
+      </activation>
+      <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <echo>===== Properties that can be set for functional test =====</echo>
-                                <echo>-Dfunctional-test : to activate functional test run</echo>
-                                <echo>-Dcargo.wait : to ask cargo to start up then wait so that tests can be run manually</echo>
-                                <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
-                                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war.</echo>
-                                <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>
-                                <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
-                                <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
-                                <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
-                                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is **/*AggregateTestSuite.java.</echo>
-                                <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is chrome.</echo>
-                                <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
-                                <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
-                                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
-                                <echo>==========================================================</echo>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--we want to run tests in integration phase-->
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                    <failIfNoTests>false</failIfNoTests>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.maven.plugins
-                                        </groupId>
-                                        <artifactId>
-                                            maven-antrun-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.7,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>run</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven2-plugin</artifactId>
+            <version>1.3.1</version>
+            <configuration>
+              <wait>${cargo.wait}</wait>
 
-                <!--We don't want cobertura here-->
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                    <configuration>
-                        <instrumentation>
-                            <excludes>
-                                <exclude>**/*</exclude>
-                            </excludes>
-                        </instrumentation>
-                        <check>
-                            <totalBranchRate>0</totalBranchRate>
-                            <totalLineRate>0</totalLineRate>
-                            <haltOnFailure>false</haltOnFailure>
-                        </check>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+              <container>
+                <containerId>${cargo.container}</containerId>
+                <type>installed</type>
+
+                <!--if install from url-->
+                <zipUrlInstaller>
+                  <url>${cargo.installation}</url>
+                  <downloadDir>${user.home}/Downloads</downloadDir>
+                  <extractDir>${cargo.extract.dir}</extractDir>
+                </zipUrlInstaller>
+
+                <output>${project.build.directory}/container.log</output>
+                <append>false</append>
+                <log>${project.build.directory}/cargo.log</log>
+
+                <systemProperties>
+                  <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
+                  <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
+                  <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
+                </systemProperties>
+              </container>
+
+              <deployables>
+                <deployable>
+                  <!--<groupId>${project.groupId}</groupId>-->
+                  <!--<artifactId>zanata-war</artifactId>-->
+                  <type>war</type>
+                  <location>${zanata.target.war}</location>
+                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
+                  <pingTimeout>60000</pingTimeout>
+                  <properties>
+                    <context>${context.path}</context>
+                  </properties>
+                </deployable>
+
+              </deployables>
+
+              <configuration>
+                <type>standalone</type>
+                <home>${cargo.container.home}</home>
+
+                <configfiles>
+                  <configfile>
+                    <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
+                    <todir>deployments</todir>
+                  </configfile>
+                  <!-- see above zipUrlInstaller/extractDir-->
+                  <!-- cargo will force todir and tofile to be relative to container home directory -->
+                  <!-- enable javamelody -->
+                  <configfile>
+                    <file>${project.basedir}/src/test/resources/as7module/sun/module.xml</file>
+                    <todir>${cargo.install.relative.to.container.home}/modules/system/layers/base/sun/jdk/main</todir>
+                  </configfile>
+
+                  <!-- security and jndi for properties -->
+                  <configfile>
+                    <file>${project.build.testOutputDirectory}/conf/standalone.xml</file>
+                    <todir>configuration</todir>
+                  </configfile>
+
+                </configfiles>
+
+                <files>
+                  <!-- this is a hack to upgrade eap6-alpa's hibernate version-->
+                  <file>
+                    <!-- copy in the new jar and override the old one (this is ugly but inside cargo not much option we have -->
+                    <file>${settings.localRepository}/org/hibernate/hibernate-core/${hibernate.version}/hibernate-core-${hibernate.version}.jar</file>
+                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-core-4.2.0.CR1.jar</tofile>
+                  </file>
+                  <file>
+                    <file>${settings.localRepository}/org/hibernate/hibernate-entitymanager/${hibernate.version}/hibernate-entitymanager-${hibernate.version}.jar</file>
+                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-entitymanager-4.2.0.CR1.jar</tofile>
+                  </file>
+                  <file>
+                    <file>${settings.localRepository}/org/hibernate/hibernate-infinispan/${hibernate.version}/hibernate-infinispan-${hibernate.version}.jar</file>
+                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-infinispan-4.2.0.CR1.jar</tofile>
+                  </file>
+                  <file>
+                    <file>${settings.localRepository}/org/hibernate/hibernate-envers/${hibernate.version}/hibernate-envers-${hibernate.version}.jar</file>
+                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/envers/main/hibernate-envers-4.2.0.CR1.jar</tofile>
+                  </file>
+                </files>
+
+                <properties>
+                  <cargo.jboss.configuration>default</cargo.jboss.configuration>
+                  <cargo.hostname>${cargo.host}</cargo.hostname>
+                  <cargo.servlet.port>9898</cargo.servlet.port>
+
+                  <cargo.jvmargs>
+                    <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                    -XX:PermSize=512m -XX:MaxPermSize=1024
+                    -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                    ${cargo.debug.jvm.args}
+                  </cargo.jvmargs>
+                </properties>
+              </configuration>
+            </configuration>
+            <executions>
+              <execution>
+                <id>cargo-start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>cargo-stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.11</version>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <redirectTestOutputToFile>false</redirectTestOutputToFile>
+              <printSummary>true</printSummary>
+              <runOrder>alphabetical</runOrder>
+              <!--<forkMode>always</forkMode>-->
+              <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
+              <includes>
+                <include>${include.test.patterns}</include>
+                <!--index page-->
+                <include>**/FeatureTest.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.sql</include>
+          <include>**/log4j.xml</include>
+          <include>**/zanata-ds.xml</include>
+          <include>conf/standalone.xml</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources/zanata-user-config</directory>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>sample-projects</directory>
+        <targetPath>${zanata.sample.projects.basedir}</targetPath>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/zanata.xml</include>
+          <include>**/pom.xml</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>sample-projects</directory>
+        <targetPath>${zanata.sample.projects.basedir}</targetPath>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/zanata.xml</exclude>
+          <exclude>**/pom.xml</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources/concordion</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo>===== Properties that can be set for functional test =====</echo>
+                <echo>-Dfunctional-test : to activate functional test run</echo>
+                <echo>-Dcargo.wait : to ask cargo to start up then wait so that tests can be run manually</echo>
+                <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
+                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war.</echo>
+                <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>
+                <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
+                <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
+                <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
+                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is **/*AggregateTestSuite.java.</echo>
+                <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is chrome.</echo>
+                <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
+                <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
+                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
+                <echo>==========================================================</echo>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <failOnWarning>true</failOnWarning>
+          <usedDependencies combine.children="append">
+            <usedDependency>com.h2database:h2</usedDependency>
+            <usedDependency>org.hibernate:hibernate-core</usedDependency>
+            <usedDependency>org.hibernate:hibernate-envers</usedDependency>
+            <usedDependency>org.hibernate:hibernate-entitymanager</usedDependency>
+            <usedDependency>org.hibernate:hibernate-infinispan</usedDependency>
+            <usedDependency>org.projectlombok:lombok</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+
+      <!--we want to run tests in integration phase-->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.apache.maven.plugins
+                    </groupId>
+                    <artifactId>
+                      maven-antrun-plugin
+                    </artifactId>
+                    <versionRange>
+                      [1.7,)
+                    </versionRange>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+        <!--We don't want cobertura here-->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <configuration>
+            <instrumentation>
+              <excludes>
+                <exclude>**/*</exclude>
+              </excludes>
+            </instrumentation>
+            <check>
+              <totalBranchRate>0</totalBranchRate>
+              <totalLineRate>0</totalLineRate>
+              <haltOnFailure>false</haltOnFailure>
+            </check>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>

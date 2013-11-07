@@ -40,118 +40,115 @@ import org.zanata.util.TMXParseException;
 /**
  * Translation Memory Adapter for the TMX parser. Provides callback effects
  * (functions) to be used when the parser encounters certain specific events.
- * 
+ *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- * 
+ *
  */
 @Name("transMemoryAdapter")
 @AutoCreate
 @NoArgsConstructor
-public class TransMemoryAdapter
-{
-   @In
-   private EntityManager entityManager;
+public class TransMemoryAdapter {
+    @In
+    private EntityManager entityManager;
 
-   @In
-   private TransMemoryDAO transMemoryDAO;
+    @In
+    private TransMemoryDAO transMemoryDAO;
 
-   /**
-    * Persists the header elements when
-    * encountered while parsing. This modifies the translation memory fields and
-    * metadata.
-    * @throws TMXParseException 
-    */
-   public void processHeader(TransMemory tm, Element headerElem) throws TMXParseException
-   {
-      TMXMetadataHelper.setMetadata(tm, headerElem);
-      entityManager.merge(tm);
-   }
+    /**
+     * Persists the header elements when encountered while parsing. This
+     * modifies the translation memory fields and metadata.
+     *
+     * @throws TMXParseException
+     */
+    public void processHeader(TransMemory tm, Element headerElem)
+            throws TMXParseException {
+        TMXMetadataHelper.setMetadata(tm, headerElem);
+        entityManager.merge(tm);
+    }
 
-   /**
-    * Persists a translation unit when a tu
-    * element is encountered while parsing.
-    * @throws TMXParseException 
-    */
-   public void processTransUnit(TransMemory tm, Element tuElem) throws TMXParseException
-   {
-      TransMemoryUnit tu = new TransMemoryUnit();
-      tu.setTranslationMemory(tm);
+    /**
+     * Persists a translation unit when a tu element is encountered while
+     * parsing.
+     *
+     * @throws TMXParseException
+     */
+    public void processTransUnit(TransMemory tm, Element tuElem)
+            throws TMXParseException {
+        TransMemoryUnit tu = new TransMemoryUnit();
+        tu.setTranslationMemory(tm);
 
-      TMXMetadataHelper.setMetadata(tu, tuElem, tm.getSourceLanguage());
-      tu.setVersionNum(0);
+        TMXMetadataHelper.setMetadata(tu, tuElem, tm.getSourceLanguage());
+        tu.setVersionNum(0);
 
-      addTUVs(tu, tuElem.getChildElements("tuv"));
+        addTUVs(tu, tuElem.getChildElements("tuv"));
 
-      tu.setUniqueId(determineUniqueId(tu));
+        tu.setUniqueId(determineUniqueId(tu));
 
-      tu = mergeWithExistingTUIfAny(tu);
-      entityManager.merge(tu);
-   }
+        tu = mergeWithExistingTUIfAny(tu);
+        entityManager.merge(tu);
+    }
 
-   private String determineUniqueId(TransMemoryUnit tu) throws TMXParseException
-   {
-      if (tu.getTransUnitId() != null)
-      {
-         // tuid is the natural id by default
-         return tu.getTransUnitId();
-      }
-      else
-      {
-         // Go looking for a source content hash
-         String srcLang = tu.getSourceLanguage();
-         if (srcLang != null)
-         {
-            TransMemoryUnitVariant sourceVariant = tu.getTransUnitVariants().get(srcLang);
-            if (sourceVariant == null)
-            {
-               throw new TMXParseException("Source variant cannot be determined for Translation unit with no tuid.");
+    private String determineUniqueId(TransMemoryUnit tu)
+            throws TMXParseException {
+        if (tu.getTransUnitId() != null) {
+            // tuid is the natural id by default
+            return tu.getTransUnitId();
+        } else {
+            // Go looking for a source content hash
+            String srcLang = tu.getSourceLanguage();
+            if (srcLang != null) {
+                TransMemoryUnitVariant sourceVariant =
+                        tu.getTransUnitVariants().get(srcLang);
+                if (sourceVariant == null) {
+                    throw new TMXParseException(
+                            "Source variant cannot be determined for Translation unit with no tuid.");
+                }
+                return sourceVariant.getPlainTextSegmentHash();
+            } else {
+                throw new TMXParseException(
+                        "Source language cannot be determined for Translation unit with no tuid. "
+                                + "It must be defined either in the <tu> or the <header> element.");
             }
-            return sourceVariant.getPlainTextSegmentHash();
-         }
-         else
-         {
-            throw new TMXParseException("Source language cannot be determined for Translation unit with no tuid. " +
-                  "It must be defined either in the <tu> or the <header> element.");
-         }
-      }
-   }
+        }
+    }
 
-   private void addTUVs(TransMemoryUnit tu, Elements tuvElems) throws TMXParseException
-   {
-      for (int i = 0; i < tuvElems.size(); i++)
-      {
-         Element tuvElem = tuvElems.get(i);
-         addVariant(tu, tuvElem);
-      }
-   }
+    private void addTUVs(TransMemoryUnit tu, Elements tuvElems)
+            throws TMXParseException {
+        for (int i = 0; i < tuvElems.size(); i++) {
+            Element tuvElem = tuvElems.get(i);
+            addVariant(tu, tuvElem);
+        }
+    }
 
-   private void addVariant(TransMemoryUnit tu, Element tuvElem) throws TMXParseException
-   {
-      String taggedSegment = tuvElem.getFirstChildElement("seg").toXML();
+    private void addVariant(TransMemoryUnit tu, Element tuvElem)
+            throws TMXParseException {
+        String taggedSegment = tuvElem.getFirstChildElement("seg").toXML();
 
-      TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
-      tuv.setTaggedSegment(taggedSegment);
-      TMXMetadataHelper.setMetadata(tuv, tuvElem);
-      tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
-   }
+        TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
+        tuv.setTaggedSegment(taggedSegment);
+        TMXMetadataHelper.setMetadata(tuv, tuvElem);
+        tu.getTransUnitVariants().put(tuv.getLanguage(), tuv);
+    }
 
-   private TransMemoryUnit mergeWithExistingTUIfAny(TransMemoryUnit newTU)
-   {
-      TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(newTU.getTranslationMemory().getSlug(),
-            newTU.getUniqueId());
-      if( existingTu != null )
-      {
-         existingTu.setMetadata(newTU.getMetadataType(), newTU.getMetadata());
-         existingTu.setPosition(newTU.getPosition());
-         existingTu.setSourceLanguage(newTU.getSourceLanguage());
-         existingTu.setTransUnitId(newTU.getTransUnitId());
-         existingTu.getTransUnitVariants().clear();
-         existingTu.getTransUnitVariants().putAll( newTU.getTransUnitVariants() );
-         // No need to set the unique id or parent Trans Memory, it should be the same
-         return existingTu;
-      }
-      return newTU;
-   }
+    private TransMemoryUnit mergeWithExistingTUIfAny(TransMemoryUnit newTU) {
+        TransMemoryUnit existingTu =
+                transMemoryDAO.findTranslationUnit(newTU.getTranslationMemory()
+                        .getSlug(), newTU.getUniqueId());
+        if (existingTu != null) {
+            existingTu
+                    .setMetadata(newTU.getMetadataType(), newTU.getMetadata());
+            existingTu.setPosition(newTU.getPosition());
+            existingTu.setSourceLanguage(newTU.getSourceLanguage());
+            existingTu.setTransUnitId(newTU.getTransUnitId());
+            existingTu.getTransUnitVariants().clear();
+            existingTu.getTransUnitVariants().putAll(
+                    newTU.getTransUnitVariants());
+            // No need to set the unique id or parent Trans Memory, it should be
+            // the same
+            return existingTu;
+        }
+        return newTU;
+    }
 
 }

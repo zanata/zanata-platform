@@ -30,8 +30,8 @@ import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
-import org.zanata.webtrans.shared.model.ValidationInfo;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
@@ -43,251 +43,271 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 
 @Test(groups = { "unit-tests" })
-public class EditorOptionsPresenterTest
-{
-   private EditorOptionsPresenter presenter;
-   @Mock
-   private EditorOptionsDisplay display;
-   @Mock
-   private EventBus eventBus;
-   @Mock
-   private UserWorkspaceContext userWorkspaceContext;
-   @Mock
-   private WorkspaceContext workspaceContext;
-   @Mock
-   private ValidationOptionsPresenter validationDetailsPresenter;
-   @Mock
-   private ChangeReferenceLangPresenter changeReferenceLangPresenter;
-   @Mock
-   private ChangeReferenceLangDisplay changeReferenceLangDisplay;
-   @Mock
-   private CachingDispatchAsync dispatcher;
-   @Captor
-   private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
-   @Mock
-   private UserOptionsService userOptionsService;
+public class EditorOptionsPresenterTest {
+    private EditorOptionsPresenter presenter;
+    @Mock
+    private EditorOptionsDisplay display;
+    @Mock
+    private EventBus eventBus;
+    @Mock
+    private UserWorkspaceContext userWorkspaceContext;
+    @Mock
+    private WorkspaceContext workspaceContext;
+    @Mock
+    private ValidationOptionsPresenter validationDetailsPresenter;
+    @Mock
+    private ChangeReferenceLangPresenter changeReferenceLangPresenter;
+    @Mock
+    private ChangeReferenceLangDisplay changeReferenceLangDisplay;
+    @Mock
+    private CachingDispatchAsync dispatcher;
+    @Captor
+    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
+    @Mock
+    private UserOptionsService userOptionsService;
 
-   private UserConfigHolder configHolder = new UserConfigHolder();
+    private UserConfigHolder configHolder = new UserConfigHolder();
 
-   private WorkspaceId workspaceId;
+    private WorkspaceId workspaceId;
 
-   @BeforeMethod
-   public void beforeMethod()
-   {
-      MockitoAnnotations.initMocks(this);
-      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
+    @BeforeMethod
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-      presenter = new EditorOptionsPresenter(display, eventBus, userWorkspaceContext, validationDetailsPresenter, changeReferenceLangPresenter, dispatcher, userOptionsService);
+        presenter =
+                new EditorOptionsPresenter(display, eventBus,
+                        userWorkspaceContext, validationDetailsPresenter,
+                        changeReferenceLangPresenter,
+                        dispatcher, userOptionsService);
 
-      workspaceId = new WorkspaceId(new ProjectIterationId("projectSlug", "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
+        workspaceId =
+                new WorkspaceId(new ProjectIterationId("projectSlug",
+                        "iterationSlug", ProjectType.Podir), LocaleId.EN_US);
 
-      when(userWorkspaceContext.getWorkspaceContext()).thenReturn(workspaceContext);
-      when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
+        when(userWorkspaceContext.getWorkspaceContext()).thenReturn(
+                workspaceContext);
+        when(workspaceContext.getWorkspaceId()).thenReturn(workspaceId);
 
-      verify(display).setListener(presenter);
-   }
+        verify(display).setListener(presenter);
+    }
 
-   @Test
-   public void onBindWillRegisterHandlers()
-   {
-      // Given: user workspace context is not readonly
-      when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
+    @Test
+    public void onBindWillRegisterHandlers() {
+        // Given: user workspace context is not readonly
+        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
       
-      when(changeReferenceLangPresenter.getDisplay()).thenReturn(changeReferenceLangDisplay);
+        when(changeReferenceLangPresenter.getDisplay())
+                .thenReturn(changeReferenceLangDisplay);
 
-      // When:
-      presenter.onBind();
+        // When:
+        presenter.onBind();
 
-      // Then:
-      verify(validationDetailsPresenter).bind();
+        // Then:
+        verify(validationDetailsPresenter).bind();
 
-      verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(), presenter);
-      verify(display).setOptionsState(userOptionsService.getConfigHolder().getState());
-   }
+        verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(),
+                presenter);
+        verify(display).setOptionsState(
+                userOptionsService.getConfigHolder().getState());
+    }
 
-   @Test
-   public void canSetReadOnlyOnWorkspaceUpdate()
-   {
-      // Given: project become inactive
-      WorkspaceContextUpdateEvent workspaceContextUpdateEvent = new WorkspaceContextUpdateEvent(workplaceContextData(false, ProjectType.Podir));
-      when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
-      when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
+    @Test
+    public void canSetReadOnlyOnWorkspaceUpdate() {
+        // Given: project become inactive
+        WorkspaceContextUpdateEvent workspaceContextUpdateEvent =
+                new WorkspaceContextUpdateEvent(workplaceContextData(false,
+                        ProjectType.Podir));
+        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
+        when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
-      // When:
-      presenter.onWorkspaceContextUpdated(workspaceContextUpdateEvent);
+        // When:
+        presenter.onWorkspaceContextUpdated(workspaceContextUpdateEvent);
 
-      // Then:
-      verify(userWorkspaceContext).setProjectActive(false);
-      assertThat(configHolder.getState().isDisplayButtons(), Matchers.is(false));
-      verify(display).setOptionsState(configHolder.getState());
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        // Then:
+        verify(userWorkspaceContext).setProjectActive(false);
+        assertThat(configHolder.getState().isDisplayButtons(),
+                Matchers.is(false));
+        verify(display).setOptionsState(configHolder.getState());
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   private static HasWorkspaceContextUpdateData workplaceContextData(final boolean projectActive, final ProjectType projectType)
-   {
-      return new HasWorkspaceContextUpdateData()
-      {
-         @Override
-         public boolean isProjectActive()
-         {
-            return projectActive;
-         }
+    private static HasWorkspaceContextUpdateData workplaceContextData(
+            final boolean projectActive, final ProjectType projectType) {
+        return new HasWorkspaceContextUpdateData() {
+            @Override
+            public boolean isProjectActive() {
+                return projectActive;
+            }
 
-         @Override
-         public ProjectType getProjectType()
-         {
-            return projectType;
-         }
+            @Override
+            public ProjectType getProjectType() {
+                return projectType;
+            }
 
-         @Override
-         public Map<ValidationId, ValidationInfo> getValidationInfoList()
-         {
-            return null;
-         }
-      };
-   }
+            @Override
+            public Map<ValidationId, State> getValidationStates() {
+                return null;
+            }
+        };
+    }
 
-   @Test
-   public void onPageSizeClick()
-   {
-      presenter.onPageSizeClick(99);
+    @Test
+    public void onPageSizeClick() {
+        presenter.onPageSizeClick(99);
 
-      assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(99));
-      ArgumentCaptor<EditorPageSizeChangeEvent> eventCaptor = ArgumentCaptor.forClass(EditorPageSizeChangeEvent.class);
-      verify(eventBus).fireEvent(eventCaptor.capture());
-      assertThat(eventCaptor.getValue().getPageSize(), Matchers.equalTo(99));
-   }
+        assertThat(configHolder.getState().getEditorPageSize(),
+                Matchers.equalTo(99));
+        ArgumentCaptor<EditorPageSizeChangeEvent> eventCaptor =
+                ArgumentCaptor.forClass(EditorPageSizeChangeEvent.class);
+        verify(eventBus).fireEvent(eventCaptor.capture());
+        assertThat(eventCaptor.getValue().getPageSize(), Matchers.equalTo(99));
+    }
 
-   @Test
-   public void onEnterSaveApprovedOptionChange()
-   {
-      configHolder.setEnterSavesApproved(false);
+    @Test
+    public void onEnterSaveApprovedOptionChange() {
+        configHolder.setEnterSavesApproved(false);
 
-      presenter.onEnterSaveOptionChanged(true);
+        presenter.onEnterSaveOptionChanged(true);
 
-      assertThat(configHolder.getState().isEnterSavesApproved(), Matchers.is(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().isEnterSavesApproved(),
+                Matchers.is(true));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onEditorButtonsOptionChange()
-   {
-      configHolder.setDisplayButtons(false);
+    @Test
+    public void onEditorButtonsOptionChange() {
+        configHolder.setDisplayButtons(false);
 
-      presenter.onEditorButtonsOptionChanged(true);
+        presenter.onEditorButtonsOptionChanged(true);
 
-      assertThat(configHolder.getState().isDisplayButtons(), Matchers.is(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().isDisplayButtons(),
+                Matchers.is(true));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onNavOptionChange()
-   {
-      configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
+    @Test
+    public void onNavOptionChange() {
+        configHolder.setNavOption(NavOption.FUZZY_UNTRANSLATED);
 
-      presenter.onSelectionChange("", NavOption.FUZZY);
+        presenter.onSelectionChange("", NavOption.FUZZY);
 
-      assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().getNavOption(),
+                Matchers.equalTo(NavOption.FUZZY));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onShowSaveApprovedWarningChanged()
-   {
-      configHolder.setShowSaveApprovedWarning(true);
+    @Test
+    public void onShowSaveApprovedWarningChanged() {
+        configHolder.setShowSaveApprovedWarning(true);
 
-      presenter.onShowSaveApprovedWarningChanged(false);
+        presenter.onShowSaveApprovedWarningChanged(false);
 
-      assertThat(configHolder.getState().isShowSaveApprovedWarning(), Matchers.equalTo(false));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().isShowSaveApprovedWarning(),
+                Matchers.equalTo(false));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onSpellCheckOptionChanged()
-   {
-      configHolder.setSpellCheckEnabled(false);
+    @Test
+    public void onSpellCheckOptionChanged() {
+        configHolder.setSpellCheckEnabled(false);
 
-      presenter.onSpellCheckOptionChanged(true);
+        presenter.onSpellCheckOptionChanged(true);
 
-      assertThat(configHolder.getState().isSpellCheckEnabled(), Matchers.equalTo(true));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().isSpellCheckEnabled(),
+                Matchers.equalTo(true));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onTMDisplayModeChanged()
-   {
-      configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
+    @Test
+    public void onTMDisplayModeChanged() {
+        configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
 
-      presenter.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
+        presenter.onTransMemoryDisplayModeChanged(DiffMode.NORMAL);
 
-      assertThat(configHolder.getState().getTransMemoryDisplayMode(), Matchers.equalTo(DiffMode.NORMAL));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-   }
+        assertThat(configHolder.getState().getTransMemoryDisplayMode(),
+                Matchers.equalTo(DiffMode.NORMAL));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+    }
 
-   @Test
-   public void onCodeMirrorOptionChanged()
-   {
-      configHolder.setUseCodeMirrorEditor(false);
+    @Test
+    public void onCodeMirrorOptionChanged() {
+        configHolder.setUseCodeMirrorEditor(false);
 
-      presenter.onUseCodeMirrorOptionChanged(true);
+        presenter.onUseCodeMirrorOptionChanged(true);
 
-      assertThat(configHolder.getState().isUseCodeMirrorEditor(), Matchers.equalTo(true));
-      verify(eventBus).fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
-   }
+        assertThat(configHolder.getState().isUseCodeMirrorEditor(),
+                Matchers.equalTo(true));
+        verify(eventBus).fireEvent(RefreshPageEvent.REDRAW_PAGE_EVENT);
+    }
 
-   @Test
-   public void onLoadDefaultOptions()
-   {
-      presenter.loadDefaultOptions();
+    @Test
+    public void onLoadDefaultOptions() {
+        presenter.loadDefaultOptions();
 
-      verify(userOptionsService).loadEditorDefaultOptions();
+        verify(userOptionsService).loadEditorDefaultOptions();
 
-      verify(display).setOptionsState(isA(UserConfigHolder.ConfigurationState.class));
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-      verify(eventBus).fireEvent(isA(NotificationEvent.class));
-   }
+        verify(display).setOptionsState(
+                isA(UserConfigHolder.ConfigurationState.class));
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+        verify(eventBus).fireEvent(isA(NotificationEvent.class));
+    }
 
-   @Test
-   public void onPersistOption()
-   {
-      configHolder.setFilterByFuzzy(true);
-      configHolder.setFilterByTranslated(false);
-      configHolder.setFilterByUntranslated(true);
+    @Test
+    public void onPersistOption() {
+        configHolder.setFilterByFuzzy(true);
+        configHolder.setFilterByTranslated(false);
+        configHolder.setFilterByUntranslated(true);
 
-      presenter.persistOptionChange();
+        presenter.persistOptionChange();
 
-      verify(userOptionsService).persistOptionChange(userOptionsService.getEditorOptions());
-   }
+        verify(userOptionsService).persistOptionChange(
+                userOptionsService.getEditorOptions());
+    }
 
-   @Test
-   public void onLoadSavedOption()
-   {
-      UserConfigHolder configHolder = new UserConfigHolder();
-      configHolder.setEnterSavesApproved(true);
-      configHolder.setFilterByTranslated(true);
-      configHolder.setNavOption(NavOption.FUZZY);
-      configHolder.setEditorPageSize(10);
+    @Test
+    public void onLoadSavedOption() {
+        UserConfigHolder configHolder = new UserConfigHolder();
+        configHolder.setEnterSavesApproved(true);
+        configHolder.setFilterByTranslated(true);
+        configHolder.setNavOption(NavOption.FUZZY);
+        configHolder.setEditorPageSize(10);
 
-      LoadOptionsResult result = new LoadOptionsResult(configHolder.getState());
+        LoadOptionsResult result =
+                new LoadOptionsResult(configHolder.getState());
 
-      presenter.loadOptions();
+        presenter.loadOptions();
 
-      ArgumentCaptor<LoadOptionsAction> actionCaptor = ArgumentCaptor.forClass(LoadOptionsAction.class);
-      ArgumentCaptor<AsyncCallback> callbackCaptor = ArgumentCaptor.forClass(AsyncCallback.class);
-      verify(dispatcher).execute(actionCaptor.capture(), callbackCaptor.capture());
+        ArgumentCaptor<LoadOptionsAction> actionCaptor =
+                ArgumentCaptor.forClass(LoadOptionsAction.class);
+        ArgumentCaptor<AsyncCallback> callbackCaptor =
+                ArgumentCaptor.forClass(AsyncCallback.class);
+        verify(dispatcher).execute(actionCaptor.capture(),
+                callbackCaptor.capture());
 
-      AsyncCallback callback = callbackCaptor.getValue();
+        AsyncCallback callback = callbackCaptor.getValue();
 
-      // when(needReviewChk.getValue()).thenReturn(false);
-      // when(translatedChk.getValue()).thenReturn(true);
-      // when(untranslatedChk.getValue()).thenReturn(false);
-      callback.onSuccess(result);
-      assertThat(configHolder.getState().getEditorPageSize(), Matchers.equalTo(10));
-      assertThat(configHolder.getState().getNavOption(), Matchers.equalTo(NavOption.FUZZY));
+        // when(needReviewChk.getValue()).thenReturn(false);
+        // when(translatedChk.getValue()).thenReturn(true);
+        // when(untranslatedChk.getValue()).thenReturn(false);
+        callback.onSuccess(result);
+        assertThat(configHolder.getState().getEditorPageSize(),
+                Matchers.equalTo(10));
+        assertThat(configHolder.getState().getNavOption(),
+                Matchers.equalTo(NavOption.FUZZY));
 
-      verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+        verify(eventBus).fireEvent(
+                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
 
-      callback.onFailure(null);
-      verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
-   }
+        callback.onFailure(null);
+        verify(eventBus, times(2)).fireEvent(isA(NotificationEvent.class));
+    }
 }

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.persistence.Transient;
 
 import org.apache.solr.analysis.LowerCaseFilterFactory;
@@ -45,67 +46,59 @@ import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
 @AnalyzerDefs({
-      @AnalyzerDef(name = "StandardAnalyzer",
-            tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-            filters = {
-                  @TokenFilterDef(factory = StandardFilterFactory.class),
-                  @TokenFilterDef(factory = LowerCaseFilterFactory.class)
-                  //@TokenFilterDef(factory = StopFilterFactory.class)
-            }
-      ),
-      @AnalyzerDef(name = "UnigramAnalyzer",
-            tokenizer = @TokenizerDef(factory = NGramTokenizerFactory.class,
-                                      params = {@Parameter(name = "minGramSize", value = "1"),
-                                                @Parameter(name = "maxGramSize", value = "1")
-                                               }
-                                     ),
-            filters = {
-                  @TokenFilterDef(factory = LowerCaseFilterFactory.class)
-            }
-      )
-})
-abstract class HTextContainer implements HasContents, Serializable
-{
-   private static final long serialVersionUID = 1L;
+        @AnalyzerDef(name = "StandardAnalyzer", tokenizer = @TokenizerDef(
+                factory = StandardTokenizerFactory.class), filters = {
+                @TokenFilterDef(factory = StandardFilterFactory.class),
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class)
+        // @TokenFilterDef(factory = StopFilterFactory.class)
+                }),
+        @AnalyzerDef(name = "UnigramAnalyzer", tokenizer = @TokenizerDef(
+                factory = NGramTokenizerFactory.class, params = {
+                        @Parameter(name = "minGramSize", value = "1"),
+                        @Parameter(name = "maxGramSize", value = "1") }),
+                filters = { @TokenFilterDef(
+                        factory = LowerCaseFilterFactory.class) }) })
+abstract class HTextContainer implements HasContents, Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @SuppressWarnings("unused")
-   @Field(name=IndexFieldLabels.CONTENT,
-          bridge = @FieldBridge(impl = StringListBridge.class))
-   @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
-   private List<String> getContentsToIndex()
-   {
-      return getContents();
-   }
+    @SuppressWarnings("unused")
+    @Field(name = IndexFieldLabels.CONTENT, bridge = @FieldBridge(
+            impl = StringListBridge.class))
+    @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
+    private List<String> getContentsToIndex() {
+        return getContents();
+    }
 
-   /**
-    * As of release 1.6, replaced by {@link #getContents()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getContent()
-   {
-      return getContents() != null && getContents().size() > 0 ? getContents().get(0) : null;
-   }
+    /**
+     * As of release 1.6, replaced by {@link #getContents()}
+     *
+     * @return
+     */
+    @Deprecated
+    @Transient
+    public String getContent() {
+        return getContents() != null && getContents().size() > 0 ? getContents()
+                .get(0) : null;
+    }
 
-   /**
-    * As of release 1.6, replaced by {@link #setContents(String...)}
-    * @return
-    */
-   @Deprecated
-   public void setContent(String content)
-   {
-      setContents(content);
-   }
+    /**
+     * As of release 1.6, replaced by {@link #setContents(String...)}
+     *
+     * @return
+     */
+    @Deprecated
+    public void setContent(String content) {
+        setContents(content);
+    }
 
-   @Override
-   public void setContents(String... args)
-   {
-      setContents(new ArrayList<String>(Arrays.asList(args)));
-   }
+    @Override
+    public void setContents(String... args) {
+        setContents(new ArrayList<String>(Arrays.asList(args)));
+    }
 
 }

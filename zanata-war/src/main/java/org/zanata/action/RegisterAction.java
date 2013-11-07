@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -37,7 +37,7 @@ import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.log.Log;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
@@ -47,179 +47,138 @@ import org.zanata.service.RegisterService;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
-public class RegisterAction implements Serializable
-{
+public class RegisterAction implements Serializable {
 
-   private static final long serialVersionUID = -7883627570614588182L;
+    private static final long serialVersionUID = -7883627570614588182L;
 
-   @Logger
-   Log log;
+    @Logger
+    Log log;
 
-   @In
-   private EntityManager entityManager;
+    @In
+    private EntityManager entityManager;
 
-   @In
-   RegisterService registerServiceImpl;
-   
-   @In
-   PersonDAO personDAO;
-   
-   @In
-   EmailService emailServiceImpl;
+    @In
+    RegisterService registerServiceImpl;
 
-   @In(create = true)
-   private Renderer renderer;
+    @In
+    PersonDAO personDAO;
 
-   private String username;
-   private String email;
-   private String password;
-   private String passwordConfirm;
+    @In
+    EmailService emailServiceImpl;
 
-   private boolean agreedToTermsOfUse;
+    private String username;
+    private String email;
+    private String password;
+    private String humanField;
 
-   private boolean valid;
+    private boolean valid;
 
-   private HPerson person;
+    private HPerson person;
 
-   private String activationKey;
+    @Begin(join = true)
+    public HPerson getPerson() {
+        if (person == null)
+            person = new HPerson();
+        return person;
+    }
 
-   @Begin(join = true)
-   public HPerson getPerson()
-   {
-      if (person == null)
-         person = new HPerson();
-      return person;
-   }
+    public void setUsername(String username) {
+        validateUsername(username);
+        this.username = username;
+    }
 
-   public void setUsername(String username)
-   {
-      validateUsername(username);
-      this.username = username;
-   }
+    @NotEmpty
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-z\\d_]{3,20}$",
+            message = "{validation.username.constraints}")
+    public String getUsername() {
+        return username;
+    }
 
-   @NotEmpty
-   @Size(min = 3, max = 20)
-   @Pattern(regexp = "^[a-z\\d_]{3,20}$", message = "{validation.username.constraints}")
-   public String getUsername()
-   {
-      return username;
-   }
-   
-   public void setEmail(String email)
-   {
-      this.email = email;
-   }
-   
-   @NotEmpty
-   @Email
-   @NotDuplicateEmail(message="This email address is already taken.")
-   public String getEmail()
-   {
-      return email;
-   }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-   public void setPassword(String password)
-   {
-      this.password = password;
-   }
+    @NotEmpty
+    @Email
+    @NotDuplicateEmail(message = "This email address is already taken.")
+    public String getEmail() {
+        return email;
+    }
 
-   @NotEmpty
-   @Size(min = 6, max = 20)
-   // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
-   // message="Password is not secure enough!")
-   public String getPassword()
-   {
-      return password;
-   }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-   public void setPasswordConfirm(String passwordConfirm)
-   {
-      validatePasswords(getPassword(), passwordConfirm);
-      this.passwordConfirm = passwordConfirm;
-   }
+    @NotEmpty
+    @Size(min = 6, max = 20)
+    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
+    // message="Password is not secure enough!")
+            public
+            String getPassword() {
+        return password;
+    }
 
-   public String getPasswordConfirm()
-   {
-      return passwordConfirm;
-   }
+    @Size(min = 0, max = 0)
+    public String getHumanField() {
+        return humanField;
+    }
 
-   public boolean isAgreedToTermsOfUse()
-   {
-      return agreedToTermsOfUse;
-   }
+    public void setHumanField(String humanField) {
+        this.humanField = humanField;
+    }
 
-   public void setAgreedToTermsOfUse(boolean agreedToTermsOfUse)
-   {
-      this.agreedToTermsOfUse = agreedToTermsOfUse;
-   }
+    public void validateUsername(String username) {
+        try {
+            entityManager
+                    .createQuery("from HAccount a where a.username = :username")
+                    .setParameter("username", username).getSingleResult();
+            valid = false;
+            FacesMessages.instance().addToControl("username",
+                    "This username is not available");
+        } catch (NoResultException e) {
+            // pass
+        }
+    }
 
-   public void validateUsername(String username)
-   {
-      try
-      {
-         entityManager.createQuery("from HAccount a where a.username = :username").setParameter("username", username).getSingleResult();
-         valid = false;
-         FacesMessages.instance().addToControl("username", "This username is not available");
-      }
-      catch (NoResultException e)
-      {
-         // pass
-      }
-   }
+    public void validateHumanField() {
+        if (humanField != null && humanField.length() > 0) {
+            valid = false;
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "You have filled a field that was not meant for humans.");
+            humanField = null;
+        }
 
-   public void validatePasswords(String p1, String p2)
-   {
+    }
 
-      if (p1 == null || !p1.equals(p2))
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("passwordConfirm", "Passwords do not match");
-      }
+    @End
+    public String register() {
+        valid = true;
+        validateUsername(getUsername());
+        validateHumanField();
 
-   }
+        if (!isValid()) {
+            return null;
+        }
+        final String user = getUsername();
+        final String pass = getPassword();
+        final String email = getEmail();
+        String key =
+                registerServiceImpl.register(user, pass, getPerson().getName(),
+                        email);
+        log.info("get register key:" + key);
 
-   public void validateTermsOfUse()
-   {
-      if (!isAgreedToTermsOfUse())
-      {
-         valid = false;
-         FacesMessages.instance().addToControl("agreedToTerms", "You must accept the Terms of Use");
-      }
-   }
+        String message =
+                emailServiceImpl.sendActivationEmail(
+                        EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user,
+                        email, key);
+        FacesMessages.instance().add(message);
 
-   @End
-   public String register()
-   {
-      valid = true;
-      validateUsername(getUsername());
-      validatePasswords(getPassword(), getPasswordConfirm());
-      validateTermsOfUse();
+        return "/home.xhtml";
+    }
 
-      if (!isValid())
-      {
-         return null;
-      }
-      final String user = getUsername();
-      final String pass = getPassword();
-      final String email = getEmail();
-      String key = registerServiceImpl.register(user, pass, getPerson().getName(), email);
-      log.info("get register key:" + key);
-
-      String message = emailServiceImpl.sendActivationEmail(EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user, email, key);
-      FacesMessages.instance().add(message);
-      
-      return "/home.xhtml";
-   }
-
-   @Begin(join = true)
-   public void setActivationKey(String activationKey)
-   {
-      this.activationKey = activationKey;
-   }
-
-   public boolean isValid()
-   {
-      return valid;
-   }
+    public boolean isValid() {
+        return valid;
+    }
 
 }
