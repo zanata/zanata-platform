@@ -1633,7 +1633,7 @@
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-arquillian-container-managed</artifactId>
-      <version>7.1.3.Final</version>
+      <version>${jboss.as.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -1671,11 +1671,19 @@
       <artifactId>jboss-as-controller</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Currently only needed for our override of Arquillian's
+    ManagementClient -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
     <dependency>
       <groupId>org.jboss.arquillian.extension</groupId>
       <artifactId>arquillian-seam2</artifactId>
-      <version>1.0.0.Alpha2</version>
+      <version>1.0.0.Beta1</version>
       <exclusions>
         <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
         <exclusion>
