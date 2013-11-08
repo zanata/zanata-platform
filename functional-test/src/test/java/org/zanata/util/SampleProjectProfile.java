@@ -116,39 +116,42 @@ public class SampleProjectProfile {
                         "b6d7044e9ee3b2447c28fb7c50d86d98", 1L);
         assignAccountRole(1L, "admin");
 
-        admin = makePerson(1L, "Administrator");
+        admin = makePerson(1L, "Administrator", "admin");
         assignAccountToPerson(adminAccount, admin);
 
         HAccount translatorAccount =
                 makeAccount("translator", "Fr5JHlcaEqKLSHjnBm4gXg==",
                         "d83882201764f7d339e97c4b087f0806", 2L);
         assignAccountRole(2L, "user");
-        translator = makePerson(2L, "translator");
+        translator = makePerson(2L, "translator", "translator");
         assignAccountToPerson(translatorAccount, translator);
 
         HAccount glossaristAccount =
                 makeAccount("glossarist", "fRIeiPDPlSMtHbBNoqDjNQ==",
                         "b1e3daa18e41c0ce79829e87ce66b201", 3L);
         assignAccountRole(3L, "glossarist");
-        glossarist = makePerson(3L, "glossarist");
+        glossarist = makePerson(3L, "glossarist", "glossarist");
         assignAccountToPerson(glossaristAccount, glossarist);
 
         HAccount gAdminAccount =
                 makeAccount("glossaryadmin", "/W0YpteXk+WtymQ7H84kPQ==",
                         "5a6a34d28d39ff90ea47402311f339d4", 4L);
         assignAccountRole(4L, "glossary-admin");
-        glossaryAdmin = makePerson(4L, "glossary-admin");
+        glossaryAdmin = makePerson(4L, "glossary-admin", "glossary-admin");
         assignAccountToPerson(gAdminAccount, glossaryAdmin);
     }
 
-    private HPerson makePerson(Long wantedIdValue, String nameValue) {
+    private HPerson makePerson(Long wantedIdValue, String nameValue,
+        String username) {
         return EntityMakerBuilder
-                .builder()
-                .addFieldOrPropertyMaker(HPerson.class, "name",
-                    FixedValueMaker.fix(nameValue))
-                .build()
-                .makeAndPersist(entityManager, HPerson.class,
-                    new FixIdCallback(HPerson.class, wantedIdValue));
+            .builder()
+            .addFieldOrPropertyMaker(HPerson.class, "name",
+                FixedValueMaker.fix(nameValue))
+            .addFieldOrPropertyMaker(HPerson.class, "email",
+                FixedValueMaker.fix(username + "@example.com"))
+            .build()
+            .makeAndPersist(entityManager, HPerson.class,
+                new FixIdCallback(HPerson.class, wantedIdValue));
     }
 
     private void assignAccountToPerson(HAccount account, HPerson hPerson) {
