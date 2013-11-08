@@ -20,7 +20,9 @@
  */
 package org.zanata.feature.glossary;
 
-import com.google.common.base.Joiner;
+import java.io.File;
+import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -33,9 +35,7 @@ import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.ClientPushWorkFlow;
-
-import java.io.File;
-import java.util.List;
+import com.google.common.base.Joiner;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/170111/">TCMS test

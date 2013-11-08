@@ -20,9 +20,10 @@
  */
 package org.zanata.page;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -33,10 +34,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 import org.zanata.util.PropertiesHolder;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
+import lombok.extern.slf4j.Slf4j;
 
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
@@ -97,8 +97,9 @@ public enum WebDriverFactory {
                         .withEnvironment(
                                 ImmutableMap
                                         .of("DISPLAY",
-                                                PropertiesHolder.properties
-                                                        .getProperty("webdriver.display")))
+                                            PropertiesHolder.properties
+                                                .getProperty(
+                                                    "webdriver.display")))
                         .withLogFile(
                                 new File(PropertiesHolder.properties
                                         .getProperty("webdriver.log"))).build();

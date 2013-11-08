@@ -20,12 +20,8 @@
  */
 package org.zanata.page;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -41,8 +37,11 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-
-import java.util.List;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar

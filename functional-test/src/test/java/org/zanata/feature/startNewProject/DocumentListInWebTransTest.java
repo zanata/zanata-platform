@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.startNewProject;
 
+import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -33,8 +35,6 @@ import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import java.util.List;
 
 /**
  * @author Patrick Huang <a

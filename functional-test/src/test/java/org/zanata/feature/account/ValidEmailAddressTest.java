@@ -33,15 +33,7 @@ import org.zanata.util.rfc2822.ValidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.BASIC_EMAIL;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.DOMAIN_LABEL_MAX_CHARACTERS;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.DOMAIN_MULTIPLE_LABELS;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.HYPHENATED_DOMAIN_LABEL;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.HYPHENATED_LOCALPART_LABEL;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_LABEL_MAX_CHARACTERS;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_MAX_LENGTH;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.LOCALPART_MULTIPLE_LABELS;
-import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.SPECIAL_CHARACTERS_LOCALPART;
+import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
 
 /**
  * @author Damian Jansen <a

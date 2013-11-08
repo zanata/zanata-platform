@@ -20,7 +20,8 @@
  */
 package org.zanata.feature.startNewProject;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
@@ -34,8 +35,7 @@ import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
