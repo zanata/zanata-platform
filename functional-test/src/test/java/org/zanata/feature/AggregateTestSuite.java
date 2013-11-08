@@ -28,15 +28,25 @@ import org.zanata.feature.dashboard.DashboardTestSuite;
 import org.zanata.feature.document.DocumentTestSuite;
 import org.zanata.feature.glossary.GlossaryTestSuite;
 import org.zanata.feature.googleopenid.GoogleOpenIDTestSuite;
+import org.zanata.feature.language.LanguageTestSuite;
+import org.zanata.feature.project.ProjectTestSuite;
 import org.zanata.feature.security.SecurityTestSuite;
 import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
 import org.zanata.feature.versionGroup.VersionGroupTestSuite;
 
+/**
+ * The top level of the feature test suite hierarchy. Lists the available test
+ * suites and can be extended for the purpose of running categorised test
+ * collections.
+ * @author Damian Jansen <a
+ *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ AccountTestSuite.class, AdministrationTestSuite.class,
         GlossaryTestSuite.class, SecurityTestSuite.class,
         CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
         DocumentTestSuite.class, DashboardTestSuite.class,
-        GoogleOpenIDTestSuite.class })
+        GoogleOpenIDTestSuite.class, ProjectTestSuite.class,
+        LanguageTestSuite.class})
 public class AggregateTestSuite {
 }

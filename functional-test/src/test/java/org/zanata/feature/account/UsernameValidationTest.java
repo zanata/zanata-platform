@@ -109,8 +109,11 @@ public class UsernameValidationTest {
                 "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
         RegisterPage registerPage =
                 new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage = registerPage.enterUserName(username).clickTerms();
-        assertThat("Validation errors are shown", registerPage.getErrors(),
+        registerPage = registerPage.enterUserName(username);
+        registerPage.defocus();
+
+        assertThat("Validation errors are shown",
+                registerPage.waitForFieldErrors(),
                 Matchers.hasItem(errorMsg));
     }
 }

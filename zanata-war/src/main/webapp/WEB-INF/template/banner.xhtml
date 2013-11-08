@@ -34,7 +34,7 @@
     </a>
   </s:fragment>
   <s:fragment rendered="#{not identity.loggedIn}">
-    <div class="header__login l--float-right">
+    <s:div styleClass="header__login l--float-right">
       <s:link id="register_link_internal_auth" view="/account/register.xhtml"
         value="#{messages['jsf.Signup']}"
         propagation="none" styleClass="is-hidden--s button"
@@ -59,7 +59,7 @@
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{messages['jsf.Login']}
       </h:outputLink>
-    </div>
+    </s:div>
   </s:fragment>
 
   <nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">

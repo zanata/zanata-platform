@@ -23,6 +23,7 @@ package org.zanata.feature.security;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -65,9 +66,10 @@ public class SecurityFullTest {
     public void signInFailure() {
         SignInPage signInPage =
                 new LoginWorkFlow().signInFailure("nosuchuser", "password");
+
         assertThat("Error message is shown",
-                signInPage.getNotificationMessage(), equalTo("Login failed"));
-        assertThat("User has failed to log in", !signInPage.hasLoggedIn());
+                signInPage.waitForFieldErrors(),
+                Matchers.hasItem("Login failed"));
     }
 
     @Test

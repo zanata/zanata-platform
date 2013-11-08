@@ -574,6 +574,10 @@ public class AppPresenterTest {
     @Test
     public void onProjectStatsUpdated() {
         projectStats = new ContainerTranslationStatistics();
+        projectStats.addStats(new TranslationStatistics(new TransUnitCount(0,
+            0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId().getLocaleId().getId()));
+        projectStats.addStats(new TranslationStatistics(new TransUnitWords(0,
+            0, 0), userWorkspace.getWorkspaceContext().getWorkspaceId().getLocaleId().getId()));
 
         presenter.setStatesForTest(projectStats, selectedDocumentStats, null,
                 null);

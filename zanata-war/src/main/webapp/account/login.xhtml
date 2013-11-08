@@ -7,25 +7,40 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template.xhtml">
+  template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{messages['jsf.Login']}</ui:define>
   <ui:define name="center_content">
+
+    <div class="header__logo-only">
+      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+        <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg"
+          alt="Zanata"/>
+      </s:link>
+    </div>
+
     <div class="g--centered">
       <div
-        class="g__item w--1-2 #{applicationConfiguration.multiAuth ? 'w--3-4-l w--2-3-m' : 'w--2-5-l w--1-4-h'}">
+        class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
-          <h1 class="l--push-all-0 beta">#{messages['jsf.Login']}</h1>
-
+          <a4j:outputPanel ajaxRendered="true" layout="block">
+            <h:messages id="messages" globalOnly="true"
+              styleClass="list--no-bullets"
+              errorClass="message--danger l--push-bottom-half"
+              infoClass="message--highlight l--push-bottom-half"
+              warnClass="message--warning l--push-bottom-half"
+              rendered="#{showGlobalMessages != 'false'}"/>
+          </a4j:outputPanel>
           <div class="g">
             <ui:remove>
               <!--Internal, JAAS and Kerberos Login form-->
             </ui:remove>
             <s:div
-              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--7-12 w--1-m' : ''}"
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
-                <h2 class="gamma heading--sub">with Zanata</h2>
+                <h2
+                  class="gamma heading--sub">#{messages['jsf.login.WithZanata.label']}</h2>
               </s:fragment>
               <s:fragment rendered="#{applicationConfiguration.kerberosAuth}">
                 <p class="txt--meta">
@@ -38,36 +53,40 @@
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
                 <div class="l--clearfix">
-                  <label for="username"
-                    class="l--float-left">#{messages['jsf.Username']}</label>
+                  <h:outputLabel for="username"
+                    styleClass="l--float-left">#{messages['jsf.Username']}</h:outputLabel>
                 </div>
                 <h:inputText id="username" value="#{loginAction.username}"
-                  tabindex="1"/>
+                  tabindex="2"/>
 
                 <div class="l--push-top-half l--clearfix">
-                  <label for="password"
-                    class="l--float-left">#{messages['jsf.Password']}</label>
+                  <h:outputLabel for="password"
+                    styleClass="l--float-left">#{messages['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="3"
+                      propagation="none" tabindex="4"
                       rendered="#{applicationConfiguration.internalAuth}">
                       #{messages['jsf.ForgotYourPassword']}
                     </s:link>
                   </span>
                 </div>
                 <h:inputSecret id="password" value="#{loginAction.password}"
-                  tabindex="2"/>
+                  tabindex="3"/>
 
-                <div class="l--push-top-half">
+                <div class="l--push-top-1">
                   <h:commandButton id="loginButton"
                     action="#{loginAction.login}"
                     value="#{messages['jsf.Login']}"
-                    styleClass="button--primary"/>
+                    styleClass="button--primary button--full"/>
+
                   <s:fragment
                     rendered="#{applicationConfiguration.internalAuth}">
-                    <span class="l--push-h-quarter">or</span>
-                    <s:link view="/account/register.xhtml"
-                      value="#{messages['jsf.Signup']}" />
+                    <div
+                      class="txt--align-center txt--align-center-s l--push-top-half">
+                      #{messages['jsf.login.DontHaveAnAccount.label']} <s:link
+                      view="/account/register.xhtml"
+                      value="#{messages['jsf.SignUp']}"/>
+                    </div>
                   </s:fragment>
                   <s:fragment
                     rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
@@ -81,11 +100,12 @@
               <!-- OpenId Login form-->
             </ui:remove>
             <s:div
-              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--5-12 w--1-m' : ''}"
+              styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
-                  <h2 class="gamma heading--sub">or</h2>
+                  <h2
+                    class="gamma heading--sub">#{messages['jsf.login.OrLoginUsing.label']}</h2>
                 </s:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
@@ -102,13 +122,13 @@
                   </li>
                   <li
                     class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
-                    <label for="openid">Open ID</label>
+                    <h:outputLabel for="openid">Open ID</h:outputLabel>
 
                     <div class="g--tighter">
-                      <div class="g__item w--2-3">
+                      <div class="g__item w--3-4 w--3-4-s">
                         <h:inputText id="openid" value="#{loginAction.openId}"/>
                       </div>
-                      <div class="g__item w--1-3">
+                      <div class="g__item w--1-4 w--1-4-s">
                         <h:commandButton
                           action="#{loginAction.openIdLogin('Generic')}"
                           styleClass="button--full" value="Go"/>
