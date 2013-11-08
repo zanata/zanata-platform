@@ -21,7 +21,6 @@
 package org.zanata.page.projects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
+import org.zanata.util.Constants;
 
 public class CreateVersionPage extends BasePage {
 
@@ -46,20 +46,7 @@ public class CreateVersionPage extends BasePage {
     private WebElement saveButton;
 
     private static final Map<String, String> projectTypeOptions =
-            new HashMap<String, String>();
-    static {
-        projectTypeOptions.put("File",
-                "File. For plain text, LibreOffice, InDesign.");
-        projectTypeOptions.put("Gettext",
-                "Gettext. For gettext software strings.");
-        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
-        projectTypeOptions.put("Properties",
-                "Properties. For Java properties files.");
-        projectTypeOptions.put("Utf8Properties",
-                "Utf8Properties. For UTF8-encoded Java properties.");
-        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
-        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
-    }
+            Constants.projectTypeOptions();
 
     public CreateVersionPage(final WebDriver driver) {
         super(driver);
