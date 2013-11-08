@@ -23,6 +23,20 @@
  */
 package org.jboss.as.arquillian.container;
 
+import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STARTING;
+import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STOPPING;
+import static org.jboss.as.controller.client.helpers.ClientConstants.DEPLOYMENT;
+import static org.jboss.as.controller.client.helpers.ClientConstants.FAILURE_DESCRIPTION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OP;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OP_ADDR;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OUTCOME;
+import static org.jboss.as.controller.client.helpers.ClientConstants.READ_ATTRIBUTE_OPERATION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.RECURSIVE;
+import static org.jboss.as.controller.client.helpers.ClientConstants.RESULT;
+import static org.jboss.as.controller.client.helpers.ClientConstants.SUBSYSTEM;
+import static org.jboss.as.controller.client.helpers.ClientConstants.SUCCESS;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,29 +75,16 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.logging.Logger;
 
-import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STARTING;
-import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STOPPING;
-import static org.jboss.as.controller.client.helpers.ClientConstants.DEPLOYMENT;
-import static org.jboss.as.controller.client.helpers.ClientConstants.FAILURE_DESCRIPTION;
-import static org.jboss.as.controller.client.helpers.ClientConstants.OP;
-import static org.jboss.as.controller.client.helpers.ClientConstants.OP_ADDR;
-import static org.jboss.as.controller.client.helpers.ClientConstants.OUTCOME;
-import static org.jboss.as.controller.client.helpers.ClientConstants.READ_ATTRIBUTE_OPERATION;
-import static org.jboss.as.controller.client.helpers.ClientConstants.READ_RESOURCE_OPERATION;
-import static org.jboss.as.controller.client.helpers.ClientConstants.RECURSIVE;
-import static org.jboss.as.controller.client.helpers.ClientConstants.RESULT;
-import static org.jboss.as.controller.client.helpers.ClientConstants.SUBSYSTEM;
-import static org.jboss.as.controller.client.helpers.ClientConstants.SUCCESS;
-
 /**
- * A helper class to join management related operations, like extract sub system ip/port (web/jmx)
- * and deployment introspection.
+ * A helper class to join management related operations, like extract sub system
+ * ip/port (web/jmx) and deployment introspection.
  *
  * @author <a href="aslak@redhat.com">Aslak Knutsen</a>
  */
 public class ManagementClient {
 
-    private static final Logger logger = Logger.getLogger(ManagementClient.class);
+    private static final Logger logger = Logger
+            .getLogger(ManagementClient.class);
 
     private static final String SUBDEPLOYMENT = "subdeployment";
 
@@ -108,7 +109,7 @@ public class ManagementClient {
     private JMXConnector connector;
 
     public ManagementClient(ModelControllerClient client,
-        final String mgmtAddress, final int managementPort) {
+            final String mgmtAddress, final int managementPort) {
         if (client == null) {
             throw new IllegalArgumentException("Client must be specified");
         }
@@ -117,9 +118,10 @@ public class ManagementClient {
         this.mgmtPort = managementPort;
     }
 
-    //-------------------------------------------------------------------------------------||
-    // Public API -------------------------------------------------------------------------||
-    //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Public API
+    // -------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
     public ModelControllerClient getControllerClient() {
         return client;
@@ -137,8 +139,10 @@ public class ManagementClient {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            ModelNode socketBinding = rootNode.get("subsystem").get("web").get("connector").get("http").get("socket-binding");
-            if(!socketBinding.isDefined()) {
+            ModelNode socketBinding =
+                    rootNode.get("subsystem").get("web").get("connector")
+                            .get("http").get("socket-binding");
+            if (!socketBinding.isDefined()) {
                 try {
                     // MODIFIED:
                     webUri = new URI("http://localhost:8080");
@@ -167,10 +171,12 @@ public class ManagementClient {
 
         ProtocolMetaData metaData = new ProtocolMetaData();
         metaData.addContext(new JMXContext(getConnection()));
-        HTTPContext context = new HTTPContext(webURI.getHost(), webURI.getPort());
+        HTTPContext context =
+                new HTTPContext(webURI.getHost(), webURI.getPort());
         metaData.addContext(context);
         try {
-            ModelNode deploymentNode = readResource(createDeploymentAddress(deploymentName), false);
+            ModelNode deploymentNode =
+                    readResource(createDeploymentAddress(deploymentName), false);
 
             if (isWebArchive(deploymentName)) {
                 extractWebArchiveContexts(context, deploymentNode);
@@ -193,8 +199,10 @@ public class ManagementClient {
 
             ModelNode rsp = client.execute(op);
             return SUCCESS.equals(rsp.get(OUTCOME).asString())
-                && !CONTROLLER_PROCESS_STATE_STARTING.equals(rsp.get(RESULT).asString())
-                && !CONTROLLER_PROCESS_STATE_STOPPING.equals(rsp.get(RESULT).asString());
+                    && !CONTROLLER_PROCESS_STATE_STARTING.equals(rsp
+                            .get(RESULT).asString())
+                    && !CONTROLLER_PROCESS_STATE_STOPPING.equals(rsp
+                            .get(RESULT).asString());
         } catch (Throwable ignored) {
             return false;
         }
@@ -210,7 +218,8 @@ public class ManagementClient {
                 try {
                     connector.close();
                 } catch (IOException e) {
-                    throw new RuntimeException("Could not close JMX connection", e);
+                    throw new RuntimeException(
+                            "Could not close JMX connection", e);
                 }
             }
         }
@@ -220,7 +229,8 @@ public class ManagementClient {
         rootNode = readResource(new ModelNode(), false);
     }
 
-    private static ModelNode defined(final ModelNode node, final String message) {
+    private static ModelNode
+            defined(final ModelNode node, final String message) {
         if (!node.isDefined())
             throw new IllegalStateException(message);
         return node;
@@ -228,36 +238,47 @@ public class ManagementClient {
 
     private URI getBinding(final String protocol, final String socketBinding) {
         try {
-            //TODO: resolve socket binding group correctly
-            final String socketBindingGroupName = rootNode.get("socket-binding-group").keys().iterator().next();
+            // TODO: resolve socket binding group correctly
+            final String socketBindingGroupName =
+                    rootNode.get("socket-binding-group").keys().iterator()
+                            .next();
 
             final ModelNode operation = new ModelNode();
-            operation.get(OP_ADDR).get("socket-binding-group").set(socketBindingGroupName);
+            operation.get(OP_ADDR).get("socket-binding-group")
+                    .set(socketBindingGroupName);
             operation.get(OP_ADDR).get("socket-binding").set(socketBinding);
             operation.get(OP).set(READ_ATTRIBUTE_OPERATION);
             operation.get(NAME).set("bound-address");
             String ip = executeForResult(operation).asString();
-            //it appears some system can return a binding with the zone specifier on the end
-            if(ip.contains(":") && ip.contains("%")) {
+            // it appears some system can return a binding with the zone
+            // specifier on the end
+            if (ip.contains(":") && ip.contains("%")) {
                 ip = ip.split("%")[0];
             }
 
             final ModelNode portOp = new ModelNode();
-            portOp.get(OP_ADDR).get("socket-binding-group").set(socketBindingGroupName);
+            portOp.get(OP_ADDR).get("socket-binding-group")
+                    .set(socketBindingGroupName);
             portOp.get(OP_ADDR).get("socket-binding").set(socketBinding);
             portOp.get(OP).set(READ_ATTRIBUTE_OPERATION);
             portOp.get(NAME).set("bound-port");
-            final int port = defined(executeForResult(portOp), socketBindingGroupName + " -> " + socketBinding + " -> bound-port is undefined").asInt();
+            final int port =
+                    defined(
+                            executeForResult(portOp),
+                            socketBindingGroupName + " -> " + socketBinding
+                                    + " -> bound-port is undefined").asInt();
 
-            return URI.create(protocol + "://" + NetworkUtils.formatPossibleIpv6Address(ip) + ":" + port);
+            return URI.create(protocol + "://"
+                    + NetworkUtils.formatPossibleIpv6Address(ip) + ":" + port);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    //-------------------------------------------------------------------------------------||
-    // Metadata Extraction Operations -----------------------------------------------------||
-    //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Metadata Extraction Operations
+    // -----------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
     private boolean isEnterpriseArchive(String deploymentName) {
         return deploymentName.endsWith(POSTFIX_EAR);
@@ -273,52 +294,62 @@ public class ManagementClient {
         return address;
     }
 
-    private void extractEnterpriseArchiveContexts(HTTPContext context, ModelNode deploymentNode) {
+    private void extractEnterpriseArchiveContexts(HTTPContext context,
+            ModelNode deploymentNode) {
         if (deploymentNode.hasDefined(SUBDEPLOYMENT)) {
-            for (ModelNode subdeployment : deploymentNode.get(SUBDEPLOYMENT).asList()) {
+            for (ModelNode subdeployment : deploymentNode.get(SUBDEPLOYMENT)
+                    .asList()) {
                 String deploymentName = subdeployment.keys().iterator().next();
                 if (isWebArchive(deploymentName)) {
-                    extractWebArchiveContexts(context, deploymentName, subdeployment.get(deploymentName));
+                    extractWebArchiveContexts(context, deploymentName,
+                            subdeployment.get(deploymentName));
                 }
             }
         }
     }
 
-    private void extractWebArchiveContexts(HTTPContext context, ModelNode deploymentNode) {
-        extractWebArchiveContexts(context, deploymentNode.get(NAME).asString(), deploymentNode);
+    private void extractWebArchiveContexts(HTTPContext context,
+            ModelNode deploymentNode) {
+        extractWebArchiveContexts(context, deploymentNode.get(NAME).asString(),
+                deploymentNode);
     }
 
-    private void extractWebArchiveContexts(HTTPContext context, String deploymentName, ModelNode deploymentNode) {
+    private void extractWebArchiveContexts(HTTPContext context,
+            String deploymentName, ModelNode deploymentNode) {
         // CHANGED :
         // Added the try block and the 4 subsequent lines and commented out
         // the lines below
 
-        //if (deploymentNode.hasDefined(SUBSYSTEM)) {
-        //    ModelNode subsystem = deploymentNode.get(SUBSYSTEM);
-        //    if (subsystem.hasDefined(WEB)) {
-        //        ModelNode webSubSystem = subsystem.get(WEB);
+        // if (deploymentNode.hasDefined(SUBSYSTEM)) {
+        // ModelNode subsystem = deploymentNode.get(SUBSYSTEM);
+        // if (subsystem.hasDefined(WEB)) {
+        // ModelNode webSubSystem = subsystem.get(WEB);
         try {
             ModelNode address = new ModelNode();
             address.add(DEPLOYMENT).add(DEPLOYMENT, deploymentNode.get(NAME))
-                .add(SUBSYSTEM, WEB);
+                    .add(SUBSYSTEM, WEB);
             ModelNode webSubSystem = readResource(address, true);
-            if (webSubSystem.isDefined() && webSubSystem.hasDefined("context-root")) {
-                final String contextName = webSubSystem.get("context-root").asString();
+            if (webSubSystem.isDefined()
+                    && webSubSystem.hasDefined("context-root")) {
+                final String contextName =
+                        webSubSystem.get("context-root").asString();
                 if (webSubSystem.hasDefined(SERVLET)) {
-                    for (final ModelNode servletNode : webSubSystem.get(SERVLET).asList()) {
+                    for (final ModelNode servletNode : webSubSystem
+                            .get(SERVLET).asList()) {
                         for (final String servletName : servletNode.keys()) {
-                            context.add(new Servlet(servletName, toContextName(contextName)));
+                            context.add(new Servlet(servletName,
+                                    toContextName(contextName)));
                         }
                     }
                 }
                 /*
-                 * This is a WebApp, it has some form of webcontext whether it has a
-                 * Servlet or not. AS7 does not expose jsp / default servlet in mgm api
+                 * This is a WebApp, it has some form of webcontext whether it
+                 * has a Servlet or not. AS7 does not expose jsp / default
+                 * servlet in mgm api
                  */
                 context.add(new Servlet("default", toContextName(contextName)));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -329,60 +360,68 @@ public class ManagementClient {
             correctedName = correctedName.substring(1);
         }
         if (correctedName.indexOf(".") != -1) {
-            correctedName = correctedName.substring(0,
-                correctedName.lastIndexOf("."));
+            correctedName =
+                    correctedName.substring(0, correctedName.lastIndexOf("."));
         }
         return correctedName;
     }
 
-    //-------------------------------------------------------------------------------------||
-    // Common Management API Operations ---------------------------------------------------||
-    //-------------------------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
+    // Common Management API Operations
+    // ---------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
 
     // MODIFIED:
-    private ModelNode readResource(ModelNode address, boolean recursive) throws Exception {
+    private ModelNode readResource(ModelNode address, boolean recursive)
+            throws Exception {
         final ModelNode operation = new ModelNode();
         operation.get(OP).set(READ_RESOURCE_OPERATION);
-        if(recursive) {
+        if (recursive) {
             operation.get(RECURSIVE).set("true");
         }
         operation.get(OP_ADDR).set(address);
 
         return executeForResult(operation);
     }
-    /*
-     * ORIGINAL:
-     private ModelNode readResource(ModelNode address) throws Exception {
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(READ_RESOURCE_OPERATION);
-        operation.get(RECURSIVE).set("true");
-        operation.get(OP_ADDR).set(address);
 
-        return executeForResult(operation);
-    }
+    /*
+     * ORIGINAL: private ModelNode readResource(ModelNode address) throws
+     * Exception { final ModelNode operation = new ModelNode();
+     * operation.get(OP).set(READ_RESOURCE_OPERATION);
+     * operation.get(RECURSIVE).set("true");
+     * operation.get(OP_ADDR).set(address);
+     *
+     * return executeForResult(operation); }
      */
 
-    private ModelNode executeForResult(final ModelNode operation) throws Exception {
+    private ModelNode executeForResult(final ModelNode operation)
+            throws Exception {
         final ModelNode result = client.execute(operation);
         checkSuccessful(result, operation);
         return result.get(RESULT);
     }
 
     private void checkSuccessful(final ModelNode result,
-        final ModelNode operation) throws UnSuccessfulOperationException {
+            final ModelNode operation) throws UnSuccessfulOperationException {
         if (!SUCCESS.equals(result.get(OUTCOME).asString())) {
-            logger.error("Operation " + operation + " did not succeed. Result was " + result);
+            logger.error("Operation " + operation
+                    + " did not succeed. Result was " + result);
             throw new UnSuccessfulOperationException(result.get(
-                FAILURE_DESCRIPTION).toString());
+                    FAILURE_DESCRIPTION).toString());
         }
     }
 
     private MBeanServerConnection getConnection() {
         if (connection == null) {
             try {
-                final HashMap<String, Object> env = new HashMap<String, Object>();
-                env.put(CallbackHandler.class.getName(), Authentication.getCallbackHandler());
-                connection = new MBeanConnectionProxy(JMXConnectorFactory.connect(getRemoteJMXURL(), env).getMBeanServerConnection());
+                final HashMap<String, Object> env =
+                        new HashMap<String, Object>();
+                env.put(CallbackHandler.class.getName(),
+                        Authentication.getCallbackHandler());
+                connection =
+                        new MBeanConnectionProxy(JMXConnectorFactory.connect(
+                                getRemoteJMXURL(), env)
+                                .getMBeanServerConnection());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -392,9 +431,12 @@ public class ManagementClient {
 
     public JMXServiceURL getRemoteJMXURL() {
         try {
-            return new JMXServiceURL("service:jmx:remoting-jmx://" + NetworkUtils.formatPossibleIpv6Address(mgmtAddress) + ":" + mgmtPort);
+            return new JMXServiceURL("service:jmx:remoting-jmx://"
+                    + NetworkUtils.formatPossibleIpv6Address(mgmtAddress) + ":"
+                    + mgmtPort);
         } catch (Exception e) {
-            throw new RuntimeException("Could not create JMXServiceURL:" + this, e);
+            throw new RuntimeException(
+                    "Could not create JMXServiceURL:" + this, e);
         }
     }
 
@@ -415,14 +457,19 @@ public class ManagementClient {
                     throw new RuntimeException(e);
                 }
             }
-            String socketBinding = rootNode.get("subsystem").get("remoting").get("connector").get("remoting-connector").get("socket-binding").asString();
+            String socketBinding =
+                    rootNode.get("subsystem").get("remoting").get("connector")
+                            .get("remoting-connector").get("socket-binding")
+                            .asString();
             ejbUri = getBinding("remote", socketBinding);
         }
         return ejbUri;
     }
-    //-------------------------------------------------------------------------------------||
-    // Helper classes ---------------------------------------------------------------------||
-    //-------------------------------------------------------------------------------------||
+
+    // -------------------------------------------------------------------------------------||
+    // Helper classes
+    // ---------------------------------------------------------------------||
+    // -------------------------------------------------------------------------------------||
     private static class UnSuccessfulOperationException extends Exception {
         private static final long serialVersionUID = 1L;
 
@@ -431,11 +478,12 @@ public class ManagementClient {
         }
     }
 
-    private class MBeanConnectionProxy implements MBeanServerConnection{
+    private class MBeanConnectionProxy implements MBeanServerConnection {
         private MBeanServerConnection connection;
 
         /**
-         * @param connection connection to delegate to
+         * @param connection
+         *            connection to delegate to
          */
         private MBeanConnectionProxy(MBeanServerConnection connection) {
             super();
@@ -443,45 +491,54 @@ public class ManagementClient {
         }
 
         @Override
-        public ObjectInstance createMBean(String className, ObjectName name) throws ReflectionException,
-            InstanceAlreadyExistsException, MBeanException, NotCompliantMBeanException,
-            IOException {
+        public ObjectInstance createMBean(String className, ObjectName name)
+                throws ReflectionException, InstanceAlreadyExistsException,
+                MBeanException, NotCompliantMBeanException, IOException {
             checkConnection();
             return connection.createMBean(className, name);
         }
 
         @Override
-        public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName) throws ReflectionException,
-            InstanceAlreadyExistsException, MBeanException, NotCompliantMBeanException,
-            InstanceNotFoundException, IOException {
+        public ObjectInstance createMBean(String className, ObjectName name,
+                ObjectName loaderName) throws ReflectionException,
+                InstanceAlreadyExistsException, MBeanException,
+                NotCompliantMBeanException, InstanceNotFoundException,
+                IOException {
             checkConnection();
             return connection.createMBean(className, name, loaderName);
         }
 
         @Override
-        public ObjectInstance createMBean(String className, ObjectName name, Object[] params, String[] signature)
-            throws ReflectionException, InstanceAlreadyExistsException, MBeanException,
-            NotCompliantMBeanException, IOException {
+        public ObjectInstance createMBean(String className, ObjectName name,
+                Object[] params, String[] signature)
+                throws ReflectionException, InstanceAlreadyExistsException,
+                MBeanException, NotCompliantMBeanException, IOException {
             checkConnection();
             return connection.createMBean(className, name, params, signature);
         }
 
         @Override
-        public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params,
-            String[] signature) throws ReflectionException, InstanceAlreadyExistsException,
-            MBeanException, NotCompliantMBeanException, InstanceNotFoundException, IOException {
+        public ObjectInstance createMBean(String className, ObjectName name,
+                ObjectName loaderName, Object[] params, String[] signature)
+                throws ReflectionException, InstanceAlreadyExistsException,
+                MBeanException, NotCompliantMBeanException,
+                InstanceNotFoundException, IOException {
             checkConnection();
-            return connection.createMBean(className, name, loaderName, params, signature);
+            return connection.createMBean(className, name, loaderName, params,
+                    signature);
         }
 
         @Override
-        public void unregisterMBean(ObjectName name) throws InstanceNotFoundException, MBeanRegistrationException, IOException {
+        public void unregisterMBean(ObjectName name)
+                throws InstanceNotFoundException, MBeanRegistrationException,
+                IOException {
             checkConnection();
             connection.unregisterMBean(name);
         }
 
         @Override
-        public ObjectInstance getObjectInstance(ObjectName name) throws InstanceNotFoundException, IOException {
+        public ObjectInstance getObjectInstance(ObjectName name)
+                throws InstanceNotFoundException, IOException {
             try {
                 return connection.getObjectInstance(name);
             } catch (IOException e) {
@@ -491,7 +548,8 @@ public class ManagementClient {
         }
 
         @Override
-        public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) throws IOException {
+        public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query)
+                throws IOException {
             try {
                 return connection.queryMBeans(name, query);
             } catch (IOException e) {
@@ -501,7 +559,8 @@ public class ManagementClient {
         }
 
         @Override
-        public Set<ObjectName> queryNames(ObjectName name, QueryExp query) throws IOException {
+        public Set<ObjectName> queryNames(ObjectName name, QueryExp query)
+                throws IOException {
             try {
                 return connection.queryNames(name, query);
             } catch (IOException e) {
@@ -531,8 +590,9 @@ public class ManagementClient {
         }
 
         @Override
-        public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException,
-            InstanceNotFoundException, ReflectionException, IOException {
+        public Object getAttribute(ObjectName name, String attribute)
+                throws MBeanException, AttributeNotFoundException,
+                InstanceNotFoundException, ReflectionException, IOException {
             try {
                 return connection.getAttribute(name, attribute);
             } catch (IOException e) {
@@ -542,8 +602,10 @@ public class ManagementClient {
         }
 
         @Override
-        public AttributeList getAttributes(ObjectName name, String[] attributes) throws InstanceNotFoundException,
-            ReflectionException, IOException {
+        public AttributeList
+                getAttributes(ObjectName name, String[] attributes)
+                        throws InstanceNotFoundException, ReflectionException,
+                        IOException {
             try {
                 return connection.getAttributes(name, attributes);
             } catch (IOException e) {
@@ -553,22 +615,27 @@ public class ManagementClient {
         }
 
         @Override
-        public void setAttribute(ObjectName name, Attribute attribute) throws InstanceNotFoundException,
-            AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException {
+        public void setAttribute(ObjectName name, Attribute attribute)
+                throws InstanceNotFoundException, AttributeNotFoundException,
+                InvalidAttributeValueException, MBeanException,
+                ReflectionException, IOException {
             checkConnection();
             connection.setAttribute(name, attribute);
         }
 
         @Override
-        public AttributeList setAttributes(ObjectName name, AttributeList attributes) throws InstanceNotFoundException,
-            ReflectionException, IOException {
+        public AttributeList setAttributes(ObjectName name,
+                AttributeList attributes) throws InstanceNotFoundException,
+                ReflectionException, IOException {
             checkConnection();
             return connection.setAttributes(name, attributes);
         }
 
         @Override
-        public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature)
-            throws InstanceNotFoundException, MBeanException, ReflectionException, IOException {
+        public Object invoke(ObjectName name, String operationName,
+                Object[] params, String[] signature)
+                throws InstanceNotFoundException, MBeanException,
+                ReflectionException, IOException {
             checkConnection();
             return connection.invoke(name, operationName, params, signature);
         }
@@ -594,13 +661,16 @@ public class ManagementClient {
         }
 
         @Override
-        public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter,
-            Object handback) throws InstanceNotFoundException, IOException {
+        public void addNotificationListener(ObjectName name,
+                NotificationListener listener, NotificationFilter filter,
+                Object handback) throws InstanceNotFoundException, IOException {
             try {
-                connection.addNotificationListener(name, listener, filter, handback);
+                connection.addNotificationListener(name, listener, filter,
+                        handback);
             } catch (IOException e) {
                 if (!checkConnection()) {
-                    connection.addNotificationListener(name, listener, filter, handback);
+                    connection.addNotificationListener(name, listener, filter,
+                            handback);
                 } else {
                     throw e;
                 }
@@ -608,13 +678,17 @@ public class ManagementClient {
         }
 
         @Override
-        public void addNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
-            throws InstanceNotFoundException, IOException {
+        public void
+                addNotificationListener(ObjectName name, ObjectName listener,
+                        NotificationFilter filter, Object handback)
+                        throws InstanceNotFoundException, IOException {
             try {
-                connection.addNotificationListener(name, listener, filter, handback);
+                connection.addNotificationListener(name, listener, filter,
+                        handback);
             } catch (IOException e) {
                 if (!checkConnection()) {
-                    connection.addNotificationListener(name, listener, filter, handback);
+                    connection.addNotificationListener(name, listener, filter,
+                            handback);
                 } else {
                     throw e;
                 }
@@ -622,8 +696,9 @@ public class ManagementClient {
         }
 
         @Override
-        public void removeNotificationListener(ObjectName name, ObjectName listener) throws InstanceNotFoundException,
-            ListenerNotFoundException, IOException {
+        public void removeNotificationListener(ObjectName name,
+                ObjectName listener) throws InstanceNotFoundException,
+                ListenerNotFoundException, IOException {
             try {
                 connection.removeNotificationListener(name, listener);
             } catch (IOException e) {
@@ -636,13 +711,18 @@ public class ManagementClient {
         }
 
         @Override
-        public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
-            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+        public void
+                removeNotificationListener(ObjectName name,
+                        ObjectName listener, NotificationFilter filter,
+                        Object handback) throws InstanceNotFoundException,
+                        ListenerNotFoundException, IOException {
             try {
-                connection.removeNotificationListener(name, listener, filter, handback);
+                connection.removeNotificationListener(name, listener, filter,
+                        handback);
             } catch (IOException e) {
                 if (!checkConnection()) {
-                    connection.removeNotificationListener(name, listener, filter, handback);
+                    connection.removeNotificationListener(name, listener,
+                            filter, handback);
                 } else {
                     throw e;
                 }
@@ -650,8 +730,10 @@ public class ManagementClient {
         }
 
         @Override
-        public void removeNotificationListener(ObjectName name, NotificationListener listener)
-            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+        public void removeNotificationListener(ObjectName name,
+                NotificationListener listener)
+                throws InstanceNotFoundException, ListenerNotFoundException,
+                IOException {
             try {
                 connection.removeNotificationListener(name, listener);
             } catch (IOException e) {
@@ -664,13 +746,17 @@ public class ManagementClient {
         }
 
         @Override
-        public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter,
-            Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+        public void removeNotificationListener(ObjectName name,
+                NotificationListener listener, NotificationFilter filter,
+                Object handback) throws InstanceNotFoundException,
+                ListenerNotFoundException, IOException {
             try {
-                connection.removeNotificationListener(name, listener, filter, handback);
+                connection.removeNotificationListener(name, listener, filter,
+                        handback);
             } catch (IOException e) {
                 if (!checkConnection()) {
-                    connection.removeNotificationListener(name, listener, filter, handback);
+                    connection.removeNotificationListener(name, listener,
+                            filter, handback);
                 } else {
                     throw e;
                 }
@@ -678,8 +764,9 @@ public class ManagementClient {
         }
 
         @Override
-        public MBeanInfo getMBeanInfo(ObjectName name) throws InstanceNotFoundException, IntrospectionException,
-            ReflectionException, IOException {
+        public MBeanInfo getMBeanInfo(ObjectName name)
+                throws InstanceNotFoundException, IntrospectionException,
+                ReflectionException, IOException {
             try {
                 return connection.getMBeanInfo(name);
             } catch (IOException e) {
@@ -689,7 +776,8 @@ public class ManagementClient {
         }
 
         @Override
-        public boolean isInstanceOf(ObjectName name, String className) throws InstanceNotFoundException, IOException {
+        public boolean isInstanceOf(ObjectName name, String className)
+                throws InstanceNotFoundException, IOException {
             try {
                 return connection.isInstanceOf(name, className);
             } catch (IOException e) {
@@ -698,11 +786,11 @@ public class ManagementClient {
             }
         }
 
-        private boolean checkConnection(){
-            try{
+        private boolean checkConnection() {
+            try {
                 this.connection.getMBeanCount();
                 return true;
-            }catch(IOException ioe){
+            } catch (IOException ioe) {
             }
             this.connection = this.getConnection();
             return false;
@@ -710,8 +798,10 @@ public class ManagementClient {
 
         private MBeanServerConnection getConnection() {
             try {
-                final HashMap<String, Object> env = new HashMap<String, Object>();
-                env.put(CallbackHandler.class.getName(), Authentication.getCallbackHandler());
+                final HashMap<String, Object> env =
+                        new HashMap<String, Object>();
+                env.put(CallbackHandler.class.getName(),
+                        Authentication.getCallbackHandler());
                 connector = JMXConnectorFactory.connect(getRemoteJMXURL(), env);
                 connection = connector.getMBeanServerConnection();
             } catch (IOException e) {

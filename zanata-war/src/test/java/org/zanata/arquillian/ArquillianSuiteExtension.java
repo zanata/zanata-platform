@@ -85,8 +85,8 @@ public class ArquillianSuiteExtension implements LoadableExtension {
                 public Void call() throws Exception {
                     for (Deployment d : suiteDeploymentScenario.deployments()) {
                         deploymentEvent.fire(new DeployDeployment(
-                            findContainer(registry,
-                                event.getDeployableContainer()), d));
+                                findContainer(registry,
+                                        event.getDeployableContainer()), d));
                     }
                     return null;
                 }
@@ -172,7 +172,8 @@ public class ArquillianSuiteExtension implements LoadableExtension {
                 return Class.forName(className);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(
-                        "Could not load defined deploymentClass: " + className, e);
+                        "Could not load defined deploymentClass: " + className,
+                        e);
             }
         }
     }
