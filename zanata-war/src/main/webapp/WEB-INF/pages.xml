@@ -67,7 +67,7 @@
   </page>
 
 
-  <!-- Landing page for Kerberos Authentication -->
+  <!-- Landing page for Kerberos ticket-based Authentication -->
   <page view-id="/account/klogin.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
@@ -96,7 +96,8 @@
     </navigation>
   </page>
 
-  <!-- Landing page for Internal and JAAS authentication -->
+  <!-- Landing page for Internal, JAAS and Kerberos form-based
+       authentication -->
   <page view-id="/account/login.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />

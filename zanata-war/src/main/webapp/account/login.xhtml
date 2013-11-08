@@ -32,12 +32,22 @@
               rendered="#{showGlobalMessages != 'false'}"/>
           </a4j:outputPanel>
           <div class="g">
+            <ui:remove>
+              <!--Internal, JAAS and Kerberos Login form-->
+            </ui:remove>
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
-              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
+              rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{messages['jsf.login.WithZanata.label']}</h2>
+              </s:fragment>
+              <s:fragment rendered="#{applicationConfiguration.kerberosAuth}">
+                <p class="txt--meta">
+                  <h:outputText escape="false"
+                    value="#{messages['jsf.auth.KerberosNotice.label']}">
+                  </h:outputText>
+                </p>
               </s:fragment>
 
               <h:form id="loginForm"
@@ -54,7 +64,8 @@
                     styleClass="l--float-left">#{messages['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
                     <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="4">
+                      propagation="none" tabindex="4"
+                      rendered="#{applicationConfiguration.internalAuth}">
                       #{messages['jsf.ForgotYourPassword']}
                     </s:link>
                   </span>
@@ -64,18 +75,30 @@
 
                 <div class="l--push-top-1">
                   <h:commandButton id="loginButton"
-                    action="#{loginAction.login}" value="Log In"
+                    action="#{loginAction.login}"
+                    value="#{messages['jsf.Login']}"
                     styleClass="button--primary button--full"/>
 
-                  <div
-                    class="txt--align-center txt--align-center-s l--push-top-half">
-                    #{messages['jsf.login.DontHaveAnAccount.label']} <s:link
-                    view="/account/register.xhtml"
-                    value="#{messages['jsf.SignUp']}"/>
-                  </div>
+                  <s:fragment
+                    rendered="#{applicationConfiguration.internalAuth}">
+                    <div
+                      class="txt--align-center txt--align-center-s l--push-top-half">
+                      #{messages['jsf.login.DontHaveAnAccount.label']} <s:link
+                      view="/account/register.xhtml"
+                      value="#{messages['jsf.SignUp']}"/>
+                    </div>
+                  </s:fragment>
+                  <s:fragment
+                    rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
+                    <s:link view="#{applicationConfiguration.registerPath}"
+                      value="#{messages['jsf.Signup']}" />
+                  </s:fragment>
                 </div>
               </h:form>
             </s:div>
+            <ui:remove>
+              <!-- OpenId Login form-->
+            </ui:remove>
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
