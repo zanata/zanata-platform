@@ -105,7 +105,7 @@ public class BasePage extends CorePage {
     public RegisterPage goToRegistration() {
         Preconditions
                 .checkArgument(!hasLoggedIn(),
-                    "User has logged in! You should sign out or delete cookie first in your test.");
+                        "User has logged in! You should sign out or delete cookie first in your test.");
 
         WebElement registerLink =
                 getDriver().findElement(By.id("register_link_internal_auth"));

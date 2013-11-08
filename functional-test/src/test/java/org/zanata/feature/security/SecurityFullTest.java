@@ -135,8 +135,8 @@ public class SecurityFullTest {
         assertThat(
                 resetPasswordPage.getErrors().get(0),
                 either(equalTo("size must be between 3 and 20")).or(
-                    equalTo("may not be empty")).or(
-                    equalTo("must match ^[a-z\\d_]{3,20}$")));
+                        equalTo("may not be empty")).or(
+                        equalTo("must match ^[a-z\\d_]{3,20}$")));
 
     }
 

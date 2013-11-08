@@ -60,7 +60,7 @@ public class DocumentListInWebTransTest {
         projectVersionPage =
                 new BasicWorkFlow()
                         .goToPage(String.format("iteration/view/plurals/%s",
-                            versionSlug), ProjectVersionPage.class);
+                                versionSlug), ProjectVersionPage.class);
         // ProjectPage projectPage =
         // homePage.goToProjects().goToProject(projectName);
         // projectVersionPage = projectPage.goToVersion(versionSlug);

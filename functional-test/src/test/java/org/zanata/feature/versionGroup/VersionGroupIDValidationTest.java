@@ -98,10 +98,8 @@ public class VersionGroupIDValidationTest {
     public void goToGroupPage() {
         if (groupPage == null) {
             groupPage =
-                    new LoginWorkFlow()
-                        .signIn("admin", "admin")
-                        .goToGroups()
-                        .createNewGroup();
+                    new LoginWorkFlow().signIn("admin", "admin").goToGroups()
+                            .createNewGroup();
         }
     }
 

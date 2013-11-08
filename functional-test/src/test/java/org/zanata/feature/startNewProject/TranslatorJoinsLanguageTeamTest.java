@@ -43,7 +43,6 @@ import org.zanata.workflow.LoginWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class TranslatorJoinsLanguageTeamTest {
-
     private DashboardPage dashboardPage;
     private ManageLanguagePage manageLanguagePage;
     private ManageLanguageTeamMemberPage manageLanguageTeamMemberPage;

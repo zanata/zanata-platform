@@ -73,8 +73,8 @@ public class EditTranslationMemoryTest {
     @After
     public void cleanUp() {
         EntityCleaner.deleteAll(getEntityManager(), Lists.<Class> newArrayList(
-            TransMemoryUnitVariant.class, TransMemoryUnit.class,
-            TransMemory.class));
+                TransMemoryUnitVariant.class, TransMemoryUnit.class,
+                TransMemory.class));
     }
 
     private EntityManager getEntityManager() {
@@ -93,7 +93,7 @@ public class EditTranslationMemoryTest {
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow().createTranslationMemory(
-                    newTMId, tmDescription);
+                        newTMId, tmDescription);
 
         assertThat("The success message is displayed",
                 translationMemoryPage.getNotificationMessage(),
@@ -162,18 +162,15 @@ public class EditTranslationMemoryTest {
         File importFile =
                 testFileGenerator
                         .generateTestFileWithContent(
-                            "importtmtest",
-                            ".tmx",
-                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                +
-                                "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                + "<tmx version=\"1.4\">\n"
-                                +
-                                "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                + "  <body>\n"
-                                +
-                                "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                + "  </body>\n" + "</tmx>");
+                                "importtmtest",
+                                ".tmx",
+                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                                        + "<tmx version=\"1.4\">\n"
+                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                                        + "  <body>\n"
+                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                                        + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -194,7 +191,7 @@ public class EditTranslationMemoryTest {
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow().createTranslationMemory(
-                    rejectTMId).clickImport(rejectTMId);
+                        rejectTMId).clickImport(rejectTMId);
         Alert uploadError = translationMemoryPage.expectFailedUpload();
 
         assertThat("Error is displayed", uploadError.getText(),
@@ -253,18 +250,15 @@ public class EditTranslationMemoryTest {
         File importFile =
                 testFileGenerator
                         .generateTestFileWithContent(
-                            "cleartmtest",
-                            ".tmx",
-                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                +
-                                "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                + "<tmx version=\"1.4\">\n"
-                                +
-                                "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                + "  <body>\n"
-                                +
-                                "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                + "  </body>\n" + "</tmx>");
+                                "cleartmtest",
+                                ".tmx",
+                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                                        + "<tmx version=\"1.4\">\n"
+                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                                        + "  <body>\n"
+                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                                        + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -291,18 +285,15 @@ public class EditTranslationMemoryTest {
         File importFile =
                 testFileGenerator
                         .generateTestFileWithContent(
-                            "cleartmtest",
-                            ".tmx",
-                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                +
-                                "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                + "<tmx version=\"1.4\">\n"
-                                +
-                                "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                + "  <body>\n"
-                                +
-                                "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                + "  </body>\n" + "</tmx>");
+                                "cleartmtest",
+                                ".tmx",
+                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                                        + "<tmx version=\"1.4\">\n"
+                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                                        + "  <body>\n"
+                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                                        + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -329,18 +320,15 @@ public class EditTranslationMemoryTest {
         File importFile =
                 testFileGenerator
                         .generateTestFileWithContent(
-                            "cleartmtest",
-                            ".tmx",
-                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                +
-                                "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                + "<tmx version=\"1.4\">\n"
-                                +
-                                "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                + "  <body>\n"
-                                +
-                                "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                + "  </body>\n" + "</tmx>");
+                                "cleartmtest",
+                                ".tmx",
+                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                                        + "<tmx version=\"1.4\">\n"
+                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                                        + "  <body>\n"
+                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                                        + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()

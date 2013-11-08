@@ -97,9 +97,8 @@ public enum WebDriverFactory {
                         .withEnvironment(
                                 ImmutableMap
                                         .of("DISPLAY",
-                                            PropertiesHolder.properties
-                                                .getProperty(
-                                                    "webdriver.display")))
+                                                PropertiesHolder.properties
+                                                        .getProperty("webdriver.display")))
                         .withLogFile(
                                 new File(PropertiesHolder.properties
                                         .getProperty("webdriver.log"))).build();

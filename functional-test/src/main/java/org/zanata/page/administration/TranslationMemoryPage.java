@@ -20,20 +20,17 @@
  */
 package org.zanata.page.administration;
 
-import java.util.List;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.zanata.page.BasePage;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.FindBy;
+import org.zanata.page.BasePage;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
+
+import java.util.List;
 
 /**
  * @author Damian Jansen <a
