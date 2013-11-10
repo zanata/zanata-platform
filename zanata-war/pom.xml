@@ -117,6 +117,8 @@
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
             <!-- used for annotations -->
             <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <!-- used for arquillian tests -->
+            <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
