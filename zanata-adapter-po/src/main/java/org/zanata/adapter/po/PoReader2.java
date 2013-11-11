@@ -110,6 +110,14 @@ public class PoReader2 {
                 // add the target content (msgstr)
                 TextFlowTarget tfTarget = new TextFlowTarget();
                 tfTarget.setResId(id);
+                String sourceContent;
+                if (message.isPlural()) {
+                    sourceContent =
+                            message.getMsgid() + '|' + message.getMsgidPlural();
+                } else {
+                    sourceContent = message.getMsgid();
+                }
+                tfTarget.setSourceHash(HashUtil.generateHash(sourceContent));
                 tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
                 tfTarget.setContents(getContents(message));
                 tfTarget.setState(getContentState(message));
