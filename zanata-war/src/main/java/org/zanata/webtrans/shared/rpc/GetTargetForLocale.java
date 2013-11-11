@@ -7,7 +7,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  *
  * @author Hannes Eskebaek
  */
-public class GetTargetForLocale extends 
+public class GetTargetForLocale extends
         AbstractWorkspaceAction<GetTargetForLocaleResult> {
     private static final long serialVersionUID = 1L;
     private TransUnitId sourceTransUnitId;

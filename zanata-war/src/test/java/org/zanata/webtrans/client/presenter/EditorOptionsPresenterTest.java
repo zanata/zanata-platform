@@ -96,7 +96,7 @@ public class EditorOptionsPresenterTest {
     public void onBindWillRegisterHandlers() {
         // Given: user workspace context is not readonly
         when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
-      
+
         when(changeReferenceLangPresenter.getDisplay())
                 .thenReturn(changeReferenceLangDisplay);
 

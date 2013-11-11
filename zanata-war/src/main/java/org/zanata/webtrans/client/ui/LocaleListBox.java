@@ -102,7 +102,7 @@ public class LocaleListBox extends ListBox {
      * @param locale the locale to be mapped with the item
      * @param index the index where it should be inserted
      */
-    public void insertItem(String item, HasDirection.Direction dir, 
+    public void insertItem(String item, HasDirection.Direction dir,
             Locale locale, int index) {
         super.insertItem(item, dir, locale.getDisplayName(), index);
         locales.add(index, locale);

@@ -36,8 +36,7 @@ import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 
 @Test(groups = {"jpa-tests"})
 @Slf4j
-public class GetLocaleListHandlerTest
-{
+public class GetLocaleListHandlerTest {
     private GetLocaleListHandler handler;
 
     @Mock
@@ -51,18 +50,17 @@ public class GetLocaleListHandlerTest
 
     @Mock
     private ProjectDAO projectDAO;
-    
+
     @Mock
     private HProjectIteration hProjectIteration;
-    
+
     @Mock
     private HProject hProject;
-    
+
     private GetLocaleList action;
 
     @BeforeMethod
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
         handler = SeamAutowire.instance()
@@ -73,11 +71,11 @@ public class GetLocaleListHandlerTest
                 .ignoreNonResolvable()
                 .autowire(GetLocaleListHandler.class);
         // @formatter:on
-        
+
         WorkspaceId workspaceId = TestFixture.workspaceId();
         action = new GetLocaleList();
         action.setWorkspaceId(workspaceId);
-        
+
         Set<HLocale> iterationLocales = new HashSet<HLocale>();
         iterationLocales.add(new HLocale(LocaleId.EN_US));
         iterationLocales.add(new HLocale(LocaleId.DE));
@@ -86,13 +84,13 @@ public class GetLocaleListHandlerTest
                 .thenReturn(iterationLocales);
         when(projectIterationDAO.getBySlug("project", "master"))
                 .thenReturn(hProjectIteration);
-        
+
         Set<HLocale> projectLocales = new HashSet<HLocale>();
         projectLocales.add(new HLocale(LocaleId.ES));
         when(hProject.getId()).thenReturn(1L);
         when(hProject.getCustomizedLocales()).thenReturn(projectLocales);
         when(projectDAO.getBySlug("project")).thenReturn(hProject);
-        
+
         List<HLocale> defaultLocales = new ArrayList<HLocale>();
         defaultLocales.add(new HLocale(LocaleId.FR));
         defaultLocales.add(new HLocale(LocaleId.EN));
@@ -102,15 +100,14 @@ public class GetLocaleListHandlerTest
     }
 
     @Test
-    public void testExecute() throws Exception
-    {        
+    public void testExecute() throws Exception {
         when(hProjectIteration.isOverrideLocales()).thenReturn(false);
         when(hProject.isOverrideLocales()).thenReturn(false);
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         assertThat(result.getLocales(), Matchers.hasSize(3));
-        
+
         assertThat(result.getLocales().get(0).getId().getLocaleId(),
                 Matchers.equalTo(LocaleId.FR));
         assertThat(result.getLocales().get(1).getId().getLocaleId(),
@@ -118,10 +115,9 @@ public class GetLocaleListHandlerTest
         assertThat(result.getLocales().get(2).getId().getLocaleId(),
                 Matchers.equalTo(LocaleId.DE));
     }
-    
+
     @Test
-    public void testExecuteWithOverriddenProjectLocales() throws Exception
-    {
+    public void testExecuteWithOverriddenProjectLocales() throws Exception {
         when(hProject.isOverrideLocales()).thenReturn(true);
 
         GetLocaleListResult result = handler.execute(action, null);
@@ -130,10 +126,9 @@ public class GetLocaleListHandlerTest
         assertThat(result.getLocales().get(0).getId().getLocaleId(),
                 Matchers.equalTo(LocaleId.ES));
     }
-    
+
     @Test
-    public void testExecuteWithOverriddenIterationLocales() throws Exception
-    {
+    public void testExecuteWithOverriddenIterationLocales() throws Exception {
         when(hProject.isOverrideLocales()).thenReturn(true);
         when(hProjectIteration.isOverrideLocales()).thenReturn(true);
 
@@ -144,11 +139,10 @@ public class GetLocaleListHandlerTest
                 Matchers.equalTo(LocaleId.DE));
         assertThat(result.getLocales().get(1).getId().getLocaleId(),
                 Matchers.equalTo(LocaleId.EN_US));
-    }    
+    }
 
     @Test
-    public void testRollback() throws Exception
-    {
+    public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }
 }

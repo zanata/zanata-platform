@@ -70,7 +70,7 @@ public class SourceContentsPresenter implements ClickHandler,
     private final Provider<SourceContentsDisplay> displayProvider;
     private final UserConfigHolder configHolder;
     private final CachingDispatchAsync dispatcher;
-   
+
     // states
     private List<SourceContentsDisplay> displayList = Collections.emptyList();
     private TransUnitId currentTransUnitId;

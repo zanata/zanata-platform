@@ -5,7 +5,7 @@ import org.zanata.webtrans.shared.model.Locale;
 
 public class ReferenceVisibleEvent extends
         GwtEvent<ReferenceVisibleEventHandler> {
-    
+
     /**
      * Handler type.
      */
@@ -22,7 +22,7 @@ public class ReferenceVisibleEvent extends
         }
         return TYPE;
     }
-    
+
     private Locale selectedLocale;
     private boolean isVisible;
 

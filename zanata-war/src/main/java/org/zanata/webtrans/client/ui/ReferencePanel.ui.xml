@@ -1,12 +1,12 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
-  <ui:with field="messages" 
+  <ui:with field="messages"
     type="org.zanata.webtrans.client.resources.TableEditorMessages" />
-	
-  <ui:style field="style" 
+
+  <ui:style field="style"
     type="org.zanata.webtrans.client.ui.ReferencePanel.Styles">
-    
+
     .container {
     width: 95%;
     table-layout: fixed;
@@ -23,7 +23,7 @@
     cursor: pointer;
     color: #686868;
     }
-    
+
     .header:hover {
     color: #686868;
     }
@@ -34,8 +34,8 @@
     white-space: nowrap;
     }
   </ui:style>
-    
-  <g:DisclosurePanel addStyleNames="{style.container} 
+
+  <g:DisclosurePanel addStyleNames="{style.container}
     fadeElement" ui:field="disclosurePanel">
     <g:customHeader>
       <g:Label ui:field="referenceLabel" styleName="{style.referenceLabel}" />

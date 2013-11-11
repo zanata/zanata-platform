@@ -22,7 +22,7 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 @Scope(ScopeType.STATELESS)
 @ActionHandlerFor(GetTargetForLocale.class)
 @Slf4j
-public class GetTargetForLocaleHandler extends 
+public class GetTargetForLocaleHandler extends
         AbstractActionHandler<GetTargetForLocale, GetTargetForLocaleResult> {
     @In
     private ZanataIdentity identity;
@@ -48,7 +48,7 @@ public class GetTargetForLocaleHandler extends
                         new TextFlowTargetId(hTextFlowTarget.getId()),
                         action.getLocale(), hTextFlowTarget.getContents().get(0),
                         displayName);
-                
+
                 return new GetTargetForLocaleResult(textFlowTarget);
             }
         } catch (Exception e) {

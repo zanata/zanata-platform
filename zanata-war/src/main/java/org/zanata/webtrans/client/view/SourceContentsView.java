@@ -58,7 +58,7 @@ public class SourceContentsView extends Composite implements
     private TransUnit transUnit;
     private final UserConfigHolder configHolder;
     private final History history;
-    private ReferencePanel referencePanel; 
+    private ReferencePanel referencePanel;
     private UiMessages messages;
 
     @Inject
@@ -185,7 +185,7 @@ public class SourceContentsView extends Composite implements
     public TransUnitId getId() {
         return transUnit.getId();
     }
-    
+
     @Override
     public void showReference(TextFlowTarget reference) {
         if (reference == null) {

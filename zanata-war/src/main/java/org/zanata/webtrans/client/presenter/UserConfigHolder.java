@@ -70,7 +70,7 @@ public class UserConfigHolder {
     public static final boolean DEFAULT_SPELL_CHECK = true;
     public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
     public static final boolean DEFAULT_SHOW_PANEL = true;
-    public static final String DEFAULT_SELECTED_REFERENCE = "none"; 
+    public static final String DEFAULT_SELECTED_REFERENCE = "none";
 
     public UserConfigHolder() {
         // default state
@@ -215,7 +215,7 @@ public class UserConfigHolder {
         state = new ConfigurationState(state);
         state.showTMPanel = show;
     }
-   
+
     public void setSelectedReferenceForSourceLang(String selected) {
         state = new ConfigurationState(state);
         state.selectedReferenceForSourceLang = selected;
@@ -370,7 +370,7 @@ public class UserConfigHolder {
         public DiffMode getTransMemoryDisplayMode() {
             return transMemoryDisplayMode;
         }
-      
+
         public String getSelectedReferenceForSourceLang() {
             return selectedReferenceForSourceLang;
         }
