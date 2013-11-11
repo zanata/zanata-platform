@@ -21,6 +21,7 @@
 package org.zanata.page.projects;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -79,5 +80,49 @@ public class ProjectsPage extends BasePage {
 
         return WebElementUtil.getColumnContents(getDriver(), projectTableBy,
                 PROJECT_NAME_COLUMN);
+    }
+
+    /**
+     * Wait for a project name to be shown or hidden in the list.
+     * The list may take several seconds to reload.
+     * @param projectName name of the desired project
+     * @param visible is or is not visible
+     */
+    public void waitForProjectVisibility(final String projectName,
+                                            final boolean visible) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getProjectNamesOnCurrentPage()
+                        .contains(projectName) == visible;
+            }
+        });
+    }
+
+    public ProjectsPage setActiveFilterEnabled(boolean enabled) {
+        WebElement activeCheckbox = getDriver()
+                .findElement(By.xpath("//*[@title='Filter active projects']"));
+        if (activeCheckbox.isSelected() != enabled) {
+            activeCheckbox.click();
+        }
+        return new ProjectsPage(getDriver());
+    }
+
+    public ProjectsPage setReadOnlyFilterEnabled(final boolean enabled) {
+        WebElement readOnlyCheckbox = getDriver().findElement(
+                By.xpath("//*[@title='Filter read-only projects']"));
+        if (readOnlyCheckbox.isSelected() != enabled) {
+            readOnlyCheckbox.click();
+        }
+        return new ProjectsPage(getDriver());
+    }
+
+    public ProjectsPage setObsoleteFilterEnabled(boolean enabled) {
+        WebElement readOnlyCheckbox = getDriver().findElement(
+                By.xpath("//*[@title='Filter obsolete projects']"));
+        if (readOnlyCheckbox.isSelected() != enabled) {
+            readOnlyCheckbox.click();
+        }
+        return new ProjectsPage(getDriver());
     }
 }
