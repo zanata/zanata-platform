@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -628,6 +629,7 @@ public class TranslationServiceImpl implements TranslationService {
 
                         for (TextFlowTarget incomingTarget : batch) {
                             String resId = incomingTarget.getResId();
+                            String sourceHash = incomingTarget.getSourceHash();
                             HTextFlow textFlow =
                                     textFlowDAO.getById(document, resId);
                             if (textFlow == null) {
@@ -640,6 +642,19 @@ public class TranslationServiceImpl implements TranslationService {
                                 log.warn(
                                         "skipping TextFlowTarget with unknown resId: {}",
                                         resId);
+                            } else if (sourceHash != null && !sourceHash.equals(textFlow.getContentHash())) {
+                                String warning = MessageFormat.format(
+                                        "TextFlowTarget {0} may be obsolete; "
+                                                + "associated source hash: {1}; "
+                                                + "expected hash is {2} for source: {3}",
+                                                resId,
+                                                sourceHash,
+                                                textFlow.getContentHash(),
+                                                textFlow.getContents());
+                                warnings.add(warning);
+                                log.warn(
+                                        "skipping TextFlowTarget {} with unknown sourceHash: {}",
+                                        resId, sourceHash);
                             } else {
                                 String validationMessage =
                                         validateTranslations(
