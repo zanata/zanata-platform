@@ -20,9 +20,9 @@ import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 
 @XmlType(name = "textFlowTargetType", propOrder = { "description",
-        "translator", "content", "contents", "extensions" })
+        "translator", "content", "contents", "sourceHash", "extensions" })
 @JsonPropertyOrder({ "resId", "state", "translator", "content", "contents",
-        "extensions" })
+        "sourceHash", "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TextFlowTarget extends TextContainer implements Serializable,
@@ -36,6 +36,7 @@ public class TextFlowTarget extends TextContainer implements Serializable,
     private ExtensionSet<TextFlowTargetExtension> extensions;
     private Integer revision;
     private Integer textFlowRevision;
+    private String sourceHash;
 
     public TextFlowTarget() {
     }
@@ -106,6 +107,25 @@ public class TextFlowTarget extends TextContainer implements Serializable,
 
     public void setResId(String resId) {
         this.resId = resId;
+    }
+
+    /**
+     * Optional MD5 hash of the source text.
+     * @return the sourceHash
+     */
+    public String getSourceHash() {
+        return sourceHash;
+    }
+
+    /**
+     * Optional MD5 hash of the source text, which the server may use to check
+     * for outdated translations upon push.  If the source text has multiple
+     * parts (eg msgid and msgid_plural), please concatenate them with '|'
+     * before hashing.
+     * @param hash
+     */
+    public void setSourceHash(String hash) {
+        this.sourceHash = hash;
     }
 
     @Override
