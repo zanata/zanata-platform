@@ -27,10 +27,12 @@
 
   <module name="TreeWalker">
     <module name="LeftCurly"/>
+<!--
     <module name="LineLength">
       <property name="severity"
         value="warning"/>
     </module>
+-->
   </module>
 
   <!-- Miscellaneous other checks.                   -->
