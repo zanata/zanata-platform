@@ -6,16 +6,16 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.log.Log;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -33,15 +33,13 @@ import org.zanata.model.HLocale;
  */
 @Name("essentialDataCreator")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 @Install(false)
 public class EssentialDataCreator {
 
     // You can listen to this event during startup
     public static final String ESSENTIAL_DATA_CREATED_EVENT =
             "EssentialDataCreator.complete";
-
-    @Logger
-    private static Log log;
 
     @In
     private EntityManager entityManager;

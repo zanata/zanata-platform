@@ -24,10 +24,8 @@ import java.io.Serializable;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -47,9 +45,6 @@ public class AdminStatsAction implements Serializable {
     *
     */
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    Log log;
 
     @In
     ProjectDAO projectDAO;

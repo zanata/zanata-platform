@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.ResourceBundle;
 import org.jboss.seam.faces.Renderer;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.ApplicationConfiguration;
@@ -45,12 +45,11 @@ import org.zanata.service.EmailService;
  */
 @Name("emailServiceImpl")
 @Scope(ScopeType.STATELESS)
+@Slf4j
+// TODO refactor class to minimise duplicate code
 public class EmailServiceImpl implements EmailService {
     @In(create = true)
     private Renderer renderer;
-
-    @Logger
-    private Log log;
 
     @In
     private IdentityManager identityManager;
@@ -78,7 +77,7 @@ public class EmailServiceImpl implements EmailService {
         renderer.render(emailTemplate);
 
         log.info(
-                "Sent activation account email: toName '{0}', toEmailAddress '{1}'",
+                "Sent activation account email: toName '{}', toEmailAddress '{}'",
                 toName, toEmailAddr);
         return "#{messages['jsf.Account.ActivationMessage']}";
     }
@@ -96,7 +95,7 @@ public class EmailServiceImpl implements EmailService {
                 renderer.render(emailTemplate);
             }
             log.info(
-                    "Sent language team coordinator email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}', language '{5}'",
+                    "Sent language team coordinator email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}', language '{}'",
                     fromName, fromLoginName, replyEmail, subject, message,
                     language);
             return "#{messages['jsf.email.coordinator.SentNotification']}";
@@ -119,7 +118,7 @@ public class EmailServiceImpl implements EmailService {
                 renderer.render(emailTemplate);
             }
             log.info(
-                    "Sent version group maintainer email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
+                    "Sent version group maintainer email: fromName '{}', fromLoginName '1}', replyEmail '{}', subject '{}', message '{}'",
                     fromName, fromLoginName, replyEmail, subject, message);
             return "#{messages['jsf.email.group.maintainer.SentNotification']}";
         } else {
@@ -143,7 +142,7 @@ public class EmailServiceImpl implements EmailService {
                 renderer.render(emailTemplate);
             }
             log.info(
-                    "Sent server admin email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
+                    "Sent server admin email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                     fromName, fromLoginName, replyEmail, subject, message);
             return "#{messages['jsf.email.admin.SentNotification']}";
         } else {
@@ -168,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         log.info(
-                "Sent admin users email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
+                "Sent admin users email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, message);
         return "#{messages['jsf.email.admin.SentNotification']}";
     }

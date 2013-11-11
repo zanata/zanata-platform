@@ -22,10 +22,10 @@ package org.zanata.job;
 
 import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.log.Log;
 import org.zanata.service.FileSystemService;
 
 /**
@@ -35,10 +35,8 @@ import org.zanata.service.FileSystemService;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("downloadFileCleanupJob")
+@Slf4j
 public class DownloadFileCleanupJob extends ZanataSchedulableJob {
-    @Logger
-    private Log log;
-
     @In
     private FileSystemService fileSystemServiceImpl;
 
@@ -54,7 +52,7 @@ public class DownloadFileCleanupJob extends ZanataSchedulableJob {
 
         // Remove all files that match the filter
         for (File f : toRemove) {
-            log.debug("Removing file {0}", f.getName());
+            log.debug("Removing file {}", f.getName());
             f.delete();
         }
     }

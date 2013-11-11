@@ -8,19 +8,14 @@ import java.util.Map;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 
 @Name("breadcrumbs")
 @AutoCreate
 @Scope(ScopeType.PAGE)
 public class Breadcrumbs implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    Log log;
 
     private List<Breadcrumb> locations;
 

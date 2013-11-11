@@ -22,11 +22,11 @@ package org.zanata.job;
 
 import java.util.Date;
 
-import org.jboss.seam.annotations.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.async.Asynchronous;
 import org.jboss.seam.annotations.async.IntervalCron;
 import org.jboss.seam.async.QuartzTriggerHandle;
-import org.jboss.seam.log.Log;
 
 /**
  * Base class for all Zanata jobs. Provides minor set pieces for jobs to be ran
@@ -35,10 +35,8 @@ import org.jboss.seam.log.Log;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public abstract class ZanataSchedulableJob {
-
-    @Logger
-    private Log log;
 
     public String getName() {
         return this.getClass().getName();
@@ -47,19 +45,19 @@ public abstract class ZanataSchedulableJob {
     @Asynchronous
     public QuartzTriggerHandle startJob(@IntervalCron String cron) {
         final Date startTime = new Date();
-        log.info("Running Job {0} ({1})", this.getName(), startTime);
+        log.info("Running Job {} ({})", this.getName(), startTime);
 
         try {
             this.execute();
         } catch (Exception e) {
-            log.error("Unexpected error while running Job {0}", e,
+            log.error("Unexpected error while running Job {}", e,
                     this.getName());
         }
 
         final Date endTime = new Date();
         final long durationInSecs =
                 (startTime.getTime() - endTime.getTime()) / 1000;
-        log.info("Finished running Job {0} ({1}). Total Duration {2} seconds",
+        log.info("Finished running Job {} ({}). Total Duration {} seconds",
                 this.getName(), new Date(), durationInSecs);
 
         return null;

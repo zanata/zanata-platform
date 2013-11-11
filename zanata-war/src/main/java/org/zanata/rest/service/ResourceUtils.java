@@ -29,6 +29,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -37,8 +39,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -76,6 +76,7 @@ import com.google.common.base.Optional;
 
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class ResourceUtils {
     /**
      * Newline character used for multi-line comments
@@ -106,8 +107,6 @@ public class ResourceUtils {
             .compile("nplurals=[0-9]+");
     private static final String PLURALS_FILE = "pluralforms.properties";
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
-
-    private static final Log log = Logging.getLog(ResourceUtils.class);
 
     // private static int MAX_TARGET_CONTENTS = 6;
 
@@ -176,7 +175,7 @@ public class ResourceUtils {
                             targ.setVersionNum(targ.getVersionNum() + 1);
                         }
                     }
-                    log.debug("TextFlow with id {0} has changed", tf.getId());
+                    log.debug("TextFlow with id {} has changed", tf.getId());
                 }
             } else {
                 textFlow = new HTextFlow();
@@ -188,7 +187,7 @@ public class ResourceUtils {
                 to.getAllTextFlows().put(textFlow.getResId(), textFlow);
                 to.getTextFlows().add(textFlow);
                 entityManager.persist(textFlow);
-                log.debug("TextFlow with id {0} is new", tf.getId());
+                log.debug("TextFlow with id {} is new", tf.getId());
             }
             count++;
 
@@ -202,7 +201,7 @@ public class ResourceUtils {
             HTextFlow textFlow = to.getAllTextFlows().get(id);
             if (!textFlow.isObsolete()) {
                 changed = true;
-                log.debug("TextFlow with id {0} is now obsolete", id);
+                log.debug("TextFlow with id {} is now obsolete", id);
                 textFlow.setRevision(to.getRevision());
                 textFlow.setObsolete(true);
             }
@@ -329,7 +328,7 @@ public class ResourceUtils {
             PoTargetHeader fromTargetHeader =
                     from.findByType(PoTargetHeader.class);
             if (fromTargetHeader != null) {
-                log.debug("found PO header for locale: {0}", locale);
+                log.debug("found PO header for locale: {}", locale);
                 try {
                     changed =
                             tryGetOrCreateTargetHeader(doc, locale, mergeType,
@@ -402,7 +401,7 @@ public class ResourceUtils {
                     changed = true;
                     hComment.setComment(comment.getValue());
                     to.setComment(hComment);
-                    log.debug("set comment:{0}", comment.getValue());
+                    log.debug("set comment:{}", comment.getValue());
                 }
             }
         }
@@ -997,7 +996,7 @@ public class ResourceUtils {
                 pluralForms = getPluralForms(localeId);
             }
             if (pluralForms == null) {
-                log.error("No plural forms for locale {0} found in {1}",
+                log.error("No plural forms for locale {} found in {}",
                         localeId, PLURALS_FILE);
                 throw new RuntimeException(
                         "No plural forms found; contact admin. Locale: "
@@ -1141,7 +1140,7 @@ public class ResourceUtils {
                 && from.getPotEntryData() != null) {
             PotEntryHeader header = new PotEntryHeader();
             transferToPotEntryHeader(from.getPotEntryData(), header);
-            log.debug("set header:{0}", from.getPotEntryData());
+            log.debug("set header:{}", from.getPotEntryData());
             to.add(header);
 
         }
@@ -1150,7 +1149,7 @@ public class ResourceUtils {
                 && from.getComment() != null) {
             SimpleComment comment =
                     new SimpleComment(from.getComment().getComment());
-            log.debug("set comment:{0}", from.getComment().getComment());
+            log.debug("set comment:{}", from.getComment().getComment());
             to.add(comment);
         }
 

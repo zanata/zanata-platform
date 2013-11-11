@@ -10,11 +10,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
@@ -27,9 +25,6 @@ import org.zanata.model.HAccountResetPasswordKey;
 public class PasswordResetAction implements Serializable {
 
     private static final long serialVersionUID = -3966625589007754411L;
-
-    @Logger
-    Log log;
 
     @In
     private EntityManager entityManager;

@@ -4,6 +4,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.core.ResourceMethod;
@@ -11,12 +13,11 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.security.ZanataIdentity;
 
 @SecurityPrecedence
 @ServerInterceptor
+@Slf4j
 public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
 
     public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
@@ -27,7 +28,6 @@ public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
             preProcess(HttpRequest request, ResourceMethod method)
                     throws Failure, WebApplicationException {
 
-        Log log = Logging.getLog(ZanataRestSecurityInterceptor.class);
         String username =
                 request.getHttpHeaders().getRequestHeaders()
                         .getFirst(X_AUTH_USER_HEADER);
@@ -41,7 +41,7 @@ public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
             ZanataIdentity.instance().tryLogin();
             if (!ZanataIdentity.instance().isLoggedIn()) {
                 log.info(
-                        "Failed attempt to authenticate REST request for user {0}",
+                        "Failed attempt to authenticate REST request for user {}",
                         username);
                 return ServerResponse.copyIfNotServerResponse(Response.status(
                         Status.UNAUTHORIZED).build());

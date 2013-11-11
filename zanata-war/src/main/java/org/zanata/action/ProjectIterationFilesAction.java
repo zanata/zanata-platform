@@ -41,16 +41,15 @@ import javax.validation.ConstraintViolationException;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Hex;
 import org.zanata.annotation.CachedMethods;
@@ -98,6 +97,7 @@ import com.google.common.base.Strings;
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
+@Slf4j
 public class ProjectIterationFilesAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -107,9 +107,6 @@ public class ProjectIterationFilesAction implements Serializable {
     private String iterationSlug;
 
     private String localeId;
-
-    @Logger
-    private Log log;
 
     @In
     private ZanataIdentity identity;
@@ -350,7 +347,7 @@ public class ProjectIterationFilesAction implements Serializable {
                     translationFileServiceImpl.persistToTempFile(fileContents);
             md5hash = md.digest();
         } catch (ZanataServiceException e) {
-            log.error("Failed writing temp file for document {0}", e,
+            log.error("Failed writing temp file for document {}", e,
                     documentFileUpload.getDocId());
             FacesMessages.instance().add(Severity.ERROR,
                     "Error saving uploaded document {0} to server.", fileName);

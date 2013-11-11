@@ -24,10 +24,11 @@ import java.io.Serializable;
 
 import javax.faces.model.DataModel;
 
-import org.jboss.seam.log.LogProvider;
-import org.jboss.seam.log.Logging;
+import lombok.extern.slf4j.Slf4j;
+
 import org.zanata.exception.ZanataServiceException;
 
+@Slf4j
 public abstract class PagedListDataModel<E> extends DataModel implements
         Serializable {
     private static final long serialVersionUID = 1L;
@@ -35,8 +36,6 @@ public abstract class PagedListDataModel<E> extends DataModel implements
     private int pageSize = DEFAULT_PAGESIZE;
     private int rowIndex;
     private DataPage<E> page;
-    protected static final LogProvider log = Logging
-            .getLogProvider(PagedListDataModel.class);
 
     public PagedListDataModel() {
         super();
