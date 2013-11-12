@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
+import org.zanata.rest.client.ICopyTransResource;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
@@ -99,8 +100,8 @@ public class CopyTransRestTest extends ZanataRestTest {
 
     @Test
     public void startCopyTrans() {
-        CopyTransResource copyTransResource =
-                getClientRequestFactory().createProxy(CopyTransResource.class);
+        ICopyTransResource copyTransResource =
+                getClientRequestFactory().createProxy(ICopyTransResource.class);
 
         copyTransResource.startCopyTrans("sample-project", "1.0",
                 "my/path/document.txt");
@@ -110,8 +111,8 @@ public class CopyTransRestTest extends ZanataRestTest {
 
     @Test
     public void startCopyTransAndCheckStatus() {
-        CopyTransResource copyTransResource =
-                getClientRequestFactory().createProxy(CopyTransResource.class);
+        ICopyTransResource copyTransResource =
+                getClientRequestFactory().createProxy(ICopyTransResource.class);
 
         copyTransResource.startCopyTrans("sample-project", "1.0",
                 "my/path/document.txt");
@@ -126,8 +127,8 @@ public class CopyTransRestTest extends ZanataRestTest {
 
     @Test
     public void copyTransForUnknownDocument() {
-        CopyTransResource copyTransResource =
-                getClientRequestFactory().createProxy(CopyTransResource.class);
+        ICopyTransResource copyTransResource =
+                getClientRequestFactory().createProxy(ICopyTransResource.class);
 
         try {
             copyTransResource.startCopyTrans("sample-project", "1.0",
@@ -142,8 +143,8 @@ public class CopyTransRestTest extends ZanataRestTest {
 
     @Test
     public void unauthorizedStartCopyTrans() {
-        CopyTransResource copyTransResource =
-                getClientRequestFactory().createProxy(CopyTransResource.class);
+        ICopyTransResource copyTransResource =
+                getClientRequestFactory().createProxy(ICopyTransResource.class);
         doThrow(new AuthorizationException("Expected Exception")).when(
                 mockIdentity).checkPermission(eq("copy-trans"), anyVararg());
 
@@ -160,8 +161,8 @@ public class CopyTransRestTest extends ZanataRestTest {
 
     @Test
     public void unauthorizedCopyTransStatus() {
-        CopyTransResource copyTransResource =
-                getClientRequestFactory().createProxy(CopyTransResource.class);
+        ICopyTransResource copyTransResource =
+                getClientRequestFactory().createProxy(ICopyTransResource.class);
         doThrow(new AuthorizationException("Expected Exception")).when(
                 mockIdentity).checkPermission(eq("copy-trans"), anyVararg());
 

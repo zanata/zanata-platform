@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.Path;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.action.CopyTransManager;
@@ -35,7 +37,7 @@ import org.zanata.security.ZanataIdentity;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransResourceService")
-// @Path(CopyTransResource.SERVICE_PATH)
+@Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource {
     @In
     private ZanataIdentity identity;

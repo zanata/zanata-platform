@@ -29,7 +29,7 @@ import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
-@Path(GlossaryService.SERVICE_PATH)
+@Path(GlossaryResource.SERVICE_PATH)
 @Slf4j
 @Transactional
 public class GlossaryService implements GlossaryResource {

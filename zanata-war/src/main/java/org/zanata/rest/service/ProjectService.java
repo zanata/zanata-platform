@@ -40,7 +40,7 @@ import org.zanata.rest.dto.ProjectIteration;
 import com.google.common.base.Objects;
 
 @Name("projectService")
-@Path(ProjectService.SERVICE_PATH)
+@Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
     /** Project Identifier. */
