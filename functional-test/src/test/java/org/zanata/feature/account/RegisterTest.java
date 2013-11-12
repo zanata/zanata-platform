@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -35,6 +36,7 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.utility.HomePage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -44,6 +46,9 @@ import org.zanata.workflow.BasicWorkFlow;
  */
 @Category(DetailedTest.class)
 public class RegisterTest {
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     Map<String, String> fields;
     private HomePage homePage;
 

@@ -29,7 +29,7 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -47,7 +47,7 @@ import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
 public class CreateProjectTest {
 
     @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    public static AddUsersRule addUsersRule = new AddUsersRule();
 
     @Test
     @Category(BasicAcceptanceTest.class)
