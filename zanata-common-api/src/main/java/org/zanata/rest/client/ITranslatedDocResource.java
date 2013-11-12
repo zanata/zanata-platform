@@ -44,6 +44,8 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 /**
  * Client Interface for the Translation Resources service.
  */
+//TODO remove the template parameters from TranslatedDocResource's Path
+//@Path(TranslatedDocResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ITranslatedDocResource extends TranslatedDocResource {

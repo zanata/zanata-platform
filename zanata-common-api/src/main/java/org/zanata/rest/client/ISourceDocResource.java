@@ -47,6 +47,8 @@ import java.util.Set;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+//TODO remove the template parameters from SourceDocResource's Path
+//@Path(SourceDocResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ISourceDocResource extends SourceDocResource {

@@ -39,7 +39,6 @@ import javax.ws.rs.core.Response;
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;

@@ -27,6 +27,7 @@ import org.zanata.rest.service.VersionResource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -34,6 +35,7 @@ import javax.ws.rs.core.MediaType;
  * Rest service client interface for application version.
  *
  */
+@Path(VersionResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface IVersionResource extends VersionResource {

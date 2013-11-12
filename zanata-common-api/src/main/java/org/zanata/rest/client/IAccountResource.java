@@ -10,6 +10,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 
+// TODO remove the template parameters from AccountResource's Path
+//@Path(AccountResource.SERVICE_PATH)
 public interface IAccountResource extends AccountResource {
 
     @GET
