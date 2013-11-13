@@ -37,11 +37,10 @@
     </ul>
   </a4j:outputPanel>
 
-  <ui:include src="/WEB-INF/layout/loading.xhtml">
-    <ui:param name="regionId" value="langTableRegion"/>
-  </ui:include>
-
   <h:form id="iterationLanguageForm">
+    <ui:include src="/WEB-INF/layout/loading.xhtml">
+      <ui:param name="regionId" value="langTableRegion"/>
+    </ui:include>
     <a4j:region id="langTableRegion">
       <s:token allowMultiplePosts="true"/>
 
@@ -215,7 +214,7 @@
 
       <!-- Using js function due to reRenderAfterComplete not working properly. -->
       <a4j:jsFunction name="reRenderAfterCopyTrans"
-        render="copyTransIndicator,copyTransLink,blah" limitRender="true"/>
+        render="copyTransIndicator,copyTransLink" limitRender="true"/>
       <rich:progressBar id="copyTransProgressBar"
         mode="ajax"
         value="#{viewAllStatusAction.copyTransProgress}"

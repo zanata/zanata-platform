@@ -343,10 +343,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         this.setContents(Arrays.asList(contents));
     }
 
-    // TODO use orphanRemoval=true: requires JPA 2.0
     @OneToOne(optional = true, fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "comment_id")
     public HSimpleComment getComment() {
         return comment;
