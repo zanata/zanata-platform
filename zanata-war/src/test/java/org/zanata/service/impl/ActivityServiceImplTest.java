@@ -82,6 +82,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         seam.reset().use("activityDAO", new ActivityDAO(getSession()))
                 .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
                 .use("documentDAO", new DocumentDAO(getSession()))
+                .use("session", getSession())
                 .ignoreNonResolvable();
 
         activityService = seam.autowire(ActivityServiceImpl.class);
@@ -192,7 +193,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
                 ContentState.NeedReview));
 
         List<Activity> activities =
-                activityService.findLatestActivitiesForContext(documentId2,
+                activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 10);
 
         assertThat(activities.size(), equalTo(2));

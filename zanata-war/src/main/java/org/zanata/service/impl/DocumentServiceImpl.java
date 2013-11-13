@@ -79,8 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private ApplicationConfiguration applicationConfiguration;
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
-            required = false)
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
     private HAccount authenticatedAccount;
 
 

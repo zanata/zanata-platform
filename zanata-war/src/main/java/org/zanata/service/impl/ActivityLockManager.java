@@ -23,8 +23,6 @@ package org.zanata.service.impl;
 
 import java.util.concurrent.locks.Lock;
 
-import lombok.Data;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;

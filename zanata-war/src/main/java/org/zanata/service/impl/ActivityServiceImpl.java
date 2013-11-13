@@ -113,6 +113,7 @@ public class ActivityServiceImpl implements ActivityService {
     public void logActivity(long actorId, IsEntityWithType context,
             IsEntityWithType target, ActivityType activityType, int wordCount) {
         Lock lock = activityLockManager.getLock(actorId);
+        lock.lock();
         try {
             logActivityAlreadyLocked(actorId, context, target, activityType, wordCount);
         } finally {
@@ -120,6 +121,14 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
+    /**
+     * Precondition: current thread must hold a lock for the person 'actorId'.
+     * @param actorId
+     * @param context
+     * @param target
+     * @param activityType
+     * @param wordCount
+     */
     private void logActivityAlreadyLocked(long actorId, IsEntityWithType context,
             IsEntityWithType target, ActivityType activityType, int wordCount) {
         if (context != null && activityType != null) {
@@ -155,6 +164,7 @@ public class ActivityServiceImpl implements ActivityService {
         Long actorId = event.getActorId();
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
+            lock.lock();
             try {
                 HTextFlowTarget target =
                         textFlowTargetDAO.findById(event.getTextFlowTargetId(),
@@ -180,6 +190,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Transactional
     public void onDocumentUploaded(DocumentUploadedEvent event) {
         Lock lock = activityLockManager.getLock(event.getActorId());
+        lock.lock();
         try {
             HDocument document = documentDAO.getById(event.getDocumentId());
             ActivityType activityType =
