@@ -31,15 +31,17 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.*;
+import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionGroupService.SelectableHProject;
 
@@ -62,9 +64,6 @@ public class VersionGroupJoinAction implements Serializable {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
-
-    @Logger
-    private Log log;
 
     private List<SelectableHProject> projectVersions;
 

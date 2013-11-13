@@ -8,9 +8,12 @@ import org.jboss.arquillian.container.spi.ContainerRegistry;
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.deployment.Deployment;
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentScenario;
+import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.arquillian.container.spi.event.DeployDeployment;
+import org.jboss.arquillian.container.spi.event.DeployManagedDeployments;
 import org.jboss.arquillian.container.spi.event.DeploymentEvent;
 import org.jboss.arquillian.container.spi.event.UnDeployDeployment;
+import org.jboss.arquillian.container.spi.event.UnDeployManagedDeployments;
 import org.jboss.arquillian.container.spi.event.container.AfterStart;
 import org.jboss.arquillian.container.spi.event.container.BeforeStop;
 import org.jboss.arquillian.container.test.impl.client.deployment.event.GenerateDeployment;
@@ -22,28 +25,23 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.api.event.ManagerStarted;
 import org.jboss.arquillian.core.spi.EventContext;
 import org.jboss.arquillian.core.spi.LoadableExtension;
-import org.zanata.arquillian.Seam2ExtendedConfigurationProducer;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.arquillian.test.spi.annotation.ClassScoped;
+import org.jboss.arquillian.test.spi.annotation.TestScoped;
 import org.jboss.arquillian.test.spi.context.ClassContext;
-import org.jboss.arquillian.test.spi.event.suite.AfterClass;
+import org.jboss.arquillian.test.spi.event.suite.Before;
 import org.jboss.arquillian.test.spi.event.suite.BeforeClass;
 
-/**
- * Arquillian Zanata Suite Extension.
- *
- * Taken from: https://gist.github.com/aslakknutsen/3975179
- */
 public class ArquillianSuiteExtension implements LoadableExtension {
 
     public void register(ExtensionBuilder builder) {
-        builder.observer(SuiteDeployer.class).observer(
-                Seam2ExtendedConfigurationProducer.class);
+        builder.observer(SuiteDeployer.class);
     }
 
     public static class SuiteDeployer {
 
         private Class<?> deploymentClass;
+
         private DeploymentScenario suiteDeploymentScenario;
 
         @Inject
@@ -60,6 +58,12 @@ public class ArquillianSuiteExtension implements LoadableExtension {
         // Active some form of ClassContext around our deployments due to
         // assumption bug in AS7 extension.
         private Instance<ClassContext> classContext;
+
+        private ProtocolMetaData cachedProtocolMetaData;
+
+        @TestScoped
+        @Inject
+        private InstanceProducer<ProtocolMetaData> testScopedProtocolMetaData;
 
         public void startup(@Observes(precedence = -100) ManagerStarted event,
                 ArquillianDescriptor descriptor) {
@@ -103,16 +107,32 @@ public class ArquillianSuiteExtension implements LoadableExtension {
             });
         }
 
-        public void overrideBefore(@Observes EventContext<BeforeClass> event) {
-            // Don't continue TestClass's BeforeClass context as normal.
-            // No DeploymentGeneration or Deploy will take place.
+        public void blockDeployManagedDeployments(
+                @Observes EventContext<DeployManagedDeployments> ignored) {
+            // We need to block DeployManagedDeployments event
+        }
 
+        public void storeProtocolMetaData(
+                @Observes ProtocolMetaData protocolMetaData) {
+            cachedProtocolMetaData = protocolMetaData;
+        }
+
+        public void resotreProtocolMetaData(
+                @Observes EventContext<Before> eventContext) {
+            testScopedProtocolMetaData.set(cachedProtocolMetaData);
+            eventContext.proceed();
+        }
+
+        public void restoreDeploymentScenario(
+                @Observes EventContext<BeforeClass> event) {
+            // Setup the Suite level scenario as if it came from the TestClass
+            event.proceed();
             classDeploymentScenario.set(suiteDeploymentScenario);
         }
 
-        public void overrideAfter(@Observes EventContext<AfterClass> event) {
-            // Don't continue TestClass's AfterClass context as normal.
-            // No UnDeploy will take place.
+        public void blockUnDeployManagedDeployments(
+                @Observes EventContext<UnDeployManagedDeployments> ignored) {
+            // We need to block UnDeployManagedDeployments event
         }
 
         private void executeInClassScope(Callable<Void> call) {

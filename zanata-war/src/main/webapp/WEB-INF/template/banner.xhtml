@@ -21,7 +21,7 @@
     </s:link>
   </h1>
 
-  <s:fragment rendered="#{identity.loggedIn}">
+  <s:fragment rendered="#{identity.loggedIn and personHome.instance.account.enabled}">
     <a href="#off-canvas--right" id="user_avatar"
       class="off-canvas__toggle--right l--float-right"
       title="#{personHome.instance.account.username}">
@@ -34,13 +34,14 @@
     </a>
   </s:fragment>
   <s:fragment rendered="#{not identity.loggedIn}">
-    <div class="header__login l--float-right">
+    <s:div styleClass="header__login l--float-right">
       <s:link id="register_link_internal_auth" view="/account/register.xhtml"
         value="#{messages['jsf.Signup']}"
         propagation="none" styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
-      <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+      <s:fragment
+        rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{messages['jsf.Signup']}</a>
       </s:fragment>
@@ -58,7 +59,7 @@
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{messages['jsf.Login']}
       </h:outputLink>
-    </div>
+    </s:div>
   </s:fragment>
 
   <nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">

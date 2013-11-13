@@ -26,21 +26,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Factory;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.service.LocaleService;
 
 @Name("localeListAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class LocaleListAction implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<String> customizedLocales = new ArrayList<String>();
@@ -52,8 +53,6 @@ public class LocaleListAction implements Serializable {
     @Out(required = false)
     private Boolean overrideLocales;
     private boolean setting;
-    @Logger
-    Log log;
     @In
     ProjectDAO projectDAO;
 

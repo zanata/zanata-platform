@@ -47,7 +47,9 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             log.warn("Login failed. May due to some weird issue. Will Try again.");
             doSignIn(username, password);
         } catch (TimeoutException e) {
-            log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
+            log.error("timeout on login. If you are running tests manually"+
+                    " with cargo.wait, you probably forget to create the user"+
+                    " admin/admin. See ManualRunHelper.");
             throw e;
         }
         return PageFactory.initElements(driver, pageClass);
@@ -63,16 +65,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
         log.info("log in as username: {}", username);
         signInPage.enterUsername(username);
         signInPage.enterPassword(password);
-        signInPage.clickSignIn();
-        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                List<WebElement> messages =
-                        driver.findElements(By.id("messages"));
-                return messages.size() > 0
-                        && messages.get(0).getText().contains("Login failed");
-            }
-        });
+        signInPage.clickSignInExpectError();
         return new SignInPage(driver);
     }
 
@@ -88,9 +81,9 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             @Override
             public boolean apply(WebDriver driver) {
                 List<WebElement> messages =
-                        driver.findElements(By.id("messages"));
-                if (messages.size() > 0
-                        && messages.get(0).getText().contains("Login failed")) {
+                        driver.findElements(By.className("message--danger"));
+                if (messages.size() > 0 && messages.get(0)
+                        .getText().contains(" Login failed ")) {
                     throw new IllegalAccessError("Login failed");
                 }
                 List<WebElement> signIn = driver.findElements(By.id("Sign_in"));

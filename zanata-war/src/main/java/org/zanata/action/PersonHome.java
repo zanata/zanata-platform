@@ -23,13 +23,13 @@ package org.zanata.action;
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.framework.EntityHome;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -37,6 +37,7 @@ import org.zanata.model.HPerson;
 
 @Name("personHome")
 @Scope(ScopeType.CONVERSATION)
+@Slf4j
 public class PersonHome extends EntityHome<HPerson> {
 
     /**
@@ -55,9 +56,6 @@ public class PersonHome extends EntityHome<HPerson> {
     @In
     AccountDAO accountDAO;
 
-    @Logger
-    Log log;
-
     @Override
     public Object getId() {
         Object id = super.getId();
@@ -71,7 +69,7 @@ public class PersonHome extends EntityHome<HPerson> {
     public void regenerateApiKey() {
         accountDAO.createApiKey(getInstance().getAccount());
         getEntityManager().merge(getInstance().getAccount());
-        log.info("Reset API key for {0}", getInstance().getAccount()
+        log.info("Reset API key for {}", getInstance().getAccount()
                 .getUsername());
     }
 

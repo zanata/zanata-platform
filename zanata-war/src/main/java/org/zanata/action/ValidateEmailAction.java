@@ -27,13 +27,13 @@ import java.util.Date;
 
 import javax.security.auth.login.LoginException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
@@ -43,6 +43,7 @@ import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.service.impl.EmailChangeService;
 
 @Name("validateEmail")
+@Slf4j
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
     private String activationKey;
@@ -55,9 +56,6 @@ public class ValidateEmailAction implements Serializable {
 
     @In
     EmailChangeService emailChangeService;
-
-    @Logger
-    Log log;
 
     @Transactional
     public String validate() throws LoginException {
@@ -88,7 +86,7 @@ public class ValidateEmailAction implements Serializable {
                 emailChangeService.removeEntry(entry);
                 FacesMessages.instance().add(
                         "You have successfully changed your email account.");
-                log.info("update email address to {0}  successfully",
+                log.info("update email address to {}  successfully",
                         entry.getEmail());
             } else {
                 returnUrl = checkResult;

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -37,7 +37,9 @@
 
     <!-- Groovy properties -->
     <groovy.version>2.1.5</groovy.version>
-    <groovy.eclipse.batch.version>2.1.5-03</groovy.eclipse.batch.version>
+    <groovy.eclipse.batch.version>2.1.8-01</groovy.eclipse.batch.version>
+    <!-- NB: groovy-eclipse-compiler 2.8.0-01 breaks with Lombok.
+         Waiting for 2.9.0-01. -->
     <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
 
     <zanata.web.assets.version>2</zanata.web.assets.version>
@@ -107,17 +109,22 @@
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
             <usedDependency>com.google.code.findbugs:annotations</usedDependency>
-            <usedDependency>quartz:quartz</usedDependency>
+            <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- used by REST API interfaces -->
             <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
+            <!-- used indirectly by drools -->
+            <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
+            <!-- used for annotations -->
+            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <!-- used for arquillian tests -->
+            <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
             <usedDependency>antlr:antlr</usedDependency>
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
             <usedDependency>com.ibm.icu:icu4j</usedDependency>
             <usedDependency>com.sun.faces:jsf-impl</usedDependency>
@@ -148,6 +155,8 @@
             <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
             <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <usedDependency>org.zanata:zanata-rest-client</usedDependency>
+            <!-- NB: Don't add anything without a comment explaining how the
+                 dependency is used -->
           </usedDependencies>
         </configuration>
       </plugin>
@@ -984,19 +993,11 @@
           <name>newCompiler</name>
         </property>
       </activation>
+      <properties>
+        <groovy.eclipse.compiler.version>2.9.0-01-20130710.222406-4</groovy.eclipse.compiler.version>
+      </properties>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-eclipse-compiler</artifactId>
-                <version>2.9.0-01-SNAPSHOT</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
           <plugin>
             <artifactId>maven-enforcer-plugin</artifactId>
             <configuration>
@@ -1223,7 +1224,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
@@ -1401,7 +1405,7 @@
     <!-- Quartz -->
 
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
     </dependency>
 
@@ -1633,7 +1637,7 @@
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-arquillian-container-managed</artifactId>
-      <version>7.1.3.Final</version>
+      <version>${jboss.as.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -1671,11 +1675,19 @@
       <artifactId>jboss-as-controller</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Currently only needed for our override of Arquillian's
+    ManagementClient -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
     <dependency>
       <groupId>org.jboss.arquillian.extension</groupId>
       <artifactId>arquillian-seam2</artifactId>
-      <version>1.0.0.Alpha2</version>
+      <version>1.0.0.Beta1</version>
       <exclusions>
         <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
         <exclusion>
@@ -1773,7 +1785,7 @@
     <dependency>
       <groupId>com.allen-sauer.gwt.log</groupId>
       <artifactId>gwt-log</artifactId>
-      <version>3.1.8</version>
+      <version>3.2.1</version>
     </dependency>
 
     <dependency>

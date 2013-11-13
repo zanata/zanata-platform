@@ -49,6 +49,6 @@ public class CreateNewProjectTest {
     }
 
     public ProjectPage createNewProject(String projectSlug, String projectName) {
-        return new ProjectWorkFlow().createNewProject(projectSlug, projectName);
+        return new ProjectWorkFlow().createNewSimpleProject(projectSlug, projectName);
     }
 }

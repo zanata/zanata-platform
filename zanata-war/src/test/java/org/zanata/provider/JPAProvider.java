@@ -25,8 +25,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.hibernate.Session;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides JPA facilities.
@@ -35,13 +35,12 @@ import org.jboss.seam.log.Logging;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class JPAProvider {
+    private static final Logger log = LoggerFactory.getLogger(JPAProvider.class);
     private static final String PERSIST_NAME = "zanataTestDatasourcePU";
 
     private static EntityManagerFactory emf;
 
     protected EntityManager em;
-
-    Log log = Logging.getLog(JPAProvider.class);
 
     public void setupEM() {
         log.debug("Setting up EM");

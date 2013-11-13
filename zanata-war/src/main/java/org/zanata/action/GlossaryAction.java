@@ -11,15 +11,15 @@ import java.util.Map.Entry;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.log.Log;
 import org.zanata.annotation.CachedMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -32,14 +32,9 @@ import org.zanata.service.GlossaryFileService;
 @Name("glossaryAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
+@Slf4j
 public class GlossaryAction implements Serializable {
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    Log log;
 
     @In
     private GlossaryDAO glossaryDAO;

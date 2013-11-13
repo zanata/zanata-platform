@@ -26,12 +26,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.BasePage;
+import org.zanata.page.CorePage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.utility.DashboardPage;
 
 @Slf4j
-public class SignInPage extends BasePage {
+public class SignInPage extends CorePage {
     @FindBy(id = "loginForm:username")
     private WebElement usernameField;
 
@@ -61,6 +61,11 @@ public class SignInPage extends BasePage {
     public DashboardPage clickSignIn() {
         signInButton.click();
         return new DashboardPage(getDriver());
+    }
+
+    public SignInPage clickSignInExpectError() {
+        signInButton.click();
+        return new SignInPage(getDriver());
     }
 
     public GoogleAccountPage selectGoogleOpenID() {

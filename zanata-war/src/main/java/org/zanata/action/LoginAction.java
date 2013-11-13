@@ -76,23 +76,27 @@ public class LoginAction implements Serializable {
             credentials.setAuthType(AuthenticationType.INTERNAL);
         } else if (applicationConfiguration.isJaasAuth()) {
             credentials.setAuthType(AuthenticationType.JAAS);
+        } else if (applicationConfiguration.isKerberosAuth()) {
+            credentials.setAuthType(AuthenticationType.KERBEROS);
         }
 
         String loginResult;
 
         switch (credentials.getAuthType()) {
         case INTERNAL:
-            credentials.setAuthType(AuthenticationType.INTERNAL);
             loginResult = authenticationManager.internalLogin();
             break;
         case JAAS:
-            credentials.setAuthType(AuthenticationType.JAAS);
             loginResult = authenticationManager.jaasLogin();
             break;
-        // Kerberos auth happens on its own
+        case KERBEROS:
+            // Ticket based kerberos auth happens when hittin klogin
+            // (see pages.xml)
+            loginResult = authenticationManager.formBasedKerberosLogin();
+            break;
         default:
             throw new RuntimeException(
-                    "login() only supports internal or jaas authentication");
+                    "login() only supports internal, jaas, or kerberos authentication");
         }
 
         return loginResult;

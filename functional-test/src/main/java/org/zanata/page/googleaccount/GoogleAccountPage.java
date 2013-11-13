@@ -20,6 +20,7 @@
  */
 package org.zanata.page.googleaccount;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -32,6 +33,9 @@ import org.zanata.page.AbstractPage;
 public class GoogleAccountPage extends AbstractPage {
     @FindBy(id = "Email")
     private WebElement emailField;
+
+    @FindBy(id = "reauthEmail")
+    private WebElement emailLabelField;
 
     @FindBy(id = "Passwd")
     private WebElement passwordField;
@@ -61,5 +65,29 @@ public class GoogleAccountPage extends AbstractPage {
     public GoogleManagePermissionsPage clickPermissionsSignIn() {
         signInButton.click();
         return new GoogleManagePermissionsPage(getDriver());
+    }
+
+    public String rememberedUser() {
+        return emailLabelField.getText();
+    }
+
+    public boolean hasRememberedAuthentication() {
+        return emailLabelField.isDisplayed();
+    }
+
+    public GoogleAccountPage removeSavedAuthentication() {
+        getDriver().findElement(By.linkText("Sign in with a different account")).click();
+        return new GoogleAccountPage(getDriver());
+    }
+
+    /**
+     * Query if the old google site login is presented to the user.
+     *
+     * The Google account profile image only shows on the new Google site, so
+     * if this element exists return false.
+     * @return true if the profile image is not shown.
+     */
+    public boolean isTheOldGoogleSite() {
+        return getDriver().findElements(By.id("profile-img")).size() < 1;
     }
 }

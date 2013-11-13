@@ -22,7 +22,7 @@ package org.zanata.action;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
+
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
@@ -30,20 +30,18 @@ import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.SlugEntityService;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -61,8 +59,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @In
     SlugEntityService slugEntityServiceImpl;
 
-    @Logger
-    Log log;
     private List<SelectItem> statusList;
 
     @Override

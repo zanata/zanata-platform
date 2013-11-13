@@ -7,18 +7,18 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Synchronized;
-import org.jboss.seam.log.Log;
 import org.zanata.ServerConstants;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
@@ -39,11 +39,9 @@ import org.zanata.service.AsyncTaskManagerService;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
+@Slf4j
 public class ReindexAsyncBean implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Logger
-    private Log log;
 
     @In
     EntityManagerFactory entityManagerFactory;
@@ -202,20 +200,20 @@ public class ReindexAsyncBean implements Serializable {
             for (Class<?> clazz : indexables) {
                 if (!getHandle().isCancelled()
                         && indexingOptions.get(clazz).isPurge()) {
-                    log.info("purging index for {0}", clazz);
+                    log.info("purging index for {}", clazz);
                     currentClass = clazz;
                     session.purgeAll(clazz);
                     getHandle().increaseProgress(1);
                 }
                 if (!getHandle().isCancelled()
                         && indexingOptions.get(clazz).isReindex()) {
-                    log.info("reindexing {0}", clazz);
+                    log.info("reindexing {}", clazz);
                     currentClass = clazz;
                     getIndexer(clazz).index();
                 }
                 if (!getHandle().isCancelled()
                         && indexingOptions.get(clazz).isOptimize()) {
-                    log.info("optimizing {0}", clazz);
+                    log.info("optimizing {}", clazz);
                     currentClass = clazz;
                     session.getSearchFactory().optimize(clazz);
                     getHandle().increaseProgress(1);
@@ -229,7 +227,7 @@ public class ReindexAsyncBean implements Serializable {
                         .getMaxProgress()) {
                     // @formatter: off
                     log.warn(
-                            "Did not reindex the expected number of objects. Counted {0} but indexed {1}. "
+                            "Did not reindex the expected number of objects. Counted {} but indexed {}. "
                                     + "The index may be out-of-sync. "
                                     + "This may be caused by lack of sufficient memory, or by database activity during reindexing.",
                             getHandle().getMaxProgress(), getHandle()

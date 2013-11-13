@@ -56,6 +56,11 @@ public class MyAccountPage extends BasePage {
         return new ChangePasswordPage(getDriver());
     }
 
+    public EditProfilePage clickEditProfileButton() {
+        editProfileButton.click();
+        return new EditProfilePage(getDriver());
+    }
+
     public String getFullName() {
         return getDriver().findElement(By.id("main_body_content"))
                 .findElement(By.tagName("h1")).getText();

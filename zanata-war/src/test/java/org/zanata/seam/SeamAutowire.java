@@ -20,17 +20,6 @@
  */
 package org.zanata.seam;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-import org.apache.commons.lang.ArrayUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.log.Logging;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +30,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Logger;
 
 /**
  * Helps with Auto-wiring of Seam components for integrated tests without the
@@ -55,9 +55,8 @@ import java.util.Set;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class SeamAutowire {
-    private static final org.slf4j.Logger log = LoggerFactory
-            .getLogger(SeamAutowire.class);
 
     private static final Object PLACEHOLDER = new Object();
 
@@ -312,8 +311,7 @@ public class SeamAutowire {
             }
             // Logs
             else if (accessor.getAnnotation(Logger.class) != null) {
-                accessor.setValue(component,
-                        Logging.getLog(accessor.getComponentType()));
+                throw new RuntimeException("Please use Slf4j, not Seam Logger");
             }
         }
 

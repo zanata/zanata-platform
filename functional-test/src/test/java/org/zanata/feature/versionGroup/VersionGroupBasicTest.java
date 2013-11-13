@@ -123,7 +123,7 @@ public class VersionGroupBasicTest {
     public void createProjectAndVersion(String projectId, String projectName,
             String version) {
         ProjectPage projectPage =
-                projectWorkFlow.createNewProject(projectId, projectName);
+                projectWorkFlow.createNewSimpleProject(projectId, projectName);
         projectPage.clickCreateVersionLink().inputVersionId(version)
                 .selectStatus("READONLY").selectStatus("ACTIVE").saveVersion();
     }

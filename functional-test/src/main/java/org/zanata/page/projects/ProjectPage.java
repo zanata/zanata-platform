@@ -20,6 +20,7 @@
  */
 package org.zanata.page.projects;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,5 +97,26 @@ public class ProjectPage extends BasePage {
         }
 
         return WebElementUtil.elementsToText(versionLinks);
+    }
+
+    public CreateProjectPage clickEditProject() {
+        getDriver().findElement(By.linkText("Edit Project")).click();
+        return new CreateProjectPage(getDriver());
+    }
+
+    public ProjectMaintainersPage clickManageMaintainers() {
+        getDriver().findElement(By.linkText("Manage Maintainers")).click();
+        return new ProjectMaintainersPage(getDriver());
+    }
+
+    public List<String> getContentAreaParagraphs() {
+        List<String> paragraphTexts = new ArrayList<String>();
+        List<WebElement> paragraphs = getDriver()
+                .findElement(By.className("content_box"))
+                .findElements(By.tagName("p"));
+        for (WebElement element : paragraphs) {
+            paragraphTexts.add(element.getText());
+        }
+        return paragraphTexts;
     }
 }

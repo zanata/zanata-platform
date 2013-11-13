@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
@@ -34,18 +33,18 @@ import javax.persistence.EntityManager;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.util.Work;
 import org.zanata.async.AsyncUtils;
+import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
@@ -62,15 +61,16 @@ import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
+import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import org.zanata.webtrans.shared.model.ValidationAction;
 
 //TODO unit test suite for this class
 
 @Name("copyTransServiceImpl")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class CopyTransServiceImpl implements CopyTransService {
     @In
     private EntityManager entityManager;
@@ -90,13 +90,10 @@ public class CopyTransServiceImpl implements CopyTransService {
     @In
     private ValidationService validationServiceImpl;
 
-    @Logger
-    Log log;
-
     @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
     public void runCopyTrans(Long docId, String project, String iterationSlug) {
         HDocument document = documentDAO.findById(docId, true);
-        log.info("copyTrans start: document \"{0}\"", document.getDocId());
+        log.info("copyTrans start: document \"{}\"", document.getDocId());
         List<HLocale> localelist =
                 localeServiceImpl.getSupportedLangugeByProjectIteration(
                         project, iterationSlug);
@@ -107,7 +104,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         for (HLocale locale : localelist) {
             copyTransForLocale(document, locale);
         }
-        log.info("copyTrans finished: document \"{0}\"", document.getDocId());
+        log.info("copyTrans finished: document \"{}\"", document.getDocId());
     }
 
     private String createComment(HTextFlowTarget target) {
@@ -202,7 +199,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                     }
 
                     log.info(
-                            "copyTrans: {0} {1} translations for document \"{2}{3}\" ",
+                            "copyTrans: {} {} translations for document \"{}{}\" ",
                             copyCount, locale.getLocaleId(),
                             document.getPath(), document.getName());
 
@@ -474,7 +471,7 @@ public class CopyTransServiceImpl implements CopyTransService {
             copyTransOpts = new HCopyTransOptions();
         }
 
-        log.info("copyTrans start: document \"{0}\"", document.getDocId());
+        log.info("copyTrans start: document \"{}\"", document.getDocId());
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
         List<HLocale> localeList =
@@ -492,7 +489,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         if (taskHandleOpt.isPresent()) {
             taskHandleOpt.get().incrementDocumentsProcessed();
         }
-        log.info("copyTrans finished: document \"{0}\"", document.getDocId());
+        log.info("copyTrans finished: document \"{}\"", document.getDocId());
     }
 
     @Override
@@ -553,7 +550,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                             ValidationAction.State.Error);
 
             if (!validationMessages.isEmpty()) {
-                log.warn(validationMessages);
+                log.warn(validationMessages.toString());
                 return true;
             }
         }
