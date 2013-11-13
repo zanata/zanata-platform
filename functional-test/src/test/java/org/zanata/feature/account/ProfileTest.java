@@ -21,10 +21,11 @@
 package org.zanata.feature.account;
 
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.util.ResetDatabaseRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -38,8 +39,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Category(DetailedTest.class)
 public class ProfileTest {
 
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
     private String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
 
@@ -91,5 +92,75 @@ public class ProfileTest {
                 myAccountPage.getConfigurationDetails(),
                 Matchers.containsString("localhost.key=".concat(myAccountPage
                         .getApiKey())));
+    }
+
+    @Test
+    public void changeUsersName() {
+        MyAccountPage myAccountPage = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToMyProfile();
+        myAccountPage = myAccountPage
+                .clickEditProfileButton()
+                .enterName("Tranny")
+                .clickSaveChanges();
+        assertThat("The user's name has been changed",
+                myAccountPage.getFullName(),
+                Matchers.equalTo("Tranny"));
+    }
+
+    @Test
+    public void changeUsersEmailAddress() {
+        MyAccountPage myAccountPage = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToMyProfile();
+        myAccountPage = myAccountPage
+                .clickEditProfileButton()
+                .enterEmail("anewemail@test.com")
+                .clickSaveChanges();
+        assertThat("The email link notification is displayed",
+                myAccountPage.getNotificationMessage(),
+                Matchers.equalTo("You will soon receive an email with a link "+
+                        "to activate your email account change."));
+    }
+
+    @Test
+    public void cancelChangeUsersProfile() {
+        MyAccountPage myAccountPage = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToMyProfile();
+        myAccountPage = myAccountPage
+                .clickEditProfileButton()
+                .enterName("Transistor")
+                .enterEmail("transistor@test.com")
+                .clickCancel();
+        assertThat("The user's name has been not changed",
+                myAccountPage.getFullName(),
+                Matchers.equalTo("translator"));
+        assertThat("No email change indication is shown",
+                myAccountPage.getNotificationMessage(),
+                Matchers.equalTo(""));
+    }
+
+    @Test
+    public void emailValidationIsUsedOnProfileEdit() {
+        EditProfilePage editProfilePage = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToMyProfile()
+                .clickEditProfileButton()
+                .enterName("Transistor")
+                .enterEmail("admin@example.com")
+                .clickSaveAndExpectErrors();
+
+        assertThat("The email is rejected, being already taken",
+                editProfilePage.getErrors(),
+                Matchers.contains("This email address is already taken"));
+
+        editProfilePage = editProfilePage
+                .enterEmail("test @example.com")
+                .clickSaveAndExpectErrors();
+
+        assertThat("The email is rejected, being of invalid format",
+                editProfilePage.getErrors(),
+                Matchers.contains("not a well-formed email address"));
     }
 }

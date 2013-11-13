@@ -97,4 +97,14 @@ public class ProjectPage extends BasePage {
 
         return WebElementUtil.elementsToText(versionLinks);
     }
+
+    public CreateProjectPage clickEditProject() {
+        getDriver().findElement(By.linkText("Edit Project")).click();
+        return new CreateProjectPage(getDriver());
+    }
+
+    public ProjectMaintainersPage clickManageMaintainers() {
+        getDriver().findElement(By.linkText("Manage Maintainers")).click();
+        return new ProjectMaintainersPage(getDriver());
+    }
 }

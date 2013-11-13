@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.resources;
 
-import java.util.List;
-
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -21,12 +19,12 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("(No Content)")
     String noContent();
 
-    @DefaultMessage("{0} ({1,number,#.#}hrs) {2}")
-    String statusBarPercentageHrs(String approved, double remainingHours,
+    @DefaultMessage("{0}% ({1}hrs) {2}")
+    String statusBarPercentageHrs(String approved, String remainingHours,
             String by);
 
-    @DefaultMessage("{0,number,#.#}")
-    String statusBarLabelHours(double remainingHours);
+    @DefaultMessage("{0}")
+    String statusBarLabelHours(String remainingHours);
 
     @DefaultMessage("http://zanata.org/")
     String hrefHelpLink();
@@ -252,9 +250,9 @@ public interface WebTransMessages extends Messages {
         "one|=0", "Item can not be undone",
         "other|=0", "Items can not be undone"
         // @formatter:on
-    })
+            })
     String undoUnsuccessful(@PluralCount int unsuccessfulCount,
-            @PluralCount int successfulCount);
+        @PluralCount int successfulCount);
 
     @DefaultMessage("Undo failed")
     String undoFailure();

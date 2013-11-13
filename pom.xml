@@ -31,7 +31,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
-    <zanata.api.version>3.1.1</zanata.api.version>
+    <zanata.api.version>3.1.2-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.1.0</zanata.api.compat.version>
     <zanata.client.version>3.0.1</zanata.client.version>
@@ -117,6 +117,12 @@
         <scope>import</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.opensymphony.quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>1.6.5</version>
+      </dependency>
+
       <!-- zanata api -->
       <dependency>
         <groupId>org.zanata</groupId>
@@ -189,6 +195,11 @@
         <version>3.0</version>
       </dependency>
 
+      <dependency>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+          <version>2.4.1</version>
+      </dependency>
       <dependency>
         <groupId>com.ibm.icu</groupId>
         <artifactId>icu4j</artifactId>

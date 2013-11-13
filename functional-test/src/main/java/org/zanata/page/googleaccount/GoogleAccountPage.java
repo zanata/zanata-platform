@@ -79,4 +79,15 @@ public class GoogleAccountPage extends AbstractPage {
         getDriver().findElement(By.linkText("Sign in with a different account")).click();
         return new GoogleAccountPage(getDriver());
     }
+
+    /**
+     * Query if the old google site login is presented to the user.
+     *
+     * The Google account profile image only shows on the new Google site, so
+     * if this element exists return false.
+     * @return true if the profile image is not shown.
+     */
+    public boolean isTheOldGoogleSite() {
+        return getDriver().findElements(By.id("profile-img")).size() < 1;
+    }
 }

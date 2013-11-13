@@ -20,20 +20,31 @@
  */
 package org.zanata.page.administration;
 
+import com.google.common.base.Predicate;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class AddLanguagePage extends BasePage {
+
+    public static final int NAME_ROW = 3;
+    private static final int NAME_COLUMN = 0;
+    private static final int VALUE_COLUMN = 1;
+
     @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
     private WebElement languageInput;
 
     @FindBy(xpath = "//input[@value='Save']")
     private WebElement saveButton;
 
-    @FindBy(
-            xpath = "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
+    @FindBy(xpath =
+            "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
     private WebElement enabledByDefaultInput;
 
     public AddLanguagePage(final WebDriver driver) {
@@ -42,6 +53,7 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage inputLanguage(String language) {
         languageInput.sendKeys(language);
+        defocus();
         return this;
     }
 
@@ -50,6 +62,35 @@ public class AddLanguagePage extends BasePage {
             enabledByDefaultInput.click();
         }
         return this;
+    }
+
+    public AddLanguagePage disableLanguageByDefault() {
+        if (enabledByDefaultInput.isSelected()) {
+            enabledByDefaultInput.click();
+        }
+        return this;
+    }
+
+    public Map<String, String> getLanguageDetails() {
+        Map<String, String> map = new HashMap();
+        // Wait for the fields to be populated
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                List<WebElement> thisElement = getDriver()
+                        .findElements(By.className("prop"));
+                return !thisElement.get(NAME_ROW)
+                        .findElements(By.tagName("span"))
+                        .get(VALUE_COLUMN).getText().isEmpty();
+            }
+        });
+        for (WebElement item : getDriver().findElements(By.className("prop"))) {
+            map.put(item.findElements(By.tagName("span"))
+                    .get(NAME_COLUMN).getText(),
+                item.findElements(By.tagName("span"))
+                    .get(VALUE_COLUMN).getText());
+        }
+        return map;
     }
 
     public ManageLanguagePage saveLanguage() {
