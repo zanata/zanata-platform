@@ -1,10 +1,8 @@
 package org.zanata.client;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -16,10 +14,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.core.ContainerServer;
-import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.zanata.client.commands.AppAbortStrategy;
-import org.zanata.client.commands.NullAbortStrategy;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -60,11 +56,10 @@ public class ClientToServerTest {
         HTTPMockContainer mockContainer =
             HTTPMockContainer.notOkResponse(Status.SERVICE_UNAVAILABLE);
         ContainerServer server = new ContainerServer(mockContainer);
-        Connection connection = new SocketConnection(server);
+        SocketConnection connection = new SocketConnection(server);
         try {
-            InetSocketAddress address = new InetSocketAddress(0);
+            InetSocketAddress address = (InetSocketAddress) connection.connect(new InetSocketAddress(0));
             int port = address.getPort();
-            connection.connect(address);
 
             String command = "stats";
             String url = "http://localhost:"+port+"/";
