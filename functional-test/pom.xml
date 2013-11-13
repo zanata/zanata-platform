@@ -560,6 +560,7 @@
         <configuration>
           <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
+            <usedDependency>com.h2database:h2</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <usedDependency>org.hibernate:hibernate-core</usedDependency>
