@@ -62,11 +62,12 @@ public class ClientToServerTest {
         ContainerServer server = new ContainerServer(mockContainer);
         Connection connection = new SocketConnection(server);
         try {
-            InetSocketAddress address = new InetSocketAddress(8080);
+            InetSocketAddress address = new InetSocketAddress(0);
+            int port = address.getPort();
             connection.connect(address);
 
             String command = "stats";
-            String url = "http://localhost:8080/";
+            String url = "http://localhost:"+port+"/";
             String project = "iok";
             String version = "6.4";
     //        client.setErrors(true);
