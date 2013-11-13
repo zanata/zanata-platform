@@ -28,8 +28,8 @@ import org.jboss.seam.annotations.Name;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("unbuildableComponent")
-public class UnbuildableTestComponent {
-    public UnbuildableTestComponent(String unboundArgument) {
+@Name("childBroken")
+public class ChildBroken {
+    public ChildBroken(String unboundArgument) {
     }
 }

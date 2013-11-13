@@ -18,34 +18,17 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.seam;
+package org.zanata.seam.test;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
 
-/**
- * Represents a component accessor in a class.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- */
-abstract class ComponentAccessor {
-    public static final ComponentAccessor newInstance(Field f) {
-        return new FieldComponentAccessor(f);
+@Name("componentWithRequiredBrokenChild")
+public class ComponentWithRequiredBrokenChild {
+    @In(required = true)
+    private ChildBroken unbuildableTestComponent;
+
+    public ChildBroken getUnbuildableTestComponent() {
+        return unbuildableTestComponent;
     }
-
-    public static final ComponentAccessor newInstance(Method m) {
-        return new MethodComponentAccessor(m);
-    }
-
-    public abstract Object getValue(Object instance);
-
-    public abstract void setValue(Object instance, Object value);
-
-    public abstract <T extends Annotation> T getAnnotation(Class<T> annotation);
-
-    public abstract String getComponentName();
-
-    public abstract Class<?> getComponentType();
 }

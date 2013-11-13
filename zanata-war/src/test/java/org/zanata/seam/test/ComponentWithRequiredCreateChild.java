@@ -24,17 +24,10 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
-/**
- * This is a correctly defined Seam component. It contains dependencies to
- * 'incorrect' components.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- */
-@Name("correctComponent")
-public class TestComponent {
-    @In
-    private UnbuildableTestComponent unbuildableTestComponent;
+@Name("ComponentWithRequiredCreateChild")
+public class ComponentWithRequiredCreateChild {
+    @In(required = true, create = true)
+    private Child childComponent;
 
     private boolean postConstructInvoked = false;
 
@@ -47,7 +40,4 @@ public class TestComponent {
         return postConstructInvoked;
     }
 
-    public UnbuildableTestComponent getUnbuildableTestComponent() {
-        return unbuildableTestComponent;
-    }
 }

@@ -20,22 +20,34 @@
  */
 package org.zanata.seam.test;
 
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 /**
- * Child component that forms a dependency cycle with
- * {@link CyclicParentComponent}
+ * This is a correctly defined Seam component. It contains dependencies to
+ * 'incorrect' components.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("cyclicChildComponent")
-public class CyclicChildComponent {
-    @In
-    private CyclicParentComponent cyclicParentComponent;
+@Name("componentWithNonRequiredBrokenChild")
+public class ComponentWithNonRequiredBrokenChild {
+    @In(required = false)
+    private ChildBroken unbuildableTestComponent;
 
-    public CyclicParentComponent getCyclicParentComponent() {
-        return cyclicParentComponent;
+    private boolean postConstructInvoked = false;
+
+    @Create
+    public void postConstruct() {
+        this.postConstructInvoked = true;
+    }
+
+    public boolean isPostConstructInvoked() {
+        return postConstructInvoked;
+    }
+
+    public ChildBroken getUnbuildableTestComponent() {
+        return unbuildableTestComponent;
     }
 }
