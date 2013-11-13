@@ -78,16 +78,15 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         String clientTimestamp = clientApiVersion.getBuildTimeStamp();
         IVersionResource iversion = createIVersionResource();
         ClientResponse<VersionInfo> versionResp = iversion.get();
-        VersionInfo serverVersionInfo;
         // unauthorized
         if (versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED) {
             throw new RuntimeException("Incorrect username/password");
         } else if (versionResp.getResponseStatus() == Response.Status.SERVICE_UNAVAILABLE) {
             throw new RuntimeException("Service is currently unavailable. " +
                 "Please check outage notification or try again later.");
-        } else {
-            serverVersionInfo = versionResp.getEntity();
         }
+        ClientUtility.checkResult(versionResp);
+        VersionInfo serverVersionInfo = versionResp.getEntity();
         serverVersion = serverVersionInfo.getVersionNo();
         String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 
