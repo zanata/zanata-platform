@@ -1,5 +1,6 @@
 package org.zanata.rest.client;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,6 +23,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.core.ClientInterceptorRepository;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -297,7 +299,21 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
      * @param interceptor
      */
     public void registerPrefixInterceptor(Object interceptor) {
-        crf.getPrefixInterceptors().registerInterceptor(interceptor);
+        ClientInterceptorRepository repo = getPrefixInterceptors();
+        repo.registerInterceptor(interceptor);
+    }
+
+    /**
+     * Workaround for signature incompatibility between RESTEasy 2.x and 3.x
+     * @return
+     */
+    private ClientInterceptorRepository getPrefixInterceptors() {
+        try {
+            Method m = crf.getClass().getMethod("getPrefixInterceptors");
+            return (ClientInterceptorRepository) m.invoke(crf);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected IVersionResource createIVersionResource() {
