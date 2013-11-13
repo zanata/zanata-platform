@@ -250,6 +250,7 @@ public class SeamAutowire {
                 String compName = accessor.getComponentName();
                 Class<?> compType = accessor.getComponentType();
 
+                // TODO stateless components should not / need not be cached
                 // autowire the component if not done yet
                 if (!namedComponents.containsKey(compName)) {
                     Object newComponent = null;

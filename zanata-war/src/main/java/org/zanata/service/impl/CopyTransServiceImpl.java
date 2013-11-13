@@ -35,8 +35,6 @@ import javax.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import org.hibernate.HibernateException;
-import org.hibernate.ScrollableResults;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -47,7 +45,6 @@ import org.jboss.seam.log.Log;
 import org.jboss.seam.util.Work;
 import org.zanata.async.AsyncUtils;
 import org.zanata.common.ContentState;
-import org.zanata.dao.DatabaseConstants;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -140,65 +137,41 @@ public class CopyTransServiceImpl implements CopyTransService {
                 protected Void work() throws Exception {
                     int copyCount = 0;
 
-                    // Determine the state of the copies for each pass
-                    boolean checkContext = true, checkProject = true, checkDocument =
-                            true;
-
-                    // First pass, very conservative
-                    // Every result will match context, document, and project
-                    copyCount +=
-                            copyTransPass(document, locale, checkContext,
-                                    checkProject, checkDocument, options);
-
-                    // Next passes, more relaxed and only needed when the
-                    // options call for it
-                    if (options.getDocIdMismatchAction() != REJECT) {
-                        // Relax doc Id restriction
+                    boolean checkContext = false, checkProject = false,
                         checkDocument = false;
-                        // Every result will match context, and project
-                        // Assuming Phase 1 ran, results will have non-matching
-                        // doc Ids
-                        copyCount +=
-                                copyTransPass(document, locale, checkContext,
-                                        checkProject, checkDocument, options);
+                    boolean requireTranslationReview =
+                            document.getProjectIteration()
+                                    .getRequireTranslationReview();
+
+                    // Only outright reject copies if the options say so
+                    if (options.getDocIdMismatchAction() == REJECT) {
+                        checkDocument = true;
                     }
-                    if (options.getProjectMismatchAction() != REJECT) {
-                        // Relax project restriction
-                        checkProject = false;
-                        // Every result will match context
-                        // Assuming above phases, results will have non-matching
-                        // project
-                        // Assuming above phase: either doc Id didn't match, or
-                        // the user explicitly rejected non-matching documents
-                        copyCount +=
-                                copyTransPass(document, locale, checkContext,
-                                        checkProject, checkDocument, options);
+                    if (options.getProjectMismatchAction() == REJECT) {
+                        checkProject = true;
                     }
-                    if (options.getContextMismatchAction() != REJECT) {
-                        // Relax context restriction
-                        checkContext = false;
-                        // Assuming above phases:
-                        // Context does not match
-                        // either doc Id didn't match, or the user explicitly
-                        // rejected non-matching documents
-                        // and either Project didn't match, or the user
-                        // explicitly rejected non-matching projects
-                        copyCount +=
-                                copyTransPass(document, locale, checkContext,
-                                        checkProject, checkDocument, options);
+                    if (options.getContextMismatchAction() == REJECT) {
+                        checkContext = true;
                     }
-                    if (options.getContextMismatchAction() != REJECT) {
-                        // Relax context restriction
-                        checkContext = false;
-                        // Assuming above phases:
-                        // Context does not match
-                        // either doc Id didn't match, or the user explicitly
-                        // rejected non-matching documents
-                        // and either Project didn't match, or the user
-                        // explicitly rejected non-matching projects
-                        copyCount +=
-                                copyTransPass(document, locale, checkContext,
-                                        checkProject, checkDocument, options);
+
+                    for (HTextFlow textFlow : document.getTextFlows()) {
+                        if (shouldFindMatch(textFlow, locale,
+                                requireTranslationReview)) {
+                            Optional<HTextFlowTarget> bestMatch =
+                                    textFlowTargetDAO
+                                            .findBestMatchingTranslation(
+                                                textFlow, locale,
+                                                checkContext,
+                                                checkDocument, checkProject);
+
+                            if (bestMatch.isPresent()) {
+                                copyCount++;
+
+                                saveCopyTransMatch(bestMatch.get(), textFlow,
+                                        options, requireTranslationReview);
+
+                            }
+                        }
                     }
 
                     log.info(
@@ -221,108 +194,85 @@ public class CopyTransServiceImpl implements CopyTransService {
         }
     }
 
-    private int copyTransPass(HDocument document, HLocale locale,
-            boolean checkContext, boolean checkProject, boolean checkDocument,
-            HCopyTransOptions options) {
-        ScrollableResults results = null;
+    /**
+     * Indicates if a given text flow should have a match found for a given
+     * locale, or if it is already good enough.
+     */
+    private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
+        boolean requireTranslationReview) {
+        HTextFlowTarget targetForLocale = textFlow.getTargets().get(locale.getId());
 
-        int copyCount = 0;
-        try {
-            boolean requireTranslationReview =
-                    document.getProjectIteration()
-                            .getRequireTranslationReview();
-            results =
-                    textFlowTargetDAO.findMatchingTranslations(document,
-                            locale, checkContext, checkDocument, checkProject,
-                            requireTranslationReview);
-            copyCount = 0;
-
-            while (results.next()) {
-                // HTextFlowTarget matchingTarget =
-                // (HTextFlowTarget)results.get(0);
-                HTextFlowTarget matchingTarget =
-                        textFlowTargetDAO
-                                .findById((Long) results.get(1), false);
-
-                HTextFlow originalTf = (HTextFlow) results.get(0);
-                HProjectIteration matchingTargetProjectIteration =
-                        matchingTarget.getTextFlow().getDocument()
-                                .getProjectIteration();
-                ContentState copyState =
-                        determineContentState(
-                                originalTf.getResId()
-                                        .equals(matchingTarget.getTextFlow()
-                                                .getResId()),
-                                originalTf
-                                        .getDocument()
-                                        .getProjectIteration()
-                                        .getProject()
-                                        .getId()
-                                        .equals(matchingTargetProjectIteration
-                                                .getProject().getId()),
-                                originalTf
-                                        .getDocument()
-                                        .getDocId()
-                                        .equals(matchingTarget.getTextFlow()
-                                                .getDocument().getDocId()),
-                                options, requireTranslationReview,
-                                matchingTarget.getState());
-
-                boolean hasValidationError =
-                        validationTranslations(copyState,
-                                matchingTargetProjectIteration,
-                                originalTf.getContents(),
-                                matchingTarget.getContents());
-
-                if (hasValidationError) {
-                    continue;
-                }
-
-                HTextFlowTarget hTarget =
-                        textFlowTargetDAO.getOrCreateTarget(originalTf, locale);
-                if (shouldOverwrite(hTarget, copyState)) {
-                    // NB we don't touch creationDate
-                    hTarget.setTextFlowRevision(originalTf.getRevision());
-                    hTarget.setLastChanged(matchingTarget.getLastChanged());
-                    hTarget.setLastModifiedBy(matchingTarget
-                            .getLastModifiedBy());
-                    hTarget.setTranslator(matchingTarget.getTranslator());
-                    // TODO rhbz953734 - will need a new copyTran option for
-                    // review state
-                    if (copyState == ContentState.Approved) {
-                        hTarget.setReviewer(matchingTarget.getReviewer());
-                    }
-                    hTarget.setContents(matchingTarget.getContents());
-                    hTarget.setState(copyState);
-                    HSimpleComment hcomment = hTarget.getComment();
-                    if (hcomment == null) {
-                        hcomment = new HSimpleComment();
-                        hTarget.setComment(hcomment);
-                    }
-                    hcomment.setComment(createComment(matchingTarget));
-                    ++copyCount;
-
-                    // manually flush
-                    if (copyCount % DatabaseConstants.BATCH_SIZE == 0) {
-                        entityManager.flush();
-                        entityManager.clear();
-                    }
-                }
-            }
-
-            // a final flush
-            if (copyCount % DatabaseConstants.BATCH_SIZE != 0) {
-                entityManager.flush();
-                entityManager.clear();
-            }
-        } catch (HibernateException e) {
-            log.error("Copy trans error", e);
-        } finally {
-            if (results != null) {
-                results.close();
-            }
+        if (targetForLocale == null ||
+            targetForLocale.getState() == NeedReview) {
+            return true;
+        } else if (requireTranslationReview && targetForLocale.getState() != Approved) {
+            return true;
+        } else if (!requireTranslationReview && targetForLocale.getState() != Translated) {
+            return true;
+        } else {
+            return false;
         }
-        return copyCount;
+    }
+
+    private void saveCopyTransMatch(HTextFlowTarget matchingTarget,
+        HTextFlow originalTf, HCopyTransOptions options,
+        boolean requireTranslationReview) {
+        HProjectIteration matchingTargetProjectIteration =
+            matchingTarget.getTextFlow().getDocument()
+                .getProjectIteration();
+        ContentState copyState =
+            determineContentState(
+                originalTf.getResId()
+                    .equals(matchingTarget.getTextFlow()
+                        .getResId()),
+                originalTf
+                    .getDocument()
+                    .getProjectIteration()
+                    .getProject()
+                    .getId()
+                    .equals(matchingTargetProjectIteration
+                        .getProject().getId()),
+                originalTf
+                    .getDocument()
+                    .getDocId()
+                    .equals(matchingTarget.getTextFlow()
+                        .getDocument().getDocId()),
+                options, requireTranslationReview,
+                matchingTarget.getState());
+
+        boolean hasValidationError =
+            validationTranslations(copyState,
+                matchingTargetProjectIteration,
+                originalTf.getContents(),
+                matchingTarget.getContents());
+
+        if (hasValidationError) {
+            return;
+        }
+
+        HTextFlowTarget hTarget =
+            textFlowTargetDAO.getOrCreateTarget(originalTf, matchingTarget.getLocale());
+        if (shouldOverwrite(hTarget, copyState)) {
+            // NB we don't touch creationDate
+            hTarget.setTextFlowRevision(originalTf.getRevision());
+            hTarget.setLastChanged(matchingTarget.getLastChanged());
+            hTarget.setLastModifiedBy(matchingTarget
+                .getLastModifiedBy());
+            hTarget.setTranslator(matchingTarget.getTranslator());
+            // TODO rhbz953734 - will need a new copyTran option for
+            // review state
+            if (copyState == ContentState.Approved) {
+                hTarget.setReviewer(matchingTarget.getReviewer());
+            }
+            hTarget.setContents(matchingTarget.getContents());
+            hTarget.setState(copyState);
+            HSimpleComment hcomment = hTarget.getComment();
+            if (hcomment == null) {
+                hcomment = new HSimpleComment();
+                hTarget.setComment(hcomment);
+            }
+            hcomment.setComment(createComment(matchingTarget));
+        }
     }
 
     /**
