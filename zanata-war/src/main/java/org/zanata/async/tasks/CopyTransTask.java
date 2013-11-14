@@ -40,10 +40,11 @@ public abstract class CopyTransTask implements
 
     protected HCopyTransOptions copyTransOptions;
 
-    private final CopyTransTaskHandle handle = new CopyTransTaskHandle();
+    private final CopyTransTaskHandle handle;
 
-    public CopyTransTask(HCopyTransOptions copyTransOptions) {
+    public CopyTransTask(HCopyTransOptions copyTransOptions, String taskName) {
         this.copyTransOptions = copyTransOptions;
+        this.handle = new CopyTransTaskHandle(taskName);
     }
 
     @Override
@@ -87,6 +88,10 @@ public abstract class CopyTransTask implements
         @Getter
         @Setter
         private String triggeredBy;
+
+        public CopyTransTaskHandle(String taskName) {
+            super(taskName);
+        }
 
         /**
          * Increments the processed documents by 1

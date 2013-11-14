@@ -43,7 +43,7 @@ public class IterationCopyTransTask extends CopyTransTask {
 
     public IterationCopyTransTask(HProjectIteration projectIteration,
             HCopyTransOptions options) {
-        super(options);
+        super(options, "IterationCopyTransTask: "+projectIteration.getSlug());
         this.projectIteration = projectIteration;
     }
 

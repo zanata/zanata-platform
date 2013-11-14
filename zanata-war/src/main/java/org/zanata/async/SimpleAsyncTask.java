@@ -32,5 +32,10 @@ import lombok.Getter;
 public abstract class SimpleAsyncTask<V> implements
         AsyncTask<V, AsyncTaskHandle<V>> {
     @Getter
-    private final AsyncTaskHandle<V> handle = new AsyncTaskHandle<V>();
+    private final AsyncTaskHandle<V> handle;
+
+    public SimpleAsyncTask(String taskName) {
+        handle = new AsyncTaskHandle<V>(taskName);
+    }
+
 }

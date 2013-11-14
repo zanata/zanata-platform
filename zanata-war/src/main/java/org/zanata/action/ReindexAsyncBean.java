@@ -182,7 +182,8 @@ public class ReindexAsyncBean implements Serializable {
         @Override
         public AsyncTaskHandle<Boolean> getHandle() {
             if (handle == null) {
-                handle = new AsyncTaskHandle<Boolean>();
+                String name = getClass().getSimpleName(); //+":"+indexingOptions
+                handle = new AsyncTaskHandle<Boolean>(name);
                 handle.setMaxProgress(getTotalOperations());
             }
             return handle;
