@@ -103,6 +103,7 @@ public class ActivateWorkspaceHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
         ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .use("accountDAO", accountDAO)

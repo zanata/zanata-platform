@@ -33,9 +33,10 @@ public class PreviewReplaceTextHandlerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
-      handler = SeamAutowire.instance()
-            .use("identity", identity)
-            .autowire(PreviewReplaceTextHandler.class);
+        handler = SeamAutowire.instance()
+                .reset()
+                .use("identity", identity)
+                .autowire(PreviewReplaceTextHandler.class);
       // @formatter:on
     }
 

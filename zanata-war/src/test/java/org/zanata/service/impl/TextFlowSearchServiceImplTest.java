@@ -52,14 +52,15 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
-      service = SeamAutowire.instance()
+        service = SeamAutowire.instance()
+            .reset()
             .use("localeServiceImpl", localeService)
             .use("documentDAO", new DocumentDAO(getSession()))
             .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
             .use("session", new FullTextSessionImpl(getSession()))
             .autowire(TextFlowSearchServiceImpl.class);
-      // @formatter:on
+        // @formatter:on
         jaHLocale = getEm().find(HLocale.class, 3L);
         when(
                 localeService.validateLocaleByProjectIteration(localeId,

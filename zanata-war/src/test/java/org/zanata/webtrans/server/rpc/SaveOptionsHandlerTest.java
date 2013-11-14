@@ -49,6 +49,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
         authenticatedAccount = getEm().find(HAccount.class, 1L);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", accountDAO)
             .ignoreNonResolvable()

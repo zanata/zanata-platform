@@ -58,6 +58,7 @@ public class RevertTransUnitUpdatesHandlerTest {
         MockitoAnnotations.initMocks(this);
         TransUnitTransformer transUnitTransformer =
                 SeamAutowire.instance()
+                        .reset()
                         .use("resourceUtils", new ResourceUtils())
                         .autowire(TransUnitTransformer.class);
         // @formatter:off

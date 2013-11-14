@@ -108,6 +108,7 @@ public class TransMemoryMergeHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("webtrans.gwt.GetTransMemoryHandler", getTransMemoryHandler)
             .use("webtrans.gwt.GetTransMemoryDetailsHandler", getTransMemoryDetailsHandler)
             .use("webtrans.gwt.UpdateTransUnitHandler", updateTransUnitHandler)

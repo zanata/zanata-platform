@@ -50,6 +50,7 @@ public class GetGlossaryDetailsHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("glossaryDAO", glossaryDAO)
             .use("localeServiceImpl", localeServiceImpl)

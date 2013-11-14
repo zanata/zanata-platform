@@ -102,7 +102,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
             expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "Could not auto-wire component of type .*. No no-args constructor.")
     public void brokenChild() {
-        SeamAutowire.instance().reset().autowire(ComponentWithNonRequiredBrokenChild.class);
+        SeamAutowire.instance().autowire(ComponentWithNonRequiredBrokenChild.class);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
     @Test
     public void cyclesAllowed() {
         ComponentWithChildCycle parent =
-                SeamAutowire.instance().reset().allowCycles()
+                SeamAutowire.instance().allowCycles()
                         .autowire(ComponentWithChildCycle.class);
 
         assertThat(parent.getCyclicChildComponent(), notNullValue());
@@ -166,6 +166,6 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
             expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject .* into component of type .*")
     public
             void cyclesNotAllowed() {
-        SeamAutowire.instance().reset().autowire(ComponentWithChildCycle.class);
+        SeamAutowire.instance().autowire(ComponentWithChildCycle.class);
     }
 }

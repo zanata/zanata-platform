@@ -44,6 +44,7 @@ public class TransUnitEditHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .ignoreNonResolvable()
