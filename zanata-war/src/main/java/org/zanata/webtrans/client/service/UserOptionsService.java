@@ -135,6 +135,8 @@ public class UserOptionsService {
                 .getNavOption().toString());
         configMap.put(UserOptions.ShowSaveApprovedWarning, Boolean
                 .toString(configHolder.getState().isShowSaveApprovedWarning()));
+        configMap.put(UserOptions.SelectedReferenceLang, configHolder
+                .getState().getSelectedReferenceForSourceLang());
 
         return configMap;
     }
@@ -178,6 +180,8 @@ public class UserOptionsService {
         configHolder.setTMDisplayMode(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE);
         configHolder.setShowTMPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
         configHolder.setShowGlossaryPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
+        configHolder
+                .setSelectedReferenceForSourceLang(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
     }
 
     public UserConfigHolder getConfigHolder() {

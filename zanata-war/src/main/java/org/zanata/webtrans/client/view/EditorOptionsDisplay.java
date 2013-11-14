@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.view;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -13,7 +14,7 @@ import org.zanata.webtrans.shared.rpc.NavOption;
  */
 public interface EditorOptionsDisplay extends WidgetDisplay {
     void setListener(Listener listener);
-
+    void setSourceLangListBox(IsWidget sourceLangListBoxView);
     void setOptionsState(UserConfigHolder.ConfigurationState state);
 
     interface Listener extends

@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
+import lombok.extern.slf4j.Slf4j;
+
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -33,9 +33,8 @@ import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
+@Slf4j
 public class TranslationWorkspaceImpl implements TranslationWorkspace {
-    private static final Log log = Logging
-            .getLog(TranslationWorkspaceImpl.class);
     private final WorkspaceContext workspaceContext;
     private final Domain domain;
     private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions =
@@ -79,7 +78,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
                                         .remove(connectionId);
                         if (editorClientId != null) {
                             log.info(
-                                    "Timeout for GWTEventService connectionId {0}; removing EditorClientId {1} from workspace {2}",
+                                    "Timeout for GWTEventService connectionId {}; removing EditorClientId {} from workspace {}",
                                     connectionId, editorClientId, workspaceId);
                             removeEditorClient(editorClientId);
                         }
@@ -105,7 +104,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
                 sessions.putIfAbsent(editorClientId, new PersonSessionDetails(
                         new Person(personId, "", ""), null));
         if (prev == null) {
-            log.info("Added user {0} with editorClientId {1} to workspace {2}",
+            log.info("Added user {} with editorClientId {} to workspace {}",
                     personId.getId(), editorClientId, workspaceContext);
             httpSessionToEditorClientId.put(httpSessionId, editorClientId);
         }
@@ -114,7 +113,7 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
     @Override
     public void onEventServiceConnected(EditorClientId editorClientId,
             String connectionId) {
-        log.info("EditorClientId {0} has connectionId {1}", editorClientId,
+        log.info("EditorClientId {} has connectionId {}", editorClientId,
                 connectionId);
         connectionIdToEditorClientId.put(connectionId, editorClientId);
     }
@@ -145,18 +144,18 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
                 publish(event);
 
                 log.info(
-                        "Removed user {0} with editorClientId {1} from workspace {2}",
+                        "Removed user {} with editorClientId {} from workspace {}",
                         details.getPerson().getId(), editorClientId,
                         workspaceContext);
                 return true;
             } else {
                 log.warn(
-                        "Unable to remove user {0} with editorClientId {1} from workspace {2}",
+                        "Unable to remove user {} with editorClientId {} from workspace {}",
                         details.getPerson().getId(), editorClientId,
                         workspaceContext);
             }
         } else {
-            log.debug("EditorClientId {0} not found in workspace {1}",
+            log.debug("EditorClientId {} not found in workspace {}",
                     editorClientId, workspaceContext);
             return false;
         }

@@ -29,12 +29,12 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -56,6 +56,7 @@ import com.ibm.icu.util.ULocale;
  */
 @Name("localeServiceImpl")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class LocaleServiceImpl implements LocaleService {
     private LocaleDAO localeDAO;
 
@@ -66,9 +67,6 @@ public class LocaleServiceImpl implements LocaleService {
     private PersonDAO personDAO;
 
     private TextFlowTargetDAO textFlowTargetDAO;
-
-    @Logger
-    Log log;
 
     public LocaleServiceImpl() {
     }

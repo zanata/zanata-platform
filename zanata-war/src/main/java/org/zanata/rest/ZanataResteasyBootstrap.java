@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.SynchronousDispatcher;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -14,14 +16,12 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.ResteasyBootstrap;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
@@ -31,10 +31,8 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 @AutoCreate
 @Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
         precedence = Install.DEPLOYMENT)
+@Slf4j
 public class ZanataResteasyBootstrap extends ResteasyBootstrap {
-
-    @Logger
-    Log log;
 
     @Observer("org.jboss.seam.postReInitialization")
     public void registerHotDeployedClasses() {

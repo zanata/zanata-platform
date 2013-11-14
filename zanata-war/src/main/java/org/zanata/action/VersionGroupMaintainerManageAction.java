@@ -4,16 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
@@ -22,6 +22,7 @@ import org.zanata.service.VersionGroupService;
 
 @Name("versionGroupMaintainerManageAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class VersionGroupMaintainerManageAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,9 +40,6 @@ public class VersionGroupMaintainerManageAction implements Serializable {
 
     @In
     AccountDAO accountDAO;
-
-    @Logger
-    Log log;
 
     public void init() {
         allList = versionGroupServiceImpl.getMaintainerBySlug(slug);
@@ -62,7 +60,7 @@ public class VersionGroupMaintainerManageAction implements Serializable {
     @Restrict("#{s:hasPermission(versionGroupMaintainerManageAction.group,'update')}")
     public
             void deleteMaintainer(HPerson person) {
-        log.debug("try to delete maintainer {0} from slug {1}",
+        log.debug("try to delete maintainer {} from slug {}",
                 person.getName(), this.slug);
         HIterationGroup iterationGroup =
                 versionGroupServiceImpl.getBySlug(this.slug);
@@ -93,7 +91,7 @@ public class VersionGroupMaintainerManageAction implements Serializable {
             personList.add(a.getPerson());
             versionGroupServiceImpl.makePersistent(iterationGroup);
             versionGroupServiceImpl.flush();
-            log.debug("add {0} into maintainers", account);
+            log.debug("add {} into maintainers", account);
             return "success";
         } else {
             FacesMessages.instance().add("This account is disabled.");

@@ -20,13 +20,31 @@
  */
 package org.zanata.rest.service;
 
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -45,35 +63,15 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("sourceDocResourceService")
 @Path(SourceDocResource.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class SourceDocResourceService implements SourceDocResource {
-
-    @Logger
-    private Log log;
 
     @Context
     private Request request;
@@ -161,7 +159,7 @@ public class SourceDocResourceService implements SourceDocResource {
         String resourceName = resource.getName();
         if (!Pattern.matches(SourceDocResource.RESOURCE_NAME_REGEX,
                 resourceName)) {
-            log.warn("bad resource name in post(): {0}", resourceName);
+            log.warn("bad resource name in post(): {}", resourceName);
             throw new WebApplicationException(Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity("not a legal resource name: " + resourceName)
@@ -226,7 +224,7 @@ public class SourceDocResourceService implements SourceDocResource {
         }
 
         Resource entity = new Resource(doc.getDocId());
-        log.debug("get resource details {0}", entity.toString());
+        log.debug("get resource details {}", entity.toString());
         resourceUtils.transferToResource(doc, entity);
 
         for (HTextFlow htf : doc.getTextFlows()) {
@@ -241,7 +239,7 @@ public class SourceDocResourceService implements SourceDocResource {
         // handle extensions
         resourceUtils.transferToResourceExtensions(doc,
                 entity.getExtensions(true), extensions);
-        log.debug("Get resource :{0}", entity.toString());
+        log.debug("Get resource :{}", entity.toString());
         return Response.ok().entity(entity).tag(etag)
                 .lastModified(doc.getLastChanged()).build();
     }
@@ -331,7 +329,7 @@ public class SourceDocResourceService implements SourceDocResource {
         resourceUtils.transferToResourceExtensions(doc,
                 entity.getExtensions(true), extensions);
 
-        log.debug("successfuly get resource meta: {0}", entity);
+        log.debug("successfuly get resource meta: {}", entity);
         return Response.ok().entity(entity).tag(etag).build();
     }
 
@@ -354,7 +352,7 @@ public class SourceDocResourceService implements SourceDocResource {
         }
 
         log.debug("pass evaluation");
-        log.debug("put resource meta: {0}", messageBody);
+        log.debug("put resource meta: {}", messageBody);
 
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
@@ -422,7 +420,7 @@ public class SourceDocResourceService implements SourceDocResource {
             return hLocale;
         } catch (ZanataServiceException e) {
             log.warn(
-                    "Exception validating target locale {0} in proj {1} iter {2}",
+                    "Exception validating target locale {} in proj {} iter {}",
                     e, locale, projectSlug, iterationSlug);
             throw new WebApplicationException(Response
                     .status(Response.Status.FORBIDDEN).entity(e.getMessage())

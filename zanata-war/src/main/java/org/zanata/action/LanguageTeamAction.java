@@ -26,10 +26,10 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -52,6 +51,7 @@ import org.zanata.service.LocaleService;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class LanguageTeamAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -72,9 +72,6 @@ public class LanguageTeamAction implements Serializable {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
-
-    @Logger
-    private Log log;
 
     @Getter
     @Setter
@@ -144,11 +141,11 @@ public class LanguageTeamAction implements Serializable {
                     this.language, authenticatedAccount.getPerson().getId(),
                     true, true, true);
             Events.instance().raiseEvent("personJoinedTribe");
-            log.info("{0} joined tribe {1}",
+            log.info("{} joined tribe {}",
                     authenticatedAccount.getUsername(), this.language);
             // FIXME use localizable string
             FacesMessages.instance().add(
-                    "You are now a member of the {0} language team",
+                    "You are now a member of the {} language team",
                     getLocale().retrieveNativeName());
         } catch (Exception e) {
             FacesMessages.instance().add(Severity.ERROR, e.getMessage());
@@ -165,7 +162,7 @@ public class LanguageTeamAction implements Serializable {
         languageTeamServiceImpl.leaveLanguageTeam(this.language,
                 authenticatedAccount.getPerson().getId());
         Events.instance().raiseEvent("personLeftTribe");
-        log.info("{0} left tribe {1}", authenticatedAccount.getUsername(),
+        log.info("{} left tribe {}", authenticatedAccount.getUsername(),
                 this.language);
         FacesMessages.instance().add("You have left the {0} language team",
                 getLocale().retrieveNativeName());

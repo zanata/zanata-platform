@@ -6,12 +6,12 @@
 
   <!-- sso security -->
 
-  <!-- Kerberos only (also configurable on JBOSS_HOME/server/<config>/deployers/jbossweb.deployer/web.xml)-->
+  <!-- Kerberos ticket based authentication settings -->
 
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>sign in</web-resource-name>
-      <url-pattern>/account/klogin.seam</url-pattern>
+      <url-pattern>/account/klogin</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>*</role-name>
@@ -19,11 +19,15 @@
   </security-constraint>
   <login-config>
     <auth-method>SPNEGO</auth-method>
+    <form-login-config>
+      <form-login-page>/account/kloginform.jsp</form-login-page>
+      <!-- Error page not needed since the login form takes over -->
+      <form-error-page>/</form-error-page>
+    </form-login-config>
   </login-config>
   <security-role>
     <role-name>*</role-name>
   </security-role>
-
 
   <!-- RichFaces -->
   <context-param>

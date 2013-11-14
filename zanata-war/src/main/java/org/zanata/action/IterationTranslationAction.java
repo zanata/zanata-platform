@@ -26,10 +26,8 @@ import java.util.List;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
@@ -49,8 +47,6 @@ public class IterationTranslationAction implements Serializable {
 
     @In
     LocaleService localeServiceImpl;
-    @Logger
-    Log log;
 
     @In
     Identity identity;

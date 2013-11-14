@@ -1,13 +1,10 @@
 /**
  * TODO This is a forceful override of Arquillian's class with the same name.
+ * Remove this when the issues have been fixed in Arquillian.
  * This is due to some problems while connecting via JMX to check for the health of
- * the deployment and EAP 6.0.1.
- * See lines: 137 and 316 and for the respective alterations.
- * 141: The root node does not contain the specified attribute. Fetching the attribute from a new request may solve it.
- *      Hardcoding it for our tests.
- * 320: Specifying the recursive parameter on some nodes ("undefined,"which is the case when reading the root node; and
- *      a deployment node) makes the server return an undefined response or an error.
- */
+ * the deployment and EAP 6.1.0.
+ * TO find the changes, look for the CHANGED comment keyword.
+ * /
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2009, Red Hat Middleware LLC, and individual contributors
@@ -26,8 +23,23 @@
  */
 package org.jboss.as.arquillian.container;
 
+import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STARTING;
+import static org.jboss.as.controller.client.helpers.ClientConstants.CONTROLLER_PROCESS_STATE_STOPPING;
+import static org.jboss.as.controller.client.helpers.ClientConstants.DEPLOYMENT;
+import static org.jboss.as.controller.client.helpers.ClientConstants.FAILURE_DESCRIPTION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OP;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OP_ADDR;
+import static org.jboss.as.controller.client.helpers.ClientConstants.OUTCOME;
+import static org.jboss.as.controller.client.helpers.ClientConstants.READ_ATTRIBUTE_OPERATION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.as.controller.client.helpers.ClientConstants.RECURSIVE;
+import static org.jboss.as.controller.client.helpers.ClientConstants.RESULT;
+import static org.jboss.as.controller.client.helpers.ClientConstants.SUBSYSTEM;
+import static org.jboss.as.controller.client.helpers.ClientConstants.SUCCESS;
+
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -59,22 +71,9 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.JMXContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
-import org.jboss.as.controller.ControlledProcessState;
-import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DEPLOYMENT;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.READ_ATTRIBUTE_OPERATION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RECURSIVE;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
+import org.jboss.logging.Logger;
 
 /**
  * A helper class to join management related operations, like extract sub system
@@ -83,6 +82,9 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUC
  * @author <a href="aslak@redhat.com">Aslak Knutsen</a>
  */
 public class ManagementClient {
+
+    private static final Logger logger = Logger
+            .getLogger(ManagementClient.class);
 
     private static final String SUBDEPLOYMENT = "subdeployment";
 
@@ -137,10 +139,21 @@ public class ManagementClient {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            String socketBinding =
+            ModelNode socketBinding =
                     rootNode.get("subsystem").get("web").get("connector")
-                            .get("http").get("socket-binding").asString();
-            webUri = getBinding("http", /* socketBinding */"http");
+                            .get("http").get("socket-binding");
+            if (!socketBinding.isDefined()) {
+                try {
+                    // MODIFIED:
+                    webUri = new URI("http://localhost:8080");
+                    // Hard code the binding if it's not present
+                    webUri = getBinding("http", "http");
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                webUri = getBinding("http", socketBinding.asString());
+            }
         }
         return webUri;
     }
@@ -179,17 +192,17 @@ public class ManagementClient {
 
     public boolean isServerInRunningState() {
         try {
-            ModelNode op =
-                    Util.getEmptyOperation(READ_ATTRIBUTE_OPERATION,
-                            PathAddress.EMPTY_ADDRESS.toModelNode());
+            ModelNode op = new ModelNode();
+            op.get(OP).set(READ_ATTRIBUTE_OPERATION);
+            op.get(OP_ADDR).setEmptyList();
             op.get(NAME).set("server-state");
 
             ModelNode rsp = client.execute(op);
             return SUCCESS.equals(rsp.get(OUTCOME).asString())
-                    && !ControlledProcessState.State.STARTING.toString()
-                            .equals(rsp.get(RESULT).asString())
-                    && !ControlledProcessState.State.STOPPING.toString()
-                            .equals(rsp.get(RESULT).asString());
+                    && !CONTROLLER_PROCESS_STATE_STARTING.equals(rsp
+                            .get(RESULT).asString())
+                    && !CONTROLLER_PROCESS_STATE_STOPPING.equals(rsp
+                            .get(RESULT).asString());
         } catch (Throwable ignored) {
             return false;
         }
@@ -303,32 +316,21 @@ public class ManagementClient {
 
     private void extractWebArchiveContexts(HTTPContext context,
             String deploymentName, ModelNode deploymentNode) {
-        /*
-         * if (deploymentNode.hasDefined(SUBSYSTEM)) { ModelNode subsystem =
-         * deploymentNode.get(SUBSYSTEM); if (subsystem.hasDefined(WEB)) {
-         * ModelNode webSubSystem = subsystem.get(WEB); if
-         * (webSubSystem.isDefined() && webSubSystem.hasDefined("context-root"))
-         * { final String contextName =
-         * webSubSystem.get("context-root").asString(); if
-         * (webSubSystem.hasDefined(SERVLET)) { for (final ModelNode servletNode
-         * : webSubSystem.get(SERVLET).asList()) { for (final String servletName
-         * : servletNode.keys()) { context.add(new Servlet(servletName,
-         * toContextName(contextName))); } } }
-         *//*
-            * This is a WebApp, it has some form of webcontext whether it has a
-            * Servlet or not. AS7 does not expose jsp / default servlet in mgm
-            * api
-            *//*
-               * context.add(new Servlet("default",
-               * toContextName(contextName))); } } }
-               */
+        // CHANGED :
+        // Added the try block and the 4 subsequent lines and commented out
+        // the lines below
+
+        // if (deploymentNode.hasDefined(SUBSYSTEM)) {
+        // ModelNode subsystem = deploymentNode.get(SUBSYSTEM);
+        // if (subsystem.hasDefined(WEB)) {
+        // ModelNode webSubSystem = subsystem.get(WEB);
         try {
             ModelNode address = new ModelNode();
             address.add(DEPLOYMENT).add(DEPLOYMENT, deploymentNode.get(NAME))
                     .add(SUBSYSTEM, WEB);
             ModelNode webSubSystem = readResource(address, true);
-
-            if (webSubSystem.hasDefined("context-root")) {
+            if (webSubSystem.isDefined()
+                    && webSubSystem.hasDefined("context-root")) {
                 final String contextName =
                         webSubSystem.get("context-root").asString();
                 if (webSubSystem.hasDefined(SERVLET)) {
@@ -340,6 +342,11 @@ public class ManagementClient {
                         }
                     }
                 }
+                /*
+                 * This is a WebApp, it has some form of webcontext whether it
+                 * has a Servlet or not. AS7 does not expose jsp / default
+                 * servlet in mgm api
+                 */
                 context.add(new Servlet("default", toContextName(contextName)));
             }
         } catch (Exception e) {
@@ -364,15 +371,13 @@ public class ManagementClient {
     // ---------------------------------------------------||
     // -------------------------------------------------------------------------------------||
 
-    /**
-     * Additional method that allows the recursive parameter to be defined
-     */
+    // MODIFIED:
     private ModelNode readResource(ModelNode address, boolean recursive)
             throws Exception {
         final ModelNode operation = new ModelNode();
         operation.get(OP).set(READ_RESOURCE_OPERATION);
         if (recursive) {
-            operation.get(RECURSIVE).set(recursive);
+            operation.get(RECURSIVE).set("true");
         }
         operation.get(OP_ADDR).set(address);
 
@@ -380,8 +385,8 @@ public class ManagementClient {
     }
 
     /*
-     * private ModelNode readResource(ModelNode address) throws Exception {
-     * final ModelNode operation = new ModelNode();
+     * ORIGINAL: private ModelNode readResource(ModelNode address) throws
+     * Exception { final ModelNode operation = new ModelNode();
      * operation.get(OP).set(READ_RESOURCE_OPERATION);
      * operation.get(RECURSIVE).set("true");
      * operation.get(OP_ADDR).set(address);
@@ -399,10 +404,10 @@ public class ManagementClient {
     private void checkSuccessful(final ModelNode result,
             final ModelNode operation) throws UnSuccessfulOperationException {
         if (!SUCCESS.equals(result.get(OUTCOME).asString())) {
-            /*
-             * throw new UnSuccessfulOperationException(result.get(
-             * FAILURE_DESCRIPTION).toString());
-             */
+            logger.error("Operation " + operation
+                    + " did not succeed. Result was " + result);
+            throw new UnSuccessfulOperationException(result.get(
+                    FAILURE_DESCRIPTION).toString());
         }
     }
 

@@ -22,22 +22,21 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import javax.faces.event.ValueChangeEvent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
@@ -53,6 +52,7 @@ import org.zanata.service.impl.EmailChangeService;
 
 @Name("profileAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class ProfileAction implements Serializable {
     /**
     *
@@ -67,9 +67,6 @@ public class ProfileAction implements Serializable {
 
     @In
     ApplicationConfiguration applicationConfiguration;
-
-    @Logger
-    Log log;
 
     @In
     ZanataIdentity identity;
@@ -248,6 +245,8 @@ public class ProfileAction implements Serializable {
 
     public String cancel() {
         if (identityStore.isNewUser(username)) {
+            // Log the identity out
+            identity.logout();
             return "home";
         }
         return "view";

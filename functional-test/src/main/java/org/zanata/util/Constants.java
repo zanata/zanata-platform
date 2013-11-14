@@ -22,6 +22,9 @@ package org.zanata.util;
 
 import com.google.common.base.Objects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Constants {
     // constants used by page and workflow objects
     propFile("setup.properties"), zanataInstance("zanata.instance.url"),
@@ -49,5 +52,22 @@ public enum Constants {
 
     public String value() {
         return value;
+    }
+
+    public static Map<String, String> projectTypeOptions() {
+        Map<String, String> projectTypeOptions = new HashMap<String, String>();
+        projectTypeOptions.put("None", "-- No selection --");
+        projectTypeOptions.put("File",
+                "File. For plain text, LibreOffice, InDesign.");
+        projectTypeOptions.put("Gettext",
+                "Gettext. For gettext software strings.");
+        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
+        projectTypeOptions.put("Properties",
+                "Properties. For Java properties files.");
+        projectTypeOptions.put("Utf8Properties",
+                "Utf8Properties. For UTF8-encoded Java properties.");
+        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
+        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
+        return projectTypeOptions;
     }
 }

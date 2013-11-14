@@ -29,11 +29,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -42,17 +40,10 @@ import org.zanata.model.HAccount;
 @Name("passwordChange")
 @Scope(ScopeType.PAGE)
 public class PasswordChangeAction implements Serializable {
-
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
-
-    @Logger
-    Log log;
 
     @In
     private IdentityManager identityManager;

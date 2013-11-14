@@ -7,6 +7,7 @@ import org.zanata.webtrans.shared.model.HasTransUnitId;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh {
     void setValue(TransUnit value);
@@ -22,4 +23,8 @@ public interface SourceContentsDisplay extends HasTransUnitId, NeedsRefresh {
     void toggleTransUnitDetails(boolean showTransUnitDetails);
 
     void updateTransUnitDetails(TransUnit transUnit);
+
+    void showReference(TextFlowTarget reference);
+
+    void hideReference();
 }

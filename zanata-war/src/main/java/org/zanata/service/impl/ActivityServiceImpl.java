@@ -31,12 +31,10 @@ import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -61,9 +59,6 @@ import org.zanata.service.ActivityService;
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 public class ActivityServiceImpl implements ActivityService {
-    @Logger
-    private Log log;
-
     @In
     private ActivityDAO activityDAO;
 

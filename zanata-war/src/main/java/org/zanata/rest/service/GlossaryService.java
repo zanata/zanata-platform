@@ -12,12 +12,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
@@ -30,6 +30,7 @@ import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
 @Path(GlossaryService.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class GlossaryService implements GlossaryResource {
     @Context
@@ -50,8 +51,6 @@ public class GlossaryService implements GlossaryResource {
 
     @In
     private GlossaryFileService glossaryFileServiceImpl;
-
-    Log log = Logging.getLog(GlossaryService.class);
 
     @Override
     public Response getEntries() {

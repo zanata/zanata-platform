@@ -47,32 +47,50 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshPageEventHandler;
+import org.zanata.webtrans.client.events.ReferenceVisibleEvent;
+import org.zanata.webtrans.client.events.ReferenceVisibleEventHandler;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.shared.model.Locale;
+import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
+import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 public class SourceContentsPresenter implements ClickHandler,
-        UserConfigChangeHandler, TransUnitUpdatedEventHandler {
+        UserConfigChangeHandler, TransUnitUpdatedEventHandler,
+        ReferenceVisibleEventHandler, RefreshPageEventHandler {
     private final EventBus eventBus;
     private final Provider<SourceContentsDisplay> displayProvider;
     private final UserConfigHolder configHolder;
+    private final CachingDispatchAsync dispatcher;
 
     // states
     private List<SourceContentsDisplay> displayList = Collections.emptyList();
     private TransUnitId currentTransUnitId;
     private HasSelectableSource selectedSource;
+    private Boolean isReferenceShowing = false;
+    private Locale selectedReferenceLocale;
 
     @Inject
     public SourceContentsPresenter(EventBus eventBus,
             Provider<SourceContentsDisplay> displayProvider,
+            CachingDispatchAsync dispatcher,
             UserConfigHolder configHolder) {
         this.eventBus = eventBus;
         this.displayProvider = displayProvider;
         this.configHolder = configHolder;
+        this.dispatcher = dispatcher;
         eventBus.addHandler(UserConfigChangeEvent.TYPE, this);
         eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
+        eventBus.addHandler(ReferenceVisibleEvent.getType(), this);
+        eventBus.addHandler(RefreshPageEvent.TYPE, this);
     }
 
     /**
@@ -126,6 +144,9 @@ public class SourceContentsPresenter implements ClickHandler,
             builder.add(display);
         }
         displayList = builder.build();
+        if (isReferenceShowing) {
+            showReference();
+        }
     }
 
     public List<SourceContentsDisplay> getDisplays() {
@@ -185,6 +206,52 @@ public class SourceContentsPresenter implements ClickHandler,
             sourceContentsView.get().updateTransUnitDetails(
                     event.getUpdateInfo().getTransUnit());
             sourceContentsView.get().refresh();
+        }
+    }
+
+
+    @Override
+    public void onShowHideReference(ReferenceVisibleEvent event) {
+        if (event.isVisible()) {
+            isReferenceShowing = true;
+            selectedReferenceLocale = event.getSelectedLocale();
+            showReference();
+        } else {
+            hideReference();
+        }
+    }
+
+    private void showReference() {
+        for (final SourceContentsDisplay display : displayList) {
+            GetTargetForLocale action = new GetTargetForLocale(display.getId(),
+                    selectedReferenceLocale);
+            dispatcher.execute(action,
+                    new AsyncCallback<GetTargetForLocaleResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    eventBus.fireEvent(new NotificationEvent(NotificationEvent
+                            .Severity.Error, "Failed to fetch target"));
+                }
+
+                @Override
+                public void onSuccess(GetTargetForLocaleResult result) {
+                    display.showReference(result.getTarget());
+                }
+            });
+        }
+    }
+
+    public void hideReference() {
+        for (SourceContentsDisplay display : displayList) {
+            display.hideReference();
+        }
+        isReferenceShowing = false;
+    }
+
+    @Override
+    public void onRefreshPage(RefreshPageEvent event) {
+        if (isReferenceShowing) {
+            showReference();
         }
     }
 

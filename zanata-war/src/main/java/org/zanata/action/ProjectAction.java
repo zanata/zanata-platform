@@ -26,10 +26,8 @@ import javax.faces.model.DataModel;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
@@ -50,9 +48,6 @@ public class ProjectAction implements Serializable {
                     !showObsolete);
 
     private int scrollerPage = 1;
-
-    @Logger
-    Log log;
 
     @In
     private ProjectDAO projectDAO;

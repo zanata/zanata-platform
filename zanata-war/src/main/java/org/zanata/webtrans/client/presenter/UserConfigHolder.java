@@ -70,6 +70,7 @@ public class UserConfigHolder {
     public static final boolean DEFAULT_SPELL_CHECK = true;
     public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
     public static final boolean DEFAULT_SHOW_PANEL = true;
+    public static final String DEFAULT_SELECTED_REFERENCE = "none";
 
     public UserConfigHolder() {
         // default state
@@ -96,6 +97,7 @@ public class UserConfigHolder {
         state.showTMPanel = DEFAULT_SHOW_PANEL;
         state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
         state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
+        state.selectedReferenceForSourceLang = DEFAULT_SELECTED_REFERENCE;
         state.displayTheme = ThemesOption.THEMES_DEFAULT;
         state.enabledValidationIds = new ArrayList<ValidationId>();
     }
@@ -214,6 +216,11 @@ public class UserConfigHolder {
         state.showTMPanel = show;
     }
 
+    public void setSelectedReferenceForSourceLang(String selected) {
+        state = new ConfigurationState(state);
+        state.selectedReferenceForSourceLang = selected;
+    }
+
     public void setShowGlossaryPanel(boolean show) {
         state = new ConfigurationState(state);
         state.showGlossaryPanel = show;
@@ -256,6 +263,7 @@ public class UserConfigHolder {
         private boolean filterByApproved;
         private boolean filterByRejected;
         private boolean filterByHasError;
+        private String selectedReferenceForSourceLang;
 
         private boolean showSaveApprovedWarning;
         private boolean spellCheckEnabled;
@@ -295,6 +303,8 @@ public class UserConfigHolder {
             this.showOptionalTransUnitDetails =
                     old.isShowOptionalTransUnitDetails();
             this.enabledValidationIds = old.getEnabledValidationIds();
+            this.selectedReferenceForSourceLang =
+                    old.getSelectedReferenceForSourceLang();
         }
 
         public boolean isEnterSavesApproved() {
@@ -359,6 +369,10 @@ public class UserConfigHolder {
 
         public DiffMode getTransMemoryDisplayMode() {
             return transMemoryDisplayMode;
+        }
+
+        public String getSelectedReferenceForSourceLang() {
+            return selectedReferenceForSourceLang;
         }
 
         public ThemesOption getDisplayTheme() {
