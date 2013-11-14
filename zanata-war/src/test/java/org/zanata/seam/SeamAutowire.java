@@ -123,6 +123,9 @@ public class SeamAutowire {
      *            The component instance to use under the provided name.
      */
     public SeamAutowire use(String name, Object component) {
+        if (namedComponents.containsKey(name)) {
+            throw new RuntimeException("Component "+name+" was already created.  You should register it before it is resolved.");
+        }
         namedComponents.put(name, component);
         return this;
     }
@@ -252,7 +255,6 @@ public class SeamAutowire {
 
         // Register all interfaces for this class
         this.registerInterfaces(componentClass);
-
         // Resolve injected Components
         for (ComponentAccessor accessor : getAllComponentAccessors(component)) {
             // Another annotated component
@@ -504,11 +506,10 @@ public class SeamAutowire {
     }
 
     private void registerInterfaces(Class<?> cls) {
-        if (!cls.isInterface()) {
-            // register all interfaces registered by this component
-            for (Class<?> iface : getAllInterfaces(cls)) {
-                this.componentImpls.put(iface, cls);
-            }
+        assert !cls.isInterface();
+        // register all interfaces registered by this component
+        for (Class<?> iface : getAllInterfaces(cls)) {
+            this.componentImpls.put(iface, cls);
         }
     }
 

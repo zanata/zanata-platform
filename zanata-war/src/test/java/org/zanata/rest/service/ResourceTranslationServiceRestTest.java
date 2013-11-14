@@ -6,8 +6,11 @@ import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.BeforeMethod;
 import org.zanata.ZanataRestTest;
+import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 
