@@ -40,6 +40,7 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 
 @Test(groups = { "unit-tests" })
 public class EditorOptionsPresenterTest {
@@ -54,6 +55,10 @@ public class EditorOptionsPresenterTest {
     private WorkspaceContext workspaceContext;
     @Mock
     private ValidationOptionsPresenter validationDetailsPresenter;
+    @Mock
+    private ChangeReferenceLangPresenter changeReferenceLangPresenter;
+    @Mock
+    private ChangeReferenceLangDisplay changeReferenceLangDisplay;
     @Mock
     private CachingDispatchAsync dispatcher;
     @Captor
@@ -73,6 +78,7 @@ public class EditorOptionsPresenterTest {
         presenter =
                 new EditorOptionsPresenter(display, eventBus,
                         userWorkspaceContext, validationDetailsPresenter,
+                        changeReferenceLangPresenter,
                         dispatcher, userOptionsService);
 
         workspaceId =
@@ -90,6 +96,9 @@ public class EditorOptionsPresenterTest {
     public void onBindWillRegisterHandlers() {
         // Given: user workspace context is not readonly
         when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false);
+
+        when(changeReferenceLangPresenter.getDisplay())
+                .thenReturn(changeReferenceLangDisplay);
 
         // When:
         presenter.onBind();

@@ -138,7 +138,7 @@ public class UserOptionsServiceTest {
     public void getEditorOptions() {
         Map<UserOptions, String> map = service.getEditorOptions();
 
-        assertThat(map.size(), Matchers.equalTo(17));
+        assertThat(map.size(), Matchers.equalTo(18));
 
         assertThat(map.containsKey(UserOptions.ShowErrors),
                 Matchers.equalTo(true));
@@ -168,6 +168,8 @@ public class UserOptionsServiceTest {
         assertThat(map.containsKey(UserOptions.Navigation),
                 Matchers.equalTo(true));
         assertThat(map.containsKey(UserOptions.ShowSaveApprovedWarning),
+                Matchers.equalTo(true));
+        assertThat(map.containsKey(UserOptions.SelectedReferenceLang),
                 Matchers.equalTo(true));
     }
 
@@ -228,6 +230,8 @@ public class UserOptionsServiceTest {
                 Matchers.equalTo(UserConfigHolder.DEFAULT_USE_CODE_MIRROR));
         assertThat(configHolder.getState().getTransMemoryDisplayMode(),
                 Matchers.equalTo(UserConfigHolder.DEFAULT_TM_DISPLAY_MODE));
+        assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
+                Matchers.equalTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE));
     }
 
     @Test

@@ -501,6 +501,9 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Display configuration")
     String displayConfiguration();
 
+    @DefaultMessage("Enable Reference for Source Language")
+    String enableReferenceForSourceLang();
+
     @DefaultMessage("Configure how you want your editor to look like")
     String displayConfigurationTooltip();
 

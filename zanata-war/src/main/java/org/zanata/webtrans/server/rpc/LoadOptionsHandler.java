@@ -156,6 +156,13 @@ public class LoadOptionsHandler extends
                     .getValueAsBoolean());
         }
 
+        if (filteredOptions.containsKey(UserOptions.SelectedReferenceLang
+                .getPersistentName())) {
+            configHolder.setSelectedReferenceForSourceLang(filteredOptions.get(
+                    UserOptions.SelectedReferenceLang.getPersistentName())
+                    .getValue());
+        }
+
         if (filteredOptions
                 .containsKey(UserOptions.ShowOptionalTransUnitDetails
                         .getPersistentName())) {

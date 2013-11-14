@@ -37,7 +37,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -90,6 +92,9 @@ public class EditorOptionsView extends Composite implements
     CheckBox showGlossaryChk;
     @UiField
     CheckBox showOptionalTransUnitDetailsChk;
+
+    @UiField
+    HTMLPanel sourceLangListBoxContainer;
 
     private Listener listener;
 
@@ -233,6 +238,12 @@ public class EditorOptionsView extends Composite implements
             ValueChangeEvent<Boolean> event) {
         listener.onDisplayTransUnitDetailsOptionChanged(showOptionalTransUnitDetailsChk
                 .getValue());
+    }
+
+    @Override
+    public void setSourceLangListBox(IsWidget sourceLangListBoxView) {
+        sourceLangListBoxContainer.clear();
+        sourceLangListBoxContainer.add(sourceLangListBoxView);
     }
 
     @Override

@@ -128,6 +128,9 @@ import com.google.inject.name.Named;
 
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
+import org.zanata.webtrans.client.presenter.ChangeReferenceLangPresenter;
+import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
+import org.zanata.webtrans.client.view.ChangeReferenceLangView;
 
 public class WebTransClientModule extends AbstractPresenterModule {
 
@@ -185,6 +188,8 @@ public class WebTransClientModule extends AbstractPresenterModule {
         bindPresenter(SideMenuPresenter.class, SideMenuDisplay.class,
                 SideMenuView.class);
         bind(ForceReviewCommentPresenter.class).asEagerSingleton();
+        bindPresenter(ChangeReferenceLangPresenter.class,
+                ChangeReferenceLangDisplay.class, ChangeReferenceLangView.class);
 
         bind(SourceContentsPresenter.class).in(Singleton.class);
         bind(TargetContentsDisplay.class).to(TargetContentsView.class);

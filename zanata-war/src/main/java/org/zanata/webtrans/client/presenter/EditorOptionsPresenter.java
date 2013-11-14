@@ -53,6 +53,7 @@ public class EditorOptionsPresenter extends
         EditorOptionsDisplay.Listener, OptionsDisplay.CommonOptionsListener,
         WorkspaceContextUpdateEventHandler, ReloadUserConfigUIHandler {
     private final ValidationOptionsPresenter validationOptionsPresenter;
+    private final ChangeReferenceLangPresenter changeReferenceLangPresenter;
     private final UserWorkspaceContext userWorkspaceContext;
     private final CachingDispatchAsync dispatcher;
     private final UserOptionsService userOptionsService;
@@ -61,10 +62,12 @@ public class EditorOptionsPresenter extends
     public EditorOptionsPresenter(EditorOptionsDisplay display,
             EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
             ValidationOptionsPresenter validationDetailsPresenter,
+            ChangeReferenceLangPresenter changeReferenceLangPresenter,
             CachingDispatchAsync dispatcher,
             UserOptionsService userOptionsService) {
         super(display, eventBus);
         this.validationOptionsPresenter = validationDetailsPresenter;
+        this.changeReferenceLangPresenter = changeReferenceLangPresenter;
         this.userWorkspaceContext = userWorkspaceContext;
         this.dispatcher = dispatcher;
         this.userOptionsService = userOptionsService;
@@ -74,6 +77,9 @@ public class EditorOptionsPresenter extends
     @Override
     protected void onBind() {
         validationOptionsPresenter.bind();
+        changeReferenceLangPresenter.bind();
+        display.setSourceLangListBox(changeReferenceLangPresenter
+                .getDisplay().asWidget());
         if (userWorkspaceContext.hasReadOnlyAccess()) {
             setReadOnly(true);
         }
@@ -187,6 +193,7 @@ public class EditorOptionsPresenter extends
         eventBus.fireEvent(new DisplaySouthPanelEvent(displaySouthPanel));
     }
 
+
     @Override
     public void onDisplayTransUnitDetailsOptionChanged(
             Boolean showTransUnitDetailsChkValue) {
@@ -211,6 +218,7 @@ public class EditorOptionsPresenter extends
 
     @Override
     protected void onUnbind() {
+        changeReferenceLangPresenter.unbind();
     }
 
     @Override
