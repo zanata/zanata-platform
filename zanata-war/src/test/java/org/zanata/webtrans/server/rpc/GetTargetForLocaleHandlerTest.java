@@ -55,6 +55,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
         // @formatter:off
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
+        SeamAutowire.instance().reset();
         TransUnitTransformer transUnitTransformer = SeamAutowire.instance()
                 .use("resourceUtils", resourceUtils)
                 .autowire(TransUnitTransformer.class);
