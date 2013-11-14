@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.Path;
+
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -60,6 +62,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("statisticsServiceImpl")
+@Path(StatisticsResource.SERVICE_PATH)
 @Scope(ScopeType.STATELESS)
 public class StatisticsServiceImpl implements StatisticsResource {
     @In

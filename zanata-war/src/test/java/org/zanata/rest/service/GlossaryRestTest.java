@@ -42,8 +42,7 @@ public class GlossaryRestTest extends ZanataRestTest {
     public void createClient() {
         MockitoAnnotations.initMocks(this);
         this.glossaryService =
-                getClientRequestFactory().createProxy(IGlossaryResource.class,
-                        createBaseURI("/glossary"));
+                getClientRequestFactory().createProxy(IGlossaryResource.class);
     }
 
     @Override

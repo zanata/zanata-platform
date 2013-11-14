@@ -221,8 +221,8 @@ public abstract class RestTest {
             String apiKey) {
         try {
             return new ZanataProxyFactory(new URI(getRestEndpointUrl()),
-                    username, apiKey, null, new VersionInfo("Test", "Test"),
-                    false) {
+                    username, apiKey, new VersionInfo("Test", "Test"),
+                    false, false) {
                 @Override
                 protected String getUrlPrefix() {
                     return ""; // No prefix for tests
@@ -238,6 +238,16 @@ public abstract class RestTest {
         try {
             return clientFactory.createProxy(clientClass, new URI(
                     getRestEndpointUrl(baseUri)));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected <T> T createProxy(ZanataProxyFactory clientFactory,
+            Class<T> clientClass) {
+        try {
+            return clientFactory.createProxy(clientClass, new URI(
+                    getRestEndpointUrl()));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
