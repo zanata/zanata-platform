@@ -94,7 +94,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                     new StringBuilder(
                             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
                                     + "<config xmlns=\""
-                                    + Namespaces.ZANATA_CONFIG + "\">")
+                                    + Namespaces.ZANATA_CONFIG + "\">\n")
                             .append(indent(tag("url",
                                     applicationConfiguration.getServerPath()
                                             + "/")))
