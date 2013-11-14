@@ -27,9 +27,11 @@ import javassist.CtMethod;
 import javassist.NotFoundException;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.log.Logging;
 import org.slf4j.LoggerFactory;
 
@@ -269,7 +271,12 @@ public class SeamAutowire {
                 if (!namedComponents.containsKey(compName)) {
                     boolean required = inAnnotation.required();
                     boolean autoCreate = implType.isAnnotationPresent(AutoCreate.class);
-                    boolean mayCreate = inAnnotation.create() || autoCreate;
+                    Scope scopeAnn = implType.getAnnotation(Scope.class);
+                    boolean stateless = false;
+                    if (scopeAnn != null) {
+                        stateless = scopeAnn.value() == ScopeType.STATELESS;
+                    }
+                    boolean mayCreate = inAnnotation.create() || autoCreate || stateless;
                     if (required && !mayCreate) {
                         String msg = "Not allowed to create required component "+compName+" with impl "+implType+". Try @AutoCreate or @In(create=true).";
                         if (ignoreNonResolvable) {
