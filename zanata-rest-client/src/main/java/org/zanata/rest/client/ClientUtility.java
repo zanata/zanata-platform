@@ -25,10 +25,6 @@ public class ClientUtility {
                                 + Arrays.asList(resp.getAnnotations())
                                         .toString();
             }
-            // TODO if this works, remove uri parameter
-            if (response.getLocation() != null) {
-                uriString = ", location: " + response.getLocation();
-            }
             if (uri != null) {
                 uriString = ", uri: " + uri;
             }
