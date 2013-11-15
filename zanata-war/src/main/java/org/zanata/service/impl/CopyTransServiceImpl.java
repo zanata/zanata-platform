@@ -123,10 +123,10 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     @Override
     public void copyTransForLocale(HDocument document, HLocale locale) {
-        this.copyTransForLocale(document, locale, new HCopyTransOptions());
+        this.copyTransForLocale(document.getId(), locale, new HCopyTransOptions());
     }
 
-    public void copyTransForLocale(final HDocument document,
+    public void copyTransForLocale(final Long documentId,
             final HLocale locale, final HCopyTransOptions options) {
         try {
             new Work<Void>() {
@@ -136,6 +136,7 @@ public class CopyTransServiceImpl implements CopyTransService {
 
                     boolean checkContext = false, checkProject = false,
                         checkDocument = false;
+                    HDocument document = documentDAO.findById(documentId);
                     boolean requireTranslationReview =
                             document.getProjectIteration()
                                     .getRequireTranslationReview();
@@ -433,7 +434,7 @@ public class CopyTransServiceImpl implements CopyTransService {
             if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
                 return;
             }
-            copyTransForLocale(document, locale, copyTransOpts);
+            copyTransForLocale(document.getId(), locale, copyTransOpts);
         }
 
         if (taskHandleOpt.isPresent()) {

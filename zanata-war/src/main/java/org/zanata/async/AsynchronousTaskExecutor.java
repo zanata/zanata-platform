@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.zanata.action.AuthenticationEvents;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
+import org.zanata.security.ZanataJpaIdentityStore;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class
@@ -111,11 +112,15 @@ public class AsynchronousTaskExecutor {
             // injection
             AccountDAO accountDAO =
                 (AccountDAO) Component.getInstance(AccountDAO.class);
+            ZanataJpaIdentityStore idStore =
+                    (ZanataJpaIdentityStore) Component
+                            .getInstance(ZanataJpaIdentityStore.class);
             AuthenticationEvents authEvts =
                 (AuthenticationEvents) Component
                     .getInstance(AuthenticationEvents.class);
             HAccount authenticatedAccount = accountDAO.getByUsername(username);
             authEvts.injectAuthenticatedPersonIntoWorkingMemory(authenticatedAccount);
+            idStore.setAuthenticateUser(authenticatedAccount);
         }
     }
 }
