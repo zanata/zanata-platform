@@ -341,8 +341,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 new HCopyTransOptions(execution.getContextMismatchAction(),
                         execution.getDocumentMismatchAction(),
                         execution.getProjectMismatchAction());
-        CopyTransService copyTransService = seam// .use("asynchronousProcessHandle",
-                                                // handle)
+        CopyTransService copyTransService = seam
                 .autowire(CopyTransServiceImpl.class);
         copyTransService.copyTransForIteration(projectIteration, options);
 
