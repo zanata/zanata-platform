@@ -27,13 +27,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -46,9 +42,6 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -58,8 +51,9 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
-import org.zanata.service.ValidationService;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import lombok.Getter;
+import lombok.Setter;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject> {
@@ -73,15 +67,6 @@ public class ProjectHome extends SlugHome<HProject> {
 
     @In
     ZanataIdentity identity;
-
-    @In
-    private PersonDAO personDAO;
-
-    @In
-    private LocaleDAO localeDAO;
-
-    @In
-    private ValidationService validationServiceImpl;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
@@ -111,9 +96,6 @@ public class ProjectHome extends SlugHome<HProject> {
 
     @In
     private SlugEntityService slugEntityServiceImpl;
-
-    @In(create = true)
-    private ProjectDAO projectDAO;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -309,10 +291,13 @@ public class ProjectHome extends SlugHome<HProject> {
     }
 
     private void updateOverrideValidations() {
-        getInstance().getCustomizedValidations().clear();
-        for (ValidationAction action : customizedValidations) {
-            getInstance().getCustomizedValidations().put(action.getId().name(),
-                    action.getState().name());
+        // edit project page code won't have customized validations outjected
+        if (customizedValidations != null) {
+            getInstance().getCustomizedValidations().clear();
+            for (ValidationAction action : customizedValidations) {
+                getInstance().getCustomizedValidations().put(
+                    action.getId().name(), action.getState().name());
+            }
         }
     }
 
