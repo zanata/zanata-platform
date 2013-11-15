@@ -658,10 +658,14 @@ public class TranslationServiceImpl implements TranslationService {
                                         "skipping TextFlowTarget {} with unknown sourceHash: {}",
                                         resId, sourceHash);
                             } else {
+                                HProjectIteration iterationReloaded =
+                                        projectIterationDAO
+                                                .findById(hProjectIteration
+                                                        .getId());
                                 String validationMessage =
                                         validateTranslations(
                                                 incomingTarget.getState(),
-                                                hProjectIteration,
+                                                iterationReloaded,
                                                 incomingTarget.getResId(),
                                                 textFlow.getContents(),
                                                 incomingTarget.getContents());
