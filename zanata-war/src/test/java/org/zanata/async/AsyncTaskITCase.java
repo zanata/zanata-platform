@@ -54,7 +54,7 @@ public class AsyncTaskITCase extends ArquillianTest {
 
         // Start an asynchronous process
         AsyncTaskHandle<String> handle =
-                taskExecutor.startTask(new SimpleAsyncTask<String>() {
+                taskExecutor.startTask(new SimpleAsyncTask<String>("taskReturnsValue") {
                     @Override
                     public String call() throws Exception {
                         return expectedRetVal;
@@ -73,7 +73,7 @@ public class AsyncTaskITCase extends ArquillianTest {
     public void executionError() throws Exception {
         // Start an asynchronous process that throws an exception
         AsyncTaskHandle<String> handle =
-                taskExecutor.startTask(new SimpleAsyncTask<String>() {
+                taskExecutor.startTask(new SimpleAsyncTask<String>("executionError") {
                     @Override
                     public String call() throws Exception {
                         throw new RuntimeException("Expected Exception");
@@ -90,7 +90,7 @@ public class AsyncTaskITCase extends ArquillianTest {
     public void progressUpdates() throws Exception {
         final List<Integer> progressUpdates = Lists.newArrayList();
         // "Mock" the task handle so that progress updates are recorded
-        final AsyncTaskHandle<Void> taskHandle = new AsyncTaskHandle<Void>() {
+        final AsyncTaskHandle<Void> taskHandle = new AsyncTaskHandle<Void>("progressUpdates") {
             @Override
             public void setCurrentProgress(int progress) {
                 super.setCurrentProgress(progress);

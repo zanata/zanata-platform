@@ -35,6 +35,10 @@ import lombok.Setter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AsyncTaskHandle<V> extends AbstractFuture<V> {
+
+    @Getter
+    private final String taskName;
+
     @Getter
     @Setter
     public int maxProgress = 100;
@@ -46,6 +50,15 @@ public class AsyncTaskHandle<V> extends AbstractFuture<V> {
     @Getter
     @Setter
     public int currentProgress = 0;
+
+    public AsyncTaskHandle(String taskName) {
+        this.taskName = taskName;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+"(taskName="+taskName+")";
+    }
 
     @Override
     protected boolean setException(Throwable throwable) {
