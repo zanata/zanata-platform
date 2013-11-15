@@ -20,6 +20,10 @@
  */
 package org.zanata.seam;
 
+
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Scope;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -120,6 +124,9 @@ public class SeamAutowire {
      *            The component instance to use under the provided name.
      */
     public SeamAutowire use(String name, Object component) {
+        if (namedComponents.containsKey(name)) {
+            throw new RuntimeException("Component "+name+" was already created.  You should register it before it is resolved.");
+        }
         namedComponents.put(name, component);
         return this;
     }
@@ -173,13 +180,10 @@ public class SeamAutowire {
      *            spec.
      * @return The component.
      */
-    private <T> T create(Class<T> componentClass) {
-        // If the component type is an interface, try to find a declared
-        // implementation
-        if (componentClass.isInterface()
-                && this.componentImpls.containsKey(componentClass)) {
-            componentClass = (Class<T>) this.componentImpls.get(componentClass);
-        }
+    private <T> T create(Class<T> fieldClass) {
+        // field might be an interface, but we need to find the
+        // implementation class
+        Class<T> componentClass = getImplClass(fieldClass);
 
         try {
             Constructor<T> constructor =
@@ -213,6 +217,18 @@ public class SeamAutowire {
         }
     }
 
+    private <T> Class<T> getImplClass(Class<T> fieldClass) {
+        // If the component type is an interface, try to find a declared
+        // implementation
+        // TODO field class might be abstract, or a concrete superclass
+        // of the impl class
+        if (fieldClass.isInterface()
+                && this.componentImpls.containsKey(fieldClass)) {
+            fieldClass = (Class<T>) this.componentImpls.get(fieldClass);
+        }
+        return fieldClass;
+    }
+
     /**
      * Autowires and returns the component instance for the provided class.
      *
@@ -240,18 +256,35 @@ public class SeamAutowire {
 
         // Register all interfaces for this class
         this.registerInterfaces(componentClass);
-
         // Resolve injected Components
         for (ComponentAccessor accessor : getAllComponentAccessors(component)) {
             // Another annotated component
-            if (accessor.getAnnotation(In.class) != null) {
+            In inAnnotation = accessor.getAnnotation(In.class);
+            if (inAnnotation != null) {
                 Object fieldVal = null;
                 String compName = accessor.getComponentName();
                 Class<?> compType = accessor.getComponentType();
+                Class<?> implType = getImplClass(compType);
 
                 // TODO stateless components should not / need not be cached
                 // autowire the component if not done yet
                 if (!namedComponents.containsKey(compName)) {
+                    boolean required = inAnnotation.required();
+                    boolean autoCreate = implType.isAnnotationPresent(AutoCreate.class);
+                    Scope scopeAnn = implType.getAnnotation(Scope.class);
+                    boolean stateless = false;
+                    if (scopeAnn != null) {
+                        stateless = scopeAnn.value() == ScopeType.STATELESS;
+                    }
+                    boolean mayCreate = inAnnotation.create() || autoCreate || stateless;
+                    if (required && !mayCreate) {
+                        String msg = "Not allowed to create required component "+compName+" with impl "+implType+". Try @AutoCreate or @In(create=true).";
+                        if (ignoreNonResolvable) {
+                            log.warn(msg);
+                        } else {
+                            throw new RuntimeException(msg);
+                        }
+                    }
                     Object newComponent = null;
                     try {
                         newComponent = create(compType);
@@ -479,11 +512,10 @@ public class SeamAutowire {
     }
 
     private void registerInterfaces(Class<?> cls) {
-        if (!cls.isInterface()) {
-            // register all interfaces registered by this component
-            for (Class<?> iface : getAllInterfaces(cls)) {
-                this.componentImpls.put(iface, cls);
-            }
+        assert !cls.isInterface();
+        // register all interfaces registered by this component
+        for (Class<?> iface : getAllInterfaces(cls)) {
+            this.componentImpls.put(iface, cls);
         }
     }
 

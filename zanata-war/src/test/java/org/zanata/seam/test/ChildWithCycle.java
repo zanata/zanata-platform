@@ -24,18 +24,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
 /**
- * Parent component that forms a dependency cycle with
- * {@link CyclicChildComponent}.
+ * Child component that forms a dependency cycle with
+ * {@link ComponentWithChildCycle}
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("cyclicParentComponent")
-public class CyclicParentComponent {
-    @In
-    private CyclicChildComponent cyclicChildComponent;
+@Name("ChildWithCycle")
+public class ChildWithCycle {
+    @In(create = true)
+    private ComponentWithChildCycle cyclicParentComponent;
 
-    public CyclicChildComponent getCyclicChildComponent() {
-        return cyclicChildComponent;
+    public ComponentWithChildCycle getCyclicParentComponent() {
+        return cyclicParentComponent;
     }
 }

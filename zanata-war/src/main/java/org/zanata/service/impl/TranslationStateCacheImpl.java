@@ -33,6 +33,7 @@ import net.sf.ehcache.CacheManager;
 
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
@@ -64,6 +65,7 @@ import com.google.common.cache.CacheLoader;
 @Name("translationStateCacheImpl")
 // TODO split into APPLICATION and STATELESS beans
 @Scope(ScopeType.APPLICATION)
+@AutoCreate
 public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String BASE = TranslationStateCacheImpl.class
             .getName();

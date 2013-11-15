@@ -54,6 +54,7 @@ public class GetDocumentListHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("documentDAO", documentDAO)
             .use("translationFileServiceImpl", translationFileServiceImpl)

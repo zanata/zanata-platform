@@ -75,7 +75,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance().use("resourceUtils", resourceUtils)
+                SeamAutowire.instance().reset().use("resourceUtils", resourceUtils)
                         .autowire(TransUnitTransformer.class);
 
         SeamAutowire seam =

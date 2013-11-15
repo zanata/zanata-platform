@@ -48,13 +48,12 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         HAccount authenticatedAccount = getEm().find(HAccount.class, 1L);
         // @formatter:off
         handler = SeamAutowire.instance()
+            .reset()
             .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", accountDAO)
             .autowire(LoadOptionsHandler.class);
 
         saveHandler = SeamAutowire.instance()
-            .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
-            .use("accountDAO", accountDAO)
             .autowire(SaveOptionsHandler.class);
         // @formatter:on
     }

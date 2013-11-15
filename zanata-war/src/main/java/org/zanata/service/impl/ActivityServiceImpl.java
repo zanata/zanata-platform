@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import javax.persistence.EntityManager;
 
@@ -37,6 +38,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
@@ -67,16 +69,26 @@ public class ActivityServiceImpl implements ActivityService {
     private DocumentDAO documentDAO;
 
     @In
+    private PersonDAO personDAO;
+
+    @In
     private ProjectIterationDAO projectIterationDAO;
 
     @In
     private EntityManager entityManager;
 
+    @In
+    private ActivityLockManager activityLockManager;
+
     @Override
     public Activity findActivity(long actorId, EntityType contextType,
             long contextId, ActivityType activityType, Date actionTime) {
         return activityDAO.findActivity(actorId, contextType, contextId,
-                activityType, DateUtils.truncate(actionTime, Calendar.HOUR));
+                activityType, getRoundedTime(actionTime));
+    }
+
+    private Date getRoundedTime(Date actionTime) {
+        return DateUtils.truncate(actionTime, Calendar.HOUR);
     }
 
     @Override
@@ -93,17 +105,36 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void logActivity(HPerson actor, IsEntityWithType context,
+    public void logActivity(long actorId, IsEntityWithType context,
             IsEntityWithType target, ActivityType activityType, int wordCount) {
-        if (actor != null && context != null && activityType != null) {
+        Lock lock = activityLockManager.getLock(actorId);
+        lock.lock();
+        try {
+            logActivityAlreadyLocked(actorId, context, target, activityType, wordCount);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Precondition: current thread must hold a lock for the person 'actorId'.
+     * @param actorId
+     * @param context
+     * @param target
+     * @param activityType
+     * @param wordCount
+     */
+    private void logActivityAlreadyLocked(long actorId, IsEntityWithType context,
+            IsEntityWithType target, ActivityType activityType, int wordCount) {
+        if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =
-                    findActivity(actor.getId(), context.getEntityType(),
+                    findActivity(actorId, context.getEntityType(),
                             context.getId(), activityType, currentActionTime);
-
             if (activity != null) {
                 activity.updateActivity(currentActionTime, target, wordCount);
             } else {
+                HPerson actor = personDAO.findById(actorId);
                 activity =
                         new Activity(actor, context, target, activityType,
                                 wordCount);
@@ -125,16 +156,26 @@ public class ActivityServiceImpl implements ActivityService {
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Transactional
     public void logTextFlowStateUpdate(TextFlowTargetStateEvent event) {
-        HTextFlowTarget target =
-                textFlowTargetDAO.findById(event.getTextFlowTargetId(), false);
-        HDocument document = documentDAO.getById(event.getDocumentId());
-        ActivityType activityType =
-                event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
-                        : ActivityType.UPDATE_TRANSLATION;
+        Long actorId = event.getActorId();
+        if (actorId != null) {
+            Lock lock = activityLockManager.getLock(actorId);
+            lock.lock();
+            try {
+                HTextFlowTarget target =
+                        textFlowTargetDAO.findById(event.getTextFlowTargetId(),
+                                false);
+                HDocument document = documentDAO.getById(event.getDocumentId());
+                ActivityType activityType =
+                        event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+                                : ActivityType.UPDATE_TRANSLATION;
 
-        logActivity(target.getLastModifiedBy(), document.getProjectIteration(),
-                target, activityType, target.getTextFlow().getWordCount()
-                        .intValue());
+                logActivityAlreadyLocked(actorId,
+                        document.getProjectIteration(), target, activityType,
+                        target.getTextFlow().getWordCount().intValue());
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -143,14 +184,20 @@ public class ActivityServiceImpl implements ActivityService {
     @Observer(DocumentUploadedEvent.EVENT_NAME)
     @Transactional
     public void onDocumentUploaded(DocumentUploadedEvent event) {
-        HDocument document = documentDAO.getById(event.getDocumentId());
-        ActivityType activityType =
-                event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
-                        : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
-
-        logActivity(document.getLastModifiedBy(),
-                document.getProjectIteration(), document, activityType,
-                getDocumentWordCount(document));
+        Lock lock = activityLockManager.getLock(event.getActorId());
+        lock.lock();
+        try {
+            HDocument document = documentDAO.getById(event.getDocumentId());
+            ActivityType activityType =
+                    event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
+                            : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
+            HPerson actor = personDAO.findById(event.getActorId());
+            logActivityAlreadyLocked(actor.getId(),
+                    document.getProjectIteration(), document, activityType,
+                    getDocumentWordCount(document));
+        } finally {
+            lock.unlock();
+        }
     }
 
     private int getDocumentWordCount(HDocument document) {

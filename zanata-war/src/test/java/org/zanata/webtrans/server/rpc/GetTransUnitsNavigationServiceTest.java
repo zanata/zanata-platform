@@ -45,6 +45,7 @@ public class GetTransUnitsNavigationServiceTest extends ZanataDbunitJpaTest {
         TextFlowDAO dao = new TextFlowDAO((Session) getEm().getDelegate());
         // @formatter:off
       service = SeamAutowire.instance()
+            .reset()
             .use("textFlowDAO", dao)
             .autowire(GetTransUnitsNavigationService.class);
       // @formatter:on

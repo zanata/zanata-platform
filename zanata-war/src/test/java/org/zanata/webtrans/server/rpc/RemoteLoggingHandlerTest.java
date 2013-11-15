@@ -32,6 +32,7 @@ public class RemoteLoggingHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .ignoreNonResolvable()
             .autowire(RemoteLoggingHandler.class);

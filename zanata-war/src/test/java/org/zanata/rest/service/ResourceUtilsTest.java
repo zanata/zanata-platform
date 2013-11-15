@@ -56,7 +56,7 @@ public class ResourceUtilsTest {
         EntityManager mockEm = Mockito.mock(EntityManager.class);
 
         resourceUtils =
-                SeamAutowire.instance().use("entityManager", mockEm)
+                SeamAutowire.instance().reset().use("entityManager", mockEm)
                         .autowire(ResourceUtils.class);
     }
 

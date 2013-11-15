@@ -202,4 +202,3 @@ public class SourceContentsView extends Composite implements
         referencePanel.setVisible(false);
     }
 }
-
