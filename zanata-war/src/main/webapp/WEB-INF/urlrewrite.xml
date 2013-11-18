@@ -398,7 +398,7 @@
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/copy_trans_options.seam\?projectSlug=(.+)$</from>
+    <from>^(/.+)?/project/copy_trans_options.seam\?projectSlug=([^&amp;]+)(&amp;.+)?$</from>
     <to>$1/project/view/$2/copy_trans_opts</to>
   </outbound-rule>
   <outbound-rule>
