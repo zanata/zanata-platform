@@ -20,13 +20,12 @@
  */
 package org.zanata.async.tasks;
 
-import org.jboss.seam.security.Identity;
+import lombok.Getter;
+import lombok.Setter;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
-
-import lombok.Getter;
-import lombok.Setter;
+import org.zanata.security.ZanataIdentity;
 
 /**
  * Asynchronous Task that runs copy trans. Subclasses should allow for running
@@ -63,7 +62,7 @@ public abstract class CopyTransTask implements
     public Void call() throws Exception {
         getHandle().startTiming();
         getHandle()
-                .setTriggeredBy(Identity.instance().getPrincipal().getName());
+                .setTriggeredBy(ZanataIdentity.instance().getAccountUsername());
         getHandle().setMaxProgress(getMaxProgress());
 
         callCopyTrans();

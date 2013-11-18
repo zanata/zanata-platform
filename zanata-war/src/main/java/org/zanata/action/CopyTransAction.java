@@ -100,8 +100,7 @@ public class CopyTransAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(copyTransAction.projectIteration, 'copy-trans')}")
-    public
-            void startCopyTrans() {
+    public void startCopyTrans() {
         if (isCopyTransRunning()) {
             flashScope.setAttribute("message", messages
                     .get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
