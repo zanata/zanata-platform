@@ -9,6 +9,10 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 
 public class ClientUtility {
+    public static void checkResult(ClientResponse<?> response) {
+        checkResult(response, null);
+    }
+
     public static void checkResult(ClientResponse<?> response, URI uri) {
         if (response.getStatus() >= 399) {
             String annotString = "";
@@ -20,10 +24,6 @@ public class ClientUtility {
                         ", annotations: "
                                 + Arrays.asList(resp.getAnnotations())
                                         .toString();
-            }
-            // TODO if this works, remove uri parameter
-            if (response.getLocation() != null) {
-                uriString = ", location: " + response.getLocation();
             }
             if (uri != null) {
                 uriString = ", uri: " + uri;

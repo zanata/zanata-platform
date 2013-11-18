@@ -20,7 +20,6 @@
  */
 package org.zanata.client.commands.glossary.delete;
 
-import java.net.URI;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
@@ -44,20 +43,16 @@ public class GlossaryDeleteCommand extends
             .getLogger(GlossaryDeleteCommand.class);
 
     private final IGlossaryResource glossaryResource;
-    private final URI uri;
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts,
-            ZanataProxyFactory factory, IGlossaryResource glossaryResource,
-            URI uri) {
+            ZanataProxyFactory factory, IGlossaryResource glossaryResource) {
         super(opts, factory);
         this.glossaryResource = glossaryResource;
-        this.uri = uri;
     }
 
     private GlossaryDeleteCommand(GlossaryDeleteOptions opts,
             ZanataProxyFactory factory) {
-        this(opts, factory, factory.getGlossaryResource(), factory
-                .getGlossaryResourceURI());
+        this(opts, factory, factory.getGlossaryResource());
     }
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts) {
@@ -82,6 +77,6 @@ public class GlossaryDeleteCommand extends
         } else {
             throw new RuntimeException("Option 'zanata.lang' is required.");
         }
-        ClientUtility.checkResult(response, uri);
+        ClientUtility.checkResult(response);
     }
 }

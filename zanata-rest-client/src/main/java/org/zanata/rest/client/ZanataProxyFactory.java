@@ -1,5 +1,6 @@
 package org.zanata.rest.client;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,6 +8,7 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -21,6 +23,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.core.ClientInterceptorRepository;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -28,9 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.service.AsynchronousProcessResource;
-import org.zanata.rest.service.CopyTransResource;
-import org.zanata.rest.service.StatisticsResource;
 
 public class ZanataProxyFactory implements ITranslationResourcesFactory {
     private String clientVersion;
@@ -80,13 +80,15 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         String clientTimestamp = clientApiVersion.getBuildTimeStamp();
         IVersionResource iversion = createIVersionResource();
         ClientResponse<VersionInfo> versionResp = iversion.get();
-        VersionInfo serverVersionInfo;
         // unauthorized
         if (versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED) {
             throw new RuntimeException("Incorrect username/password");
-        } else {
-            serverVersionInfo = versionResp.getEntity();
+        } else if (versionResp.getResponseStatus() == Response.Status.SERVICE_UNAVAILABLE) {
+            throw new RuntimeException("Service is currently unavailable. " +
+                "Please check outage notification or try again later.");
         }
+        ClientUtility.checkResult(versionResp);
+        VersionInfo serverVersionInfo = versionResp.getEntity();
         serverVersion = serverVersionInfo.getVersionNo();
         String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
 
@@ -139,6 +141,14 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         }
     }
 
+    private URI getBaseUri() {
+        try {
+            return getBaseUrl().toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected String getUrlPrefix() {
         return "rest/";
     }
@@ -161,11 +171,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
      * @see {@link ZanataProxyFactory#createProxy(Class, java.net.URI)}
      */
     public <T> T createProxy(Class<T> clazz) {
-        try {
-            return createProxy(clazz, new URI(getBaseUrl().toString()));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return createProxy(clazz, getBaseUri());
     }
 
     private static URI fixBase(URI base) {
@@ -186,18 +192,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
     }
 
     public IGlossaryResource getGlossaryResource() {
-        return createProxy(IGlossaryResource.class, getGlossaryResourceURI());
-    }
-
-    public URI getGlossaryResourceURI() {
-        try {
-            URL url = new URL(getBaseUrl(), "glossary");
-            return url.toURI();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return createProxy(IGlossaryResource.class);
     }
 
     public IAccountResource getAccount(String username) {
@@ -250,8 +245,8 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
     }
 
     // NB IProjectsResource is not currently used in Java
-    public IProjectsResource getProjects(final URI uri) {
-        return createProxy(IProjectsResource.class, uri);
+    public IProjectsResource getProjectsResource() {
+        return createProxy(IProjectsResource.class);
     }
 
     @Override
@@ -268,33 +263,19 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
     }
 
     public IFileResource getFileResource() {
-        return createProxy(IFileResource.class, getFileURI());
+        return createProxy(IFileResource.class);
     }
 
-    private URI getFileURI() {
-        String spec = "file/";
-        try {
-            return new URL(getBaseUrl(), spec).toURI();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            log.error("URI Syntax error. Part of url: {}", spec);
-            throw new RuntimeException(e);
-        }
+    public IStatisticsResource getStatisticsResource() {
+        return createProxy(IStatisticsResource.class);
     }
 
-    public StatisticsResource getStatisticsResource() {
-        // NB: No specific client interface (not needed)
-        return createProxy(StatisticsResource.class);
+    public ICopyTransResource getCopyTransResource() {
+        return createProxy(ICopyTransResource.class);
     }
 
-    public CopyTransResource getCopyTransResource() {
-        // NB: No specific client interface (not needed)
-        return createProxy(CopyTransResource.class);
-    }
-
-    public AsynchronousProcessResource getAsynchronousProcessResource() {
-        return createProxy(AsynchronousProcessResource.class);
+    public IAsynchronousProcessResource getAsynchronousProcessResource() {
+        return createProxy(IAsynchronousProcessResource.class);
     }
 
     @Override
@@ -320,19 +301,25 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
      * @param interceptor
      */
     public void registerPrefixInterceptor(Object interceptor) {
-        crf.getPrefixInterceptors().registerInterceptor(interceptor);
+        ClientInterceptorRepository repo = getPrefixInterceptors();
+        repo.registerInterceptor(interceptor);
+    }
+
+    /**
+     * Workaround for signature incompatibility between RESTEasy 2.x and 3.x
+     * @return
+     */
+    private ClientInterceptorRepository getPrefixInterceptors() {
+        try {
+            Method m = crf.getClass().getMethod("getPrefixInterceptors");
+            return (ClientInterceptorRepository) m.invoke(crf);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected IVersionResource createIVersionResource() {
-        URL url;
-        try {
-            url = new URL(getBaseUrl(), "version");
-            return createProxy(IVersionResource.class, url.toURI());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return createProxy(IVersionResource.class, getBaseUri());
     }
 
     /**

@@ -54,6 +54,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class PushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PushCommand.class);
+    private static final int POLL_PERIOD = 250;
     private static final String UTF_8 = "UTF-8";
 
     private static final Map<String, AbstractPushStrategy> strategies =
@@ -538,7 +539,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     break;
                 }
 
-                wait(2000); // Wait before retrying
+                wait(POLL_PERIOD); // Wait before retrying
                 status = asyncProcessResource.getProcessStatus(status.getUrl());
             }
 
@@ -659,7 +660,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     break;
                 }
 
-                wait(2000); // Wait before retrying
+                wait(POLL_PERIOD); // Wait before retrying
                 status = asyncProcessResource.getProcessStatus(status.getUrl());
             }
             ConsoleUtils.endProgressFeedback();
@@ -734,7 +735,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
         while (copyTransStatus.isInProgress()) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(POLL_PERIOD);
             } catch (InterruptedException e) {
                 log.warn("Interrupted while waiting for Copy Trans to finish.");
             }

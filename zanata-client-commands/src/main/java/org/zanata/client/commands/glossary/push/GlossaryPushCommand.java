@@ -25,13 +25,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,20 +59,16 @@ public class GlossaryPushCommand extends
     private static final Map<String, AbstractGlossaryPushReader> glossaryReaders =
             new HashMap<String, AbstractGlossaryPushReader>();
     private final IGlossaryResource glossaryResource;
-    private final URI uri;
 
     public GlossaryPushCommand(GlossaryPushOptions opts,
-            ZanataProxyFactory factory, IGlossaryResource glossaryResource,
-            URI uri) {
+            ZanataProxyFactory factory, IGlossaryResource glossaryResource) {
         super(opts, factory);
         this.glossaryResource = glossaryResource;
-        this.uri = uri;
     }
 
     private GlossaryPushCommand(GlossaryPushOptions opts,
             ZanataProxyFactory factory) {
-        this(opts, factory, factory.getGlossaryResource(), factory
-                .getGlossaryResourceURI());
+        this(opts, factory, factory.getGlossaryResource());
     }
 
     public GlossaryPushCommand(GlossaryPushOptions opts) {
@@ -171,7 +163,7 @@ public class GlossaryPushCommand extends
         for (Glossary glossary : glossaries) {
             log.debug(glossary.toString());
             ClientResponse<String> response = glossaryResource.put(glossary);
-            ClientUtility.checkResult(response, uri);
+            ClientUtility.checkResult(response);
             response.releaseConnection();
             totalDone = totalDone + glossary.getGlossaryEntries().size();
             log.info("Pushed " + totalDone + " of " + totalEntries + " entries");

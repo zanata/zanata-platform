@@ -24,6 +24,8 @@ import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
+import org.zanata.rest.client.IAsynchronousProcessResource;
+import org.zanata.rest.client.ICopyTransResource;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
@@ -33,8 +35,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.AsynchronousProcessResource;
-import org.zanata.rest.service.CopyTransResource;
 
 public class PushCommandTest {
     @Mock
@@ -44,9 +44,9 @@ public class PushCommandTest {
     @Mock
     ITranslatedDocResource mockTranslationResources;
     @Mock
-    CopyTransResource mockCopyTransResource;
+    ICopyTransResource mockCopyTransResource;
     @Mock
-    AsynchronousProcessResource mockAsynchronousProcessResource;
+    IAsynchronousProcessResource mockAsynchronousProcessResource;
 
     public PushCommandTest() throws Exception {
         initMocks(this);
