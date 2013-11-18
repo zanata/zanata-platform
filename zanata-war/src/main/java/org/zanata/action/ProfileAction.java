@@ -235,6 +235,7 @@ public class ProfileAction implements Serializable {
             }
             setActivationKey(key);
             renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
+            identity.unAuthenticate();
             FacesMessages
                     .instance()
                     .add("You will soon receive an email with a link to activate your account.");
