@@ -44,8 +44,6 @@ public class ProjectCopyTransOptionsAction implements Serializable {
 
     private String projectSlug;
 
-    private HProject project;
-
     @In
     private ProjectDAO projectDAO;
 
@@ -68,10 +66,7 @@ public class ProjectCopyTransOptionsAction implements Serializable {
     }
 
     public HProject getProject() {
-        if (project == null) {
-            project = projectDAO.getBySlug(this.projectSlug);
-        }
-        return project;
+        return projectDAO.getBySlug(this.projectSlug);
     }
 
     @Transactional
@@ -79,9 +74,10 @@ public class ProjectCopyTransOptionsAction implements Serializable {
     public
             void saveOptions() {
         copyTransOptionsModel.save();
-        getProject().setDefaultCopyTransOpts(
-                copyTransOptionsModel.getInstance());
-        projectDAO.makePersistent(getProject());
+        HProject project = getProject();
+        project.setDefaultCopyTransOpts(
+            copyTransOptionsModel.getInstance());
+        projectDAO.makePersistent(project);
 
         FacesMessages.instance().add(StatusMessage.Severity.INFO,
                 "jsf.project.CopyTransOpts.saved", null, null, null);
