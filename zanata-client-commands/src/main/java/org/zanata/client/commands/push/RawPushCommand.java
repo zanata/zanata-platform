@@ -82,7 +82,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() throws IOException {
         PushCommand.logOptions(log, getOpts());
         log.warn("Using EXPERIMENTAL project type 'file'.");
 
@@ -242,16 +242,23 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                                 }
                             });
                 }
+            } catch (IOException e) {
+                log.error(
+                        "Operation failed: "+e.getMessage()+"\n\n"
+                        + "    To retry from the last document, please add the option: {}\n",
+                        getOpts().buildFromDocArgument(localDocName));
+                throw new RuntimeException(e.getMessage(), e);
             } catch (RuntimeException e) {
                 log.error(
-                        "Operation failed.\n\n    To retry from the last document, please add the option: {}\n",
+                        "Operation failed: "+e.getMessage()+"\n\n"
+                        + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(localDocName));
-                throw e;
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
 
         if (hasErrors) {
-            throw new Exception(
+            throw new RuntimeException(
                     "Push completed with errors, see log for details.");
         }
 
@@ -277,13 +284,11 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param qualifiedDocName
      *            docName with added module prefix
      * @return true if the push was successful
-     * @throws FileNotFoundException
-     * @throws NoSuchAlgorithmException
      * @throws IOException
      */
     private boolean pushSourceDocumentToServer(File sourceDir,
             String localDocName, String qualifiedDocName, String fileType)
-            throws FileNotFoundException, NoSuchAlgorithmException, IOException {
+            throws IOException {
         log.info("pushing source document [{}] to server", qualifiedDocName);
 
         String locale = null;
