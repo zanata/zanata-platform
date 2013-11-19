@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -12,6 +13,7 @@ import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.config.CommandHook;
 import org.zanata.client.config.ConfigUtil;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.ZanataConfig;
@@ -91,8 +93,10 @@ public class OptionsUtil {
         LocaleList locales = config.getLocales();
         opts.setLocaleMapList(locales);
 
-        // command hooks cannot be set via parameters
-        opts.setCommandHooks(config.getHooks());
+        if (opts.getCommandHooks() == null || opts.getCommandHooks().isEmpty()) {
+            opts.setCommandHooks(config.getHooks() == null ? new ArrayList<CommandHook>()
+                    : config.getHooks());
+        }
     }
 
     /**

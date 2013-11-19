@@ -83,12 +83,9 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
      *             if any of the commands fail
      */
     private void runBeforeActions() throws Exception {
-        List<CommandHook> hooks = getOpts().getCommandHooks();
-        if (hooks != null) {
-            for (CommandHook hook : hooks) {
-                if (isForThisCommand(hook)) {
-                    runSystemCommands(hook.getBefores());
-                }
+        for (CommandHook hook : getOpts().getCommandHooks()) {
+            if (isForThisCommand(hook)) {
+                runSystemCommands(hook.getBefores());
             }
         }
     }
@@ -98,12 +95,9 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
      *             if any of the commands fail.
      */
     private void runAfterActions() throws Exception {
-        List<CommandHook> hooks = getOpts().getCommandHooks();
-        if (hooks != null) {
-            for (CommandHook hook : hooks) {
-                if (isForThisCommand(hook)) {
-                    runSystemCommands(hook.getAfters());
-                }
+        for (CommandHook hook : getOpts().getCommandHooks()) {
+            if (isForThisCommand(hook)) {
+                runSystemCommands(hook.getAfters());
             }
         }
     }

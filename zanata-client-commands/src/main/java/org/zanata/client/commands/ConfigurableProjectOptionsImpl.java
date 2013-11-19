@@ -21,6 +21,7 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kohsuke.args4j.Option;
@@ -49,7 +50,7 @@ public abstract class ConfigurableProjectOptionsImpl extends
     private String projectVersion;
     private String projectType;
     private LocaleList locales;
-    private List<CommandHook> commandHooks;
+    private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
 
     @Override
     public String getProj() {
