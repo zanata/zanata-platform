@@ -15,33 +15,35 @@ import org.zanata.rest.dto.Account;
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
-public class PutUserCommand extends ConfigurableCommand<PutUserOptions>
-{
-   private static final Logger log = LoggerFactory.getLogger(PutUserCommand.class);
+public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
+    private static final Logger log = LoggerFactory
+            .getLogger(PutUserCommand.class);
 
-   public PutUserCommand(PutUserOptions opts)
-   {
-      super(opts);
-   }
+    public PutUserCommand(PutUserOptions opts) {
+        super(opts);
+    }
 
-   public void run() throws Exception
-   {
-      Account account = new Account();
-      account.setEmail(getOpts().getUserEmail());
-      account.setName(getOpts().getUserName());
-      account.setUsername(getOpts().getUserUsername());
-      account.setPasswordHash(getOpts().getUserPasswordHash());
-      account.setApiKey(getOpts().getUserKey());
-      account.setEnabled(!getOpts().isUserDisabled());
-      account.setRoles(new HashSet<String>(Arrays.asList(getOpts().getUserRoles().split(","))));
-      account.setTribes(new HashSet<String>(Arrays.asList(getOpts().getUserLangs().split(","))));
+    public void run() throws Exception {
+        Account account = new Account();
+        account.setEmail(getOpts().getUserEmail());
+        account.setName(getOpts().getUserName());
+        account.setUsername(getOpts().getUserUsername());
+        account.setPasswordHash(getOpts().getUserPasswordHash());
+        account.setApiKey(getOpts().getUserKey());
+        account.setEnabled(!getOpts().isUserDisabled());
+        account.setRoles(new HashSet<String>(Arrays.asList(getOpts()
+                .getUserRoles().split(","))));
+        account.setTribes(new HashSet<String>(Arrays.asList(getOpts()
+                .getUserLangs().split(","))));
 
-      log.debug("{}", account);
+        log.debug("{}", account);
 
-      IAccountResource iterResource = getRequestFactory().getAccount(getOpts().getUserUsername());
-      URI uri = getRequestFactory().getAccountURI(getOpts().getUserUsername());
-      ClientResponse<?> response = iterResource.put(account);
-      ClientUtility.checkResult(response, uri);
-   }
+        IAccountResource iterResource =
+                getRequestFactory().getAccount(getOpts().getUserUsername());
+        URI uri =
+                getRequestFactory().getAccountURI(getOpts().getUserUsername());
+        ClientResponse<?> response = iterResource.put(account);
+        ClientUtility.checkResult(response, uri);
+    }
 
 }

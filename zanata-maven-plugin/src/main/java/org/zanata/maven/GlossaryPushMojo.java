@@ -29,126 +29,117 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.glossary.push.GlossaryPushCommand;
 import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Pushes glossary file into Zanata.
- * 
+ *
  * @goal glossary-push
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class GlossaryPushMojo extends ConfigurableProjectMojo<GlossaryPushOptions> implements GlossaryPushOptions
-{
+public class GlossaryPushMojo extends
+        ConfigurableProjectMojo<GlossaryPushOptions> implements
+        GlossaryPushOptions {
 
-   /**
-    * Source language of document
-    * 
-    * @parameter expression="${zanata.sourceLang}" default-value="en-US"
-    */
-   private String sourceLang = "en-US";
+    /**
+     * Source language of document
+     *
+     * @parameter expression="${zanata.sourceLang}" default-value="en-US"
+     */
+    private String sourceLang = "en-US";
 
+    /**
+     * Translation language of document. Not required for csv file
+     *
+     * @parameter expression="${zanata.transLang}"
+     */
+    private String transLang;
 
-   /**
-    * Translation language of document. Not required for csv file
-    * 
-    * @parameter expression="${zanata.transLang}"
-    */
-   private String transLang;
+    /**
+     * Location path for the glossary file
+     *
+     * @parameter expression="${zanata.glossaryFile}"
+     * @required
+     */
+    private File glossaryFile;
 
-   /**
-    * Location path for the glossary file
-    * 
-    * @parameter expression="${zanata.glossaryFile}"
-    * @required
-    */
-   private File glossaryFile;
+    /**
+     * Treat source comments and references as target comments in glossary file
+     * as translation comment
+     *
+     * @parameter expression="${zanata.treatSourceCommentsAsTarget}"
+     *            default-value="false"
+     */
+    private boolean treatSourceCommentsAsTarget = false;
 
-   /**
-    * Treat source comments and references as target comments in glossary file
-    * as translation comment
-    * 
-    * @parameter expression="${zanata.treatSourceCommentsAsTarget}"
-    *            default-value="false"
-    */
-   private boolean treatSourceCommentsAsTarget = false;
+    /**
+     * Customized comment column headers for csv file format. Format of CSV:
+     * {source locale},{locale},{locale}...,pos,description OR {source
+     * locale},{locale},{locale}...,description1,description2...
+     *
+     * @parameter expression="${zanata.commentCols}"
+     *            default-value="pos,description"
+     */
+    private String commentCols = "pos,description";
 
-   /**
-    * Customized comment column headers for csv file format. Format of CSV:
-    * {source locale},{locale},{locale}...,pos,description OR {source
-    * locale},{locale},{locale}...,description1,description2...
-    * 
-    * @parameter expression="${zanata.commentCols}"
-    *            default-value="pos,description"
-    */
-   private String commentCols = "pos,description";
+    /**
+     * Batch size for large glossary file
+     *
+     * @parameter expression="${zanata.batchSize}" default-value=50
+     */
+    private int batchSize = 50;
 
-   /**
-    * Batch size for large glossary file
-    * 
-    * @parameter expression="${zanata.batchSize}" default-value=50
-    */
-   private int batchSize = 50;
+    public GlossaryPushMojo() throws Exception {
+        super();
+    }
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
+    @Override
+    public File getGlossaryFile() {
+        return glossaryFile;
+    }
 
-   public GlossaryPushMojo() throws Exception
-   {
-      super();
-   }
+    @Override
+    public String getSourceLang() {
+        return sourceLang;
+    }
 
-   @Override
-   public File getGlossaryFile()
-   {
-      return glossaryFile;
-   }
+    @Override
+    public GlossaryPushCommand initCommand() {
+        return new GlossaryPushCommand(this);
+    }
 
+    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
+            justification = "Injected by Maven")
+    @Override
+    public String getTransLang() {
+        return transLang;
+    }
 
-   @Override
-   public String getSourceLang()
-   {
-      return sourceLang;
-   }
+    @Override
+    public boolean getTreatSourceCommentsAsTarget() {
+        return treatSourceCommentsAsTarget;
+    }
 
-   @Override
-   public GlossaryPushCommand initCommand()
-   {
-      return new GlossaryPushCommand(this);
-   }
+    @Override
+    public List<String> getCommentCols() {
+        String[] commentHeadersList = StringUtils.split(commentCols, ",");
+        List<String> list = new ArrayList<String>();
+        if (commentHeadersList != null && commentHeadersList.length > 0) {
+            Collections.addAll(list, commentHeadersList);
+        }
+        return list;
+    }
 
-   @Override
-   public String getTransLang()
-   {
-      return transLang;
-   }
+    @Override
+    public int getBatchSize() {
+        return batchSize;
+    }
 
-   @Override
-   public boolean getTreatSourceCommentsAsTarget()
-   {
-      return treatSourceCommentsAsTarget;
-   }
-
-   @Override
-   public List<String> getCommentCols()
-   {
-      String[] commentHeadersList = StringUtils.split(commentCols, ",");
-      List<String> list = new ArrayList<String>();
-      if (commentHeadersList != null && commentHeadersList.length > 0)
-      {
-         Collections.addAll(list, commentHeadersList);
-      }
-      return list;
-   }
-
-   @Override
-   public int getBatchSize()
-   {
-      return batchSize;
-   }
-
-   @Override
-   public String getCommandName()
-   {
-      return "glossary-push";
-   }
+    @Override
+    public String getCommandName() {
+        return "glossary-push";
+    }
 }
-
-
- 

@@ -30,80 +30,83 @@ import java.io.OutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.util.PathUtil;
 
 /**
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPullStrategy
-{
+public class RawPullStrategy {
 
-   private static final Logger log = LoggerFactory.getLogger(RawPullStrategy.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(RawPullStrategy.class);
 
-   private PullOptions opts;
+    private PullOptions opts;
 
-   public void setPullOptions(PullOptions opts)
-   {
-      this.opts = opts;
-   }
+    public void setPullOptions(PullOptions opts) {
+        this.opts = opts;
+    }
 
-   public void writeSrcFile(String localDocName, InputStream srcFile) throws IOException
-   {
-      if (srcFile == null)
-      {
-         throw new RuntimeException("no data for downloaded file " + localDocName);
-      }
-      File srcDir = opts.getSrcDir();
-      File file = new File(srcDir, localDocName);
-      logAndStreamToFile(srcFile, file);
-   }
+    public void writeSrcFile(String localDocName, InputStream srcFile)
+            throws IOException {
+        if (srcFile == null) {
+            throw new RuntimeException("no data for downloaded file "
+                    + localDocName);
+        }
+        File srcDir = opts.getSrcDir();
+        File file = new File(srcDir, localDocName);
+        logAndStreamToFile(srcFile, file);
+    }
 
-   public void writeTransFile(String localDocName, LocaleMapping localeMapping, InputStream transFile) throws IOException
-   {
-      if (transFile == null)
-      {
-         throw new RuntimeException("no data for downloaded file " + localDocName);
-      }
-      File transDir = new File(opts.getTransDir(), localeMapping.getLocalLocale());
-      File file = new File(transDir, localDocName);
-      logAndStreamToFile(transFile, file);
-   }
+    public void writeTransFile(String localDocName,
+            LocaleMapping localeMapping, InputStream transFile)
+            throws IOException {
+        if (transFile == null) {
+            throw new RuntimeException("no data for downloaded file "
+                    + localDocName);
+        }
+        File transDir =
+                new File(opts.getTransDir(), localeMapping.getLocalLocale());
+        File file = new File(transDir, localDocName);
+        logAndStreamToFile(transFile, file);
+    }
 
-   /**
-    * Write stream to file after indicating whether an existing file will be overwritten.
-    * 
-    * @param stream
-    * @param file
-    * @throws FileNotFoundException
-    * @throws IOException
-    */
-   private void logAndStreamToFile(InputStream stream, File file) throws FileNotFoundException, IOException
-   {
-      if (file.exists())
-      {
-         log.warn("overwriting existing document at [{}]", file.getAbsolutePath());
-      }
-      else
-      {
-         log.info("writing new document to [{}]", file.getAbsolutePath());
-      }
-      file.getParentFile().mkdirs();
-      writeStreamToFile(stream, file);
-   }
+    /**
+     * Write stream to file after indicating whether an existing file will be
+     * overwritten.
+     *
+     * @param stream
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private void logAndStreamToFile(InputStream stream, File file)
+            throws FileNotFoundException, IOException {
+        if (file.exists()) {
+            log.warn("overwriting existing document at [{}]",
+                    file.getAbsolutePath());
+        } else {
+            log.info("writing new document to [{}]", file.getAbsolutePath());
+        }
+        PathUtil.makeDirs(file.getParentFile());
+        writeStreamToFile(stream, file);
+    }
 
-   private void writeStreamToFile(InputStream stream, File file) throws FileNotFoundException, IOException
-   {
-      OutputStream out = new FileOutputStream(file);
-      int read = 0;
-      byte[] buffer = new byte[1024];
-      while ((read = stream.read(buffer)) != -1)
-      {
-         out.write(buffer, 0, read);
-      }
-      stream.close();
-      out.flush();
-      out.close();
-   }
+    private void writeStreamToFile(InputStream stream, File file)
+            throws FileNotFoundException, IOException {
+        OutputStream out = new FileOutputStream(file);
+        try {
+            int read;
+            byte[] buffer = new byte[1024];
+            while ((read = stream.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            out.flush();
+        } finally {
+            out.close();
+        }
+    }
 
 }

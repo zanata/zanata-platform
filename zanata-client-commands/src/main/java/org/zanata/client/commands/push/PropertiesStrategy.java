@@ -40,92 +40,101 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * NB: you must initialise this object with init() after setPushOptions()
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PropertiesStrategy extends AbstractPushStrategy
-{
-   // "8859_1" is used in Properties.java...
-   private static final String ISO_8859_1 = "ISO-8859-1";
+public class PropertiesStrategy extends AbstractPushStrategy {
+    // "8859_1" is used in Properties.java...
+    private static final String ISO_8859_1 = "ISO-8859-1";
 
-   private PropReader propReader;
+    private PropReader propReader;
 
-   private final String charset;
+    private final String charset;
 
-   public PropertiesStrategy()
-   {
-      this(ISO_8859_1);
-   }
+    public PropertiesStrategy() {
+        this(ISO_8859_1);
+    }
 
-   public PropertiesStrategy(String charset)
-   {
-      super(new StringSet("comment"), ".properties");
-      this.charset = charset;
-   }
+    public PropertiesStrategy(String charset) {
+        super(new StringSet("comment"), ".properties");
+        this.charset = charset;
+    }
 
-   @Override
-   public void init()
-   {
-      this.propReader = new PropReader(
-            charset,
-            new LocaleId(getOpts().getSourceLang()),
-            ContentState.Approved);
-   }
+    @Override
+    public void init() {
+        this.propReader =
+                new PropReader(charset,
+                        new LocaleId(getOpts().getSourceLang()),
+                        ContentState.Approved);
+    }
 
-   @Override
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException
-   {
-      Set<String> localDocNames = new HashSet<String>();
+    @Override
+    public Set<String> findDocNames(File srcDir, List<String> includes,
+            List<String> excludes, boolean useDefaultExclude,
+            boolean caseSensitive, boolean excludeLocaleFilenames)
+            throws IOException {
+        Set<String> localDocNames = new HashSet<String>();
 
-      String[] files = getSrcFiles(srcDir, includes, excludes, excludeLocaleFilenames, useDefaultExclude, caseSensitive);
+        String[] files =
+                getSrcFiles(srcDir, includes, excludes, excludeLocaleFilenames,
+                        useDefaultExclude, caseSensitive);
 
-      for (String relativeFilePath : files)
-      {
-         String baseName = FilenameUtils.removeExtension(relativeFilePath);
-         localDocNames.add(baseName);
-      }
-      return localDocNames;
-   }
+        for (String relativeFilePath : files) {
+            String baseName = FilenameUtils.removeExtension(relativeFilePath);
+            localDocNames.add(baseName);
+        }
+        return localDocNames;
+    }
 
-   private Resource loadResource(String docName, File propFile) throws IOException, RuntimeException
-   {
-      Resource doc = new Resource(docName);
-      // doc.setContentType(contentType);
-      propReader.extractTemplate(doc, new FileInputStream(propFile));
-      return doc;
-   }
+    private Resource loadResource(String docName, File propFile)
+            throws IOException, RuntimeException {
+        Resource doc = new Resource(docName);
+        // doc.setContentType(contentType);
+        FileInputStream in = new FileInputStream(propFile);
+        try {
+            propReader.extractTemplate(doc, in);
+        } finally {
+            in.close();
+        }
+        return doc;
+    }
 
-   @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException, RuntimeException
-   {
-      String filename = docNameToFilename(docName);
-      File propFile = new File(sourceDir, filename);
-      return loadResource(docName, propFile);
-   }
+    @Override
+    public Resource loadSrcDoc(File sourceDir, String docName)
+            throws IOException, RuntimeException {
+        String filename = docNameToFilename(docName);
+        File propFile = new File(sourceDir, filename);
+        return loadResource(docName, propFile);
+    }
 
-   private TranslationsResource loadTranslationsResource(Resource srcDoc, File transFile) throws IOException, RuntimeException
-   {
-      TranslationsResource targetDoc = new TranslationsResource();
-      propReader.extractTarget(targetDoc, new FileInputStream(transFile));
-      return targetDoc;
-   }
+    private TranslationsResource loadTranslationsResource(Resource srcDoc,
+            File transFile) throws IOException, RuntimeException {
+        TranslationsResource targetDoc = new TranslationsResource();
+        FileInputStream in = new FileInputStream(transFile);
+        try {
+            propReader.extractTarget(targetDoc, in);
+        } finally {
+            in.close();
+        }
+        return targetDoc;
+    }
 
-   @Override
-   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor callback) throws IOException, RuntimeException
-   {
-      for (LocaleMapping locale : getOpts().getLocaleMapList())
-      {
-         String filename = docNameToFilename(docName, locale);
-         File transFile = new File(getOpts().getTransDir(), filename);
-         if (transFile.exists())
-         {
-            TranslationsResource targetDoc = loadTranslationsResource(srcDoc, transFile);
-            callback.visit(locale, targetDoc);
-         }
-         else
-         {
-            // no translation found in 'locale' for current doc
-         }
-      }
-   }
+    @Override
+    public void visitTranslationResources(String docName, Resource srcDoc,
+            TranslationResourcesVisitor callback) throws IOException,
+            RuntimeException {
+        for (LocaleMapping locale : getOpts().getLocaleMapList()) {
+            String filename = docNameToFilename(docName, locale);
+            File transFile = new File(getOpts().getTransDir(), filename);
+            if (transFile.exists()) {
+                TranslationsResource targetDoc =
+                        loadTranslationsResource(srcDoc, transFile);
+                callback.visit(locale, targetDoc);
+            } else {
+                // no translation found in 'locale' for current doc
+            }
+        }
+    }
 }

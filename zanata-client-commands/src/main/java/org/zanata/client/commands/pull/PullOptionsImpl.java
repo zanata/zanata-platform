@@ -28,140 +28,140 @@ import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.PushPullType;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions> implements PullOptions
-{
-   private static final String DEFAULT_PULL_TYPE = "trans";
-   private static final boolean DEFAULT_CREATE_SKELETONS = false;
-   private static final boolean DEFAULT_ENCODE_TABS = true;
-   private static final boolean DEFAULT_INCLUDE_FUZZY = false;
-   private static final boolean DEFAULT_USE_CACHE = true;
-   private static final boolean DEFAULT_PURGE_CACHE = false;
-   private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
+public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
+        implements PullOptions {
+    private static final String DEFAULT_PULL_TYPE = "trans";
+    private static final boolean DEFAULT_CREATE_SKELETONS = false;
+    private static final boolean DEFAULT_ENCODE_TABS = true;
+    private static final boolean DEFAULT_INCLUDE_FUZZY = false;
+    private static final boolean DEFAULT_USE_CACHE = true;
+    private static final boolean DEFAULT_PURGE_CACHE = false;
+    private static final boolean DEFAULT_CONTINUE_AFTER_ERROR = false;
 
-   private String pullType = DEFAULT_PULL_TYPE;
+    private String pullType = DEFAULT_PULL_TYPE;
 
-   private boolean createSkeletons = DEFAULT_CREATE_SKELETONS;
-   private boolean encodeTabs = DEFAULT_ENCODE_TABS;
-   private boolean includeFuzzy = DEFAULT_INCLUDE_FUZZY;
-   private boolean useCache = DEFAULT_USE_CACHE;
-   private boolean purgeCache = DEFAULT_PURGE_CACHE;
-   private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
+    private boolean createSkeletons = DEFAULT_CREATE_SKELETONS;
+    private boolean encodeTabs = DEFAULT_ENCODE_TABS;
+    private boolean includeFuzzy = DEFAULT_INCLUDE_FUZZY;
+    private boolean useCache = DEFAULT_USE_CACHE;
+    private boolean purgeCache = DEFAULT_PURGE_CACHE;
+    private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
 
-   @Override
-   public ZanataCommand initCommand()
-   {
-      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
-      {
-         return new RawPullCommand(this);
-      }
-      else
-      {
-         return new PullCommand(this);
-      }
-   }
+    @Override
+    public ZanataCommand initCommand() {
+        if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType())) {
+            return new RawPullCommand(this);
+        } else {
+            return new PullCommand(this);
+        }
+    }
 
-   @Override
-   public String getCommandName()
-   {
-      return "pull";
-   }
+    @Override
+    public String getCommandName() {
+        return "pull";
+    }
 
-   @Override
-   public String getCommandDescription()
-   {
-      return "Pull translated text from Zanata.";
-   }
+    @Override
+    public String getCommandDescription() {
+        return "Pull translated text from Zanata.";
+    }
 
-   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALE1,LOCALE2", usage = "Locales to pull from the server.\n" +
-       "By default all locales in zanata.xml will be pulled.")
-   public void setLocales(String locales)
-   {
-      this.locales = locales.split(",");
-   }
+    @Option(aliases = { "-l" }, name = "--locales",
+            metaVar = "LOCALE1,LOCALE2",
+            usage = "Locales to pull from the server.\n"
+                    + "By default all locales in zanata.xml will be pulled.")
+    public void setLocales(String locales) {
+        this.locales = locales.split(",");
+    }
 
-   @Override
-   public PushPullType getPullType()
-   {
-      return PushPullType.fromString(pullType);
-   }
+    @Override
+    public PushPullType getPullType() {
+        return PushPullType.fromString(pullType);
+    }
 
-   @Option(name = "--pull-type", metaVar = "TYPE", required = false,
-         usage = "Type of pull to perform from the server: \"source\" pulls source documents only.\n" +
-            "\"trans\" (default) pulls translation documents only.\n" +
-            "\"both\" pulls both source and translation documents.")
-   public void setPullType(String pullType)
-   {
-      this.pullType = pullType;
-   }
+    @Option(
+            name = "--pull-type",
+            metaVar = "TYPE",
+            required = false,
+            usage = "Type of pull to perform from the server: \"source\" pulls source documents only.\n"
+                    + "\"trans\" (default) pulls translation documents only.\n"
+                    + "\"both\" pulls both source and translation documents.")
+    public
+            void setPullType(String pullType) {
+        this.pullType = pullType;
+    }
 
-   @Override
-   public boolean getCreateSkeletons()
-   {
-      return createSkeletons;
-   }
+    @Override
+    public boolean getCreateSkeletons() {
+        return createSkeletons;
+    }
 
-   @Option(name = "--create-skeletons", usage = "Create skeleton entries for strings/files which have not been translated yet." +
-                                                " Skeletons are not created by default.")
-   public void setCreateSkeletons(boolean createSkeletons)
-   {
-      this.createSkeletons = createSkeletons;
-   }
+    @Option(
+            name = "--create-skeletons",
+            usage = "Create skeleton entries for strings/files which have not been translated yet."
+                    + " Skeletons are not created by default.")
+    public
+            void setCreateSkeletons(boolean createSkeletons) {
+        this.createSkeletons = createSkeletons;
+    }
 
-   @Override
-   public boolean getEncodeTabs()
-   {
-      return this.encodeTabs;
-   }
+    @Override
+    public boolean getEncodeTabs() {
+        return this.encodeTabs;
+    }
 
-   @Option(name = "--encode-tabs", handler = BooleanValueHandler.class,
-      usage = "Whether tabs should be encoded as \\t (true, default) or left as tabs (false).")
-   public void setEncodeTabs(boolean encodeTabs)
-   {
-      this.encodeTabs = encodeTabs;
-   }
+    @Option(
+            name = "--encode-tabs",
+            handler = BooleanValueHandler.class,
+            usage = "Whether tabs should be encoded as \\t (true, default) or left as tabs (false).")
+    public
+            void setEncodeTabs(boolean encodeTabs) {
+        this.encodeTabs = encodeTabs;
+    }
 
-   @Override
-   public boolean getIncludeFuzzy()
-   {
-      return this.includeFuzzy;
-   }
+    @Override
+    public boolean getIncludeFuzzy() {
+        return this.includeFuzzy;
+    }
 
-   @Option(name = "--include-fuzzy", usage = "[project type 'file' only] Whether to include fuzzy " +
-      "translations in translation files. " +
-      "If this option is false (default), source text will be used for any string " +
-      "that does not have an approved translation.")
-   public void setIncludeFuzzy(boolean includeFuzzy)
-   {
-      this.includeFuzzy = includeFuzzy;
-   }
+    @Option(
+            name = "--include-fuzzy",
+            usage = "[project type 'file' only] Whether to include fuzzy "
+                    + "translations in translation files. "
+                    + "If this option is false (default), source text will be used for any string "
+                    + "that does not have an approved translation.")
+    public
+            void setIncludeFuzzy(boolean includeFuzzy) {
+        this.includeFuzzy = includeFuzzy;
+    }
 
-   @Override
-   public boolean getPurgeCache()
-   {
-      return purgeCache;
-   }
+    @Override
+    public boolean getPurgeCache() {
+        return purgeCache;
+    }
 
-   @Override
-   public boolean getUseCache()
-   {
-      return useCache;
-   }
+    @Override
+    public boolean getUseCache() {
+        return useCache;
+    }
 
-   @Option(name = "--continue-after-error", aliases = "-c",
-         usage = "When there is an error, whether try to workaround it and continue to next text flow or fail the process." +
-               "i.e. when encounter a mismatch plural form, it will try to use singular form.\n" +
-               "Note: This option may not work on all circumstances.")
-   public void setContinueAfterError(boolean continueAfterError)
-   {
-      this.continueAfterError = continueAfterError;
-   }
+    @Option(
+            name = "--continue-after-error",
+            aliases = "-c",
+            usage = "When there is an error, whether try to workaround it and continue to next text flow or fail the process."
+                    + "i.e. when encounter a mismatch plural form, it will try to use singular form.\n"
+                    + "Note: This option may not work on all circumstances.")
+    public
+            void setContinueAfterError(boolean continueAfterError) {
+        this.continueAfterError = continueAfterError;
+    }
 
-   @Override
-   public boolean isContinueAfterError()
-   {
-      return continueAfterError;
-   }
+    @Override
+    public boolean isContinueAfterError() {
+        return continueAfterError;
+    }
 }

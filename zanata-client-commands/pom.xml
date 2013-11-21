@@ -1,144 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.zanata</groupId>
-		<artifactId>client</artifactId>
-		<version>3.1.3-SNAPSHOT</version>
-	</parent>
-	<artifactId>zanata-client-commands</artifactId>
-	<name>Zanata client commands</name>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>client</artifactId>
+    <version>3.2.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>zanata-client-commands</artifactId>
+  <name>Zanata client commands</name>
 
-    <!-- Should be the same as zanata-client/pom.xml -->
-    <scm>
-        <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
-        <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
-        <url>https://github.com/zanata/zanata-client</url>
-    </scm>
+  <!-- Should be the same as zanata-client/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
+    <url>https://github.com/zanata/zanata-client</url>
+  </scm>
 
-	<dependencies>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>zanata-common-util</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-adapter-properties</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-adapter-po</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-adapter-xliff</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-rest-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zanata</groupId>
-			<artifactId>zanata-adapter-glossary</artifactId>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-properties</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-po</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-xliff</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-glossary</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>jaxrs-api</artifactId>
-            <version>${resteasy.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <version>${resteasy.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
 
-        <dependency>
-           <groupId>org.slf4j</groupId>
-           <artifactId>slf4j-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>args4j</groupId>
-			<artifactId>args4j</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.fedorahosted.openprops</groupId>
-			<artifactId>openprops</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>args4j</groupId>
+      <artifactId>args4j</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.fedorahosted.openprops</groupId>
+      <artifactId>openprops</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>net.sf.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>1.8.2</version>
-		</dependency>
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.8.2</version>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.aesh</groupId>
       <artifactId>aesh</artifactId>
     </dependency>
-	</dependencies>
+  </dependencies>
 </project>

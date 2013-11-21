@@ -24,21 +24,19 @@ package org.zanata.client;
 import org.kohsuke.args4j.Argument;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class HelpOptions
-{
-   private String command;
+public class HelpOptions {
+    private String command;
 
-   public String getCommand()
-   {
-      return command;
-   }
+    public String getCommand() {
+        return command;
+    }
 
-   @Argument
-   public void setCommand(String command)
-   {
-      this.command = command;
-   }
+    @Argument
+    public void setCommand(String command) {
+        this.command = command;
+    }
 }

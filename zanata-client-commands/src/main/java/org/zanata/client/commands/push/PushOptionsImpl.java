@@ -32,239 +32,247 @@ import org.zanata.client.commands.ZanataCommand;
 import org.zanata.util.StringUtil;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions> implements PushOptions
-{
-   private static final boolean DEF_EXCLUDES = true;
-   private static final boolean DEF_CASE_SENSITIVE = true;
-   private static final boolean DEF_EXCLUDE_LOCALES = true;
-   private static final boolean DEF_COPYTRANS = true;
-   private static final int DEF_CHUNK_SIZE = 1024 * 1024;
-   /** @see org.zanata.common.MergeType for options */
-   private static final String DEF_MERGE_TYPE = "AUTO";
-   private static final String DEF_PUSH_TYPE = "source";
+public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
+        implements PushOptions {
+    private static final boolean DEF_EXCLUDES = true;
+    private static final boolean DEF_CASE_SENSITIVE = true;
+    private static final boolean DEF_EXCLUDE_LOCALES = true;
+    private static final boolean DEF_COPYTRANS = true;
+    private static final int DEF_CHUNK_SIZE = 1024 * 1024;
+    /** @see org.zanata.common.MergeType for options */
+    private static final String DEF_MERGE_TYPE = "AUTO";
+    private static final String DEF_PUSH_TYPE = "source";
 
-   private List<String> includes = new ArrayList<String>();
-   private List<String> excludes = new ArrayList<String>();
-   private List<String> fileTypes;
-   private boolean defaultExcludes = DEF_EXCLUDES;
-   private String mergeType = DEF_MERGE_TYPE;
-   private boolean caseSensitive = DEF_CASE_SENSITIVE;
-   private int chunkSize = DEF_CHUNK_SIZE;
-   private boolean excludeLocaleFilenames = DEF_EXCLUDE_LOCALES;
-   private boolean copyTrans = DEF_COPYTRANS;
-   private String pushType = DEF_PUSH_TYPE;
-   private String sourceLang = "en-US";
+    private List<String> includes = new ArrayList<String>();
+    private List<String> excludes = new ArrayList<String>();
+    private List<String> fileTypes;
+    private boolean defaultExcludes = DEF_EXCLUDES;
+    private String mergeType = DEF_MERGE_TYPE;
+    private boolean caseSensitive = DEF_CASE_SENSITIVE;
+    private int chunkSize = DEF_CHUNK_SIZE;
+    private boolean excludeLocaleFilenames = DEF_EXCLUDE_LOCALES;
+    private boolean copyTrans = DEF_COPYTRANS;
+    private String pushType = DEF_PUSH_TYPE;
+    private String sourceLang = "en-US";
 
-   private String validate;
+    private String validate;
 
-   @Override
-   public ZanataCommand initCommand()
-   {
-      if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType()))
-      {
-         return new RawPushCommand(this);
-      }
-      else
-      {
-         return new PushCommand(this);
-      }
-   }
+    @Override
+    public ZanataCommand initCommand() {
+        if (PROJECT_TYPE_FILE.equalsIgnoreCase(getProjectType())) {
+            return new RawPushCommand(this);
+        } else {
+            return new PushCommand(this);
+        }
+    }
 
-   @Override
-   public String getCommandName()
-   {
-      return "push";
-   }
+    @Override
+    public String getCommandName() {
+        return "push";
+    }
 
-   @Override
-   public String getCommandDescription()
-   {
-      return "Pushes source text to a Zanata project version so that it can be translated.";
-   }
+    @Override
+    public String getCommandDescription() {
+        return "Pushes source text to a Zanata project version so that it can be translated.";
+    }
 
-   @Override
-   public String getSourceLang()
-   {
-      return sourceLang;
-   }
+    @Override
+    public String getSourceLang() {
+        return sourceLang;
+    }
 
-   @Option(name = "--src-lang", usage = "Language of source documents (defaults to en-US)")
-   public void setSourceLang(String sourceLang)
-   {
-      this.sourceLang = sourceLang;
-   }
+    @Option(name = "--src-lang",
+            usage = "Language of source documents (defaults to en-US)")
+    public void setSourceLang(String sourceLang) {
+        this.sourceLang = sourceLang;
+    }
 
-   @Option(aliases = { "-l" }, name = "--locales", metaVar = "LOCALE1,LOCALE2,...", usage = "Locales to push to the server.\n" +
-       "By default all locales in zanata.xml will be pushed.")
-   public void setLocales(String locales)
-   {
-      this.locales = locales.split(",");
-   }
+    @Option(aliases = { "-l" }, name = "--locales",
+            metaVar = "LOCALE1,LOCALE2,...",
+            usage = "Locales to push to the server.\n"
+                    + "By default all locales in zanata.xml will be pushed.")
+    public void setLocales(String locales) {
+        this.locales = locales.split(",");
+    }
 
-   @Override
-   public boolean getCopyTrans()
-   {
-      return copyTrans;
-   }
+    @Override
+    public boolean getCopyTrans() {
+        return copyTrans;
+    }
 
-   public boolean isCopyTrans()
-   {
-      return copyTrans;
-   }
+    public boolean isCopyTrans() {
+        return copyTrans;
+    }
 
-   @Option(name = "--copy-trans", handler = BooleanValueHandler.class,
-         usage = "Copy latest translations from equivalent messages/documents in the database (default: "+DEF_COPYTRANS+")")
-   public void setCopyTrans(boolean copyTrans)
-   {
-      this.copyTrans = copyTrans;
-   }
+    @Option(
+            name = "--copy-trans",
+            handler = BooleanValueHandler.class,
+            usage = "Copy latest translations from equivalent messages/documents in the database (default: "
+                    + DEF_COPYTRANS + ")")
+    public
+            void setCopyTrans(boolean copyTrans) {
+        this.copyTrans = copyTrans;
+    }
 
-   @Override
-   public String getMergeType()
-   {
-      return mergeType;
-   }
+    @Override
+    public String getMergeType() {
+        return mergeType;
+    }
 
-   @Option(name = "--merge-type", metaVar = "TYPE", usage = "Merge type: \"auto\" (default) or \"import\" (DANGER!).")
-   public void setMergeType(String mergeType)
-   {
-      this.mergeType = mergeType;
-   }
+    @Option(name = "--merge-type", metaVar = "TYPE",
+            usage = "Merge type: \"auto\" (default) or \"import\" (DANGER!).")
+    public void setMergeType(String mergeType) {
+        this.mergeType = mergeType;
+    }
 
-   @Override
-   public PushPullType getPushType()
-   {
-      return PushPullType.fromString(pushType);
-   }
+    @Override
+    public PushPullType getPushType() {
+        return PushPullType.fromString(pushType);
+    }
 
-   @Option(name = "--push-type", metaVar = "TYPE", required = false, 
-         usage = "Type of push to perform on the server:\n" +
-                 "  \"source\" (default) pushes source documents only.\n" +
-                 "  \"trans\" pushes translation documents only.\n" +
-                 "  \"both\" pushes both source and translation documents.")
-   public void setPushType(String pushType)
-   {
-      this.pushType = pushType;
-   }
+    @Option(
+            name = "--push-type",
+            metaVar = "TYPE",
+            required = false,
+            usage = "Type of push to perform on the server:\n"
+                    + "  \"source\" (default) pushes source documents only.\n"
+                    + "  \"trans\" pushes translation documents only.\n"
+                    + "  \"both\" pushes both source and translation documents.")
+    public
+            void setPushType(String pushType) {
+        this.pushType = pushType;
+    }
 
-   @Override
-   public List<String> getIncludes()
-   {
-      return includes;
-   }
+    @Override
+    public List<String> getIncludes() {
+        return includes;
+    }
 
-   @Option(name = "--includes", metaVar = "INCLUDES", usage = "Wildcard pattern to include files and directories. This parameter is only\n" +
-           "needed for some project types, eg XLIFF, Properties. Usage\n" +
-           "--includes=\"src/myfile*.xml,**/*.xlf\"")
-   public void setIncludes(String includes)
-   {
-      this.includes = StringUtil.split(includes, ",");
-   }
+    @Option(
+            name = "--includes",
+            metaVar = "INCLUDES",
+            usage = "Wildcard pattern to include files and directories. This parameter is only\n"
+                    + "needed for some project types, eg XLIFF, Properties. Usage\n"
+                    + "--includes=\"src/myfile*.xml,**/*.xlf\"")
+    public
+            void setIncludes(String includes) {
+        this.includes = StringUtil.split(includes, ",");
+    }
 
-   @Override
-   public List<String> getExcludes()
-   {
-      return excludes;
-   }
+    @Override
+    public List<String> getExcludes() {
+        return excludes;
+    }
 
-   @Option(name = "--excludes", metaVar = "EXCLUDES", usage = "Wildcard pattern to exclude files and directories. Usage\n" + 
-           "--excludes=\"Pattern1,Pattern2,Pattern3\"")
-   public void setExcludes(String excludes)
-   {
-      this.excludes = StringUtil.split(excludes, ",");
-   }
+    @Option(
+            name = "--excludes",
+            metaVar = "EXCLUDES",
+            usage = "Wildcard pattern to exclude files and directories. Usage\n"
+                    + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
+    public
+            void setExcludes(String excludes) {
+        this.excludes = StringUtil.split(excludes, ",");
+    }
 
-   @Override
-   public boolean getDefaultExcludes()
-   {
-      return defaultExcludes;
-   }
+    @Override
+    public boolean getDefaultExcludes() {
+        return defaultExcludes;
+    }
 
-   @Option(name = "--default-excludes", handler = BooleanValueHandler.class,
-         usage = "Add the default excludes (.svn, .git, etc) to the excludes list (default: "+DEF_EXCLUDES+")")
-   public void setDefaultExcludes(boolean defaultExcludes)
-   {
-      this.defaultExcludes = defaultExcludes;
-   }
+    @Option(
+            name = "--default-excludes",
+            handler = BooleanValueHandler.class,
+            usage = "Add the default excludes (.svn, .git, etc) to the excludes list (default: "
+                    + DEF_EXCLUDES + ")")
+    public
+            void setDefaultExcludes(boolean defaultExcludes) {
+        this.defaultExcludes = defaultExcludes;
+    }
 
-   @Override
-   public boolean getDeleteObsoleteModules()
-   {
-      // modules are currently only supported by Maven Mojos:
-      return false;
-   }
+    @Override
+    public boolean getDeleteObsoleteModules() {
+        // modules are currently only supported by Maven Mojos:
+        return false;
+    }
 
-   @Override
-   public int getChunkSize()
-   {
-      return chunkSize;
-   }
+    @Override
+    public int getChunkSize() {
+        return chunkSize;
+    }
 
-   @Option(name = "--chunk-size", metaVar = "SIZE", usage = "Maximum size, in bytes, of document chunks to transmit. Documents smaller\n" + 
-           "than this size will be transmitted in a single request, larger documents\n" +
-           "will be sent over multiple requests.")
-   public void setChunkSize(int chunkSize)
-   {
-      this.chunkSize = chunkSize;
-   }
+    @Option(
+            name = "--chunk-size",
+            metaVar = "SIZE",
+            usage = "Maximum size, in bytes, of document chunks to transmit. Documents smaller\n"
+                    + "than this size will be transmitted in a single request, larger documents\n"
+                    + "will be sent over multiple requests.")
+    public
+            void setChunkSize(int chunkSize) {
+        this.chunkSize = chunkSize;
+    }
 
-   @Override
-   public List<String> getFileTypes()
-   {
-      return fileTypes;
-   }
+    @Override
+    public List<String> getFileTypes() {
+        return fileTypes;
+    }
 
-   @Option(name = "--file-types", metaVar = "TYPES", usage = "File types to locate and transmit to the server.")
-   public void setFileTypes(String fileTypes)
-   {
-      this.fileTypes = StringUtil.split(fileTypes, ",");
-   }
+    @Option(name = "--file-types", metaVar = "TYPES",
+            usage = "File types to locate and transmit to the server.")
+    public void setFileTypes(String fileTypes) {
+        this.fileTypes = StringUtil.split(fileTypes, ",");
+    }
 
-   @Override
-   public boolean getCaseSensitive()
-   {
-      return caseSensitive;
-   }
+    @Override
+    public boolean getCaseSensitive() {
+        return caseSensitive;
+    }
 
-   @Option(name = "--case-sensitive", handler = BooleanValueHandler.class,
-         usage = "Consider case of filenames in includes and excludes options. (default: "+DEF_CASE_SENSITIVE+")")
-   public void setCaseSensitive(boolean caseSensitive)
-   {
-      this.caseSensitive = caseSensitive;
-   }
+    @Option(
+            name = "--case-sensitive",
+            handler = BooleanValueHandler.class,
+            usage = "Consider case of filenames in includes and excludes options. (default: "
+                    + DEF_CASE_SENSITIVE + ")")
+    public
+            void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
 
-   @Override
-   public boolean getExcludeLocaleFilenames()
-   {
-      return excludeLocaleFilenames;
-   }
+    @Override
+    public boolean getExcludeLocaleFilenames() {
+        return excludeLocaleFilenames;
+    }
 
-   @Option(name = "--exclude-locale-filenames", handler = BooleanValueHandler.class,
-         usage = "Exclude filenames which match locales in zanata.xml (other than the\n" + 
-         "source locale).  For instance, if zanata.xml includes de and fr,\n" + 
-         "then the files messages_de.properties and messages_fr.properties\n" + 
-         "will not be treated as source files.\n" + 
-         "NB: This parameter will be ignored for some project types which use\n" + 
-         "different file naming conventions (eg podir, gettext).\n" +
-         "(default: "+DEF_EXCLUDE_LOCALES+")")
-   public void setExcludeLocaleFilenames(boolean excludeLocaleFilenames)
-   {
-      this.excludeLocaleFilenames = excludeLocaleFilenames;
-   }
+    @Option(
+            name = "--exclude-locale-filenames",
+            handler = BooleanValueHandler.class,
+            usage = "Exclude filenames which match locales in zanata.xml (other than the\n"
+                    + "source locale).  For instance, if zanata.xml includes de and fr,\n"
+                    + "then the files messages_de.properties and messages_fr.properties\n"
+                    + "will not be treated as source files.\n"
+                    + "NB: This parameter will be ignored for some project types which use\n"
+                    + "different file naming conventions (eg podir, gettext).\n"
+                    + "(default: " + DEF_EXCLUDE_LOCALES + ")")
+    public
+            void setExcludeLocaleFilenames(boolean excludeLocaleFilenames) {
+        this.excludeLocaleFilenames = excludeLocaleFilenames;
+    }
 
-   @Override
-   public String getValidate()
-   {
-      return validate;
-   }
+    @Override
+    public String getValidate() {
+        return validate;
+    }
 
-   @Option(name = "--validate", metaVar = "TYPE", usage = "Type of validation for XLIFF files. (values: XSD, CONTENT (default))")
-   public void setValidate(String validate)
-   {
-      this.validate = validate;
-   }
+    @Option(
+            name = "--validate",
+            metaVar = "TYPE",
+            usage = "Type of validation for XLIFF files. (values: XSD, CONTENT (default))")
+    public
+            void setValidate(String validate) {
+        this.validate = validate;
+    }
 
 }

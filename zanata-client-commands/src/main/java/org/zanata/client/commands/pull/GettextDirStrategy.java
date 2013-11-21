@@ -30,31 +30,31 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class GettextDirStrategy extends AbstractGettextPullStrategy
-{
-   public GettextDirStrategy(PullOptions opts)
-   {
-      super(opts);
-   }
+public class GettextDirStrategy extends AbstractGettextPullStrategy {
+    public GettextDirStrategy(PullOptions opts) {
+        super(opts);
+    }
 
-   @Override
-   public File getTransFileToWrite(String docName, LocaleMapping localeMapping)
-   {
-      String localLocale = localeMapping.getLocalLocale();
-      // write the PO file to $locale/$name.po
-      File localeDir = new File(getOpts().getTransDir(), localLocale);
-      File transFile = new File(localeDir, docName + ".po");
-      return transFile;
-   }
+    @Override
+    public File
+            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
+        String localLocale = localeMapping.getLocalLocale();
+        // write the PO file to $locale/$name.po
+        File localeDir = new File(getOpts().getTransDir(), localLocale);
+        File transFile = new File(localeDir, docName + ".po");
+        return transFile;
+    }
 
-   @Override
-   public FileDetails writeTransFile(Resource doc, String docName, LocaleMapping locMapping, TranslationsResource targetDoc) throws IOException
-   {
-      File transFile = getTransFileToWrite(docName, locMapping);
-      return getPoWriter().writePoToFile(transFile, doc, targetDoc);
-   }
+    @Override
+    public FileDetails writeTransFile(Resource doc, String docName,
+            LocaleMapping locMapping, TranslationsResource targetDoc)
+            throws IOException {
+        File transFile = getTransFileToWrite(docName, locMapping);
+        return getPoWriter().writePoToFile(transFile, doc, targetDoc);
+    }
 
 }

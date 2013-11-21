@@ -24,32 +24,30 @@ import org.zanata.client.commands.pull.PullOptions;
 
 /**
  * Pulls translated text from Zanata.
- * 
+ *
  * @goal pull
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PullSimpleMojo extends AbstractPullMojo implements PullOptions
-{
+public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
 
-   /**
-    * Whether module processing should be enabled. This option is obsolete. Please
-    * use pull-module instead.
-    * @parameter expression="${zanata.enableModules}"
-    */
-   private boolean enableModules = false;
+    /**
+     * Whether module processing should be enabled. This option is obsolete.
+     * Please use pull-module instead.
+     *
+     * @parameter expression="${zanata.enableModules}"
+     */
+    private boolean enableModules = false;
 
-   public PullSimpleMojo()
-   {
-      if (enableModules)
-      {
-         throw new RuntimeException("Please use pull-module for module support");
-      }
-   }
+    public PullSimpleMojo() {
+        if (enableModules) {
+            throw new RuntimeException(
+                    "Please use pull-module for module support");
+        }
+    }
 
-   @Override
-   public boolean getEnableModules()
-   {
-      return false;
-   }
+    @Override
+    public boolean getEnableModules() {
+        return false;
+    }
 
 }

@@ -3,7 +3,7 @@
   <groupId>null</groupId>
   <artifactId>null</artifactId>
   <version>0</version>
- 
+
   <build>
     <plugins>
       <plugin>
@@ -11,8 +11,8 @@
         <artifactId>zanata-maven-plugin</artifactId>
         <version>1.8.0-SNAPSHOT</version>
         <configuration>
-           <glossaryFile>fuel_hi.po</glossaryFile>
-           <transLang>hi</transLang>
+          <glossaryFile>fuel_hi.po</glossaryFile>
+          <transLang>hi</transLang>
         </configuration>
       </plugin>
     </plugins>

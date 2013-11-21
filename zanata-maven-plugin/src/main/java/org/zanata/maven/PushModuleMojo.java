@@ -22,32 +22,32 @@
 package org.zanata.maven;
 
 /**
- * Pushes source text to a Zanata project version so that it can be translated, and optionally push translated text as well.
- * NB: Any documents which exist on the server but not locally will be deleted as obsolete.
- * If deleteObsoleteModules is true, documents belonging to unknown/obsolete modules will be deleted as well.
+ * Pushes source text to a Zanata project version so that it can be translated,
+ * and optionally push translated text as well. NB: Any documents which exist on
+ * the server but not locally will be deleted as obsolete. If
+ * deleteObsoleteModules is true, documents belonging to unknown/obsolete
+ * modules will be deleted as well.
  *
  * @goal push-module
  * @requiresProject true
  * @author Sean Flanigan <sflaniga@redhat.com>
  */
-public class PushModuleMojo extends AbstractPushMojo
-{
-   /**
-    * Remove modules that are found in the server but not locally.
-    *
-    * @parameter expression="${zanata.deleteObsoleteModules}" default-value="false"
-    */
-   private boolean deleteObsoleteModules;
+public class PushModuleMojo extends AbstractPushMojo {
+    /**
+     * Remove modules that are found in the server but not locally.
+     *
+     * @parameter expression="${zanata.deleteObsoleteModules}"
+     *            default-value="false"
+     */
+    private boolean deleteObsoleteModules;
 
-   @Override
-   public boolean getEnableModules()
-   {
-      return true;
-   }
+    @Override
+    public boolean getEnableModules() {
+        return true;
+    }
 
-   @Override
-   public boolean getDeleteObsoleteModules()
-   {
-      return this.deleteObsoleteModules;
-   }
+    @Override
+    public boolean getDeleteObsoleteModules() {
+        return this.deleteObsoleteModules;
+    }
 }

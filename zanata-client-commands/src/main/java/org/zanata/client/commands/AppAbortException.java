@@ -22,27 +22,25 @@
 package org.zanata.client.commands;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class AppAbortException extends RuntimeException
-{
+public class AppAbortException extends RuntimeException {
 
-   /**
-    * @param msg
-    * @param e
-    */
-   public AppAbortException(String msg, Throwable e)
-   {
-      super(msg, e);
-   }
+    /**
+     * @param msg
+     * @param e
+     */
+    public AppAbortException(String msg, Throwable e) {
+        super(msg, e);
+    }
 
-   /**
-    * @param msg
-    */
-   public AppAbortException(String msg)
-   {
-      super(msg);
-   }
+    /**
+     * @param msg
+     */
+    public AppAbortException(String msg) {
+        super(msg);
+    }
 
 }

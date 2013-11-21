@@ -39,82 +39,75 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class XmlStrategy extends AbstractPushStrategy
-{
-   private JAXBContext jaxbContext;
-   private Unmarshaller unmarshaller;
+public class XmlStrategy extends AbstractPushStrategy {
+    private JAXBContext jaxbContext;
+    private Unmarshaller unmarshaller;
 
-   public XmlStrategy()
-   {
-      super(new StringSet("comment;gettext"), ".xml");
-      try
-      {
-         jaxbContext = JAXBContext.newInstance(Resource.class, TranslationsResource.class);
-         unmarshaller = jaxbContext.createUnmarshaller();
-      }
-      catch (JAXBException e)
-      {
-         throw new RuntimeException(e);
-      }
-   }
+    public XmlStrategy() {
+        super(new StringSet("comment;gettext"), ".xml");
+        try {
+            jaxbContext =
+                    JAXBContext.newInstance(Resource.class,
+                            TranslationsResource.class);
+            unmarshaller = jaxbContext.createUnmarshaller();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-   @Override
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException
-   {
-      Set<String> localDocNames = new HashSet<String>();
+    @Override
+    public Set<String> findDocNames(File srcDir, List<String> includes,
+            List<String> excludes, boolean useDefaultExclude,
+            boolean caseSensitive, boolean excludeLocaleFilenames)
+            throws IOException {
+        Set<String> localDocNames = new HashSet<String>();
 
-      String[] files = getSrcFiles(srcDir, includes, excludes, excludeLocaleFilenames, useDefaultExclude, caseSensitive);
+        String[] files =
+                getSrcFiles(srcDir, includes, excludes, excludeLocaleFilenames,
+                        useDefaultExclude, caseSensitive);
 
-      for (String relativeFilePath : files)
-      {
-         String baseName = FilenameUtils.removeExtension(relativeFilePath);
-         localDocNames.add(baseName);
-      }
-      return localDocNames;
-   }
+        for (String relativeFilePath : files) {
+            String baseName = FilenameUtils.removeExtension(relativeFilePath);
+            localDocNames.add(baseName);
+        }
+        return localDocNames;
+    }
 
-   @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
-   {
-      try
-      {
-         String filename = docNameToFilename(docName);
-         File srcFile = new File(sourceDir, filename);
-         Resource resource = (Resource) unmarshaller.unmarshal(srcFile);
-         return resource;
-      }
-      catch (JAXBException e)
-      {
-         throw new IOException(e);
-      }
-   }
+    @Override
+    public Resource loadSrcDoc(File sourceDir, String docName)
+            throws IOException {
+        try {
+            String filename = docNameToFilename(docName);
+            File srcFile = new File(sourceDir, filename);
+            Resource resource = (Resource) unmarshaller.unmarshal(srcFile);
+            return resource;
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
+    }
 
-   @Override
-   public void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException
-   {
-      try
-      {
-         for (LocaleMapping locale : getOpts().getLocaleMapList())
-         {
-            String filename = docNameToFilename(docName, locale);
-            File transFile = new File(getOpts().getTransDir(), filename);
-            if (transFile.exists())
-            {
-               TranslationsResource targetDoc = (TranslationsResource) unmarshaller.unmarshal(transFile);
-               visitor.visit(locale, targetDoc);
+    @Override
+    public void visitTranslationResources(String docName, Resource srcDoc,
+            TranslationResourcesVisitor visitor) throws IOException {
+        try {
+            for (LocaleMapping locale : getOpts().getLocaleMapList()) {
+                String filename = docNameToFilename(docName, locale);
+                File transFile = new File(getOpts().getTransDir(), filename);
+                if (transFile.exists()) {
+                    TranslationsResource targetDoc =
+                            (TranslationsResource) unmarshaller
+                                    .unmarshal(transFile);
+                    visitor.visit(locale, targetDoc);
+                } else {
+                    // no translation found in 'locale' for current doc
+                }
             }
-            else
-            {
-               // no translation found in 'locale' for current doc
-            }
-         }
-      }
-      catch (JAXBException e)
-      {
-         throw new IOException(e);
-      }
-   }
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
+    }
 }

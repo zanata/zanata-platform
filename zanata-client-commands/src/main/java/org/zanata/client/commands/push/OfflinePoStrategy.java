@@ -36,69 +36,73 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 
 /**
  * Similar to {@link GettextDirStrategy} but uses msgctxt to map text flow id.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class OfflinePoStrategy extends GettextDirStrategy
-{
-   private final ISourceDocResource sourceDocResource;
-   private final PoReader2 poReader;
+public class OfflinePoStrategy extends GettextDirStrategy {
+    private final ISourceDocResource sourceDocResource;
+    private final PoReader2 poReader;
 
-   private final URI uri;
+    private final URI uri;
 
-   public OfflinePoStrategy(ISourceDocResource sourceDocResource, URI uri)
-   {
-      this.sourceDocResource = sourceDocResource;
-      this.uri = uri;
-      poReader = new PoReader2(true);
-   }
+    public OfflinePoStrategy(ISourceDocResource sourceDocResource, URI uri) {
+        this.sourceDocResource = sourceDocResource;
+        this.uri = uri;
+        poReader = new PoReader2(true);
+    }
 
-   @Override
-   protected PoReader2 getPoReader()
-   {
-      return poReader;
-   }
+    @Override
+    protected PoReader2 getPoReader() {
+        return poReader;
+    }
 
-   @Override
-   public boolean isTransOnly()
-   {
-      return true;
-   };
+    @Override
+    public boolean isTransOnly() {
+        return true;
+    };
 
-   /**
-    * This implementation retrieves document names from the server.
-    * All parameters are ignored as there is no disk scanning.
-    */
-   @Override
-   public Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException
-   {
-      ClientResponse<List<ResourceMeta>> getResponse = sourceDocResource.get(null);
-      ClientUtility.checkResult(getResponse, uri);
-      List<ResourceMeta> remoteDocList = getResponse.getEntity();
-      Set<String> localDocNames = new HashSet<String>();
-      for (ResourceMeta doc : remoteDocList)
-      {
-         localDocNames.add(doc.getName());
-      }
-      return localDocNames;
-   }
+    /**
+     * This implementation retrieves document names from the server. All
+     * parameters are ignored as there is no disk scanning.
+     */
+    @Override
+    public Set<String> findDocNames(File srcDir, List<String> includes,
+            List<String> excludes, boolean useDefaultExclude,
+            boolean caseSensitive, boolean excludeLocaleFilenames)
+            throws IOException {
+        ClientResponse<List<ResourceMeta>> getResponse =
+                sourceDocResource.get(null);
+        ClientUtility.checkResult(getResponse, uri);
+        List<ResourceMeta> remoteDocList = getResponse.getEntity();
+        Set<String> localDocNames = new HashSet<String>();
+        for (ResourceMeta doc : remoteDocList) {
+            localDocNames.add(doc.getName());
+        }
+        return localDocNames;
+    }
 
-   @Override
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFilenames, boolean useDefaultExclude, boolean isCaseSensitive)
-   {
-      throw new RuntimeException("Source files should never be accessed in a trans-only strategy");
-   }
+    @Override
+    public String[] getSrcFiles(File srcDir, List<String> includes,
+            List<String> excludes, boolean excludeLocaleFilenames,
+            boolean useDefaultExclude, boolean isCaseSensitive) {
+        throw new RuntimeException(
+                "Source files should never be accessed in a trans-only strategy");
+    }
 
-   @Override
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, List<String> fileExtensions, boolean useDefaultExcludes, boolean isCaseSensitive)
-   {
-      throw new RuntimeException("Source files should never be accessed in a trans-only strategy");
-   }
+    @Override
+    public String[] getSrcFiles(File srcDir, List<String> includes,
+            List<String> excludes, List<String> fileExtensions,
+            boolean useDefaultExcludes, boolean isCaseSensitive) {
+        throw new RuntimeException(
+                "Source files should never be accessed in a trans-only strategy");
+    }
 
-   @Override
-   public Resource loadSrcDoc(File sourceDir, String docName) throws IOException
-   {
-      throw new RuntimeException("Source files should never be accessed in a trans-only strategy");
-   }
+    @Override
+    public Resource loadSrcDoc(File sourceDir, String docName)
+            throws IOException {
+        throw new RuntimeException(
+                "Source files should never be accessed in a trans-only strategy");
+    }
 
 }

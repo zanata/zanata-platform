@@ -31,27 +31,32 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * Push options for documents that are parsed on the client and transmitted as a
  * {@link Resource} or {@link TranslationsResource}.
  */
-public interface PushOptions extends PushPullOptions
-{
-   public String getSourceLang();
-   public PushPullType getPushType();
-   public String getMergeType();
-   public List<String> getIncludes();
-   public List<String> getExcludes();
+public interface PushOptions extends PushPullOptions {
+    public String getSourceLang();
 
-   public boolean getCaseSensitive();
+    public PushPullType getPushType();
 
-   public boolean getExcludeLocaleFilenames();
-   public boolean getDefaultExcludes();
-   public boolean getDeleteObsoleteModules();
+    public String getMergeType();
 
-   public boolean getCopyTrans();
+    public List<String> getIncludes();
 
-   // raw file push
-   public int getChunkSize();
-   public List<String> getFileTypes();
+    public List<String> getExcludes();
 
-   public String getValidate();
+    public boolean getCaseSensitive();
+
+    public boolean getExcludeLocaleFilenames();
+
+    public boolean getDefaultExcludes();
+
+    public boolean getDeleteObsoleteModules();
+
+    public boolean getCopyTrans();
+
+    // raw file push
+    public int getChunkSize();
+
+    public List<String> getFileTypes();
+
+    public String getValidate();
 
 }
-

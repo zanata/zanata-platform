@@ -25,45 +25,58 @@ import java.io.File;
 import java.util.Set;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface PushPullOptions extends ConfigurableProjectOptions
-{
+public interface PushPullOptions extends ConfigurableProjectOptions {
 
-   /**
-    * Character or characters which must appear after moduleIDs when constructing qualified document names
-    * @return
-    */
-   String getModuleSuffix();
+    /**
+     * Character or characters which must appear after moduleIDs when
+     * constructing qualified document names
+     *
+     * @return
+     */
+    String getModuleSuffix();
 
-   /**
-    * A regex for document names, which captures the module ID as group 1 and the unqualified docname as group 2.
-    * This regex should broadly follow the pattern "(moduleID)moduleSuffix(localDocName)".
-    */
-   String getDocNameRegex();
-   boolean isDryRun();
-   File getSrcDir();
-   String getSrcDirParameterName();
-   File getTransDir();
+    /**
+     * A regex for document names, which captures the module ID as group 1 and
+     * the unqualified docname as group 2. This regex should broadly follow the
+     * pattern "(moduleID)moduleSuffix(localDocName)".
+     */
+    String getDocNameRegex();
 
-   public String getFromDoc();
+    boolean isDryRun();
 
-   /**
-    * This name should represent the exact parameter as it would be entered on the command line, and include
-    * any space or operators that would link the parameter to the argument. This is so that the argument can be
-    * appended directly to the parameter name.
-    */
-   public String buildFromDocArgument(String argValue);
+    File getSrcDir();
 
-   boolean getEnableModules();
-   boolean isRootModule();
-   String getCurrentModule();
+    String getSrcDirParameterName();
 
-   /**
-    * @param canonicalName true if the module name should be in the canonical format used by maven
-    * @return
-    */
-   String getCurrentModule(boolean canonicalName);
-   Set<String> getAllModules();
+    File getTransDir();
+
+    public String getFromDoc();
+
+    /**
+     * This name should represent the exact parameter as it would be entered on
+     * the command line, and include any space or operators that would link the
+     * parameter to the argument. This is so that the argument can be appended
+     * directly to the parameter name.
+     */
+    public String buildFromDocArgument(String argValue);
+
+    boolean getEnableModules();
+
+    boolean isRootModule();
+
+    String getCurrentModule();
+
+    /**
+     * @param canonicalName
+     *            true if the module name should be in the canonical format used
+     *            by maven
+     * @return
+     */
+    String getCurrentModule(boolean canonicalName);
+
+    Set<String> getAllModules();
 }

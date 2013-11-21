@@ -8,61 +8,65 @@ import org.kohsuke.args4j.Option;
 /**
  * Base options for commands which supports configuration by the user's
  * zanata.ini
- * 
+ *
  * @author Sean Flanigan <sflaniga@redhat.com>
- * 
+ *
  */
-public interface ConfigurableOptions extends BasicOptions
-{
+public interface ConfigurableOptions extends BasicOptions {
 
-   /**
-    * API key for accessing the REST API. Defaults to the value in
-    * zanata.ini.
-    */
-   public String getKey();
+    /**
+     * API key for accessing the REST API. Defaults to the value in zanata.ini.
+     */
+    public String getKey();
 
-   @Option(name = "--key", metaVar = "KEY", usage = "API key (from user's profile page)")
-   public void setKey(String key);
+    @Option(name = "--key", metaVar = "KEY",
+            usage = "API key (from user's profile page)")
+    public void setKey(String key);
 
-   /**
-    * Base URL for the server. Defaults to the value in zanata.xml.
-    */
-   public URL getUrl();
+    /**
+     * Base URL for the server. Defaults to the value in zanata.xml.
+     */
+    public URL getUrl();
 
-   @Option(name = "--url", metaVar = "URL", usage = "Base URL, eg http://zanata.example.com/zanata/")
-   public void setUrl(URL url);
+    @Option(name = "--url", metaVar = "URL",
+            usage = "Base URL, eg http://zanata.example.com/zanata/")
+    public void setUrl(URL url);
 
-   /**
-    * Client configuration file.
-    */
-   public File getUserConfig();
+    /**
+     * Client configuration file.
+     */
+    public File getUserConfig();
 
-   @Option(name = "--user-config", metaVar = "FILE", usage = "User configuration, eg /home/user/.config/zanata.ini")
-   public void setUserConfig(File userConfig);
+    @Option(name = "--user-config", metaVar = "FILE",
+            usage = "User configuration, eg /home/user/.config/zanata.ini")
+    public void setUserConfig(File userConfig);
 
-   /**
-    * Username for accessing the REST API. Defaults to the value in
-    * zanata.ini.
-    */
-   public String getUsername();
+    /**
+     * Username for accessing the REST API. Defaults to the value in zanata.ini.
+     */
+    public String getUsername();
 
-   @Option(name = "--username", metaVar = "USER", usage = "Username")
-   public void setUsername(String username);
-   
-   /**
-    * Enable HTTP message logging.
-    */
-   public boolean getLogHttp();
-   
-   @Option(name = "--logHttp", metaVar = "LOGHTTP", usage = "Enable HTTP message logging.")
-   public void setLogHttp(boolean traceLogging);
+    @Option(name = "--username", metaVar = "USER", usage = "Username")
+    public void setUsername(String username);
 
+    /**
+     * Enable HTTP message logging.
+     */
+    public boolean getLogHttp();
 
-   /**
-    * Disable SSL certificate verification when connecting to Zanata host by https.
-    */
-   boolean isDisableSSLCert();
+    @Option(name = "--logHttp", metaVar = "LOGHTTP",
+            usage = "Enable HTTP message logging.")
+    public void setLogHttp(boolean traceLogging);
 
-   @Option(name = "--disable-ssl-cert", usage = "Whether verification of SSL certificates should be disabled")
-   public void setDisableSSLCert(boolean disableSSLCert);
+    /**
+     * Disable SSL certificate verification when connecting to Zanata host by
+     * https.
+     */
+    boolean isDisableSSLCert();
+
+    @Option(
+            name = "--disable-ssl-cert",
+            usage = "Whether verification of SSL certificates should be disabled")
+    public
+            void setDisableSSLCert(boolean disableSSLCert);
 }

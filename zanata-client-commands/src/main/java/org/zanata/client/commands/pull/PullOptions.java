@@ -25,17 +25,22 @@ import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.commands.PushPullType;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface PullOptions extends PushPullOptions
-{
-   PushPullType getPullType();
-   boolean getCreateSkeletons();
-   boolean getEncodeTabs();
-   boolean getIncludeFuzzy();
-   boolean getPurgeCache();
-   boolean getUseCache();
+public interface PullOptions extends PushPullOptions {
+    PushPullType getPullType();
 
-   boolean isContinueAfterError();
+    boolean getCreateSkeletons();
+
+    boolean getEncodeTabs();
+
+    boolean getIncludeFuzzy();
+
+    boolean getPurgeCache();
+
+    boolean getUseCache();
+
+    boolean isContinueAfterError();
 }

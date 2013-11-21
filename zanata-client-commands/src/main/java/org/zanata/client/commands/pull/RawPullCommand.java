@@ -42,163 +42,172 @@ import org.zanata.rest.client.IFileResource;
 import org.zanata.rest.service.FileResource;
 
 /**
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class RawPullCommand extends PushPullCommand<PullOptions>
-{
-   private static final Logger log = LoggerFactory.getLogger(RawPullCommand.class);
+public class RawPullCommand extends PushPullCommand<PullOptions> {
+    private static final Logger log = LoggerFactory
+            .getLogger(RawPullCommand.class);
 
-   private IFileResource fileResource;
+    private IFileResource fileResource;
 
-   public RawPullCommand(PullOptions opts)
-   {
-      super(opts);
-      this.fileResource = getRequestFactory().getFileResource();
-   }
+    public RawPullCommand(PullOptions opts) {
+        super(opts);
+        this.fileResource = getRequestFactory().getFileResource();
+    }
 
-   @Override
-   public void run() throws Exception
-   {
-      PullCommand.logOptions(log, getOpts());
-      if (getOpts().isDryRun())
-      {
-         log.info("DRY RUN: no permanent changes will be made");
-      }
+    @Override
+    public void run() throws Exception {
+        PullCommand.logOptions(log, getOpts());
+        if (getOpts().isDryRun()) {
+            log.info("DRY RUN: no permanent changes will be made");
+        }
 
-      log.warn("Using EXPERIMENTAL project type 'file'.");
+        log.warn("Using EXPERIMENTAL project type 'file'.");
 
-      LocaleList locales = getOpts().getLocaleMapList();
-      if (locales == null)
-         throw new ConfigException("no locales specified");
-      RawPullStrategy strat = new RawPullStrategy();
-      strat.setPullOptions(getOpts());
+        LocaleList locales = getOpts().getLocaleMapList();
+        if (locales == null)
+            throw new ConfigException("no locales specified");
+        RawPullStrategy strat = new RawPullStrategy();
+        strat.setPullOptions(getOpts());
 
-      List<String> docNamesForModule = getQualifiedDocNamesForCurrentModuleFromServer();
-      SortedSet<String> localDocNames = new TreeSet<String>(docNamesForModule);
+        List<String> docNamesForModule =
+                getQualifiedDocNamesForCurrentModuleFromServer();
+        SortedSet<String> localDocNames =
+                new TreeSet<String>(docNamesForModule);
 
-      SortedSet<String> docsToPull = localDocNames;
-      if (getOpts().getFromDoc() != null)
-      {
-         if (!localDocNames.contains(getOpts().getFromDoc()))
-         {
-            log.error("Document with id {} not found, unable to start pull from unknown document. Aborting.", getOpts().getFromDoc());
-            // FIXME should this be throwing an exception to properly abort?
-            // need to see behaviour with modules
+        SortedSet<String> docsToPull = localDocNames;
+        if (getOpts().getFromDoc() != null) {
+            if (!localDocNames.contains(getOpts().getFromDoc())) {
+                log.error(
+                        "Document with id {} not found, unable to start pull from unknown document. Aborting.",
+                        getOpts().getFromDoc());
+                // FIXME should this be throwing an exception to properly abort?
+                // need to see behaviour with modules
+                return;
+            }
+            docsToPull = localDocNames.tailSet(getOpts().getFromDoc());
+            int numSkippedDocs = localDocNames.size() - docsToPull.size();
+            log.info("Skipping {} document(s) before {}.", numSkippedDocs,
+                    getOpts().getFromDoc());
+        }
+
+        // TODO compare docNamesForModule with localDocNames, offer to delete
+        // obsolete translations from filesystem
+        if (docsToPull.isEmpty()) {
+            log.info("No documents in remote module: {}; nothing to do",
+                    getOpts().getCurrentModule());
             return;
-         }
-         docsToPull = localDocNames.tailSet(getOpts().getFromDoc());
-         int numSkippedDocs = localDocNames.size() - docsToPull.size();
-         log.info("Skipping {} document(s) before {}.", numSkippedDocs, getOpts().getFromDoc());
-      }
-
-      // TODO compare docNamesForModule with localDocNames, offer to delete obsolete translations from filesystem
-      if (docsToPull.isEmpty())
-      {
-         log.info("No documents in remote module: {}; nothing to do", getOpts().getCurrentModule());
-         return;
-      }
-      else
-      {
-         log.info("Source documents on server:");
-         for (String docName : localDocNames)
-         {
-            if (docsToPull.contains(docName))
-            {
-               log.info("           {}", docName);
+        } else {
+            log.info("Source documents on server:");
+            for (String docName : localDocNames) {
+                if (docsToPull.contains(docName)) {
+                    log.info("           {}", docName);
+                } else {
+                    log.info("(to skip)  {}", docName);
+                }
             }
-            else
-            {
-               log.info("(to skip)  {}", docName);
+        }
+
+        log.info("Pulling {} of {} docs for this module from the server",
+                docsToPull.size(), localDocNames.size());
+        log.debug("Doc names: {}", localDocNames);
+
+        PushPullType pullType = getOpts().getPullType();
+        boolean pullSrc =
+                pullType == PushPullType.Both
+                        || pullType == PushPullType.Source;
+        boolean pullTarget =
+                pullType == PushPullType.Both || pullType == PushPullType.Trans;
+
+        if (pullSrc) {
+            log.warn("Pull Type set to '"
+                    + pullType
+                    + "': existing source-language files may be overwritten/deleted");
+            confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
+        } else {
+            confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
+        }
+
+        for (String qualifiedDocName : docsToPull) {
+            // TODO add filtering by file type? e.g. pull all dtd documents
+            // only.
+
+            try {
+                String localDocName = unqualifiedDocName(qualifiedDocName);
+
+                if (pullSrc) {
+                    ClientResponse response =
+                            fileResource.downloadSourceFile(
+                                    getOpts().getProj(), getOpts()
+                                            .getProjectVersion(),
+                                    FileResource.FILETYPE_RAW_SOURCE_DOCUMENT,
+                                    qualifiedDocName);
+                    if (response.getResponseStatus() == Status.NOT_FOUND) {
+                        log.warn(
+                                "No source document file is available for [{}]. Skipping.",
+                                qualifiedDocName);
+                    } else {
+                        ClientUtility.checkResult(response, uri);
+                        InputStream srcDoc =
+                                (InputStream) response
+                                        .getEntity(InputStream.class);
+                        if (srcDoc != null) {
+                            try {
+                                strat.writeSrcFile(localDocName, srcDoc);
+                            } finally {
+                                srcDoc.close();
+                            }
+                        }
+                    }
+                }
+
+                if (pullTarget) {
+                    String fileExtension;
+                    if (getOpts().getIncludeFuzzy()) {
+                        fileExtension =
+                                FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
+                    } else {
+                        fileExtension =
+                                FileResource.FILETYPE_TRANSLATED_APPROVED;
+                    }
+
+                    for (LocaleMapping locMapping : locales) {
+                        LocaleId locale = new LocaleId(locMapping.getLocale());
+                        ClientResponse response =
+                                fileResource.downloadTranslationFile(getOpts()
+                                        .getProj(), getOpts()
+                                        .getProjectVersion(), locale.getId(),
+                                        fileExtension, qualifiedDocName);
+                        if (response.getResponseStatus() == Response.Status.NOT_FOUND) {
+                            log.info(
+                                    "No translation document file found in locale {} for document [{}]",
+                                    locale, qualifiedDocName);
+                        } else {
+                            ClientUtility.checkResult(response, uri);
+                            InputStream transDoc =
+                                    (InputStream) response
+                                            .getEntity(InputStream.class);
+                            if (transDoc != null) {
+                                try {
+                                    strat.writeTransFile(localDocName, locMapping,
+                                            transDoc);
+                                } finally {
+                                    transDoc.close();
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (RuntimeException e) {
+                log.error(
+                        "Operation failed.\n\n    To retry from the last document, please add the option: {}\n",
+                        getOpts().buildFromDocArgument(qualifiedDocName));
+                throw e;
             }
-         }
-      }
-
-      log.info("Pulling {} of {} docs for this module from the server", docsToPull.size(), localDocNames.size());
-      log.debug("Doc names: {}", localDocNames);
-
-      PushPullType pullType = getOpts().getPullType();
-      boolean pullSrc = pullType == PushPullType.Both || pullType == PushPullType.Source;
-      boolean pullTarget = pullType == PushPullType.Both || pullType == PushPullType.Trans;
-
-      if (pullSrc)
-      {
-         log.warn("Pull Type set to '" + pullType + "': existing source-language files may be overwritten/deleted");
-         confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
-      }
-      else
-      {
-         confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
-      }
-
-      for (String qualifiedDocName : docsToPull)
-      {
-         // TODO add filtering by file type? e.g. pull all dtd documents only.
-
-         try
-         {
-            String localDocName = unqualifiedDocName(qualifiedDocName);
-
-            if (pullSrc)
-            {
-               ClientResponse response = fileResource.downloadSourceFile(getOpts().getProj(),
-                     getOpts().getProjectVersion(), FileResource.FILETYPE_RAW_SOURCE_DOCUMENT, qualifiedDocName);
-               if (response.getResponseStatus() == Status.NOT_FOUND)
-               {
-                  log.warn("No source document file is available for [{}]. Skipping.", qualifiedDocName);
-               }
-               else
-               {
-                  ClientUtility.checkResult(response, uri);
-                  InputStream srcDoc = (InputStream) response.getEntity(InputStream.class);
-                  if (srcDoc != null)
-                  {
-                     strat.writeSrcFile(localDocName, srcDoc);
-                  }
-               }
-            }
-
-            if(pullTarget)
-            {
-               String fileExtension;
-               if (getOpts().getIncludeFuzzy())
-               {
-                  fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
-               }
-               else
-               {
-                  fileExtension = FileResource.FILETYPE_TRANSLATED_APPROVED;
-               }
-
-               for (LocaleMapping locMapping : locales)
-               {
-                  LocaleId locale = new LocaleId(locMapping.getLocale());
-                  ClientResponse response = fileResource.downloadTranslationFile(getOpts().getProj(),
-                        getOpts().getProjectVersion(), locale.getId(),
-                        fileExtension, qualifiedDocName);
-                  if (response.getResponseStatus() == Response.Status.NOT_FOUND)
-                  {
-                     log.info("No translation document file found in locale {} for document [{}]", locale, qualifiedDocName);
-                  }
-                  else
-                  {
-                     ClientUtility.checkResult(response, uri);
-                     InputStream transDoc = (InputStream) response.getEntity(InputStream.class);
-                     if (transDoc != null)
-                     {
-                        strat.writeTransFile(localDocName, locMapping, transDoc);
-                     }
-                  }
-               }
-            }
-         }
-         catch (RuntimeException e)
-         {
-            log.error("Operation failed.\n\n    To retry from the last document, please add the option: {}\n", getOpts().buildFromDocArgument(qualifiedDocName));
-            throw e;
-         }
-      }
-   }
+        }
+    }
 
 }

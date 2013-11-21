@@ -18,14 +18,14 @@
       </includes>
       <fileMode>744</fileMode>
     </fileSet>
-      <fileSet>
-          <directory>target</directory>
-          <outputDirectory>bin</outputDirectory>
-          <includes>
-              <include>zanata-cli-completion</include>
-          </includes>
-          <fileMode>644</fileMode>
-      </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>zanata-cli-completion</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
     <fileSet>
       <directory>target/appassembler/lib</directory>
       <outputDirectory>lib</outputDirectory>

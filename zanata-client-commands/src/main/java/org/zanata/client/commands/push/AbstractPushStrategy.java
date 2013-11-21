@@ -34,101 +34,103 @@ import org.zanata.rest.dto.resource.Resource;
 
 /**
  * NB: you must initialise this object with init() after setPushOptions()
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public abstract class AbstractPushStrategy extends AbstractCommonPushStrategy<PushOptions>
-{
-   private StringSet extensions;
-   private String fileExtension;
+public abstract class AbstractPushStrategy extends
+        AbstractCommonPushStrategy<PushOptions> {
+    private StringSet extensions;
+    private String fileExtension;
 
-   public abstract Set<String> findDocNames(File srcDir, List<String> includes, List<String> excludes, boolean useDefaultExclude, boolean caseSensitive, boolean excludeLocaleFilenames) throws IOException;
+    public abstract Set<String> findDocNames(File srcDir,
+            List<String> includes, List<String> excludes,
+            boolean useDefaultExclude, boolean caseSensitive,
+            boolean excludeLocaleFilenames) throws IOException;
 
-   public abstract Resource loadSrcDoc(File sourceDir, String docName) throws IOException;
+    public abstract Resource loadSrcDoc(File sourceDir, String docName)
+            throws IOException;
 
-   public abstract void visitTranslationResources(String docName, Resource srcDoc, TranslationResourcesVisitor visitor) throws IOException;
+    public abstract void visitTranslationResources(String docName,
+            Resource srcDoc, TranslationResourcesVisitor visitor)
+            throws IOException;
 
-   public AbstractPushStrategy(StringSet extensions, String fileExtension)
-   {
-      this.extensions = extensions;
-      this.fileExtension = fileExtension;
-   }
+    public AbstractPushStrategy(StringSet extensions, String fileExtension) {
+        this.extensions = extensions;
+        this.fileExtension = fileExtension;
+    }
 
-   /**
-    * Indicates if this strategy must work without access to source files. No
-    * attempt should be made to read, write or push source documents for a
-    * trans-only strategy.
-    * 
-    * @return true if this strategy only allows interactions with translation files.
-    */
-   public boolean isTransOnly()
-   {
-      return false;
-   }
+    /**
+     * Indicates if this strategy must work without access to source files. No
+     * attempt should be made to read, write or push source documents for a
+     * trans-only strategy.
+     *
+     * @return true if this strategy only allows interactions with translation
+     *         files.
+     */
+    public boolean isTransOnly() {
+        return false;
+    }
 
-   /**
-    * Scan srcDir to return a list of all source files.
-    * 
-    * @param srcDir base directory in which to find source files
-    * @param includes empty to find all source files, non-empty to find only the
-    *           documents in this list
-    * @param excludes
-    * @param excludeLocaleFilenames adds entries to excludes to ignore any file
-    *           with a locale id suffix before the file extension.
-    * @param useDefaultExclude true to also exclude a set of default excludes
-    *           for common temp file and source control filenames
-    * @param isCaseSensitive case sensitive search for includes and excludes
-    *           options
-    * @return document paths for source files found in srcDir
-    */
-   public String[] getSrcFiles(File srcDir, List<String> includes, List<String> excludes, boolean excludeLocaleFilenames, boolean useDefaultExclude, boolean isCaseSensitive)
-   {
-      if (excludeLocaleFilenames)
-      {
-         addExcludesForLocaleFilenames(excludes);
-      }
-      return getSrcFiles(srcDir, includes, excludes, Collections.<String> singletonList(fileExtension), useDefaultExclude, isCaseSensitive);
-   }
+    /**
+     * Scan srcDir to return a list of all source files.
+     *
+     * @param srcDir
+     *            base directory in which to find source files
+     * @param includes
+     *            empty to find all source files, non-empty to find only the
+     *            documents in this list
+     * @param excludes
+     * @param excludeLocaleFilenames
+     *            adds entries to excludes to ignore any file with a locale id
+     *            suffix before the file extension.
+     * @param useDefaultExclude
+     *            true to also exclude a set of default excludes for common temp
+     *            file and source control filenames
+     * @param isCaseSensitive
+     *            case sensitive search for includes and excludes options
+     * @return document paths for source files found in srcDir
+     */
+    public String[] getSrcFiles(File srcDir, List<String> includes,
+            List<String> excludes, boolean excludeLocaleFilenames,
+            boolean useDefaultExclude, boolean isCaseSensitive) {
+        if (excludeLocaleFilenames) {
+            addExcludesForLocaleFilenames(excludes);
+        }
+        return getSrcFiles(srcDir, includes, excludes,
+                Collections.<String> singletonList(fileExtension),
+                useDefaultExclude, isCaseSensitive);
+    }
 
-   private void addExcludesForLocaleFilenames(List<String> excludes)
-   {
-      String sourceLang = new LocaleId(getOpts().getSourceLang()).toJavaName();
+    private void addExcludesForLocaleFilenames(List<String> excludes) {
+        String sourceLang =
+                new LocaleId(getOpts().getSourceLang()).toJavaName();
 
-      for (LocaleMapping locMap : getOpts().getLocaleMapList())
-      {
-         String loc = locMap.getJavaLocale();
-         if (!sourceLang.equals(loc))
-         {
-            excludes.add("**/*_" + loc + fileExtension);
-         }
-      }
-   }
-   
-   protected String docNameToFilename(String docName)
-   {
-      return docName + fileExtension;
-   }
+        for (LocaleMapping locMap : getOpts().getLocaleMapList()) {
+            String loc = locMap.getJavaLocale();
+            if (!sourceLang.equals(loc)) {
+                excludes.add("**/*_" + loc + fileExtension);
+            }
+        }
+    }
 
-   protected String docNameToFilename(String docName, LocaleMapping locale)
-   {
-      return docName + "_" + locale.getJavaLocale() + fileExtension;
-   }
+    protected String docNameToFilename(String docName) {
+        return docName + fileExtension;
+    }
 
-   public StringSet getExtensions()
-   {
-      return extensions;
-   }
+    protected String docNameToFilename(String docName, LocaleMapping locale) {
+        return docName + "_" + locale.getJavaLocale() + fileExtension;
+    }
 
-   public String getFileExtension()
-   {
-      return fileExtension;
-   }
+    public StringSet getExtensions() {
+        return extensions;
+    }
 
-   public void init()
-   {
-   }
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void init() {
+    }
 
 }
-
-
- 

@@ -20,7 +20,6 @@
  */
 package org.zanata.client.commands.glossary.delete;
 
-import java.net.URI;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.ClientResponse;
@@ -34,56 +33,50 @@ import org.zanata.rest.client.IGlossaryResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  **/
-public class GlossaryDeleteCommand extends ConfigurableCommand<GlossaryDeleteOptions>
-{
-   private static final Logger log = LoggerFactory.getLogger(GlossaryDeleteCommand.class);
+public class GlossaryDeleteCommand extends
+        ConfigurableCommand<GlossaryDeleteOptions> {
+    private static final Logger log = LoggerFactory
+            .getLogger(GlossaryDeleteCommand.class);
 
-   private final IGlossaryResource glossaryResource;
-   private final URI uri;
+    private final IGlossaryResource glossaryResource;
 
-   public GlossaryDeleteCommand(GlossaryDeleteOptions opts, ZanataProxyFactory factory, IGlossaryResource glossaryResource, URI uri)
-   {
-      super(opts, factory);
-      this.glossaryResource = glossaryResource;
-      this.uri = uri;
-   }
+    public GlossaryDeleteCommand(GlossaryDeleteOptions opts,
+            ZanataProxyFactory factory, IGlossaryResource glossaryResource) {
+        super(opts, factory);
+        this.glossaryResource = glossaryResource;
+    }
 
-   private GlossaryDeleteCommand(GlossaryDeleteOptions opts, ZanataProxyFactory factory)
-   {
-      this(opts, factory, factory.getGlossaryResource(), factory.getGlossaryResourceURI());
-   }
+    private GlossaryDeleteCommand(GlossaryDeleteOptions opts,
+            ZanataProxyFactory factory) {
+        this(opts, factory, factory.getGlossaryResource());
+    }
 
-   public GlossaryDeleteCommand(GlossaryDeleteOptions opts)
-   {
-      this(opts, OptionsUtil.createRequestFactory(opts));
-   }
+    public GlossaryDeleteCommand(GlossaryDeleteOptions opts) {
+        this(opts, OptionsUtil.createRequestFactory(opts));
+    }
 
-   @Override
-   public void run() throws Exception
-   {
-      log.info("Server: {}", getOpts().getUrl());
-      log.info("Username: {}", getOpts().getUsername());
-      log.info("Locale to delete: {}", getOpts().getlang());
-      log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
+    @Override
+    public void run() throws Exception {
+        log.info("Server: {}", getOpts().getUrl());
+        log.info("Username: {}", getOpts().getUsername());
+        log.info("Locale to delete: {}", getOpts().getlang());
+        log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
 
-      ClientResponse<String> response;
+        ClientResponse<String> response;
 
-      if (getOpts().getAllGlossary())
-      {
-         response = glossaryResource.deleteGlossaries();
-      }
-      else if (!StringUtils.isEmpty(getOpts().getlang()))
-      {
-         response = glossaryResource.deleteGlossary(new LocaleId(getOpts().getlang()));
-      }
-      else
-      {
-         throw new RuntimeException("Option 'zanata.lang' is required.");
-      }
-      ClientUtility.checkResult(response, uri);
-   }
+        if (getOpts().getAllGlossary()) {
+            response = glossaryResource.deleteGlossaries();
+        } else if (!StringUtils.isEmpty(getOpts().getlang())) {
+            response =
+                    glossaryResource.deleteGlossary(new LocaleId(getOpts()
+                            .getlang()));
+        } else {
+            throw new RuntimeException("Option 'zanata.lang' is required.");
+        }
+        ClientUtility.checkResult(response);
+    }
 }
