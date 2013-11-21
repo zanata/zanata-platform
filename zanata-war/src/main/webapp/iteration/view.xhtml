@@ -18,7 +18,9 @@
   <script type="text/javascript">
     function submitSearchOnEnter(e) {
       if (e.keyCode == 13) {
-        #{rich:element('searchBtn')}.click();
+        #{rich:element('searchBtn')}
+      .
+        click();
         return false;
       }
     }
@@ -177,7 +179,7 @@
     <s:fragment
       rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
       <a href="#" class="action_link"
-        onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
+        onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestAddProjectToGroup']}</a>
     </s:fragment>
     <h:outputLink id="exportTMXIterLink" styleClass="action_link"
       onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
@@ -294,7 +296,7 @@
             </f:facet>
 
             <s:link view="/iteration/request_to_join_group.xhtml"
-              rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+              rendered="#{!viewAllStatusAction.isVersionInGroup(group.slug)}"
               title="#{messages['jsf.SelectGroup']}"
               value="#{messages['jsf.Select']}" propagation="none"
               styleClass="button">
@@ -308,7 +310,7 @@
             </s:link>
 
             <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-              rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}"/>
+              rendered="#{viewAllStatusAction.isVersionInGroup(group.slug)}"/>
 
           </rich:column>
         </rich:dataTable>

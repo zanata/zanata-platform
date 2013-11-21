@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,13 +38,14 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
-import org.zanata.service.VersionGroupService.SelectableHProject;
+
+import com.google.common.collect.Lists;
 
 @Name("versionGroupJoinAction")
 @Scope(ScopeType.PAGE)
@@ -57,6 +59,9 @@ public class VersionGroupJoinAction implements Serializable {
     private ProjectDAO projectDAO;
 
     @In
+    private VersionGroupDAO versionGroupDAO;
+
+    @In
     private ProjectIterationDAO projectIterationDAO;
 
     @In(create = true)
@@ -65,9 +70,8 @@ public class VersionGroupJoinAction implements Serializable {
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
-    private List<SelectableHProject> projectVersions;
-
-    private HIterationGroup group;
+    @Getter
+    private List<SelectableProject> projectVersions = Lists.newArrayList();
 
     @Getter
     @Setter
@@ -87,10 +91,14 @@ public class VersionGroupJoinAction implements Serializable {
         for (HProject project : maintainedProjects) {
             for (HProjectIteration projectIteration : projectDAO
                     .getAllIterations(project.getSlug())) {
-                getProjectVersions().add(
-                        new SelectableHProject(projectIteration, false));
+                projectVersions.add(new SelectableProject(projectIteration,
+                        false));
             }
         }
+    }
+
+    public String getGroupName() {
+        return versionGroupDAO.getBySlug(slug).getName();
     }
 
     public void searchProjectVersion() {
@@ -99,18 +107,11 @@ public class VersionGroupJoinAction implements Serializable {
             HProjectIteration projectIteration =
                     projectIterationDAO.getBySlug(projectSlug, iterationSlug);
             if (projectIteration != null) {
-                getProjectVersions().add(
-                        new SelectableHProject(projectIteration, true));
+                projectVersions.add(new SelectableProject(projectIteration,
+                        true));
             }
 
         }
-    }
-
-    public List<SelectableHProject> getProjectVersions() {
-        if (projectVersions == null) {
-            projectVersions = new ArrayList<SelectableHProject>();
-        }
-        return projectVersions;
     }
 
     public boolean isVersionInGroup(Long projectIterationId) {
@@ -124,7 +125,7 @@ public class VersionGroupJoinAction implements Serializable {
 
     public String send() {
         boolean isAnyVersionSelected = false;
-        for (SelectableHProject projectVersion : getProjectVersions()) {
+        for (SelectableProject projectVersion : projectVersions) {
             if (projectVersion.isSelected()) {
                 isAnyVersionSelected = true;
             }
@@ -132,7 +133,7 @@ public class VersionGroupJoinAction implements Serializable {
         if (isAnyVersionSelected) {
             List<HPerson> maintainers = new ArrayList<HPerson>();
             for (HPerson maintainer : versionGroupServiceImpl
-                    .getMaintainerBySlug(slug)) {
+                    .getMaintainersBySlug(slug)) {
                 maintainers.add(maintainer);
             }
             return sendEmail.sendToVersionGroupMaintainer(maintainers);
@@ -144,35 +145,15 @@ public class VersionGroupJoinAction implements Serializable {
 
     }
 
-    public HIterationGroup getGroup() {
-        if (group == null) {
-            group = versionGroupServiceImpl.getBySlug(slug);
-        }
-        return group;
+    @AllArgsConstructor
+    public final class SelectableProject {
+
+        @Getter
+        private HProjectIteration projectIteration;
+
+        @Getter
+        @Setter
+        private boolean selected;
     }
 
-    public String getQuery() {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append(slug);
-        queryBuilder.append("/");
-        if (!getProjectVersions().isEmpty()) {
-            queryBuilder.append("?");
-
-            for (int i = 0; i < getProjectVersions().size(); i++) {
-                SelectableHProject projectVersion = getProjectVersions().get(i);
-                if (projectVersion.isSelected()) {
-                    if (i != 0) {
-                        queryBuilder.append("&");
-                    }
-                    queryBuilder.append("slugParam=");
-                    queryBuilder.append(projectVersion.getProjectIteration()
-                            .getProject().getSlug());
-                    queryBuilder.append(":");
-                    queryBuilder.append(projectVersion.getProjectIteration()
-                            .getSlug());
-                }
-            }
-        }
-        return queryBuilder.toString();
-    }
 }

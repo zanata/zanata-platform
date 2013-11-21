@@ -83,7 +83,7 @@ public class FileUploadDialog extends DialogBox {
         panel.add(mergeTranslation);
 
         panel.setCellHorizontalAlignment(buttonPanel,
-                HasHorizontalAlignment.ALIGN_RIGHT);
+            HasHorizontalAlignment.ALIGN_RIGHT);
 
         // Because we're going to add a FileUpload widget, we'll need to set
         // the
@@ -97,7 +97,7 @@ public class FileUploadDialog extends DialogBox {
     }
 
     public void registerHandler(final DocumentListDisplay.Listener listener,
-            String uploadFileURL) {
+        String uploadFileURL) {
         form.setAction(uploadFileURL);
         cancelButton.addClickHandler(new ClickHandler() {
             @Override
@@ -142,9 +142,9 @@ public class FileUploadDialog extends DialogBox {
 
     public void setDocumentInfo(DocumentInfo docInfo, WorkspaceId workspaceId) {
         projectSlug.setValue(workspaceId.getProjectIterationId()
-                .getProjectSlug());
+            .getProjectSlug());
         versionSlug.setValue(workspaceId.getProjectIterationId()
-                .getIterationSlug());
+            .getIterationSlug());
         docId.setValue(docInfo.getId().getDocId());
         targetLocale.setValue(workspaceId.getLocaleId().toString());
     }

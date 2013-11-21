@@ -14,12 +14,11 @@
 </p>
 
 <p>
-  To create an <span c:set="#groupStatus">ACTIVE</span> Version Group with Group
-  ID "<span c:set="#groupId">group1</span>",
+  To create Version Group with Group ID "<span c:set="#groupId">group1</span>",
   name "<span c:set="#groupName">group one</span>" and description of "<span
   c:set="#groupDescription">The first group</span>",
       <span
-        c:execute="#versionGroupsPage = createNewVersionGroup(#groupId, #groupName, #groupDescription, #groupStatus)">
+        c:execute="#versionGroupsPage = createNewVersionGroup(#groupId, #groupName, #groupDescription)">
       <ol>
         <li>Select the Groups menu item</li>
         <li>Click on Create New Group</li>
@@ -72,17 +71,13 @@
     <th>Description</th>
     <td><span c:set="#groupDescription">The first group</span></td>
   </tr>
-  <tr>
-    <th>Status</th>
-    <td><span c:set="#groupStatus">ACTIVE</span></td>
-  </tr>
 </table>
 and <i>group1</i> has already been created, when the Group ID is
       <span
-        c:execute="#createVersionGroupPage = groupIDAlreadyExists(#groupId, #groupName, #groupDescription, #groupStatus)">
+        c:execute="#createVersionGroupPage = groupIDAlreadyExists(#groupId, #groupName, #groupDescription)">
          attempted to be used as a new Group ID</span>, the form will give the
 error message
-<span c:assertEquals="getFirstGroupsError(#createVersionGroupPage)">This Group ID is not available</span>.
+<span c:assertEquals="getFieldsValidationError(#createVersionGroupPage)">This Group ID is not available</span>.
 </p>
 <span ext:screenshot=""/>
 
@@ -102,30 +97,10 @@ error message
   alphanumeric character.
   <br/>
   The form will give the error message
-  <span c:assertEquals="getFirstGroupsError(#invalidCharactersPage)">must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.</span>
+  <span c:assertEquals="getFieldsValidationError(#invalidCharactersPage)">must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.</span>
 </p>
 <span ext:screenshot=""/>
 
-<h2>Creating an Obsolete Group</h2>
-
-<p>
-  A group can be created in the obsolete state. For example, enter:
-<ol>
-  <li>GroupID <span c:set="#obsoleteGroupID">obs-group</span></li>
-  <li>Group Name <span c:set="#obsoleteGroupName">ObsGroup</span></li>
-  <li>Description <span c:set="#obsoleteGroupDesc">Obsolete Group</span></li>
-  <li>Select Status <span c:set="#obsoleteGroupStatus">OBSOLETE</span></li>
-  <li>Press <span c:execute="#obsoletegrouppage = createNewVersionGroup(#obsoleteGroupID,
-            #obsoleteGroupName, #obsoleteGroupDesc, #obsoleteGroupStatus)">Save</span>
-  </li>
-</ol>
-The Group will be saved,
-<span c:assertFalse="groupNamesContain(#obsoletegrouppage, #obsoleteGroupName)">but will not show</span>.
-<span c:execute="#obsoletegrouppage = toggleObsolete(#obsoletegrouppage)">Click the Obsolete button</span>
-to
-<span c:assertTrue="groupNamesContain(#obsoletegrouppage, #obsoleteGroupName)">show the group</span>.
-</p>
-<span ext:screenshot=""/>
 <br/>
 
 <h2>Associating a Group with a Project</h2>
@@ -159,78 +134,56 @@ to
   <li>Click <span c:execute="#groupsPage = groups()">Groups</span></li>
   <li>Click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span
     c:set="#groupName">group one</span></span></li>
-  <li>Select <span
-    c:execute="#searchResult = searchProjectToAddToVersionGroup(#searchTerm)">Add Project Versions link and search <span
-    c:set="#searchTerm">group</span></span></li>
+  <li>Click on <span c:execute="clickSettingsTab()">Settings</span> tab</li>
+  <li>Click on <span
+    c:execute="clickSettingsProjectsTab()">Projects</span> tab under
+    setting page
+  </li>
+
+  <li>Type <span c:set="#searchTerm">group</span> in text field
+    <span
+      c:execute="#searchResult = searchProjectToAddToVersionGroup(#searchTerm)"></span>
+  </li>
 </ol>
 </p>
 <p>
   There should be a set of displayed Project Versions as such:<br/>
 <table c:verifyRows="#row : #searchResult">
   <tr>
-    <th c:assertEquals="#row">row content (List.toString)</th>
+    <th c:assertEquals="#row">Results</th>
   </tr>
   <tr>
-    <td>[project a to be grouped, master, ]</td>
+    <td>project a to be grouped master</td>
   </tr>
   <tr>
-    <td>[project b to be grouped, master, ]</td>
+    <td>project b to be grouped master</td>
   </tr>
 </table>
+
+
 <span ext:screenshot=""/>
 </p>
 
 <p>
-  Check the desired project row, e.g. row <span c:set="#row">1</span> from
+  Select the desired project row, e.g. row <span c:set="#row">1</span> from
   search result and
-  <span c:execute="#versionGroupPage = addProjectToVersionGroup(#row)">press Add Selected</span>,
+  <span
+    c:execute="#versionGroupPage = addProjectToVersionGroup(#row)">press Add</span>,
+  Click on <span c:execute="clickProjectsTab()">Projects</span> tab,
   The table will show
 <table
   c:verifyRows="#projectVersion : #versionGroupPage.projectVersionsInGroup">
   <tr>
-    <th c:assertEquals="#projectVersion">project name, version, status</th>
+    <th c:assertEquals="#projectVersion">Results</th>
   </tr>
   <tr>
-    <td>[project a to be grouped, master, ]</td>
+    <td>group-project-a master 0.0% translated</td>
   </tr>
 </table>
+
+
 <span ext:screenshot=""/>
 </p>
 
-<p>
-  Check on project url in version group:
-<ol>
-  <li>Click <span c:execute="#groupsPage = groups()">Groups</span></li>
-  <li>Click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span
-    c:set="#groupName">group one</span></span></li>
-  <li>Navigate to project link on row <span c:set="#row">0</span> with project
-    name <span c:execute="#projectName = getProjectName(#row)"><span
-      c:echo="#projectName"></span></span></li>
-  <li>Click on project link <span
-    c:execute="#projectPage = clickProjectLinkOnRow(#row)"></span></li>
-  <li>I should be redirect to project page <span
-    c:assertTrue="checkIfEquals(#projectPage, #projectName)"><span
-    c:echo="#projectName"></span></span></li>
-</ol>
-<span ext:screenshot=""/>
-</p>
-
-<p>
-  Check on version url in version group:
-<ol>
-  <li>Click <span c:execute="#groupsPage = groups()">Groups</span></li>
-  <li>Click on <span c:execute="clickGroupName(#groupsPage, #groupName)"><span
-    c:set="#groupName">group one</span></span></li>
-  <li>Navigate to version link on row <span c:set="#row">0</span> with version
-    name <span c:execute="#versionId = getProjectVersionName(#row)"><span
-      c:echo="#versionId"></span></span></li>
-  <li>Click on version link <span
-    c:execute="#versionPage = clickVersionLinkOnRow(#row)"></span></li>
-  <li>I should be redirect to project version page <span
-    c:assertTrue="checkIfEquals(#versionPage, #versionId)"><span
-    c:echo="#versionId"></span></span></li>
-</ol>
-<span ext:screenshot=""/>
-</p>
 </body>
 </html>

@@ -20,7 +20,11 @@
  */
 package org.zanata.util;
 
-import java.util.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -35,8 +39,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import static java.util.concurrent.TimeUnit.*;
 
 public class WebElementUtil {
     private WebElementUtil() {
@@ -163,6 +165,17 @@ public class WebElementUtil {
                                 Lists.transform(rows,
                                         WebElementTableRowFunction.FUNCTION);
                         return transformToTwoDimensionList(tableRows);
+                    }
+                });
+    }
+
+    public static List<WebElement> getListItems(WebDriver driver, final By by) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<WebElement>>() {
+                    @Override
+                    public List<WebElement> apply(WebDriver input) {
+                        final WebElement list = input.findElement(by);
+                        return list.findElements(By.xpath(".//li"));
                     }
                 });
     }

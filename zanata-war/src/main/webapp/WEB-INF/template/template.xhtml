@@ -5,10 +5,8 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:a="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
   <!--[if lt IE 7]>      <html class="no-js new-zanata lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
   <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
@@ -44,6 +42,8 @@
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
     <link type="text/css" rel="stylesheet"
       href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
+    <script type="text/javascript"
+      src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <ui:insert name="head"/>
   </h:head>
 
@@ -55,15 +55,45 @@
       <div class="off-canvas__inner">
         <ui:include src="banner.xhtml"/>
 
-        <a:outputPanel ajaxRendered="true" layout="block"
-          styleClass="l__wrapper l--push-top-1">
-          <h:messages id="messages" globalOnly="true"
-            styleClass="list--no-bullets"
-            errorClass="message--danger l--push-bottom-half"
-            infoClass="message--highlight l--push-bottom-half"
-            warnClass="message--warning l--push-bottom-half"
-            rendered="#{showGlobalMessages != 'false'}"/>
-        </a:outputPanel>
+        <a4j:outputPanel layout="block" ajaxRendered="true"
+          styleClass="l__wrapper ">
+          <s:div styleClass="l--push-top-1"
+            rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}">
+            <h:messages id="messages" globalOnly="true"
+              styleClass="list--no-bullets"
+              errorClass="message--danger l--push-bottom-half"
+              infoClass="message--highlight l--push-bottom-half"
+              warnClass="message--warning l--push-bottom-half"
+              rendered="#{showGlobalMessages != 'false'}"/>
+          </s:div>
+        </a4j:outputPanel>
+
+        <s:div id="pageMessages" styleClass="l__wrapper">
+          <s:fragment
+            rendered="#{flashScope.hasAttribute('message')}">
+            <ul class="list--no-bullets l--push-top-1">
+              <ui:repeat value="#{flashScope.getAttribute('message')}"
+                var="message">
+                <s:fragment rendered="#{message.severity eq 'INFO'}">
+                  <li class="message--highlight l--push-bottom-half">
+                    #{message.summary}
+                  </li>
+                </s:fragment>
+                <s:fragment rendered="#{message.severity eq 'WARN'}">
+                  <li class="message--warning l--push-bottom-half">
+                    #{message.summary}
+                  </li>
+                </s:fragment>
+                <s:fragment
+                  rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
+                  <li class="message--danger l--push-bottom-half">
+                    #{message.summary}
+                  </li>
+                </s:fragment>
+              </ui:repeat>
+            </ul>
+          </s:fragment>
+        </s:div>
 
         <main role="main" class="l--pad-v-1">
           <div class="l__wrapper">
@@ -73,6 +103,30 @@
 
         <footer role="contentinfo" class="l--push--v-2">
           <div class="l__wrapper">
+            <div class="l--pad-v-1 d--top">
+              <div class="g">
+                <div class="g__item w--1-2 l--push-bottom-quarter">
+                  <ul class="list--horizontal txt--meta">
+                    <li><a href="http://zanata.org/terms"
+                      target="_blank">Terms</a></li>
+                    <li><a href="http://zanata.org/about"
+                      target="_blank">#{messages['jsf.About']}</a></li>
+                    <li><a href="http://zanata.org/blog"
+                      target="_blank">#{messages['jsf.Blog']}</a></li>
+                    <li><a href="http://zanata.org/help"
+                      target="_blank">#{messages['jsf.Help']}</a></li>
+                    <li><a
+                      href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
+                      target="_blank">#{messages['jsf.ReportAProblem']}</a></li>
+                  </ul>
+                </div>
+                <div class="g__item w--1-2 txt--align-right">
+                  <p class="txt--meta"><h:outputText
+                    value="#{messages['jsf.CopyrightNotice']}" escape="false"/>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </footer>
       </div>
@@ -80,10 +134,9 @@
 
     <ui:include src="piwik.xhtml"/>
 
-    <script
-      src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script
-      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
+    <script type="text/javascript"
+      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"/>
+
   </h:body>
   </html>
 </f:view>

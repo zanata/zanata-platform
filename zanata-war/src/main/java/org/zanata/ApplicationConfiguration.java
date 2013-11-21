@@ -70,7 +70,7 @@ public class ApplicationConfiguration implements Serializable {
     public static final String EVENT_CONFIGURATION_CHANGED =
             "zanata.configuration.changed";
 
-    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.css";
+    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.min.css";
 
     @In
     private DatabaseBackedConfig databaseBackedConfig;

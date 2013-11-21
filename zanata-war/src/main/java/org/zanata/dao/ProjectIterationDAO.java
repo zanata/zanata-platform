@@ -32,10 +32,8 @@ import javax.ws.rs.core.EntityTag;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
@@ -46,6 +44,8 @@ import org.zanata.common.TransUnitWords;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
+import org.zanata.ui.model.statistic.MessageStatistic;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.HashUtil;
 import org.zanata.util.StatisticsUtil;
 
@@ -54,8 +54,6 @@ import org.zanata.util.StatisticsUtil;
 @Scope(ScopeType.STATELESS)
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
-    @In
-    private FullTextEntityManager entityManager;
 
     public ProjectIterationDAO() {
         super(HProjectIteration.class);
@@ -85,6 +83,19 @@ public class ProjectIterationDAO extends
                 .using("slug", iterationSlug).using("project", project).load();
     }
 
+    public List<HProjectIteration> getByGroupSlug(String groupSlug) {
+        Query q =
+            getSession()
+                .createQuery(
+                    "select g.projectIterations from HIterationGroup as g where g.slug = :slug");
+        q.setParameter("slug", groupSlug);
+        q.setComment("ProjectIterationDAO.getBySlug");
+        @SuppressWarnings("unchecked")
+        List<HProjectIteration> results = q.list();
+        return results;
+    }
+
+
     /**
      * @see DocumentDAO#getStatistics(long, LocaleId)
      * @param iterationId
@@ -93,22 +104,7 @@ public class ProjectIterationDAO extends
      */
     public TransUnitCount getStatisticsForContainer(Long iterationId,
             LocaleId localeId) {
-
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select new org.zanata.model.StatusCount(tft.state, count(tft)) "
-                                        + "from HTextFlowTarget tft "
-                                        + "where tft.textFlow.document.projectIteration.id = :id "
-                                        + "  and tft.locale.localeId = :locale"
-                                        + " and tft.textFlow.obsolete = false"
-                                        + " and tft.textFlow.document.obsolete = false"
-                                        + " group by tft.state");
-        q.setParameter("id", iterationId).setParameter("locale", localeId);
-        q.setCacheable(true).setComment(
-                "ProjectIterationDAO.getStatisticsForContainer");
-        @SuppressWarnings("unchecked")
-        List<StatusCount> stats = q.list();
+        List<StatusCount> stats = getMessageStatusCount(iterationId, localeId);
 
         TransUnitCount stat = new TransUnitCount();
 
@@ -133,22 +129,7 @@ public class ProjectIterationDAO extends
     public TransUnitWords getWordStatsForContainer(Long iterationId,
             LocaleId localeId) {
 
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select new org.zanata.model.StatusCount(tft.state, "
-                                        + "sum(tft.textFlow.wordCount)) "
-                                        + "from HTextFlowTarget tft "
-                                        + "where tft.textFlow.document.projectIteration.id = :id "
-                                        + "  and tft.locale.localeId = :locale"
-                                        + " and tft.textFlow.obsolete = false"
-                                        + " and tft.textFlow.document.obsolete = false"
-                                        + " group by tft.state");
-        q.setParameter("id", iterationId).setParameter("locale", localeId);
-        q.setCacheable(true).setComment(
-                "ProjectIterationDAO.getWordStatsForContainer");
-        @SuppressWarnings("unchecked")
-        List<StatusCount> stats = q.list();
+        List<StatusCount> stats = getWordStatusCount(iterationId, localeId);
 
         TransUnitWords stat = new TransUnitWords();
 
@@ -164,12 +145,100 @@ public class ProjectIterationDAO extends
         return stat;
     }
 
+    public WordStatistic getWordStatistics(Long iterationId, LocaleId localeId) {
+
+        List<StatusCount> stats = getWordStatusCount(iterationId, localeId);
+
+        WordStatistic wordStatistic = new WordStatistic();
+
+        for (StatusCount count : stats) {
+            wordStatistic.set(count.status, count.count.intValue());
+        }
+
+        Long totalCount = getTotalWordCountForIteration(iterationId);
+
+        wordStatistic.set(
+                ContentState.New,
+                totalCount.intValue()
+                        - (wordStatistic.getApproved()
+                                + wordStatistic.getTranslated()
+                                + wordStatistic.getNeedReview() + wordStatistic
+                                    .getRejected()));
+        return wordStatistic;
+    }
+
+    public MessageStatistic getMessageStatistics(Long iterationId,
+            LocaleId localeId) {
+
+        List<StatusCount> stats = getMessageStatusCount(iterationId, localeId);
+
+        MessageStatistic messageStatistic = new MessageStatistic();
+
+        for (StatusCount count : stats) {
+            messageStatistic.set(count.status, count.count.intValue());
+        }
+
+        Long totalCount = getTotalMessageCountForIteration(iterationId);
+
+        messageStatistic
+                .set(ContentState.New,
+                        totalCount.intValue()
+                                - (messageStatistic.getApproved()
+                                        + messageStatistic.getTranslated()
+                                        + messageStatistic.getNeedReview() + messageStatistic
+                                            .getRejected()));
+        return messageStatistic;
+    }
+
+    public List<StatusCount> getWordStatusCount(Long iterationId,
+            LocaleId localeId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select new org.zanata.model.StatusCount(tft.state, "
+                                        + "sum(tft.textFlow.wordCount)) "
+                                        + "from HTextFlowTarget tft "
+                                        + "where tft.textFlow.document.projectIteration.id = :id "
+                                        + "and tft.locale.localeId = :locale "
+                                        + "and tft.textFlow.obsolete = false "
+                                        + "and tft.textFlow.document.obsolete = false "
+                                        + "group by tft.state ");
+        q.setParameter("id", iterationId).setParameter("locale", localeId);
+        q.setCacheable(true)
+                .setComment("ProjectIterationDAO.getWordStatistics");
+        @SuppressWarnings("unchecked")
+        List<StatusCount> stats = q.list();
+
+        return stats;
+    }
+
+    public List<StatusCount> getMessageStatusCount(Long iterationId,
+            LocaleId localeId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select new org.zanata.model.StatusCount(tft.state, count(tft)) "
+                                        + "from HTextFlowTarget tft "
+                                        + "where tft.textFlow.document.projectIteration.id = :id "
+                                        + "and tft.locale.localeId = :locale "
+                                        + "and tft.textFlow.obsolete = false "
+                                        + "and tft.textFlow.document.obsolete = false "
+                                        + "group by tft.state");
+        q.setParameter("id", iterationId).setParameter("locale", localeId);
+        q.setCacheable(true).setComment(
+                "ProjectIterationDAO.getMessageStatusCount");
+        @SuppressWarnings("unchecked")
+        List<StatusCount> stats = q.list();
+
+        return stats;
+    }
+
     public EntityTag getResourcesETag(HProjectIteration projectIteration) {
         Query q =
                 getSession().createQuery(
                         "select d.revision from HDocument d "
-                            + "where d.projectIteration =:iteration "
-                            + "and d.obsolete = false").setParameter(
+                                + "where d.projectIteration =:iteration "
+                                + "and d.obsolete = false").setParameter(
                         "iteration", projectIteration);
         q.setCacheable(true).setComment("ProjectIterationDAO.getResourcesETag");
         @SuppressWarnings("unchecked")
@@ -277,7 +346,7 @@ public class ProjectIterationDAO extends
         }
 
         for (TransUnitCount stat : retVal.values()) {
-            Long totalCount = getTotalCountForIteration(iterationId);
+            Long totalCount = getTotalMessageCountForIteration(iterationId);
             stat.set(ContentState.New,
                     StatisticsUtil.calculateUntranslated(totalCount, stat));
         }
@@ -285,7 +354,7 @@ public class ProjectIterationDAO extends
         return retVal;
     }
 
-    public Long getTotalCountForIteration(Long iterationId) {
+    public Long getTotalMessageCountForIteration(Long iterationId) {
         Query q =
                 getSession().createQuery(
                         "select count(tf) from HTextFlow tf "
@@ -294,7 +363,7 @@ public class ProjectIterationDAO extends
                                 + " and tf.document.obsolete = false");
         q.setParameter("id", iterationId);
         q.setCacheable(true).setComment(
-                "ProjectIterationDAO.getTotalCountForIteration");
+                "ProjectIterationDAO.getTotalMessageCountForIteration");
         Long totalCount = (Long) q.uniqueResult();
         if (totalCount == null) {
             totalCount = 0L;
@@ -311,7 +380,7 @@ public class ProjectIterationDAO extends
                                 + " and tf.document.obsolete = false");
         q.setParameter("id", iterationId);
         q.setCacheable(true).setComment(
-                "ProjectIterationDAO.getTotalWordCountForIteration");
+                "ProjectIterationDAO.getTotalWordCountForGroup");
         Long totalCount = (Long) q.uniqueResult();
         if (totalCount == null) {
             totalCount = 0L;

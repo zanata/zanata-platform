@@ -20,21 +20,30 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
+import org.zanata.service.VersionLocaleKey;
+import org.zanata.service.VersionStateCache;
+import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.StatisticsUtil;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -42,46 +51,75 @@ import org.zanata.service.VersionGroupService;
 @Name("versionGroupServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class VersionGroupServiceImpl implements VersionGroupService {
+
     @In
     private VersionGroupDAO versionGroupDAO;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
 
-    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-    private HAccount authenticatedAccount;
+    @In
+    private VersionStateCache versionStateCacheImpl;
 
     @Override
-    public List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer() {
-        List<HIterationGroup> activeVersions =
-                versionGroupDAO.getAllActiveVersionGroups();
+    public Map<VersionLocaleKey, WordStatistic> getLocaleStatistic(
+            String groupSlug, LocaleId localeId) {
+
+        Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+
+        for (HProjectIteration version : group.getProjectIterations()) {
+            WordStatistic statistic =
+                    versionStateCacheImpl.getVersionStatistics(version.getId(),
+                            localeId);
+            statistic.setRemainingHours(StatisticsUtil
+                    .getRemainingHours(statistic));
+
+            statisticMap.put(new VersionLocaleKey(version.getId(), localeId),
+                    statistic);
+        }
+
+        return statisticMap;
+    }
+
+    @Override
+    public int getTotalMessageCount(String groupSlug) {
+        int result = 0;
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+        for (HProjectIteration version : group.getProjectIterations()) {
+            result +=
+                    projectIterationDAO.getTotalMessageCountForIteration(
+                            version.getId()).intValue();
+        }
+        result = result * group.getActiveLocales().size();
+        return result;
+    }
+
+    @Override
+    public List<HIterationGroup>
+            getAllActiveAndMaintainedGroups(HPerson person) {
+        List<HIterationGroup> activeVersions = getAllActiveGroups();
+        if (person == null) {
+            return activeVersions;
+        }
+
         List<HIterationGroup> obsoleteVersions =
                 versionGroupDAO.getAllObsoleteVersionGroups();
 
-        List<HIterationGroup> filteredList = new ArrayList<HIterationGroup>();
+        List<HIterationGroup> filteredList = Lists.newArrayList();
         for (HIterationGroup obsoleteGroup : obsoleteVersions) {
-            if (authenticatedAccount != null) {
-                if (authenticatedAccount.getPerson()
-                        .isMaintainer(obsoleteGroup)) {
-                    filteredList.add(obsoleteGroup);
-                }
+            if (person.isMaintainer(obsoleteGroup)) {
+                filteredList.add(obsoleteGroup);
             }
         }
-
         activeVersions.addAll(filteredList);
 
         return activeVersions;
     }
 
     @Override
-    public HProjectIteration getProjectIterationBySlug(String projectSlug,
-            String iterationSlug) {
-        return projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-    }
-
-    @Override
-    public HIterationGroup getBySlug(String slug) {
-        return versionGroupDAO.getBySlug(slug);
+    public List<HIterationGroup> getAllActiveGroups() {
+        return versionGroupDAO.getAllActiveVersionGroups();
     }
 
     @Override
@@ -91,62 +129,13 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
-    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm) {
-        return versionGroupDAO.searchLikeSlugAndName(searchTerm);
-    }
-
-    @Override
-    public List<HPerson> getMaintainerBySlug(String slug) {
-        return versionGroupDAO.getMaintainerBySlug(slug);
-    }
-
-    @Override
-    public void makePersistent(HIterationGroup iterationGroup) {
-        versionGroupDAO.makePersistent(iterationGroup);
-    }
-
-    @Override
-    public void flush() {
-        versionGroupDAO.flush();
-    }
-
-    @Override
-    public boolean joinVersionGroup(String slug, Long projectIterationId) {
-        HProjectIteration projectIteration =
-                projectIterationDAO.findById(projectIterationId, false);
-        HIterationGroup group = getBySlug(slug);
-        if (group != null && projectIteration != null) {
-            if (!group.getProjectIterations().contains(projectIteration)) {
-                group.addProjectIteration(projectIteration);
-                versionGroupDAO.makePersistent(group);
-                flush();
-                return true;
-            }
-        }
-        return false;
-
-    }
-
-    @Override
-    public boolean leaveVersionGroup(String slug, Long projectIterationId) {
-        HProjectIteration projectIteration =
-                projectIterationDAO.findById(projectIterationId, false);
-        HIterationGroup group = getBySlug(slug);
-
-        if (group != null && projectIteration != null) {
-            if (group.getProjectIterations().contains(projectIteration)) {
-                group.getProjectIterations().remove(projectIteration);
-                versionGroupDAO.makePersistent(group);
-                flush();
-                return true;
-            }
-        }
-        return false;
+    public List<HPerson> getMaintainersBySlug(String groupSlug) {
+        return versionGroupDAO.getMaintainersBySlug(groupSlug);
     }
 
     @Override
     public boolean isVersionInGroup(String groupSlug, Long projectIterationId) {
-        HIterationGroup group = getBySlug(groupSlug);
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
         if (group != null && projectIterationId != null) {
             for (HProjectIteration iteration : group.getProjectIterations()) {
                 if (iteration.getId().equals(projectIterationId)) {
@@ -158,16 +147,63 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
-    public boolean isGroupInVersion(String groupSlug, Long projectIterationId) {
+    public Set<HLocale> getGroupActiveLocales(String groupSlug) {
         HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
         if (group != null) {
-            for (HProjectIteration iteration : group.getProjectIterations()) {
-                if (iteration.getId().equals(projectIterationId)) {
-                    return true;
-                }
-            }
+            return group.getActiveLocales();
         }
-        return false;
+        return Sets.newHashSet();
     }
 
+    /**
+     * Return versions that don't contained all active locales of the group.
+     *
+     * @param groupSlug
+     */
+    @Override
+    public Map<LocaleId, List<HProjectIteration>> getMissingLocaleVersionMap(
+            String groupSlug) {
+        Map<LocaleId, List<HProjectIteration>> result = Maps.newHashMap();
+
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+        if (group != null) {
+            for (HLocale activeLocale : group.getActiveLocales()) {
+                List<HProjectIteration> versionList = Lists.newArrayList();
+                for (HProjectIteration version : group.getProjectIterations()) {
+                    if (!isLocaleActivatedInVersion(version, activeLocale)) {
+                        versionList.add(version);
+                    }
+                }
+                result.put(activeLocale.getLocaleId(), versionList);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Return if the locale is activate in the version. Return true if version
+     * and project doesn't overrides locale.
+     *
+     * Fallback to project customised locale if version doesn't overrides
+     * locales
+     *
+     * @param version
+     * @param locale
+     */
+    private boolean isLocaleActivatedInVersion(HProjectIteration version,
+            HLocale locale) {
+        Set<HLocale> customisedLocales = Sets.newHashSet();
+
+        if (version.isOverrideLocales()) {
+            customisedLocales = version.getCustomizedLocales();
+        } else if (version.getProject().isOverrideLocales()) {
+            customisedLocales = version.getProject().getCustomizedLocales();
+        }
+
+        if (version.isOverrideLocales()
+                || version.getProject().isOverrideLocales()) {
+            return customisedLocales.contains(locale);
+        }
+        return true; // no overrides of locales from version or it's project
+    }
 }

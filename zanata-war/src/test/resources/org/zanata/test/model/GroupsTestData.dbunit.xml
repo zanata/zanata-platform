@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<dataset>
+  <HIterationGroup
+    id="1"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    slug="group1"
+    description="Group1 description"
+    name="Group1"
+    status="A"
+    />
+
+  <HIterationGroup_Maintainer
+    iterationGroupId="1"
+    personId="1"
+    />
+
+  <HIterationGroup_Maintainer
+    iterationGroupId="1"
+    personId="2"
+    />
+
+  <HIterationGroup_ProjectIteration
+    iterationGroupId="1"
+    projectIterationId="1" />
+
+  <HIterationGroup_ProjectIteration
+    iterationGroupId="1"
+    projectIterationId="2" />
+
+  <IterationGroup_Locale
+    iteration_group_id="1"
+    locale_id="1"
+    />
+
+  <IterationGroup_Locale
+    iteration_group_id="1"
+    locale_id="2"
+    />
+
+  <IterationGroup_Locale
+    iteration_group_id="1"
+    locale_id="3"
+    />
+
+  <HIterationGroup
+    id="2"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    slug="group2"
+    description="Group2 description"
+    name="Group2"
+    status="A"
+    />
+
+  <HIterationGroup_ProjectIteration
+    iterationGroupId="2"
+    projectIterationId="3" />
+
+  <HIterationGroup_ProjectIteration
+    iterationGroupId="2"
+    projectIterationId="4" />
+
+  <HIterationGroup_Maintainer
+    iterationGroupId="2"
+    personId="2"
+    />
+
+  <HIterationGroup_Maintainer
+    iterationGroupId="2"
+    personId="3"
+    />
+
+  <IterationGroup_Locale
+    iteration_group_id="2"
+    locale_id="1"
+    />
+
+  <IterationGroup_Locale
+    iteration_group_id="2"
+    locale_id="2"
+    />
+
+  <IterationGroup_Locale
+    iteration_group_id="2"
+    locale_id="3"
+    />
+
+  <HIterationGroup
+    id="3"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16"
+    slug="group3"
+    description="Group3 description"
+    name="Group3"
+    status="O"
+    />
+
+  <HIterationGroup_Maintainer
+    iterationGroupId="3"
+    personId="1"
+    />
+
+  <HIterationGroup_ProjectIteration
+    iterationGroupId="1"
+    projectIterationId="900" />
+
+</dataset>

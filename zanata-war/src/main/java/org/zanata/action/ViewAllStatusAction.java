@@ -51,6 +51,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
@@ -62,7 +63,6 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.util.DateUtil;
@@ -82,8 +82,7 @@ public class ViewAllStatusAction implements Serializable {
                     .appendSuffix(" day", " days").appendSeparator(", ")
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins")
-                    .toFormatter();
+                    .appendSuffix(" min", " mins").toFormatter();
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -98,10 +97,10 @@ public class ViewAllStatusAction implements Serializable {
     private PersonDAO personDAO;
 
     @In
-    private LocaleService localeServiceImpl;
+    private VersionGroupDAO versionGroupDAO;
 
     @In
-    private CopyTransService copyTransServiceImpl;
+    private LocaleService localeServiceImpl;
 
     @In
     private VersionGroupService versionGroupServiceImpl;
@@ -213,8 +212,8 @@ public class ViewAllStatusAction implements Serializable {
                             .getId());
         } else {
             total =
-                    projectIterationDAO.getTotalCountForIteration(iteration
-                            .getId());
+                    projectIterationDAO
+                            .getTotalMessageCountForIteration(iteration.getId());
         }
 
         for (HLocale locale : localeList) {
@@ -252,8 +251,8 @@ public class ViewAllStatusAction implements Serializable {
                             .getId());
         } else {
             total =
-                    projectIterationDAO.getTotalCountForIteration(iteration
-                            .getId());
+                    projectIterationDAO
+                            .getTotalMessageCountForIteration(iteration.getId());
         }
 
         for (HLocale locale : localeList) {
@@ -340,7 +339,8 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(viewAllStatusAction.projectIteration, 'copy-trans')}")
-    public void cancelCopyTrans() {
+    public
+            void cancelCopyTrans() {
         if (isCopyTransRunning()) {
             copyTransManager.cancelCopyTrans(getProjectIteration());
         }
@@ -466,8 +466,8 @@ public class ViewAllStatusAction implements Serializable {
         if (period.toStandardMinutes().getMinutes() <= 0) {
             return "less than a minute"; // TODO Localize
         } else {
-            return COPY_TRANS_TIME_REMAINING_FORMATTER
-                .print(period.normalizedStandard());
+            return COPY_TRANS_TIME_REMAINING_FORMATTER.print(period
+                    .normalizedStandard());
         }
     }
 
@@ -484,12 +484,11 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     public void searchGroup() {
-        searchResults =
-                versionGroupServiceImpl.searchLikeSlugAndName(searchTerm);
+        searchResults = versionGroupDAO.searchGroupBySlugAndName(searchTerm);
     }
 
-    public boolean isGroupInVersion(String groupSlug) {
-        return versionGroupServiceImpl.isGroupInVersion(groupSlug,
+    public boolean isVersionInGroup(String groupSlug) {
+        return versionGroupServiceImpl.isVersionInGroup(groupSlug,
                 getProjectIteration().getId());
     }
 
