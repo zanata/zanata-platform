@@ -18,27 +18,23 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.console.util;
+package org.zanata.console.aesh;
 
-import org.zanata.client.commands.ConfigurableCommand;
-import org.zanata.client.commands.ConfigurableOptions;
+import org.jboss.aesh.cl.internal.ProcessedCommand;
+import org.jboss.aesh.cl.parser.AeshCommandLineParser;
+import org.jboss.aesh.cl.parser.CommandPopulator;
 
 /**
- * This is a bridge command between args4j and AEsh.
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class GenericBridgeCommand<OPTIONS extends ConfigurableOptions, COMMAND extends ConfigurableCommand<OPTIONS>>
-{
-   private COMMAND command;
+public class CustomCommandLineParser extends AeshCommandLineParser {
+    public CustomCommandLineParser(
+        ProcessedCommand command) {
+        super(command);
+    }
 
-   public GenericBridgeCommand(COMMAND command)
-   {
-      this.command = command;
-   }
-
-   public OPTIONS getOptions()
-   {
-      return command.getOpts();
-   }
-
+    @Override
+    public CommandPopulator getCommandPopulator() {
+        return new CustomCommandPopulator(this);
+    }
 }

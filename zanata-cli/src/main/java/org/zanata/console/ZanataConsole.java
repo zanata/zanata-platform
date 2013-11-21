@@ -24,22 +24,23 @@ import com.google.common.collect.Lists;
 import org.jboss.aesh.cl.Arguments;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
-import org.jboss.aesh.cl.parser.CommandLineParser;
-import org.jboss.aesh.console.AeshCommandRegistryBuilder;
+import org.jboss.aesh.cl.internal.ProcessedCommand;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
-import org.jboss.aesh.console.Command;
-import org.jboss.aesh.console.CommandResult;
 import org.jboss.aesh.console.Prompt;
-import org.jboss.aesh.console.operator.ControlOperator;
+import org.jboss.aesh.console.command.Command;
+import org.jboss.aesh.console.command.CommandResult;
+import org.jboss.aesh.console.command.invocation.CommandInvocation;
+import org.jboss.aesh.console.command.registry.AeshCommandRegistryBuilder;
 import org.jboss.aesh.console.settings.Settings;
 import org.jboss.aesh.console.settings.SettingsBuilder;
 import org.jboss.aesh.terminal.CharacterType;
 import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalCharacter;
+import org.jboss.aesh.terminal.TerminalColor;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
+import org.zanata.console.command.GetStatisticsConsoleCommand;
 import org.zanata.console.util.Args4jCommandGenerator;
-import org.zanata.console.util.GetStatisticsConsoleCmd;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,116 +48,96 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ZanataConsole
-{
-   public static void main(String[] args)
-   {
-      List<TerminalCharacter> terminalChars =
-         Lists.newArrayList(
-               new TerminalCharacter('z', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('n', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('t', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('a', Color.DEFAULT_BG, Color.BLUE_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter('>', Color.DEFAULT_BG, Color.YELLOW_TEXT, CharacterType.BOLD ),
-               new TerminalCharacter(' ', Color.DEFAULT_BG, Color.DEFAULT_BG, CharacterType.NORMAL )
-               );
-      Prompt prompt = new Prompt(terminalChars);
+public class ZanataConsole {
+    public static void main(String[] args) {
+        List<TerminalCharacter> terminalChars =
+                Lists.newArrayList(
+                    new TerminalCharacter('z', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('a', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('n', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('a', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('t', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('a', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
+                    new TerminalCharacter('>', new TerminalColor(Color.BLUE, Color.YELLOW), CharacterType.BOLD),
+                    new TerminalCharacter(' ', new TerminalColor(Color.DEFAULT, Color.DEFAULT)));
+        Prompt prompt = new Prompt(terminalChars);
 
-      Settings settings = new SettingsBuilder().logging(true).create();
-      AeshConsole aeshConsole = new AeshConsoleBuilder().settings(settings)
-            .prompt(prompt)
-            .commandRegistry(
-                new AeshCommandRegistryBuilder()
-                    .command(new CommandLineParser(Args4jCommandGenerator.generateCommand("stats", "",
-                        GetStatisticsOptionsImpl.class)), new GetStatisticsConsoleCmd())
-                        //.command(GetStatisticsConsoleCmd.class)
-                    .command(ExitCommand.class)
-                    .command(LsCommand.class)
-                    .command(SampleCommand.class)
-                    .command(HelpCommand.class)
-                    .create())
-            .create();
+        Settings settings = new SettingsBuilder().logging(true).create();
+        
+        ProcessedCommand statsProcessedCommand = Args4jCommandGenerator
+            .generateCommand(
+                "stats",
+                "",
+                GetStatisticsOptionsImpl.class);
+        
+        AeshConsole aeshConsole =
+                new AeshConsoleBuilder()
+                        .settings(settings)
+                        .prompt(prompt)
+                        //.commandInvocationProvider()
+                        .commandRegistry(
+                            new AeshCommandRegistryBuilder()
+                                .command(statsProcessedCommand,
+                                    new GetStatisticsConsoleCommand())
+                                .command(ExitCommand.class)
+                                .command(LsCommand.class)
+                                .command(HelpCommand.class).create())
+                        .create();
 
-      aeshConsole.start();
-   }
+        aeshConsole.start();
+    }
 
-   @CommandDefinition(name = "exit", description = "exit the program")
-   public static class ExitCommand implements Command
-   {
-      @Override
-      public CommandResult execute(AeshConsole console, ControlOperator operator) throws IOException
-      {
-         console.stop();
-         return CommandResult.SUCCESS;
-      }
-   }
+    @CommandDefinition(name = "exit", description = "exit the program")
+    public static class ExitCommand implements Command {
 
-   @CommandDefinition(name = "ls", description = "fooing")
-   public static class LsCommand implements Command
-   {
-      @Option
-      private String color;
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation)
+            throws IOException {
+            commandInvocation.stop();
+            return CommandResult.SUCCESS;
+        }
+    }
 
-      @Arguments
-      private List<File> files;
+    @CommandDefinition(name = "ls", description = "fooing")
+    public static class LsCommand implements Command {
+        @Option
+        private String color;
 
-      @Override
-      public CommandResult execute(AeshConsole console, ControlOperator operator) throws IOException
-      {
-         if (files != null)
-         {
-            for (File f : files)
-               console.out().println(f.toString());
-         }
-         return CommandResult.SUCCESS;
-      }
-   }
+        @Arguments
+        private List<File> files;
 
-   @CommandDefinition(name = "sample", description = "a sample command")
-   public static class SampleCommand implements Command
-   {
-      @Option
-      private String option1;
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation) throws IOException {
+            if (files != null) {
+                for (File f : files)
+                    commandInvocation.getShell().out().println(f.toString());
+            }
+            return CommandResult.SUCCESS;
+        }
+    }
 
-      @Option
-      private String option2;
+    @CommandDefinition(name = "help",
+            description = "Displays help for the console's commands")
+    public static class HelpCommand implements Command {
+        @Arguments(description = "Commands to show help for")
+        private List<String> commandNames;
 
-      @Option
-      private String option3;
-
-      @Override
-      public CommandResult execute(AeshConsole aeshConsole, ControlOperator operator) throws IOException
-      {
-         aeshConsole.out().println(option1 + ", " + option2 + ", " + option3);
-         return CommandResult.SUCCESS;
-      }
-   }
-
-   @CommandDefinition(name = "help", description = "Displays help for the console's commands")
-   public static class HelpCommand implements Command
-   {
-      @Arguments(description = "Commands to show help for")
-      private List<String> commandNames;
-
-      @Override
-      public CommandResult execute(AeshConsole aeshConsole, ControlOperator operator) throws IOException
-      {
-         if( commandNames == null )
-         {
-            commandNames = new ArrayList<String>();
-            commandNames.addAll( aeshConsole.getCommandRegistry().getAllCommandNames() );
-         }
-         for( String command : commandNames )
-         {
-            String helpInfo = aeshConsole.getHelpInfo(command);
-            aeshConsole.out().println(helpInfo);
-         }
-         return CommandResult.SUCCESS;
-      }
-   }
+        @Override
+        public CommandResult execute(CommandInvocation commandInvocation) throws IOException {
+            if (commandNames == null) {
+                commandNames = new ArrayList<String>();
+                commandNames.addAll(commandInvocation.getCommandRegistry()
+                        .getAllCommandNames());
+            }
+            for (String command : commandNames) {
+                String helpInfo = commandInvocation.getHelpInfo(command);
+                commandInvocation.getShell().out().println(helpInfo);
+            }
+            return CommandResult.SUCCESS;
+        }
+    }
 
 }
