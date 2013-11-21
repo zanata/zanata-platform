@@ -134,6 +134,21 @@
     status="R"
     />
 
+  <HProjectIteration id="900"
+    versionNum="1"
+    creationDate="2009-09-01 20:30:46"
+    lastChanged="2009-09-01 20:30:46"
+    slug="different-version"
+    parentId="[NULL]"
+    project_id="1"
+    overrideLocales="TRUE"
+    status="A"
+    />
+
+  <HProjectIteration_Locale
+    projectIterationId="900"
+    localeId="4" />
+
   <!-- Tell DbUnit to delete any existing documents -->
   <HDocument />
 </dataset>

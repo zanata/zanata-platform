@@ -63,14 +63,13 @@ public class VersionGroupFullTest {
         createVersionGroupPage.inputGroupName(groupName);
         createVersionGroupPage
                 .inputGroupDescription("A basic group can be saved");
-        createVersionGroupPage.selectStatus("ACTIVE");
         VersionGroupsPage versionGroupsPage =
                 createVersionGroupPage.saveGroup();
         assertThat("Group was created", versionGroupsPage.getGroupNames()
                 .contains(groupName));
         VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
         assertThat("The group is displayed", groupView.getTitle(),
-                Matchers.equalTo("Zanata: Groups:".concat(groupName)));
+                Matchers.equalTo("Groups:".concat(groupName)));
     }
 
     @Test
@@ -82,24 +81,24 @@ public class VersionGroupFullTest {
         CreateVersionGroupPage groupPage =
                 dashboardPage.goToGroups().createNewGroup().saveGroupFailure();
         assertThat("The two errors are value is required",
-                groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
+                groupPage.getFieldValidationErrors(), Matchers.contains(errorMsg, errorMsg));
 
         groupPage =
                 groupPage.clearFields().inputGroupName(groupName)
                         .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getErrors(),
+        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
 
         groupPage =
                 groupPage.clearFields().inputGroupId(groupID)
                         .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getErrors(),
+        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
     }
 
     @Test
     public void groupIDFieldSize() {
-        String errorMsg = "size must be between 1 and 40";
+        String errorMsg = "value must be shorter than or equal to 40 characters";
         String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmno";
         String groupName = "verifyIDFieldSizeName";
 
@@ -107,7 +106,8 @@ public class VersionGroupFullTest {
                 dashboardPage.goToGroups().createNewGroup();
         groupPage.inputGroupId(groupID).inputGroupName(groupName)
                 .saveGroupFailure();
-        assertThat("Invalid length error is shown", groupPage.getErrors(),
+        assertThat("Invalid length error is shown",
+                groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
 
         groupPage.clearFields();
@@ -122,7 +122,7 @@ public class VersionGroupFullTest {
 
     @Test
     public void groupDescriptionFieldSize() {
-        String errorMsg = "size must be between 0 and 100";
+        String errorMsg = "value must be shorter than or equal to 100 characters";
         String groupID = "verifyDescriptionFieldSizeID";
         String groupName = "verifyDescriptionFieldSizeName";
         String groupDescription =
@@ -135,7 +135,8 @@ public class VersionGroupFullTest {
         groupPage.inputGroupId(groupID).inputGroupName(groupName)
                 .inputGroupDescription(groupDescription);
         groupPage.saveGroupFailure();
-        assertThat("Invalid length error is shown", groupPage.getErrors(),
+        assertThat("Invalid length error is shown",
+                groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
 
         groupPage.clearFields();

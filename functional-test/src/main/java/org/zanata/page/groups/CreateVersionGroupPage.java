@@ -1,15 +1,15 @@
 package org.zanata.page.groups;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
-
-import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
@@ -19,38 +19,44 @@ import com.google.common.collect.ImmutableList;
  */
 @Slf4j
 public class CreateVersionGroupPage extends BasePage {
-    @FindBy(id = "projectForm:slugField:slug")
+    @FindBy(id = "group-form:slugField:slug")
     private WebElement groupSlugField;
 
-    @FindBy(id = "projectForm:nameField:name")
+    @FindBy(id = "group-form:nameField:name")
     private WebElement groupNameField;
 
-    @FindBy(id = "projectForm:descriptionField:description")
+    @FindBy(id = "group-form:descriptionField:description")
     private WebElement groupDescriptionField;
 
-    @FindBy(tagName = "Select")
-    private WebElement groupStatusSelection;
-
-    @FindBy(id = "projectForm:save")
+    @FindBy(id = "group-form:group-create-new")
     private WebElement saveButton;
-
-    @FindBy(className = "errors")
-    private WebElement groupSlugFieldError;
 
     public CreateVersionGroupPage(WebDriver driver) {
         super(driver);
         List<By> elementBys =
                 ImmutableList.<By> builder()
-                        .add(By.id("projectForm:slugField:slug"))
-                        .add(By.id("projectForm:nameField:name"))
-                        .add(By.id("projectForm:descriptionField:description"))
-                        .add(By.id("projectForm:save")).build();
+                        .add(By.id("group-form:slugField:slug"))
+                        .add(By.id("group-form:nameField:name"))
+                        .add(By.id("group-form:descriptionField:description"))
+                        .add(By.id("group-form:group-create-new")).build();
         waitForPage(elementBys);
     }
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
         groupSlugField.sendKeys(groupId);
         return new CreateVersionGroupPage(getDriver());
+    }
+
+    public WebElement getInputGroupName() {
+        return groupNameField;
+    }
+
+    public WebElement getInputGroupId() {
+        return groupSlugField;
+    }
+
+    public WebElement getInputGroupDescription() {
+        return groupDescriptionField;
     }
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
@@ -63,18 +69,13 @@ public class CreateVersionGroupPage extends BasePage {
         return this;
     }
 
-    public CreateVersionGroupPage selectStatus(String status) {
-        new Select(groupStatusSelection).selectByVisibleText(status);
-        return this;
-    }
-
     public VersionGroupsPage saveGroup() {
         clickAndCheckErrors(saveButton);
         return new VersionGroupsPage(getDriver());
     }
 
     public CreateVersionGroupPage saveGroupFailure() {
-        clickAndExpectErrors(saveButton);
+        clickAndCheckErrors(saveButton);
         return new CreateVersionGroupPage(getDriver());
     }
 
@@ -83,5 +84,15 @@ public class CreateVersionGroupPage extends BasePage {
         groupNameField.clear();
         groupDescriptionField.clear();
         return new CreateVersionGroupPage(getDriver());
+    }
+
+    public List<String> getFieldValidationErrors() {
+        List<WebElement> elements =
+                getDriver().findElements(By.className("message--danger"));
+        List<String> errors = new ArrayList<String>();
+        for (WebElement element : elements) {
+            errors.add(element.getText());
+        }
+        return errors;
     }
 }

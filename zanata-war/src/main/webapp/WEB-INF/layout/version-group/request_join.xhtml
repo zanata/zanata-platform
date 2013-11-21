@@ -40,27 +40,27 @@
 
     <h4>#{messages['jsf.ClickSendMessageToProceedRequest']}</h4>
     <rich:panel>
-      <s:decorate id="nameField" template="display.xhtml">
+      <s:decorate id="nameField" template="../display.xhtml">
         <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
         <h:outputText id="senderName" value="#{sendEmail.fromName}"
           required="true"/>
       </s:decorate>
 
-      <s:decorate id="replyEmailField" template="display.xhtml">
+      <s:decorate id="replyEmailField" template="../display.xhtml">
         <ui:define name="label">#{messages['jsf.email.ReplyAddress']}
           <br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
         <h:outputText id="email" value="#{sendEmail.replyEmail}"
           required="true"/>
       </s:decorate>
 
-      <s:decorate id="subjectField" template="display.xhtml">
+      <s:decorate id="subjectField" template="../display.xhtml">
         <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
         <h:outputText id="subject"
-          value="#{messages['jsf.email.joingrouprequest.Subject']}"
+          value="#{messages['jsf.email.JoinGroupRequest.Subject']}"
           required="true"/>
       </s:decorate>
 
-      <s:decorate id="messageField" template="edit.xhtml">
+      <s:decorate id="messageField" template="../edit.xhtml">
         <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
 
         <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">

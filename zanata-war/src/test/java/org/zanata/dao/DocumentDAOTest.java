@@ -110,8 +110,8 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
                         ITERATION_SLUG, DOC_ID);
         doc.setName("newdocname.txt");
 
-        // force a flush on the DB
-        getSession().flush();
+        documentDAO.makePersistent(doc);
+        documentDAO.flush();
 
         // Hash must change
         String changedDocHash =

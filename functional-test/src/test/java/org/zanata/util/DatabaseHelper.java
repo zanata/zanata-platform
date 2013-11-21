@@ -37,7 +37,7 @@ public class DatabaseHelper {
     private static Statement statement;
     private static DatabaseHelper DB;
     private String backupPath;
-    private static int CURRENT_TABLE_COUNT = 81;
+    private static int CURRENT_TABLE_COUNT = 82;
     private FluentWait<Statement> wait;
 
     private DatabaseHelper() {

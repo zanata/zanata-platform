@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -21,60 +21,84 @@
 package org.zanata.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.zanata.common.LocaleId;
 import org.zanata.model.HIterationGroup;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.ui.model.statistic.WordStatistic;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public interface VersionGroupService {
-    List<HIterationGroup> getAllActiveVersionGroupsOrIsMaintainer();
 
-    HIterationGroup getBySlug(String slug);
+    /**
+     * Return all active groups + maintained groups of the person
+     *
+     * @param person
+     */
+    List<HIterationGroup> getAllActiveAndMaintainedGroups(HPerson person);
 
+    /**
+     * Return all active groups
+     *
+     */
+    List<HIterationGroup> getAllActiveGroups();
+
+    /**
+     * Search project version by fuzzy matching of version slug or project slug
+     *
+     * @param searchTerm
+     */
     List<HProjectIteration> searchLikeSlugOrProjectSlug(String searchTerm);
 
-    List<HIterationGroup> searchLikeSlugAndName(String searchTerm);
+    /**
+     * Return maintainers of the group
+     *
+     * @param slug
+     */
+    List<HPerson> getMaintainersBySlug(String slug);
 
-    List<HPerson> getMaintainerBySlug(String slug);
-
-    void makePersistent(HIterationGroup iterationGroup);
-
-    void flush();
-
-    boolean joinVersionGroup(String slug, Long projectIterationId);
-
-    boolean leaveVersionGroup(String slug, Long projectIterationId);
-
-    HProjectIteration getProjectIterationBySlug(String projectSlug,
-            String iterationSlug);
-
+    /**
+     * Return if a version had joined a group
+     *
+     * @param groupSlug
+     * @param projectIterationId
+     */
     boolean isVersionInGroup(String groupSlug, Long projectIterationId);
 
-    boolean isGroupInVersion(String groupSlug, Long id);
+    /**
+     * Return map of statistics for all version and active locales in group
+     *
+     * @param groupSlug
+     * @param localeId
+     */
+    Map<VersionLocaleKey, WordStatistic> getLocaleStatistic(String groupSlug,
+            LocaleId localeId);
 
-    public final class SelectableHProject {
-        private HProjectIteration projectIteration;
-        private boolean selected;
+    /**
+     * Return total message count of the versions in group
+     *
+     * @param groupSlug
+     */
+    int getTotalMessageCount(String groupSlug);
 
-        public SelectableHProject(HProjectIteration projectIteration,
-                boolean selected) {
-            this.projectIteration = projectIteration;
-            this.selected = selected;
-        }
+    /**
+     * Return versions that doesn't contained all active locales of the group.
+     *
+     * @param groupSlug
+     */
+    Map<LocaleId, List<HProjectIteration>> getMissingLocaleVersionMap(
+            String groupSlug);
 
-        public HProjectIteration getProjectIteration() {
-            return projectIteration;
-        }
-
-        public boolean isSelected() {
-            return selected;
-        }
-
-        public void setSelected(boolean selected) {
-            this.selected = selected;
-        }
-    }
+    /**
+     * Return group's activate locales
+     *
+     * @param groupSlug
+     */
+    Set<HLocale> getGroupActiveLocales(String groupSlug);
 }

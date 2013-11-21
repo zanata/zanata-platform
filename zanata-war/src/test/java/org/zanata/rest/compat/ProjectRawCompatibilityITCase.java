@@ -110,7 +110,7 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                 assertThat(project.getId(), is("sample-project"));
                 assertThat(project.getName(), is("Sample Project"));
                 assertThat(project.getDescription(), is("An example Project"));
-                assertThat(project.getIterations().size(), is(2));
+                assertThat(project.getIterations().size(), is(3));
             }
         }.run();
     }

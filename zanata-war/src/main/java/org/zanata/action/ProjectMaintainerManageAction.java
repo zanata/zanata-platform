@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -29,18 +31,21 @@ public class ProjectMaintainerManageAction implements Serializable {
     private static final long serialVersionUID = 1L;
     @DataModel
     List<HPerson> allList;
+
     @DataModelSelection
     HPerson selectedPerson;
 
     @In
     private IdentityManager identityManager;
 
+    @Getter
+    @Setter
     private String slug;
 
     @In
-    ProjectDAO projectDAO;
+    private ProjectDAO projectDAO;
     @In
-    AccountDAO accountDAO;
+    private AccountDAO accountDAO;
 
     public void loadAllMaintainers() {
         allList = projectDAO.getProjectMaintainerBySlug(this.slug);
@@ -50,14 +55,6 @@ public class ProjectMaintainerManageAction implements Serializable {
         return this.selectedPerson;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getSlug() {
-        return this.slug;
-    }
-
     public HProject getProject() {
         return projectDAO.getBySlug(this.slug);
     }
@@ -65,8 +62,8 @@ public class ProjectMaintainerManageAction implements Serializable {
     @Restrict("#{s:hasPermission(projectMaintainerManageAction.project, 'update')}")
     public
             void deleteMaintainer(HPerson person) {
-        log.debug("try to delete maintainer {} from slug {}",
-                person.getName(), this.slug);
+        log.debug("try to delete maintainer {} from slug {}", person.getName(),
+                this.slug);
         final HProject project = projectDAO.getBySlug(this.slug);
         Set<HPerson> personList = project.getMaintainers();
         for (HPerson l : personList) {

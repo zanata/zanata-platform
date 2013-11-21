@@ -14,6 +14,9 @@
   <HDocumentHistory />
   <HGlossaryEntry />
   <HGlossaryTerm />
+  <HIterationGroup />
+  <HIterationGroup_Maintainer />
+  <HIterationGroup_ProjectIteration />
   <HLocale />
   <HLocale_Member />
   <HPerson />
@@ -33,6 +36,7 @@
   <HTextFlowTargetContentHistory />
   <HTextFlowTargetHistory />
   <HTextFlowTargetReviewComment />
+  <IterationGroup_Locale />
   <TransMemory_Metadata />
   <TransMemory />
   <TransMemoryUnit />

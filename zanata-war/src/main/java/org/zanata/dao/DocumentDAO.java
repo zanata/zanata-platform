@@ -272,7 +272,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 new HashMap<String, TransUnitWords>();
 
         StringBuilder query = new StringBuilder();
-        query.append("select new map (tft.state as state, count(tft) as count, ");
+        query.append("select new map (tft.state as state, count(tft) as msgCount, ");
         query.append("          sum(tft.textFlow.wordCount) as wordCount, "
                 + "tft.locale.localeId as locale) ");
         query.append("from HTextFlowTarget tft ");
@@ -300,7 +300,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         // Collect the results for all states
         for (Map<String, Object> row : stats) {
             ContentState state = (ContentState) row.get("state");
-            Long count = (Long) row.get("count");
+            Long msgCount = (Long) row.get("msgCount");
             Long wordCount = (Long) row.get("wordCount");
             LocaleId localeId = (LocaleId) row.get("locale");
 
@@ -318,33 +318,18 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 transUnitWordsMap.put(localeId.getId(), transUnitWords);
             }
 
-            transUnitCount.set(state, count.intValue());
+            transUnitCount.set(state, msgCount.intValue());
             transUnitWords.set(state, wordCount.intValue());
         }
 
-        Map<String, Object> totalCounts =
-                (Map<String, Object>) session
-                        .createQuery(
-                                "select new map ( count(tf) as count, "
-                                        + "sum(tf.wordCount) as wordCount ) "
-                                        + "from HTextFlow tf "
-                                        + "where tf.document.id = :id "
-                                        + "and tf.obsolete = false")
-                        .setParameter("id", docId)
-                        .setComment(
-                                "DocumentDAO.getStatisticsMultipleLocales-words")
-                        .setCacheable(true).uniqueResult();
 
-        // Calculate the 'New' counts
-        Long totalCount = (Long) totalCounts.get("count");
-        Long totalWordCount = (Long) totalCounts.get("wordCount");
         for (TransUnitCount stat : transUnitCountMap.values()) {
             stat.set(ContentState.New,
-                    StatisticsUtil.calculateUntranslated(totalCount, stat));
+                    StatisticsUtil.calculateUntranslated(new Long(stat.getTotal()), stat));
         }
         for (TransUnitWords stat : transUnitWordsMap.values()) {
             stat.set(ContentState.New,
-                    StatisticsUtil.calculateUntranslated(totalWordCount, stat));
+                    StatisticsUtil.calculateUntranslated(new Long(stat.getTotal()), stat));
         }
 
         // Merge into a single Stats object

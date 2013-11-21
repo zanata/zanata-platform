@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+  <div class="bg--pop-high">
+    <div class="panels__panel__header">
+      <div class="g--tight">
+        <div class="g__item w--1-2 w--1-2-s">
+          <h2 class="heading--secondary epsilon">
+            <i class="i i--maintain l--push-right-quarter"></i>
+            #{messages['jsf.Maintainers']}
+          </h2>
+        </div>
+        <div
+          class="g__item w--1-2 w--1-2-s txt--align-right txt--s-align-right">
+        </div>
+      </div>
+    </div>
+    <ul class="list--slat">
+      <ui:repeat value="#{versionGroupHomeAction.maintainers}" var="maintainer">
+        <li class="l--pad-all-half">
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
+              alt="#{maintainer.name}"/>
+          </span>
+          #{maintainer.name}
+          <span class="txt--meta">@#{maintainer.account.username}</span>
+        </li>
+      </ui:repeat>
+    </ul>
+  </div>
+</ui:composition>

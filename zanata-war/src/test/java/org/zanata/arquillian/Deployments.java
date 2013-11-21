@@ -87,9 +87,7 @@ public class Deployments {
             public boolean include(ArchivePath object) {
                 // Avoid the model package (for some reason it's being included
                 // as a class file)
-                return !object.get().startsWith("/org/zanata/model/") &&
-                // and the ui package (not needed)
-                        !object.get().startsWith("/org/zanata/ui");
+                return !object.get().startsWith("/org/zanata/model/");
             }
         }, "org.zanata");
 
