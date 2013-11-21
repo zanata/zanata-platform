@@ -34,6 +34,8 @@ import org.jboss.aesh.cl.internal.ProcessedCommand;
 import org.jboss.aesh.cl.internal.ProcessedOption;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+import org.zanata.client.commands.ConfigurableCommand;
+import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.console.converter.URLConverter;
 
 /**

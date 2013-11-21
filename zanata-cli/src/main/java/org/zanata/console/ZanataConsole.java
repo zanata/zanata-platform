@@ -38,8 +38,10 @@ import org.jboss.aesh.terminal.CharacterType;
 import org.jboss.aesh.terminal.Color;
 import org.jboss.aesh.terminal.TerminalCharacter;
 import org.jboss.aesh.terminal.TerminalColor;
+import org.zanata.client.commands.stats.GetStatisticsCommand;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
 import org.zanata.console.command.GetStatisticsConsoleCommand;
+import org.zanata.console.util.AeshCommandGenerator;
 import org.zanata.console.util.Args4jCommandGenerator;
 
 import java.io.File;
@@ -52,7 +54,7 @@ import java.util.List;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class ZanataConsole {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         List<TerminalCharacter> terminalChars =
                 Lists.newArrayList(
                     new TerminalCharacter('z', new TerminalColor(Color.BLUE, Color.DEFAULT), CharacterType.BOLD),
@@ -72,6 +74,9 @@ public class ZanataConsole {
                 "stats",
                 "",
                 GetStatisticsOptionsImpl.class);
+        Class<?> commandClass = AeshCommandGenerator.generateCommandClass(statsProcessedCommand);
+        Command statsCmd = (Command)commandClass.getConstructor(Class.class, Class.class).newInstance(
+            GetStatisticsCommand.class, GetStatisticsOptionsImpl.class);
         
         AeshConsole aeshConsole =
                 new AeshConsoleBuilder()
@@ -81,7 +86,7 @@ public class ZanataConsole {
                         .commandRegistry(
                             new AeshCommandRegistryBuilder()
                                 .command(statsProcessedCommand,
-                                    new GetStatisticsConsoleCommand())
+                                    statsCmd)
                                 .command(ExitCommand.class)
                                 .command(LsCommand.class)
                                 .command(HelpCommand.class).create())

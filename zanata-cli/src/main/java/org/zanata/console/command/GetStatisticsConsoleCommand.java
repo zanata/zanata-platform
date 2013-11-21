@@ -20,12 +20,6 @@
  */
 package org.zanata.console.command;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
-import org.jboss.aesh.cl.CommandDefinition;
-import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.console.command.Command;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
@@ -34,52 +28,36 @@ import org.zanata.client.commands.stats.GetStatisticsCommand;
 import org.zanata.client.commands.stats.GetStatisticsOptions;
 import org.zanata.client.config.LocaleList;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@CommandDefinition(name = "stats", description = "Gets Statistics")
 public class GetStatisticsConsoleCommand implements Command,
         GetStatisticsOptions {
-    @Option
+    
     private boolean includeDetails;
-    @Option
     private boolean includeWordLevelStats;
-    @Option
     private String format;
-    @Option
     private String documentId;
-    @Option
     private String project;
-    @Option
     private File projectConfig;
-    @Option
     private String projectVersion;
-    @Option
     private String projectType;
-    @Option
     private LocaleList localeMapList;
-    @Option
     private String key;
-    @Option(/* converter = URLConverter.class */)
     private URL url;
-    @Option
     private File userConfig;
-    @Option
     private String username;
-    @Option
     private boolean logHttp;
-    @Option
     private boolean disableSSLCert;
-    @Option
     private Boolean debug = null;
-    @Option(name = "errors", shortName = 'X')
     private Boolean errors = null;
-    @Option
     private boolean help;
-    @Option
     private Boolean quiet = null;
-    @Option
     private boolean interactiveMode;
 
     @Override
@@ -88,8 +66,7 @@ public class GetStatisticsConsoleCommand implements Command,
         try {
             new GetStatisticsCommand(this).run();
         } catch (Exception e) {
-            e.printStackTrace(); // To change body of catch statement use File |
-                                 // Settings | File Templates.
+            e.printStackTrace();
             return CommandResult.FAILURE;
         }
         return CommandResult.SUCCESS;
