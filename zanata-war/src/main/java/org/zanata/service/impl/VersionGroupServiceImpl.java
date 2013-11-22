@@ -174,8 +174,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
             for (HLocale activeLocale : group.getActiveLocales()) {
                 List<HProjectIteration> versionList = Lists.newArrayList();
                 for (HProjectIteration version : group.getProjectIterations()) {
-                    if (!isLocaleActivatedInVersion(version, activeLocale)
-                            && !isLocaleEnabledByDefault(activeLocale)) {
+                    if (!isLocaleActivatedInVersion(version, activeLocale)) {
                         versionList.add(version);
                     }
                 }
@@ -186,8 +185,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     /**
-     * Return if the locale is activate in the version. Return true if version
-     * and project doesn't overrides locale.
+     * Return if the locale enabled by default in server and is activate in the
+     * version. Return true if version and project doesn't overrides locale.
      *
      * Fallback to project customised locale if version doesn't overrides
      * locales
@@ -197,6 +196,11 @@ public class VersionGroupServiceImpl implements VersionGroupService {
      */
     private boolean isLocaleActivatedInVersion(HProjectIteration version,
             HLocale locale) {
+
+        if(!isLocaleEnabledByDefault(locale)) {
+           return false;
+        }
+
         Set<HLocale> customisedLocales = Sets.newHashSet();
 
         if (version.isOverrideLocales()) {
