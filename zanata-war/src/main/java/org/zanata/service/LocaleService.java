@@ -46,6 +46,8 @@ public interface LocaleService {
 
     boolean localeSupported(@Nonnull LocaleId locale);
 
+    boolean localeEnabledByDefault(@Nonnull LocaleId locale);
+
     List<HLocale> getSupportedLocales();
 
     HLocale getByLocaleId(@Nonnull LocaleId locale);

@@ -181,6 +181,12 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
+    public boolean localeEnabledByDefault(@Nonnull LocaleId locale) {
+        HLocale entity = localeDAO.findByLocaleId(locale);
+        return entity != null && entity.isEnabledByDefault();
+    }
+
+    @Override
     public @Nonnull
     HLocale validateLocaleByProject(@Nonnull LocaleId locale,
             @Nonnull String project) throws ZanataServiceException {

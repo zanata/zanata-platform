@@ -35,6 +35,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
@@ -60,6 +61,9 @@ public class VersionGroupServiceImpl implements VersionGroupService {
 
     @In
     private VersionStateCache versionStateCacheImpl;
+
+    @In
+    private LocaleService localeServiceImpl;
 
     @Override
     public Map<VersionLocaleKey, WordStatistic> getLocaleStatistic(
@@ -170,7 +174,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
             for (HLocale activeLocale : group.getActiveLocales()) {
                 List<HProjectIteration> versionList = Lists.newArrayList();
                 for (HProjectIteration version : group.getProjectIterations()) {
-                    if (!isLocaleActivatedInVersion(version, activeLocale)) {
+                    if (!isLocaleActivatedInVersion(version, activeLocale)
+                            && !isLocaleEnabledByDefault(activeLocale)) {
                         versionList.add(version);
                     }
                 }
@@ -205,5 +210,9 @@ public class VersionGroupServiceImpl implements VersionGroupService {
             return customisedLocales.contains(locale);
         }
         return true; // no overrides of locales from version or it's project
+    }
+
+    private boolean isLocaleEnabledByDefault(HLocale locale) {
+        return localeServiceImpl.localeEnabledByDefault(locale.getLocaleId());
     }
 }

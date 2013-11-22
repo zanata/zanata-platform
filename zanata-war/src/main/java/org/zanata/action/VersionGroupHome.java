@@ -167,7 +167,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     public List<HLocale> suggestLocales(final String query) {
         if (supportedLocales == null) {
-            supportedLocales = localeServiceImpl.getSupportedLocales();
+            supportedLocales =
+                    localeServiceImpl.getSupportedLocales();
         }
 
         Collection<HLocale> filtered =
