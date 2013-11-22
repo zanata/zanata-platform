@@ -359,7 +359,7 @@ public class VersionGroupHomeAction implements Serializable {
 
     /**
      * Search for locale that is not activated in given version
-     *
+     * 
      * @param version
      */
     public List<LocaleId> getMissingLocale(HProjectIteration version) {
@@ -384,11 +384,14 @@ public class VersionGroupHomeAction implements Serializable {
 
     /**
      * Search for version that doesn't activate given locale
-     *
+     * 
      * @param localeId
      */
     public List<HProjectIteration> getMissingVersion(LocaleId localeId) {
-        return getMissingLocaleVersionMap().get(localeId);
+        if (getMissingLocaleVersionMap().containsKey(localeId)) {
+            return getMissingLocaleVersionMap().get(localeId);
+        }
+        return Lists.newArrayList();
     }
 
     public String getMissingVersionTitle(LocaleId localeId) {

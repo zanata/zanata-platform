@@ -87,9 +87,7 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
                                 "select g.maintainers from HIterationGroup as g where g.slug = :slug");
         q.setParameter("slug", slug);
         q.setComment("VersionGroupDAO.getMaintainersBySlug");
-        @SuppressWarnings("unchecked")
-        List<HPerson> results = q.list();
-        return results;
+        return q.list();
     }
 
     public List<HIterationGroup> searchGroupBySlugAndName(String searchTerm) {
