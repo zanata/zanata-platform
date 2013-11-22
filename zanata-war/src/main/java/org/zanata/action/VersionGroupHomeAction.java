@@ -388,7 +388,10 @@ public class VersionGroupHomeAction implements Serializable {
      * @param localeId
      */
     public List<HProjectIteration> getMissingVersion(LocaleId localeId) {
-        return getMissingLocaleVersionMap().get(localeId);
+        if (getMissingLocaleVersionMap().containsKey(localeId)) {
+            return getMissingLocaleVersionMap().get(localeId);
+        }
+        return Lists.newArrayList();
     }
 
     public String getMissingVersionTitle(LocaleId localeId) {
