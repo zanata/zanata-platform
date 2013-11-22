@@ -196,27 +196,10 @@ public class VersionGroupServiceImpl implements VersionGroupService {
      */
     private boolean isLocaleActivatedInVersion(HProjectIteration version,
             HLocale locale) {
+        List<HLocale> versionLocales =
+            localeServiceImpl.getSupportedLangugeByProjectIteration(
+                version.getProject().getSlug(), version.getSlug());
+        return versionLocales.contains(locale);
 
-        if(!isLocaleEnabledByDefault(locale)) {
-           return false;
-        }
-
-        Set<HLocale> customisedLocales = Sets.newHashSet();
-
-        if (version.isOverrideLocales()) {
-            customisedLocales = version.getCustomizedLocales();
-        } else if (version.getProject().isOverrideLocales()) {
-            customisedLocales = version.getProject().getCustomizedLocales();
-        }
-
-        if (version.isOverrideLocales()
-                || version.getProject().isOverrideLocales()) {
-            return customisedLocales.contains(locale);
-        }
-        return true; // no overrides of locales from version or it's project
-    }
-
-    private boolean isLocaleEnabledByDefault(HLocale locale) {
-        return localeServiceImpl.localeEnabledByDefault(locale.getLocaleId());
     }
 }
