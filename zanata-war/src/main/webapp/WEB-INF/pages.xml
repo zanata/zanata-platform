@@ -404,12 +404,6 @@
     <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
     <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
     <action execute="#{versionGroupHome.validateSuppliedId}" />
-
-    <navigation from-action="#{versionGroupHome.update}">
-      <redirect view-id="/version-group/version_group.xhtml">
-        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-      </redirect>
-    </navigation>
   </page>
 
   <page view-id="/version-group/request_to_join.xhtml">
