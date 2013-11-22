@@ -30,7 +30,7 @@ import org.zanata.model.HProject;
 public class ProjectMaintainerManageAction implements Serializable {
     private static final long serialVersionUID = 1L;
     @DataModel
-    List<HPerson> allList;
+    List<HPerson> maintainerList;
 
     @DataModelSelection
     HPerson selectedPerson;
@@ -48,7 +48,7 @@ public class ProjectMaintainerManageAction implements Serializable {
     private AccountDAO accountDAO;
 
     public void loadAllMaintainers() {
-        allList = projectDAO.getProjectMaintainerBySlug(this.slug);
+        maintainerList = projectDAO.getProjectMaintainerBySlug(this.slug);
     }
 
     public HPerson getSelectedPerson() {
