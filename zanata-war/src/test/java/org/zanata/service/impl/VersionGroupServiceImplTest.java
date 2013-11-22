@@ -86,7 +86,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                 .use("projectIterationDAO",
                         new ProjectIterationDAO(getSession()))
                 .use("session", getSession())
-                .useImpl(VersionStateCacheImpl.class).ignoreNonResolvable();
+                .useImpl(VersionStateCacheImpl.class).useImpl(LocaleServiceImpl.class).ignoreNonResolvable();
 
         versionGroupServiceImpl = seam.autowire(VersionGroupServiceImpl.class);
     }

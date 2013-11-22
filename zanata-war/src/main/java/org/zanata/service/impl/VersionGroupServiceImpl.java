@@ -35,6 +35,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
+import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
@@ -60,6 +61,9 @@ public class VersionGroupServiceImpl implements VersionGroupService {
 
     @In
     private VersionStateCache versionStateCacheImpl;
+
+    @In
+    private LocaleService localeServiceImpl;
 
     @Override
     public Map<VersionLocaleKey, WordStatistic> getLocaleStatistic(
@@ -181,8 +185,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     /**
-     * Return if the locale is activate in the version. Return true if version
-     * and project doesn't overrides locale.
+     * Return if the locale enabled by default in server and is activate in the
+     * version. Return true if version and project doesn't overrides locale.
      *
      * Fallback to project customised locale if version doesn't overrides
      * locales
@@ -192,18 +196,10 @@ public class VersionGroupServiceImpl implements VersionGroupService {
      */
     private boolean isLocaleActivatedInVersion(HProjectIteration version,
             HLocale locale) {
-        Set<HLocale> customisedLocales = Sets.newHashSet();
+        List<HLocale> versionLocales =
+            localeServiceImpl.getSupportedLangugeByProjectIteration(
+                version.getProject().getSlug(), version.getSlug());
+        return versionLocales.contains(locale);
 
-        if (version.isOverrideLocales()) {
-            customisedLocales = version.getCustomizedLocales();
-        } else if (version.getProject().isOverrideLocales()) {
-            customisedLocales = version.getProject().getCustomizedLocales();
-        }
-
-        if (version.isOverrideLocales()
-                || version.getProject().isOverrideLocales()) {
-            return customisedLocales.contains(locale);
-        }
-        return true; // no overrides of locales from version or it's project
     }
 }
