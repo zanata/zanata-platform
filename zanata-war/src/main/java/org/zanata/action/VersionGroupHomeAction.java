@@ -184,27 +184,34 @@ public class VersionGroupHomeAction implements Serializable {
         }
 
         @Override
-        public int compare(HProjectIteration locale, HProjectIteration locale2) {
+        public int
+                compare(HProjectIteration version, HProjectIteration version2) {
             final HProjectIteration item1, item2;
 
             if (sortingType.isDescending()) {
-                item1 = locale;
-                item2 = locale2;
+                item1 = version;
+                item2 = version2;
             } else {
-                item1 = locale2;
-                item2 = locale;
+                item1 = version2;
+                item2 = version;
             }
 
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
-                WordStatistic wordStatistic1 =
-                        statisticMap.get(new VersionLocaleKey(item1.getId(),
-                                selectedLocale.getLocaleId()));
-                WordStatistic wordStatistic2 =
-                        statisticMap.get(new VersionLocaleKey(item2.getId(),
-                                selectedLocale.getLocaleId()));
+                WordStatistic wordStatistic1 = new WordStatistic();
+                WordStatistic wordStatistic2 = new WordStatistic();
+                if (selectedLocale != null) {
+                    wordStatistic1 =
+                            statisticMap
+                                    .get(new VersionLocaleKey(item1.getId(),
+                                            selectedLocale.getLocaleId()));
+                    wordStatistic2 =
+                            statisticMap
+                                    .get(new VersionLocaleKey(item2.getId(),
+                                            selectedLocale.getLocaleId()));
+                }
 
                 if (selectedSortOption
                         .equals(SortingType.SortOption.PERCENTAGE)) {
