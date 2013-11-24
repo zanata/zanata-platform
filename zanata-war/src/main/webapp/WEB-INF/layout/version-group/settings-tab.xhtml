@@ -84,9 +84,10 @@
       <ui:include src="edit_form.xhtml"/>
 
       <div class="l--push-top-1">
-        <h:commandButton value="#{messages['jsf.UpdateGeneralSettings']}"
+        <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
           action="#{versionGroupHome.update}"
           rendered="#{versionGroupHome.managed}"
+          render="group-info"
           styleClass="l--push-right-half button--primary"/>
       </div>
       <hr/>
