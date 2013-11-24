@@ -28,6 +28,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
@@ -73,14 +74,17 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
 
         for (HProjectIteration version : group.getProjectIterations()) {
-            WordStatistic statistic =
-                    versionStateCacheImpl.getVersionStatistics(version.getId(),
-                            localeId);
-            statistic.setRemainingHours(StatisticsUtil
-                    .getRemainingHours(statistic));
+            if (version.getStatus() == EntityStatus.ACTIVE) {
+                WordStatistic statistic =
+                        versionStateCacheImpl.getVersionStatistics(
+                                version.getId(), localeId);
+                statistic.setRemainingHours(StatisticsUtil
+                        .getRemainingHours(statistic));
 
-            statisticMap.put(new VersionLocaleKey(version.getId(), localeId),
-                    statistic);
+                statisticMap.put(
+                        new VersionLocaleKey(version.getId(), localeId),
+                        statistic);
+            }
         }
 
         return statisticMap;
@@ -159,6 +163,19 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         return Sets.newHashSet();
     }
 
+    @Override
+    public List<HProjectIteration> getProjectIterationBySlug(String slug) {
+        List<HProjectIteration> projectIterations =
+                projectIterationDAO.getByGroupSlug(slug);
+        List<HProjectIteration> filteredList = Lists.newArrayList();
+        for (HProjectIteration version : projectIterations) {
+            if (version.getStatus() == EntityStatus.ACTIVE) {
+                filteredList.add(version);
+            }
+        }
+        return filteredList;
+    }
+
     /**
      * Return versions that don't contained all active locales of the group.
      *
@@ -197,8 +214,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     private boolean isLocaleActivatedInVersion(HProjectIteration version,
             HLocale locale) {
         List<HLocale> versionLocales =
-            localeServiceImpl.getSupportedLangugeByProjectIteration(
-                version.getProject().getSlug(), version.getSlug());
+                localeServiceImpl.getSupportedLangugeByProjectIteration(version
+                        .getProject().getSlug(), version.getSlug());
         return versionLocales.contains(locale);
 
     }

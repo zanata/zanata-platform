@@ -74,9 +74,6 @@ public class VersionGroupHomeAction implements Serializable {
     @In
     private VersionGroupDAO versionGroupDAO;
 
-    @In
-    private ProjectIterationDAO projectIterationDAO;
-
     @Getter
     @Setter
     private String slug;
@@ -457,8 +454,10 @@ public class VersionGroupHomeAction implements Serializable {
 
     public List<HProjectIteration> getProjectIterations() {
         if (projectIterations == null) {
-            projectIterations = projectIterationDAO.getByGroupSlug(slug);
+            projectIterations =
+                    versionGroupServiceImpl.getProjectIterationBySlug(slug);
         }
+
         Collections.sort(projectIterations, versionComparator);
         return projectIterations;
     }

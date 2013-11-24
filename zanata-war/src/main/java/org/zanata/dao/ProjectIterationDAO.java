@@ -85,16 +85,15 @@ public class ProjectIterationDAO extends
 
     public List<HProjectIteration> getByGroupSlug(String groupSlug) {
         Query q =
-            getSession()
-                .createQuery(
-                    "select g.projectIterations from HIterationGroup as g where g.slug = :slug");
+                getSession()
+                        .createQuery(
+                                "select g.projectIterations from HIterationGroup as g where g.slug = :slug");
         q.setParameter("slug", groupSlug);
         q.setComment("ProjectIterationDAO.getBySlug");
         @SuppressWarnings("unchecked")
         List<HProjectIteration> results = q.list();
         return results;
     }
-
 
     /**
      * @see DocumentDAO#getStatistics(long, LocaleId)
