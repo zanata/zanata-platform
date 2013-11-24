@@ -14,12 +14,12 @@
         disabled="true"
         value="#{versionGroupHome.instance.slug}">
       </h:inputText>
-      <h:inputText rendered="#{not versionGroupHome.managed}"
+      <h:inputText rendered="#{not versionGroupHome.managed}" maxlength="40"
         id="slug" required="true"
         value="#{versionGroupHome.instance.slug}"
         valueChangeListener="#{versionGroupHome.verifySlugAvailable}">
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
-        <f:validateLength minimum="1" maximum="40"/>
+        <f:validateLength minimum="1"/>
       </h:inputText>
     </s:decorate>
   </div>
@@ -28,10 +28,9 @@
       <s:span styleClass="txt--required">*</s:span>
     </h:outputLabel>
     <s:decorate id="nameField" template="../field.xhtml" enclose="true">
-      <h:inputText id="name" required="true"
+      <h:inputText id="name" required="true" maxlength="80"
         value="#{versionGroupHome.instance.name}">
         <a4j:ajax event="blur" render="nameField" execute="@this"/>
-        <f:validateLength maximum="80"/>
       </h:inputText>
     </s:decorate>
   </div>
@@ -44,6 +43,7 @@
       <h:inputTextarea id="description" required="false"
         value="#{versionGroupHome.instance.description}">
         <f:validateLength maximum="100"/>
+        <a4j:ajax event="blur" render="descriptionField" execute="@this"/>
       </h:inputTextarea>
     </s:decorate>
   </div>
