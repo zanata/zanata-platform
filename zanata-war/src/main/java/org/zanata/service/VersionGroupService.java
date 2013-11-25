@@ -103,7 +103,7 @@ public interface VersionGroupService {
     Set<HLocale> getGroupActiveLocales(String groupSlug);
 
     /**
-     * Return list of active project iteration
+     * Return list of not obsolete project iteration
      * @param groupSlug
      */
     List<HProjectIteration> getProjectIterationsBySlug(String groupSlug);

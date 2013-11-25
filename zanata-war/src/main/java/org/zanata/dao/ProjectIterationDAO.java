@@ -88,8 +88,8 @@ public class ProjectIterationDAO extends
         Query q =
                 getSession()
                         .createQuery(
-                                "from HProjectIteration as iter where iter.status=:status AND :group in elements(iter.groups)");
-        q.setParameter("status", EntityStatus.ACTIVE);
+                                "from HProjectIteration as iter where iter.status<>:OBSOLETE AND :group in elements(iter.groups)");
+        q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
         q.setParameter("group", group);
         q.setComment("ProjectIterationDAO.getByGroup");
         @SuppressWarnings("unchecked")
