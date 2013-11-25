@@ -469,6 +469,7 @@ public class VersionGroupHomeAction implements Serializable {
         activeLocales = null;
         selectedLocale = null;
         selectedVersion = null;
+        missingLocaleVersionMap = null;
         loadStatistic();
     }
 }
