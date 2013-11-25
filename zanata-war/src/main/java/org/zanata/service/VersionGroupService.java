@@ -104,7 +104,7 @@ public interface VersionGroupService {
 
     /**
      * Return list of active project iteration
-     * @param slug
+     * @param groupSlug
      */
-    List<HProjectIteration> getProjectIterationBySlug(String slug);
+    List<HProjectIteration> getProjectIterationBySlug(String groupSlug);
 }

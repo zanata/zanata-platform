@@ -41,6 +41,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
@@ -83,13 +84,14 @@ public class ProjectIterationDAO extends
                 .using("slug", iterationSlug).using("project", project).load();
     }
 
-    public List<HProjectIteration> getByGroupSlug(String groupSlug) {
+    public List<HProjectIteration> getByGroup(HIterationGroup group) {
         Query q =
                 getSession()
                         .createQuery(
-                                "select g.projectIterations from HIterationGroup as g where g.slug = :slug");
-        q.setParameter("slug", groupSlug);
-        q.setComment("ProjectIterationDAO.getBySlug");
+                                "from HProjectIteration as iter where iter.status=:status AND :group in elements(iter.groups)");
+        q.setParameter("status", EntityStatus.ACTIVE);
+        q.setParameter("group", group);
+        q.setComment("ProjectIterationDAO.getByGroup");
         @SuppressWarnings("unchecked")
         List<HProjectIteration> results = q.list();
         return results;

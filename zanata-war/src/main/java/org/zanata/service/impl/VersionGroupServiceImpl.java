@@ -164,16 +164,10 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
-    public List<HProjectIteration> getProjectIterationBySlug(String slug) {
-        List<HProjectIteration> projectIterations =
-                projectIterationDAO.getByGroupSlug(slug);
-        List<HProjectIteration> filteredList = Lists.newArrayList();
-        for (HProjectIteration version : projectIterations) {
-            if (version.getStatus() == EntityStatus.ACTIVE) {
-                filteredList.add(version);
-            }
-        }
-        return filteredList;
+    public List<HProjectIteration> getProjectIterationBySlug(String groupSlug) {
+        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
+        return projectIterationDAO.getByGroup(group);
+
     }
 
     /**
