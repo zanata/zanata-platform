@@ -123,16 +123,14 @@
       <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
         <p class="d--top l--pad-top-half txt--mini">
           #{messages['jsf.TotalSourceContains']}
-          <strong>#{versionGroupHomeAction.getOverallStatistic().getTotalWordCount()}
-            words /
-            #{versionGroupHomeAction.getOverallStatistic().getTotalMessageCount()}
-            messages</strong>
+          <strong>#{versionGroupHomeAction.overallStatistic.total}
+            words</strong>
         </p>
         <ul class="g g--fit">
           <li class="g__item">
             <span class="stats--large txt--state-success">
               <span class="stats__figure">
-                #{statisticBar.formatPercentage(versionGroupHomeAction.getOverallStatistic().statistic.percentTranslated)}%
+                #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
               </span>
               <span class="stats__unit txt--lowercase">
                 #{messages['jsf.stats.Translated']}
@@ -142,7 +140,7 @@
           <li class="g__item">
             <span class="stats--large">
               <span class="stats__figure">
-                #{statisticBar.formatHours(versionGroupHomeAction.getOverallStatistic().statistic.remainingHours)}
+                #{statisticBar.formatHours(versionGroupHomeAction.overallStatistic.remainingHours)}
               </span>
               <span class="stats__unit">
                 #{messages['jsf.stats.TotalHoursRemaining']}
@@ -152,7 +150,7 @@
         </ul>
         <div class="l--push-v-1">
           <zanata:statistic
-            value="#{versionGroupHomeAction.getOverallStatistic().statistic}"
+            value="#{versionGroupHomeAction.overallStatistic}"
             type="large"/>
         </div>
       </s:fragment>

@@ -71,7 +71,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
             String groupSlug, LocaleId localeId) {
 
         Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
-        for (HProjectIteration version : getProjectIterationsBySlug(groupSlug)) {
+        for (HProjectIteration version : getNonObsoleteProjectIterationsBySlug(
+            groupSlug)) {
             if (version.getStatus() == EntityStatus.ACTIVE) {
                 WordStatistic statistic =
                         versionStateCacheImpl.getVersionStatistics(
@@ -168,7 +169,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
-    public List<HProjectIteration> getProjectIterationsBySlug(String groupSlug) {
+    public List<HProjectIteration> getNonObsoleteProjectIterationsBySlug(
+        String groupSlug) {
         HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
         return getNotObsoleteProjectIterations(group);
     }
