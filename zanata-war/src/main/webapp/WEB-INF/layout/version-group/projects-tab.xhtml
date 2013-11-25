@@ -55,7 +55,7 @@
               <a4j:commandLink
                 action="#{versionGroupHomeAction.setSelectedVersion(version)}"
                 render="projects-language_list, project-label"
-                onclick="updateActiveRow(this), toggleColumn('projects_content')"
+                onclick="updateActiveRow(this);toggleColumn('projects_content')"
                 styleClass="bx--block">
                 <div class="list__item">
                   <div class="list__item__info">
