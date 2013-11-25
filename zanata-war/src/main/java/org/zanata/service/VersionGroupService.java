@@ -72,7 +72,7 @@ public interface VersionGroupService {
     boolean isVersionInGroup(String groupSlug, Long projectIterationId);
 
     /**
-     * Return map of statistics for all active versions and active locales in group
+     * Return map of statistics for all non obsolete versions and active locales in group
      *
      * @param groupSlug
      * @param localeId
