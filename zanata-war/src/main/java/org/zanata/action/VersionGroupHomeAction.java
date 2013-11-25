@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -89,7 +88,7 @@ public class VersionGroupHomeAction implements Serializable {
     private HProjectIteration selectedVersion;
 
     @Getter
-    private OverallStatistic overallStatistic;
+    private WordStatistic overallStatistic;
 
     private List<HLocale> activeLocales;
 
@@ -424,37 +423,20 @@ public class VersionGroupHomeAction implements Serializable {
             statisticMap.putAll(versionGroupServiceImpl.getLocaleStatistic(
                     getSlug(), locale.getLocaleId()));
         }
-        WordStatistic overallWordStatistic = new WordStatistic();
-        int totalWordCount = 0;
+        overallStatistic = new WordStatistic();
         for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
                 .entrySet()) {
-            overallWordStatistic.add(entry.getValue());
-            totalWordCount += entry.getValue().getTotal();
+            overallStatistic.add(entry.getValue());
         }
-        overallWordStatistic.setRemainingHours(StatisticsUtil
-                .getRemainingHours(overallWordStatistic));
-
-        int totalMessageCount =
-                versionGroupServiceImpl.getTotalMessageCount(getSlug());
-
-        overallStatistic =
-                new OverallStatistic(totalWordCount, totalMessageCount,
-                        overallWordStatistic);
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public final class OverallStatistic {
-        private int totalWordCount;
-        private int totalMessageCount;
-        private WordStatistic statistic;
+        overallStatistic.setRemainingHours(StatisticsUtil
+                .getRemainingHours(overallStatistic));
     }
 
     public List<HProjectIteration> getProjectIterations() {
         if (projectIterations == null) {
             projectIterations =
-                    versionGroupServiceImpl.getProjectIterationsBySlug(slug);
+                    versionGroupServiceImpl.getNonObsoleteProjectIterationsBySlug(
+                        slug);
         }
 
         Collections.sort(projectIterations, versionComparator);

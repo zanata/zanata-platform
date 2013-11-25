@@ -50,7 +50,8 @@ public interface VersionGroupService {
     List<HIterationGroup> getAllActiveGroups();
 
     /**
-     * Search not obsolete project version by fuzzy matching of version slug or project slug
+     * Search not obsolete project version by fuzzy matching of version slug or
+     * project slug
      *
      * @param searchTerm
      */
@@ -72,7 +73,8 @@ public interface VersionGroupService {
     boolean isVersionInGroup(String groupSlug, Long projectIterationId);
 
     /**
-     * Return map of statistics for all non obsolete versions and active locales in group
+     * Return map of statistics for all non obsolete versions and active locales
+     * in group
      *
      * @param groupSlug
      * @param localeId
@@ -80,7 +82,12 @@ public interface VersionGroupService {
     Map<VersionLocaleKey, WordStatistic> getLocaleStatistic(String groupSlug,
             LocaleId localeId);
 
+    // TODO: cache message statistic in VersionStateCache to avoid
+    // PessimisticLockException in h2.
+    // https://bugzilla.redhat.com/show_bug.cgi?id=1033439
+
     /**
+     *
      * Return total message count of the versions in group
      *
      * @param groupSlug
@@ -103,8 +110,10 @@ public interface VersionGroupService {
     Set<HLocale> getGroupActiveLocales(String groupSlug);
 
     /**
-     * Return list of not obsolete project iteration
+     * Return list of not obsolete project iteration for group
+     *
      * @param groupSlug
      */
-    List<HProjectIteration> getProjectIterationsBySlug(String groupSlug);
+    List<HProjectIteration> getNonObsoleteProjectIterationsBySlug(
+            String groupSlug);
 }
