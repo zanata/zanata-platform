@@ -147,12 +147,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         if (authenticatedAccount != null) {
             getInstance().addMaintainer(authenticatedAccount.getPerson());
         }
+        clearMessage();
         return super.persist();
     }
 
     @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String update() {
+        clearMessage();
         return super.update();
     }
 
@@ -167,8 +169,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     public List<HLocale> suggestLocales(final String query) {
         if (supportedLocales == null) {
-            supportedLocales =
-                    localeServiceImpl.getSupportedLocales();
+            supportedLocales = localeServiceImpl.getSupportedLocales();
         }
 
         Collection<HLocale> filtered =
@@ -222,6 +223,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         statusMessage.interpolate();
 
         flashScope.setAttribute("message", statusMessage);
+    }
+
+    private void clearMessage() {
+        flashScope.getAndClearAttribute("message");
     }
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
