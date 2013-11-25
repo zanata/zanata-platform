@@ -55,7 +55,7 @@
               <a4j:commandLink
                 action="#{versionGroupHomeAction.setSelectedVersion(version)}"
                 render="projects-language_list, project-label"
-                onclick="updateActiveRow(this), toggleColumn()"
+                onclick="updateActiveRow(this), toggleColumn('projects_content')"
                 styleClass="bx--block">
                 <div class="list__item">
                   <div class="list__item__info">
@@ -106,7 +106,7 @@
           <h2 class="heading--secondary epsilon">
                 <span class="is-hidden--l-up">
                   <a href="#"
-                    onclick="removeActiveRows('projects-project_list');toggleColumn()"
+                    onclick="removeActiveRows('projects-project_list');toggleColumn('projects_content')"
                     title="#{messages['Projects']}">
                     <i class="i i--project"></i>
                   </a>

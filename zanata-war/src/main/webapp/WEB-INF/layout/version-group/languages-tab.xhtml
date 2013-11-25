@@ -55,7 +55,7 @@
               <a4j:commandLink
                 action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
                 render="languages-project_list, language-label"
-                onclick="updateActiveRow(this), toggleColumn();return"
+                onclick="updateActiveRow(this), toggleColumn('languages_content');return"
                 styleClass="bx--block">
                 <div class="list__item">
                   <div class="list__item__info">
@@ -105,7 +105,7 @@
           <h2 class="heading--secondary epsilon">
                 <span class="is-hidden--l-up">
                   <a href="#"
-                    onclick="removeActiveRows('languages-language_list');toggleColumn()"
+                    onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
                     title="#{messages['Languages']}">
                     <i class="i i--language"></i>
                   </a>
