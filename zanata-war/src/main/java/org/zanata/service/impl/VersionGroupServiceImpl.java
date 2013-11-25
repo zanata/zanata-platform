@@ -184,7 +184,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         if (group != null) {
             for (HLocale activeLocale : group.getActiveLocales()) {
                 List<HProjectIteration> versionList = Lists.newArrayList();
-                for (HProjectIteration version : group.getProjectIterations()) {
+                List<HProjectIteration> notObsoleteProjectIterations = projectIterationDAO.getByGroup(group);
+                for (HProjectIteration version : notObsoleteProjectIterations) {
                     if (!isLocaleActivatedInVersion(version, activeLocale)) {
                         versionList.add(version);
                     }
