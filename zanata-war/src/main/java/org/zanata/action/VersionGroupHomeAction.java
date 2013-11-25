@@ -38,7 +38,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -73,9 +72,6 @@ public class VersionGroupHomeAction implements Serializable {
 
     @In
     private VersionGroupDAO versionGroupDAO;
-
-    @In
-    private ProjectIterationDAO projectIterationDAO;
 
     @Getter
     @Setter
@@ -457,8 +453,10 @@ public class VersionGroupHomeAction implements Serializable {
 
     public List<HProjectIteration> getProjectIterations() {
         if (projectIterations == null) {
-            projectIterations = projectIterationDAO.getByGroupSlug(slug);
+            projectIterations =
+                    versionGroupServiceImpl.getProjectIterationsBySlug(slug);
         }
+
         Collections.sort(projectIterations, versionComparator);
         return projectIterations;
     }
