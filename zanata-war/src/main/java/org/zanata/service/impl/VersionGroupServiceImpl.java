@@ -71,9 +71,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
             String groupSlug, LocaleId localeId) {
 
         Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
-        HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
-
-        for (HProjectIteration version : group.getProjectIterations()) {
+        for (HProjectIteration version : getProjectIterationsBySlug(groupSlug)) {
             if (version.getStatus() == EntityStatus.ACTIVE) {
                 WordStatistic statistic =
                         versionStateCacheImpl.getVersionStatistics(
@@ -90,11 +88,17 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         return statisticMap;
     }
 
+    private List<HProjectIteration> getNotObsoleteProjectIterations(
+            HIterationGroup group) {
+        return projectIterationDAO.getByGroup(group);
+    }
+
     @Override
     public int getTotalMessageCount(String groupSlug) {
         int result = 0;
         HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
-        for (HProjectIteration version : group.getProjectIterations()) {
+
+        for (HProjectIteration version : getNotObsoleteProjectIterations(group)) {
             result +=
                     projectIterationDAO.getTotalMessageCountForIteration(
                             version.getId()).intValue();
@@ -166,8 +170,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     @Override
     public List<HProjectIteration> getProjectIterationsBySlug(String groupSlug) {
         HIterationGroup group = versionGroupDAO.getBySlug(groupSlug);
-        return projectIterationDAO.getByGroup(group);
-
+        return getNotObsoleteProjectIterations(group);
     }
 
     /**
@@ -184,8 +187,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         if (group != null) {
             for (HLocale activeLocale : group.getActiveLocales()) {
                 List<HProjectIteration> versionList = Lists.newArrayList();
-                List<HProjectIteration> notObsoleteProjectIterations = projectIterationDAO.getByGroup(group);
-                for (HProjectIteration version : notObsoleteProjectIterations) {
+                for (HProjectIteration version : getNotObsoleteProjectIterations(group)) {
                     if (!isLocaleActivatedInVersion(version, activeLocale)) {
                         versionList.add(version);
                     }

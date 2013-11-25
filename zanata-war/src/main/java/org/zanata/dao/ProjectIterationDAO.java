@@ -451,10 +451,12 @@ public class ProjectIterationDAO extends
         Query q =
                 getSession().createQuery(
                         "from HProjectIteration t "
-                                + "where lower(t.slug) LIKE :searchTerm "
+                                + "where (lower(t.slug) LIKE :searchTerm "
                                 + "OR lower(t.project.slug) LIKE :searchTerm "
-                                + "OR lower(t.project.name) LIKE :searchTerm");
+                                + "OR lower(t.project.name) LIKE :searchTerm) "
+                                + "AND t.status<>:OBSOLETE");
         q.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
+        q.setParameter("OBSOLETE", EntityStatus.OBSOLETE);
         q.setCacheable(false).setComment(
                 "ProjectIterationDAO.searchLikeSlugOrProjectSlug");
 

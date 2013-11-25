@@ -87,36 +87,39 @@
         <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
           action="#{versionGroupHome.update}"
           rendered="#{versionGroupHome.managed}"
-          render="group-info"
+          render="group-info,pageMessages"
           styleClass="l--push-right-half button--primary"/>
       </div>
       <hr/>
       <a4j:outputPanel id="status">
-        <p>
-          <a4j:commandLink styleClass="button--danger"
-            action="#{versionGroupHome.setStatus('O')}" render="status"
-            rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
-            #{messages['jsf.ArchiveThisGroup']}
-          </a4j:commandLink>
+        <s:fragment
+          rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
+          <p>
+            <a4j:commandLink styleClass="button--danger"
+              action="#{versionGroupHome.setStatus('O')}" render="status">
+              #{messages['jsf.ArchiveThisGroup']}
+            </a4j:commandLink>
+          </p>
 
-          <a4j:commandLink styleClass="button--success"
-            action="#{versionGroupHome.setStatus('A')}" render="status"
-            rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
-            #{messages['jsf.ActivateThisGroup']}
-          </a4j:commandLink>
-        </p>
-
-        <p class="txt--meta">
-          <a4j:outputPanel
-            rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
+          <p class="txt--meta">
             #{messages['jsf.ArchiveGroupMessage']}
-          </a4j:outputPanel>
+          </p>
+        </s:fragment>
 
-          <a4j:outputPanel
-            rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
+        <s:fragment
+          rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
+          <p>
+            <a4j:commandLink styleClass="button--success"
+              action="#{versionGroupHome.setStatus('A')}" render="status">
+              #{messages['jsf.ActivateThisGroup']}
+            </a4j:commandLink>
+          </p>
+
+          <p class="txt--meta">
             #{messages['jsf.ActivateGroupMessage']}
-          </a4j:outputPanel>
-        </p>
+          </p>
+        </s:fragment>
+
       </a4j:outputPanel>
     </div>
   </h:form>
@@ -232,7 +235,8 @@
             </s:decorate>
           </div>
           <div class="g__item w--3-10">
-            <a4j:commandButton styleClass="button--full" id="group-add-new-project-button"
+            <a4j:commandButton styleClass="button--full"
+              id="group-add-new-project-button"
               action="#{versionGroupHome.addVersion()}"
               oncomplete="refreshStatistics();focusVersionInput()"
               value="#{messages['Add']}" render="settings-projects-form"/>
@@ -259,7 +263,6 @@
           <span class="txt--meta">@#{maintainer.account.username}</span>
           <a4j:commandLink
             action="#{versionGroupHome.removeMaintainer(maintainer)}"
-            oncomplete="refreshStatistics()"
             styleClass="l--float-right txt--danger reveal__target"
             render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers_content">
             <i class="i--large i--remove"></i>

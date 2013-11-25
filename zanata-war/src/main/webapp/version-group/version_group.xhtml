@@ -35,7 +35,9 @@
         selectedTabId = window.location.hash + "_tab";
       }
     }
+
     jQuery(selectedTabId).click();
+    window.location.hash = selectedTabId;
 
     if (window.location.hash.substring(0, 9) == "#settings") {
       handleSettingsTab(originalHashUrl);
@@ -166,10 +168,11 @@
             <f:param name="versionGroupSlug"
               value="#{versionGroupHomeAction.slug}"/>
             <i
-              class="i i--project"></i> <h:outputFormat
-            value="#{messages['jsf.RequestAddProjectToGroup']}">
-            <f:param value="#{versionGroupHome.instance.name}"/>
-          </h:outputFormat>
+              class="i i--project"></i>
+            <h:outputFormat
+              value="#{messages['jsf.RequestAddProjectToGroup']}">
+              <f:param value="#{versionGroupHome.instance.name}"/>
+            </h:outputFormat>
           </s:link>
         </li>
       </ul>

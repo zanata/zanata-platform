@@ -50,7 +50,7 @@ public interface VersionGroupService {
     List<HIterationGroup> getAllActiveGroups();
 
     /**
-     * Search project version by fuzzy matching of version slug or project slug
+     * Search not obsolete project version by fuzzy matching of version slug or project slug
      *
      * @param searchTerm
      */
