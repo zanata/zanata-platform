@@ -72,7 +72,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
 
         Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
         for (HProjectIteration version : getProjectIterationsBySlug(groupSlug)) {
-            if (version.getStatus() == EntityStatus.ACTIVE) {
+            if (version.getStatus() != EntityStatus.OBSOLETE) {
                 WordStatistic statistic =
                         versionStateCacheImpl.getVersionStatistics(
                                 version.getId(), localeId);
