@@ -467,6 +467,8 @@ public class VersionGroupHomeAction implements Serializable {
     public void resetPageData() {
         projectIterations = null;
         activeLocales = null;
+        selectedLocale = null;
+        selectedVersion = null;
         missingLocaleVersionMap = null;
         loadStatistic();
     }

@@ -54,7 +54,7 @@
               class="progress-bar__expander panels__panel__item bg--highest--hover">
               <a4j:commandLink
                 action="#{versionGroupHomeAction.setSelectedVersion(version)}"
-                render="projects-language_list, projectLabel"
+                render="projects-language_list, project-label"
                 onclick="updateActiveRow(this), toggleColumn()"
                 styleClass="bx--block">
                 <div class="list__item">
@@ -113,7 +113,7 @@
                   <i class="i i--arrow-right"></i>
                 </span>
             <i class="i i--language"></i>
-            <a4j:outputPanel id="projectLabel">
+            <a4j:outputPanel id="project-label">
               #{versionGroupHomeAction.selectedVersion.project.slug}
             </a4j:outputPanel>
             #{messages['Languages']}
