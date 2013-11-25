@@ -83,8 +83,8 @@
     jQuery('#' + listId).children('li').children("a").removeClass('is-active');
   }
 
-  function toggleColumn() {
-    jQuery('.panels--2').toggleClass('panel__active-2');
+  function toggleColumn(tabId) {
+    jQuery('#' + tabId).find('.panels--2').toggleClass('panel__active-2');
   }
 </script>
 
