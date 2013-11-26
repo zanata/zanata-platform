@@ -1,5 +1,11 @@
 package org.zanata.client.commands;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.zanata.client.config.CommandHook;
+
 public interface BasicOptions {
     ZanataCommand initCommand();
 
@@ -64,4 +70,7 @@ public interface BasicOptions {
      */
     public String getCommandDescription();
 
+    public @Nonnull List<CommandHook> getCommandHooks();
+
+    public void setCommandHooks(@Nonnull List<CommandHook> commandHooks);
 }

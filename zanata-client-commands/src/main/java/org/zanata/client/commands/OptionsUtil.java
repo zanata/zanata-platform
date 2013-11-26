@@ -93,9 +93,8 @@ public class OptionsUtil {
         LocaleList locales = config.getLocales();
         opts.setLocaleMapList(locales);
 
-        if (opts.getCommandHooks() == null || opts.getCommandHooks().isEmpty()) {
-            opts.setCommandHooks(config.getHooks() == null ? new ArrayList<CommandHook>()
-                    : config.getHooks());
+        if (opts.getCommandHooks().isEmpty() && config.getHooks() != null) {
+            opts.setCommandHooks(config.getHooks());
         }
     }
 

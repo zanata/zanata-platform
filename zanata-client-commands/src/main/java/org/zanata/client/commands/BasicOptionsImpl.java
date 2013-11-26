@@ -20,7 +20,11 @@
  */
 package org.zanata.client.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kohsuke.args4j.Option;
+import org.zanata.client.config.CommandHook;
 
 /**
  * Base class for commands
@@ -38,6 +42,7 @@ public abstract class BasicOptionsImpl implements BasicOptions {
     private boolean quiet = false;
     private boolean quietSet;
     private boolean interactiveMode = true;
+    private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
 
     public BasicOptionsImpl() {
     }
@@ -127,4 +132,15 @@ public abstract class BasicOptionsImpl implements BasicOptions {
     public boolean isQuietSet() {
         return quietSet;
     }
+
+    @Override
+    public void setCommandHooks(List<CommandHook> commandHooks) {
+        this.commandHooks = commandHooks;
+    }
+
+    @Override
+    public List<CommandHook> getCommandHooks() {
+        return commandHooks;
+    }
+
 }
