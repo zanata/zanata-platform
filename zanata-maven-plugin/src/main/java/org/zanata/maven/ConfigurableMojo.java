@@ -2,6 +2,7 @@ package org.zanata.maven;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -73,7 +74,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
      */
     private String key;
 
-    private List<CommandHook> commandHooks;
+    private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
 
     /**
      * Interactive mode is enabled by default, but can be disabled using Maven's
