@@ -127,6 +127,9 @@ public class VersionGroupHomeAction implements Serializable {
     private class LanguageComparator implements Comparator<HLocale> {
         private SortingType sortingType;
 
+        @Setter
+        private Long versionId;
+
         public LanguageComparator(SortingType sortingType) {
             this.sortingType = sortingType;
         }
@@ -148,10 +151,22 @@ public class VersionGroupHomeAction implements Serializable {
 
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
-                WordStatistic wordStatistic1 =
-                        getStatisticsForLocale(item1.getLocaleId());
-                WordStatistic wordStatistic2 =
-                        getStatisticsForLocale(item2.getLocaleId());
+                WordStatistic wordStatistic1;
+                WordStatistic wordStatistic2;
+
+                if (versionId == null) {
+                    wordStatistic1 =
+                            getStatisticsForLocale(item1.getLocaleId());
+                    wordStatistic2 =
+                            getStatisticsForLocale(item2.getLocaleId());
+                } else {
+                    wordStatistic1 =
+                            statisticMap.get(new VersionLocaleKey(versionId,
+                                    item1.getLocaleId()));
+                    wordStatistic2 =
+                            statisticMap.get(new VersionLocaleKey(versionId,
+                                    item2.getLocaleId()));
+                }
 
                 if (selectedSortOption
                         .equals(SortingType.SortOption.PERCENTAGE)) {
@@ -174,6 +189,9 @@ public class VersionGroupHomeAction implements Serializable {
     private class VersionComparator implements Comparator<HProjectIteration> {
         private SortingType sortingType;
 
+        @Setter
+        private LocaleId localeId;
+
         public VersionComparator(SortingType sortingType) {
             this.sortingType = sortingType;
         }
@@ -195,17 +213,18 @@ public class VersionGroupHomeAction implements Serializable {
                     sortingType.getSelectedSortOption();
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
-                WordStatistic wordStatistic1 = new WordStatistic();
-                WordStatistic wordStatistic2 = new WordStatistic();
-                if (selectedLocale != null) {
+                WordStatistic wordStatistic1;
+                WordStatistic wordStatistic2;
+                if (localeId != null) {
                     wordStatistic1 =
-                            statisticMap
-                                    .get(new VersionLocaleKey(item1.getId(),
-                                            selectedLocale.getLocaleId()));
+                            statisticMap.get(new VersionLocaleKey(
+                                    item1.getId(), localeId));
                     wordStatistic2 =
-                            statisticMap
-                                    .get(new VersionLocaleKey(item2.getId(),
-                                            selectedLocale.getLocaleId()));
+                            statisticMap.get(new VersionLocaleKey(
+                                    item2.getId(), localeId));
+                } else {
+                    wordStatistic1 = getStatisticForProject(item1.getId());
+                    wordStatistic2 = getStatisticForProject(item2.getId());
                 }
 
                 if (selectedSortOption
@@ -238,11 +257,37 @@ public class VersionGroupHomeAction implements Serializable {
                 && authenticatedAccount.getPerson().isMaintainerOfProjects();
     }
 
+    /**
+     * Sort language list based on overall locale statistic for the group
+     */
     public void sortLanguageList() {
+        languageComparator.setVersionId(null);
         Collections.sort(activeLocales, languageComparator);
     }
 
+    /**
+     * Sort language list based on statistics of the version on selected locale
+     */
+    public void sortLanguageList(Long versionId) {
+        languageComparator.setVersionId(versionId);
+        Collections.sort(activeLocales, languageComparator);
+    }
+
+    /**
+     * Sort project list based on selected locale - language tab
+     *
+     * @param localeId
+     */
+    public void sortProjectList(LocaleId localeId) {
+        versionComparator.setLocaleId(localeId);
+        Collections.sort(projectIterations, versionComparator);
+    }
+
+    /**
+     * Sort project list based on version's overall statistics
+     */
     public void sortProjectList() {
+        versionComparator.setLocaleId(null);
         Collections.sort(projectIterations, versionComparator);
     }
 
@@ -435,8 +480,8 @@ public class VersionGroupHomeAction implements Serializable {
     public List<HProjectIteration> getProjectIterations() {
         if (projectIterations == null) {
             projectIterations =
-                    versionGroupServiceImpl.getNonObsoleteProjectIterationsBySlug(
-                        slug);
+                    versionGroupServiceImpl
+                            .getNonObsoleteProjectIterationsBySlug(slug);
         }
 
         Collections.sort(projectIterations, versionComparator);

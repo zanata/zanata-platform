@@ -122,7 +122,7 @@
         <div
           class="g__item w--1-2 w--1-2-s txt--align-right txt--s-align-right">
           <zanata:sortlist id="projects-language_sorting"
-            sortAction="#{versionGroupHomeAction.sortLanguageList()}"
+            sortAction="#{versionGroupHomeAction.sortLanguageList(versionGroupHomeAction.selectedVersion.id)}"
             render="projects-language_list"
             sortingList="#{versionGroupHomeAction.languageSortingList}"/>
         </div>
