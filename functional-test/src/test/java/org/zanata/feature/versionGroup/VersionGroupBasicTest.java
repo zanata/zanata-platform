@@ -20,6 +20,7 @@
  */
 package org.zanata.feature.versionGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.concordion.api.extension.Extensions;

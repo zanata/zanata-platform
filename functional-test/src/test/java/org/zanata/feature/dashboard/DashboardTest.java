@@ -21,14 +21,9 @@
 package org.zanata.feature.dashboard;
 
 import com.github.huangp.entityunit.entity.Callbacks;
-import com.github.huangp.entityunit.entity.EntityMaker;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.entity.TakeCopyCallback;
 import com.github.huangp.entityunit.entity.WireManyToManyCallback;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.github.huangp.entityunit.maker.IntervalValuesMaker;
-import com.github.huangp.entityunit.maker.RangeValuesMaker;
-import com.github.huangp.entityunit.maker.SkipFieldValueMaker;
 import lombok.extern.slf4j.Slf4j;
 import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
@@ -46,6 +41,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.IsEntityWithType;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.EntityManagerFactoryHolder;
 import org.zanata.util.SampleProjectRule;
@@ -78,63 +74,44 @@ public class DashboardTest {
         WireManyToManyCallback manyToManyCallback = Callbacks
             .wireManyToMany(HProject.class, sampleProjectRule.getGlossarist());
         TakeCopyCallback copyCallback = Callbacks.takeCopy();
-        EntityMakerBuilder.builder()
-            .reuseEntities(sampleProjectRule.getGlossarist(),
-                sampleProjectRule.getGlossarist().getAccount())
-            .build()
-            .makeAndPersist(entityManager, HTextFlowTarget.class,
-                Callbacks.chain(manyToManyCallback, copyCallback));
+        EntityMakerBuilder
+                .builder()
+                .reuseEntities(sampleProjectRule.getGlossarist(),
+                        sampleProjectRule.getGlossarist().getAccount())
+                .build()
+                .makeAndPersist(entityManager, HDocument.class,
+                        Callbacks.chain(manyToManyCallback, copyCallback));
 
-        EntityMakerBuilder builder = EntityMakerBuilder.builder()
-            .reuseEntities(copyCallback.getCopy())
-                // public Activity(HPerson actor, IsEntityWithType
-                // context, IsEntityWithType target, ActivityType
-                // activityType, int wordCount)
-            .addConstructorParameterMaker(
-                Activity.class, 0,
-                FixedValueMaker.fix(sampleProjectRule
-                    .getGlossarist()))
-            .addConstructorParameterMaker(Activity.class, 1,
-                FixedValueMaker.fix(
-                    copyCallback.getByType(HProjectIteration.class)))
-            .addConstructorParameterMaker(
-                Activity.class, 2,
-                RangeValuesMaker.cycle(
-                    copyCallback.getByType(HDocument.class),
-                    copyCallback.getByType(HTextFlowTarget.class)))
-            .addConstructorParameterMaker(
-                Activity.class, 3,
-                RangeValuesMaker
-                    .cycle(ActivityType.UPLOAD_SOURCE_DOCUMENT,
-                        ActivityType.UPDATE_TRANSLATION,
-                        ActivityType.UPLOAD_TRANSLATION_DOCUMENT,
-                        ActivityType.REVIEWED_TRANSLATION))
-            .addConstructorParameterMaker(Activity.class, 4,
-                FixedValueMaker.fix(10))
-                // below two fields are primitive types. It can not tell
-                // whether it has default value or not so we have to
-                // skip them
-            .addFieldOrPropertyMaker(Activity.class, "contextId",
-                SkipFieldValueMaker.MAKER)
-            .addFieldOrPropertyMaker(Activity.class, "lastTargetId",
-                SkipFieldValueMaker.MAKER)
-            .addFieldOrPropertyMaker(
-                Activity.class, "creationDate",
-                        IntervalValuesMaker.startFrom(new Date(),
-                            -TimeUnit.DAYS.toMillis(1)));
+        HDocument hDocument = copyCallback.getByType(HDocument.class);
 
-        EntityMaker maker = builder.build();
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 1);
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 2);
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 3);
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 4);
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 5);
+        makeActivity(entityManager, copyCallback, hDocument,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 6);
+    }
 
-        // make 6 activities
-        Activity activity = maker.makeAndPersist(entityManager, Activity.class);
-        log.info("activity: {} - {} - {} - {}", activity.getContextType(),
-                activity.getContextId(), activity.getActivityType(),
-            activity.getActor());
-        maker.makeAndPersist(entityManager, Activity.class);
-        maker.makeAndPersist(entityManager, Activity.class);
-        maker.makeAndPersist(entityManager, Activity.class);
-        maker.makeAndPersist(entityManager, Activity.class);
-        maker.makeAndPersist(entityManager, Activity.class);
+    private void makeActivity(EntityManager entityManager,
+        TakeCopyCallback copyCallback,
+        IsEntityWithType activityTarget, ActivityType activityType,
+        int pastDays) {
+        Activity activity = new Activity(sampleProjectRule.getGlossarist(),
+            copyCallback.getByType(HProjectIteration.class),
+            activityTarget,
+            activityType, 10);
+        Date now = new Date();
+        long timestamp = now.getTime() - TimeUnit.DAYS.toMillis(pastDays);
+        activity.setCreationDate(new Date(timestamp));
+        entityManager.getTransaction().begin();
+        entityManager.persist(activity);
+        entityManager.getTransaction().commit();
     }
 
     private DashboardPage dashboardPage;
