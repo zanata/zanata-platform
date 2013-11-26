@@ -22,6 +22,7 @@
 package org.zanata.feature.project;
 
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -64,6 +65,7 @@ public class EditMaintainersTest {
     }
 
     @Test
+    @Ignore("rhbz1034559")
     public void addMaintainer() {
         ProjectMaintainersPage projectMaintainersPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -101,6 +103,7 @@ public class EditMaintainersTest {
     }
 
     @Test
+    @Ignore("rhbz1034559")
     public void removeMaintainer() {
         // Precondition
         ProjectMaintainersPage projectMaintainersPage =
@@ -119,6 +122,7 @@ public class EditMaintainersTest {
     }
 
     @Test
+    @Ignore("rhbz1034559")
     public void dontRemoveMaintainer() {
         // Precondition
         ProjectMaintainersPage projectMaintainersPage =
