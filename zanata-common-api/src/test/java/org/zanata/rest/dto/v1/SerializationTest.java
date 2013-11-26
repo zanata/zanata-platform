@@ -46,262 +46,282 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @deprecated These tests are no longer working.
- * @see http://java.net/jira/browse/JAXB-828
- * This bug in the generation of any xml schema that references the xml namespace 
- * (http://www.w3.org/XML/1998/namespace) causes these tests to fail.
+ * @see http://java.net/jira/browse/JAXB-828 This bug in the generation of any
+ *      xml schema that references the xml namespace
+ *      (http://www.w3.org/XML/1998/namespace) causes these tests to fail.
  */
 @Test(groups = { "unit-tests" })
-public class SerializationTest
-{
+public class SerializationTest {
 
-   protected ObjectMapper mapper;
-   private final Logger log = LoggerFactory.getLogger(SerializationTest.class);
+    protected ObjectMapper mapper;
+    private final Logger log = LoggerFactory.getLogger(SerializationTest.class);
 
-   @BeforeMethod
-   public void setup()
-   {
-      mapper = new ObjectMapper();
-      // AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
-      // mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
-      // mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
-   }
+    @BeforeMethod
+    public void setup() {
+        mapper = new ObjectMapper();
+        // AnnotationIntrospector introspector = new
+        // JaxbAnnotationIntrospector();
+        // mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
+        // mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
+    }
 
-   private Person createPerson()
-   {
-      return new Person("id", "name");
-   }
-   
-   @Test
-   public void serializeAndDeserializeProject() throws JAXBException, JsonGenerationException, JsonMappingException, IOException, URISyntaxException
-   {
-      Project p = new Project().createSample();
-      
-      Links links = new Links();
-      links.add( new Link( new URI("http://www.zanata.org"), "", "linkType" ) );
-      links.add( new Link( new URI("http://www2.zanata.org"), "", "linkType" ) );
-      p.setLinks( links );
-      
-      JaxbUtil.validateXml(p);
-      
-      String output = mapper.writeValueAsString(p);
-      
-      Project p2 = mapper.readValue(output, Project.class);
-      assertThat(p2, notNullValue());
-      JaxbUtil.validateXml(p2);
-      
-      p2 = JaxbTestUtil.roundTripXml(p);
-      System.out.println(p2);
-      assertThat(p2, notNullValue());
-   }
+    private Person createPerson() {
+        return new Person("id", "name");
+    }
 
-   @Test
-   public void serializeAndDeserializePerson() throws JAXBException, JsonGenerationException, JsonMappingException, IOException
-   {
-      Person p = createPerson();
-      JaxbUtil.validateXml(p);
+    @Test
+    public void serializeAndDeserializeProject() throws JAXBException,
+            JsonGenerationException, JsonMappingException, IOException,
+            URISyntaxException {
+        Project p = new Project().createSample();
 
-      String output = mapper.writeValueAsString(p);
+        Links links = new Links();
+        links.add(new Link(new URI("http://www.zanata.org"), "", "linkType"));
+        links.add(new Link(new URI("http://www2.zanata.org"), "", "linkType"));
+        p.setLinks(links);
 
-      Person p2 = mapper.readValue(output, Person.class);
-      assertThat(p2, notNullValue());
-      JaxbUtil.validateXml(p2);
+        JaxbUtil.validateXml(p);
 
-      p2 = JaxbTestUtil.roundTripXml(p);
-      // System.out.println(p2);
-      assertThat(p2, notNullValue());
-   }
+        String output = mapper.writeValueAsString(p);
 
-   private PoHeader createPoHeader()
-   {
-      return new PoHeader("hello world");
-   }
+        Project p2 = mapper.readValue(output, Project.class);
+        assertThat(p2, notNullValue());
+        JaxbUtil.validateXml(p2);
 
-   @Test(enabled=false)
-   public void serializeAndDeserializeExtension() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
-   {
-      // TODO are we actually trying to test serializing an extension where the type is not known?
-      
-      PoHeader e = createPoHeader();
-      JaxbUtil.validateXml(e);
+        p2 = JaxbTestUtil.roundTripXml(p);
+        System.out.println(p2);
+        assertThat(p2, notNullValue());
+    }
 
-      String output = mapper.writeValueAsString(e);
-      PoHeader e2 = mapper.readValue(output, PoHeader.class);
-      JaxbUtil.validateXml(e2);
-      assertThat(e2, instanceOf(PoHeader.class));
+    @Test
+    public void serializeAndDeserializePerson() throws JAXBException,
+            JsonGenerationException, JsonMappingException, IOException {
+        Person p = createPerson();
+        JaxbUtil.validateXml(p);
 
-      e2 = JaxbTestUtil.roundTripXml(e, PoHeader.class);
-      assertThat(e2, instanceOf(PoHeader.class));
-   }
+        String output = mapper.writeValueAsString(p);
 
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeAndDeserializeTranslationResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
-   {
-      ResourceMeta res = new ResourceMeta("id");
-      res.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
-      JaxbUtil.validateXml(res, PoHeader.class);
+        Person p2 = mapper.readValue(output, Person.class);
+        assertThat(p2, notNullValue());
+        JaxbUtil.validateXml(p2);
 
-      String output = mapper.writeValueAsString(res);
-      ResourceMeta res2 = mapper.readValue(output, ResourceMeta.class);
+        p2 = JaxbTestUtil.roundTripXml(p);
+        // System.out.println(p2);
+        assertThat(p2, notNullValue());
+    }
 
-      assertThat(res2.getExtensions().size(), is(1));
-      assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
-      assertThat(((PoHeader) res2.getExtensions().iterator().next()).getComment(), is("comment"));
+    private PoHeader createPoHeader() {
+        return new PoHeader("hello world");
+    }
 
-      res2 = JaxbTestUtil.roundTripXml(res, PoHeader.class);
-      assertThat(res2, notNullValue());
-      assertThat(res2.getExtensions().size(), is(1));
-      assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
-   }
+    @Test(enabled = false)
+    public void serializeAndDeserializeExtension()
+            throws JsonGenerationException, JsonMappingException, IOException,
+            JAXBException {
+        // TODO are we actually trying to test serializing an extension where
+        // the type is not known?
 
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeSourceResource() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
-   {
-      Resource sourceResource = new Resource("Acls.pot");
-      sourceResource.setType(ResourceType.FILE);
-      sourceResource.setContentType(ContentType.PO);
-      sourceResource.setLang(LocaleId.EN);
-      TextFlow tf = new TextFlow();
-      tf.setContents("ttff");
-      TextFlow tf2 = new TextFlow();
-      tf2.setContents("ttff2");
-      sourceResource.getTextFlows().add(tf);
-      sourceResource.getTextFlows().add(tf2);
-      sourceResource.getExtensions(true).add(new PoHeader("comment", new HeaderEntry("h1", "v1"), new HeaderEntry("h2", "v2")));
+        PoHeader e = createPoHeader();
+        JaxbUtil.validateXml(e);
 
-      JaxbUtil.validateXml(sourceResource, Resource.class);
+        String output = mapper.writeValueAsString(e);
+        PoHeader e2 = mapper.readValue(output, PoHeader.class);
+        JaxbUtil.validateXml(e2);
+        assertThat(e2, instanceOf(PoHeader.class));
 
-      String output = mapper.writeValueAsString(sourceResource);
-      log.info(output);
-      Resource res2 = mapper.readValue(output, Resource.class);
+        e2 = JaxbTestUtil.roundTripXml(e, PoHeader.class);
+        assertThat(e2, instanceOf(PoHeader.class));
+    }
 
-      assertThat(res2.getExtensions().size(), is(1));
-      assertThat(res2.getExtensions().iterator().next(), instanceOf(PoHeader.class));
-      assertThat(((PoHeader) res2.getExtensions().iterator().next()).getComment(), is("comment"));
-   }
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeAndDeserializeTranslationResource()
+            throws JsonGenerationException, JsonMappingException, IOException,
+            JAXBException {
+        ResourceMeta res = new ResourceMeta("id");
+        res.getExtensions(true).add(
+                new PoHeader("comment", new HeaderEntry("h1", "v1"),
+                        new HeaderEntry("h2", "v2")));
+        JaxbUtil.validateXml(res, PoHeader.class);
 
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeAndDeserializeTextFlow() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
-   {
-      TextFlow tf = new TextFlow();
-      tf.setContents("ttff");
-      SimpleComment comment = new SimpleComment("test");
-      PotEntryHeader pot = new PotEntryHeader();
-      pot.setContext("context");
-      pot.getReferences().add("fff");
-      tf.getExtensions(true).add(comment);
-      tf.getExtensions(true).add(pot);
+        String output = mapper.writeValueAsString(res);
+        ResourceMeta res2 = mapper.readValue(output, ResourceMeta.class);
 
-      JaxbUtil.validateXml(tf, TextFlow.class);
+        assertThat(res2.getExtensions().size(), is(1));
+        assertThat(res2.getExtensions().iterator().next(),
+                instanceOf(PoHeader.class));
+        assertThat(
+                ((PoHeader) res2.getExtensions().iterator().next())
+                        .getComment(),
+                is("comment"));
 
-      String output = mapper.writeValueAsString(tf);
-      TextFlow res2 = mapper.readValue(output, TextFlow.class);
+        res2 = JaxbTestUtil.roundTripXml(res, PoHeader.class);
+        assertThat(res2, notNullValue());
+        assertThat(res2.getExtensions().size(), is(1));
+        assertThat(res2.getExtensions().iterator().next(),
+                instanceOf(PoHeader.class));
+    }
 
-      assertThat(res2.getExtensions(true).size(), is(2));
-      for (TextFlowExtension e : res2.getExtensions())
-      {
-         if (e instanceof SimpleComment)
-         {
-            assertThat(((SimpleComment) e).getValue(), is("test"));
-         }
-         if (e instanceof PotEntryHeader)
-         {
-            assertThat(((PotEntryHeader) e).getContext(), is("context"));
-         }
-      }
-   }
-   
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeAndDeserializeTextFlowTarget() throws ValidationException, JsonGenerationException, JsonMappingException, IOException
-   {
-      TextFlowTarget tf = new TextFlowTarget();
-      tf.setTranslator(createPerson());
-      tf.setContents("ttff");
-      SimpleComment comment = new SimpleComment("testcomment");
-      tf.getExtensions(true).add(comment);
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeSourceResource() throws JsonGenerationException,
+            JsonMappingException, IOException, JAXBException {
+        Resource sourceResource = new Resource("Acls.pot");
+        sourceResource.setType(ResourceType.FILE);
+        sourceResource.setContentType(ContentType.PO);
+        sourceResource.setLang(LocaleId.EN);
+        TextFlow tf = new TextFlow();
+        tf.setContents("ttff");
+        TextFlow tf2 = new TextFlow();
+        tf2.setContents("ttff2");
+        sourceResource.getTextFlows().add(tf);
+        sourceResource.getTextFlows().add(tf2);
+        sourceResource.getExtensions(true).add(
+                new PoHeader("comment", new HeaderEntry("h1", "v1"),
+                        new HeaderEntry("h2", "v2")));
 
-      JaxbUtil.validateXml(tf, TextFlowTarget.class);
+        JaxbUtil.validateXml(sourceResource, Resource.class);
 
-      String output = mapper.writeValueAsString(tf);
-      TextFlowTarget res2 = mapper.readValue(output, TextFlowTarget.class);
+        String output = mapper.writeValueAsString(sourceResource);
+        log.info(output);
+        Resource res2 = mapper.readValue(output, Resource.class);
 
-      assertThat(res2.getExtensions(true).size(), is(1));
-      for (TextFlowTargetExtension e : res2.getExtensions())
-      {
-         if (e instanceof SimpleComment)
-         {
-            assertThat(((SimpleComment) e).getValue(), is("testcomment"));
-         }
-      }
-   }
+        assertThat(res2.getExtensions().size(), is(1));
+        assertThat(res2.getExtensions().iterator().next(),
+                instanceOf(PoHeader.class));
+        assertThat(
+                ((PoHeader) res2.getExtensions().iterator().next())
+                        .getComment(),
+                is("comment"));
+    }
 
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeAndDeserializeTranslation() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
-   {
-      TranslationsResource entity = new TranslationsResource();
-      TextFlowTarget target = new TextFlowTarget("rest1");
-      target.setContents("hello world");
-      target.setState(ContentState.Translated);
-      target.setTranslator(new Person("root@localhost", "Admin user"));
-      // for the convenience of test
-      entity.getTextFlowTargets().add(target);
-      entity.getExtensions(true);
-      PoTargetHeader poTargetHeader = new PoTargetHeader("target header comment", new HeaderEntry("ht", "vt1"), new HeaderEntry("th2", "tv2"));
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeAndDeserializeTextFlow() throws ValidationException,
+            JsonGenerationException, JsonMappingException, IOException {
+        TextFlow tf = new TextFlow();
+        tf.setContents("ttff");
+        SimpleComment comment = new SimpleComment("test");
+        PotEntryHeader pot = new PotEntryHeader();
+        pot.setContext("context");
+        pot.getReferences().add("fff");
+        tf.getExtensions(true).add(comment);
+        tf.getExtensions(true).add(pot);
 
-      entity.getExtensions(true).add(poTargetHeader);
+        JaxbUtil.validateXml(tf, TextFlow.class);
 
-      JaxbUtil.validateXml(entity, TranslationsResource.class);
+        String output = mapper.writeValueAsString(tf);
+        TextFlow res2 = mapper.readValue(output, TextFlow.class);
 
-      String output = mapper.writeValueAsString(entity);
-      TranslationsResource res2 = mapper.readValue(output, TranslationsResource.class);
+        assertThat(res2.getExtensions(true).size(), is(2));
+        for (TextFlowExtension e : res2.getExtensions()) {
+            if (e instanceof SimpleComment) {
+                assertThat(((SimpleComment) e).getValue(), is("test"));
+            }
+            if (e instanceof PotEntryHeader) {
+                assertThat(((PotEntryHeader) e).getContext(), is("context"));
+            }
+        }
+    }
 
-      assertThat(res2.getExtensions().size(), is(1));
-      assertThat(res2.getExtensions().iterator().next(), instanceOf(PoTargetHeader.class));
-      assertThat(((PoTargetHeader) res2.getExtensions().iterator().next()).getComment(), is("target header comment"));
-   }
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeAndDeserializeTextFlowTarget()
+            throws ValidationException, JsonGenerationException,
+            JsonMappingException, IOException {
+        TextFlowTarget tf = new TextFlowTarget();
+        tf.setTranslator(createPerson());
+        tf.setContents("ttff");
+        SimpleComment comment = new SimpleComment("testcomment");
+        tf.getExtensions(true).add(comment);
 
-   // FIXME broken test
-   @Test(enabled = false)
-   public void serializeAndDeserializeGlossary() throws JsonGenerationException, JsonMappingException, IOException, JAXBException
-   {
-      Glossary glossary = new Glossary();
-      glossary.getSourceLocales().add("en-US");
+        JaxbUtil.validateXml(tf, TextFlowTarget.class);
 
-      glossary.getTargetLocales().add("jp");
-      glossary.getTargetLocales().add("de");
+        String output = mapper.writeValueAsString(tf);
+        TextFlowTarget res2 = mapper.readValue(output, TextFlowTarget.class);
 
-      GlossaryEntry entry = new GlossaryEntry();
-      entry.setSrcLang(LocaleId.EN_US);
-      entry.setSourcereference("source ref");
+        assertThat(res2.getExtensions(true).size(), is(1));
+        for (TextFlowTargetExtension e : res2.getExtensions()) {
+            if (e instanceof SimpleComment) {
+                assertThat(((SimpleComment) e).getValue(), is("testcomment"));
+            }
+        }
+    }
 
-      GlossaryTerm term = new GlossaryTerm();
-      term.setContent("testData1");
-      term.setLocale(LocaleId.EN_US);
-      term.getComments().add("comment1");
-      term.getComments().add("comment2");
-      term.getComments().add("comment3");
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeAndDeserializeTranslation()
+            throws JsonGenerationException, JsonMappingException, IOException,
+            JAXBException {
+        TranslationsResource entity = new TranslationsResource();
+        TextFlowTarget target = new TextFlowTarget("rest1");
+        target.setContents("hello world");
+        target.setState(ContentState.Translated);
+        target.setTranslator(new Person("root@localhost", "Admin user"));
+        // for the convenience of test
+        entity.getTextFlowTargets().add(target);
+        entity.getExtensions(true);
+        PoTargetHeader poTargetHeader =
+                new PoTargetHeader("target header comment", new HeaderEntry(
+                        "ht", "vt1"), new HeaderEntry("th2", "tv2"));
 
-      GlossaryTerm term2 = new GlossaryTerm();
-      term2.setContent("testData2");
-      term2.setLocale(LocaleId.DE);
-      term2.getComments().add("comment4");
-      term2.getComments().add("comment5");
-      term2.getComments().add("comment6");
+        entity.getExtensions(true).add(poTargetHeader);
 
-      entry.getGlossaryTerms().add(term);
-      entry.getGlossaryTerms().add(term2);
-      glossary.getGlossaryEntries().add(entry);
+        JaxbUtil.validateXml(entity, TranslationsResource.class);
 
-      // System.out.println(glossary);
-      JaxbUtil.validateXml(glossary, Glossary.class);
-      String output = mapper.writeValueAsString(glossary);
-      Glossary glossary2 = mapper.readValue(output, Glossary.class);
-      assertThat(glossary2.getGlossaryEntries().size(), is(1));
-      assertThat(glossary2.getGlossaryEntries().get(0).getGlossaryTerms().size(), is(2));
+        String output = mapper.writeValueAsString(entity);
+        TranslationsResource res2 =
+                mapper.readValue(output, TranslationsResource.class);
 
-   }
+        assertThat(res2.getExtensions().size(), is(1));
+        assertThat(res2.getExtensions().iterator().next(),
+                instanceOf(PoTargetHeader.class));
+        assertThat(
+                ((PoTargetHeader) res2.getExtensions().iterator().next())
+                        .getComment(),
+                is("target header comment"));
+    }
+
+    // FIXME broken test
+    @Test(enabled = false)
+    public void serializeAndDeserializeGlossary()
+            throws JsonGenerationException, JsonMappingException, IOException,
+            JAXBException {
+        Glossary glossary = new Glossary();
+        glossary.getSourceLocales().add("en-US");
+
+        glossary.getTargetLocales().add("jp");
+        glossary.getTargetLocales().add("de");
+
+        GlossaryEntry entry = new GlossaryEntry();
+        entry.setSrcLang(LocaleId.EN_US);
+        entry.setSourcereference("source ref");
+
+        GlossaryTerm term = new GlossaryTerm();
+        term.setContent("testData1");
+        term.setLocale(LocaleId.EN_US);
+        term.getComments().add("comment1");
+        term.getComments().add("comment2");
+        term.getComments().add("comment3");
+
+        GlossaryTerm term2 = new GlossaryTerm();
+        term2.setContent("testData2");
+        term2.setLocale(LocaleId.DE);
+        term2.getComments().add("comment4");
+        term2.getComments().add("comment5");
+        term2.getComments().add("comment6");
+
+        entry.getGlossaryTerms().add(term);
+        entry.getGlossaryTerms().add(term2);
+        glossary.getGlossaryEntries().add(entry);
+
+        // System.out.println(glossary);
+        JaxbUtil.validateXml(glossary, Glossary.class);
+        String output = mapper.writeValueAsString(glossary);
+        Glossary glossary2 = mapper.readValue(output, Glossary.class);
+        assertThat(glossary2.getGlossaryEntries().size(), is(1));
+        assertThat(glossary2.getGlossaryEntries().get(0).getGlossaryTerms()
+                .size(), is(2));
+
+    }
 }

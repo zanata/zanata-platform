@@ -19,6 +19,7 @@
  */
 package org.zanata.rest.dto.resource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,165 +36,136 @@ import org.zanata.rest.dto.DTOUtil;
  *
  **/
 @XmlType(name = "localesType")
-public class LocaleList implements List<String>
-{
-   private final List<String> locales = new ArrayList<String>();
+public class LocaleList implements List<String>, Serializable {
+    private static final long serialVersionUID = 1L;
+    private final List<String> locales = new ArrayList<String>();
 
-   @Override
-   public String toString()
-   {
-      return DTOUtil.toXML(this);
-   }
+    @Override
+    public String toString() {
+        return DTOUtil.toXML(this);
+    }
 
-   @Override
-   public int size()
-   {
-      return locales.size();
-   }
+    @Override
+    public int size() {
+        return locales.size();
+    }
 
-   @Override
-   public boolean isEmpty()
-   {
-      return locales.isEmpty();
-   }
+    @Override
+    public boolean isEmpty() {
+        return locales.isEmpty();
+    }
 
-   @Override
-   public boolean contains(Object o)
-   {
-      return locales.contains(o);
-   }
+    @Override
+    public boolean contains(Object o) {
+        return locales.contains(o);
+    }
 
-   @Override
-   public Iterator<String> iterator()
-   {
-      return locales.iterator();
-   }
+    @Override
+    public Iterator<String> iterator() {
+        return locales.iterator();
+    }
 
-   @Override
-   public Object[] toArray()
-   {
-      return locales.toArray();
-   }
+    @Override
+    public Object[] toArray() {
+        return locales.toArray();
+    }
 
-   @Override
-   public <T> T[] toArray(T[] a)
-   {
-      return locales.toArray(a);
-   }
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return locales.toArray(a);
+    }
 
-   @Override
-   public boolean add(String e)
-   {
-      return locales.add(e);
-   }
+    @Override
+    public boolean add(String e) {
+        return locales.add(e);
+    }
 
-   @Override
-   public boolean remove(Object o)
-   {
-      return locales.remove(o);
-   }
+    @Override
+    public boolean remove(Object o) {
+        return locales.remove(o);
+    }
 
-   @Override
-   public boolean containsAll(Collection<?> c)
-   {
-      return locales.containsAll(c);
-   }
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return locales.containsAll(c);
+    }
 
-   @Override
-   public boolean addAll(Collection<? extends String> c)
-   {
-      return locales.addAll(c);
-   }
+    @Override
+    public boolean addAll(Collection<? extends String> c) {
+        return locales.addAll(c);
+    }
 
-   @Override
-   public boolean addAll(int index, Collection<? extends String> c)
-   {
-      return locales.addAll(index, c);
-   }
+    @Override
+    public boolean addAll(int index, Collection<? extends String> c) {
+        return locales.addAll(index, c);
+    }
 
-   @Override
-   public boolean removeAll(Collection<?> c)
-   {
-      return locales.removeAll(c);
-   }
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return locales.removeAll(c);
+    }
 
-   @Override
-   public boolean retainAll(Collection<?> c)
-   {
-      return locales.retainAll(c);
-   }
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return locales.retainAll(c);
+    }
 
-   @Override
-   public void clear()
-   {
-      locales.clear();
-   }
+    @Override
+    public void clear() {
+        locales.clear();
+    }
 
-   @Override
-   public String get(int index)
-   {
-      return locales.get(index);
-   }
+    @Override
+    public String get(int index) {
+        return locales.get(index);
+    }
 
-   @Override
-   public String set(int index, String element)
-   {
-      return locales.set(index, element);
-   }
+    @Override
+    public String set(int index, String element) {
+        return locales.set(index, element);
+    }
 
-   @Override
-   public void add(int index, String element)
-   {
-      locales.add(index, element);
-   }
+    @Override
+    public void add(int index, String element) {
+        locales.add(index, element);
+    }
 
-   @Override
-   public String remove(int index)
-   {
-      return locales.remove(index);
-   }
+    @Override
+    public String remove(int index) {
+        return locales.remove(index);
+    }
 
-   @Override
-   public int indexOf(Object o)
-   {
-      return locales.indexOf(o);
-   }
+    @Override
+    public int indexOf(Object o) {
+        return locales.indexOf(o);
+    }
 
-   @Override
-   public int lastIndexOf(Object o)
-   {
-      return locales.lastIndexOf(o);
-   }
+    @Override
+    public int lastIndexOf(Object o) {
+        return locales.lastIndexOf(o);
+    }
 
-   @Override
-   public ListIterator<String> listIterator()
-   {
-      return locales.listIterator();
-   }
+    @Override
+    public ListIterator<String> listIterator() {
+        return locales.listIterator();
+    }
 
-   @Override
-   public ListIterator<String> listIterator(int index)
-   {
-      return locales.listIterator(index);
-   }
+    @Override
+    public ListIterator<String> listIterator(int index) {
+        return locales.listIterator(index);
+    }
 
-   @Override
-   public List<String> subList(int fromIndex, int toIndex)
-   {
-      return locales.subList(fromIndex, toIndex);
-   }
+    @Override
+    public List<String> subList(int fromIndex, int toIndex) {
+        return locales.subList(fromIndex, toIndex);
+    }
 
-   @Override
-   public int hashCode()
-   {
-      return locales.hashCode();
-   }
+    @Override
+    public int hashCode() {
+        return locales.hashCode();
+    }
 
-   public boolean equals(Object o)
-   {
-      return locales.equals(o);
-   }
+    public boolean equals(Object o) {
+        return locales.equals(o);
+    }
 }
-
-
- 

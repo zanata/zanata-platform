@@ -23,24 +23,18 @@ package org.zanata.rest.service;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
-
 import static org.zanata.rest.service.SourceDocResource.*;
 
 @Test(groups = { "unit-tests" })
-public class SourceDocResourceTest
-{
+public class SourceDocResourceTest {
 
-   @Test
-   public void testRegexes()
-   {
-      assertThat("", "file".matches(RESOURCE_NAME_REGEX));
-      assertThat("", "test/file".matches(RESOURCE_NAME_REGEX));
-      assertThat("", !"/test/".matches(RESOURCE_NAME_REGEX));
-      assertThat("", !"/test/file".matches(RESOURCE_NAME_REGEX));
-      assertThat("", !":".matches(RESOURCE_NAME_REGEX));
-   }
+    @Test
+    public void testRegexes() {
+        assertThat("", "file".matches(RESOURCE_NAME_REGEX));
+        assertThat("", "test/file".matches(RESOURCE_NAME_REGEX));
+        assertThat("", !"/test/".matches(RESOURCE_NAME_REGEX));
+        assertThat("", !"/test/file".matches(RESOURCE_NAME_REGEX));
+        assertThat("", !":".matches(RESOURCE_NAME_REGEX));
+    }
 
 }

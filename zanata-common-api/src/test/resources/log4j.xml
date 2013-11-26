@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
 <log4j:configuration>
-    <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer"/>
-    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
-        <param name="threshold" value="DEBUG"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-5p [%c{1}] - %m%n" />
-        </layout>
-    </appender>
-<!--
-     <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-        <param name="file" value="target/test.log"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d %-5p [%c] - %m%n" />
-        </layout>
-    </appender>
- -->
-<!--
-    <logger name="org.hibernate">
-        <level value="info" />
-    </logger>
--->
-    <logger name="gwt-log">
-        <level value="OFF" />
-    </logger>
-    <root>
-        <level value="ERROR" />
-        <appender-ref ref="STDOUT" />
-<!--         <appender-ref ref="FILE" /> -->
-    </root>
+  <throwableRenderer class="org.apache.log4j.EnhancedThrowableRenderer" />
+  <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+    <param name="threshold" value="DEBUG" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p [%c{1}] - %m%n" />
+    </layout>
+  </appender>
+  <!--
+       <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+          <param name="file" value="target/test.log"/>
+          <layout class="org.apache.log4j.PatternLayout">
+              <param name="ConversionPattern" value="%d %-5p [%c] - %m%n" />
+          </layout>
+      </appender>
+   -->
+  <!--
+      <logger name="org.hibernate">
+          <level value="info" />
+      </logger>
+  -->
+  <logger name="gwt-log">
+    <level value="OFF" />
+  </logger>
+  <root>
+    <level value="ERROR" />
+    <appender-ref ref="STDOUT" />
+    <!--         <appender-ref ref="FILE" /> -->
+  </root>
 </log4j:configuration>

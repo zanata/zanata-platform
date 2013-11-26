@@ -1,6 +1,5 @@
 package org.zanata.common;
 
-public enum EditState
-{
-   StartEditing, StopEditing;
+public enum EditState {
+    StartEditing, StopEditing;
 }

@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.bind.JAXBContext;
@@ -29,50 +30,53 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+public class GenerateSchema {
 
-public class GenerateSchema
-{
+    public static void main(String[] args) throws IOException, JAXBException {
+        Class<?>[] classes =
+                new Class<?>[] { Account.class, HeaderEntry.class, Link.class,
+                        Links.class, Person.class, PoHeader.class,
+                        PoTargetHeader.class, PotEntryHeader.class,
+                        Project.class, ProjectIteration.class,
+                        ProjectList.class, ProjectType.class, Resource.class,
+                        ResourceMeta.class, SimpleComment.class,
+                        TextFlow.class, TextFlowTarget.class,
+                        TranslationsResource.class };
+        JAXBContext context = JAXBContext.newInstance(classes);
 
-   public static void main(String[] args) throws IOException, JAXBException
-   {
-      Class<?>[] classes = new Class<?>[] { Account.class, HeaderEntry.class, Link.class, Links.class, Person.class, PoHeader.class, PoTargetHeader.class, PotEntryHeader.class, Project.class, ProjectIteration.class, ProjectList.class, ProjectType.class, Resource.class, ResourceMeta.class, SimpleComment.class, TextFlow.class, TextFlowTarget.class, TranslationsResource.class };
-      JAXBContext context = JAXBContext.newInstance(classes);
+        generateSchemaToStdout(context);
 
-      generateSchemaToStdout(context);
+    }
 
-   }
+    public static void generateSchemaToStdout(JAXBContext context)
+            throws IOException {
+        final TreeMap<String, String> outputMap = new TreeMap<String, String>();
+        SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver() {
 
-   public static void generateSchemaToStdout(JAXBContext context) throws IOException
-   {
-      final TreeMap<String, String> outputMap = new TreeMap<String, String>();
-      SchemaOutputResolver schemaOutputResolver = new SchemaOutputResolver()
-      {
+            @Override
+            public Result createOutput(final String namespaceUri,
+                    String suggestedFileName) throws IOException {
+                StringWriter writer = new StringWriter() {
+                    @Override
+                    public void close() throws IOException {
+                        super.close();
+                        outputMap.put(namespaceUri, super.toString());
+                    }
+                };
+                StreamResult result = new StreamResult(writer);
+                result.setSystemId("stdout");
+                return result;
+            }
+        };
 
-         @Override
-         public Result createOutput(final String namespaceUri, String suggestedFileName) throws IOException
-         {
-            StringWriter writer = new StringWriter()
-            {
-               @Override
-               public void close() throws IOException
-               {
-                  super.close();
-                  outputMap.put(namespaceUri, super.toString());
-               }
-            };
-            StreamResult result = new StreamResult(writer);
-            result.setSystemId("stdout");
-            return result;
-         }
-      };
-
-      context.generateSchema(schemaOutputResolver);
-      // System.out.println(outputMap);
-      for (String namespace : outputMap.keySet())
-      {
-         System.out.println("schema for namespace: '" + namespace + "'");
-         System.out.println(outputMap.get(namespace));
-      }
-   }
+        context.generateSchema(schemaOutputResolver);
+        // System.out.println(outputMap);
+        for (Map.Entry<String, String> entry : outputMap.entrySet()) {
+            String namespace = entry.getKey();
+            String schema = entry.getValue();
+            System.out.println("schema for namespace: '" + namespace + "'");
+            System.out.println(schema);
+        }
+    }
 
 }

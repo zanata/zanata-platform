@@ -1,0 +1,20 @@
+<enunciate xsi:noNamespaceSchemaLocation=
+  "http://enunciate.codehaus.org/schemas/enunciate-1.24.xsd">
+  <namespaces>
+    <namespace id="zanata" uri="http://www.zanata.org" />
+  </namespaces>
+  <api-classes>
+    <include pattern="org.zanata.rest.enunciate.*" />
+  </api-classes>
+  <modules>
+    <docs docsDir="rest-api-docs" title="Zanata REST API"
+      copyright="Copyright 2008-2013 Red Hat, Inc and others." />
+    <c disabled="true" />
+    <csharp disabled="true" />
+    <gwt disabled="true" />
+    <java-client disabled="true" />
+    <obj-c disabled="true" />
+    <php disabled="true" />
+    <ruby disabled="true" />
+  </modules>
+</enunciate>

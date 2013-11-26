@@ -20,23 +20,36 @@
  */
 package org.zanata.rest.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.VersionInfo;
 
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+public interface VersionResource {
+    public static final String SERVICE_PATH = "/version";
 
-public interface VersionResource
-{
-
-   /**
-    * Retrieve VersionInfo
-    * 
-    * @return VersionInfo
-    */
-   @GET
-   @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_JSON, MediaTypes.APPLICATION_ZANATA_VERSION_XML })
-   public Response get();
+    /**
+     * Retrieve Version information for the application.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response with the system's version information in the
+     *         content.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML,
+                MediaTypes.APPLICATION_ZANATA_VERSION_JSON })
+    @TypeHint(VersionInfo.class)
+    public Response get();
 
 }

@@ -2,17 +2,17 @@
  * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
- * 
+ *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * This software is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
@@ -20,7 +20,9 @@
  */
 package org.zanata.rest.client;
 
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.client.ClientResponse;
+import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.service.SourceDocResource;
@@ -42,47 +44,66 @@ import java.util.Set;
 /**
  * Client interface for Source document resources.
  *
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Produces({ MediaType.APPLICATION_XML })
-@Consumes({ MediaType.APPLICATION_XML })
-public interface ISourceDocResource extends SourceDocResource
-{
-   @Override
-   @GET
-   public ClientResponse<List<ResourceMeta>> get(@QueryParam("ext") Set<String> extensions);
+//TODO remove the template parameters from SourceDocResource's Path
+//@Path(SourceDocResource.SERVICE_PATH)
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+public interface ISourceDocResource extends SourceDocResource {
+    @Override
+    @GET
+    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
+    public ClientResponse<List<ResourceMeta>> get(
+            @QueryParam("ext") Set<String> extensions);
 
-   @Override
-   @POST
-   public ClientResponse<String> post(Resource messageBody, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
+    @Override
+    @POST
+    public ClientResponse<String> post(Resource messageBody,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
-   @Override
-   @GET
-   @Path("{id}")
-   public ClientResponse<Resource> getResource(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
+    @Override
+    @GET
+    @Path(RESOURCE_SLUG_TEMPLATE)
+    public ClientResponse<Resource> getResource(
+            @PathParam("id") String idNoSlash,
+            @QueryParam("ext") Set<String> extensions);
 
-   @Override
-   @PUT
-   @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions, @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
+    @Override
+    @PUT
+    @Path(RESOURCE_SLUG_TEMPLATE)
+    public ClientResponse<String> putResource(
+            @PathParam("id") String idNoSlash, Resource resource,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
-   @PUT
-   @Path("{id}")
-   public ClientResponse<String> putResource(@PathParam("id") String idNoSlash, Resource resource, @QueryParam("ext") Set<String> extensions);
+    @PUT
+    @Path(RESOURCE_SLUG_TEMPLATE)
+    @Deprecated
+    public ClientResponse<String> putResource(
+            @PathParam("id") String idNoSlash, Resource resource,
+            @QueryParam("ext") Set<String> extensions);
 
-   @Override
-   @DELETE
-   @Path("{id}")
-   public ClientResponse<String> deleteResource(@PathParam("id") String idNoSlash);
+    @Override
+    @DELETE
+    @Path(RESOURCE_SLUG_TEMPLATE)
+    public ClientResponse<String> deleteResource(
+            @PathParam("id") String idNoSlash);
 
-   @Override
-   @GET
-   @Path("{id}/meta")
-   public ClientResponse<ResourceMeta> getResourceMeta(@PathParam("id") String idNoSlash, @QueryParam("ext") Set<String> extensions);
+    @Override
+    @GET
+    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
+    public ClientResponse<ResourceMeta> getResourceMeta(
+            @PathParam("id") String idNoSlash,
+            @QueryParam("ext") Set<String> extensions);
 
-   @Override
-   @PUT
-   @Path("{id}/meta")
-   public ClientResponse<String> putResourceMeta(@PathParam("id") String idNoSlash, ResourceMeta messageBody, @QueryParam("ext") Set<String> extensions);
+    @Override
+    @PUT
+    @Path(RESOURCE_SLUG_TEMPLATE + "/meta")
+    public ClientResponse<String> putResourceMeta(
+            @PathParam("id") String idNoSlash, ResourceMeta messageBody,
+            @QueryParam("ext") Set<String> extensions);
 
 }

@@ -22,23 +22,20 @@
 package org.zanata.rest;
 
 /**
- * A set of strings which can be converted to and from a single string.
- * The constructor splits a group of strings separated by ';' into a set,
- * and the toString() method joins all the string together with ';'.
+ * A set of strings which can be converted to and from a single string. The
+ * constructor splits a group of strings separated by ';' into a set, and the
+ * toString() method joins all the string together with ';'.
  *
  */
-public class StringSet extends ElemSet<String>
-{
+public class StringSet extends ElemSet<String> {
 
-   public StringSet(String values)
-   {
-      super(values);
-   }
+    public StringSet(String values) {
+        super(values);
+    }
 
-   @Override
-   protected String valueOfElem(String value)
-   {
-      return value;
-   }
+    @Override
+    protected String valueOfElem(String value) {
+        return value;
+    }
 
 }

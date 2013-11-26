@@ -2,29 +2,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>api</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.2-SNAPSHOT</version>
   <name>Zanata API modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>13-SNAPSHOT</version>
+    <version>14</version>
     <relativePath>../parent</relativePath>
   </parent>
 
-	<scm>
-		<connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
-		<developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
-		<url>https://github.com/zanata/zanata-api</url>
-	</scm>
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
+    <url>https://github.com/zanata/zanata-api</url>
+  </scm>
 
-   <dependencies>
-      <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-      </dependency>
-   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <failOnError>true</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <modules>
     <module>zanata-common-api</module>

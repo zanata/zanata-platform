@@ -29,133 +29,117 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 /**
  * Form for use in file uploads.
- * 
+ *
  * For upload of a document as a single chunk, 'first' and 'last' should both be
  * set to TRUE (uploadId is ignored). For chunked upload, send the first part
  * with first=TRUE, then send the returned uploadId from the first part with
  * subsequent parts. The document is parsed when the final part is sent with
  * last=TRUE.
- * 
+ *
  * Hash should always be set to the md5 hash of the entire document. For chunked
  * upload, the hash is checked against the complete document after the chunks
  * are joined.
- * 
- * @author David Mason, <a href="mailto:damason@redhat.com">damason@redhat.com</a>
+ *
+ * @author David Mason, <a
+ *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * @see MultipartForm
  */
-public class DocumentFileUploadForm implements Serializable
-{
-   private static final long serialVersionUID = 1L;
+public class DocumentFileUploadForm implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-   @FormParam("file")
-   @PartType("application/octet-stream")
-   private InputStream fileStream;
+    @FormParam("file")
+    @PartType("application/octet-stream")
+    private transient InputStream fileStream;
 
-   @FormParam("type")
-   @PartType("text/plain")
-   private String fileType;
+    @FormParam("type")
+    @PartType("text/plain")
+    private String fileType;
 
-   @FormParam("uploadId")
-   @PartType("text/plain")
-   private Long uploadId;
+    @FormParam("uploadId")
+    @PartType("text/plain")
+    private Long uploadId;
 
-   @FormParam("first")
-   @PartType("text/plain")
-   private Boolean first;
+    @FormParam("first")
+    @PartType("text/plain")
+    private Boolean first;
 
-   @FormParam("last")
-   @PartType("text/plain")
-   private Boolean last;
+    @FormParam("last")
+    @PartType("text/plain")
+    private Boolean last;
 
-   @FormParam("hash")
-   @PartType("text/plain")
-   private String hash;
+    @FormParam("hash")
+    @PartType("text/plain")
+    private String hash;
 
-   @FormParam("size")
-   @PartType("text/plain")
-   private Long size;
+    @FormParam("size")
+    @PartType("text/plain")
+    private Long size;
 
-   @FormParam("adapterParams")
-   @PartType("text/plain")
-   private String adapterParams;
+    @FormParam("adapterParams")
+    @PartType("text/plain")
+    private String adapterParams;
 
-   public InputStream getFileStream()
-   {
-      return fileStream;
-   }
+    public InputStream getFileStream() {
+        return fileStream;
+    }
 
-   public void setFileStream(InputStream fileStream)
-   {
-      this.fileStream = fileStream;
-   }
+    public void setFileStream(InputStream fileStream) {
+        this.fileStream = fileStream;
+    }
 
-   public String getFileType()
-   {
-      return fileType;
-   }
+    public String getFileType() {
+        return fileType;
+    }
 
-   public void setFileType(String fileType)
-   {
-      this.fileType = fileType;
-   }
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
 
-   public Long getUploadId()
-   {
-      return uploadId;
-   }
+    public Long getUploadId() {
+        return uploadId;
+    }
 
-   public void setUploadId(Long uploadId)
-   {
-      this.uploadId = uploadId;
-   }
+    public void setUploadId(Long uploadId) {
+        this.uploadId = uploadId;
+    }
 
-   public Boolean getFirst()
-   {
-      return first;
-   }
+    public Boolean getFirst() {
+        return first;
+    }
 
-   public void setFirst(Boolean first)
-   {
-      this.first = first;
-   }
+    public void setFirst(Boolean first) {
+        this.first = first;
+    }
 
-   public Boolean getLast()
-   {
-      return last;
-   }
+    public Boolean getLast() {
+        return last;
+    }
 
-   public void setLast(Boolean last)
-   {
-      this.last = last;
-   }
+    public void setLast(Boolean last) {
+        this.last = last;
+    }
 
-   public String getHash()
-   {
-      return hash;
-   }
+    public String getHash() {
+        return hash;
+    }
 
-   public void setHash(String hash)
-   {
-      this.hash = hash;
-   }
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
 
-   public Long getSize()
-   {
-      return size;
-   }
+    public Long getSize() {
+        return size;
+    }
 
-   public void setSize(Long size)
-   {
-      this.size = size;
-   }
+    public void setSize(Long size) {
+        this.size = size;
+    }
 
-   public String getAdapterParams()
-   {
-      return adapterParams;
-   }
+    public String getAdapterParams() {
+        return adapterParams;
+    }
 
-   public void setAdapterParams(String adapterParams)
-   {
-      this.adapterParams = adapterParams;
-   }
+    public void setAdapterParams(String adapterParams) {
+        this.adapterParams = adapterParams;
+    }
 }

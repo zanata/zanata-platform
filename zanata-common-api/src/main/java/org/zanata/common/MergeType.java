@@ -22,19 +22,20 @@
 package org.zanata.common;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public enum MergeType
-{
-   /**
-    * Adds new translations, imports extension headers, but rejects old
-    * translations which have already been seen in the history, even if
-    * their states have changed (eg from Fuzzy to Approved).
-    */
-   AUTO,
-   /**
-    * Straight import - completely replaces server's translations; may delete content.
-    */
-   IMPORT;
+public enum MergeType {
+    /**
+     * Adds new translations, imports extension headers, but rejects old
+     * translations which have already been seen in the history, even if their
+     * states have changed (eg from Fuzzy to Approved).
+     */
+    AUTO,
+    /**
+     * Straight import - completely replaces server's translations; may delete
+     * content.
+     */
+    IMPORT;
 }

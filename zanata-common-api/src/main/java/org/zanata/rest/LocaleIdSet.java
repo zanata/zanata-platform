@@ -2,18 +2,15 @@ package org.zanata.rest;
 
 import org.zanata.common.LocaleId;
 
-public class LocaleIdSet extends ElemSet<LocaleId>
-{
+public class LocaleIdSet extends ElemSet<LocaleId> {
 
-   public LocaleIdSet(String values)
-   {
-      super(values);
-   }
+    public LocaleIdSet(String values) {
+        super(values);
+    }
 
-   @Override
-   protected LocaleId valueOfElem(String value)
-   {
-      return new LocaleId(value);
-   }
+    @Override
+    protected LocaleId valueOfElem(String value) {
+        return new LocaleId(value);
+    }
 
 }
