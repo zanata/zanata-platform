@@ -20,12 +20,6 @@
  */
 package org.zanata.client.commands;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.pull.PullCommand;
-import org.zanata.client.config.CommandHook;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ZanataProxyFactory;
 
@@ -38,9 +32,6 @@ import org.zanata.rest.client.ZanataProxyFactory;
  */
 public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOptions>
         extends ConfigurableCommand<O> {
-
-    private static final Logger log = LoggerFactory
-            .getLogger(PullCommand.class);
 
     protected static final String PROJECT_TYPE_UTF8_PROPERTIES =
             "utf8properties";
@@ -67,68 +58,5 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
 
     protected String getProjectType() {
         return this.getOpts().getProjectType();
-    }
-
-    @Override
-    public void run() throws Exception {
-        runBeforeActions();
-        performWork();
-        runAfterActions();
-    };
-
-    protected abstract void performWork() throws Exception;
-
-    /**
-     * @throws Exception
-     *             if any of the commands fail
-     */
-    private void runBeforeActions() throws Exception {
-        for (CommandHook hook : getOpts().getCommandHooks()) {
-            if (isForThisCommand(hook)) {
-                runSystemCommands(hook.getBefores());
-            }
-        }
-    }
-
-    /**
-     * @throws Exception
-     *             if any of the commands fail.
-     */
-    private void runAfterActions() throws Exception {
-        for (CommandHook hook : getOpts().getCommandHooks()) {
-            if (isForThisCommand(hook)) {
-                runSystemCommands(hook.getAfters());
-            }
-        }
-    }
-
-    /**
-     * @throws Exception
-     *             if any of the commands fail.
-     */
-    private void runSystemCommands(List<String> commands) throws Exception {
-        for (String command : commands) {
-            log.info("[Running command]$ " + command);
-            try {
-                Process proc = Runtime.getRuntime().exec(command);
-                proc.waitFor();
-                if (proc.exitValue() != 0) {
-                    throw new Exception(
-                            "Command returned non-zero exit value: "
-                                    + proc.exitValue());
-                }
-                log.info("    Completed with exit value: " + proc.exitValue());
-            } catch (java.io.IOException e) {
-                throw new Exception("Failed to run command. " + e.getMessage(),
-                        e);
-            } catch (InterruptedException e) {
-                throw new Exception("Interrupted while running command. "
-                        + e.getMessage(), e);
-            }
-        }
-    }
-
-    private boolean isForThisCommand(CommandHook hook) {
-        return this.getName().equals(hook.getCommand());
     }
 }

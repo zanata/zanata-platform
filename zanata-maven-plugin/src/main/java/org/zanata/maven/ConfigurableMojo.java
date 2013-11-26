@@ -156,7 +156,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
                 getLog().warn("Command \"" + name + "\" has been deprecated");
             }
         }
-        command.run();
+        command.runWithActions();
     }
 
     public abstract ConfigurableCommand<O> initCommand();

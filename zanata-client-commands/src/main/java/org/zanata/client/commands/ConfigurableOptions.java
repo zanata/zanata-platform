@@ -2,12 +2,9 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 
-import javax.annotation.Nonnull;
 
 import org.kohsuke.args4j.Option;
-import org.zanata.client.config.CommandHook;
 
 /**
  * Base options for commands which supports configuration by the user's

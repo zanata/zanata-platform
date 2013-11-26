@@ -227,7 +227,7 @@ public class PushCommandTest {
             // .thenReturn(okResponse);
         }
         ZanataCommand cmd = generatePushCommand(pushTrans, mapLocale);
-        cmd.run();
+        cmd.runWithActions();
     }
 
 }

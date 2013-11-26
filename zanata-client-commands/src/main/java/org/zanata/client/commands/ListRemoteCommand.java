@@ -43,7 +43,7 @@ public class ListRemoteCommand extends
     }
 
     @Override
-    public void performWork() throws Exception {
+    public void run() throws Exception {
         log.info("Server: " + getOpts().getUrl());
         log.info("Project: " + getOpts().getProj());
         log.info("Version: " + getOpts().getProjectVersion());

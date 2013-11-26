@@ -117,7 +117,7 @@ public class PublicanPullCommandTest {
                 new PublicanPullCommand(opts, mockRequestFactory,
                         mockSourceDocResource, mockTranslationResources,
                         new URI("http://example.com/"));
-        cmd.run();
+        cmd.runWithActions();
     }
 
     private void mockExpectGetTranslationsAndReturnResponse(String id,

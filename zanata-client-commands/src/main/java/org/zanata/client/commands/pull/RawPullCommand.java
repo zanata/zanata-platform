@@ -59,7 +59,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     }
 
     @Override
-    public void performWork() throws Exception {
+    public void run() throws Exception {
         PullCommand.logOptions(log, getOpts());
         if (getOpts().isDryRun()) {
             log.info("DRY RUN: no permanent changes will be made");

@@ -189,7 +189,7 @@ public class ZanataClientTest {
         verify(mockOptions).setUrl(new URL(url));
         verify(mockOptions).setProj(project);
         verify(mockOptions).setProjectVersion(version);
-        verify(mockCommand).run();
+        verify(mockCommand).runWithActions();
     }
 
     /**

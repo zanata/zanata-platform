@@ -118,7 +118,7 @@ public class PublicanPushCommandTest {
                 new PublicanPushCommand(opts, mockRequestFactory,
                         mockSourceDocResource, mockTranslationResources,
                         new URI("http://example.com/"));
-        cmd.run();
+        cmd.runWithActions();
     }
 
 }

@@ -3,7 +3,6 @@
  */
 package org.zanata.client.commands;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.log4j.Level;
@@ -46,7 +45,7 @@ public class ArgsUtil {
                 log.info("Error stacktraces are turned on.");
             }
             ZanataCommand cmd = opts.initCommand();
-            cmd.run();
+            cmd.runWithActions();
         } catch (Exception e) {
             handleException(e, opts.getErrors(), abortStrategy);
         }
