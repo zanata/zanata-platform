@@ -114,6 +114,6 @@ public class VersionGroupIDValidationTest {
                         .inputGroupName(inputText).saveGroupFailure();
 
         assertThat("Validation error is displayed for input:" + inputText,
-                groupPage.getErrors(1), Matchers.contains(errorMsg));
+                groupPage.getFieldErrors(), Matchers.hasItem(errorMsg));
     }
 }

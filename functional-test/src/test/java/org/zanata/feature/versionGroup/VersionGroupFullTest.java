@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
@@ -97,6 +98,7 @@ public class VersionGroupFullTest {
     }
 
     @Test
+    @Ignore("rhbz1034551")
     public void groupIDFieldSize() {
         String errorMsg = "value must be shorter than or equal to 40 characters";
         String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmno";
