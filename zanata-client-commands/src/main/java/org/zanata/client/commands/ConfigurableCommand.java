@@ -22,6 +22,11 @@ package org.zanata.client.commands;
 
 import java.util.List;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.LogOutputStream;
+import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.CommandHook;
@@ -129,14 +134,17 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         for (String command : commands) {
             log.info("[Running command]$ " + command);
             try {
-                Process proc = Runtime.getRuntime().exec(command);
-                proc.waitFor();
-                if (proc.exitValue() != 0) {
+                DefaultExecutor executor = new DefaultExecutor();
+                executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
+                CommandLine cmdLine = CommandLine.parse(command);
+                int exitValue = executor.execute(cmdLine);
+
+                if (exitValue != 0) {
                     throw new Exception(
                             "Command returned non-zero exit value: "
-                                    + proc.exitValue());
+                                    + exitValue);
                 }
-                log.info("    Completed with exit value: " + proc.exitValue());
+                log.info("    Completed with exit value: " + exitValue);
             } catch (java.io.IOException e) {
                 throw new Exception("Failed to run command. " + e.getMessage(),
                         e);

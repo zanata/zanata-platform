@@ -141,5 +141,12 @@
       <artifactId>ant</artifactId>
       <version>1.8.2</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-exec</artifactId>
+      <version>1.1</version>
+    </dependency>
+
   </dependencies>
 </project>
