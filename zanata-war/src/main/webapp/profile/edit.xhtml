@@ -1,77 +1,42 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.EditProfile']}</ui:define>
+  <ui:define
+    name="page_title">#{messages['jsf.Profile']}:#{messages['jsf.EditProfile']}</ui:define>
+
   <ui:define name="center_content">
+    <div class="g--centered">
+      <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
 
-    <h1>#{messages['jsf.EditProfile']}</h1>
-    <h:form id="editProfileForm">
-      <s:token allowMultiplePosts="true"/>
-      <rich:panel>
-        <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
+        <s:link view="/profile/view.xhtml" propagation="none">
+          <p class="txt--meta l--push-all-0">#{messages['jsf.Profile']}</p>
+        </s:link>
 
-        <s:decorate id="nameField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{messages['jsf.Name']}</ui:define>
-          <h:inputText id="name" value="#{profileAction.name}" required="true">
-            <a4j:ajax event="blur" render="nameField" execute="@this"/>
-          </h:inputText>
-          <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-            <rich:tooltip>
-              #{messages['jsf.NameToolTip']}
-            </rich:tooltip>
-          </s:span>
-        </s:decorate>
-        <ui:remove>
-          <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
-        </ui:remove>
-        <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
-          rendered="#{profileAction.newUser}" enclose="true">
-          <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-          <h:inputText id="username" value="#{profileAction.username}"
-            required="true">
-            <a4j:ajax event="blur" render="usernameField" execute="@this"/>
-          </h:inputText>
+        <h1 class="l--push-all-0">#{messages['jsf.EditProfile']}</h1>
 
-          <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-            <rich:tooltip>
-              #{messages['jsf.UsernameToolTip']}
-            </rich:tooltip>
-          </s:span>
-        </s:decorate>
-        <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
-          <h:inputText id="email" value="#{profileAction.email}"
-            required="true">
-            <a4j:ajax event="blur" render="emailField"/>
-          </h:inputText>
+        <h:form id="profile-form">
+          <ui:include src="../WEB-INF/layout/profile/edit_form.xhtml"/>
 
-          <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-            <rich:tooltip>
-              #{messages['jsf.EmailToolTip']}
-            </rich:tooltip>
-          </s:span>
+          <div class="l--push-top-1">
+            <h:commandButton id="user-create-new"
+              value="#{messages['jsf.Save']}"
+              action="#{profileAction.edit}"
+              styleClass="l--push-right-half button--primary"/>
+            <s:button id="user-create-cancel" styleClass="button button-link"
+              value="#{messages['jsf.Cancel']}"
+              action="#{profileAction.cancel}"/>
+          </div>
 
-        </s:decorate>
 
-        <div style="clear:both"></div>
-
-        <div class="actionButtons">
-          <h:commandButton id="saveButton" value="#{messages['jsf.Save']}"
-            action="#{profileAction.edit}"/>
-          <s:button id="cancelButton" value="#{messages['jsf.Cancel']}"
-            action="#{profileAction.cancel}"/>
-        </div>
-      </rich:panel>
-    </h:form>
-
+        </h:form>
+      </div>
+    </div>
   </ui:define>
+
 
 </ui:composition>
