@@ -18,6 +18,21 @@
     <url>https://github.com/zanata/zanata-client</url>
   </scm>
 
+  <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <properties>
     <zanata.api.version>3.2-SNAPSHOT</zanata.api.version>
     <zanata.common.version>3.1-SNAPSHOT</zanata.common.version>
