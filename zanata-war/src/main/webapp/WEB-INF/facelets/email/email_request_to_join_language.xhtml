@@ -20,7 +20,8 @@
     <p>
       #{messages['jsf.email.joinrequest.UserRequestingToJoin']}
       <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
-        <br/>#{messages['jsf.email.joinrequest.RoleRequested']}
+        <br/><h:outputText
+        value="#{messages['jsf.email.joinrequest.RoleRequested']}"/>
         <ul>
           <s:fragment
             rendered="#{languageJoinUpdateRoleAction.requestAsTranslator}">
