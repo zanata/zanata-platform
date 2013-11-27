@@ -29,6 +29,39 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * <p>Optional element used to attach system commands to run before or after a
+ * Zanata command (the "hooked command"). The hooked command is specified in the
+ * "command" attribute.</p>
+ *
+ * <p>Include {@code <hook>} elements within a {@code <hooks>} element in the
+ * {@code <config>} element of zanata.xml. Each command should have zero or one
+ * hooks. Each hook can have any number of {@code <before>} and {@code <after>}
+ * elements.</p>
+ *
+ * <p>Commands specified in {@code <before>} elements will be run before the hooked
+ * command, in the order that they are specified. Commands specified in
+ * {@code <after>} elements are similarly run in order after the hooked command
+ * successfully completes. If any command fails, including the hooked command,
+ * no further commands will be run.</p>
+ *
+ * e.g.
+ *
+ * <pre>
+ * {@code
+ * <hooks>
+ *   <hook command="push">
+ *     <before>po4a-gettextize -f man -m manpage.1 -p manpage.pot</before>
+ *     <after>rm -f manpage.pot</after>
+ *   </hook>
+ *   <hook command="pull">
+ *     <after>po4a-translate -f man -m manpage.1 -p trans/de/manpage.po -l manpage.de.1 --keep 1</after>
+ *     <after>rm -rf trans</after>
+ *   </hook>
+ * </hooks>
+ * }
+ * </pre>
+ */
 @XmlType(name = "hookType", propOrder = { "befores", "afters" })
 public class CommandHook implements Serializable {
 

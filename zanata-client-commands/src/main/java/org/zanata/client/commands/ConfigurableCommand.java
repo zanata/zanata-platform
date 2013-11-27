@@ -40,7 +40,6 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
     private boolean deprecated;
     private String deprecationMessage;
 
-
     private static final Logger log = LoggerFactory
             .getLogger(ConfigurableCommand.class);
 
@@ -91,6 +90,11 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         runAfterActions();
     };
 
+    /**
+     * Runs the specific command, not including before- or after- actions.
+     *
+     * @throws Exception
+     */
     protected abstract void run() throws Exception;
 
     /**
