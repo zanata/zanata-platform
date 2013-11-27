@@ -46,7 +46,7 @@
     <navigation>
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule
         if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
@@ -465,6 +465,18 @@
       <rule if-outcome="view">
         <redirect view-id="/profile/view.xhtml" />
       </rule>
+    </navigation>
+  </page>
+
+  <page view-id="/profile/create_user.xhtml">
+    <restrict>#{identity.preAuthenticated}</restrict>
+    <navigation from-action="#{profileAction.createUser}">
+      <rule if-outcome="home">
+        <redirect view-id="/home.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{profileAction.cancel}">
+      <redirect view-id="/home.xhtml" />
     </navigation>
   </page>
 

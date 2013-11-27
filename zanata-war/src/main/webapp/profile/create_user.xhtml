@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  template="../WEB-INF/template/template.xhtml">
+
+  <ui:define
+    name="page_title">#{messages['jsf.Profile']}:#{messages['jsf.NewUser.Label']}</ui:define>
+
+  <ui:define name="center_content">
+    <div class="g--centered">
+      <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
+
+        <s:link view="/account/register.xhtml"
+          propagation="none"
+          rendered="#{applicationConfiguration.internalAuth}">
+          <p class="txt--meta l--push-all-0">#{messages['jsf.Signup']}</p>
+        </s:link>
+
+        <s:fragment
+          rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
+          <a href="#{applicationConfiguration.registerPath}">
+            <p class="txt--meta l--push-all-0">#{messages['jsf.Signup']}</p>
+          </a>
+        </s:fragment>
+
+        <h1 class="l--push-all-0">#{messages['jsf.NewUser.Label']}</h1>
+        <h:form id="profile-form">
+          <ui:include src="../WEB-INF/layout/profile/edit_form.xhtml"/>
+
+          <div class="l--push-top-1">
+            <h:commandButton id="user-create-new"
+              value="#{messages['jsf.NewUser.Create']}"
+              action="#{profileAction.createUser}"
+              styleClass="l--push-right-half button--primary"/>
+            <s:button id="user-create-cancel" styleClass="button button-link"
+              value="#{messages['jsf.Cancel']}"
+              action="#{profileAction.cancel}"/>
+          </div>
+
+
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+
+</ui:composition>
