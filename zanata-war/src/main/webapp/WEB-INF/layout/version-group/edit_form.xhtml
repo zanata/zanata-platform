@@ -9,11 +9,6 @@
   <div class="l--push-top-half form__item">
     <h:outputLabel for="slug">#{messages['jsf.GroupId']}
       <s:span styleClass="txt--required">*</s:span>
-      <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
-        <rich:tooltip>
-          <em><code>#{messages['jsf.GroupIdExample']}</code></em>
-        </rich:tooltip>
-      </s:span>
     </h:outputLabel>
     <s:decorate id="slugField" template="../field.xhtml" enclose="true">
       <h:inputText rendered="#{versionGroupHome.managed}"

@@ -223,6 +223,11 @@
   </rule>
 
   <rule>
+    <from casesensitive="true">^/profile/create(.+)?$</from>
+    <to last="true">/profile/create_user.seam$1</to>
+  </rule>
+
+  <rule>
     <from casesensitive="true">^/profile/view(.+)?$</from>
     <to last="true">/profile/view.seam$1</to>
   </rule>
@@ -516,6 +521,11 @@
   <outbound-rule>
     <from>^(/.+)?/profile/edit.seam(.+)?$</from>
     <to>$1/profile/edit$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/create_user.seam(.+)?$</from>
+    <to>$1/profile/create$2</to>
   </outbound-rule>
 
   <outbound-rule>

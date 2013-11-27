@@ -9,11 +9,6 @@
 
   <ui:define name="page_title">#{messages['jsf.EditProfile']}</ui:define>
   <ui:define name="center_content">
-    <div>
-      <h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}"
-        rendered="#{authenticationManager.newUser}"/>
-      <br/>
-    </div>
 
     <h1>#{messages['jsf.EditProfile']}</h1>
     <h:form id="editProfileForm">

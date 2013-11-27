@@ -9,11 +9,6 @@
   <div class="l--push-top-half form__item">
     <h:outputLabel for="name">#{messages['jsf.Name']}
       <s:span styleClass="txt--required">*</s:span>
-      <s:span styleClass="icon-info-circle-2 input_help" id="nameHelp">
-        <rich:tooltip>
-          #{messages['jsf.NameToolTip']}
-        </rich:tooltip>
-      </s:span>
     </h:outputLabel>
     <s:decorate id="nameField" template="../field.xhtml" enclose="true">
       <h:inputText id="name" value="#{profileAction.name}" required="true"
@@ -26,11 +21,6 @@
   <div class="l--push-top-half form__item">
     <h:outputLabel for="username">#{messages['jsf.Username']}
       <s:span styleClass="txt--required">*</s:span>
-      <s:span styleClass="icon-info-circle-2 input_help" id="usernameHelp">
-        <rich:tooltip>
-          #{messages['jsf.UsernameToolTip']}
-        </rich:tooltip>
-      </s:span>
     </h:outputLabel>
     <s:decorate id="usernameField" template="../field.xhtml" enclose="true">
       <h:inputText id="username" required="true" maxlength="80"
@@ -51,11 +41,6 @@
   <div class="l--push-top-half form__item">
     <h:outputLabel for="email">
       #{messages['jsf.Email']}
-      <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
-        <rich:tooltip>
-          #{messages['jsf.EmailToolTip']}
-        </rich:tooltip>
-      </s:span>
     </h:outputLabel>
     <s:decorate id="emailField" template="../field.xhtml">
       <h:inputText id="email" required="false"
