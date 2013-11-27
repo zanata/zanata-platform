@@ -573,6 +573,17 @@ package.
 
   <profiles>
     <profile>
+      <activation>
+        <jdk>[1.8</jdk>
+      </activation>
+      <properties>
+        <!-- FindBugs 2.0.x is not compatible with Java 8
+             See http://sourceforge.net/p/findbugs/bugs/1162/
+         -->
+        <findbugs.skip>true</findbugs.skip>
+      </properties>
+    </profile>
+    <profile>
       <id>sonatype-oss-release</id>
       <!-- This profile is enabled automatically by the Sonatype
            oss-parent POM when invoking the Maven Release Plugin -->
