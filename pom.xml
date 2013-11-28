@@ -36,7 +36,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>3.2-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.2.0</zanata.api.version>
   </properties>
 
   <build>
