@@ -1,5 +1,7 @@
 language: java
-script: "mvn test -Dgwt.compiler.skip -q"
+install: true
+script: mvn test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+
 jdk:
   - openjdk6
   - openjdk7
