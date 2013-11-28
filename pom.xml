@@ -18,6 +18,21 @@
     <url>https://github.com/zanata/zanata-api</url>
   </scm>
 
+  <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
