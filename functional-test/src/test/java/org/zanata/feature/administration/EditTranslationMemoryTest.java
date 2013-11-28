@@ -23,6 +23,7 @@ package org.zanata.feature.administration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
@@ -30,6 +31,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.TranslationMemoryEditPage;
 import org.zanata.page.administration.TranslationMemoryPage;
 import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.RetryRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -47,6 +49,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class EditTranslationMemoryTest {
     @ClassRule
     public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+
+    @Rule
+    public RetryRule retryRule = new RetryRule(2);
+
     TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @Before
