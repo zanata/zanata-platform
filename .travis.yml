@@ -3,4 +3,9 @@ jdk:
   - openjdk6
   - openjdk7
   - oraclejdk7
-#  - oraclejdk8
+  - oraclejdk8
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - jdk: oraclejdk8
