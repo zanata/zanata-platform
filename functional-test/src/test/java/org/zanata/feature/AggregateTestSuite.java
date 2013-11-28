@@ -28,6 +28,7 @@ import org.zanata.feature.dashboard.DashboardTestSuite;
 import org.zanata.feature.document.DocumentTestSuite;
 import org.zanata.feature.glossary.GlossaryTestSuite;
 import org.zanata.feature.googleopenid.GoogleOpenIDTestSuite;
+import org.zanata.feature.infrastructure.InfrastructureTestSuite;
 import org.zanata.feature.language.LanguageTestSuite;
 import org.zanata.feature.project.ProjectTestSuite;
 import org.zanata.feature.security.SecurityTestSuite;
@@ -42,7 +43,8 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
  *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ AccountTestSuite.class, AdministrationTestSuite.class,
+@Suite.SuiteClasses({InfrastructureTestSuite.class,
+        AccountTestSuite.class, AdministrationTestSuite.class,
         GlossaryTestSuite.class, SecurityTestSuite.class,
         CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
         DocumentTestSuite.class, DashboardTestSuite.class,
