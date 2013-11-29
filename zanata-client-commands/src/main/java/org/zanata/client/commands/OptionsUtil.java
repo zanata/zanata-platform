@@ -90,6 +90,10 @@ public class OptionsUtil {
         }
         LocaleList locales = config.getLocales();
         opts.setLocaleMapList(locales);
+
+        if (opts.getCommandHooks().isEmpty() && config.getHooks() != null) {
+            opts.setCommandHooks(config.getHooks());
+        }
     }
 
     /**

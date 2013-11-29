@@ -20,6 +20,16 @@
  */
 package org.zanata.client.commands;
 
+import java.util.List;
+
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.LogOutputStream;
+import org.apache.commons.exec.ShutdownHookProcessDestroyer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.client.config.CommandHook;
 import org.zanata.rest.client.ZanataProxyFactory;
 
 /**
@@ -34,6 +44,9 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
     private ZanataProxyFactory requestFactory;
     private boolean deprecated;
     private String deprecationMessage;
+
+    private static final Logger log = LoggerFactory
+            .getLogger(ConfigurableCommand.class);
 
     public ConfigurableCommand(O opts, ZanataProxyFactory factory) {
         this.opts = opts;
@@ -75,4 +88,74 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         return opts.getCommandName();
     }
 
+    @Override
+    public void runWithActions() throws Exception {
+        runBeforeActions();
+        run();
+        runAfterActions();
+    };
+
+    /**
+     * Runs the specific command, not including before- or after- actions.
+     *
+     * @throws Exception
+     */
+    protected abstract void run() throws Exception;
+
+    /**
+     * @throws Exception
+     *             if any of the commands fail
+     */
+    private void runBeforeActions() throws Exception {
+        for (CommandHook hook : getOpts().getCommandHooks()) {
+            if (isForThisCommand(hook)) {
+                runSystemCommands(hook.getBefores());
+            }
+        }
+    }
+
+    /**
+     * @throws Exception
+     *             if any of the commands fail.
+     */
+    private void runAfterActions() throws Exception {
+        for (CommandHook hook : getOpts().getCommandHooks()) {
+            if (isForThisCommand(hook)) {
+                runSystemCommands(hook.getAfters());
+            }
+        }
+    }
+
+    /**
+     * @throws Exception
+     *             if any of the commands fail.
+     */
+    private void runSystemCommands(List<String> commands) throws Exception {
+        for (String command : commands) {
+            log.info("[Running command]$ " + command);
+            try {
+                DefaultExecutor executor = new DefaultExecutor();
+                executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
+                CommandLine cmdLine = CommandLine.parse(command);
+                int exitValue = executor.execute(cmdLine);
+
+                if (exitValue != 0) {
+                    throw new Exception(
+                            "Command returned non-zero exit value: "
+                                    + exitValue);
+                }
+                log.info("    Completed with exit value: " + exitValue);
+            } catch (java.io.IOException e) {
+                throw new Exception("Failed to run command. " + e.getMessage(),
+                        e);
+            } catch (InterruptedException e) {
+                throw new Exception("Interrupted while running command. "
+                        + e.getMessage(), e);
+            }
+        }
+    }
+
+    private boolean isForThisCommand(CommandHook hook) {
+        return this.getName().equals(hook.getCommand());
+    }
 }

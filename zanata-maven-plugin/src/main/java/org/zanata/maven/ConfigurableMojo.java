@@ -2,6 +2,8 @@ package org.zanata.maven;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -10,6 +12,7 @@ import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.config.CommandHook;
 
 import com.pyx4j.log4j.MavenLogAppender;
 
@@ -70,6 +73,8 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
      * @parameter expression="${zanata.key}"
      */
     private String key;
+
+    private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
 
     /**
      * Interactive mode is enabled by default, but can be disabled using Maven's
@@ -152,7 +157,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
                 getLog().warn("Command \"" + name + "\" has been deprecated");
             }
         }
-        command.run();
+        command.runWithActions();
     }
 
     public abstract ConfigurableCommand<O> initCommand();
@@ -271,6 +276,16 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     @Override
     public File getUserConfig() {
         return userConfig;
+    }
+
+    @Override
+    public void setCommandHooks(List<CommandHook> commandHooks) {
+        this.commandHooks = commandHooks;
+    }
+
+    @Override
+    public List<CommandHook> getCommandHooks() {
+        return commandHooks;
     }
 
     @Override

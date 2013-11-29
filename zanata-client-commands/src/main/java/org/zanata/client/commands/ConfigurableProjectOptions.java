@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.io.File;
 
+
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;
 
@@ -52,5 +53,4 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
     public LocaleList getLocaleMapList();
 
     public void setLocaleMapList(LocaleList locales);
-
 }

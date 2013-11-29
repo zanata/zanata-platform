@@ -22,6 +22,8 @@ package org.zanata.client.config;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -36,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlType(name = "configType", propOrder = { "url", "project", "projectVersion",
-        "projectType", "locales" })
+        "projectType", "hooks", "locales" })
 @XmlRootElement(name = "config")
 public class ZanataConfig implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -45,6 +47,7 @@ public class ZanataConfig implements Serializable {
     private URL url;
     private String projectType;
     private String projectVersion;
+    private List<CommandHook> hooks = new ArrayList<CommandHook>();
 
     public ZanataConfig() {
     }
@@ -57,6 +60,16 @@ public class ZanataConfig implements Serializable {
 
     public void setLocales(LocaleList locales) {
         this.locales = locales;
+    }
+
+    @XmlElementWrapper(name = "hooks", required = false)
+    @XmlElement(name = "hook")
+    public List<CommandHook> getHooks() {
+        return hooks;
+    }
+
+    public void setHooks(List<CommandHook> commandHooks) {
+        this.hooks = commandHooks;
     }
 
     @XmlElement(name = "project")
@@ -94,4 +107,5 @@ public class ZanataConfig implements Serializable {
     public void setProjectVersion(String version) {
         this.projectVersion = version;
     }
+
 }
