@@ -39,6 +39,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.web.FileUploadException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -371,11 +372,13 @@ public class ResourceUtils {
     }
 
     private boolean transferFromTextFlowExtensions(
-            ExtensionSet<TextFlowExtension> from, HTextFlow to,
+            TextFlow from, HTextFlow to,
             Set<String> enabledExtensions) {
         boolean changed = false;
+        ExtensionSet<TextFlowExtension> extensions = from.getExtensions(true);
         if (enabledExtensions.contains(PotEntryHeader.ID)) {
-            PotEntryHeader entryHeader = from.findByType(PotEntryHeader.class);
+            PotEntryHeader entryHeader =
+                    extensions.findByType(PotEntryHeader.class);
             if (entryHeader != null) {
                 HPotEntryData hEntryHeader = to.getPotEntryData();
 
@@ -386,11 +389,12 @@ public class ResourceUtils {
                     log.debug("set potentryheader");
                 }
                 changed |=
-                        transferFromPotEntryHeader(entryHeader, hEntryHeader);
+                        transferFromPotEntryHeader(entryHeader, hEntryHeader,
+                                from);
             }
         }
         if (enabledExtensions.contains(SimpleComment.ID)) {
-            SimpleComment comment = from.findByType(SimpleComment.class);
+            SimpleComment comment = extensions.findByType(SimpleComment.class);
             if (comment != null) {
                 HSimpleComment hComment = to.getComment();
 
@@ -414,10 +418,11 @@ public class ResourceUtils {
      * @see #transferToPotEntryHeader(HPotEntryData, PotEntryHeader)
      * @param from
      * @param to
+     * @param textFlow
      * @return
      */
     private boolean transferFromPotEntryHeader(PotEntryHeader from,
-            HPotEntryData to) {
+            HPotEntryData to, TextFlow textFlow) {
         boolean changed = false;
 
         if (!equals(from.getContext(), to.getContext())) {
@@ -426,7 +431,15 @@ public class ResourceUtils {
         }
 
         List<String> flagList = from.getFlags();
-        String flags = StringUtil.concat(from.getFlags(), ',');
+        // rhbz1012502 - should not store fuzzy tag in source document
+        if (flagList.contains("fuzzy")) {
+            throw new FileUploadException(String.format(
+                    "Please remove fuzzy flags from document. "
+                            + "First fuzzy flag was found on "
+                            + "text flow %s with content %s", textFlow.getId(),
+                    textFlow.getContents()));
+        }
+        String flags = StringUtil.concat(flagList, ',');
         if (flagList.isEmpty()) {
             flags = null;
         }
@@ -603,7 +616,7 @@ public class ResourceUtils {
 
         // TODO from.getLang()
 
-        transferFromTextFlowExtensions(from.getExtensions(true), to,
+        transferFromTextFlowExtensions(from, to,
                 enabledExtensions);
 
         return changed;
@@ -1156,7 +1169,7 @@ public class ResourceUtils {
     }
 
     /**
-     * @see #transferFromPotEntryHeader(PotEntryHeader, HPotEntryData)
+     * @see #transferFromPotEntryHeader(org.zanata.rest.dto.extensions.gettext.PotEntryHeader, org.zanata.model.po.HPotEntryData, org.zanata.rest.dto.resource.TextFlow)
      * @param from
      * @param to
      */

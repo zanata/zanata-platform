@@ -102,8 +102,10 @@
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
-    <navigation>
-      <rule if="#{identity.loggedIn}">
+
+    <action execute="#{identity.isLoggedIn()}" />
+    <navigation from-action="#{identity.isLoggedIn()}">
+      <rule if-outcome="true">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
     </navigation>
@@ -164,8 +166,9 @@
   </page>
 
   <page view-id="/account/register.xhtml">
-    <navigation>
-      <rule if="#{identity.loggedIn}">
+    <action execute="#{identity.isLoggedIn()}" />
+    <navigation from-action="#{identity.isLoggedIn()}">
+      <rule if-outcome="true">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
     </navigation>
