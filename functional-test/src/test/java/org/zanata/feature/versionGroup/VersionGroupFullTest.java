@@ -25,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
@@ -100,28 +99,20 @@ public class VersionGroupFullTest {
     }
 
     @Test
-    @Ignore("rhbz1034551")
     public void groupIDFieldSize() {
-        String errorMsg = "value must be shorter than or equal to 40 characters";
-        String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmno";
+        String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmn";
+        String groupIDExtra = "xyz";
         String groupName = "verifyIDFieldSizeName";
 
-        CreateVersionGroupPage groupPage =
-                dashboardPage.goToGroups().createNewGroup();
-        groupPage.inputGroupId(groupID).inputGroupName(groupName)
-                .saveGroupFailure();
-        assertThat("Invalid length error is shown",
-                groupPage.getFieldValidationErrors(),
-                Matchers.contains(errorMsg));
+        CreateVersionGroupPage groupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID + groupIDExtra)
+                .inputGroupName(groupName);
 
-        groupPage.clearFields();
-        groupID = groupID.substring(0, 40);
-        assertThat("GroupID is now 40 characters long", groupID.length(),
-                Matchers.equalTo(40));
-        groupPage.inputGroupId(groupID).inputGroupName(groupName);
-        VersionGroupsPage versionGroupsPage = groupPage.saveGroup();
-        assertThat("A group ID of 40 chars is valid",
-                versionGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
+        assertThat("User cannot enter more than 40 characters",
+                groupPage.getGroupIdValue(),
+                Matchers.equalTo(groupID));
     }
 
     @Test

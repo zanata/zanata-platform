@@ -51,8 +51,8 @@ public class CreateVersionGroupPage extends BasePage {
         return groupNameField;
     }
 
-    public WebElement getInputGroupId() {
-        return groupSlugField;
+    public String getGroupIdValue() {
+        return groupSlugField.getAttribute("value");
     }
 
     public WebElement getInputGroupDescription() {
