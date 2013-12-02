@@ -39,7 +39,7 @@ public class DocumentTypeTest {
         assertThat(allExtensions, not(empty()));
         assertThat(
                 allExtensions,
-                containsInAnyOrder("po", "pot", "txt", "dtd", "idml",
+                containsInAnyOrder("po", "pot", "txt", "dtd", "idml", "html",
                         // "properties",
                         "odt", "fodt", "odp", "fodp", "ods", "fods", "odg",
                         "fodg", "odb", "odf"));
