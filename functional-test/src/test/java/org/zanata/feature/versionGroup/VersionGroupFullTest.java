@@ -43,8 +43,10 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @Category(DetailedTest.class)
 public class VersionGroupFullTest {
+
     @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    public static ResetDatabaseRule resetDatabaseRule =
+            new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
     private DashboardPage dashboardPage;
 
     @Before
@@ -151,6 +153,29 @@ public class VersionGroupFullTest {
                 groupPage.inputGroupDescription(groupDescription).saveGroup();
         assertThat("A group description of 100 chars is valid",
                 verGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
+
+    }
+
+    @Test
+    public void addANewProjectVersionToAnEmptyGroup() {
+        String groupID = "add-version-to-empty-group";
+        String groupName = "AddVersionToEmptyGroup";
+        VersionGroupPage versionGroupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .saveGroup()
+                .goToGroup(groupName)
+                .clickProjectsTab()
+                .clickAddProjectVersionsButton()
+                .enterProjectVersion("about-fedora master")
+                .clickAddProjectButton()
+                .clickProjectsTab();
+
+        assertThat("The version group shows in the list",
+                versionGroupPage.getProjectVersionsInGroup(),
+                Matchers.hasItem("about-fedora master"));
 
     }
 

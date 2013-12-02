@@ -80,17 +80,22 @@ public class VersionGroupPage extends BasePage {
         return this;
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Get the list of project versions attached to the group
+     * @return a list of version group identifiers in the format
+     *         "$projectID $version"
+     */
     public List<String> getProjectVersionsInGroup() {
 
-        List<WebElement> elements =
-                WebElementUtil
-                        .getListItems(getDriver(), versionsInGroupTableBy);
+        List<WebElement> elements = WebElementUtil
+                .getListItems(getDriver(), versionsInGroupTableBy);
 
         List<String> result = new ArrayList<String>();
 
         for (WebElement element : elements) {
-            result.add(element.getText());
+            result.add(element
+                    .findElement(By.className("list__title"))
+                    .getText());
         }
         return result;
     }
@@ -121,4 +126,41 @@ public class VersionGroupPage extends BasePage {
         WebElement tab = getDriver().findElement(By.id(tabId));
         tab.click();
     }
+
+    public VersionGroupPage clickProjectsTab() {
+        getDriver().findElement(By.id("projects_tab")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickAddProjectVersionsButton() {
+        WebElement addProjectVersionButton =
+                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        return driver.findElement(By
+                                .xpath("//*[@href='#settings-projects']"));
+                    }
+                });
+        addProjectVersionButton.click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    /**
+     * Enter a project version identifier
+     * @param projectVersion identifier in format "$projectID $version"
+     * @return new VersionGroupPage
+     */
+    public VersionGroupPage enterProjectVersion(String projectVersion) {
+        getDriver().findElement(By.id("settings-projects-form:newVersionField:"+
+                "newVersionInput"))
+                .sendKeys(projectVersion);
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickAddProjectButton() {
+        getDriver().findElement(By.id(
+                "settings-projects-form:group-add-new-project-button")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
 }
