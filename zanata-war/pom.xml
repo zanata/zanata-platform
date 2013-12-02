@@ -149,7 +149,6 @@
             <usedDependency>org.jboss.resteasy:resteasy-jackson-provider</usedDependency>
             <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
             <usedDependency>org.jboss.seam:jboss-seam-mail</usedDependency>
-            <usedDependency>org.liquibase.ext:modify-column</usedDependency>
             <usedDependency>org.openxri:openxri-client</usedDependency>
             <usedDependency>org.openxri:openxri-syntax</usedDependency>
             <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
@@ -1811,14 +1810,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.liquibase.ext</groupId>
-      <artifactId>modify-column</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.mattbertolini</groupId>
       <artifactId>liquibase-slf4j</artifactId>
-      <version>1.0.0</version>
+      <version>1.2.1</version>
     </dependency>
 
     <dependency>

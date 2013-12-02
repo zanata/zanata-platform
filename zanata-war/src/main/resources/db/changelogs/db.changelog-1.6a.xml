@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog 
    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
-                  http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <!--
     This changelog file is the real changelog for Zanata 1.6.
@@ -169,7 +167,8 @@
 	<changeSet author="camunoz@redhat.com" id="9" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALEPRO"/>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALEPRO"
+          foreignKeyTableName="HProject_Locale"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint 
@@ -182,7 +181,8 @@
 	<changeSet author="camunoz@redhat.com" id="10" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALELOC"/>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTLOCALELOC"
+          foreignKeyTableName="HProject_Locale"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint 
@@ -195,7 +195,8 @@
 	<changeSet author="camunoz@redhat.com" id="11" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCPRO"/>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCPRO"
+          foreignKeyTableName="HProjectIteration_Locale"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint 
@@ -208,7 +209,8 @@
 	<changeSet author="camunoz@redhat.com" id="12" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCLOC"/>
+				<foreignKeyConstraintExists foreignKeyName="FKHPROJECTITELOCLOC"
+          foreignKeyTableName="HProjectIteration_Locale"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint 
@@ -223,7 +225,8 @@
 	<changeSet author="camunoz@redhat.com" id="13" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_glossary_entry_id"/>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_glossary_entry_id"
+          foreignKeyTableName="HGlossaryTerm"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
@@ -233,7 +236,8 @@
 	<changeSet author="camunoz@redhat.com" id="14" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_localeId"/>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryterm_localeId"
+          foreignKeyTableName="HGlossaryTerm"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint baseTableName="HGlossaryTerm"
@@ -243,7 +247,8 @@
 	<changeSet author="camunoz@redhat.com" id="15" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="UKtermComment_glossaryTerm"/>
+				<foreignKeyConstraintExists foreignKeyName="UKtermComment_glossaryTerm"
+          foreignKeyTableName="HTermComment"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint baseTableName="HTermComment"
@@ -253,7 +258,8 @@
 	<changeSet author="camunoz@redhat.com" id="16" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="UKglossaryentry_srcLocaleId"/>
+				<foreignKeyConstraintExists foreignKeyName="UKglossaryentry_srcLocaleId"
+          foreignKeyTableName="HGlossaryEntry"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
@@ -265,7 +271,8 @@
 	<changeSet author="camunoz@redhat.com" id="17" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow"/>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow"
+          foreignKeyTableName="HTextFlowContent"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint constraintName="FKcontent_text_flow" 
@@ -275,7 +282,8 @@
 	<changeSet author="camunoz@redhat.com" id="18" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_history"/>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_history"
+          foreignKeyTableName="HTextFlowContentHistory"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint constraintName="FKcontent_text_flow_history" 
@@ -285,7 +293,8 @@
 	<changeSet author="camunoz@redhat.com" id="19" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target"/>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target"
+          foreignKeyTableName="HTextFlowTargetContent"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target" 
@@ -295,7 +304,8 @@
 	<changeSet author="camunoz@redhat.com" id="20" dbms="mysql">
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target_history"/>
+				<foreignKeyConstraintExists foreignKeyName="FKcontent_text_flow_target_history"
+          foreignKeyTableName="HTextFlowTargetContentHistory"/>
 			</not>
 		</preConditions>
 		<addForeignKeyConstraint constraintName="FKcontent_text_flow_target_history" 

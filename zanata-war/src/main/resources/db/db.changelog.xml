@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-1.0.xml" />
@@ -33,6 +33,9 @@
     file="changelogs/db.changelog-3.2.xml" />
 
   <!-- NB: triggers must be created after all table changes -->
+  <!-- If the Liquibase version is being updated, please refer to the
+   file below and change the ids of the trigger change sets to reflect the
+   updated Liquibase version-->
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-triggers.xml" />
 </databaseChangeLog>
