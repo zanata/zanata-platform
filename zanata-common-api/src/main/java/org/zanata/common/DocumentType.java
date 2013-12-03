@@ -66,6 +66,7 @@ public enum DocumentType {
     }
 
     // FIXME damason: rename getExtension to toString
+    @Deprecated
     public String getExtension() {
         return extensions.get(0);
     }
