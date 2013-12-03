@@ -188,13 +188,13 @@ public class ProfileAction implements Serializable {
     }
 
     @Transactional
-    public String edit() {
+    public void edit() {
         this.valid = true;
         validateEmail(this.email);
         validateUsername(username);
 
         if (!this.isValid()) {
-            return null;
+            return;
         }
 
         if (authenticatedAccount != null) {
@@ -215,42 +215,44 @@ public class ProfileAction implements Serializable {
                         .instance()
                         .add("You will soon receive an email with a link to activate your email account change.");
             }
-
-            return "updated";
-        } else {
-
-            String key;
-            if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS
-                    || identity.getCredentials().getAuthType() == AuthenticationType.JAAS) {
-                key =
-                        registerServiceImpl.register(this.username,
-                                this.username, this.email);
-            } else {
-                key =
-                        registerServiceImpl.register(this.username,
-                                zanataOpenId.getAuthResult()
-                                        .getAuthenticatedId(),
-                                AuthenticationType.OPENID, this.name,
-                                this.email);
-            }
-            setActivationKey(key);
-            renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
-            identity.unAuthenticate();
-            FacesMessages
-                    .instance()
-                    .add("You will soon receive an email with a link to activate your account.");
-
-            return "home";
         }
     }
 
-    public String cancel() {
+    @Transactional
+    public void createUser() {
+        this.valid = true;
+        validateEmail(this.email);
+        validateUsername(username);
+
+        if (!this.isValid()) {
+            return;
+        }
+
+        String key;
+        if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS
+                || identity.getCredentials().getAuthType() == AuthenticationType.JAAS) {
+            key =
+                    registerServiceImpl.register(this.username, this.username,
+                            this.email);
+        } else {
+            key =
+                    registerServiceImpl.register(this.username, zanataOpenId
+                            .getAuthResult().getAuthenticatedId(),
+                            AuthenticationType.OPENID, this.name, this.email);
+        }
+        setActivationKey(key);
+        renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
+        identity.unAuthenticate();
+        FacesMessages
+                .instance()
+                .add("You will soon receive an email with a link to activate your account.");
+    }
+
+    public void cancel() {
         if (identityStore.isNewUser(username)) {
             // Log the identity out
             identity.logout();
-            return "home";
         }
-        return "view";
     }
 
     public boolean isValid() {

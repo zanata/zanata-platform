@@ -46,7 +46,7 @@
     <navigation>
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule
         if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
@@ -454,20 +454,20 @@
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.EditProfile'])}" />
     <navigation from-action="#{profileAction.edit}">
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if-outcome="updated">
-        <redirect view-id="/profile/view.xhtml" />
-      </rule>
+      <redirect view-id="/profile/view.xhtml" />
     </navigation>
     <navigation from-action="#{profileAction.cancel}">
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if-outcome="view">
-        <redirect view-id="/profile/view.xhtml" />
-      </rule>
+      <redirect view-id="/profile/view.xhtml" />
+    </navigation>
+  </page>
+
+  <page view-id="/profile/create_user.xhtml">
+    <restrict>#{identity.preAuthenticated}</restrict>
+    <navigation from-action="#{profileAction.createUser}">
+      <redirect view-id="/home.xhtml" />
+    </navigation>
+    <navigation from-action="#{profileAction.cancel}">
+      <redirect view-id="/account/register.xhtml" />
     </navigation>
   </page>
 
