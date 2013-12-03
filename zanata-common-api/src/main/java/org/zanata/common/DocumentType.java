@@ -3,7 +3,10 @@ package org.zanata.common;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public enum DocumentType {
     GETTEXT_PORTABLE_OBJECT("po"), GETTEXT_PORTABLE_OBJECT_TEMPLATE("pot"),
@@ -15,20 +18,19 @@ public enum DocumentType {
     OPEN_DOCUMENT_GRAPHICS("odg"), OPEN_DOCUMENT_GRAPHICS_FLAT("fodg"),
     OPEN_DOCUMENT_DATABASE("odb"), OPEN_DOCUMENT_FORMULA("odf"),
 
-    IDML("idml");
+    HTML("html", "htm"), IDML("idml");
 
     private static final List<String> allExtensions = buildExtensionsList();
 
     private static List<String> buildExtensionsList() {
         List<String> allExtensions = new ArrayList<String>();
         for (DocumentType type : DocumentType.values()) {
-            allExtensions.add(type.getExtension());
+            allExtensions.addAll(type.extensions);
         }
         return unmodifiableList(allExtensions);
     }
 
     /**
-     *
      * @return a read-only list of file extensions for known file types
      */
     public static List<String> getAllExtensions() {
@@ -38,7 +40,7 @@ public enum DocumentType {
     // FIXME damason: rename typeFor to fromString
     public static DocumentType typeFor(String extension) {
         for (DocumentType type : DocumentType.values()) {
-            if (type.getExtension().equals(extension)) {
+            if (type.extensions.contains(extension)) {
                 return type;
             }
         }
@@ -46,15 +48,30 @@ public enum DocumentType {
         return null;
     }
 
-    private final String extension;
+    private final List<String> extensions;
 
-    DocumentType(String extension) {
-        this.extension = extension;
+    /**
+     * Create a document type enum constant with the given list of extensions.
+     * At least one extension must be specified.
+     *
+     * @throws IllegalArgumentException
+     *             if no extensions are specified
+     */
+    DocumentType(@Nonnull String... extensions) throws IllegalArgumentException {
+        if (extensions.length == 0) {
+            throw new IllegalArgumentException(
+                    "DocumentType must be constructed with at least one extension.");
+        }
+        this.extensions = unmodifiableList(Arrays.asList(extensions));
     }
 
     // FIXME damason: rename getExtension to toString
+    @Deprecated
     public String getExtension() {
-        return extension;
+        return extensions.get(0);
     }
 
+    public List<String> getExtensions() {
+        return extensions;
+    }
 }

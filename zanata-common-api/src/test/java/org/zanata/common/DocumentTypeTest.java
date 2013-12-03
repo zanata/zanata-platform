@@ -6,7 +6,6 @@ import static org.zanata.common.DocumentType.*;
 
 import java.util.List;
 
-import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 @Test(groups = { "unit-tests" })
@@ -39,10 +38,9 @@ public class DocumentTypeTest {
         assertThat(allExtensions, not(empty()));
         assertThat(
                 allExtensions,
-                containsInAnyOrder("po", "pot", "txt", "dtd", "idml",
-                        // "properties",
-                        "odt", "fodt", "odp", "fodp", "ods", "fods", "odg",
-                        "fodg", "odb", "odf"));
+                containsInAnyOrder("po", "pot", "txt", "dtd", "idml", "html",
+                        "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
+                        "odg", "fodg", "odb", "odf"));
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
@@ -63,4 +61,10 @@ public class DocumentTypeTest {
         allExtensions.remove(0);
     }
 
+    public void getExtensionsHasCorrectValues() {
+        // given: HTML has extensions "html" and "htm"
+        assertThat(HTML.getExtensions().contains("html"), is(true));
+        assertThat(HTML.getExtensions().contains("htm"), is(true));
+        assertThat(HTML.getExtensions().contains("idml"), is(false));
+    }
 }
