@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import static org.jboss.seam.ScopeType.STATELESS;
 import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT;
 import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_DATABASE;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_FORMULA;
@@ -54,6 +55,7 @@ import org.jboss.seam.annotations.Scope;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
+import org.zanata.adapter.HTMLAdapter;
 import org.zanata.adapter.IDMLAdapter;
 import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
@@ -100,6 +102,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(PLAIN_TEXT, PlainTextAdapter.class);
         DOCTYPEMAP.put(XML_DOCUMENT_TYPE_DEFINITION, DTDAdapter.class);
         DOCTYPEMAP.put(IDML, IDMLAdapter.class);
+        DOCTYPEMAP.put(HTML, HTMLAdapter.class);
     }
 
     private static Set<String> SUPPORTED_EXTENSIONS =
