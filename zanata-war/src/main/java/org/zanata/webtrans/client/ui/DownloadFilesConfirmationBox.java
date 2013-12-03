@@ -7,14 +7,11 @@ import org.zanata.webtrans.client.view.DocumentListDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -25,15 +22,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class DownloadFilesConfirmationBox extends DialogBox {
 
     private final WebTransMessages messages;
-    private final HorizontalPanel infoPanel;
-    private final HorizontalPanel progressPanel;
+    private final UnorderedListWidget progressPanel;
     private final Label progressMessage;
     private final Anchor downloadLink;
     private final Image progressImage;
 
-    private final HorizontalPanel buttonPanel;
-    private final PushButton cancelButton;
-    private final PushButton okButton;
+    private final UnorderedListWidget buttonPanel;
+    private final Button cancelButton;
+    private final Button okButton;
 
     public DownloadFilesConfirmationBox(boolean autoHide,
             WebTransMessages messages, final Resources resources) {
@@ -41,39 +37,36 @@ public class DownloadFilesConfirmationBox extends DialogBox {
         this.messages = messages;
         setText(messages.downloadAllFiles());
         setGlassEnabled(true);
-        setStyleName("gwt-DialogBox-NoFixedSize");
+        setStyleName("gwt-DialogBox");
 
         VerticalPanel panel = new VerticalPanel();
+        panel.setStyleName("new-zanata");
 
-        Label infoMessage = new Label(messages.prepareDownloadConfirmation());
-        InlineLabel infoImg = new InlineLabel();
+        UnorderedListWidget infoPanel = new UnorderedListWidget();
+        infoPanel.setStyleName("list--horizontal");
+
+        ListItemWidget infoImg = new ListItemWidget();
         infoImg.setStyleName("icon-help-circle");
 
-        infoPanel = new HorizontalPanel();
-        infoPanel.setStyleName("info");
         infoPanel.add(infoImg);
-        infoPanel.add(infoMessage);
-        infoPanel.setCellVerticalAlignment(infoMessage,
-                HasVerticalAlignment.ALIGN_MIDDLE);
+        infoPanel
+                .add(new ListItemWidget(messages.prepareDownloadConfirmation()));
 
-        cancelButton = new PushButton(messages.cancel());
-        cancelButton.addStyleName("button");
+        cancelButton = new Button(messages.cancel());
+        okButton = new Button(messages.ok());
 
-        okButton = new PushButton(messages.ok());
-        okButton.addStyleName("button");
-
-        buttonPanel = new HorizontalPanel();
-        buttonPanel.setStyleName("buttonPanel");
-        buttonPanel.add(cancelButton);
-        buttonPanel.add(okButton);
+        buttonPanel = new UnorderedListWidget();
+        buttonPanel.setStyleName("list--horizontal l--float-right");
+        buttonPanel.add(new ListItemWidget(cancelButton));
+        buttonPanel.add(new ListItemWidget(okButton));
 
         progressImage = new Image(resources.progressLoading());
         progressMessage = new Label();
 
-        progressPanel = new HorizontalPanel();
-        progressPanel.setSpacing(5);
-        progressPanel.setStyleName("progress");
+        progressPanel = new UnorderedListWidget();
+        progressPanel.setStyleName("list--horizontal");
         progressPanel.setVisible(false);
+
         showDownloadLink(false);
 
         panel.add(infoPanel);
@@ -114,16 +107,11 @@ public class DownloadFilesConfirmationBox extends DialogBox {
     public void showDownloadLink(boolean show) {
         progressPanel.clear();
         if (show) {
-            progressPanel.add(downloadLink);
+            progressPanel.add(new ListItemWidget(downloadLink));
             cancelButton.setText(messages.close());
         } else {
-            progressPanel.add(progressImage);
-            progressPanel.add(progressMessage);
-
-            progressPanel.setCellVerticalAlignment(progressImage,
-                    HasVerticalAlignment.ALIGN_MIDDLE);
-            progressPanel.setCellVerticalAlignment(progressMessage,
-                    HasVerticalAlignment.ALIGN_MIDDLE);
+            progressPanel.add(new ListItemWidget(progressImage));
+            progressPanel.add(new ListItemWidget(progressMessage));
         }
     }
 

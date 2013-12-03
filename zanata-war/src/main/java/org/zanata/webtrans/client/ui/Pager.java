@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -40,8 +39,8 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,22 +58,17 @@ public class Pager extends Composite implements HasPager {
     }
 
     interface Styles extends CssResource {
-        String enabled();
-
         String disabled();
     }
 
     @UiField
-    InlineLabel firstPage, lastPage, nextPage, prevPage;
+    Anchor firstPage, lastPage, nextPage, prevPage;
 
     @UiField
     TextBox gotoPage;
 
     @UiField
     Label pageCountLabel;
-
-    @UiField(provided = true)
-    Resources resources;
 
     @UiField
     Styles style;
@@ -84,8 +78,7 @@ public class Pager extends Composite implements HasPager {
     private int currentPage;
     private boolean isFocused;
 
-    public Pager(final WebTransMessages messages, final Resources resources) {
-        this.resources = resources;
+    public Pager(final WebTransMessages messages) {
         initWidget(uiBinder.createAndBindUi(this));
 
         // set tooltips of page nav icons, i18n-ized w/ WebTransMessages.java
@@ -207,7 +200,7 @@ public class Pager extends Composite implements HasPager {
     };
 
     private boolean isButtonEnabled(Widget button) {
-        return button.getStyleName().contains(style.enabled());
+        return !button.getStyleName().contains(style.disabled());
     }
 
     @Override
@@ -220,12 +213,10 @@ public class Pager extends Composite implements HasPager {
         return gotoPage.addBlurHandler(handler);
     }
 
-    private void setEnabled(InlineLabel button, boolean enabled) {
+    private void setEnabled(Anchor button, boolean enabled) {
         if (enabled) {
             button.removeStyleName(style.disabled());
-            button.addStyleName(style.enabled());
         } else {
-            button.removeStyleName(style.enabled());
             button.addStyleName(style.disabled());
         }
     }

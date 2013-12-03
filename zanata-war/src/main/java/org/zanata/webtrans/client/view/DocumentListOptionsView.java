@@ -25,49 +25,34 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class DocumentListOptionsView extends Composite implements
         DocumentListOptionsDisplay {
     interface DocumentListOptionsUiBinder extends
-            UiBinder<VerticalPanel, DocumentListOptionsView> {
+            UiBinder<Widget, DocumentListOptionsView> {
     }
 
     private static DocumentListOptionsUiBinder uiBinder = GWT
             .create(DocumentListOptionsUiBinder.class);
 
     @UiField
-    Label pageSizeHeader;
+    Anchor twentyFiveDoc, fiftyDoc, hundredDoc, twoHundredFiftyDoc;
 
     @UiField
-    InlineLabel twentyFiveDoc, fiftyDoc, hundredDoc, twoHundredFiftyDoc;
-
-    @UiField
-    Styles style;
+    WebTransMessages messages;
 
     private Listener listener;
 
-    interface Styles extends CssResource {
-        String selectedPageSize();
-    }
-
     @Inject
-    public DocumentListOptionsView(WebTransMessages messages) {
+    public DocumentListOptionsView() {
         initWidget(uiBinder.createAndBindUi(this));
-        pageSizeHeader.setText(messages.pageSize());
-        twentyFiveDoc.setText("25");
-        fiftyDoc.setText("50");
-        hundredDoc.setText("100");
-        twoHundredFiftyDoc.setText("250");
     }
 
     @Override
@@ -78,34 +63,34 @@ public class DocumentListOptionsView extends Composite implements
     @UiHandler("twentyFiveDoc")
     public void onTwentyFiveDocClicked(ClickEvent event) {
         listener.onPageSizeClick(25);
-        onPageSizeChanged(twentyFiveDoc, 25);
+        onPageSizeChanged(twentyFiveDoc);
     }
 
     @UiHandler("fiftyDoc")
     public void onFiftyDocClicked(ClickEvent event) {
         listener.onPageSizeClick(50);
-        onPageSizeChanged(fiftyDoc, 50);
+        onPageSizeChanged(fiftyDoc);
     }
 
     @UiHandler("hundredDoc")
     public void onHundredDocClicked(ClickEvent event) {
         listener.onPageSizeClick(100);
-        onPageSizeChanged(hundredDoc, 100);
+        onPageSizeChanged(hundredDoc);
     }
 
     @UiHandler("twoHundredFiftyDoc")
     public void onTwoHundredFiftyDocClicked(ClickEvent event) {
         listener.onPageSizeClick(250);
-        onPageSizeChanged(twoHundredFiftyDoc, 250);
+        onPageSizeChanged(twoHundredFiftyDoc);
     }
 
-    private void onPageSizeChanged(InlineLabel selectedWidget, int pageSize) {
-        twentyFiveDoc.removeStyleName(style.selectedPageSize());
-        fiftyDoc.removeStyleName(style.selectedPageSize());
-        hundredDoc.removeStyleName(style.selectedPageSize());
-        twoHundredFiftyDoc.removeStyleName(style.selectedPageSize());
+    private void onPageSizeChanged(Anchor selectedWidget) {
+        twentyFiveDoc.addStyleName("txt--invert");
+        fiftyDoc.addStyleName("txt--invert");
+        hundredDoc.addStyleName("txt--invert");
+        twoHundredFiftyDoc.addStyleName("txt--invert");
 
-        selectedWidget.addStyleName(style.selectedPageSize());
+        selectedWidget.removeStyleName("txt--invert");
     }
 
     @Override

@@ -56,7 +56,6 @@ public class NotificationPresenterTest {
         notificationPresenter.bind();
 
         verify(mockDisplay).setMessagesToKeep(MSG_TO_KEEP);
-        verify(mockDisplay).setMessageOrder(DisplayOrder.ASCENDING);
         verify(mockDisplay).setListener(notificationPresenter);
     }
 

@@ -1,115 +1,53 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
-  xmlns:f="urn:import:org.zanata.webtrans.client"
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-  ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
-  ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
   ui:generateLocales="en">
 
   <ui:style>
-    .button {
-      float: right;
+    .container {
+      height: 30em;
     }
-
-    .content {
-      background-color: #ffffff;
-      padding: 2px;
-    }
-
-    .comment {
-      background: #d3d3d3;
-    }
-
-    .table {
-      table-layout: fixed;
-    }
-
-    .headerCol {
-      text-align: right;
-      width: 120px;
-      padding-top: 8px;
-    }
-
   </ui:style>
 
-  <g:DialogBox autoHide="true" modal="true" styleName="gwt-DialogBox-fixedSize">
-    <g:LayoutPanel>
-      <g:layer top="5px" height="90px" left="0" right="0">
-        <g:HTMLPanel>
-          <g:InlineLabel styleName="headerLabel alignTop" text="Locations:" />
-          <g:ListBox ui:field='documentListBox' visibleItemCount='5'
-            width="518px" />
-        </g:HTMLPanel>
-      </g:layer>
-
-      <g:layer top="100px" height="35px" left="0" right="0">
-        <g:HTMLPanel>
-          <g:InlineLabel styleName="headerLabel" text="Project/Iteration:" />
-          <g:InlineLabel ui:field='projectIterationName' />
-          <br />
-          <g:InlineLabel styleName="headerLabel" text="Document:" />
-          <g:InlineLabel ui:field='docName' />
-        </g:HTMLPanel>
-      </g:layer>
-
-      <g:layer top="140px" height="185px" left="0" right="0px">
-        <g:ScrollPanel height="185px" width="100%">
-          <g:Grid styleName="{style.table}">
-            <g:row>
-              <g:customCell styleName="{style.headerCol}">
-                <g:Label styleName="headerLabel" text="Source:" />
-              </g:customCell>
-              <g:customCell>
-                <g:SimplePanel ui:field="sourceTextContainer"
-                  styleName="{style.content}" />
-              </g:customCell>
-            </g:row>
-            <g:row>
-              <g:customCell styleName="{style.headerCol}">
-                <g:Label styleName="headerLabel" text="Source Comment:" />
-              </g:customCell>
-              <g:customCell>
-                <g:Label ui:field='sourceComment' styleName="{style.comment}" />
-              </g:customCell>
-            </g:row>
-            <g:row>
-              <g:customCell styleName="{style.headerCol}">
-                <g:Label styleName="headerLabel" text="Target:" />
-              </g:customCell>
-              <g:customCell>
-                <g:SimplePanel ui:field="targetTextContainer"
-                  styleName="{style.content}" />
-              </g:customCell>
-            </g:row>
-            <g:row>
-              <g:customCell styleName="{style.headerCol}">
-                <g:Label styleName="headerLabel" text="Target Comment:" />
-              </g:customCell>
-              <g:customCell>
-                <g:Label ui:field='targetComment' styleName="{style.comment}" />
-              </g:customCell>
-            </g:row>
-            <g:row>
-              <g:customCell styleName="{style.headerCol}">
-                <g:Label styleName="headerLabel" text="Content State:" />
-              </g:customCell>
-              <g:customCell>
-                <g:Label ui:field='targetState' />
-              </g:customCell>
-            </g:row>
-          </g:Grid>
-        </g:ScrollPanel>
-      </g:layer>
-
-      <g:layer top="340px" height="30px">
-        <g:HTMLPanel>
-          <g:InlineLabel ui:field='lastModified'
-            styleName="lastModifiedLabel" />
-          <g:Button ui:field='dismissButton'
-            addStyleNames="button {style.button}" />
-        </g:HTMLPanel>
-      </g:layer>
-    </g:LayoutPanel>
-  </g:DialogBox>
+  <g:HTMLPanel styleName="new-zanata">
+    <fui:DialogBoxCloseButton ui:field="closeButton" />
+    <div class="l__wrapper {style.container} l--scroll-auto">
+      <div>
+        <span class="delta">Locations</span>
+        <g:ListBox ui:field='documentListBox' visibleItemCount='5' />
+      </div>
+      <div class="l--push-top-half">
+        <span class="delta">Project/Iteration</span>
+        <g:InlineLabel ui:field='projectIterationName' />
+      </div>
+      <div>
+        <span class="delta">Document</span>
+        <g:InlineLabel ui:field='docName' />
+      </div>
+      <div class="l--push-top-half">
+        <span class="delta">Source</span>
+        <g:SimplePanel ui:field="sourceTextContainer" />
+      </div>
+      <div class="l--push-left-half">
+        <label>Comments</label>
+        <g:TextBox readOnly="true" ui:field="sourceComment" />
+      </div>
+      <div class="l--push-top-half">
+        <span class="delta">Target</span>
+        <g:SimplePanel ui:field="targetTextContainer" />
+      </div>
+      <div class="l--push-left-half">
+        <label>Comments</label>
+        <g:TextBox ui:field='targetComment' readOnly="true" />
+      </div>
+      <div>
+        <label>Content State</label>
+        <g:TextBox ui:field='targetState' readOnly="true" />
+      </div>
+      <div>
+        <g:InlineLabel ui:field='lastModified' />
+      </div>
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder>

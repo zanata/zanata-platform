@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
@@ -33,12 +32,10 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -51,23 +48,20 @@ public class TranslationEditorView extends Composite implements
             UiBinder<Widget, TranslationEditorView> {
     }
 
-    @UiField
-    HTMLPanel transUnitNavigationContainer;
+    @UiField(provided = true)
+    Widget transUnitNavigationView;
 
-    @UiField
-    LayoutPanel editor;
+    @UiField(provided = true)
+    Widget transUnitsTableView;
 
     @UiField(provided = true)
     Pager pager;
 
     @UiField(provided = true)
-    Resources resources;
+    Widget transFilterView;
 
     @UiField
-    HTMLPanel filterPanelContainer;
-
-    @UiField
-    InlineLabel refreshCurrentPage, resize;
+    Anchor refreshCurrentPage, resize;
 
     private Listener listener;
 
@@ -78,29 +72,20 @@ public class TranslationEditorView extends Composite implements
 
     @Inject
     public TranslationEditorView(final WebTransMessages messages,
-            final Resources resources) {
-        this.resources = resources;
-        this.pager = new Pager(messages, resources);
+            TransFilterDisplay transFilterView,
+            TransUnitNavigationDisplay transUnitNavigationView,
+            TransUnitsTableDisplay transUnitsTableView) {
+        this.pager = new Pager(messages);
         this.messages = messages;
+        this.transFilterView = transFilterView.asWidget();
+        this.transUnitNavigationView = transUnitNavigationView.asWidget();
+        this.transUnitsTableView = transUnitsTableView.asWidget();
 
         initWidget(uiBinder.createAndBindUi(this));
 
         refreshCurrentPage.setTitle(messages.refreshCurrentPage());
         resize.setTitle(messages.hideSouthPanel());
         resize.addStyleName(STYLE_HIDE_SOUTHPANEL);
-    }
-
-    @Override
-    public void setEditorView(IsWidget editor) {
-        this.editor.clear();
-        this.editor.add(editor);
-
-    }
-
-    @Override
-    public void setTransUnitNavigation(IsWidget navigationWidget) {
-        transUnitNavigationContainer.clear();
-        transUnitNavigationContainer.add(navigationWidget);
     }
 
     /**
@@ -135,12 +120,6 @@ public class TranslationEditorView extends Composite implements
     @Override
     public HasPager getPageNavigation() {
         return pager;
-    }
-
-    @Override
-    public void setFilterView(IsWidget filterView) {
-        filterPanelContainer.clear();
-        filterPanelContainer.add(filterView);
     }
 
     @Override

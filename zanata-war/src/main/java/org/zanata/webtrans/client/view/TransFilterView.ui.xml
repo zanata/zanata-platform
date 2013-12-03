@@ -4,17 +4,9 @@
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
   <ui:style type="org.zanata.webtrans.client.view.TransFilterView.Styles">
-    .container {
-    }
-
-    .container ul {
-      display: inline-block;
+    ul.container, ul.filterList {
       margin: 0;
       padding: 0;
-    }
-
-    .container > ul > li {
-      display: inline-block;
     }
 
     .transFilterTextBoxEmpty {
@@ -60,7 +52,7 @@
       color: #0085cc;
     }
 
-    .container ul.filterList {
+    ul.filterList {
       display: none;
       min-width: 100%;
       font-size: 0.9em;
@@ -69,15 +61,17 @@
       z-index: 3;
       background-color: #fafafa;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(0, 0, 0, 0.2);
-      top: 95%;
     }
 
-    .container ul.filterList li {
+    ul.filterList li {
       display: inherit;
+      margin-right: 0 !important;
+      display: block !important;
     }
 
     .drop-down {
       position: relative;
+      vertical-align: top;
     }
 
     .drop-down:hover {
@@ -89,9 +83,7 @@
       display: block;
     }
 
-    .drop-down label,
     .drop-down input[type=checkbox],
-    .filterList li label,
     .filterList li input[type=checkbox] {
       cursor: pointer;
       display: inline-block;
@@ -100,16 +92,18 @@
 
     .drop-down label,
     .filterList li label {
-      line-height: 32px;
+      line-height: 2.4em;
+      font-weight: normal;
     }
 
     .drop-down input[type=checkbox] {
-      margin: 0 3px 0 6px;
+      margin: 0 0.4em 0 0.5em;
     }
 
     .filterList li span {
-      display: block;
+      display: inline-block;
       opacity: 0.6;
+      width: 100%;
       transition: .3s;
       -webkit-transition: .3s;
       -moz-transition: .3s;
@@ -123,13 +117,13 @@
     .filterList li input[type=checkbox] {
       margin: 0;
       padding: 0;
-      top: 8px;
-      left: 4px;
+      top: 0.65em;
+      left: 0.3em;
       position: absolute;
     }
 
     .filterList li label {
-      padding: 0 6px 0 20px;
+      padding: 0 0 0 1.8em;
       display: block;
     }
 
@@ -140,66 +134,64 @@
 
   </ui:style>
 
-  <g:HTMLPanel styleName="{style.container}">
-    <ul>
-      <li>
-        <fui:SearchField ui:field="searchField" />
-      </li>
+  <g:HTMLPanel tag="ul" styleName="{style.container}">
+    <li>
+      <fui:SearchField ui:field="searchField" />
+    </li>
 
-      <li class="{style.drop-down}">
-        <g:CheckBox ui:field="parentIncompleteChk" styleName="{style.checkbox}">
-          <ui:msg>Incomplete</ui:msg>
-        </g:CheckBox>
-        <span class="icon-down-open {style.filterListToggle}" />
-        <ul class="{style.filterList}">
-          <li>
-            <g:CheckBox ui:field="untranslatedChk"
-              styleName="{style.untranslated} {style.checkbox}">
-              <ui:msg>Untranslated</ui:msg>
-            </g:CheckBox>
-          </li>
-          <li>
-            <g:CheckBox ui:field="fuzzyChk"
-              styleName="{style.fuzzy} {style.checkbox}">
-              <ui:msg>Fuzzy</ui:msg>
-            </g:CheckBox>
-          </li>
-          <li>
-            <g:CheckBox ui:field="rejectedChk"
-              styleName="{style.rejected} {style.checkbox}">
-              <ui:msg>Rejected</ui:msg>
-            </g:CheckBox>
-          </li>
-        </ul>
-      </li>
+    <li class="{style.drop-down}">
+      <g:CheckBox ui:field="parentIncompleteChk" styleName="{style.checkbox}">
+        <ui:msg>Incomplete</ui:msg>
+      </g:CheckBox>
+      <span class="icon-down-open {style.filterListToggle}" />
+      <ul class="{style.filterList}">
+        <li>
+          <g:CheckBox ui:field="untranslatedChk"
+            styleName="{style.untranslated} {style.checkbox}">
+            <ui:msg>Untranslated</ui:msg>
+          </g:CheckBox>
+        </li>
+        <li>
+          <g:CheckBox ui:field="fuzzyChk"
+            styleName="{style.fuzzy} {style.checkbox}">
+            <ui:msg>Fuzzy</ui:msg>
+          </g:CheckBox>
+        </li>
+        <li>
+          <g:CheckBox ui:field="rejectedChk"
+            styleName="{style.rejected} {style.checkbox}">
+            <ui:msg>Rejected</ui:msg>
+          </g:CheckBox>
+        </li>
+      </ul>
+    </li>
 
-      <li class="{style.drop-down}">
-        <g:CheckBox ui:field="parentCompleteChk" styleName="{style.checkbox}">
-          <ui:msg>Complete</ui:msg>
-        </g:CheckBox>
-        <span class="icon-down-open {style.filterListToggle}" />
-        <ul class="{style.filterList}">
-          <li>
-            <g:CheckBox ui:field="translatedChk"
-              styleName="{style.translated} {style.checkbox}">
-              <ui:msg>Translated</ui:msg>
-            </g:CheckBox>
-          </li>
-          <li>
-            <g:CheckBox ui:field="approvedChk"
-              styleName="{style.approved} {style.checkbox}">
-              <ui:msg>Approved</ui:msg>
-            </g:CheckBox>
-          </li>
-        </ul>
-      </li>
+    <li class="{style.drop-down}">
+      <g:CheckBox ui:field="parentCompleteChk" styleName="{style.checkbox}">
+        <ui:msg>Complete</ui:msg>
+      </g:CheckBox>
+      <span class="icon-down-open {style.filterListToggle}" />
+      <ul class="{style.filterList}">
+        <li>
+          <g:CheckBox ui:field="translatedChk"
+            styleName="{style.translated} {style.checkbox}">
+            <ui:msg>Translated</ui:msg>
+          </g:CheckBox>
+        </li>
+        <li>
+          <g:CheckBox ui:field="approvedChk"
+            styleName="{style.approved} {style.checkbox}">
+            <ui:msg>Approved</ui:msg>
+          </g:CheckBox>
+        </li>
+      </ul>
+    </li>
 
-      <li class="{style.drop-down}">
-        <g:CheckBox ui:field="hasErrorChk"
-          styleName="{style.hasError} {style.checkbox}">
-          <ui:msg>Invalid</ui:msg>
-        </g:CheckBox>
-      </li>
-    </ul>
+    <li class="{style.drop-down}">
+      <g:CheckBox ui:field="hasErrorChk"
+        styleName="{style.hasError} {style.checkbox}">
+        <ui:msg>Invalid</ui:msg>
+      </g:CheckBox>
+    </li>
   </g:HTMLPanel>
 </ui:UiBinder>

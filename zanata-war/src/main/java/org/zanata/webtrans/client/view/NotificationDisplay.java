@@ -39,8 +39,6 @@ public interface NotificationDisplay extends WidgetDisplay {
 
     int getMessageCount();
 
-    void setMessageOrder(DisplayOrder displayOrder);
-
     void setListener(Listener listener);
 
     interface Listener {

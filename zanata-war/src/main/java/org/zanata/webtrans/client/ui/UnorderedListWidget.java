@@ -44,4 +44,9 @@ public class UnorderedListWidget extends ComplexPanel {
         // ComplexPanel requires the two-arg add() method
         super.add(widget, getElement());
     }
+
+    public void addOnTop(Widget widget) {
+        // ComplexPanel requires the two-arg add() method
+        super.insert(widget, getElement(), 0, true);
+    }
 }

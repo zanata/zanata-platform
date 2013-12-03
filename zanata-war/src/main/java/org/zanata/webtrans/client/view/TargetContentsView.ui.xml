@@ -1,8 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
-  xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
-  >
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
 
   <ui:with field="messages"
@@ -12,13 +11,6 @@
     type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
     .targetContentsCell {
       table-layout: fixed;
-    }
-
-    .editorGridWrapper {
-      display: block;
-      overflow-x: auto;
-      height: 100%;
-      position: relative;
     }
 
     .unsaved {
@@ -54,7 +46,7 @@
 
   <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
     <g:cell verticalAlignment="ALIGN_TOP">
-      <g:FlowPanel styleName="{style.editorGridWrapper}">
+      <g:FlowPanel>
         <g:Label ui:field="savingIndicator" text="{messages.saving}"
           styleName="icon-progress {style.saving}" visible="false" />
         <g:Label ui:field="commentIndicator"
@@ -63,9 +55,11 @@
         <fui:ValidationMessagePanelView ui:field="validationPanel" />
       </g:FlowPanel>
     </g:cell>
-    <g:cell verticalAlignment="ALIGN_TOP" horizontalAlignment="ALIGN_JUSTIFY"
-      width="22px">
-      <fui:EditorButtonsWidget ui:field="buttons" />
+    <g:cell verticalAlignment="ALIGN_TOP" width="22px">
+      <g:HTMLPanel styleName="new-zanata">
+        <fui:EditorButtonsWidget ui:field="buttons" />
+      </g:HTMLPanel>
     </g:cell>
   </g:HorizontalPanel>
+
 </ui:UiBinder>

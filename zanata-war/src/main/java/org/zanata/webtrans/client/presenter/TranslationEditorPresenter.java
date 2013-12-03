@@ -61,14 +61,8 @@ public class TranslationEditorPresenter extends
     @Override
     protected void onBind() {
         transFilterPresenter.bind();
-        display.setFilterView(transFilterPresenter.getDisplay().asWidget());
-
-        transUnitsTablePresenter.bind();
-        display.setEditorView(transUnitsTablePresenter.getDisplay().asWidget());
-
         transUnitNavigationPresenter.bind();
-        display.setTransUnitNavigation(transUnitNavigationPresenter
-                .getDisplay().asWidget());
+        transUnitsTablePresenter.bind();
 
         registerHandler(eventBus.addHandler(PageChangeEvent.TYPE, this));
         registerHandler(eventBus.addHandler(PageCountChangeEvent.TYPE, this));

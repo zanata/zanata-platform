@@ -429,6 +429,9 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("When unexpected error happens, a popup window will display and show it")
             String showErrorsTooltip();
 
+    @DefaultMessage("Show System Errors")
+    String showSystemErrors();
+
     @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
             String useCodeMirrorEditorTooltip();
 
@@ -569,4 +572,19 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("More details")
     String moreDetais();
+
+    @DefaultMessage("Editor Buttons")
+    String editorButtons();
+
+    @DefaultMessage("'Enter' key saves immediately")
+    String enterKeySaves();
+
+    @DefaultMessage("Use syntax highlighting Editor")
+    String useSyntaxHighlight();
+
+    @DefaultMessage("Show 'Save as Approved' warning")
+    String showSaveApproveWarning();
+
+    @DefaultMessage("Enable Spell Check")
+    String enabledSpellCheck();
 }

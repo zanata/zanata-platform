@@ -28,11 +28,10 @@
     .container {
       min-width: 20em;
       max-height: 40em;
-      overflow: auto;
     }
   </ui:style>
 
-  <g:HTMLPanel styleName="new-zanata {style.container}">
+  <g:HTMLPanel styleName="new-zanata l--scroll-auto {style.container}">
     <z:DialogBoxCloseButton ui:field="closeButton" />
     <g:HTMLPanel styleName="l__wrapper l--pad-all-half" ui:field="messageWrapper">
       <g:HTMLPanel ui:field="message" styleName="l--push-bottom-half" />

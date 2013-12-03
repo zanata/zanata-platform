@@ -5,24 +5,17 @@
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
   <ui:style>
-    .southPanel {
-      border-bottom: 1px solid #E5E5E5;
-    }
+
   </ui:style>
 
   <g:LayoutPanel styleName="translationContainer">
-    <g:layer top="0px" bottom="0px">
+    <g:layer top="0" bottom="0">
       <g:SplitLayoutPanel ui:field="mainSplitPanel">
         <g:south size="150">
-          <g:LayoutPanel ui:field="southPanelContainer">
-            <g:layer top="0" bottom="5px">
-              <g:LayoutPanel ui:field="southPanel"
-                styleName="{style.southPanel}" />
-            </g:layer>
-          </g:LayoutPanel>
+          <g:SplitLayoutPanel ui:field="tmGlossaryPanel" styleName="new-zanata"/>
         </g:south>
         <g:center>
-          <g:LayoutPanel ui:field="editorContainer" />
+          <g:Widget ui:field="translationEditorView" />
         </g:center>
       </g:SplitLayoutPanel>
     </g:layer>

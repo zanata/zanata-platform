@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.client.ui.UserPanel;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData.MESSAGE_TYPE;
@@ -11,15 +12,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,25 +32,19 @@ public class WorkspaceUsersView extends Composite implements
     private Listener listener;
 
     @UiField
-    VerticalPanel userListPanel;
+    UnorderedListWidget userListPanel;
 
     @UiField(provided = true)
     SplitLayoutPanel mainPanel;
 
     @UiField
-    VerticalPanel chatRoom;
+    UnorderedListWidget chatRoom;
 
     @UiField
     TextBox chatInput;
 
     @UiField
-    PushButton sendButton;
-
-    @UiField
-    ScrollPanel chatRoomScrollPanel;
-
-    @UiField
-    Styles style;
+    Button sendButton;
 
     @Inject
     public WorkspaceUsersView(final UiMessages uiMessages) {
@@ -116,59 +109,41 @@ public class WorkspaceUsersView extends Composite implements
     @Override
     public void appendChat(String user, String timestamp, String msg,
             MESSAGE_TYPE messageType) {
-        InlineLabel timestampLabel = new InlineLabel("[" + timestamp + "]");
-        timestampLabel.setStylePrimaryName(style.timeStamp());
-        InlineLabel msgLabel = new InlineLabel(msg);
-        if (messageType == MESSAGE_TYPE.SYSTEM_MSG) {
-            msgLabel.setStyleName(style.systemMsg());
-        } else if (messageType == MESSAGE_TYPE.SYSTEM_WARNING) {
-            msgLabel.setStyleName(style.systemWarn());
-        } else {
-            msgLabel.setStyleName(style.msg());
-        }
 
-        FlowPanel hp = new FlowPanel();
+        SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 
+        StringBuilder sb = new StringBuilder();
         if (!Strings.isNullOrEmpty(timestamp)) {
-            hp.add(timestampLabel);
+            sb.append("[").append(timestamp).append("] ");
         }
         if (!Strings.isNullOrEmpty(user)) {
-            InlineLabel userLabel = new InlineLabel(user + ":");
-            userLabel.setStyleName(style.userName());
-            hp.add(userLabel);
+            sb.append(user).append(":");
         }
-        hp.add(msgLabel);
 
-        chatRoom.add(hp);
+        if (!sb.toString().isEmpty()) {
+            safeHtmlBuilder.appendHtmlConstant("<span class='txt--meta'>");
+            safeHtmlBuilder.appendEscaped(sb.toString());
+            safeHtmlBuilder.appendHtmlConstant("</span>");
+        }
 
-        chatRoomScrollPanel.scrollToBottom();
+        safeHtmlBuilder.appendHtmlConstant("<span class='"
+                + getCssClass(messageType) + "'>");
+        safeHtmlBuilder.appendEscaped(msg);
+        safeHtmlBuilder.appendHtmlConstant("</span>");
+
+        chatRoom.add(new HTMLPanel("li", safeHtmlBuilder.toSafeHtml()
+                .asString()));
+    }
+
+    private String getCssClass(MESSAGE_TYPE messageType) {
+        if (messageType == MESSAGE_TYPE.SYSTEM_MSG
+                || messageType == MESSAGE_TYPE.SYSTEM_WARNING) {
+            return "txt--warning";
+        }
+        return "txt--neutral";
     }
 
     interface WorkspaceUsersViewUiBinder extends
             UiBinder<SplitLayoutPanel, WorkspaceUsersView> {
-    }
-
-    interface Styles extends CssResource {
-        String systemMsg();
-
-        String userName();
-
-        String systemWarn();
-
-        String msg();
-
-        String timeStamp();
-
-        String chatInput();
-
-        String chatRoom();
-
-        String userListTable();
-
-        String mainPanel();
-
-        String chatRoomScrollPanel();
-
-        String sendButton();
     }
 }

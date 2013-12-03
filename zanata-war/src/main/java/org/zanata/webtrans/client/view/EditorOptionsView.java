@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.view;
 
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -31,16 +33,12 @@ import org.zanata.webtrans.shared.rpc.NavOption;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,50 +46,28 @@ import com.google.inject.Inject;
 
 public class EditorOptionsView extends Composite implements
         EditorOptionsDisplay {
+
     private static EditorOptionsUiBinder uiBinder = GWT
             .create(EditorOptionsUiBinder.class);
+
     private final EnumRadioButtonGroup<NavOption> navOptionGroup;
 
     @UiField
-    CheckBox enterChk, editorButtonsChk;
-
-    @UiField
-    Label navOptionHeader, editorOptionHeader;
-
-    @UiField
     VerticalPanel optionsContainer;
+
     @UiField
-    Label pageSizeHeader;
+    Anchor five, ten, twentyFive, fifty;
+
     @UiField
-    InlineLabel five;
+    RadioButton diffModeDiff, diffModeHighlight;
+
     @UiField
-    InlineLabel ten;
+    CheckBox showTMChk, showGlossaryChk, showOptionalTransUnitDetailsChk,
+            useCodeMirrorChk, showSaveApprovedWarningChk, spellCheckChk,
+            enterChk, editorButtonsChk;
+
     @UiField
-    InlineLabel fifty;
-    @UiField
-    InlineLabel twentyFive;
-    @UiField
-    Styles style;
-    @UiField
-    CheckBox useCodeMirrorChk;
-    @UiField
-    CheckBox showSaveApprovedWarningChk;
-    @UiField
-    CheckBox spellCheckChk;
-    @UiField
-    Label transMemoryHeader;
-    @UiField
-    RadioButton diffModeDiff;
-    @UiField
-    RadioButton diffModeHighlight;
-    @UiField
-    Label displayHeader;
-    @UiField
-    CheckBox showTMChk;
-    @UiField
-    CheckBox showGlossaryChk;
-    @UiField
-    CheckBox showOptionalTransUnitDetailsChk;
+    WebTransMessages messages;
 
     @UiField
     HTMLPanel sourceLangListBoxContainer;
@@ -107,11 +83,6 @@ public class EditorOptionsView extends Composite implements
                         NavOption.class, navOptionRenderer);
         navOptionGroup.addToContainer(optionsContainer);
 
-        editorOptionHeader.setText(messages.editorOptions());
-        navOptionHeader.setText(messages.navOption());
-        pageSizeHeader.setText(messages.pageSize());
-        transMemoryHeader.setText(messages.transMemoryOption());
-
         useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
         showSaveApprovedWarningChk.setTitle(messages
                 .showSaveApprovedWarningTooltip());
@@ -123,8 +94,6 @@ public class EditorOptionsView extends Composite implements
         diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
         diffModeDiff.setValue(true);
 
-        displayHeader.setText(messages.displayConfiguration());
-        displayHeader.setTitle(messages.displayConfigurationTooltip());
         showTMChk.setText(messages.showTranslationMemoryPanel());
         showGlossaryChk.setText(messages.showGlossaryPanel());
         showOptionalTransUnitDetailsChk
@@ -140,54 +109,34 @@ public class EditorOptionsView extends Composite implements
 
     @UiHandler("five")
     public void onPageSizeFiveClicked(ClickEvent event) {
-        selectFive();
+        selectPage(five);
         listener.onPageSizeClick(5);
-    }
-
-    private void selectFive() {
-        five.setStyleName(style.selectedPageSize());
-        ten.removeStyleName(style.selectedPageSize());
-        twentyFive.removeStyleName(style.selectedPageSize());
-        fifty.removeStyleName(style.selectedPageSize());
     }
 
     @UiHandler("ten")
     public void onPageSizeTenClicked(ClickEvent event) {
-        selectTen();
+        selectPage(ten);
         listener.onPageSizeClick(10);
-    }
-
-    private void selectTen() {
-        five.removeStyleName(style.selectedPageSize());
-        ten.setStyleName(style.selectedPageSize());
-        twentyFive.removeStyleName(style.selectedPageSize());
-        fifty.removeStyleName(style.selectedPageSize());
     }
 
     @UiHandler("twentyFive")
     public void onPageSizeTwentyFiveClicked(ClickEvent event) {
-        selectTwentyFive();
+        selectPage(twentyFive);
         listener.onPageSizeClick(25);
-    }
-
-    private void selectTwentyFive() {
-        five.removeStyleName(style.selectedPageSize());
-        ten.removeStyleName(style.selectedPageSize());
-        twentyFive.setStyleName(style.selectedPageSize());
-        fifty.removeStyleName(style.selectedPageSize());
     }
 
     @UiHandler("fifty")
     public void onPageSizeFiftyClicked(ClickEvent event) {
-        selectFifty();
+        selectPage(fifty);
         listener.onPageSizeClick(50);
     }
 
-    private void selectFifty() {
-        five.removeStyleName(style.selectedPageSize());
-        ten.removeStyleName(style.selectedPageSize());
-        twentyFive.removeStyleName(style.selectedPageSize());
-        fifty.setStyleName(style.selectedPageSize());
+    private void selectPage(Anchor selectedPage) {
+        five.addStyleName("txt--invert");
+        ten.addStyleName("txt--invert");
+        twentyFive.addStyleName("txt--invert");
+        fifty.addStyleName("txt--invert");
+        selectedPage.removeStyleName("txt--invert");
     }
 
     @UiHandler("editorButtonsChk")
@@ -277,25 +226,16 @@ public class EditorOptionsView extends Composite implements
 
     private void selectPageSize(int pageSize) {
         if (pageSize == 5) {
-            selectFive();
+            selectPage(five);
         } else if (pageSize == 10) {
-            selectTen();
+            selectPage(ten);
         } else if (pageSize == 25) {
-            selectTwentyFive();
+            selectPage(twentyFive);
         } else if (pageSize == 50) {
-            selectFifty();
+            selectPage(fifty);
         }
     }
 
-    interface EditorOptionsUiBinder extends
-            UiBinder<VerticalPanel, EditorOptionsView> {
-    }
-
-    interface Styles extends CssResource {
-        String selectedPageSize();
-
-        String mainPanel();
-
-        String pageSizeContainer();
+    interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView> {
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
 import org.zanata.webtrans.client.util.DateUtil;
 
@@ -16,29 +17,29 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class TransMemoryDetailsView implements TransMemoryDetailsDisplay {
+public class TransMemoryDetailsView extends DialogBox implements
+        TransMemoryDetailsDisplay {
 
     private Listener listener;
 
-    interface TMIUiBinder extends UiBinder<DialogBox, TransMemoryDetailsView> {
+    interface TMIUiBinder extends UiBinder<HTMLPanel, TransMemoryDetailsView> {
     }
 
     private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
 
-    DialogBox dialogBox;
-
     @UiField
-    Label sourceComment, targetComment;
+    TextBox sourceComment, targetComment, targetState;
 
     @UiField
     InlineLabel projectIterationName, docName;
@@ -46,11 +47,8 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay {
     @UiField
     Label lastModified;
 
-    @UiField
-    Label targetState;
-
-    @UiField
-    Button dismissButton;
+    @UiField(provided = true)
+    DialogBoxCloseButton closeButton;
 
     @UiField
     ListBox documentListBox;
@@ -63,23 +61,20 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay {
 
     @Inject
     public TransMemoryDetailsView(UiMessages messages) {
-        dialogBox = uiBinder.createAndBindUi(this);
-        dialogBox.setText(messages.translationMemoryDetails());
+        super(true, false);
+        setGlassEnabled(true);
+        closeButton = new DialogBoxCloseButton(this);
         this.messages = messages;
-        dismissButton.setText(messages.dismiss());
-    }
 
-    public void hide() {
-        dialogBox.hide();
-    }
+        HTMLPanel container = uiBinder.createAndBindUi(this);
+        getCaption().setText(messages.translationMemoryDetails());
 
-    public void show() {
-        dialogBox.center();
+        setWidget(container);
     }
 
     @Override
     public Widget asWidget() {
-        return dialogBox;
+        return this;
     }
 
     @Override
@@ -142,7 +137,6 @@ public class TransMemoryDetailsView implements TransMemoryDetailsDisplay {
         targetTextContainer.setWidget(new InlineHTML(safeHtml));
     }
 
-    @UiHandler("dismissButton")
     public void onDismissButtonClick(ClickEvent event) {
         listener.dismissTransMemoryDetails();
     }
