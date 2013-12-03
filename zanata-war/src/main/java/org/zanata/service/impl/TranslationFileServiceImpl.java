@@ -108,7 +108,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     private static Set<String> buildSupportedExtensionSet() {
         Set<String> supported = new HashSet<String>();
         for (DocumentType type : DOCTYPEMAP.keySet()) {
-            supported.add(type.getExtension());
+            supported.addAll(type.getExtensions());
         }
         return supported;
     }
