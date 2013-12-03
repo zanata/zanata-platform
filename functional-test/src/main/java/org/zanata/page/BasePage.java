@@ -20,11 +20,7 @@
  */
 package org.zanata.page;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -41,13 +37,11 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
@@ -57,10 +51,7 @@ import com.google.common.collect.Iterables;
  */
 @Slf4j
 public class BasePage extends CorePage {
-    private List<WebElement> navMenuItems = Collections.emptyList();
-
-    @FindBy(id = "nav-main")
-    WebElement navBar;
+    private final By NavMenuBy = By.id("nav-main");
 
     @FindBy(id = "projects_link")
     private WebElement projectsLink;
@@ -81,7 +72,6 @@ public class BasePage extends CorePage {
 
     public BasePage(final WebDriver driver) {
         super(driver);
-        navMenuItems = navBar.findElements(By.tagName("a"));
     }
 
     public MyAccountPage goToMyProfile() {
@@ -181,27 +171,9 @@ public class BasePage extends CorePage {
                 + WebElementUtil.elementsToText(breadcrumbs));
     }
 
-    public List<String> getNavigationMenuItems() {
-        Collection<String> linkTexts =
-                Collections2.transform(navMenuItems,
-                        new Function<WebElement, String>() {
-                            @Override
-                            public String apply(WebElement link) {
-                                return link.getText();
-                            }
-                        });
-        return ImmutableList.copyOf(linkTexts);
-    }
-
     public <P> P goToPage(String navLinkText, Class<P> pageClass) {
-        log.info("click {} and go to page {}", navLinkText, pageClass.getName());
-        List<String> navigationMenuItems = getNavigationMenuItems();
-        int menuItemIndex = navigationMenuItems.indexOf(navLinkText);
-
-        Preconditions.checkState(menuItemIndex >= 0, navLinkText
-                + " is not available in navigation menu");
-
-        navMenuItems.get(menuItemIndex).click();
+        getDriver().findElement(NavMenuBy)
+                .findElement(By.linkText(navLinkText)).click();
         return PageFactory.initElements(getDriver(), pageClass);
     }
 

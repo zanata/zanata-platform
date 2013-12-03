@@ -20,8 +20,6 @@
  */
 package org.zanata.feature.versionGroup;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,7 @@ import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebElement;
@@ -42,9 +40,11 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -56,8 +56,9 @@ import org.zanata.workflow.ProjectWorkFlow;
 @Category(ConcordionTest.class)
 public class VersionGroupBasicTest {
 
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
+
     private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
     private DashboardPage dashboardPage;
     private VersionGroupPage versionGroupPage;

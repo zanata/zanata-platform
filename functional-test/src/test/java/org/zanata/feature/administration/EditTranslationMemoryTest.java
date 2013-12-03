@@ -20,23 +20,30 @@
  */
 package org.zanata.feature.administration;
 
+import com.github.huangp.entityunit.entity.EntityCleaner;
+import com.google.common.collect.Lists;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
 import org.zanata.feature.DetailedTest;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.page.administration.TranslationMemoryEditPage;
 import org.zanata.page.administration.TranslationMemoryPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.EntityManagerFactoryHolder;
 import org.zanata.util.RetryRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.TranslationMemoryWorkFlow;
 
+import javax.persistence.EntityManager;
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,19 +54,36 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Category(DetailedTest.class)
 public class EditTranslationMemoryTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Rule
     public RetryRule retryRule = new RetryRule(2);
 
-    TestFileGenerator testFileGenerator = new TestFileGenerator();
+    private TestFileGenerator testFileGenerator = new TestFileGenerator();
+    private EntityManager entityManager;
 
     @Before
     public void before() {
         assertThat("Admin is logged in",
                 new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
                 Matchers.equalTo("admin"));
+    }
+
+    @After
+    public void cleanUp() {
+        EntityCleaner.deleteAll(getEntityManager(), Lists.<Class> newArrayList(
+                TransMemoryUnitVariant.class, TransMemoryUnit.class,
+                TransMemory.class));
+    }
+
+    private EntityManager getEntityManager() {
+        if (entityManager == null) {
+            entityManager =
+                    EntityManagerFactoryHolder.holder().getEmFactory()
+                            .createEntityManager();
+        }
+        return entityManager;
     }
 
     @Test

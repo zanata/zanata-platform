@@ -244,6 +244,8 @@
           value="no-reply@zanata.org" />
         <simple name="java:global/zanata/files/document-storage-directory"
           value="${project.build.directory}/zanata-documents" />
+        <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
+          lookup="java:global/zanata/files/document-storage-directory" />
       </bindings>
       <remote-naming />
     </subsystem>

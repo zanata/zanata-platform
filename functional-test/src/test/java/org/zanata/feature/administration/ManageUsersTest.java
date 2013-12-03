@@ -25,7 +25,7 @@ import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
@@ -33,7 +33,7 @@ import org.zanata.feature.ConcordionTest;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 @RunWith(ConcordionRunner.class)
@@ -41,8 +41,9 @@ import org.zanata.workflow.LoginWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class ManageUsersTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
+
     private DashboardPage dashboardPage;
 
     @Before

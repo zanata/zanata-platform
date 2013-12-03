@@ -29,8 +29,9 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectSourceDocumentsPage;
+import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.PropertiesHolder;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -38,7 +39,8 @@ import org.zanata.workflow.LoginWorkFlow;
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.FunctionalTestHelper.*;
+import static org.zanata.util.FunctionalTestHelper.assumeFalse;
+import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
  * @author Damian Jansen <a
@@ -47,8 +49,12 @@ import static org.zanata.util.FunctionalTestHelper.*;
 @Category(DetailedTest.class)
 public class UploadTest {
     @Rule
-    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.WithData);
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @Rule
+    public CleanDocumentStorageRule documentStorageRule =
+            new CleanDocumentStorageRule();
+
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
@@ -56,7 +62,7 @@ public class UploadTest {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         documentStorageDirectory =
-                PropertiesHolder.getProperty("document.storage.directory")
+                CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator);
         assumeFalse("", new File(documentStorageDirectory).exists());

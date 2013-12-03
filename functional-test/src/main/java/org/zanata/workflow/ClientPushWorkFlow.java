@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.zanata.util.PropertiesHolder;
 import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -42,7 +42,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

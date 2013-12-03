@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -53,9 +54,11 @@ public class GoogleSignIn {
     }
 
     /**
-     * Query the environment for a GOOGLEID variable and return the stated
+     * Query the property for a GOOGLEID variable and return the stated
      * password that corresponds to the indicated username. Expects the variable
-     * to be in the form: GOOGLEID=username1:password1;username2:password2;...
+     * to be in the form:
+     * <p />
+     * {@literal mvn <goals> -DGOOGLEID=username1:password1;username2:password2;}
      *
      * @param username
      *            Username of username:password pair query
@@ -65,8 +68,9 @@ public class GoogleSignIn {
     public static String getSignIn(String username) {
         String googlePass;
         String empty = "";
-        googlePass = System.getenv("GOOGLEID");
-        if (googlePass == null || googlePass.isEmpty()) {
+        googlePass = System.getProperty("GOOGLEID");
+        if (Strings.isNullOrEmpty(googlePass)) {
+            log.info("Google open ID credential is not available");
             return empty;
         }
 

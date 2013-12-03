@@ -29,7 +29,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.projects.CreateVersionPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import java.util.Map;
@@ -44,8 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class AddLanguageTest {
 
     @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule =
-            new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
     public void addLanguageAsEnabled() {

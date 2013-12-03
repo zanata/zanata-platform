@@ -23,12 +23,13 @@ package org.zanata.feature.project;
 
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,11 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ProjectVersionTest {
 
     @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule =
-            new ResetDatabaseRule(ResetDatabaseRule.Config.WithData);
-
-    private String formatError = "must start and end with letter or number, "+
-            "and contain only letters, numbers, underscores and hyphens.";
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
     public void idFieldMustNotBeEmpty() {
@@ -70,6 +67,8 @@ public class ProjectVersionTest {
                 .clickCreateVersionLink()
                 .inputVersionId("-A");
 
+        String formatError = "must start and end with letter or number, " +
+            "and contain only letters, numbers, underscores and hyphens.";
         assertThat("The input is rejected",
                 createVersionPage.getErrors(),
                 Matchers.hasItem(formatError));
