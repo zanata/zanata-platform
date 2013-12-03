@@ -63,9 +63,10 @@ public class SecurityFullTest {
     }
 
     @Test
+    @Category(BasicAcceptanceTest.class)
     public void signInFailure() {
-        SignInPage signInPage =
-                new LoginWorkFlow().signInFailure("nosuchuser", "password");
+        SignInPage signInPage = new LoginWorkFlow()
+                .signInFailure("nosuchuser", "password");
 
         assertThat("Error message is shown",
                 signInPage.waitForFieldErrors(),

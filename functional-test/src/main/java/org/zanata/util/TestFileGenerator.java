@@ -21,7 +21,9 @@
 package org.zanata.util;
 
 import org.apache.commons.io.FileUtils;
+
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -82,10 +84,12 @@ public class TestFileGenerator {
 
     private void setTestFileContent(File testFile, String testContent) {
         try {
-            FileWriter fileWriter = new FileWriter(testFile);
-            fileWriter.write(testContent);
-            fileWriter.flush();
-            fileWriter.close();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+                    new FileOutputStream(testFile),
+                    Charset.forName("UTF-8").newEncoder());
+            outputStreamWriter.write(testContent);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
         } catch (IOException ioException) {
             throw new RuntimeException("Could not open file for writing "
                     + testFile.getName());

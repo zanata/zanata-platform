@@ -60,23 +60,23 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
     }
 
     public SignInPage signInFailure(String username, String password) {
-        SignInPage signInPage = new BasePage(driver).clickSignInLink();
         log.info("log in as username: {}", username);
-        signInPage.enterUsername(username);
-        signInPage.enterPassword(password);
-        signInPage.clickSignInExpectError();
-        return new SignInPage(driver);
+        return new BasePage(driver)
+            .clickSignInLink()
+            .enterUsername(username)
+            .enterPassword(password)
+            .clickSignInExpectError();
     }
 
     private void doSignIn(String username, String password) {
+        log.info("log in as username: {}", username);
         BasePage basePage = new BasePage(driver);
         basePage.deleteCookiesAndRefresh();
-        SignInPage signInPage = basePage.clickSignInLink();
-        log.info("log in as username: {}", username);
-        signInPage.enterUsername(username);
-        signInPage.enterPassword(password);
-        signInPage.clickSignIn();
-        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
+        basePage.clickSignInLink()
+            .enterUsername(username)
+            .enterPassword(password)
+            .clickSignIn()
+            .waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 List<WebElement> messages =

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class PropertiesHolder {
-    public static Properties properties;
+    public final static Properties properties;
 
     static {
         Properties result;

@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
@@ -65,7 +67,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
-                    public List<TableRow> apply(WebDriver webDriver) {
+                    public List<TableRow> apply(@Nullable WebDriver webDriver) {
+                        if (webDriver == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         final WebElement table =
                                 webDriver.findElement(byQueryForTable);
                         List<WebElement> rows =
@@ -81,7 +86,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
-                    public List<TableRow> apply(WebDriver webDriver) {
+                    public List<TableRow> apply(@Nullable WebDriver webDriver) {
+                        if (webDriver == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
                         return ImmutableList.copyOf(Lists.transform(rows,
@@ -95,7 +103,10 @@ public class WebElementUtil {
         return ImmutableList.copyOf(Lists.transform(tableRows,
                 new Function<TableRow, List<String>>() {
                     @Override
-                    public List<String> apply(TableRow from) {
+                    public List<String> apply(@Nullable TableRow from) {
+                        if (from == null) {
+                            throw new RuntimeException("Source table is null");
+                        }
                         return from.getCellContents();
                     }
                 }));
@@ -119,7 +130,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
-                    public List<String> apply(WebDriver input) {
+                    public List<String> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         WebElement table;
                         try {
                             table = input.findElement(by);
@@ -156,7 +170,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
-                    public List<List<String>> apply(WebDriver input) {
+                    public List<List<String>> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         final WebElement table = input.findElement(by);
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
@@ -172,7 +189,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<WebElement>>() {
                     @Override
-                    public List<WebElement> apply(WebDriver input) {
+                    public List<WebElement> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         final WebElement list = input.findElement(by);
                         return list.findElements(By.xpath(".//li"));
                     }
@@ -209,7 +229,10 @@ public class WebElementUtil {
         FUNCTION;
 
         @Override
-        public String apply(WebElement from) {
+        public String apply(@Nullable WebElement from) {
+            if (from == null) {
+                throw new RuntimeException("Source element is null");
+            }
             return from.getText();
         }
     }

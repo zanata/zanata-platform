@@ -47,7 +47,7 @@ import static org.zanata.util.Constants.zanataInstance;
 public enum WebDriverFactory {
     INSTANCE;
 
-    private WebDriver driver;
+    private volatile WebDriver driver;
     private DriverService driverService;
 
     public WebDriver getDriver() {
