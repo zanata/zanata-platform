@@ -61,7 +61,7 @@ public class TransMemoryDetailsPresenter extends
                         }
                         selectDoc(0);
 
-                        display.show();
+                        display.center();
                     }
                 });
     }

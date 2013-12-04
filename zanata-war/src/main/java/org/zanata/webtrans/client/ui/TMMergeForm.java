@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.resources.EnumMessages;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.shared.rpc.MergeRule;
@@ -177,7 +178,7 @@ public class TMMergeForm extends Composite implements
         OptionType optionType = OptionType.valueOf(groupName);
         InlineLabel statusLabel = getStatusLabelFor(optionType);
         statusLabel.setText(mergeStatusRenderer.render(option));
-        statusLabel.setStyleName(resolveStyle(option));
+        statusLabel.setStyleName(resolveStyle(option) + " l--pad-all-quarter");
     }
 
     private InlineLabel getStatusLabelFor(OptionType optionType) {
@@ -207,7 +208,7 @@ public class TMMergeForm extends Composite implements
         return style.approved_action();
     }
 
-    interface TMMergeFormUiBinder extends UiBinder<Grid, TMMergeForm> {
+    interface TMMergeFormUiBinder extends UiBinder<Widget, TMMergeForm> {
     }
 
     interface Styles extends CssResource {
@@ -218,10 +219,6 @@ public class TMMergeForm extends Composite implements
         String ignore_action();
 
         String downgrade_action();
-
-        String header();
-
-        String tmMergeTable();
     }
 
     enum OptionType {

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.HTMLPanel;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -404,20 +405,21 @@ public class DocumentListTable extends FlexTable {
     }
 
     private Widget getActionWidget(final DocumentInfo docInfo) {
-        HorizontalPanel panel = new HorizontalPanel();
+        FlowPanel panel = new FlowPanel();
+
         for (Map.Entry<String, String> entry : docInfo.getDownloadExtensions()
                 .entrySet()) {
             Anchor anchor = new Anchor(entry.getKey());
+            anchor.addStyleName("l--push-right-half");
             anchor.setTitle(messages.downloadFileTitle(entry.getKey()));
-            anchor.setStyleName("downloadFileLink");
             anchor.setHref(Application.getFileDownloadURL(userWorkspaceContext
                     .getWorkspaceContext().getWorkspaceId(), entry.getValue()));
             anchor.setTarget("_blank");
             panel.add(anchor);
         }
-        InlineLabel upload = new InlineLabel();
+        Anchor upload = new Anchor();
         upload.setTitle(messages.uploadButtonTitle());
-        upload.setStyleName("icon-upload uploadButton");
+        upload.setStyleName("icon-upload txt--lead l--push-left-half");
         upload.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

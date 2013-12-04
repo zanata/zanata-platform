@@ -40,10 +40,6 @@
       text-decoration: underline;
     }
 
-    .contents {
-
-    }
-
     .contents li {
       border-left: 3px solid;
       padding: 0.1em 0.5em;

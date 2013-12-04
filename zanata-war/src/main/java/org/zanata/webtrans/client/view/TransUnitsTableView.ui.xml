@@ -4,39 +4,11 @@
   <ui:with field="messages"
     type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-  <ui:style field="style"
-    type="org.zanata.webtrans.client.view.TransUnitsTableView.Styles">
-    .oddRow {
-
-    }
-
-    .evenRow {
-      /* background-color: #F3F7FB; */
-    }
-
-    .cellFormat {
-      border-bottom: 1px solid silver;
-    }
-
-    .table {
-      border-collapse: collapse;
-      /* setting width to 99% to leave some space from the scroll bar */
-      width: 99%;
-      margin: 0 5px;
-      table-layout: fixed;
-    }
-
-    .noContent {
-      text-align: center;
-      font-style: italic;
-      color: grey;
-      font-size: 1.5em;
-    }
+  <ui:style>
 
   </ui:style>
 
   <g:ScrollPanel ui:field="root">
-    <g:Grid ui:field="transUnitTable"
-      styleName="{style.table} transUnitTable" />
+    <g:Grid ui:field="transUnitTable" styleName="transUnitTable" />
   </g:ScrollPanel>
 </ui:UiBinder>

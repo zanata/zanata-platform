@@ -9,5 +9,9 @@ public interface NotificationDetailListener {
 
     void showNotificationDetail(NotificationEvent notificationEvent);
 
+    /**
+     * remove message from list
+     * @param notificationEvent
+     */
     void closeMessage(NotificationEvent notificationEvent);
 }

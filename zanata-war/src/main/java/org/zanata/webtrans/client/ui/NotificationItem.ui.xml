@@ -24,20 +24,38 @@
   <ui:with field="messages"
     type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
-  <ui:style>
+  <ui:style type="org.zanata.webtrans.client.ui.NotificationItem.Styles">
     .inline {
       display: inline-block;
       vertical-align: middle;
     }
 
+    .message {
+      text-decoration: underline;
+    }
+
+    .disabledInlineLink, .disabledInlineLink:hover, .disabledInlineLink:visited {
+      color: grey;
+      font-size: 0.8em;
+      opacity: 0.5;
+      cursor: text;
+    }
+
+    .inlineLink, .inlineLink:hover, .inlineLink:visited {
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+
   </ui:style>
 
   <g:HTMLPanel tag="li" styleName="l--pad-all-quarter">
     <g:InlineLabel ui:field="message"
-      styleName="{style.inline} l--pad-right-half" />
-    <g:HTMLPanel ui:field="link" styleName="{style.inline} l--push-right-half" />
+      styleName="{style.inline} {style.message} l--pad-right-half pointer" />
+    <g:HTMLPanel ui:field="link"
+      styleName="{style.inline}" />
     <g:Anchor ui:field="details"
-      styleName="{style.inline} l--push-right-half" />
+      styleName="{style.inline} l--push-h-half" />
     <g:Anchor ui:field="closeMessage"
       styleName="{style.inline} i i--remove i--large l--float-right" />
   </g:HTMLPanel>

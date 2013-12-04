@@ -10,14 +10,8 @@
     type="org.zanata.webtrans.client.ui.DiffColorLegendPanel.Styles">
     .diffLegendPanel {
       background: #454545;
-      padding: 20px 40px 20px 40px;
-      border-radius: 10px;
-    }
-
-    .headerLabel {
-      color: #FFFFFF;
-      font-weight: bold;
-      font-size: 14px;
+      padding: 2em 3em;
+      border-radius: 3px;
     }
 
     .insertLabel {
@@ -31,63 +25,48 @@
       text-decoration: line-through;
     }
 
-    .containLabel {
-      color: #FFFFFF;
-    }
-
-    .descriptionLabel {
-      color: #FFFFFF;
-    }
-
     .table td {
-      border-bottom: 1px dotted gray;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
   </ui:style>
 
-  <g:HTMLPanel>
-    <g:Grid styleName="{style.table}" cellPadding="5">
-      <g:row>
-        <g:customCell>
-          <g:Label styleName="{style.headerLabel}" text="{messages.style}" />
-        </g:customCell>
-        <g:customCell>
-          <g:Label styleName="{style.headerLabel}"
-            text="{messages.description}" />
-        </g:customCell>
-      </g:row>
+  <g:HTMLPanel styleName="new-zanata">
+    <table class="{style.table}">
+      <tr class="txt--invert">
+        <th>
+          <ui:text from="{messages.style}" />
+        </th>
+        <th>
+          <ui:text from="{messages.description}" />
+        </th>
+      </tr>
 
-      <g:row>
-        <g:customCell>
-          <g:Label styleName="{style.insertLabel}"
-            text="{messages.blueColor}" />
-        </g:customCell>
-        <g:customCell>
-          <g:Label ui:field="insDescription"
-            styleName="{style.descriptionLabel}" />
-        </g:customCell>
-      </g:row>
+      <tr>
+        <td class="{style.insertLabel}">
+          <ui:text from="{messages.blueColor}" />
+        </td>
+        <td class="txt--invert">
+          <g:Label ui:field="insDescription" />
+        </td>
+      </tr>
 
-      <g:row>
-        <g:customCell>
-          <g:Label styleName="{style.deleteLabel}"
-            text="{messages.redColorCrossedOut}" />
-        </g:customCell>
-        <g:customCell>
-          <g:Label ui:field="delDescription"
-            styleName="{style.descriptionLabel}" />
-        </g:customCell>
-      </g:row>
+      <tr>
+        <td class="{style.deleteLabel}">
+          <ui:text from="{messages.redColorCrossedOut}" />
+        </td>
+        <td class="txt--invert">
+          <g:Label ui:field="delDescription" />
+        </td>
+      </tr>
 
-      <g:row>
-        <g:customCell>
-          <g:Label styleName="{style.containLabel}"
-            text="{messages.plainText}" />
-        </g:customCell>
-        <g:customCell>
-          <g:Label ui:field="containDescription"
-            styleName="{style.descriptionLabel}" />
-        </g:customCell>
-      </g:row>
-    </g:Grid>
+      <tr class="txt--invert">
+        <td>
+          <ui:text from="{messages.plainText}" />
+        </td>
+        <td>
+          <g:Label ui:field="containDescription" />
+        </td>
+      </tr>
+    </table>
   </g:HTMLPanel>
 </ui:UiBinder>

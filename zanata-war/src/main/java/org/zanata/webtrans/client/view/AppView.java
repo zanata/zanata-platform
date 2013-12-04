@@ -45,10 +45,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,7 +74,7 @@ public class AppView extends Composite implements AppDisplay,
     TransUnitCountBar translationStatsBar;
 
     @UiField
-    InlineLabel readOnlyLabel, keyShortcuts;
+    InlineLabel readOnlyLabel;
 
     @UiField(provided = true)
     Breadcrumb selectedDocumentSpan;
@@ -101,7 +101,7 @@ public class AppView extends Composite implements AppDisplay,
     Styles style;
 
     @UiField
-    Label editorTab, searchAndReplaceTab, documentListTab;
+    Anchor editorTab, searchAndReplaceTab, documentListTab, keyShortcuts;
 
     @UiField
     UnorderedListWidget notifications;
@@ -240,25 +240,25 @@ public class AppView extends Composite implements AppDisplay,
         readOnlyLabel.setVisible(visible);
     }
 
-    private final static double MIN_MENU_WIDTH = 24.0;
-    private final static double EXPENDED_MENU_RIGHT = 304.0;
+    private final static double MIN_MENU_WIDTH = 2;
+    private final static double EXPENDED_MENU_RIGHT = 23;
 
-    private final static double MINIMISED_EDITOR_RIGHT = 280.0;
-    private final static int ANIMATE_DURATION = 300;
+    private final static double MINIMISED_EDITOR_RIGHT = 21.5;
+    private final static int ANIMATE_DURATION = 100;
 
     @Override
     public void showSideMenu(boolean isShowing) {
         rootContainer.forceLayout();
         if (isShowing) {
-            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX,
-                    MINIMISED_EDITOR_RIGHT, Unit.PX);
+            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.EM,
+                    MINIMISED_EDITOR_RIGHT, Unit.EM);
             rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX,
-                    EXPENDED_MENU_RIGHT, Unit.PX);
+                    EXPENDED_MENU_RIGHT, Unit.EM);
         } else {
-            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.PX,
-                    0.0, Unit.PX);
-            rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.PX,
-                    MIN_MENU_WIDTH, Unit.PX);
+            rootContainer.setWidgetLeftRight(contentContainer, 0.0, Unit.EM,
+                    0.0, Unit.EM);
+            rootContainer.setWidgetRightWidth(sideMenuContainer, 0.0, Unit.EM,
+                    MIN_MENU_WIDTH, Unit.EM);
         }
         rootContainer.animate(ANIMATE_DURATION);
     }
@@ -322,7 +322,8 @@ public class AppView extends Composite implements AppDisplay,
 
     public void showNotification(NotificationEvent notification) {
         notifications.clear();
-        notifications.add(new NotificationItem(messages, notification, this));
+        notifications.add(new NotificationItem(messages, notification, this,
+                false));
     }
 
     @Override

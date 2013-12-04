@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.util.DateUtil;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
@@ -48,32 +49,46 @@ public class NotificationItem extends Composite {
     @UiField
     Anchor details, closeMessage;
 
+    @UiField
+    Styles style;
+
+    interface Styles extends CssResource {
+        String disabledInlineLink();
+
+        String inlineLink();
+    }
+
     private static NotificationItemLineUiBinder uiBinder = GWT
             .create(NotificationItemLineUiBinder.class);
 
-    public NotificationItem(final WebTransMessages messages, final NotificationEvent notificationEvent,
-            final NotificationDetailListener listener) {
+    public NotificationItem(final WebTransMessages messages,
+            final NotificationEvent notificationEvent,
+            final NotificationDetailListener listener,
+            boolean isSideNotification) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        this.addStyleName(getSeverityClass(notificationEvent.getSeverity()));
 
-        message.setText(DateUtil.formatLongDateTime(notificationEvent
-                .getDate()) + " " + notificationEvent.getMessage());
+        ClickHandler showDetailsHandler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                listener.showNotificationDetail(notificationEvent);
+            }
+        };
+        message.setText(DateUtil.formatShortDate(notificationEvent.getDate())
+                + " " + notificationEvent.getMessage());
+        message.addClickHandler(showDetailsHandler);
 
         InlineLink inlineLink = notificationEvent.getInlineLink();
         if (inlineLink != null) {
+            inlineLink.setLinkStyle(style.inlineLink());
+            inlineLink.setDisabledStyle(style.disabledInlineLink());
             link.add(inlineLink);
         } else {
             link.setVisible(false);
         }
 
         details.setText(messages.moreDetais());
-        details.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                listener.showNotificationDetail(notificationEvent);
-            }
-        });
+        details.addClickHandler(showDetailsHandler);
 
         closeMessage.addClickHandler(new ClickHandler() {
             @Override
@@ -81,6 +96,15 @@ public class NotificationItem extends Composite {
                 listener.closeMessage(notificationEvent);
             }
         });
+
+        if (isSideNotification) {
+            details.setVisible(false);
+            closeMessage.setVisible(false);
+            this.addStyleName(getTxtSeverityClass(notificationEvent
+                    .getSeverity()));
+        } else {
+            this.addStyleName(getSeverityClass(notificationEvent.getSeverity()));
+        }
     }
 
     private String getSeverityClass(NotificationEvent.Severity severity) {
@@ -90,6 +114,15 @@ public class NotificationItem extends Composite {
             return "message--danger";
         }
         return "message--highlight";
+    }
+
+    private String getTxtSeverityClass(NotificationEvent.Severity severity) {
+        if (severity == NotificationEvent.Severity.Warning) {
+            return "txt--warning";
+        } else if (severity == NotificationEvent.Severity.Error) {
+            return "txt--danger";
+        }
+        return "txt--highlight";
     }
 
     interface NotificationItemLineUiBinder extends

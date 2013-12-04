@@ -20,7 +20,6 @@
  */
 package org.zanata.webtrans.client.view;
 
-import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
 import com.google.gwt.core.client.GWT;
@@ -30,27 +29,22 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class OptionsView extends Composite implements OptionsDisplay {
     private static OptionsUiBinder uiBinder = GWT.create(OptionsUiBinder.class);
 
-    interface OptionsUiBinder extends UiBinder<VerticalPanel, OptionsView> {
+    interface OptionsUiBinder extends UiBinder<Widget, OptionsView> {
     }
 
     @UiField
     HTMLPanel optionsContainer;
-
-    @UiField
-    Label advancedUserConfig;
 
     @UiField
     CheckBox showErrorChk;
@@ -59,31 +53,17 @@ public class OptionsView extends Composite implements OptionsDisplay {
     ListBox themesList;
 
     @UiField
-    PushButton saveButton;
-
-    @UiField
-    PushButton loadButton;
-
-    @UiField
-    PushButton restoreToDefaultsButton;
+    Button saveButton, loadButton, restoreToDefaultsButton;
 
     private OptionsDisplay.Listener listener;
 
     @Inject
-    public OptionsView(WebTransMessages messages) {
+    public OptionsView() {
         initWidget(uiBinder.createAndBindUi(this));
 
         themesList.addItem("Compact", ThemesOption.THEMES_COMPACT.name());
         themesList.addItem("Default", ThemesOption.THEMES_DEFAULT.name());
         themesList.addItem("Loose", ThemesOption.THEMES_LOOSE.name());
-
-        advancedUserConfig.setText(messages.otherConfiguration());
-
-        showErrorChk.setTitle(messages.showErrorsTooltip());
-
-        saveButton.setText(messages.save());
-        loadButton.setText(messages.load());
-        restoreToDefaultsButton.setText(messages.restoreDefaults());
     }
 
     @Override

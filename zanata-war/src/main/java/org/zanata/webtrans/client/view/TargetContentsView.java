@@ -71,8 +71,10 @@ public class TargetContentsView extends Composite implements
 
     @UiField
     Label savingIndicator;
+
     @UiField(provided = true)
     EditorButtonsWidget buttons;
+
     @UiField
     Label commentIndicator;
 
@@ -287,10 +289,6 @@ public class TargetContentsView extends Composite implements
     }
 
     interface Styles extends CssResource {
-
-        String targetContentsCell();
-
-        String editorGridWrapper();
 
         String unsaved();
 

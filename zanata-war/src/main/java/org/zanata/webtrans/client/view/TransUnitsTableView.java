@@ -11,7 +11,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
@@ -38,10 +37,10 @@ public class TransUnitsTableView extends Composite implements
 
     @UiField
     Grid transUnitTable;
-    @UiField
-    Styles style;
+
     @UiField
     WebTransMessages messages;
+
     @UiField
     ScrollPanel root;
 
@@ -70,7 +69,7 @@ public class TransUnitsTableView extends Composite implements
         this.loadingPanel = loadingPanel;
         initWidget(uiBinder.createAndBindUi(this));
         noContentLabel.setText(messages.noContent());
-        noContentLabel.setStyleName(style.noContent());
+        noContentLabel.setStyleName("gamma");
 
         transUnitTable.addClickHandler(new ClickHandler() {
             @Override
@@ -97,8 +96,7 @@ public class TransUnitsTableView extends Composite implements
 
     @Override
     public void setThemes(String theme) {
-        transUnitTable.setStyleName(style.table());
-        transUnitTable.addStyleName("transUnitTable");
+        transUnitTable.setStyleName("transUnitTable");
         transUnitTable.addStyleName(theme);
     }
 
@@ -128,7 +126,6 @@ public class TransUnitsTableView extends Composite implements
         showEmptyContentIfNoData(sourceDisplays.size());
 
         transUnitTable.resizeRows(sourceDisplays.size());
-        HTMLTable.RowFormatter rowFormatter = transUnitTable.getRowFormatter();
         HTMLTable.CellFormatter cellFormatter =
                 transUnitTable.getCellFormatter();
 
@@ -143,20 +140,12 @@ public class TransUnitsTableView extends Composite implements
                     HasVerticalAlignment.ALIGN_TOP);
             cellFormatter.setVerticalAlignment(i, 1,
                     HasVerticalAlignment.ALIGN_TOP);
-            cellFormatter.setStyleName(i, 0, style.cellFormat());
             cellFormatter.addStyleName(i, 0, "transUnitCol");
-            cellFormatter.setStyleName(i, 1, style.cellFormat());
             cellFormatter.addStyleName(i, 1, "transUnitCol");
 
             sourceDisplay.refresh();
             targetDisplay.refresh();
-
-            rowFormatter.setStyleName(i, getRowStyle(i));
         }
-    }
-
-    private String getRowStyle(int row) {
-        return row % 2 == 0 ? style.evenRow() : style.oddRow();
     }
 
     private void showEmptyContentIfNoData(int dataSize) {
@@ -216,18 +205,6 @@ public class TransUnitsTableView extends Composite implements
                 firstTimeLoading = false;
             }
         }
-    }
-
-    interface Styles extends CssResource {
-        String oddRow();
-
-        String evenRow();
-
-        String cellFormat();
-
-        String table();
-
-        String noContent();
     }
 
     interface TransUnitEditViewUiBinder extends

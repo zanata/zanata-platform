@@ -4,72 +4,53 @@
   xmlns:f="urn:import:org.zanata.webtrans.client">
   <ui:style type="org.zanata.webtrans.client.view.SideMenuView.Styles">
     .mainPanel {
-      color: #FFFFFF;
-      width: 250px;
-      padding: 15px;
-      background-color: #444444;
+      color: #c4ccd4;
+      width: 21em;
+      background-color: #444c54;
       border-radius: 0 0 0 5px;
     }
 
     .menuButton {
-      cursor: pointer;
-      font-size: 18px;
-      color: #FFFFFF;
       background: #626262;
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
-      padding: 2px 0 3px 3px;
-      margin-bottom: 1px;
-      display: inline-block;
-    }
-
-    .menuButton:hover {
-      color: #96FFFF;
+      padding: 0.1em;
+      margin-bottom: 0.1em;
+      display: block;
     }
 
     .selectedButton {
-      color: #96FFFF;
-      background: #444444;
-    }
-
-    .alertTab {
-      color: yellow;
+      color: #96FFFF !important;
+      background: #444c54;
     }
 
     .notificationLabel {
-      text-align: center;
-      font-size: 10px;
-      font-weight: bold;
-      color: white;
       position: absolute;
-      background: orange;
-      border-radius: 2px;
-      min-width: 10px;
-      right: 13px;
-      top: 0px;
+      top: 0;
     }
 
   </ui:style>
 
   <g:LayoutPanel>
-    <g:layer top="0" bottom="0" left="0" width="24px">
-      <g:FlowPanel>
-        <g:InlineLabel ui:field="notificationTab"
-          styleName="icon-bell {style.menuButton}" />
+    <g:layer top="0" bottom="0" left="0" width="2em">
+      <g:FlowPanel styleName="new-zanata">
+        <g:Anchor ui:field="notificationTab"
+          styleName="icon-bell txt--invert txt--hero {style.menuButton}" />
         <g:InlineLabel ui:field="notificationLabel"
-          addStyleNames="{style.notificationLabel}" />
-        <g:InlineLabel ui:field="chatTab"
-          styleName="icon-chat-1 {style.menuButton}" />
-        <g:InlineLabel ui:field="optionsTab"
-          styleName="icon-cog {style.menuButton}" />
-        <g:InlineLabel ui:field="validationOptionsTab"
-          styleName="icon-check {style.menuButton}" />
+          styleName="{style.notificationLabel} badge--warning" />
+        <g:Anchor ui:field="chatTab"
+          styleName="icon-chat-1 {style.menuButton} txt--invert txt--hero " />
+        <g:Anchor ui:field="optionsTab"
+          styleName="icon-cog {style.menuButton} txt--invert txt--hero" />
+        <g:Anchor ui:field="validationOptionsTab"
+          styleName="icon-check {style.menuButton} txt--invert txt--hero" />
       </g:FlowPanel>
     </g:layer>
 
 
-    <g:layer top="0px" bottom="0" left="24px" right="0">
-      <g:TabLayoutPanel ui:field="container" styleName="{style.mainPanel}"
+    <g:layer top="0px" bottom="0" left="2em" right="0">
+      <g:TabLayoutPanel ui:field="container"
+        styleName="{style.mainPanel} new-zanata"
         barHeight="0" />
     </g:layer>
   </g:LayoutPanel>
