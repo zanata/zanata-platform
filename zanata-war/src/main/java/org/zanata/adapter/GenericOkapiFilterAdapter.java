@@ -162,7 +162,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    if (tu.isTranslatable()) {
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
                         TextFlow tf =
                                 new TextFlow(getIdFor(tu, subDocName),
                                         sourceLocale);
