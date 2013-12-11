@@ -62,7 +62,7 @@ public class BasePage extends CorePage {
     @FindBy(id = "languages_link")
     private WebElement languagesLink;
 
-    @FindBy(id = "user_avatar")
+    @FindBy(id = "user--avatar")
     private WebElement userAvatar;
 
     private static final By BY_SIGN_IN = By.id("signin_link");
