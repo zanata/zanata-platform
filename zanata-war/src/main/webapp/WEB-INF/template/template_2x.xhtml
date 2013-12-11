@@ -4,9 +4,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:a="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j">
   <html class="new-zanata-html">
 
@@ -28,59 +25,43 @@
   </h:head>
 
   <h:body styleClass="new-zanata-body">
-    <div class="off-canvas__outer">
-      <div class="new-zanata-base">
-        <div class="new-zanata">
-          <ui:include src="left_menu.xhtml"/>
-          <ui:include src="right_menu.xhtml"/>
-        </div>
+    <div class="new-zanata-base">
+      <div class="new-zanata">
+        <ui:include src="banner.xhtml"/>
       </div>
-
-      <div class="off-canvas__inner">
-        <div class="new-zanata-base">
-          <div class="new-zanata">
-            <ui:include src="banner.xhtml"/>
-          </div>
+    </div>
+    <div id="container">
+      <div id="bd">
+        <div id="breadcrumbs_div">
+          <ui:include src="breadcrumbs.xhtml"/>
         </div>
-        <div id="container">
-          <div id="bd">
-            <div id="search_div">
-              <ui:include src="search_panel.xhtml"/>
-            </div>
-            <div id="breadcrumbs_div">
-              <ui:include src="breadcrumbs.xhtml"/>
-            </div>
-            <div id="yui-main">
-              <div class="yui-b">
-                <a:outputPanel ajaxRendered="true">
-                  <h:messages id="messages" globalOnly="true"
-                    styleClass="message"
-                    errorClass="errormsg icon-info-circle-2"
-                    infoClass="infomsg icon-info-circle-2"
-                    warnClass="warnmsg icon-attention"
-                    rendered="#{showGlobalMessages != 'false'}"/>
-                </a:outputPanel>
+        <div id="yui-main">
+          <div class="yui-b">
+            <a4j:outputPanel ajaxRendered="true">
+              <h:messages id="messages" globalOnly="true"
+                styleClass="message"
+                errorClass="errormsg icon-info-circle-2"
+                infoClass="infomsg icon-info-circle-2"
+                warnClass="warnmsg icon-attention"
+                rendered="#{showGlobalMessages != 'false'}"/>
+            </a4j:outputPanel>
 
-                <div id="main_body_content">
-                  <ui:insert name="center_content"/>
-                </div>
-              </div>
-            </div>
-            <div class="yui-b">
-              <ui:insert name="right_content"/>
+            <div id="main_body_content">
+              <ui:insert name="center_content"/>
             </div>
           </div>
         </div>
-        <div class="footer">
-          <ui:include src="footer.xhtml"/>
+        <div class="yui-b">
+          <ui:insert name="right_content"/>
         </div>
       </div>
     </div>
-    <ui:include src="piwik.xhtml"/>
-    <script
+    <div class="footer">
+      <ui:include src="footer.xhtml"/>
+    </div>
+    <ui:include src="scripts.xhtml"/>
+    <script type="text/javascript"
       src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script
-      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
   </h:body>
   </html>
 </f:view>

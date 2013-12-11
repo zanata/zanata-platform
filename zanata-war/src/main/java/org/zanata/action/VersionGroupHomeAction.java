@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -197,8 +198,8 @@ public class VersionGroupHomeAction implements Serializable {
         }
 
         @Override
-        public int
-                compare(HProjectIteration compareFrom, HProjectIteration compareTo) {
+        public int compare(HProjectIteration compareFrom,
+                HProjectIteration compareTo) {
             final HProjectIteration item1, item2;
 
             if (sortingType.isDescending()) {
@@ -245,8 +246,8 @@ public class VersionGroupHomeAction implements Serializable {
                             .getTotal() ? 1 : -1;
                 }
             } else {
-                return item1.getProject().getName()
-                        .compareTo(item2.getProject().getName());
+                return item1.getProject().getName().toLowerCase()
+                        .compareTo(item2.getProject().getName().toLowerCase());
             }
             return 0;
         }
@@ -302,52 +303,66 @@ public class VersionGroupHomeAction implements Serializable {
     }
 
     @CachedMethodResult
-    public String getStatisticFigureForLocale(
-            SortingType.SortOption sortOption, LocaleId localeId) {
-        WordStatistic statistic = getStatisticsForLocale(localeId);
-
-        return getStatisticFigure(sortOption, statistic);
-    }
-
-    @CachedMethodResult
-    public String getStatisticFigureForProjectWithLocale(
+    public DisplayUnit getStatisticFigureForProjectWithLocale(
             SortingType.SortOption sortOption, LocaleId localeId,
             Long projectIterationId) {
         WordStatistic statistic =
                 statisticMap.get(new VersionLocaleKey(projectIterationId,
                         localeId));
-
-        return getStatisticFigure(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic);
     }
 
     @CachedMethodResult
-    public String getStatisticFigureForProject(
+    public DisplayUnit getStatisticFigureForLocale(
+            SortingType.SortOption sortOption, LocaleId localeId) {
+        WordStatistic statistic = getStatisticsForLocale(localeId);
+        return getDisplayUnit(sortOption, statistic);
+    }
+
+    @CachedMethodResult
+    public DisplayUnit getStatisticFigureForProject(
             SortingType.SortOption sortOption, Long projectIterationId) {
         WordStatistic statistic = getStatisticForProject(projectIterationId);
-
-        return getStatisticFigure(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic);
     }
 
-    private String getStatisticFigure(SortingType.SortOption sortOption,
+    private DisplayUnit getDisplayUnit(SortingType.SortOption sortOption,
             WordStatistic statistic) {
+        DisplayUnit displayUnit;
+
         if (sortOption.equals(SortingType.SortOption.HOURS)) {
-            return StatisticsUtil.formatHours(statistic.getRemainingHours());
+            displayUnit =
+                    new DisplayUnit("", StatisticsUtil.formatHours(statistic
+                            .getRemainingHours()),
+                            zanataMessages
+                                    .getMessage("jsf.stats.HoursRemaining"));
         } else if (sortOption.equals(SortingType.SortOption.WORDS)) {
-            return String.valueOf(statistic.getTotal());
+            displayUnit =
+                    new DisplayUnit("", String.valueOf(statistic.getTotal()),
+                            zanataMessages.getMessage("jsf.Words"));
         } else {
-            return StatisticsUtil.formatPercentage(statistic
-                    .getPercentTranslated()) + "%";
+            String figure =
+                    StatisticsUtil.formatPercentage(statistic
+                            .getPercentTranslated()) + "%";
+            if (statistic.getPercentTranslated() == 0) {
+                displayUnit =
+                        new DisplayUnit("txt--neutral", figure,
+                                zanataMessages.getMessage("jsf.Translated"));
+            } else {
+                displayUnit =
+                        new DisplayUnit("txt--success", figure,
+                                zanataMessages.getMessage("jsf.Translated"));
+            }
         }
+        return displayUnit;
     }
 
-    public String getStatisticUnit(SortingType.SortOption sortOption) {
-        if (sortOption.equals(SortingType.SortOption.HOURS)) {
-            return zanataMessages.getMessage("jsf.stats.HoursRemaining");
-        } else if (sortOption.equals(SortingType.SortOption.WORDS)) {
-            return zanataMessages.getMessage("jsf.Words");
-        } else {
-            return zanataMessages.getMessage("jsf.Translated");
-        }
+    @Getter
+    @AllArgsConstructor
+    public final class DisplayUnit {
+        private String cssClass;
+        private String figure;
+        private String unit;
     }
 
     @CachedMethodResult
@@ -392,7 +407,10 @@ public class VersionGroupHomeAction implements Serializable {
     }
 
     public List<HPerson> getMaintainers() {
-        return versionGroupDAO.getMaintainersBySlug(getSlug());
+        List<HPerson> list = versionGroupDAO.getMaintainersBySlug(getSlug());
+
+        Collections.sort(list, VersionGroupHome.PERSON_COMPARATOR);
+        return list;
     }
 
     private Map<LocaleId, List<HProjectIteration>> getMissingLocaleVersionMap() {

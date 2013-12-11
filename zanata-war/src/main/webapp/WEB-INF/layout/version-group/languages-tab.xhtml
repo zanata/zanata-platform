@@ -7,25 +7,17 @@
   xmlns:f="http://java.sun.com/jsf/core">
 
 <div class="panels--2">
-<div class="g--collapsed">
-<div class="g__item w--1-2 w--1-2-s panels__panel">
-  <div class="bg--pop-high">
-    <div class="panels__panel__header">
-      <div class="g--tight">
-        <div class="g__item w--1-2 w--1-2-s">
-          <h2 class="heading--secondary epsilon">
-            <i class="i i--language"></i>
-            #{messages['jsf.Languages']}
-          </h2>
-        </div>
-        <div
-          class="g__item w--1-2 w--1-2-s txt--align-right txt--s-align-right">
-          <zanata:sortlist id="languages-language_sorting"
-            sortAction="#{versionGroupHomeAction.sortLanguageList()}"
-            render="languages-language_form"
-            sortingList="#{versionGroupHomeAction.languageSortingList}"/>
-        </div>
+  <div class="panels__panel panel">
+    <div class="panel__header">
+      <div class="panel__header__sort">
+        <zanata:sortlist id="languages-language_sorting"
+          sortAction="#{versionGroupHomeAction.sortLanguageList()}"
+          render="languages-language_form"
+          sortingList="#{versionGroupHomeAction.languageSortingList}"/>
       </div>
+      <h2 class="panel__heading">
+        <i class="i--language i--left"></i>#{messages['jsf.Languages']}
+      </h2>
     </div>
     <h:form id="languages-language_form" styleClass="l--push-bottom-0">
       <s:fragment
@@ -59,31 +51,33 @@
                 styleClass="bx--block">
                 <div class="list__item">
                   <div class="list__item__info">
-                      <span class="list__title">
-                        ${hLocale.retrieveDisplayName()}
-                        <a4j:outputPanel
-                          rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
-                          styleClass="badge--danger"
-                          title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
-                          #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
-                        </a4j:outputPanel>
-                      </span>
+                    <span class="list__title">
+                      #{hLocale.retrieveDisplayName()}
+                      <a4j:outputPanel
+                        rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
+                        styleClass="badge--danger"
+                        title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
+                        #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
+                      </a4j:outputPanel>
+                    </span>
                   </div>
                   <s:div styleClass="list__item__stats"
                     rendered="#{versionGroupHomeAction.pageRendered}">
-                       <span class="stats--small txt--state-neutral">
-                          <span class="stats__figure">
-                            ${versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}
-                          </span>
-                          <span class="stats__unit txt--lowercase">
-                            ${versionGroupHomeAction.getStatisticUnit(versionGroupHomeAction.languageSortingList.selectedSortOption)}
-                          </span>
+                    <ui:param name="displayUnit"
+                      value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
+                     <span class="stats--small #{displayUnit.cssClass}">
+                        <span class="stats__figure">
+                          #{displayUnit.figure}
                         </span>
+                        <span class="stats__unit">
+                          #{displayUnit.unit}
+                        </span>
+                     </span>
                   </s:div>
                 </div>
 
                 <zanata:statistic
-                  value="${versionGroupHomeAction.getStatisticsForLocale(hLocale.localeId)}"
+                  value="#{versionGroupHomeAction.getStatisticsForLocale(hLocale.localeId)}"
                   rendered="#{versionGroupHomeAction.pageRendered}"/>
 
                 <zanata:loader type="large"
@@ -95,37 +89,28 @@
       </s:fragment>
     </h:form>
   </div>
-</div>
 
-<div class="g__item w--1-2 w--1-2-s panels__panel">
-  <s:div styleClass="bg--pop-higher">
-    <div class="panels__panel__header">
-      <div class="g--tight">
-        <div class="g__item w--1-2 w--1-2-s">
-          <h2 class="heading--secondary epsilon">
-                <span class="is-hidden--l-up">
-                  <a href="#"
-                    onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
-                    title="#{messages['Languages']}">
-                    <i class="i i--language"></i>
-                  </a>
-                  <i class="i i--arrow-right"></i>
-                </span>
-            <i class="i i--project"></i>
-            <a4j:outputPanel id="language-label">
-              #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
-            </a4j:outputPanel>
-            #{messages['Projects']}
-          </h2>
-        </div>
-        <div
-          class="g__item w--1-2 w--1-2-s txt--align-right txt--s-align-right">
-          <zanata:sortlist id="languages-project_sorting"
-            sortAction="#{versionGroupHomeAction.sortProjectList(versionGroupHomeAction.selectedLocale.localeId)}"
-            render="languages-project_list"
-            sortingList="#{versionGroupHomeAction.projectSortingList}"/>
-        </div>
+  <div class="panels__panel panel is-active">
+    <div class="panel__header">
+      <div class="panel__header__sort">
+        <zanata:sortlist id="languages-project_sorting"
+          sortAction="#{versionGroupHomeAction.sortProjectList(versionGroupHomeAction.selectedLocale.localeId)}"
+          render="languages-project_list"
+          sortingList="#{versionGroupHomeAction.projectSortingList}"/>
       </div>
+      <a href="#" class="panel__header__back"
+        onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
+        title="#{messages['Languages']}">
+        <i class="i--huge i--arrow-left" aria-hidden="true"></i>
+      </a>
+
+      <h2 class="panel__heading">
+        <i class="i--left i--project"></i>
+        <a4j:outputPanel id="language-label">
+          #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
+        </a4j:outputPanel>
+        #{messages['Projects']}
+      </h2>
     </div>
     <h:form id="languages-project_list" styleClass="l--push-bottom-0">
       <s:fragment
@@ -140,7 +125,6 @@
         rendered="#{versionGroupHomeAction.selectedLocale != null and versionGroupHomeAction.getProjectIterations().isEmpty()}">
         <div class="l--pad-all-half">
           <p class="txt--meta">#{messages['jsf.NoProjectsInGroup']}</p>
-
           <s:fragment
             rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
             <p>
@@ -159,62 +143,60 @@
             value="#{versionGroupHomeAction.getProjectIterations()}"
             var="version">
             <li
-              class="progress-bar__expander panels__panel__item bg--highest--hover">
+              class="progress-bar__expander bg--highest--hover">
               <div class="list__item">
                 <div class="list__item__info">
-                      <span class="list__title">
-                        <h:outputLink
-                          value="#{request.contextPath}/webtrans/Application.seam"
-                          rendered="#{versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
-                          <f:param name="project"
-                            value="#{version.project.slug}"/>
-                          <f:param name="iteration"
-                            value="#{version.slug}"/>
-                          <f:param name="localeId"
-                            value="#{versionGroupHomeAction.selectedLocale.localeId}"/>
-                          <f:param name="locale"
-                            value="#{locale.language}"/>
-                          #{version.project.name} <i
-                          class="i i--version"></i> #{version.slug}
-                        </h:outputLink>
+                    <span class="list__title" title="#{version.project.slug}">
+                      <h:outputLink
+                        value="#{request.contextPath}/webtrans/Application.seam"
+                        rendered="#{versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
+                        <f:param name="project"
+                          value="#{version.project.slug}"/>
+                        <f:param name="iteration" value="#{version.slug}"/>
+                        <f:param name="localeId"
+                          value="#{versionGroupHomeAction.selectedLocale.localeId}"/>
+                        <f:param name="locale" value="#{locale.language}"/>
+                        #{version.project.name} <i
+                        class="i i--version"></i> #{version.slug}
+                      </h:outputLink>
 
-                        <s:fragment
-                          rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
-                          #{version.project.name} <i
-                          class="i i--version"></i> #{version.slug}
-                        </s:fragment>
+                      <s:fragment
+                        rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
+                        #{version.project.name} <i
+                        class="i i--version"></i> #{version.slug}
+                      </s:fragment>
 
-                        <s:link view="/iteration/view.xhtml"
-                          rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
-                          <f:param name="projectSlug"
-                            value="#{version.project.slug}"/>
-                          <f:param name="iterationSlug"
-                            value="#{version.slug}"/>
-                          <span
-                            class="badge--danger">#{messages['jsf.Missing']}</span>
-                        </s:link>
-                      </span>
+                      <s:link view="/iteration/view.xhtml"
+                        rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
+                        <f:param name="projectSlug"
+                          value="#{version.project.slug}"/>
+                        <f:param name="iterationSlug"
+                          value="#{version.slug}"/>
+                        <span
+                          class="badge--danger">#{messages['jsf.Missing']}</span>
+                      </s:link>
+                    </span>
                 </div>
                 <div class="list__item__stats">
-                      <span class="stats--small">
-                        <span class="stats__figure">
-                          ${versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.projectSortingList.selectedSortOption, versionGroupHomeAction.selectedLocale.localeId, version.id)}
-                        </span>
-                        <span class="stats__unit txt--lowercase">
-                          ${versionGroupHomeAction.getStatisticUnit(versionGroupHomeAction.projectSortingList.selectedSortOption)}
-                        </span>
+                  <ui:param name="displayUnit"
+                    value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.projectSortingList.selectedSortOption, versionGroupHomeAction.selectedLocale.localeId, version.id)}"/>
+                    <span class="stats--small #{displayUnit.cssClass}">
+                      <span class="stats__figure">
+                        #{displayUnit.figure}
                       </span>
+                      <span class="stats__unit txt--lowercase">
+                        #{displayUnit.unit}
+                      </span>
+                    </span>
                 </div>
               </div>
               <zanata:statistic
-                value="${versionGroupHomeAction.getSelectedLocaleStatistic(version.id)}"/>
+                value="#{versionGroupHomeAction.getSelectedLocaleStatistic(version.id)}"/>
             </li>
           </ui:repeat>
         </ul>
       </s:fragment>
     </h:form>
-  </s:div>
-</div>
-</div>
+  </div>
 </div>
 </ui:composition>

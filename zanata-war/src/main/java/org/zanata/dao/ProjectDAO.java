@@ -7,9 +7,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -229,17 +233,23 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
-    public List<HProject> searchQuery(String searchQuery, int maxResult,
-            int firstResult) throws ParseException {
-        String[] projectFields = { "slug", "name", "description" };
-        QueryParser parser =
-                new MultiFieldQueryParser(Version.LUCENE_35, projectFields,
-                        new StandardAnalyzer(Version.LUCENE_35));
-        parser.setAllowLeadingWildcard(true);
-        org.apache.lucene.search.Query luceneQuery =
-                parser.parse(QueryParser.escape(searchQuery));
+    public List<HProject> searchQuery(@Nonnull String searchQuery,
+            int maxResult, int firstResult) throws ParseException {
+
+        searchQuery = QueryParser.escape(searchQuery);
+
+        PrefixQuery slugQuery = new PrefixQuery(new Term("slug", searchQuery));
+        PrefixQuery nameQuery = new PrefixQuery(new Term("name", searchQuery));
+        PrefixQuery descQuery =
+                new PrefixQuery(new Term("description", searchQuery));
+
+        BooleanQuery booleanQuery = new BooleanQuery();
+        booleanQuery.add(slugQuery, BooleanClause.Occur.SHOULD);
+        booleanQuery.add(nameQuery, BooleanClause.Occur.SHOULD);
+        booleanQuery.add(descQuery, BooleanClause.Occur.SHOULD);
+
         FullTextQuery query =
-                entityManager.createFullTextQuery(luceneQuery, HProject.class);
+                entityManager.createFullTextQuery(booleanQuery, HProject.class);
         query.setMaxResults(maxResult).setFirstResult(firstResult)
                 .getResultList();
 

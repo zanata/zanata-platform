@@ -5,7 +5,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template.xhtml">
@@ -36,7 +35,7 @@
       }
     }
 
-    jQuery(selectedTabId).click();
+    jQuery(selectedTabId)[0].click();
     window.location.hash = selectedTabId;
 
     if (window.location.hash.substring(0, 9) == "#settings") {
@@ -54,7 +53,7 @@
     if (elementExist(hashUrl)) {
       selectedSettingsTabId = hashUrl + "_tab";
     }
-    jQuery(selectedSettingsTabId).click();
+    jQuery(selectedSettingsTabId)[0].click();
   }
 
   function elementExist(hashId) {
@@ -90,13 +89,15 @@
   }
 </script>
 
-<a4j:jsFunction name="refreshStatistics"
-  action="#{versionGroupHomeAction.resetPageData}"
-  render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
+<h:form>
+  <a4j:jsFunction name="refreshStatistics"
+    action="#{versionGroupHomeAction.resetPageData}"
+    render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
 
-<a4j:jsFunction name="renderStatistics"
-  render="overall_statistic, languages-language_form, projects-project_form"
-  action="#{versionGroupHomeAction.setPageRendered(true)}"/>
+  <a4j:jsFunction name="renderStatistics"
+    render="overall_statistic, languages-language_form, projects-project_form"
+    action="#{versionGroupHomeAction.setPageRendered(true)}"/>
+</h:form>
 
 <div class="g">
   <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
@@ -165,8 +166,7 @@
             <f:param name="emailType" value="request_to_join_group"/>
             <f:param name="versionGroupSlug"
               value="#{versionGroupHomeAction.slug}"/>
-            <i
-              class="i i--project"></i>
+            <i class="i--left i--project"></i>
             <h:outputFormat
               value="#{messages['jsf.RequestAddProjectToGroup']}">
               <f:param value="#{versionGroupHome.instance.name}"/>
@@ -186,7 +186,7 @@
             <a href="#languages" id="languages_tab"
               onclick="setActiveTab(this)" title="#{messages['Languages']}">
               <i class="i i--language"></i>
-              <span class="is-hidden--m-down">
+              <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Languages']}
               </span>
               <a4j:outputPanel styleClass="txt--neutral" id="languages-size">
@@ -198,7 +198,7 @@
             <a href="#projects" id="projects_tab" onclick="setActiveTab(this)"
               title="#{messages['Projects']}">
               <i class="i i--project"></i>
-              <span class="is-hidden--m-down">
+              <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Projects']}
               </span>
               <a4j:outputPanel styleClass="txt--neutral" id="projects-size">
@@ -210,7 +210,7 @@
             <a href="#maintainers" id="maintainers_tab"
               title="#{messages['Maintainers']}" onclick="setActiveTab(this)">
               <i class="i i--users"></i>
-              <span class="is-hidden--m-down">
+              <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Maintainers']}
               </span>
               <a4j:outputPanel styleClass="txt--neutral"
@@ -225,7 +225,7 @@
               <a href="#settings" id="settings_tab"
                 title="#{messages['Settings']}" onclick="setActiveTab(this)">
                 <i class="i i--settings"></i>
-                <span class="is-hidden--m-down">
+                <span class="is-hidden--m-down i__text--right">
                   #{messages['jsf.Settings']}
                 </span>
               </a>
