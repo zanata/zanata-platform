@@ -7,40 +7,75 @@
   xmlns:f="http://java.sun.com/jsf/core">
 
 <script type="text/javascript">
+  var newLanguageItems = "[id='#{rich:clientId('new--language')}Items']";
+  var newVersionItems = "[id='#{rich:clientId('new--version')}Items']";
+  var newMaintainerItems = "[id='#{rich:clientId('new--maintainer')}Items']";
+
   jQuery(document).ready(function () {
-    jQuery("#settings-languages_tab").click(function () {
-      focusLanguageInput();
+    jQuery('.js-tabs-nav').children('li').children('a').click(function () {
+      var inputField = jQuery(jQuery(this).attr('href')).find('.js-tabs-nav-focus-input');
+      if (inputField.length) {
+        setTimeout(function () {
+          focusInput(inputField);
+          autocompleteResize(inputField);
+        }, 50);
+      }
     });
 
-    jQuery("#settings-projects_tab").click(function () {
-      focusVersionInput();
-    });
-
-    jQuery("#settings-maintainers_tab").click(function () {
-      focusMaintainerInput();
-    });
+    setTimeout(function () {
+      focusCurrentActiveInput();
+      jQuery(jQuery('.js-tabs-nav').children('li.is-active').children('a').attr('href')).find('.js-tabs-nav-focus-input').each(function () {
+        autocompleteResize(this);
+      });
+    }, 50);
   });
 
-  function focusLanguageInput() {
-    setTimeout(function () {
-      jQuery("[id='#{rich:clientId('newLanguage')}Input']").focus();
-    }, 50);
+  function autocompleteResize(inputField) {
+    var fieldId = jQuery(inputField).attr('id');
+    fieldId = fieldId.substring(0,
+      fieldId.length - "Input".length).concat("List").replace(/:/g, "\\:");
+
+    jQuery('#' + fieldId).find(".rf-au-lst-scrl").css("width",
+      jQuery(inputField).outerWidth() + "px");
   }
 
-  function focusVersionInput() {
-    setTimeout(function () {
-      jQuery("[id='#{rich:clientId('newVersion')}Input']").focus();
-    }, 50);
+  function focusCurrentActiveInput() {
+    jQuery(jQuery('.js-tabs-nav').children('li.is-active').children('a').attr('href')).find('.js-tabs-nav-focus-input').each(function () {
+      focusInput(this);
+    });
   }
 
-  function focusMaintainerInput() {
-    setTimeout(function () {
-      jQuery("[id='#{rich:clientId('newMaintainer')}Input']").focus();
-    }, 50);
+  function focusInput(field) {
+    jQuery(field).value = "";
+    jQuery(field).focus();
   }
 
-
+  function updateResultClickEvent(fieldSelector, clickFn) {
+    jQuery(fieldSelector).find('.rf-au-itm').click(function () {
+      clickFn(this.children[0].value);
+    });
+  }
 </script>
+
+<a4j:jsFunction name="addNewLanguage" render="settings-languages-form"
+  oncomplete="refreshStatistics();focusCurrentActiveInput()"
+  action="#{versionGroupHome.addLanguage()}">
+  <a4j:param name="val" assignTo="#{versionGroupHome.newLanguage}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="addNewVersion" render="settings-projects-form"
+  oncomplete="refreshStatistics();focusCurrentActiveInput()"
+  action="#{versionGroupHome.addVersion()}">
+  <a4j:param name="val" assignTo="#{versionGroupHome.newVersion}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="addNewMaintainer"
+  render="settings-maintainers-form,pageMessages"
+  oncomplete="focusCurrentActiveInput()"
+  action="#{versionGroupHome.addMaintainer()}">
+  <a4j:param name="val" assignTo="#{versionGroupHome.newMaintainer}"/>
+</a4j:jsFunction>
+
 <h1>#{messages['Settings']}</h1>
 
 <div class="tabs--vertical js-tabs">
@@ -48,28 +83,28 @@
   <li class="is-active">
     <a href="#settings-general" id="settings-general_tab"
       title="#{messages['General']}">
-      <i class="i i--settings"></i>
+      <i class="i--left i--settings"></i>
       <span class="is-hidden--m-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-languages" id="settings-languages_tab"
       title="#{messages['Languages']}">
-      <i class="i i--language"></i>
+      <i class="i--left i--language"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-projects" id="settings-projects_tab"
       title="#{messages['Projects']}">
-      <i class="i i--project"></i>
+      <i class="i--left i--project"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Projects']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-maintainers" id="settings-maintainers_tab"
       title="#{messages['Maintainers']}">
-      <i class="i i--users"></i>
+      <i class="i--left i--users"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Maintainers']}</span>
     </a>
   </li>
@@ -129,12 +164,12 @@
     #{messages['jsf.Languages']}
   </h2>
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
-    <ul class="list--slat l--push-top-half">
+    <ul class="list--slat list--highlight l--push-top-half">
       <ui:repeat value="#{versionGroupHome.getInstanceActiveLocales()}"
         var="locale">
-        <li class="reveal">#{locale.retrieveDisplayName()}
-          <span class="txt--meta">[#{locale.localeId}]</span>
-          <a4j:commandLink oncomplete="refreshStatistics()"
+        <li class="reveal">#{locale.retrieveDisplayName()}<span
+          class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
+          <a4j:commandLink oncomplete="refreshStatistics()" execute="@this"
             action="#{versionGroupHome.removeLanguage(locale)}"
             styleClass="l--float-right txt--danger reveal__target"
             render="settings-languages-form">
@@ -143,38 +178,27 @@
         </li>
       </ui:repeat>
       <li>
-        <label for="#{rich:clientId('newLanguage')}Input">
+        <label for="#{rich:clientId('new--language')}Input">
           #{messages['jsf.AddALanguage']}
         </label>
 
-        <div class="g--tight">
-          <div class="g__item w--7-10">
-            <s:decorate template="../field.xhtml" enclose="true"
-              id="newLanguageField">
-              <rich:autocomplete mode="ajax" var="suggestLocale"
-                minChars="2"
-                styleClass="auto-complete" id="newLanguage"
-                autocompleteMethod="#{versionGroupHome.suggestLocales}"
-                fetchValue="#{suggestLocale.localeId}" layout="list"
-                value="#{versionGroupHome.newLanguage}"
-                popupClass="auto-complete-list">
-                <a4j:ajax event="change"
-                  listener="#{versionGroupHome.validateLanguageName(component.id)}"
-                  execute="@this" render="newLanguageField"/>
+        <rich:autocomplete mode="cachedAjax" var="suggestLocale"
+          styleClass="auto-complete" id="new--language"
+          inputClass="autocomplete__input js-tabs-nav-focus-input"
+          onselectitem="addNewLanguage(this.value);"
+          autocompleteMethod="#{versionGroupHome.suggestLocales}"
+          layout="list"
+          oncomplete="updateResultClickEvent(newLanguageItems, addNewLanguage)"
+          fetchValue="#{suggestLocale.retrieveDisplayName()} [#{suggestLocale.localeId}]"
+          popupClass="auto-complete-list" minChars="0">
+          <rich:placeholder value="#{messages['jsf.AddALanguage']}"
+            styleClass="form__placeholder"/>
 
-                #{suggestLocale.retrieveDisplayName()} <span
-                class="txt--meta">[#{suggestLocale.localeId}]</span>
-              </rich:autocomplete>
-            </s:decorate>
-          </div>
-          <div class="g__item w--3-10">
-            <a4j:commandButton styleClass="button--full"
-              action="#{versionGroupHome.addLanguage()}"
-              value="#{messages['Add']}"
-              oncomplete="refreshStatistics();focusLanguageInput()"
-              render="settings-languages-form"/>
-          </div>
-        </div>
+          <h:inputHidden
+            value="#{suggestLocale.retrieveDisplayName()} [#{suggestLocale.localeId}]"/>
+          #{suggestLocale.retrieveDisplayName()}<span
+          class="txt--understated l--push-left-quarter">[#{suggestLocale.localeId}]</span>
+        </rich:autocomplete>
       </li>
     </ul>
   </h:form>
@@ -186,19 +210,13 @@
   <h:form id="settings-projects-form" styleClass="l--push-bottom-0">
     <ul class="list--slat l--push-top-half">
       <ui:repeat
-        value="#{versionGroupHome.getInstanceProjectIterations()}"
+        value="#{versionGroupHome.getSortedInstanceProjectIterations()}"
         var="version">
         <li class="reveal">
-          <s:link value="#{version.project.name}"
-            view="/project/project.xhtml"
-            styleClass="l--push-right-quarter">
-            <f:param name="slug"
-              value="#{version.project.slug}"/>
-          </s:link>
           <s:link view="/iteration/view.xhtml">
             <f:param name="projectSlug" value="#{version.project.slug}"/>
             <f:param name="iterationSlug" value="#{version.slug}"/>
-            <i class="i i--version"></i> #{version.slug}
+            #{version.project.name} <i class="i i--version"></i> #{version.slug}
           </s:link>
           <a4j:commandLink
             action="#{versionGroupHome.removeVersion(version)}"
@@ -214,34 +232,24 @@
           #{messages['jsf.AddAProject']}
         </label>
 
-        <div class="g--tight">
-          <div class="g__item w--7-10">
-            <s:decorate template="../field.xhtml" enclose="true"
-              id="newVersionField">
-              <rich:autocomplete mode="cachedAjax" var="suggestVersion"
-                minChars="2"
-                styleClass="auto-complete" id="newVersion"
-                popupClass="auto-complete-list"
-                autocompleteMethod="#{versionGroupHome.suggestVersions}"
-                fetchValue="#{suggestVersion.project.slug} #{suggestVersion.slug}"
-                layout="list"
-                value="#{versionGroupHome.newVersion}">
-                <a4j:ajax event="change"
-                  listener="#{versionGroupHome.validateVersion(component.id)}"
-                  execute="@this" render="newVersionField"/>
-                #{suggestVersion.project.name} <i
-                class="i i--version"></i> #{suggestVersion.slug}
-              </rich:autocomplete>
-            </s:decorate>
-          </div>
-          <div class="g__item w--3-10">
-            <a4j:commandButton styleClass="button--full"
-              id="group-add-new-project-button"
-              action="#{versionGroupHome.addVersion()}"
-              oncomplete="refreshStatistics();focusVersionInput()"
-              value="#{messages['Add']}" render="settings-projects-form"/>
-          </div>
-        </div>
+        <rich:autocomplete mode="cachedAjax" var="suggestVersion"
+          minChars="3"
+          styleClass="auto-complete" id="new--version"
+          inputClass="autocomplete__input js-tabs-nav-focus-input"
+          onselectitem="addNewVersion(this.value);"
+          popupClass="auto-complete-list"
+          autocompleteMethod="#{versionGroupHome.suggestVersions}"
+          layout="list"
+          oncomplete="updateResultClickEvent(newVersionItems, addNewVersion)"
+          fetchValue="#{suggestVersion.project.slug} #{suggestVersion.slug}">
+          <rich:placeholder value="#{messages['jsf.AddAProject']}"
+            styleClass="form__placeholder"/>
+
+          <h:inputHidden
+            value="#{suggestVersion.project.slug} #{suggestVersion.slug}"/>
+          #{suggestVersion.project.slug} <i
+          class="i i--version"></i> #{suggestVersion.slug}
+        </rich:autocomplete>
       </li>
     </ul>
   </h:form>
@@ -258,7 +266,7 @@
           <span class="w--r-1 bx--round l--push-right-quarter">
             <img
               src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
-              alt="#{maintainer.name}"/>
+              alt="#{maintainer.account.username}"/>
           </span> #{maintainer.name}
           <span class="txt--meta">@#{maintainer.account.username}</span>
           <a4j:commandLink
@@ -275,39 +283,29 @@
           #{messages['jsf.AddAMaintainer']}
         </label>
 
-        <div class="g--tight">
-          <div class="g__item w--7-10">
-            <s:decorate template="../field.xhtml" enclose="true"
-              id="newMaintainerField">
+        <rich:autocomplete mode="cachedAjax" var="suggestMaintainer"
+          minChars="3"
+          styleClass="auto-complete" id="new--maintainer"
+          inputClass="autocomplete__input js-tabs-nav-focus-input"
+          onselectitem="addNewMaintainer(this.value);"
+          popupClass="auto-complete-list"
+          autocompleteMethod="#{versionGroupHome.suggestMaintainers}"
+          layout="list"
+          oncomplete="updateResultClickEvent(newMaintainerItems, addNewMaintainer)"
+          fetchValue="#{suggestMaintainer.name} @#{suggestMaintainer.account.username}">
+          <rich:placeholder value="#{messages['jsf.AddAMaintainer']}"
+            styleClass="form__placeholder"/>
 
-              <rich:autocomplete mode="cachedAjax" var="suggestMaintainer"
-                minChars="3"
-                styleClass="auto-complete" id="newMaintainer"
-                popupClass="auto-complete-list"
-                autocompleteMethod="#{versionGroupHome.suggestMaintainers}"
-                fetchValue="#{suggestMaintainer.account.username}"
-                layout="list"
-                value="#{versionGroupHome.newMaintainer}">
-                <a4j:ajax event="change"
-                  listener="#{versionGroupHome.validateMaintainer(component.id)}"
-                  execute="@this" render="newMaintainerField"/>
-                  <span class="w--r-1 bx--round l--push-right-quarter">
-                    <img
-                      src="#{gravatarServiceImpl.getUserImageUrl(48, suggestMaintainer.email)}"
-                      alt="#{suggestMaintainer.name}"/>
-                  </span>#{suggestMaintainer.name}
-                <span
-                  class="txt--meta">@#{suggestMaintainer.account.username}</span>
-              </rich:autocomplete>
-            </s:decorate>
-          </div>
-          <div class="g__item w--3-10">
-            <a4j:commandButton styleClass="button--full"
-              action="#{versionGroupHome.addMaintainer()}"
-              value="#{messages['Add']}" oncomplete="focusMaintainerInput()"
-              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers_content,pageMessages"/>
-          </div>
-        </div>
+          <h:inputHidden
+            value="#{suggestMaintainer.name} @#{suggestMaintainer.account.username}"/>
+            <span class="w--r-1 bx--round l--push-right-quarter">
+                <img
+                  src="#{gravatarServiceImpl.getUserImageUrl(48, suggestMaintainer.email)}"
+                  alt="#{suggestMaintainer.name}"/>
+              </span>#{suggestMaintainer.name}
+            <span
+              class="txt--meta">@#{suggestMaintainer.account.username}</span>
+        </rich:autocomplete>
       </li>
     </ul>
   </h:form>

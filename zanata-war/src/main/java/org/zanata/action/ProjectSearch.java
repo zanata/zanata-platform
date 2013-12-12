@@ -3,8 +3,14 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -15,6 +21,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
+import org.zanata.security.ZanataIdentity;
 
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
@@ -23,44 +30,32 @@ public class ProjectSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Getter
+    @Setter
     private int pageSize = 30;
 
+    @Getter
+    @Setter
     private String searchQuery;
 
+    @Getter
+    @Setter
     private List<HProject> searchResults;
 
+    @Getter
     private int currentPage = 1;
 
+    @Getter
     private int resultSize;
-
-    private boolean includeObsolete;
 
     @In
     private ProjectDAO projectDAO;
 
-    public String getSearchQuery() {
-        return searchQuery;
-    }
+    @In
+    private ZanataIdentity identity;
 
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
-    }
-
-    public List<HProject> getSearchResults() {
-        return searchResults;
-    }
-
-    public void setSearchResults(List<HProject> projects) {
-        this.searchResults = projects;
-    }
-
-    public int getResultSize() {
-        return resultSize;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
+    // Count of result to be return as part of autocomplete
+    private final static int INITIAL_RESULT_COUNT = 5;
 
     public void setCurrentPage(int page) {
         if (page < 1)
@@ -69,8 +64,35 @@ public class ProjectSearch implements Serializable {
             this.currentPage = page;
     }
 
+    /**
+     * Return results on project search
+     *
+     * @param query
+     */
+    public List<SearchResult> suggestProjects(String query) {
+        searchQuery = query;
+        List<SearchResult> result = Lists.newArrayList();
+        if (StringUtils.isEmpty(searchQuery)) {
+            return result;
+        }
+        try {
+            for (HProject project : projectDAO.searchQuery(searchQuery,
+                    INITIAL_RESULT_COUNT, 0)) {
+                result.add(new SearchResult(project, searchQuery));
+            }
+            result.add(new SearchResult(searchQuery));
+            return result;
+        } catch (ParseException pe) {
+            return result;
+        }
+    }
+
     @Begin(join = true)
     public void search() {
+        if (StringUtils.isEmpty(searchQuery)) {
+            return;
+        }
+
         try {
             searchResults =
                     projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize
@@ -80,7 +102,7 @@ public class ProjectSearch implements Serializable {
         }
         // Manually filtering collection as status field is not indexed by
         // hibernate search
-        if (!this.includeObsolete) {
+        if (!identity.hasPermission("HProject", "view-obsolete")) {
             CollectionUtils.filter(searchResults, new Predicate() {
                 @Override
                 public boolean evaluate(Object arg0) {
@@ -91,20 +113,25 @@ public class ProjectSearch implements Serializable {
         resultSize = searchResults.size();
     }
 
-    public int getPageSize() {
-        return pageSize;
+    public String searchAndRedirect() {
+        search();
+        return "/search.xhtml";
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+    @AllArgsConstructor
+    public class SearchResult {
+        @Getter
+        private HProject project;
 
-    public boolean isIncludeObsolete() {
-        return includeObsolete;
-    }
+        @Getter
+        private String query;
 
-    public void setIncludeObsolete(boolean includeObsolete) {
-        this.includeObsolete = includeObsolete;
-    }
+        public SearchResult(String query) {
+            this.query = query;
+        }
 
+        public boolean isProjectNull() {
+            return project == null;
+        }
+    }
 }

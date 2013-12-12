@@ -10,10 +10,16 @@
         <redirect view-id="/home.xhtml" />
       </rule>
     </navigation>
-    <navigation from-action="#{projectSearch.search}">
-      <redirect view-id="/search.xhtml" />
-    </navigation>
   </page>
+
+  <!-- Project Search -->
+  <page view-id="/search.xhtml">
+    <param name="query" value="#{projectSearch.searchQuery}" />
+    <action execute="#{breadcrumbs.clear}" />
+    <action
+      execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
+  </page>
+
 
   <page view-id="/dashboard/*" login-required="true">
     <restrict>#{identity.loggedIn}</restrict>
@@ -31,14 +37,6 @@
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.server.EditHomePageCode.label'])}" />
     <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
-
-  <!-- Project Search -->
-  <!-- TODO this rule is a duplicate, should be combined with first * rule -->
-  <page view-id="/search.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
   </page>
 
   <!-- Landing page for open id authentication -->

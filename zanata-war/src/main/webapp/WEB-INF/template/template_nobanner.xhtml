@@ -48,28 +48,19 @@
   </h:head>
 
   <h:body styleClass="new-zanata">
-    <div class="off-canvas__outer new-zanata">
-      <div class="off-canvas__inner">
-
-        <main role="main" class="l--pad-bottom-1">
-          <div class="l__wrapper">
-            <ui:insert name="center_content"/>
-          </div>
-        </main>
-
-        <footer role="contentinfo" class="l--push--v-2">
-          <div class="l__wrapper">
-          </div>
-        </footer>
+    <main role="main" class="l--pad-bottom-1">
+      <div class="l__wrapper">
+        <ui:insert name="center_content"/>
       </div>
-    </div>
+    </main>
+    <footer role="contentinfo" class="l--push--v-2">
+      <div class="l__wrapper">
+      </div>
+    </footer>
+    <ui:include src="scripts.xhtml"/>
 
-    <ui:include src="piwik.xhtml"/>
-
-    <script
+    <script type="text/javascript"
       src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script
-      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"></script>
   </h:body>
   </html>
 </f:view>

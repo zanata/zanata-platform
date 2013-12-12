@@ -48,95 +48,95 @@
   </h:head>
 
   <h:body styleClass="new-zanata">
-    <div class="off-canvas__outer new-zanata">
-      <ui:include src="left_menu.xhtml"/>
-      <ui:include src="right_menu.xhtml"/>
+    <ui:include src="banner.xhtml"/>
+    <a4j:outputPanel layout="block" ajaxRendered="true"
+      styleClass="l__wrapper ">
+      <s:div styleClass="l--push-top-1"
+        rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}">
+        <h:messages id="messages" globalOnly="true"
+          styleClass="list--no-bullets"
+          errorClass="message--danger l--push-bottom-half"
+          infoClass="message--highlight l--push-bottom-half"
+          warnClass="message--warning l--push-bottom-half"
+          rendered="#{showGlobalMessages != 'false'}"/>
+      </s:div>
+    </a4j:outputPanel>
 
-      <div class="off-canvas__inner">
-        <ui:include src="banner.xhtml"/>
+    <s:div id="pageMessages" styleClass="l__wrapper">
+      <s:fragment
+        rendered="#{flashScope.hasAttribute('message')}">
+        <ul class="list--no-bullets l--push-top-1">
+          <ui:repeat value="#{flashScope.getAttribute('message')}"
+            var="message">
+            <s:fragment rendered="#{message.severity eq 'INFO'}">
+              <li class="message--highlight l--push-bottom-half">
+                #{message.summary}
+              </li>
+            </s:fragment>
+            <s:fragment rendered="#{message.severity eq 'WARN'}">
+              <li class="message--warning l--push-bottom-half">
+                #{message.summary}
+              </li>
+            </s:fragment>
+            <s:fragment
+              rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
+              <li class="message--danger l--push-bottom-half">
+                #{message.summary}
+              </li>
+            </s:fragment>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </s:div>
 
-        <a4j:outputPanel layout="block" ajaxRendered="true"
-          styleClass="l__wrapper ">
-          <s:div styleClass="l--push-top-1"
-            rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}">
-            <h:messages id="messages" globalOnly="true"
-              styleClass="list--no-bullets"
-              errorClass="message--danger l--push-bottom-half"
-              infoClass="message--highlight l--push-bottom-half"
-              warnClass="message--warning l--push-bottom-half"
-              rendered="#{showGlobalMessages != 'false'}"/>
-          </s:div>
-        </a4j:outputPanel>
+    <main role="main" class="l--pad-v-1">
+      <div class="l__wrapper">
+        <ui:insert name="center_content"/>
+      </div>
+    </main>
 
-        <s:div id="pageMessages" styleClass="l__wrapper">
-          <s:fragment
-            rendered="#{flashScope.hasAttribute('message')}">
-            <ul class="list--no-bullets l--push-top-1">
-              <ui:repeat value="#{flashScope.getAttribute('message')}"
-                var="message">
-                <s:fragment rendered="#{message.severity eq 'INFO'}">
-                  <li class="message--highlight l--push-bottom-half">
-                    #{message.summary}
-                  </li>
-                </s:fragment>
-                <s:fragment rendered="#{message.severity eq 'WARN'}">
-                  <li class="message--warning l--push-bottom-half">
-                    #{message.summary}
-                  </li>
-                </s:fragment>
-                <s:fragment
-                  rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
-                  <li class="message--danger l--push-bottom-half">
-                    #{message.summary}
-                  </li>
-                </s:fragment>
-              </ui:repeat>
-            </ul>
-          </s:fragment>
-        </s:div>
-
-        <main role="main" class="l--pad-v-1">
-          <div class="l__wrapper">
-            <ui:insert name="center_content"/>
-          </div>
-        </main>
-
-        <footer role="contentinfo" class="l--push--v-2">
-          <div class="l__wrapper">
-            <div class="l--pad-v-1 d--top">
-              <div class="g">
-                <div class="g__item w--1-2 l--push-bottom-quarter">
-                  <ul class="list--horizontal txt--meta">
-                    <li><a href="http://zanata.org/terms"
-                      target="_blank">Terms</a></li>
-                    <li><a href="http://zanata.org/about"
-                      target="_blank">#{messages['jsf.About']}</a></li>
-                    <li><a href="http://zanata.org/blog"
-                      target="_blank">#{messages['jsf.Blog']}</a></li>
-                    <li><a href="http://zanata.org/help"
-                      target="_blank">#{messages['jsf.Help']}</a></li>
-                    <li><a
-                      href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-                      target="_blank">#{messages['jsf.ReportAProblem']}</a></li>
-                  </ul>
-                </div>
-                <div class="g__item w--1-2 txt--align-right">
-                  <p class="txt--meta"><h:outputText
-                    value="#{messages['jsf.CopyrightNotice']}" escape="false"/>
-                  </p>
-                </div>
-              </div>
+    <footer role="contentinfo" class="l--push--v-2">
+      <div class="l__wrapper">
+        <div class="l--pad-v-1 d--top">
+          <div class="g">
+            <div class="g__item w--1-2 l--push-bottom-quarter">
+              <ul class="list--horizontal txt--meta">
+                <li><a href="http://zanata.org/terms"
+                  target="_blank">Terms</a></li>
+                <li><a href="http://zanata.org/about"
+                  target="_blank">#{messages['jsf.About']}</a></li>
+                <li><a href="http://zanata.org/blog"
+                  target="_blank">#{messages['jsf.Blog']}</a></li>
+                <li><a href="http://zanata.org/help"
+                  target="_blank">#{messages['jsf.Help']}</a></li>
+                <li><a
+                  href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
+                  target="_blank">#{messages['jsf.ReportAProblem']}</a>
+                </li>
+                <li>
+                  <h:form id="localeSelector_form">
+                    <h:selectOneMenu id="Select"
+                      value="#{localeSelector.localeString}"
+                      valueChangeListener="#{localeSelector.select}"
+                      onchange="submit()">
+                      <f:selectItems
+                        value="#{localeSelector.supportedLocales}"/>
+                    </h:selectOneMenu>
+                  </h:form>
+                </li>
+              </ul>
+            </div>
+            <div class="g__item w--1-2 txt--align-right">
+              <p class="txt--meta">
+                <h:outputText value="#{messages['jsf.RunningVersionInfo']} | #{messages['jsf.CopyrightNotice']}" escape="false"/>
+              </p>
             </div>
           </div>
-        </footer>
+        </div>
       </div>
-    </div>
+    </footer>
 
-    <ui:include src="piwik.xhtml"/>
-
-    <script type="text/javascript"
-      src="#{applicationConfiguration.webAssetsUrl}/assets/js/script.js"/>
-
+    <ui:include src="scripts.xhtml"/>
   </h:body>
   </html>
 </f:view>
