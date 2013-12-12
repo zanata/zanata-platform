@@ -539,9 +539,6 @@
       execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}" />
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.ContactAdmin'])}" />
-    <navigation from-action="#{sendEmail.cancel}">
-      <redirect view-id="/help/view.xhtml" />
-    </navigation>
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">
         <redirect view-id="/help/view.xhtml" />
