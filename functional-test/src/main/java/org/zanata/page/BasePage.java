@@ -76,7 +76,6 @@ public class BasePage extends CorePage {
 
     public MyAccountPage goToMyProfile() {
         userAvatar.click();
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_PROFILE_LINK);
 
@@ -95,7 +94,6 @@ public class BasePage extends CorePage {
 
     public AdministrationPage goToAdministration() {
         userAvatar.click();
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
 
@@ -130,8 +128,6 @@ public class BasePage extends CorePage {
 
     public HomePage logout() {
         userAvatar.click();
-
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_SIGN_OUT);
         return new HomePage(getDriver());
@@ -188,17 +184,5 @@ public class BasePage extends CorePage {
         JavascriptExecutor executor = (JavascriptExecutor) getDriver();
         executor.executeScript("arguments[0].click();", getDriver()
                 .findElement(locator));
-    }
-
-    public void waitForSideMenuClosed() {
-        WebElementUtil.waitForTenSeconds(getDriver()).until(
-                ExpectedConditions.invisibilityOfElementLocated(By
-                        .className("off-canvas--right-under")));
-    }
-
-    public void waitForSideMenuOpened() {
-        WebElementUtil.waitForTenSeconds(getDriver()).until(
-                ExpectedConditions.visibilityOfElementLocated(By
-                        .className("off-canvas--right-under")));
     }
 }

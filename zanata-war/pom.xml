@@ -42,7 +42,7 @@
          Waiting for 2.9.0-01. -->
     <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
 
-    <zanata.web.assets.version>master</zanata.web.assets.version>
+    <zanata.web.assets.version>4</zanata.web.assets.version>
   </properties>
 
   <build>
