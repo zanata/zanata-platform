@@ -53,7 +53,13 @@ public class CreateVersionPage extends BasePage {
     }
 
     public CreateVersionPage inputVersionId(String versionId) {
-        getVersionIdField().clear();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                getVersionIdField().clear();
+                return getVersionIdField().getAttribute("value").equals("");
+            }
+        });
         new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
         getVersionIdField().sendKeys(versionId);
         defocus();

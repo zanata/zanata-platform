@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -18,11 +19,6 @@ import com.google.common.collect.ImmutableList;
  */
 @Slf4j
 public class CreateVersionGroupPage extends BasePage {
-    @FindBy(id = "group-form:slugField:slug")
-    private WebElement groupSlugField;
-
-    @FindBy(id = "group-form:nameField:name")
-    private WebElement groupNameField;
 
     @FindBy(id = "group-form:descriptionField:description")
     private WebElement groupDescriptionField;
@@ -42,25 +38,25 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
-        groupSlugField.sendKeys(groupId);
+        getGroupSlugField().sendKeys(groupId);
         return new CreateVersionGroupPage(getDriver());
     }
 
-    public WebElement getInputGroupName() {
-        return groupNameField;
+    private WebElement getGroupSlugField() {
+        return getDriver().findElement(By.id("group-form:slugField:slug"));
     }
 
     public String getGroupIdValue() {
-        return groupSlugField.getAttribute("value");
-    }
-
-    public WebElement getInputGroupDescription() {
-        return groupDescriptionField;
+        return getGroupSlugField().getAttribute("value");
     }
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
-        groupNameField.sendKeys(groupName);
+        getGroupNameField().sendKeys(groupName);
         return new CreateVersionGroupPage(getDriver());
+    }
+
+    private WebElement getGroupNameField() {
+        return getDriver().findElement(By.id("group-form:nameField:name"));
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
@@ -79,8 +75,8 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public CreateVersionGroupPage clearFields() {
-        groupSlugField.clear();
-        groupNameField.clear();
+        getGroupSlugField().clear();
+        getGroupNameField().clear();
         groupDescriptionField.clear();
         return new CreateVersionGroupPage(getDriver());
     }

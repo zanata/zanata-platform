@@ -33,6 +33,7 @@ import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Category(DetailedTest.class)
 public class VersionGroupFullTest {
     @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
     private DashboardPage dashboardPage;
 
     @Before
