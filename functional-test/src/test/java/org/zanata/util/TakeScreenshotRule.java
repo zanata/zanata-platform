@@ -46,9 +46,9 @@ public class TakeScreenshotRule implements TestRule {
     }
 
     private void deleteScreenshots() {
-        File baseDir = new File(WebDriverFactory.getScreenshotBaseDir());
+        File testDir = ScreenshotDir.screenshotForTest(testDisplayName);
         try {
-            FileUtils.deleteDirectory(new File(baseDir, testDisplayName));
+            FileUtils.deleteDirectory(testDir);
         }
         catch (IOException e) {
             log.warn("error deleting screenshot base directory: {}",

@@ -40,6 +40,7 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ScreenshotDir;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import static org.zanata.util.Constants.chrome;
@@ -54,10 +55,6 @@ public enum WebDriverFactory {
     private volatile WebDriver driver = createDriver();
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
-
-    public static String getScreenshotBaseDir() {
-        return PropertiesHolder.getProperty("webdriver.screenshot.dir");
-    }
 
     public WebDriver getDriver() {
         return driver;
@@ -83,9 +80,8 @@ public enum WebDriverFactory {
 
 
     public void updateListenerTestName(String testName) {
-        if (eventListener == null && getScreenshotBaseDir() != null) {
-            eventListener  = new TestEventForScreenshotListener(driver,
-                getScreenshotBaseDir());
+        if (eventListener == null && ScreenshotDir.isScreenshotEnabled()) {
+            eventListener  = new TestEventForScreenshotListener(driver);
             driver = enableScreenshots();
         }
         eventListener.updateTestID(testName);

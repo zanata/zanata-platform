@@ -22,20 +22,17 @@ import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 @Slf4j
 public class TestEventForScreenshotListener extends AbstractWebDriverEventListener {
 
-    private WebDriver driver;
-    private File baseDir;
+    private final WebDriver driver;
     private String testId = "";
 
     /**
      * A registered TestEventListener will perform actions on navigate,
      * click and exception events
      * @param drv the WebDriver to derive screen shots from
-     * @param targetDirectory full path to screen shot storage
+     *
      */
-    public TestEventForScreenshotListener(WebDriver drv, String targetDirectory) {
+    public TestEventForScreenshotListener(WebDriver drv) {
         driver = drv;
-        baseDir = new File(targetDirectory);
-        log.info("Writing screenshots to {}", baseDir);
     }
 
     /**
@@ -47,8 +44,9 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
+        File testIDDir = null;
         try {
-            File testIDDir = new File(baseDir, testId);
+            testIDDir = ScreenshotDir.screenshotForTest(testId);
             testIDDir.mkdirs();
             File screenshotFile =
                     ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -60,7 +58,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                     + wde.getMessage());
         } catch (IOException ioe) {
             throw new RuntimeException("[Screenshot]: Failed to write to "
-                    + baseDir);
+                    + testIDDir);
         } catch (NullPointerException npe) {
             throw new RuntimeException("[Screenshot]: Null Object: "
                     + npe.getMessage());
