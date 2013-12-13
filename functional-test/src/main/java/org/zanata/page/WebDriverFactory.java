@@ -61,8 +61,9 @@ public enum WebDriverFactory {
     }
 
     public WebDriver createDriver() {
-        WebDriver driver = new EventFiringWebDriver(
-            new Augmenter().augment(createPlainDriver()));
+        WebDriver driver =
+                new EventFiringWebDriver(
+                        new Augmenter().augment(createPlainDriver()));
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -104,35 +105,36 @@ public enum WebDriverFactory {
     }
 
     private WebDriver configureChromeDriver() {
-        driverService = new ChromeDriverService.Builder()
-            .usingDriverExecutable(
-                new File(PropertiesHolder
-                    .getProperty("webdriver.chrome.driver")))
-                .usingAnyFreePort()
-                .withEnvironment(ImmutableMap.of("DISPLAY",
-                    PropertiesHolder
-                        .getProperty("webdriver.display")))
-                .withLogFile(
-                    new File(PropertiesHolder
-                        .getProperty("webdriver.log"))).build();
+        driverService =
+                new ChromeDriverService.Builder()
+                        .usingDriverExecutable(
+                                new File(PropertiesHolder.properties
+                                        .getProperty("webdriver.chrome.driver")))
+                        .usingAnyFreePort()
+                        .withEnvironment(
+                                ImmutableMap
+                                        .of("DISPLAY",
+                                                PropertiesHolder.properties
+                                                        .getProperty("webdriver.display")))
+                        .withLogFile(
+                                new File(PropertiesHolder.properties
+                                        .getProperty("webdriver.log"))).build();
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability("chrome.binary", PropertiesHolder
-            .getProperty("webdriver.chrome.bin"));
-        capabilities.setCapability("chrome.switches", Arrays
-            .asList("--start-maximized"));
+        capabilities
+                .setCapability("chrome.binary", PropertiesHolder.properties
+                        .getProperty("webdriver.chrome.bin"));
         try {
             driverService.start();
         } catch (IOException e) {
             throw new RuntimeException("fail to start chrome driver service");
         }
-
         return new RemoteWebDriver(driverService.getUrl(), capabilities);
     }
 
     private WebDriver configureFirefoxDriver() {
         final String pathToFirefox =
-                Strings.emptyToNull(PropertiesHolder
-                    .getProperty("firefox.path"));
+                Strings.emptyToNull(PropertiesHolder.properties
+                        .getProperty("firefox.path"));
 
         FirefoxBinary firefoxBinary = null;
         if (pathToFirefox != null) {
@@ -145,7 +147,7 @@ public enum WebDriverFactory {
          * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
          */
         firefoxBinary.setEnvironmentProperty("DISPLAY",
-            PropertiesHolder.getProperty("webdriver.display"));
+                PropertiesHolder.properties.getProperty("webdriver.display"));
         return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
     }
 

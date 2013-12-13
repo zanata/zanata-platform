@@ -48,7 +48,6 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 @Category(DetailedTest.class)
 public class UploadTest {
 
-    // Override database rule for data
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
