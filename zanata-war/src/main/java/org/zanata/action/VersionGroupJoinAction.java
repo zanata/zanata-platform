@@ -119,8 +119,8 @@ public class VersionGroupJoinAction implements Serializable {
                 projectIterationId);
     }
 
-    public String cancel() {
-        return sendEmail.cancel();
+    public void cancel() {
+        sendEmail.cancel();
     }
 
     public String send() {

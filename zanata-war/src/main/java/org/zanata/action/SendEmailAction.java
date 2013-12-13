@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Email;
@@ -80,14 +82,35 @@ public class SendEmailAction implements Serializable {
     @In
     private LocaleSelector localeSelector;
 
+    @Getter
+    @Setter
     private String fromName;
+
+    @Getter
+    @Setter
     private String fromLoginName;
+
+    @Email
+    @Getter
+    @Setter
     private String replyEmail;
+
+    @Getter
+    @Setter
     private String subject;
-    private String message;
+
+    @Getter
+    @Setter
+    private String htmlMessage;
+
+    @Getter
+    @Setter
     private String emailType;
 
+    @Getter
     private String language;
+
+    @Getter
     private HLocale locale;
 
     private List<HPerson> groupMaintainers;
@@ -103,70 +126,12 @@ public class SendEmailAction implements Serializable {
         replyEmail = authenticatedAccount.getPerson().getEmail();
 
         subject = "";
-        message = "";
-    }
-
-    public String getFromName() {
-        return fromName;
-    }
-
-    public void setFromName(String name) {
-        fromName = name;
-    }
-
-    public String getFromLoginName() {
-        return fromLoginName;
-    }
-
-    public void setFromLoginName(String fromLoginName) {
-        this.fromLoginName = fromLoginName;
-    }
-
-    @Email
-    public String getReplyEmail() {
-        return replyEmail;
-    }
-
-    @Email
-    public void setReplyEmail(String replyEmail) {
-        this.replyEmail = replyEmail;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getHtmlMessage() {
-        return message;
-    }
-
-    public void setHtmlMessage(String encodedMessage) {
-        this.message = encodedMessage;
-    }
-
-    public String getEmailType() {
-        return emailType;
-    }
-
-    public void setEmailType(String emailType) {
-        this.emailType = emailType;
-    }
-
-    public String getLanguage() {
-        return language;
+        htmlMessage = "";
     }
 
     public void setLanguage(String language) {
         this.language = language;
         locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
-    }
-
-    public HLocale getLocale() {
-        return locale;
     }
 
     private List<HPerson> getCoordinators() {
@@ -194,9 +159,11 @@ public class SendEmailAction implements Serializable {
         try {
             if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN)) {
                 String msg =
-                        emailServiceImpl.sendToAdminEmails(
-                                EmailService.ADMIN_EMAIL_TEMPLATE, fromName,
-                                fromLoginName, replyEmail, subject, message);
+                        emailServiceImpl
+                                .sendToAdminEmails(
+                                        EmailService.ADMIN_EMAIL_TEMPLATE,
+                                        fromName, fromLoginName, replyEmail,
+                                        subject, htmlMessage);
                 FacesMessages.instance().add(msg);
                 return "success";
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
@@ -204,7 +171,7 @@ public class SendEmailAction implements Serializable {
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.COORDINATOR_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
                 return "success";
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
@@ -212,7 +179,7 @@ public class SendEmailAction implements Serializable {
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.REQUEST_TO_JOIN_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
                 return "success";
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
@@ -220,7 +187,7 @@ public class SendEmailAction implements Serializable {
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.REQUEST_ROLE_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
                 return "success";
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
@@ -230,7 +197,7 @@ public class SendEmailAction implements Serializable {
                                         EmailService.REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE,
                                         groupMaintainers, fromName,
                                         fromLoginName, replyEmail, subject,
-                                        message);
+                                        htmlMessage);
                 FacesMessages.instance().add(msg);
                 return "success";
             } else {
@@ -242,7 +209,8 @@ public class SendEmailAction implements Serializable {
                             + e.getMessage());
             log.error(
                     "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                    e, fromName, fromLoginName, replyEmail, subject, message);
+                    e, fromName, fromLoginName, replyEmail, subject,
+                    htmlMessage);
             return "failure";
         } finally {
             localeSelector.setLocale(pervLocale);
@@ -252,12 +220,11 @@ public class SendEmailAction implements Serializable {
     /**
      * @return string 'canceled'
      */
-    public String cancel() {
+    public void cancel() {
         log.info(
                 "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                fromName, fromLoginName, replyEmail, subject, message);
+                fromName, fromLoginName, replyEmail, subject, htmlMessage);
         FacesMessages.instance().add("Sending message canceled");
-        return "canceled";
     }
 
     public String sendToVersionGroupMaintainer(List<HPerson> maintainers) {
