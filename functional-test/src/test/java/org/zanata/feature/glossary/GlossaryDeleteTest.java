@@ -35,6 +35,7 @@ import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.RetryRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.TakeScreenshotRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientPushWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -50,6 +51,9 @@ import org.zanata.workflow.LoginWorkFlow;
 public class GlossaryDeleteTest {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
+
+    @Rule
+    public TakeScreenshotRule screenshotRule = new TakeScreenshotRule();
 
     @Rule
     public RetryRule retryRule = new RetryRule(3);

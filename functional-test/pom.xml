@@ -51,6 +51,7 @@
     <webdriver.type>chrome</webdriver.type>
     <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
+    <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
 
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>

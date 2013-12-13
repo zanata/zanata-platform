@@ -28,10 +28,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.feature.FunctionalTest;
 import org.zanata.page.projects.ProjectSourceDocumentsPage;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.PropertiesHolder;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
@@ -48,7 +46,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class UploadTest extends FunctionalTest {
+public class UploadTest {
 
     // Override database rule for data
     @Rule
