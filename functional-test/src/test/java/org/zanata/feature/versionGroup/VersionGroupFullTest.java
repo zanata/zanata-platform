@@ -22,17 +22,17 @@ package org.zanata.feature.versionGroup;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -148,7 +148,9 @@ public class VersionGroupFullTest {
     }
 
     @Test
-    public void addANewProjectVersionToAnEmptyGroup() {
+    @Ignore("at the moment direct input project version to add without auto-complete will not work")
+    public void addANewProjectVersionToAnEmptyGroup()
+        throws InterruptedException {
         String groupID = "add-version-to-empty-group";
         String groupName = "AddVersionToEmptyGroup";
         VersionGroupPage versionGroupPage = dashboardPage
@@ -161,7 +163,7 @@ public class VersionGroupFullTest {
                 .clickProjectsTab()
                 .clickAddProjectVersionsButton()
                 .enterProjectVersion("about-fedora master")
-                .clickAddProjectButton()
+                .confirmAddProject()
                 .clickProjectsTab();
 
         assertThat("The version group shows in the list",

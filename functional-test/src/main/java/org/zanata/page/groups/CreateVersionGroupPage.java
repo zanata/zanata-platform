@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
@@ -78,6 +79,12 @@ public class CreateVersionGroupPage extends BasePage {
         getGroupSlugField().clear();
         getGroupNameField().clear();
         groupDescriptionField.clear();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getGroupIdValue().equals("") && getGroupNameField().getAttribute("value").equals("");
+            }
+        });
         return new CreateVersionGroupPage(getDriver());
     }
 

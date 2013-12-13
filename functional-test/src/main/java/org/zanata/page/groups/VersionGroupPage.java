@@ -7,8 +7,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectPage;
@@ -134,15 +136,16 @@ public class VersionGroupPage extends BasePage {
     }
 
     public VersionGroupPage clickAddProjectVersionsButton() {
-        WebElement addProjectVersionButton =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver driver) {
-                        return driver.findElement(By
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                WebElement addProjectVersionButton =
+                        driver.findElement(By
                                 .xpath("//*[@href='#settings-projects']"));
-                    }
-                });
-        addProjectVersionButton.click();
+                addProjectVersionButton.click();
+                return true;
+            }
+        });
         return new VersionGroupPage(getDriver());
     }
 
@@ -152,15 +155,13 @@ public class VersionGroupPage extends BasePage {
      * @return new VersionGroupPage
      */
     public VersionGroupPage enterProjectVersion(String projectVersion) {
-        getDriver().findElement(By.id("settings-projects-form:newVersionField:"+
-                "newVersionInput"))
+        getDriver().findElement(By.id("settings-projects-form:new--versionInput"))
                 .sendKeys(projectVersion);
         return new VersionGroupPage(getDriver());
     }
 
-    public VersionGroupPage clickAddProjectButton() {
-        getDriver().findElement(By.id(
-                "settings-projects-form:group-add-new-project-button")).click();
+    public VersionGroupPage confirmAddProject() {
+        new Actions(getDriver()).sendKeys(Keys.ENTER);
         return new VersionGroupPage(getDriver());
     }
 
