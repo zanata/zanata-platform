@@ -17,6 +17,7 @@ import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountRole;
+import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HDocument;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -33,6 +34,7 @@ import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.security.HCredentials;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * @author Patrick Huang <a
@@ -82,6 +84,14 @@ public class SampleProjectProfile {
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createQuery(
+            "update HApplicationConfiguration set value = '' where key = :key");
+        query.setParameter("key", HApplicationConfiguration.KEY_HOME_CONTENT);
+        query.executeUpdate();
+        query.setParameter("key", HApplicationConfiguration.KEY_HELP_CONTENT);
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
     }
 
     public void makeSampleLanguages() {
