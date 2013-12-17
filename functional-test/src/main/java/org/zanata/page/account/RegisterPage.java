@@ -108,12 +108,11 @@ public class RegisterPage extends CorePage {
      * Fields: name, email, username, password, confirmpassword, captcha
      */
     public RegisterPage setFields(Map<String, String> fields) {
-        clearFields();
-        enterName(fields.get("name"));
-        enterEmail(fields.get("email"));
-        enterUserName(fields.get("username"));
-        enterPassword(fields.get("password"));
-        return new RegisterPage(getDriver());
+        return clearFields()
+            .enterName(fields.get("name"))
+            .enterEmail(fields.get("email"))
+            .enterUserName(fields.get("username"))
+            .enterPassword(fields.get("password"));
     }
 
     public List<String> waitForErrors() {
