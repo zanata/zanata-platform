@@ -11,10 +11,10 @@ See http://jaitechwriteups.blogspot.com/2012/02/jboss-as-710final-thunder-releas
     enabled="true" use-java-context="true" pool-name="zanataDatasource"
     use-ccm="true">
     <connection-url>${ds.connection.url}</connection-url>
-    <driver>h2</driver>
+    <driver>${jdbc.artifactId}.jar</driver>
     <security>
       <user-name>${ds.username}</user-name>
-      <!--<password>${ds.password}</password>-->
+      <password>${ds.password}</password>
     </security>
   </datasource>
 </datasources>

@@ -27,6 +27,7 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -69,7 +70,7 @@ public class SampleProjectProfile {
         EntityCleaner.deleteAll(entityManager, Lists.<Class>newArrayList(
             Activity.class,
             // glossary
-            HGlossaryEntry.class, HGlossaryTerm.class,
+            HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
             // tex flows and targets
             HPoTargetHeader.class, HTextFlowTargetHistory.class,
             HTextFlowTarget.class, HTextFlow.class, HDocument.class,
