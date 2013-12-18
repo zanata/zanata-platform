@@ -22,7 +22,6 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
@@ -40,7 +39,7 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.util.ScreenshotDir;
+import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import static org.zanata.util.Constants.chrome;
@@ -81,7 +80,7 @@ public enum WebDriverFactory {
 
 
     public void updateListenerTestName(String testName) {
-        if (eventListener == null && ScreenshotDir.isScreenshotEnabled()) {
+        if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
             eventListener  = new TestEventForScreenshotListener(driver);
             driver = enableScreenshots();
         }

@@ -46,7 +46,7 @@ public class TakeScreenshotRule implements TestRule {
     }
 
     private void deleteScreenshots() {
-        File testDir = ScreenshotDir.screenshotForTest(testDisplayName);
+        File testDir = ScreenshotDirForTest.screenshotForTest(testDisplayName);
         try {
             FileUtils.deleteDirectory(testDir);
         }

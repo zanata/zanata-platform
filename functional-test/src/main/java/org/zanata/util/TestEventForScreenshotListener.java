@@ -46,7 +46,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     private void createScreenshot(String ofType) {
         File testIDDir = null;
         try {
-            testIDDir = ScreenshotDir.screenshotForTest(testId);
+            testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             testIDDir.mkdirs();
             File screenshotFile =
                     ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);

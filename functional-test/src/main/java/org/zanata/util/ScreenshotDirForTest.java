@@ -6,7 +6,7 @@ import java.io.File;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ScreenshotDir {
+public class ScreenshotDirForTest {
 
     private static String baseDirPath =
         PropertiesHolder.getProperty("webdriver.screenshot.dir");
