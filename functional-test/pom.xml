@@ -28,17 +28,18 @@
     <context.path>zanata</context.path>
 
     <!--data source-->
-    <jdbc.groupId>com.h2database</jdbc.groupId>
-    <jdbc.artifactId>h2</jdbc.artifactId>
+    <jdbc.groupId>mysql</jdbc.groupId>
+    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
     <!-- This version must match the version used in JBoss. -->
-    <jdbc.version>1.3.168</jdbc.version>
+    <jdbc.version>5.1.9</jdbc.version>
 
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
+    <ds.database>zanata_functional</ds.database>
     <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
-    <ds.driver.class>org.h2.Driver</ds.driver.class>
-    <ds.connection.url>jdbc:h2:file:${project.build.directory}/h2/zanata;AUTO_SERVER=TRUE;</ds.connection.url>
-    <ds.username>sa</ds.username>
-    <ds.password />
+    <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
+    <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
+    <ds.username>zanata</ds.username>
+    <ds.password>zanata</ds.password>
 
     <!--target zanata instance-->
     <zanata.target.version>${project.parent.version}</zanata.target.version>
@@ -327,6 +328,109 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>reserve-network-port</goal>
+                </goals>
+                <configuration>
+                  <portNames>
+                    <portName>mysql.port</portName>
+                  </portNames>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>com.jcabi</groupId>
+                      <artifactId>mysql-dist</artifactId>
+                      <version>5.5.34</version>
+                      <classifier>${mysql.classifier}</classifier>
+                      <type>zip</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-mysql-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>mysql-test</id>
+                <goals>
+                  <goal>classify</goal>
+                  <goal>start</goal>
+                  <goal>stop</goal>
+                </goals>
+                <configuration>
+                  <classifier>mysql.classifier</classifier>
+                  <port>${mysql.port}</port>
+                  <data>${project.build.directory}/mdb</data>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <dependencies>
+              <!-- specify the dependent JDBC driver here -->
+              <dependency>
+                <groupId>${jdbc.groupId}</groupId>
+                <artifactId>${jdbc.artifactId}</artifactId>
+                <version>${jdbc.version}</version>
+              </dependency>
+            </dependencies>
+
+            <!-- common configuration shared by all executions -->
+            <configuration>
+              <driver>${ds.driver.class}</driver>
+              <url>jdbc:mysql://localhost:${mysql.port}/test?characterEncoding=UTF-8</url>
+              <username>${ds.username}</username>
+              <password>${ds.password}</password>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>drop-database</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <sqlCommand>drop database if exists ${ds.database}</sqlCommand>
+                  <onError>continue</onError>
+                </configuration>
+              </execution>
+              <execution>
+                <id>create-database</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <sqlCommand>create database ${ds.database}</sqlCommand>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
             <version>1.3.1</version>
@@ -362,7 +466,7 @@
                   <type>war</type>
                   <location>${zanata.target.war}</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>60000</pingTimeout>
+                  <pingTimeout>120000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
@@ -413,6 +517,11 @@
                   <file>
                     <file>${settings.localRepository}/org/hibernate/hibernate-envers/${hibernate.version}/hibernate-envers-${hibernate.version}.jar</file>
                     <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/envers/main/hibernate-envers-4.2.0.CR1.jar</tofile>
+                  </file>
+
+                  <file>
+                    <file>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}/${jdbc.artifactId}-${jdbc.version}.jar</file>
+                    <tofile>deployments/${jdbc.artifactId}.jar</tofile>
                   </file>
                 </files>
 
@@ -564,7 +673,7 @@
         <configuration>
           <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
-            <usedDependency>com.h2database:h2</usedDependency>
+            <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <usedDependency>org.hibernate:hibernate-core</usedDependency>

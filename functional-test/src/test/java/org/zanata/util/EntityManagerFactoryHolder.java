@@ -24,6 +24,14 @@ public class EntityManagerFactoryHolder {
         overrideProps
                 .put("hibernate.connection.provider_class",
                         "org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl");
+        overrideProps.put("hibernate.connection.driver_class",
+                "com.mysql.jdbc.Driver");
+        overrideProps.put("hibernate.connection.username",
+                PropertiesHolder.getProperty("hibernate.connection.username"));
+        overrideProps.put("hibernate.connection.password",
+                PropertiesHolder.getProperty("hibernate.connection.password"));
+        overrideProps.put("hibernate.dialect",
+                "org.zanata.util.ZanataMySQL5InnoDBDialect");
         overrideProps.put("hibernate.connection.url",
                 PropertiesHolder.getProperty("hibernate.connection.url"));
         overrideProps.put("hibernate.search.default.indexBase",
