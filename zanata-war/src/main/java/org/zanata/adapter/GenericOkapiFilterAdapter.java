@@ -31,6 +31,7 @@ import java.util.Map;
 
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
+import net.sf.okapi.common.IParameters;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
@@ -402,9 +403,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
 
     private void updateParams(Optional<String> params) {
         filter.getParameters().reset();
+        updateParamsWithDefaults(filter.getParameters());
         if (params.isPresent()) {
             filter.getParameters().fromString(params.get());
         }
+    }
+
+    protected void updateParamsWithDefaults(IParameters params) {
+        // default empty implementation is provided so that subclasses are not
+        // forced to override when defaults are not needed.
     }
 
 }
