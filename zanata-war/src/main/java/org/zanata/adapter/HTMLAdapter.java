@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors
+ * Copyright 2013, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,17 +20,47 @@
  */
 package org.zanata.adapter;
 
+import java.io.IOException;
+import java.net.URL;
+
+import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.html.HtmlFilter;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 
 /**
  * Adapter to handle HTML documents.
  */
 public class HTMLAdapter extends GenericOkapiFilterAdapter {
+
+    private static final String config = loadConfig();
+
+    private static String loadConfig() {
+        URL configURL =
+                HTMLAdapter.class
+                        .getResource("HTMLAdapterDefaultConfiguration.yml");
+        try {
+            return Resources.toString(configURL, Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Failed to load config for HTML adapter.", e);
+        }
+    }
+
     public HTMLAdapter() {
         super(prepareFilter(), IdSource.contentHash, true);
     }
 
     private static HtmlFilter prepareFilter() {
         return new HtmlFilter();
+    }
+
+    @Override
+    protected void updateParamsWithDefaults(IParameters params) {
+        // IParameters has setter methods, but they break the contract in the
+        // implementation for HtmlFilter and don't do anything. Have to set all
+        // configuration at once rather than change individual settings.
+        params.fromString(config);
     }
 }
