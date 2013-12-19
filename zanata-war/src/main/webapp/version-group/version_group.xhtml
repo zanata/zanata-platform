@@ -86,6 +86,7 @@
 
   function toggleColumn(tabId) {
     jQuery('#' + tabId).find('.panels--2').toggleClass('panel__active-2');
+    jQuery('#' + tabId).find('.panel__active-2').find('.panels__panel').addClass('is-active');
   }
 </script>
 

@@ -97,20 +97,26 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     private List<SelectItem> statusList;
 
-    @Getter
     @Setter
-    // string format: #{hlocale.retrieveDisplayName()} [#{hlocale.localeId}]
-    private String newLanguage;
+    private String languageQuery;
 
-    @Getter
     @Setter
-    // string format: #{version.project.slug} #{version.slug}
-    private String newVersion;
+    // localeId
+    private String selectedLocale;
 
-    @Getter
     @Setter
-    // string format: #{hperson.name} @#{hperson.account.username}
-    private String newMaintainer;
+    private String versionQuery;
+
+    @Setter
+    // version id
+    private String selectedVersion;
+
+    @Setter
+    private String maintainerQuery;
+
+    @Setter
+    // username
+    private String selectedMaintainer;
 
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
@@ -160,32 +166,33 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         getInstance().setStatus(EntityStatus.valueOf(initial));
     }
 
-    public List<HLocale> suggestLocales(final String query) {
+    public List<HLocale> suggestLocales() {
+        if (StringUtils.isEmpty(languageQuery)) {
+            return Lists.newArrayList();
+        }
+
         List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
 
         Collection<HLocale> filtered =
                 Collections2.filter(localeList, new Predicate<HLocale>() {
                     @Override
                     public boolean apply(@Nullable HLocale input) {
-                        if (StringUtils.isEmpty(query)) {
-                            return !getInstance().getActiveLocales().contains(
-                                    input);
-                        }
                         return !getInstance().getActiveLocales()
                                 .contains(input)
                                 && (input.getLocaleId().getId()
-                                        .startsWith(query) || input
+                                        .startsWith(languageQuery) || input
                                         .retrieveDisplayName().toLowerCase()
-                                        .contains(query.toLowerCase()));
+                                        .contains(languageQuery.toLowerCase()));
                     }
                 });
 
         return Lists.newArrayList(filtered);
     }
 
-    public List<HProjectIteration> suggestVersions(final String query) {
+    public List<HProjectIteration> suggestVersions() {
         List<HProjectIteration> versionList =
-                versionGroupServiceImpl.searchLikeSlugOrProjectSlug(query);
+                versionGroupServiceImpl
+                        .searchLikeSlugOrProjectSlug(versionQuery);
 
         Collection<HProjectIteration> filtered =
                 Collections2.filter(versionList,
@@ -201,8 +208,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         return Lists.newArrayList(filtered);
     }
 
-    public List<HPerson> suggestMaintainers(final String query) {
-        List<HPerson> personList = personDAO.findAllContainingName(query);
+    public List<HPerson> suggestMaintainers() {
+        List<HPerson> personList =
+                personDAO.findAllContainingName(maintainerQuery);
 
         Collection<HPerson> filtered =
                 Collections2.filter(personList, new Predicate<HPerson>() {
@@ -213,26 +221,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                 });
 
         return Lists.newArrayList(filtered);
-    }
-
-    // Chinese (Traditional Han) [zh-Hant]
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-    public void addLanguage() {
-        if (StringUtils.isEmpty(newLanguage)) {
-            return;
-        }
-        String localeId = newLanguage.split("\\[")[1].replace("]", "");
-
-        HLocale locale = localeServiceImpl.getByLocaleId(localeId);
-
-        getInstance().getActiveLocales().add(locale);
-        super.update();
-        newLanguage = "";
-
-        addMessage(
-                StatusMessage.Severity.INFO,
-                zanataMessages.getMessage("jsf.LanguageAddedToGroup",
-                        locale.retrieveDisplayName()));
     }
 
     /**
@@ -255,18 +243,36 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     }
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-    public void addVersion() {
-        if (StringUtils.isEmpty(newVersion)) {
+    public void addLanguage() {
+        if (StringUtils.isEmpty(selectedLocale)) {
             return;
         }
 
-        String[] slugs = newVersion.split(" ");
+        HLocale locale = localeServiceImpl.getByLocaleId(selectedLocale);
+
+        getInstance().getActiveLocales().add(locale);
+        super.update();
+        selectedLocale = "";
+        languageQuery = "";
+
+        addMessage(
+                StatusMessage.Severity.INFO,
+                zanataMessages.getMessage("jsf.LanguageAddedToGroup",
+                        locale.retrieveDisplayName()));
+    }
+
+    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
+    public void addVersion() {
+        if (StringUtils.isEmpty(selectedVersion)) {
+            return;
+        }
 
         HProjectIteration version =
-                projectIterationDAO.getBySlug(slugs[0], slugs[1]);
+                projectIterationDAO.findById(new Long(selectedVersion));
         getInstance().getProjectIterations().add(version);
         super.update();
-        this.newVersion = "";
+        selectedVersion = "";
+        versionQuery = "";
 
         addMessage(
                 StatusMessage.Severity.INFO,
@@ -276,15 +282,15 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void addMaintainer() {
-        if (StringUtils.isEmpty(newMaintainer)) {
+        if (StringUtils.isEmpty(selectedMaintainer)) {
             return;
         }
-        String[] maintainerName = newMaintainer.split("@");
 
-        HPerson maintainer = personDAO.findByUsername(maintainerName[1]);
+        HPerson maintainer = personDAO.findByUsername(selectedMaintainer);
         getInstance().getMaintainers().add(maintainer);
         super.update();
-        this.newMaintainer = "";
+        selectedMaintainer = "";
+        maintainerQuery = "";
 
         addMessage(StatusMessage.Severity.INFO, zanataMessages.getMessage(
                 "jsf.MaintainerAddedToGroup", maintainer.getName()));

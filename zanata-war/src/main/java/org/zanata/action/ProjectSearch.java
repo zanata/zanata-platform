@@ -1,8 +1,5 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -22,6 +18,10 @@ import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
+
+import javax.faces.model.DataModel;
+import java.io.Serializable;
+import java.util.List;
 
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
@@ -32,21 +32,16 @@ public class ProjectSearch implements Serializable {
 
     @Getter
     @Setter
-    private int pageSize = 30;
+    private int scrollerPage = 1;
 
-    @Getter
     @Setter
-    private String searchQuery;
-
     @Getter
+    // project slug
+    private String selectedItem;
+
     @Setter
-    private List<HProject> searchResults;
-
     @Getter
-    private int currentPage = 1;
-
-    @Getter
-    private int resultSize;
+    private String suggestQuery;
 
     @In
     private ProjectDAO projectDAO;
@@ -54,81 +49,60 @@ public class ProjectSearch implements Serializable {
     @In
     private ZanataIdentity identity;
 
+    private QueryProjectPagedListDataModel queryProjectPagedListDataModel =
+            new QueryProjectPagedListDataModel();
+
     // Count of result to be return as part of autocomplete
     private final static int INITIAL_RESULT_COUNT = 5;
 
-    public void setCurrentPage(int page) {
-        if (page < 1)
-            this.currentPage = 1;
-        else
-            this.currentPage = page;
-    }
-
     /**
      * Return results on project search
-     *
-     * @param query
      */
-    public List<SearchResult> suggestProjects(String query) {
-        searchQuery = query;
+    public List<SearchResult> suggestProjects() {
         List<SearchResult> result = Lists.newArrayList();
-        if (StringUtils.isEmpty(searchQuery)) {
+        if (StringUtils.isEmpty(suggestQuery)) {
             return result;
         }
         try {
-            for (HProject project : projectDAO.searchQuery(searchQuery,
-                    INITIAL_RESULT_COUNT, 0)) {
-                result.add(new SearchResult(project, searchQuery));
+            List<HProject> searchResult =
+                    projectDAO
+                            .searchQuery(suggestQuery, INITIAL_RESULT_COUNT, 0,
+                                    identity.hasPermission("HProject",
+                                            "view-obsolete"));
+
+            for (HProject project : searchResult) {
+                result.add(new SearchResult(project));
             }
-            result.add(new SearchResult(searchQuery));
+            result.add(new SearchResult());
             return result;
         } catch (ParseException pe) {
             return result;
         }
     }
 
-    @Begin(join = true)
-    public void search() {
-        if (StringUtils.isEmpty(searchQuery)) {
-            return;
-        }
-
-        try {
-            searchResults =
-                    projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize
-                            * (currentPage - 1));
-        } catch (ParseException pe) {
-            return;
-        }
-        // Manually filtering collection as status field is not indexed by
-        // hibernate search
-        if (!identity.hasPermission("HProject", "view-obsolete")) {
-            CollectionUtils.filter(searchResults, new Predicate() {
-                @Override
-                public boolean evaluate(Object arg0) {
-                    return ((HProject) arg0).getStatus() != EntityStatus.OBSOLETE;
-                }
-            });
-        }
-        resultSize = searchResults.size();
+    public int getPageSize() {
+        return queryProjectPagedListDataModel.getPageSize();
     }
 
-    public String searchAndRedirect() {
-        search();
-        return "/search.xhtml";
+    public DataModel getProjectPagedListDataModel() {
+        queryProjectPagedListDataModel.setIncludeObsolete(identity
+                .hasPermission("HProject", "view-obsolete"));
+        return queryProjectPagedListDataModel;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        queryProjectPagedListDataModel.setQuery(searchQuery);
+    }
+
+    public String getSearchQuery() {
+        return queryProjectPagedListDataModel.getQuery();
     }
 
     @AllArgsConstructor
+    @NoArgsConstructor
     public class SearchResult {
         @Getter
         private HProject project;
-
-        @Getter
-        private String query;
-
-        public SearchResult(String query) {
-            this.query = query;
-        }
 
         public boolean isProjectNull() {
             return project == null;
