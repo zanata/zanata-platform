@@ -7,32 +7,14 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j">
 
+  <script type="text/javascript"
+    src="#{request.contextPath}/resources/script/component-autocomplete.js"></script>
+
   <script type="text/javascript">
-    var searchField;
-    jQuery(document).ready(function () {
-      searchField = jQuery('.form--search__input');
-
-      //This should be remove once new-zanata prefix is removed
-      jQuery('#' + getSearchFieldResultId()).addClass("new-zanata new-zanata-base");
-    });
-
-    function getSearchFieldResultId() {
-      var id = jQuery(searchField).attr('id');
-      return id.substring(0,
-        id.length - "Input".length).concat("List").replace(/:/g, "\\:");
-    }
-
-    function resizeSearchField() {
-      jQuery('#' +
-        getSearchFieldResultId()).find(".rf-au-lst-scrl").css("width",
-          jQuery(searchField).outerWidth() + "px");
+    function selectItem(item) {
+      window.location.href = jQuery(item).find('a').attr("href");
     }
   </script>
-
-  <a4j:jsFunction name="redirectUrl"
-    action="#{projectSearch.searchAndRedirect()}">
-    <a4j:param name="val" assignTo="#{projectSearch.searchQuery}"/>
-  </a4j:jsFunction>
 
   <h1 class="header__title">
     <s:link view="/home.xhtml" propagation="none" id="home">
@@ -50,34 +32,34 @@
 
     <div class="header__main-nav__group js-dropdown__content">
       <h:form styleClass="form--search header__search js-form--search">
-        <h:outputLabel
-          for="form--search" styleClass="form--search__label">
+        <label class="form--search__label"
+          for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
           #{messages['jsf.SearchProjects']}
-        </h:outputLabel>
+        </label>
 
-        <rich:autocomplete mode="ajax" var="suggestProject"
-          minChars="2" inputClass="form--search__input js-form--search__input"
-          styleClass="auto-complete" fetchValue="#{suggestProject.query}"
-          autocompleteMethod="#{projectSearch.suggestProjects}"
-          layout="list" onselectitem="redirectUrl(this.value);"
-          oncomplete="resizeSearchField()"
-          popupClass="auto-complete-list" id="form--search">
-          <rich:placeholder value="#{messages['jsf.SearchProjects']}"
-            styleClass="form__placeholder"/>
+        <zanata:autocomplete
+          selectedField="#{projectSearch.selectedItem}"
+          getResultAction="#{projectSearch.suggestProjects()}"
+          maxlength="100" minlength="1" id="projectAutocomplete"
+          queryField="#{projectSearch.suggestQuery}"
+          fetchValue="#{result.project.slug}"
+          placeholder="#{messages['jsf.SearchProjects']}"
+          onSelectItem="selectItem"
+          inputClass="form--search__input js-form--search__input">
 
           <s:link propagation="none" view="/project/project.xhtml"
-            rendered="#{!suggestProject.isProjectNull()}">
-            <i class="i i--project"></i> #{suggestProject.project.name}
-            <f:param name="slug" value="#{suggestProject.project.slug}"/>
+            rendered="#{!result.isProjectNull()}">
+            <i class="i i--project"></i> #{result.project.name}
+            <f:param name="slug" value="#{result.project.slug}"/>
           </s:link>
 
-          <s:link view="/search.xhtml" action="#{projectSearch.search}"
-            rendered="#{suggestProject.isProjectNull()}">
+          <s:link view="/search.xhtml" rendered="#{result.isProjectNull()}">
             <i class="i i--search"></i> Search Zanata for
-            '#{suggestProject.query}'
-            <f:param name="query" value="#{suggestProject.query}"/>
+            '#{projectSearch.suggestQuery}'
+            <f:param name="query" value="#{projectSearch.suggestQuery}"/>
           </s:link>
-        </rich:autocomplete>
+
+        </zanata:autocomplete>
 
       </h:form>
       <ul class="header__main-nav__menu">
@@ -122,7 +104,8 @@
   <s:fragment
     rendered="#{identity.loggedIn and personHome.instance.account.enabled}">
     <nav class="header__user-nav js-dropdown">
-      <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle" id="user--avatar"
+      <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
+        id="user--avatar"
         title="#{personHome.instance.account.username}">
         <div class="badge__container">
           <div class="bx--round header__avatar">

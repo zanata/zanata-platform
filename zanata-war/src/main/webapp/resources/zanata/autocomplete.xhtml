@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<composite:interface>
+  <composite:attribute name="maxlength" type="java.lang.Integer" default="100"
+    shortDescription="The maximum number of characters that may
+                be entered in this field."/>
+
+  <composite:attribute name="minlength" type="java.lang.Integer"
+    shortDescription="Minimal number of chars in input to activate suggestion popup"
+    default="2"/>
+
+  <composite:attribute name="searchWhenFocus" type="java.lang.Boolean"
+    shortDescription="Start search when input field is focus. If 'true', minlength is ignore when input field focus."
+    default="false"/>
+
+  <composite:attribute name="id" type="java.lang.String"
+    shortDescription="id of component (java naming)" required="true"/>
+
+  <composite:attribute name="fetchValue" required="true" type="java.lang.String"
+    shortDescription="A value to use when submit to server using onselectItem action"/>
+
+  <composite:attribute name="placeholder" type="java.lang.String"
+    shortDescription="placeholder text for input field" default=""/>
+
+  <composite:attribute name="getResultAction" required="true"
+    shortDescription="method to run query and return list of result"/>
+
+  <composite:attribute name="onSelectItemAction"
+    method-signature="void action()"
+    shortDescription="method to run when click or 'enter' on result"/>
+
+  <composite:attribute name="onSelectItem" default="null"
+    shortDescription="The client-side script method to be called when an item has been click on enter (param - clicked jQuery(li))"/>
+
+  <composite:attribute name="queryField" required="true"
+    shortDescription="The current value of this component."/>
+
+  <composite:attribute name="selectedField" required="true"
+    shortDescription="Field for selected item (fetchValue)"/>
+
+  <composite:attribute name="render"
+    shortDescription="Ids of component to render after submit (onSelectItemAction)"/>
+
+  <composite:attribute name="oncomplete"
+    shortDescription="The client-side script method to be called after the DOM is updated"/>
+
+  <composite:attribute name="inputClass"
+    shortDescription="CSS class for input field"/>
+
+</composite:interface>
+
+<composite:implementation>
+
+  <a4j:jsFunction name="#{cc.attrs.id}RenderResult"
+    render="#{cc.attrs.id}-result"
+    limitRender="true"
+    oncomplete="registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
+    <a4j:param name="val" assignTo="#{cc.attrs.queryField}"/>
+  </a4j:jsFunction>
+
+  <s:fragment rendered="#{cc.attrs.onSelectItemAction != null}">
+    <a4j:jsFunction name="#{cc.attrs.id}SubmitSelected"
+      action="#{cc.attrs.onSelectItemAction}"
+      render="#{cc.attrs.render}"
+      oncomplete="#{cc.attrs.oncomplete}"
+      limitRender="true">
+      <a4j:param name="val" assignTo="#{cc.attrs.selectedField}"/>
+    </a4j:jsFunction>
+  </s:fragment>
+
+  <s:fragment rendered="#{cc.attrs.onSelectItemAction == null}">
+    <a4j:jsFunction name="#{cc.attrs.id}SubmitSelected">
+      <a4j:param name="val" assignTo="#{cc.attrs.selectedField}"/>
+    </a4j:jsFunction>
+  </s:fragment>
+
+  <div class="autocomplete" id="#{cc.attrs.id}"
+    onkeydown="onResultKeyPressed(this, event, #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
+
+    <input type="text" maxlength="#{cc.attrs.maxlength}" autocomplete="off"
+      class="autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
+      onkeyup="onValueChange(this, event, #{cc.attrs.id}RenderResult)"
+      onfocus="onInputFocus(this, #{cc.attrs.id}RenderResult)"
+      id="#{cc.attrs.id}-autocomplete__input"
+      placeholder="#{cc.attrs.placeholder}"/>
+
+    <input type="hidden" value="#{cc.attrs.minlength}"/>
+    <input type="hidden" value="#{cc.attrs.searchWhenFocus}"/>
+    <s:div id="#{cc.attrs.id}-result">
+      <ui:param value="#{cc.attrs.getResultAction}" name="resultList"/>
+      <s:fragment rendered="#{not empty resultList}">
+        <ul class="autocomplete__results">
+          <ui:repeat value="#{resultList}" var="result">
+            <li class="autocomplete__result">
+              <h:inputHidden value="#{cc.attrs.fetchValue}"/>
+              <composite:insertChildren/>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </s:div>
+  </div>
+</composite:implementation>
+</html>

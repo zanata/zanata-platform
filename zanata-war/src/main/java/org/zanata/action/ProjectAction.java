@@ -41,8 +41,6 @@ public class ProjectAction implements Serializable {
     private boolean showReadOnly = true;
     private boolean showObsolete = false;
 
-    private HProject securedEntity = null;
-
     private ProjectPagedListDataModel projectPagedListDataModel =
             new ProjectPagedListDataModel(!showActive, !showReadOnly,
                     !showObsolete);

@@ -14,6 +14,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -24,7 +25,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -233,9 +236,24 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
-    public List<HProject> searchQuery(@Nonnull String searchQuery,
-            int maxResult, int firstResult) throws ParseException {
+    public List<HProject> searchProjects(@Nonnull String searchQuery,
+        int maxResult, int firstResult, boolean includeObsolete)
+            throws ParseException {
+        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        query.setMaxResults(maxResult).setFirstResult(firstResult)
+                .getResultList();
 
+        return query.getResultList();
+    }
+
+    public int getQueryProjectSize(@Nonnull String searchQuery,
+            boolean includeObsolete) {
+        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        return query.getResultSize();
+    }
+
+    private FullTextQuery getTextQuery(@Nonnull String searchQuery,
+            boolean includeObsolete) {
         searchQuery = QueryParser.escape(searchQuery);
 
         PrefixQuery slugQuery = new PrefixQuery(new Term("slug", searchQuery));
@@ -248,13 +266,13 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         booleanQuery.add(nameQuery, BooleanClause.Occur.SHOULD);
         booleanQuery.add(descQuery, BooleanClause.Occur.SHOULD);
 
-        FullTextQuery query =
-                entityManager.createFullTextQuery(booleanQuery, HProject.class);
-        query.setMaxResults(maxResult).setFirstResult(firstResult)
-                .getResultList();
+        if (!includeObsolete) {
+            TermQuery obsoleteStateQuery =
+                    new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
+                            EntityStatus.OBSOLETE.toString()));
+            booleanQuery.add(obsoleteStateQuery, BooleanClause.Occur.MUST_NOT);
+        }
 
-        @SuppressWarnings("unchecked")
-        List<HProject> resultList = query.getResultList();
-        return resultList;
+        return entityManager.createFullTextQuery(booleanQuery, HProject.class);
     }
 }
