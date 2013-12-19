@@ -8,54 +8,10 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <script type="text/javascript">
-  var newLanguageItems = "[id='#{rich:clientId('new--language')}Items']";
-  var newVersionItems = "[id='#{rich:clientId('new--version')}Items']";
-  var newMaintainerItems = "[id='#{rich:clientId('new--maintainer')}Items']";
-
-  jQuery(document).ready(function () {
-    jQuery('.js-tabs-nav').children('li').children('a').click(function () {
-      var inputField = jQuery(jQuery(this).attr('href')).find('.js-tabs-nav-focus-input');
-      if (inputField.length) {
-        setTimeout(function () {
-          focusInput(inputField);
-          autocompleteResize(inputField);
-        }, 50);
-      }
-    });
-
-    setTimeout(function () {
-      focusCurrentActiveInput();
-      jQuery(jQuery('.js-tabs-nav').children('li.is-active').children('a').attr('href')).find('.js-tabs-nav-focus-input').each(function () {
-        autocompleteResize(this);
-      });
-    }, 50);
-  });
-
-  function autocompleteResize(inputField) {
-    if (jQuery(inputField).length != 0) {
-      var fieldId = jQuery(inputField).attr('id');
-      fieldId = fieldId.substring(0,
-        fieldId.length - "Input".length).concat("List").replace(/:/g, "\\:");
-
-      jQuery('#' + fieldId).find(".rf-au-lst-scrl").css("width",
-        jQuery(inputField).outerWidth() + "px");
-    }
-  }
-
   function focusCurrentActiveInput() {
     jQuery(jQuery('.js-tabs-nav').children('li.is-active').children('a').attr('href')).find('.js-tabs-nav-focus-input').each(function () {
-      focusInput(this);
-    });
-  }
-
-  function focusInput(field) {
-    jQuery(field).value = "";
-    jQuery(field).focus();
-  }
-
-  function updateResultClickEvent(fieldSelector, clickFn) {
-    jQuery(fieldSelector).find('.rf-au-itm').click(function () {
-      clickFn(this.children[0].value);
+      jQuery(this).value = "";
+      jQuery(this).focus();
     });
   }
 </script>
@@ -171,7 +127,7 @@
             selectedField="#{versionGroupHome.selectedLocale}"
             getResultAction="#{versionGroupHome.suggestLocales()}"
             onSelectItemAction="#{versionGroupHome.addLanguage()}"
-            maxlength="80" minlength="1" id="languageAutocomplete"
+            maxlength="80" searchWhenFocus="true" id="languageAutocomplete"
             queryField="#{versionGroupHome.languageQuery}"
             fetchValue="#{result.localeId}" render="settings-languages-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput()"

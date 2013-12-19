@@ -92,6 +92,12 @@ function isEnterKey(event) {
   return event.keyCode == 13;
 }
 
+function onInputFocus(inputField, renderResultFn) {
+  if (jQuery(inputField).next('input').next('input').val() == 'true') {
+    renderResultFn(jQuery(inputField).val());
+  }
+}
+
 function onValueChange(inputField, event, renderResultFn) {
   if (!isArrowKey(event.keyCode)) {
     var minLength = parseInt(jQuery(inputField).next().val());

@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
@@ -14,7 +12,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
@@ -66,9 +63,10 @@ public class ProjectSearch implements Serializable {
         try {
             List<HProject> searchResult =
                     projectDAO
-                            .searchQuery(suggestQuery, INITIAL_RESULT_COUNT, 0,
-                                    identity.hasPermission("HProject",
-                                            "view-obsolete"));
+                            .searchProjects(suggestQuery, INITIAL_RESULT_COUNT,
+                                0,
+                                identity.hasPermission("HProject",
+                                    "view-obsolete"));
 
             for (HProject project : searchResult) {
                 result.add(new SearchResult(project));

@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -171,7 +173,15 @@ public class LocaleServiceImpl implements LocaleService {
 
     @Override
     public List<HLocale> getSupportedLocales() {
-        return localeDAO.findAllActive();
+        List<HLocale> activeLocales = localeDAO.findAllActive();
+        Collections.sort(activeLocales, new Comparator<HLocale>() {
+            @Override
+            public int compare(HLocale hLocale, HLocale hLocale2) {
+                return hLocale.retrieveDisplayName().compareTo(
+                        hLocale2.retrieveDisplayName());
+            }
+        });
+        return activeLocales;
     }
 
     @Override

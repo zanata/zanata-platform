@@ -167,7 +167,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     }
 
     public List<HLocale> suggestLocales() {
-        if (StringUtils.isEmpty(languageQuery)) {
+        if (languageQuery == null) {
             return Lists.newArrayList();
         }
 
@@ -177,6 +177,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                 Collections2.filter(localeList, new Predicate<HLocale>() {
                     @Override
                     public boolean apply(@Nullable HLocale input) {
+                        if (StringUtils.isEmpty(languageQuery)) {
+                            return !getInstance().getActiveLocales().contains(
+                                    input);
+                        }
+
                         return !getInstance().getActiveLocales()
                                 .contains(input)
                                 && (input.getLocaleId().getId()

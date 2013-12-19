@@ -236,8 +236,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
-    public List<HProject> searchQuery(@Nonnull String searchQuery,
-            int maxResult, int firstResult, boolean includeObsolete)
+    public List<HProject> searchProjects(@Nonnull String searchQuery,
+        int maxResult, int firstResult, boolean includeObsolete)
             throws ParseException {
         FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
         query.setMaxResults(maxResult).setFirstResult(firstResult)

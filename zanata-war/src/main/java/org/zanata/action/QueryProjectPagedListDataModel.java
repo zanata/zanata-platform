@@ -55,8 +55,8 @@ public class QueryProjectPagedListDataModel extends
 
         try {
             List<HProject> proj =
-                    projectDAO.searchQuery(query, pageSize, startRow,
-                            includeObsolete);
+                    projectDAO.searchProjects(query, pageSize, startRow,
+                        includeObsolete);
 
             int projectSize =
                     projectDAO.getQueryProjectSize(query, includeObsolete);

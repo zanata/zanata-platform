@@ -16,6 +16,10 @@
     shortDescription="Minimal number of chars in input to activate suggestion popup"
     default="2"/>
 
+  <composite:attribute name="searchWhenFocus" type="java.lang.Boolean"
+    shortDescription="Start search when input field is focus. If 'true', minlength is ignore when input field focus."
+    default="false"/>
+
   <composite:attribute name="id" type="java.lang.String"
     shortDescription="id of component (java naming)" required="true"/>
 
@@ -83,10 +87,12 @@
     <input type="text" maxlength="#{cc.attrs.maxlength}" autocomplete="off"
       class="autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
       onkeyup="onValueChange(this, event, #{cc.attrs.id}RenderResult)"
+      onfocus="onInputFocus(this, #{cc.attrs.id}RenderResult)"
       id="#{cc.attrs.id}-autocomplete__input"
       placeholder="#{cc.attrs.placeholder}"/>
 
     <input type="hidden" value="#{cc.attrs.minlength}"/>
+    <input type="hidden" value="#{cc.attrs.searchWhenFocus}"/>
     <s:div id="#{cc.attrs.id}-result">
       <ui:param value="#{cc.attrs.getResultAction}" name="resultList"/>
       <s:fragment rendered="#{not empty resultList}">
