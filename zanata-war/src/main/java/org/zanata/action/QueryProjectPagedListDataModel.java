@@ -21,16 +21,17 @@
  */
 package org.zanata.action;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.List;
+
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
-import java.io.Serializable;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 public class QueryProjectPagedListDataModel extends
         PagedListDataModel<HProject> implements Serializable {
@@ -56,7 +57,7 @@ public class QueryProjectPagedListDataModel extends
         try {
             List<HProject> proj =
                     projectDAO.searchProjects(query, pageSize, startRow,
-                        includeObsolete);
+                            includeObsolete);
 
             int projectSize =
                     projectDAO.getQueryProjectSize(query, includeObsolete);
