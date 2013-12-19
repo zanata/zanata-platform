@@ -28,10 +28,6 @@
     <context.path>zanata</context.path>
 
     <!--data source-->
-    <jdbc.groupId>mysql</jdbc.groupId>
-    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-    <jdbc.version>5.1.26</jdbc.version>
-
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>root</ds.database>
@@ -186,7 +182,6 @@
     <dependency>
       <groupId>${jdbc.groupId}</groupId>
       <artifactId>${jdbc.artifactId}</artifactId>
-      <version>${jdbc.version}</version>
     </dependency>
 
     <dependency>

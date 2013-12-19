@@ -53,6 +53,10 @@
 
     <!-- JBoss version for dependencies (arquillian, jboss-as-parent) -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
+
+    <jdbc.groupId>mysql</jdbc.groupId>
+    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+    <jdbc.version>5.1.26</jdbc.version>
   </properties>
 
   <dependencyManagement>
@@ -213,6 +217,13 @@
         <artifactId>icu4j</artifactId>
         <classifier>sources</classifier>
         <version>${icu4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${jdbc.groupId}</groupId>
+        <artifactId>${jdbc.artifactId}</artifactId>
+        <version>${jdbc.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
