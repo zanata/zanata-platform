@@ -30,16 +30,15 @@
     <!--data source-->
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-    <!-- This version must match the version used in JBoss. -->
-    <jdbc.version>5.1.9</jdbc.version>
+    <jdbc.version>5.1.26</jdbc.version>
 
     <ds.jndi.name>zanataDatasource</ds.jndi.name>
-    <ds.database>zanata_functional</ds.database>
-    <!--<ds.hibernate.dialect>org.hibernate.dialect.H2Dialect</ds.hibernate.dialect>-->
+    <!--mysql-maven-plugin will use these setup-->
+    <ds.database>root</ds.database>
+    <ds.username>root</ds.username>
+    <ds.password>root</ds.password>
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
-    <ds.username>zanata</ds.username>
-    <ds.password>zanata</ds.password>
 
     <!--target zanata instance-->
     <zanata.target.version>${project.parent.version}</zanata.target.version>
@@ -335,6 +334,7 @@
                 <goals>
                   <goal>reserve-network-port</goal>
                 </goals>
+                <phase>generate-test-resources</phase>
                 <configuration>
                   <portNames>
                     <portName>mysql.port</portName>
@@ -385,51 +385,6 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>sql-maven-plugin</artifactId>
-            <dependencies>
-              <!-- specify the dependent JDBC driver here -->
-              <dependency>
-                <groupId>${jdbc.groupId}</groupId>
-                <artifactId>${jdbc.artifactId}</artifactId>
-                <version>${jdbc.version}</version>
-              </dependency>
-            </dependencies>
-
-            <!-- common configuration shared by all executions -->
-            <configuration>
-              <driver>${ds.driver.class}</driver>
-              <url>jdbc:mysql://localhost:${mysql.port}/test?characterEncoding=UTF-8</url>
-              <username>${ds.username}</username>
-              <password>${ds.password}</password>
-            </configuration>
-
-            <executions>
-              <execution>
-                <id>drop-database</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <sqlCommand>drop database if exists ${ds.database}</sqlCommand>
-                  <onError>continue</onError>
-                </configuration>
-              </execution>
-              <execution>
-                <id>create-database</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <sqlCommand>create database ${ds.database}</sqlCommand>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>

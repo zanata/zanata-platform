@@ -53,10 +53,6 @@
 
     <!-- JBoss version for dependencies (arquillian, jboss-as-parent) -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
-
-    <!-- mysql maven plugin-->
-    <mysql.classifier>linux-amd64</mysql.classifier>
-    <mysql.port>13306</mysql.port>
   </properties>
 
   <dependencyManagement>
@@ -719,11 +715,6 @@
           <groupId>com.jcabi</groupId>
           <artifactId>jcabi-mysql-maven-plugin</artifactId>
           <version>0.3</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>sql-maven-plugin</artifactId>
-          <version>1.5</version>
         </plugin>
       </plugins>
     </pluginManagement>
