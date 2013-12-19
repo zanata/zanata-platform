@@ -28,7 +28,7 @@ import net.sf.okapi.filters.idml.IDMLFilter;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class IDMLAdapter extends GenericOkapiFilterAdapter {
+public class IDMLAdapter extends OkapiFilterAdapter {
     public IDMLAdapter() {
         super(prepareFilter(), IdSource.contentHash, true);
     }

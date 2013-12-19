@@ -63,7 +63,7 @@ import com.google.common.base.Optional;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class GenericOkapiFilterAdapter implements FileFormatAdapter {
+public class OkapiFilterAdapter implements FileFormatAdapter {
     private Logger log;
 
     /**
@@ -104,7 +104,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
      *            source should only produce duplicate ids when source content
      *            is identical.
      */
-    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource) {
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource) {
         this(filter, idSource, false);
     }
 
@@ -122,13 +122,13 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
      *            true if filter requires a file on disk rather than just a
      *            stream. Causes a temp file to be created when parsing.
      */
-    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource,
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource,
             boolean requireFileOutput) {
         this.filter = filter;
         this.idSource = idSource;
         this.requireFileOutput = requireFileOutput;
 
-        log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
+        log = LoggerFactory.getLogger(OkapiFilterAdapter.class);
     }
 
     @Override

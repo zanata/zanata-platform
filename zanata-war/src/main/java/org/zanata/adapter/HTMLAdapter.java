@@ -32,7 +32,7 @@ import com.google.common.io.Resources;
 /**
  * Adapter to handle HTML documents.
  */
-public class HTMLAdapter extends GenericOkapiFilterAdapter {
+public class HTMLAdapter extends OkapiFilterAdapter {
 
     private static final String config = loadConfig();
 

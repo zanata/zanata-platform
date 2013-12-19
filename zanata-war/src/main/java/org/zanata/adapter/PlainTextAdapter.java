@@ -28,7 +28,7 @@ import net.sf.okapi.filters.plaintext.PlainTextFilter;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class PlainTextAdapter extends GenericOkapiFilterAdapter {
+public class PlainTextAdapter extends OkapiFilterAdapter {
     public PlainTextAdapter() {
         super(new PlainTextFilter(), IdSource.textUnitId);
     }
