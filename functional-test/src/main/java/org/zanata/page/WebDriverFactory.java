@@ -73,18 +73,22 @@ public enum WebDriverFactory {
         return PropertiesHolder.getProperty(zanataInstance.value());
     }
 
-    private WebDriver enableScreenshots() {
-        log.info("Enabling screenshot module...");
-        return EventFiringWebDriver.class.cast(driver).register(eventListener);
-    }
-
-
     public void updateListenerTestName(String testName) {
         if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
             eventListener  = new TestEventForScreenshotListener(driver);
-            driver = enableScreenshots();
         }
+        enableScreenshots();
         eventListener.updateTestID(testName);
+    }
+
+
+    private WebDriver enableScreenshots() {
+        log.debug("Enabling screenshot module...");
+        return EventFiringWebDriver.class.cast(driver).register(eventListener);
+    }
+
+    public void unregisterScreenshot() {
+        EventFiringWebDriver.class.cast(driver).unregister(eventListener);
     }
 
     private WebDriver createPlainDriver() {

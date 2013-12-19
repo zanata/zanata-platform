@@ -45,7 +45,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Category(DetailedTest.class)
 public class ChangePasswordTest {
 
-    // Override database class rule
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 

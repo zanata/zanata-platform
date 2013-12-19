@@ -17,42 +17,45 @@ import org.zanata.page.WebDriverFactory;
 @Slf4j
 public class TakeScreenshotRule implements TestRule {
 
-    private String testDisplayName;
-
     @Override
     public Statement apply(final Statement base, Description description) {
-        testDisplayName = description.getDisplayName();
+        final String testDisplayName = description.getDisplayName();
 
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                updateWebDriverDisplayName();
+                enableScreenshotForTest(testDisplayName);
                 try {
                     base.evaluate();
-                }
-                catch (Throwable throwable) {
+                } catch (Throwable throwable) {
                     throw throwable;
+                } finally {
+                    unregisterScreenshot();
                 }
                 // if we are here the test passes
-                deleteScreenshots();
+                deleteScreenshots(testDisplayName);
             }
         };
     }
 
-    protected void updateWebDriverDisplayName() throws Throwable {
+    private static void enableScreenshotForTest(String testDisplayName)
+            throws Throwable {
         WebDriverFactory.INSTANCE.updateListenerTestName(testDisplayName);
         String date = new Date().toString();
         log.debug("[TEST] {}:{}", testDisplayName, date);
     }
 
-    private void deleteScreenshots() {
+    private static void deleteScreenshots(String testDisplayName) {
         File testDir = ScreenshotDirForTest.screenshotForTest(testDisplayName);
         try {
             FileUtils.deleteDirectory(testDir);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.warn("error deleting screenshot base directory: {}",
-                e.getMessage());
+                    e.getMessage());
         }
+    }
+
+    private static void unregisterScreenshot() {
+        WebDriverFactory.INSTANCE.unregisterScreenshot();
     }
 }
