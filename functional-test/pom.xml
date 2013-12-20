@@ -17,14 +17,12 @@
     <!--Cargo Settings -->
     <cargo.wait>false</cargo.wait>
     <cargo.host>localhost</cargo.host>
-    <cargo.container>jboss71x</cargo.container>
-    <cargo.servlet.port>9898</cargo.servlet.port>
-    <!--<cargo.installation>http://aarnet.dl.sourceforge.net/project/jboss/JBoss/JBoss-5.1.0.GA/jboss-5.1.0.GA-jdk6.zip</cargo.installation>-->
-    <!--<cargo.installation>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</cargo.installation>-->
-    <cargo.installation>http://download.jboss.org/jbosseap/6/jboss-eap-6.1.0.Alpha/jboss-eap-6.1.0.Alpha.zip</cargo.installation>
+    <cargo.container>jboss72x</cargo.container>
+    <cargo.servlet.port>8080</cargo.servlet.port>
+    <cargo.installation>http://downloads.sourceforge.net/project/zanata/server/zanata-server.zip</cargo.installation>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <cargo.install.relative.to.container.home>../../cargo/installs/jboss-eap-6.1.0.Alpha/jboss-eap-6.1</cargo.install.relative.to.container.home>
+    <cargo.install.relative.to.container.home>../../cargo/installs/zanata-server</cargo.install.relative.to.container.home>
     <context.path>zanata</context.path>
 
     <!--data source-->
@@ -135,20 +133,6 @@
       <artifactId>hamcrest-library</artifactId>
     </dependency>
 
-    <!-- cargo needs these-->
-    <!-- we need to include a newer version of hibernate and replace the ones come with JBoss EAP6-alpha -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>${hibernate.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.javassist</groupId>
-          <artifactId>javassist</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>${hibernate.scope}</scope>
-    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
@@ -161,24 +145,13 @@
       </exclusions>
       <scope>${hibernate.scope}</scope>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-infinispan</artifactId>
-      <version>${hibernate.version}</version>
-      <scope>${hibernate.scope}</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-envers</artifactId>
-      <version>${hibernate.version}</version>
-      <scope>${hibernate.scope}</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
     </dependency>
 
+    <!-- cargo needs these-->
     <dependency>
       <groupId>${jdbc.groupId}</groupId>
       <artifactId>${jdbc.artifactId}</artifactId>
@@ -412,10 +385,8 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.3.1</version>
+            <version>1.4.5</version>
             <configuration>
-              <wait>${cargo.wait}</wait>
-
               <container>
                 <containerId>${cargo.container}</containerId>
                 <type>installed</type>
@@ -445,7 +416,7 @@
                   <type>war</type>
                   <location>${zanata.target.war}</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>120000</pingTimeout>
+                  <pingTimeout>180000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
@@ -464,11 +435,6 @@
                   </configfile>
                   <!-- see above zipUrlInstaller/extractDir-->
                   <!-- cargo will force todir and tofile to be relative to container home directory -->
-                  <!-- enable javamelody -->
-                  <configfile>
-                    <file>${project.basedir}/src/test/resources/as7module/sun/module.xml</file>
-                    <todir>${cargo.install.relative.to.container.home}/modules/system/layers/base/sun/jdk/main</todir>
-                  </configfile>
 
                   <!-- security and jndi for properties -->
                   <configfile>
@@ -479,25 +445,6 @@
                 </configfiles>
 
                 <files>
-                  <!-- this is a hack to upgrade eap6-alpa's hibernate version-->
-                  <file>
-                    <!-- copy in the new jar and override the old one (this is ugly but inside cargo not much option we have -->
-                    <file>${settings.localRepository}/org/hibernate/hibernate-core/${hibernate.version}/hibernate-core-${hibernate.version}.jar</file>
-                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-core-4.2.0.CR1.jar</tofile>
-                  </file>
-                  <file>
-                    <file>${settings.localRepository}/org/hibernate/hibernate-entitymanager/${hibernate.version}/hibernate-entitymanager-${hibernate.version}.jar</file>
-                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-entitymanager-4.2.0.CR1.jar</tofile>
-                  </file>
-                  <file>
-                    <file>${settings.localRepository}/org/hibernate/hibernate-infinispan/${hibernate.version}/hibernate-infinispan-${hibernate.version}.jar</file>
-                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/main/hibernate-infinispan-4.2.0.CR1.jar</tofile>
-                  </file>
-                  <file>
-                    <file>${settings.localRepository}/org/hibernate/hibernate-envers/${hibernate.version}/hibernate-envers-${hibernate.version}.jar</file>
-                    <tofile>${cargo.install.relative.to.container.home}/modules/system/layers/base/org/hibernate/envers/main/hibernate-envers-4.2.0.CR1.jar</tofile>
-                  </file>
-
                   <file>
                     <file>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}/${jdbc.artifactId}-${jdbc.version}.jar</file>
                     <tofile>deployments/${jdbc.artifactId}.jar</tofile>
@@ -505,10 +452,7 @@
                 </files>
 
                 <properties>
-                  <cargo.jboss.configuration>default</cargo.jboss.configuration>
-                  <cargo.hostname>${cargo.host}</cargo.hostname>
-                  <cargo.servlet.port>9898</cargo.servlet.port>
-
+                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
                   <cargo.jvmargs>
                     <!-- NB: JDom parser doesn't like comments starting with '-' -->
                     -XX:PermSize=512m -XX:MaxPermSize=1024
@@ -578,10 +522,7 @@
         <filtering>true</filtering>
         <includes>
           <include>**/*.properties</include>
-          <include>**/*.sql</include>
-          <include>**/log4j.xml</include>
-          <include>**/zanata-ds.xml</include>
-          <include>conf/standalone.xml</include>
+          <include>**/*.xml</include>
           <include>META-INF/persistence.xml</include>
         </includes>
       </testResource>
@@ -655,10 +596,6 @@
             <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <usedDependency>org.hibernate:hibernate-core</usedDependency>
-            <usedDependency>org.hibernate:hibernate-envers</usedDependency>
-            <usedDependency>org.hibernate:hibernate-entitymanager</usedDependency>
-            <usedDependency>org.hibernate:hibernate-infinispan</usedDependency>
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.javassist:javassist</usedDependency>
             <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
