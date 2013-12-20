@@ -89,14 +89,8 @@ public class ProjectPage extends BasePage {
     }
 
     public List<String> getVersions() {
-        List<WebElement> versionLinks =
-                getDriver().findElements(By.className("version_link"));
-        if (versionLinks.isEmpty()) {
-            log.debug("no version exists for this project");
-            return Collections.emptyList();
-        }
-
-        return WebElementUtil.elementsToText(versionLinks);
+        return WebElementUtil.elementsToText(getDriver(),
+                By.className("version_link"));
     }
 
     public CreateProjectPage clickEditProject() {

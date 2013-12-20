@@ -28,7 +28,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 
@@ -78,9 +77,8 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> getErrors() {
-        List<WebElement> errorSpans =
-                getDriver().findElements(By.xpath("//span[@class='errors']"));
-        return WebElementUtil.elementsToText(errorSpans);
+        return WebElementUtil.elementsToText(getDriver(),
+                By.xpath("//span[@class='errors']"));
     }
 
     /**
