@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -45,10 +46,36 @@ public class WebElementUtil {
     private WebElementUtil() {
     }
 
+    /**
+     * This method potentially will suffer from StaleElementException if the
+     * WebElements given are dynamic elements on the page. If so consider using
+     * #elementsToText(org.openqa.selenium.WebDriver, org.openqa.selenium.By)
+     *  instead.
+     *
+     * @param webElements
+     *            collection of WebElement
+     * @return text representation of the elements
+     */
     public static List<String>
             elementsToText(Collection<WebElement> webElements) {
         return ImmutableList.copyOf(Collections2.transform(webElements,
                 WebElementToTextFunction.FUNCTION));
+    }
+
+
+    public static List<String> elementsToText(WebDriver driver, final By by) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<String>>() {
+                    @Override
+                    public List<String> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
+                        List<WebElement> elements = input.findElements(by);
+                        return ImmutableList.copyOf(Lists.transform(elements,
+                                WebElementToTextFunction.FUNCTION));
+                    }
+                });
     }
 
     public static String getInnerHTML(WebDriver driver, WebElement element) {

@@ -34,6 +34,7 @@ import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * Contains the physical elements, such as page title and home link, that
@@ -78,9 +79,8 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> getErrors() {
-        List<WebElement> errorSpans =
-                getDriver().findElements(By.xpath("//span[@class='errors']"));
-        return WebElementUtil.elementsToText(errorSpans);
+        return WebElementUtil.elementsToText(getDriver(),
+                By.xpath("//span[@class='errors']"));
     }
 
     /**
