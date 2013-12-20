@@ -27,6 +27,8 @@ public class ProjectSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final static int DEFAULT_PAGE_SIZE = 30;
+
     @Getter
     @Setter
     private int scrollerPage = 1;
@@ -47,7 +49,7 @@ public class ProjectSearch implements Serializable {
     private ZanataIdentity identity;
 
     private QueryProjectPagedListDataModel queryProjectPagedListDataModel =
-            new QueryProjectPagedListDataModel();
+            new QueryProjectPagedListDataModel(DEFAULT_PAGE_SIZE);
 
     // Count of result to be return as part of autocomplete
     private final static int INITIAL_RESULT_COUNT = 5;
@@ -64,9 +66,8 @@ public class ProjectSearch implements Serializable {
             List<HProject> searchResult =
                     projectDAO
                             .searchProjects(suggestQuery, INITIAL_RESULT_COUNT,
-                                0,
-                                identity.hasPermission("HProject",
-                                    "view-obsolete"));
+                                    0, identity.hasPermission("HProject",
+                                            "view-obsolete"));
 
             for (HProject project : searchResult) {
                 result.add(new SearchResult(project));
