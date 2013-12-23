@@ -63,17 +63,11 @@ public class Editor extends Composite implements ToggleEditor {
     // Timer period, in ms
     private final int TYPING_TIMER_INTERVAL = 200;
 
-    // Validation will be forced after this many periods
-    private final int TYPING_TIMER_INTERVALS_UNTIL_VALIDATION = 5;
-
     // Has a key been pressed since the timer was started or the last firing
     private boolean keyPressedSinceTimer;
 
     // Has a timer been started
     private boolean timerStarted;
-
-    // The number of timer cycles since the last keydown
-    private int typingCycles;
 
     // NB: In some cases, the idle detection may take almost 2 cycles
     // 1. Key pressed at time = 0
@@ -85,12 +79,7 @@ public class Editor extends Composite implements ToggleEditor {
         @Override
         public void run() {
             if (keyPressedSinceTimer) {
-                // still typing, validate periodically
                 keyPressedSinceTimer = false;
-                typingCycles++;
-                if (typingCycles % TYPING_TIMER_INTERVALS_UNTIL_VALIDATION == 0) {
-                    fireValidationEvent();
-                }
             } else {
                 // finished, validate immediately
                 this.cancel();
@@ -157,7 +146,6 @@ public class Editor extends Composite implements ToggleEditor {
             // set false so that next keypress is detectable
             keyPressedSinceTimer = false;
             timerStarted = true;
-            typingCycles = 0;
             typingTimer.scheduleRepeating(TYPING_TIMER_INTERVAL);
         }
         listener.setEditingState(id, UNSAVED);
