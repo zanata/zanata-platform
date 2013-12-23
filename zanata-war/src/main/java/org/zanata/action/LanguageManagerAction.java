@@ -49,6 +49,7 @@ import java.util.Map;
 @Restrict("#{s:hasRole('admin')}")
 public class LanguageManagerAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final int LENGTH_LIMIT = 254;
 
     @In
     private LocaleDAO localeDAO;
@@ -171,6 +172,13 @@ public class LanguageManagerAction implements Serializable {
     public boolean isLanguageNameValid() {
         this.languageNameValidationMessage = null; // reset
         this.languageNameWarningMessage = null; // reset
+
+        if (language.length() > LENGTH_LIMIT) {
+            this.uLocale = null;
+            this.languageNameValidationMessage =
+                    messages.get("jsf.language.validation.Invalid");
+            return false;
+        }
 
         // Cannot use FacesMessages as they are request scoped.
         // Cannot use UI binding as they don't work in Page scoped beans
