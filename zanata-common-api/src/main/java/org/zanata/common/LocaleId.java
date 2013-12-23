@@ -3,6 +3,7 @@ package org.zanata.common;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.Size;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonValue;
@@ -11,6 +12,7 @@ public class LocaleId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Size(max = 255)
     private @Nonnull
     String id;
     // TODO split up to language code, country code, qualifier etc..
