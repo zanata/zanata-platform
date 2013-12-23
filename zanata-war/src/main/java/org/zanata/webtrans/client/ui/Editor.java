@@ -90,7 +90,7 @@ public class Editor extends Composite implements ToggleEditor {
     };
 
     public Editor(String displayString, final int index,
-        final TargetContentsDisplay.Listener listener, final TransUnitId id) {
+            final TargetContentsDisplay.Listener listener, final TransUnitId id) {
         this.listener = listener;
         this.index = index;
         this.id = id;
@@ -123,9 +123,9 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public void setEnableSpellCheck(Boolean enabled) {
         targetWrapper.getElement().setAttribute("contenteditable",
-            enabled.toString());
+                enabled.toString());
         targetWrapper.getElement().setAttribute("spellcheck",
-            enabled.toString());
+                enabled.toString());
     }
 
     private void fireValidationEvent() {
@@ -220,22 +220,22 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public void insertTextInCursorPosition(String suggestion) {
         String preCursor =
-            textArea.getText().substring(0, textArea.getCursorPos());
+                textArea.getText().substring(0, textArea.getCursorPos());
         String postCursor =
-            textArea.getText().substring(textArea.getCursorPos(),
-                textArea.getText().length());
+                textArea.getText().substring(textArea.getCursorPos(),
+                        textArea.getText().length());
 
         setTextAndValidate(preCursor + suggestion + postCursor);
         textArea.setCursorPos(textArea.getText().indexOf(suggestion)
-            + suggestion.length());
+                + suggestion.length());
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this).add("id", id)
-            // .add("label", label.getText())
-            // .add("textArea", textArea.getText())
-            .add("isFocused", isFocused()).toString();
+        // .add("label", label.getText())
+        // .add("textArea", textArea.getText())
+                .add("isFocused", isFocused()).toString();
     }
 
     @Override
@@ -255,7 +255,7 @@ public class Editor extends Composite implements ToggleEditor {
 
     @Override
     public void updateValidationMessages(
-        Map<ValidationAction, List<String>> messages) {
+            Map<ValidationAction, List<String>> messages) {
         if (messages.isEmpty()) {
             targetWrapper.removeStyleName(style.hasValidationError());
         } else {
