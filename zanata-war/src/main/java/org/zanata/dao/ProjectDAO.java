@@ -1,21 +1,17 @@
 package org.zanata.dao;
 
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -25,7 +21,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HPerson;
@@ -237,7 +232,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     public List<HProject> searchProjects(@Nonnull String searchQuery,
-        int maxResult, int firstResult, boolean includeObsolete)
+            int maxResult, int firstResult, boolean includeObsolete)
             throws ParseException {
         FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
         query.setMaxResults(maxResult).setFirstResult(firstResult)
@@ -247,14 +242,14 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,
-            boolean includeObsolete) {
+            boolean includeObsolete) throws ParseException {
         FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
         return query.getResultSize();
     }
 
     private FullTextQuery getTextQuery(@Nonnull String searchQuery,
             boolean includeObsolete) {
-        searchQuery = QueryParser.escape(searchQuery);
+        searchQuery = QueryParser.escape(searchQuery.toLowerCase());
 
         PrefixQuery slugQuery = new PrefixQuery(new Term("slug", searchQuery));
         PrefixQuery nameQuery = new PrefixQuery(new Term("name", searchQuery));
