@@ -530,7 +530,6 @@
         <includes>
           <include>**/*.properties</include>
           <include>**/*.xml</include>
-          <include>META-INF/persistence.xml</include>
         </includes>
       </testResource>
       <testResource>
@@ -603,6 +602,7 @@
             <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
+            <usedDependency>org.hibernate:hibernate-entitymanager</usedDependency>
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.javassist:javassist</usedDependency>
             <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
