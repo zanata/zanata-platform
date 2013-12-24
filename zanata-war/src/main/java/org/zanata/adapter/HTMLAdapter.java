@@ -49,7 +49,7 @@ public class HTMLAdapter extends OkapiFilterAdapter {
     }
 
     public HTMLAdapter() {
-        super(prepareFilter(), IdSource.contentHash, true);
+        super(prepareFilter(), IdSource.contentHash, true, true);
     }
 
     private static HtmlFilter prepareFilter() {

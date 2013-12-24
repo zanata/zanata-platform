@@ -92,6 +92,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     private final IFilter filter;
     private final IdSource idSource;
     private boolean requireFileOutput;
+    private boolean separateNonTranslatable;
 
     /**
      * Create an adapter that will use the specified {@link IdSource} as
@@ -124,9 +125,15 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      */
     public OkapiFilterAdapter(IFilter filter, IdSource idSource,
             boolean requireFileOutput) {
+        this(filter, idSource, requireFileOutput, false);
+    }
+
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource,
+            boolean requireFileOutput, boolean separateNonTranslatable) {
         this.filter = filter;
         this.idSource = idSource;
         this.requireFileOutput = requireFileOutput;
+        this.separateNonTranslatable = separateNonTranslatable;
 
         log = LoggerFactory.getLogger(OkapiFilterAdapter.class);
     }
@@ -164,16 +171,17 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
                     if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
-                        TextFlow tf =
-                                new TextFlow(getIdFor(tu, subDocName),
-                                        sourceLocale);
-                        tf.setPlural(false);
-                        tf.setContents(GenericContent
-                                .fromFragmentToLetterCoded(tu.getSource()
-                                        .getFirstContent(), true));
-                        if (shouldAdd(tf.getId(), tf, addedResources)) {
-                            addedResources.put(tf.getId(), tf);
-                            resources.add(tf);
+                        String content = getTranslatableText(tu);
+                        if (!content.isEmpty()) {
+                            TextFlow tf =
+                                    new TextFlow(getIdFor(tu, content,
+                                            subDocName), sourceLocale);
+                            tf.setPlural(false);
+                            tf.setContents(content);
+                            if (shouldAdd(tf.getId(), tf, addedResources)) {
+                                addedResources.put(tf.getId(), tf);
+                                resources.add(tf);
+                            }
                         }
                     }
                 }
@@ -184,6 +192,39 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             filter.close();
         }
         return document;
+    }
+
+    private String getTranslatableText(TextUnit tu) {
+        String letterCodedText =
+                GenericContent.fromFragmentToLetterCoded(tu.getSource()
+                        .getFirstContent(), true);
+        if (separateNonTranslatable) {
+            return getPartitionedText(letterCodedText).get("str");
+        } else {
+            return letterCodedText;
+        }
+    }
+
+    /**
+     * Separates translatable text from surrounding non-translatable text.
+     *
+     * @param tu
+     * @return
+     */
+    private Map<String, String> getPartitionedText(TextUnit tu) {
+        return TranslatableSeparator.separate(GenericContent
+                .fromFragmentToLetterCoded(tu.getSource().getFirstContent(),
+                        true));
+    }
+
+    /**
+     * Separates translatable text from surrounding non-translatable text.
+     *
+     * @param tu
+     * @return
+     */
+    private Map<String, String> getPartitionedText(String letterCodedText) {
+        return TranslatableSeparator.separate(letterCodedText);
     }
 
     /**
@@ -258,16 +299,18 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    if (tu.isTranslatable()) {
-                        TextFlowTarget tft =
-                                new TextFlowTarget(getIdFor(tu, subDocName));
-                        tft.setContents(GenericContent
-                                .fromFragmentToLetterCoded(tu.getSource()
-                                        .getFirstContent(), true));
-                        tft.setState(ContentState.NeedReview);
-                        if (shouldAdd(tft.getResId(), tft, addedResources)) {
-                            addedResources.put(tft.getResId(), tft);
-                            translations.add(tft);
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+                        String content = getTranslatableText(tu);
+                        if (!content.isEmpty()) {
+                            TextFlowTarget tft =
+                                    new TextFlowTarget(getIdFor(tu, content, subDocName));
+                            tft.setContents(content);
+                            tft.setState(ContentState.NeedReview);
+                            if (shouldAdd(tft.getResId(), tft, addedResources)) {
+                                addedResources.put(tft.getResId(), tft);
+                                translations.add(tft);
+                            }
+
                         }
                     }
                 }
@@ -359,14 +402,28 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    TextFlowTarget tft =
-                            translations.get(getIdFor(tu, subDocName));
-                    if (tft != null) {
-                        tu.setTargetContent(localeId, GenericContent
-                                .fromLetterCodedToFragment(tft.getContents()
-                                        .get(0), tu.getSource()
-                                        .getFirstContent().clone(), true, true));
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+                        String translatable = getTranslatableText(tu);
+
+                        if (!translatable.isEmpty()) {
+                            TextFlowTarget tft =
+                                    translations.get(getIdFor(tu,
+                                            translatable, subDocName));
+
+                            if (tft != null) {
+                                String translated = tft.getContents().get(0);
+
+                                translated =
+                                        getFullTranslationText(tu, translated);
+                                tu.setTargetContent(localeId, GenericContent
+                                        .fromLetterCodedToFragment(
+                                                translated, tu.getSource()
+                                                .getFirstContent()
+                                                .clone(), true, true));
+                            }
+                        }
                     }
+
                 }
                 writer.handleEvent(event);
             }
@@ -379,6 +436,16 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         }
     }
 
+    private String getFullTranslationText(TextUnit tu, String translated) {
+        if (separateNonTranslatable) {
+            Map<String, String> partitionedContent = getPartitionedText(tu);
+            return partitionedContent.get("pre") + translated
+                    + partitionedContent.get("suf");
+        } else {
+            return translated;
+        }
+    }
+
     /**
      * Return the id for a TextUnit based on id assignment rules. This method
      * can be overridden for more complex id assignment.
@@ -388,9 +455,13 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      * @return the id for the given tu
      */
     protected String getIdFor(TextUnit tu, String subDocName) {
+        return getIdFor(tu, tu.getSource().toString(), subDocName);
+    }
+
+    protected String getIdFor(TextUnit tu, String content, String subDocName) {
         switch (idSource) {
         case contentHash:
-            return HashUtil.generateHash(tu.getSource().toString());
+            return HashUtil.generateHash(content);
         case textUnitName:
             return tu.getName();
         case subDocNameAndTextUnitId:
