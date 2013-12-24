@@ -18,7 +18,9 @@
     <cargo.wait>false</cargo.wait>
     <cargo.host>localhost</cargo.host>
     <cargo.container>jboss72x</cargo.container>
-    <cargo.servlet.port>8080</cargo.servlet.port>
+    <!--jboss port offset -->
+    <cargo.port.offset>100</cargo.port.offset>
+    <cargo.servlet.port>8180</cargo.servlet.port>
     <cargo.installation>http://downloads.sourceforge.net/project/zanata/server/zanata-server.zip</cargo.installation>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
@@ -406,7 +408,10 @@
                   <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                   <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
                   <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
+                  <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
                 </systemProperties>
+
+                <timeout>0</timeout>
               </container>
 
               <deployables>
@@ -459,6 +464,8 @@
                     -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
                     ${cargo.debug.jvm.args}
                   </cargo.jvmargs>
+                  <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
+                  <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
                 </properties>
               </configuration>
             </configuration>
