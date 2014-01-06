@@ -49,6 +49,8 @@
   <source path="shared" />
 
   <inherits name="com.google.gwt.i18n.I18N" />
-  <extend-property name="locale" values="en,qc" />
+  <!-- if we want to include new locale in our app, add new extend-property value and then add to ApplicationI18n.gwt.xml-->
+  <!-- at the moment we have included locales in faces-config.xml -->
+  <extend-property name="locale" values="en,ja,zh_Hant_TW,uk,qc" />
   <set-property-fallback name="locale" value="en" />
 </module>

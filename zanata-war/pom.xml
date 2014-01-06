@@ -405,6 +405,19 @@
       </plugin>
 
       <plugin>
+        <!-- server pom has same plugin definition with different includes -->
+        <groupId>org.zanata</groupId>
+        <configuration>
+          <srcDir>.</srcDir>
+          <transDir>.</transDir>
+          <includes>src/main/resources/org/zanata/webtrans/client/resources/*.properties</includes>
+          <excludes>src/main/resources/org/zanata/webtrans/client/resources/*_default.properties</excludes>
+        </configuration>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
@@ -1015,6 +1028,64 @@
 
       </pluginRepositories>
 
+    </profile>
+
+    <profile>
+      <id>gwt-i18n</id>
+      <activation>
+        <property>
+          <name>gwt-i18n</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-i18n</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <!--here we bind it to generate-test-resource because we want it to happen before the real compile(prepare-package) and able to do its job -->
+                <phase>generate-test-resources</phase>
+                <configuration>
+                  <module>org.zanata.webtrans.ApplicationI18n</module>
+                  <extra>${project.build.directory}/gwt-extra</extra>
+                  <extraParam>true</extraParam>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+            <configuration>
+              <!-- the groovy.script will be given by command line arg -->
+              <!-- at the moment it's used in zanata.xml as command hook -->
+              <source>${pom.basedir}/src/etc/${groovy.script}</source>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <classpath>
+                    <element>
+                      <groupId>com.google.guava</groupId>
+                      <artifactId>guava</artifactId>
+                    </element>
+                  </classpath>
+                  <source>${pom.basedir}/src/etc/SyncGWTI18NProperties.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
   </profiles>

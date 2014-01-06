@@ -739,6 +739,14 @@
           <artifactId>jcabi-mysql-maven-plugin</artifactId>
           <version>0.4</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <providerSelection>2.0</providerSelection>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
