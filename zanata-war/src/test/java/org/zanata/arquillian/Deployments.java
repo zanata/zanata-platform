@@ -110,8 +110,6 @@ public class Deployments {
         archive.addAsResource("security.drl");
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
-        archive.addAsWebInfResource(new ClassLoaderAsset(
-                "arquillian/zanata.properties"), "classes/zanata.properties");
         archive.setWebXML("arquillian/test-web.xml");
 
         addRemoteHelpers(archive);
