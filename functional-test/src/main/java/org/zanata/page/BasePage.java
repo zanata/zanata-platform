@@ -123,7 +123,7 @@ public class BasePage extends CorePage {
     }
 
     public String loggedInAs() {
-        return userAvatar.getAttribute("title");
+        return userAvatar.getAttribute("data-original-title");
     }
 
     public HomePage logout() {
