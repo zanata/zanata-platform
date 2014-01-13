@@ -256,12 +256,10 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 translationResources.getTranslations(docUri,
                                         locale, strat.getExtensions(),
                                         createSkeletons, eTag);
-                        TranslationsResource targetDoc;
 
                         // ignore 404 (no translation yet for specified
                         // document)
                         if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND) {
-                            targetDoc = null;
                             if (!createSkeletons) {
                                 log.info(
                                         "No translations found in locale {} for document {}",
@@ -270,12 +268,16 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 // see
                                 // http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
                                 transResponse.releaseConnection();
-                                continue;
+                            } else {
+                                // Write the skeleton
+                                writeTargetDoc(strat, localDocName, locMapping,
+                                    doc, null,
+                                    transResponse.getResponseHeaders()
+                                        .getFirst(HttpHeaders.ETAG));
                             }
                         }
                         // 304 NOT MODIFIED (the document can stay the same)
                         else if (transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED) {
-                            targetDoc = null;
                             log.info(
                                     "No changes in translations for locale {} and document {}",
                                     locale, localDocName);
@@ -293,17 +295,22 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                                 strat.getExtensions(),
                                                 createSkeletons, null);
                                 ClientUtility.checkResult(transResponse, uri);
-                                targetDoc = transResponse.getEntity();
+                                // rewrite the target document
+                                writeTargetDoc(strat, localDocName, locMapping,
+                                    doc, transResponse.getEntity(),
+                                    transResponse.getResponseHeaders()
+                                        .getFirst(HttpHeaders.ETAG));
                             }
                         } else {
                             ClientUtility.checkResult(transResponse, uri);
-                            targetDoc = transResponse.getEntity();
-                        }
-                        if (targetDoc != null || createSkeletons) {
+                            TranslationsResource targetDoc =
+                                transResponse.getEntity();
+
+                            // Write the target document
                             writeTargetDoc(strat, localDocName, locMapping,
-                                    doc, targetDoc,
-                                    transResponse.getResponseHeaders()
-                                            .getFirst(HttpHeaders.ETAG));
+                                doc, targetDoc,
+                                transResponse.getResponseHeaders()
+                                    .getFirst(HttpHeaders.ETAG));
                         }
                     }
 
