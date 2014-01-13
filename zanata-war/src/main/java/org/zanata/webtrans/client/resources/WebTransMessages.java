@@ -465,7 +465,7 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Text contain in both search term and result")
     String tmPlainTextDesc();
 
-    @DefaultMessage("New replacement text ")
+    @DefaultMessage("New replacement text")
     String searchReplaceInsertTagDesc();
 
     @DefaultMessage("Old text to be replaced")
