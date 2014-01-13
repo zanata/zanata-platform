@@ -414,7 +414,7 @@
           <excludes>src/main/resources/org/zanata/webtrans/client/resources/*_default.properties</excludes>
         </configuration>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.3.0</version>
       </plugin>
 
       <plugin>
