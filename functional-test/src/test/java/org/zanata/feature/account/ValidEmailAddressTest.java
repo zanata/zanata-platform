@@ -29,6 +29,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.ValidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -41,6 +42,7 @@ import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
+@NoScreenshot
 public class ValidEmailAddressTest {
 
     @DataPoint

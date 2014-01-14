@@ -22,7 +22,10 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
     @Override
     public void testStarted(Description description) throws Exception {
         super.testStarted(description);
-        enableScreenshotForTest(description.getDisplayName());
+        if (description.getTestClass().getAnnotation(NoScreenshot.class) == null
+                && description.getAnnotation(NoScreenshot.class) == null) {
+            enableScreenshotForTest(description.getDisplayName());
+        }
     }
 
     @Override
@@ -44,7 +47,7 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
             throws Exception {
         WebDriverFactory.INSTANCE.updateListenerTestName(testDisplayName);
         String date = new Date().toString();
-        ScreenshotEnabledTestRunListener.log.debug("[TEST] {}:{}", testDisplayName, date);
+        log.debug("[TEST] {}:{}", testDisplayName, date);
     }
 
     private static void deleteScreenshots(String testDisplayName) {
@@ -52,7 +55,7 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
         try {
             FileUtils.deleteDirectory(testDir);
         } catch (IOException e) {
-            ScreenshotEnabledTestRunListener.log.warn("error deleting screenshot base directory: {}",
+            log.warn("error deleting screenshot base directory: {}",
                     e.getMessage());
         }
     }

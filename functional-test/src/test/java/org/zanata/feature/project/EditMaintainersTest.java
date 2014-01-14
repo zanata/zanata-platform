@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectMaintainersPage;
+import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -39,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class EditMaintainersTest {
 
     @Rule

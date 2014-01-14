@@ -30,6 +30,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -44,6 +45,7 @@ import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class CreateProjectTest {
 
     @ClassRule

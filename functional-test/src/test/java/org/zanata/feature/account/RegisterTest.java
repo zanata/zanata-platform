@@ -37,6 +37,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -45,6 +46,7 @@ import org.zanata.workflow.BasicWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class RegisterTest {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();

@@ -30,6 +30,7 @@ import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class ManageUsersFullTest {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();

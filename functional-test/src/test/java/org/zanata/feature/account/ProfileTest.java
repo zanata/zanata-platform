@@ -28,6 +28,7 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,12 +38,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class ProfileTest {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    private String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
+    private static final String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
 
     @Test
     public void verifyProfileData() {
