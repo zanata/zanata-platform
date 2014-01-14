@@ -308,9 +308,9 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
                             // Write the target document
                             writeTargetDoc(strat, localDocName, locMapping,
-                                doc, targetDoc,
-                                transResponse.getResponseHeaders()
-                                    .getFirst(HttpHeaders.ETAG));
+                                    doc, targetDoc,
+                                    transResponse.getResponseHeaders()
+                                            .getFirst(HttpHeaders.ETAG));
                         }
                     }
 
