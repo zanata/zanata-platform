@@ -327,20 +327,6 @@
               </filters>
             </configuration>
           </execution>
-          <!-- Default Seam tests exploded war -->
-          <execution>
-            <id>generate-seamtests-war</id>
-            <goals>
-              <goal>exploded</goal>
-            </goals>
-            <phase>pre-integration-test</phase>
-            <configuration>
-              <webappDirectory>${project.build.directory}/${project.build.finalName}-seamtests</webappDirectory>
-              <filters>
-                <filter>${war.config.dir}/h2.properties</filter>
-              </filters>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 

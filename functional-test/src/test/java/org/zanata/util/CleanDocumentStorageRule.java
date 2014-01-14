@@ -42,7 +42,10 @@ public class CleanDocumentStorageRule extends ExternalResource {
             env.put(Context.INITIAL_CONTEXT_FACTORY,
                     org.jboss.naming.remote.client.InitialContextFactory.class
                             .getName());
-            env.put(Context.PROVIDER_URL, "remote://localhost:4447");
+            long portOffset = Integer.parseInt(
+                PropertiesHolder.getProperty("cargo.port.offset", "0"));
+            long rmiPort = 4447 + portOffset;
+            env.put(Context.PROVIDER_URL, "remote://localhost:" + rmiPort);
             InitialContext remoteContext = null;
             try {
                 remoteContext = new InitialContext(env);

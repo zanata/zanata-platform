@@ -12,7 +12,7 @@
 
   <ui:define name="page_title">#{messages['jsf.ManageSearch']}</ui:define>
   <ui:define name="center_content">
-    <h:form>
+    <h:form id="form">
       <s:token allowMultiplePosts="true"/>
       <a4j:region>
 
@@ -22,7 +22,7 @@
             <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
               value="#{reindexAction.classes.toArray()}" var="clazz"
               render="actions">
-              <rich:column width="auto" styleClass="centered">
+              <rich:column width="auto" styleClass="centered" id="col">
                 <f:facet
                   name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
                 <h:selectBooleanCheckbox value="#{clazz.selectAll}">
@@ -61,7 +61,7 @@
                 <f:facet
                   name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
                 <f:facet name="footer">
-                  <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}">
+                  <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}" id="reindexAllChk">
                     <a4j:ajax event="click" render="actions" execute="@this"/>
                   </h:selectBooleanCheckbox>
                 </f:facet>

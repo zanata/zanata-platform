@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.RetryRule;
 import org.zanata.util.SampleProjectRule;
@@ -80,6 +81,14 @@ public class GlossaryDeleteTest {
         assertThat(clientPushWorkFlow.isPushSuccessful(result),
                 Matchers.is(true));
 
+        new LoginWorkFlow().signIn("admin", "admin");
+        // for some reason on jenkins sometimes the index is out of sync.
+        ManageSearchPage manageSearchPage =
+                new BasicWorkFlow().goToPage("admin/search", ManageSearchPage.class);
+        manageSearchPage.selectAllActionsFor("HGlossaryEntry");
+        manageSearchPage.selectAllActionsFor("HGlossaryTerm");
+        manageSearchPage.performSelectedActions();
+
         List<List<String>> hiGlossaryResult =
                 translate("hi").searchGlossary("hello")
                         .getGlossaryResultTable();
@@ -93,8 +102,6 @@ public class GlossaryDeleteTest {
     }
 
     public EditorPage translate(String locale) {
-
-        new LoginWorkFlow().signIn("admin", "admin");
         return new BasicWorkFlow().goToPage(
                 "webtrans/translate?project=about-fedora&iteration=master&localeId="
                         + locale + "&locale=en#view:doc;doc:About_Fedora",
