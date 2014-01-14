@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands.pull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.SortedSet;
@@ -59,7 +60,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() throws IOException {
         PullCommand.logOptions(log, getOpts());
         if (getOpts().isDryRun()) {
             log.info("DRY RUN: no permanent changes will be made");
@@ -201,11 +202,18 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                         }
                     }
                 }
+            } catch (IOException e) {
+                log.error(
+                        "Operation failed: "+e.getMessage()+"\n\n"
+                        + "    To retry from the last document, please add the option: {}\n",
+                        getOpts().buildFromDocArgument(qualifiedDocName));
+                throw new RuntimeException(e.getMessage(), e);
             } catch (RuntimeException e) {
                 log.error(
-                        "Operation failed.\n\n    To retry from the last document, please add the option: {}\n",
+                        "Operation failed: "+e.getMessage()+"\n\n"
+                        + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(qualifiedDocName));
-                throw e;
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
     }

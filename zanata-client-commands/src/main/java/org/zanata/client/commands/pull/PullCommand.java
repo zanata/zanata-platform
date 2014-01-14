@@ -320,7 +320,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
             } catch (RuntimeException e) {
                 String message =
-                        "Operation failed.\n\n"
+                        "Operation failed: "+e.getMessage()+"\n\n"
                                 + "    To retry from the last document, please set the following option(s):\n\n"
                                 + "        ";
                 if (getOpts().getEnableModules()) {
@@ -335,7 +335,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                 message +=
                         getOpts().buildFromDocArgument(qualifiedDocName)
                                 + "\n\n.";
-                throw new RuntimeException(message, e);
+                log.error(message);
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
 

@@ -412,7 +412,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 }
             } catch (Exception e) {
                 String message =
-                        "Operation failed.\n\n"
+                        "Operation failed: "+e.getMessage()+"\n\n"
                                 + "    To retry from the last document, please set the following option(s):\n\n"
                                 + "        ";
                 if (getOpts().getEnableModules()) {
@@ -428,7 +428,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                         getOpts().buildFromDocArgument(
                                 qualifiedDocName(localDocName))
                                 + "\n\n.";
-                throw new RuntimeException(message, e);
+                log.error(message);
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
         deleteSourceDocsFromServer(obsoleteDocs);
