@@ -32,7 +32,6 @@ import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.TakeScreenshotRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -47,10 +46,6 @@ public class ChangePasswordTest {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public TakeScreenshotRule screenshotRule =
-        new TakeScreenshotRule();
 
     @Before
     public void setUp() {

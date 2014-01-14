@@ -516,6 +516,12 @@
                 <!--index page-->
                 <include>**/FeatureTest.java</include>
               </includes>
+              <properties>
+                <property>
+                  <name>listener</name>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener</value>
+                </property>
+              </properties>
             </configuration>
           </plugin>
         </plugins>

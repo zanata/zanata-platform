@@ -29,7 +29,6 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectMaintainersPage;
 import org.zanata.util.SampleProjectRule;
-import org.zanata.util.TakeScreenshotRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.junit.Assume.assumeTrue;
@@ -44,9 +43,6 @@ public class EditMaintainersTest {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @Rule
-    public TakeScreenshotRule screenshotRule = new TakeScreenshotRule();
 
     @Test
     public void maintainerDetailsAreDisplayed() {

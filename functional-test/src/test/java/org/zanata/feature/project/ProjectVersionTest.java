@@ -30,7 +30,6 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.util.SampleProjectRule;
-import org.zanata.util.TakeScreenshotRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,10 +43,6 @@ public class ProjectVersionTest {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @Rule
-    public TakeScreenshotRule screenshotRule = new TakeScreenshotRule();
-
 
     @Test
     public void idFieldMustNotBeEmpty() {
