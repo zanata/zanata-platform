@@ -339,19 +339,25 @@
           <plugin>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-mysql-maven-plugin</artifactId>
+            <configuration>
+              <classifier>mysql.classifier</classifier>
+              <port>${mysql.port}</port>
+              <data>${project.build.directory}/mdb</data>
+            </configuration>
             <executions>
               <execution>
                 <id>mysql-test</id>
                 <goals>
                   <goal>classify</goal>
-                  <goal>start</goal>
                   <goal>stop</goal>
                 </goals>
-                <configuration>
-                  <classifier>mysql.classifier</classifier>
-                  <port>${mysql.port}</port>
-                  <data>${project.build.directory}/mdb</data>
-                </configuration>
+              </execution>
+              <execution>
+                <id>start-mysql</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <phase>package</phase>
               </execution>
             </executions>
           </plugin>
@@ -377,7 +383,7 @@
                 <goals>
                   <goal>execute</goal>
                 </goals>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <configuration>
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
                 </configuration>
@@ -589,6 +595,7 @@
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
                 <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
                 <echo>==========================================================</echo>
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dfunctional-test -Dmysql.port=13306</echo>
               </target>
             </configuration>
           </execution>
