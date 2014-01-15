@@ -581,7 +581,6 @@
               <target>
                 <echo>===== Properties that can be set for functional test =====</echo>
                 <echo>-Dfunctional-test : to activate functional test run</echo>
-                <echo>-Dcargo.wait : to ask cargo to start up then wait so that tests can be run manually</echo>
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war.</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>

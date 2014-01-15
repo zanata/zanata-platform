@@ -87,7 +87,7 @@ public class CreateVersionPage extends BasePage {
     }
 
     public CreateVersionPage showLocalesOverride() {
-        getDriver().findElement(By.xpath("//*[@title='overrideLocales']"))
+        getDriver().findElement(By.id("iterationForm:overrideLocales"))
                 .click();
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
