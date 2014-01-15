@@ -332,7 +332,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         net.sf.okapi.common.LocaleId localeId =
                 net.sf.okapi.common.LocaleId.fromString(locale);
         IFilterWriter writer = filter.createFilterWriter();
-        writer.setOptions(localeId, "UTF-8");
+        writer.setOptions(localeId, "ascii");
 
         if (requireFileOutput) {
             writeTranslatedFileWithFileOutput(output, originalFile,
