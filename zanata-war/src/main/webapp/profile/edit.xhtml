@@ -4,6 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define
@@ -20,7 +21,29 @@
         <h1 class="l--push-all-0">#{messages['jsf.EditProfile']}</h1>
 
         <h:form id="profile-form">
-          <ui:include src="../WEB-INF/layout/profile/edit_form.xhtml"/>
+          <div class="l--push-top-half form__item">
+            <h:outputLabel for="name">#{messages['jsf.Name']}
+              <s:span styleClass="txt--required">*</s:span>
+            </h:outputLabel>
+            <s:decorate id="nameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+              <h:inputText id="name" value="#{profileAction.name}" required="true"
+                maxlength="80">
+                <a4j:ajax event="blur" render="nameField" execute="@this"/>
+              </h:inputText>
+            </s:decorate>
+          </div>
+
+          <div class="l--push-top-half form__item">
+            <h:outputLabel for="email">
+              #{messages['jsf.Email']}
+            </h:outputLabel>
+            <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
+              <h:inputText id="email" required="false"
+                value="#{profileAction.email}">
+                <a4j:ajax event="blur" render="emailField" execute="@this"/>
+              </h:inputText>
+            </s:decorate>
+          </div>
 
           <div class="l--push-top-1">
             <h:commandButton id="user-create-new"
