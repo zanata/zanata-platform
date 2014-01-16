@@ -36,9 +36,10 @@
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 
-    <!--target zanata instance-->
-    <zanata.target.version>${project.parent.version}</zanata.target.version>
-    <zanata.target.war>${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war</zanata.target.war>
+    <!-- target zanata instance will be built by war overlay -->
+    <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
+    <!-- zanata-war package phase will copy the war to this location. Jenkins will override this -->
+    <zanata.war.location>${java.io.tmpdir}/zanata-war/zanata-test.war</zanata.war.location>
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -129,10 +130,12 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
@@ -168,8 +171,7 @@
     <dependency>
       <groupId>com.github.huangp</groupId>
       <artifactId>entityunit</artifactId>
-      <version>0.2</version>
-      <scope>test</scope>
+      <version>0.3</version>
     </dependency>
 
     <!-- to be able to create entities in functional test -->
@@ -179,10 +181,18 @@
       <!--<scope>test</scope>-->
     </dependency>
     <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam</artifactId>
       <type>ejb</type>
-      <scope>test</scope>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.testng</groupId>
@@ -193,7 +203,7 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>org.jboss.resteasy</groupId>
@@ -228,7 +238,7 @@
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
@@ -281,6 +291,16 @@
       <artifactId>jsr305</artifactId>
     </dependency>
 
+    <!-- the war itself. See zanata-war pom.xml dependency:copy -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>zanata-war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+      <scope>system</scope>
+      <systemPath>${zanata.war.location}</systemPath>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -288,7 +308,7 @@
       <id>run-functional-test</id>
       <activation>
         <file>
-          <exists>${zanata.target.war}</exists>
+          <exists>${zanata.war.location}</exists>
         </file>
         <property>
           <name>functional-test</name>
@@ -296,6 +316,28 @@
       </activation>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+              <warName>${zanata.test.war.name}</warName>
+              <overlays>
+                <overlay>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>zanata-war</artifactId>
+                </overlay>
+                <overlay>
+                  <!-- empty groupId/artifactId represents the current build -->
+                </overlay>
+              </overlays>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>war</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
@@ -422,10 +464,8 @@
 
               <deployables>
                 <deployable>
-                  <!--<groupId>${project.groupId}</groupId>-->
-                  <!--<artifactId>zanata-war</artifactId>-->
                   <type>war</type>
-                  <location>${zanata.target.war}</location>
+                  <location>${project.build.directory}/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
                   <pingTimeout>180000</pingTimeout>
                   <properties>
@@ -582,8 +622,8 @@
                 <echo>===== Properties that can be set for functional test =====</echo>
                 <echo>-Dfunctional-test : to activate functional test run</echo>
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
-                <echo>-Dzanata.target.war=location of the war. Default is: ${basedir}/../zanata-war/target/zanata-${zanata.target.version}.war.</echo>
-                <echo>-Dzanata.instance.url=http://${cargo.host}:8080/${context.path}</echo>
+                <echo>-Dzanata.war.location=location of the war. Default is: ${java.io.tmpdir}/zanata-war/zanata-test.war</echo>
+                <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
@@ -613,6 +653,7 @@
             <usedDependency>org.javassist:javassist</usedDependency>
             <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
+            <usedDependency>org.zanata:zanata-war</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

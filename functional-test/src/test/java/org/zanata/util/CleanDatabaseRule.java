@@ -1,6 +1,9 @@
 package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
+import org.zanata.rest.SampleProjectResource;
+
+import static org.zanata.util.SampleProjectClient.checkAndReleaseConnection;
 
 /**
  * @author Patrick Huang <a
@@ -8,18 +11,15 @@ import org.junit.rules.ExternalResource;
  */
 public class CleanDatabaseRule extends ExternalResource {
 
-    private SampleProjectProfile profile;
+    private final SampleProjectResource resource = SampleProjectClient.RESOURCE;
 
     @Override
     protected void before() throws Throwable {
-        super.before();
-        profile = new SampleProjectProfile();
-        profile.deleteExceptEssentialData();
+        checkAndReleaseConnection(resource.deleteExceptEssentialData());
     }
 
     @Override
     protected void after() {
-        super.after();
-        profile.deleteExceptEssentialData();
+        checkAndReleaseConnection(resource.deleteExceptEssentialData());
     }
 }
