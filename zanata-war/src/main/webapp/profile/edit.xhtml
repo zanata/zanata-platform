@@ -22,6 +22,10 @@
 
         <h:form id="profile-form">
           <div class="l--push-top-half form__item">
+            <h:outputLabel for="name">#{messages['jsf.Username']}: </h:outputLabel>
+            <h:outputText id="username" value="#{profileAction.username}" />
+          </div>
+          <div class="l--push-top-half form__item">
             <h:outputLabel for="name">#{messages['jsf.Name']}
               <s:span styleClass="txt--required">*</s:span>
             </h:outputLabel>
