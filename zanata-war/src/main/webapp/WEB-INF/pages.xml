@@ -1119,6 +1119,12 @@
     <http-error error-code="503" />
   </exception>
 
+  <exception class="javax.validation.ConstraintViolationException" log-level="debug">
+    <redirect view-id="/error.xhtml">
+      <message severity="warn">#{messages['jsf.Error']} #{org.jboss.seam.handledException.message}</message>
+    </redirect>
+  </exception>
+
   <exception class="org.jboss.seam.web.FileUploadException" log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="error">
