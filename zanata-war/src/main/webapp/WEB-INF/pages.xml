@@ -461,10 +461,10 @@
 
   <page view-id="/profile/create_user.xhtml">
     <restrict>#{identity.preAuthenticated}</restrict>
-    <navigation from-action="#{profileAction.createUser}">
+    <navigation from-action="#{newProfileAction.createUser}">
       <redirect view-id="/home.xhtml" />
     </navigation>
-    <navigation from-action="#{profileAction.cancel}">
+    <navigation from-action="#{newProfileAction.cancel}">
       <redirect view-id="/account/register.xhtml" />
     </navigation>
   </page>
