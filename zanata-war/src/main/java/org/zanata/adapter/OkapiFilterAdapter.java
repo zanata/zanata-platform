@@ -140,7 +140,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public Resource parseDocumentFile(URI documentContent,
-            LocaleId sourceLocale, Optional<String> params)
+            LocaleId sourceLocale, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
         // null documentContent is handled by RawDocument constructor
         if (sourceLocale == null) {
@@ -158,7 +158,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         RawDocument rawDoc =
                 new RawDocument(documentContent, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
-        updateParams(params);
+        updateParams(filterParams);
         try {
             filter.open(rawDoc);
             String subDocName = "";
@@ -267,7 +267,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public TranslationsResource parseTranslationFile(URI fileUri,
-            String localeId, Optional<String> params)
+            String localeId, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
         if (localeId == null || localeId.isEmpty()) {
             throw new IllegalArgumentException(
@@ -277,7 +277,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         RawDocument rawDoc =
                 new RawDocument(fileUri, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
-        return parseTranslationFile(rawDoc, params);
+        return parseTranslationFile(rawDoc, filterParams);
     }
 
     private TranslationsResource parseTranslationFile(RawDocument rawDoc,
@@ -332,7 +332,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
         net.sf.okapi.common.LocaleId localeId =
                 net.sf.okapi.common.LocaleId.fromString(locale);
         IFilterWriter writer = filter.createFilterWriter();
-        writer.setOptions(localeId, "ascii");
+        writer.setOptions(localeId, getOutputEncoding());
 
         if (requireFileOutput) {
             writeTranslatedFileWithFileOutput(output, originalFile,
@@ -342,6 +342,10 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             generateTranslatedFile(originalFile, translations, localeId,
                     writer, params);
         }
+    }
+
+    protected String getOutputEncoding() {
+        return "UTF-8";
     }
 
     private void writeTranslatedFileWithFileOutput(OutputStream output,

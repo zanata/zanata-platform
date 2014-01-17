@@ -238,6 +238,7 @@ elements:
       value: [type, NOT_EQUALS, [file, hidden, image, Password]] 
       accesskey: [type, NOT_EQUALS, [file, hidden, image, Password]] 
       title: [type, NOT_EQUALS, [file, hidden, image, Password]]
+      placeholder: null
 
   ins:
     ruleTypes: [INLINE]

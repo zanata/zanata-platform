@@ -31,12 +31,17 @@ import com.google.common.io.Resources;
 
 /**
  * Adapter to handle HTML documents.
+ * This adapter outputs HTML files in ASCII encoding by default to force the use
+ * of CERs.
+ * It uses the Okapi's {@link net.sf.okapi.filters.html.HtmlFilter} class, and
+ * specifically its escapeCharacters configuration parameter to make sure all
+ * HTML entities get encoded.
  */
 public class HTMLAdapter extends OkapiFilterAdapter {
 
-    private static final String config = loadConfig();
+    private static final String defaultConfig = loadDefaultConfig();
 
-    private static String loadConfig() {
+    private static String loadDefaultConfig() {
         URL configURL =
                 HTMLAdapter.class
                         .getResource("HTMLAdapterDefaultConfiguration.yml");
@@ -44,7 +49,7 @@ public class HTMLAdapter extends OkapiFilterAdapter {
             return Resources.toString(configURL, Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Failed to load config for HTML adapter.", e);
+                    "Failed to load default config for HTML adapter.", e);
         }
     }
 
@@ -57,10 +62,16 @@ public class HTMLAdapter extends OkapiFilterAdapter {
     }
 
     @Override
+    protected String getOutputEncoding() {
+        // Using ASCII encoding for HTML to force the output of CERs
+        return "ascii";
+    }
+
+    @Override
     protected void updateParamsWithDefaults(IParameters params) {
         // IParameters has setter methods, but they break the contract in the
         // implementation for HtmlFilter and don't do anything. Have to set all
         // configuration at once rather than change individual settings.
-        params.fromString(config);
+        params.fromString(defaultConfig);
     }
 }
