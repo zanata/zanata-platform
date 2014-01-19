@@ -31,6 +31,7 @@ import java.util.Map;
 
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
+import net.sf.okapi.common.IParameters;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
@@ -62,7 +63,7 @@ import com.google.common.base.Optional;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-public class GenericOkapiFilterAdapter implements FileFormatAdapter {
+public class OkapiFilterAdapter implements FileFormatAdapter {
     private Logger log;
 
     /**
@@ -91,6 +92,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
     private final IFilter filter;
     private final IdSource idSource;
     private boolean requireFileOutput;
+    private boolean separateNonTranslatable;
 
     /**
      * Create an adapter that will use the specified {@link IdSource} as
@@ -103,7 +105,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
      *            source should only produce duplicate ids when source content
      *            is identical.
      */
-    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource) {
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource) {
         this(filter, idSource, false);
     }
 
@@ -121,18 +123,24 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
      *            true if filter requires a file on disk rather than just a
      *            stream. Causes a temp file to be created when parsing.
      */
-    public GenericOkapiFilterAdapter(IFilter filter, IdSource idSource,
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource,
             boolean requireFileOutput) {
+        this(filter, idSource, requireFileOutput, false);
+    }
+
+    public OkapiFilterAdapter(IFilter filter, IdSource idSource,
+            boolean requireFileOutput, boolean separateNonTranslatable) {
         this.filter = filter;
         this.idSource = idSource;
         this.requireFileOutput = requireFileOutput;
+        this.separateNonTranslatable = separateNonTranslatable;
 
-        log = LoggerFactory.getLogger(GenericOkapiFilterAdapter.class);
+        log = LoggerFactory.getLogger(OkapiFilterAdapter.class);
     }
 
     @Override
     public Resource parseDocumentFile(URI documentContent,
-            LocaleId sourceLocale, Optional<String> params)
+            LocaleId sourceLocale, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
         // null documentContent is handled by RawDocument constructor
         if (sourceLocale == null) {
@@ -150,7 +158,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
         RawDocument rawDoc =
                 new RawDocument(documentContent, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
-        updateParams(params);
+        updateParams(filterParams);
         try {
             filter.open(rawDoc);
             String subDocName = "";
@@ -162,17 +170,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    if (tu.isTranslatable()) {
-                        TextFlow tf =
-                                new TextFlow(getIdFor(tu, subDocName),
-                                        sourceLocale);
-                        tf.setPlural(false);
-                        tf.setContents(GenericContent
-                                .fromFragmentToLetterCoded(tu.getSource()
-                                        .getFirstContent(), true));
-                        if (shouldAdd(tf.getId(), tf, addedResources)) {
-                            addedResources.put(tf.getId(), tf);
-                            resources.add(tf);
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+                        String content = getTranslatableText(tu);
+                        if (!content.isEmpty()) {
+                            TextFlow tf =
+                                    new TextFlow(getIdFor(tu, content,
+                                            subDocName), sourceLocale);
+                            tf.setPlural(false);
+                            tf.setContents(content);
+                            if (shouldAdd(tf.getId(), tf, addedResources)) {
+                                addedResources.put(tf.getId(), tf);
+                                resources.add(tf);
+                            }
                         }
                     }
                 }
@@ -183,6 +192,39 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
             filter.close();
         }
         return document;
+    }
+
+    private String getTranslatableText(TextUnit tu) {
+        String letterCodedText =
+                GenericContent.fromFragmentToLetterCoded(tu.getSource()
+                        .getFirstContent(), true);
+        if (separateNonTranslatable) {
+            return getPartitionedText(letterCodedText).get("str");
+        } else {
+            return letterCodedText;
+        }
+    }
+
+    /**
+     * Separates translatable text from surrounding non-translatable text.
+     *
+     * @param tu
+     * @return
+     */
+    private Map<String, String> getPartitionedText(TextUnit tu) {
+        return TranslatableSeparator.separate(GenericContent
+                .fromFragmentToLetterCoded(tu.getSource().getFirstContent(),
+                        true));
+    }
+
+    /**
+     * Separates translatable text from surrounding non-translatable text.
+     *
+     * @param tu
+     * @return
+     */
+    private Map<String, String> getPartitionedText(String letterCodedText) {
+        return TranslatableSeparator.separate(letterCodedText);
     }
 
     /**
@@ -225,7 +267,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public TranslationsResource parseTranslationFile(URI fileUri,
-            String localeId, Optional<String> params)
+            String localeId, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
         if (localeId == null || localeId.isEmpty()) {
             throw new IllegalArgumentException(
@@ -235,7 +277,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
         RawDocument rawDoc =
                 new RawDocument(fileUri, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
-        return parseTranslationFile(rawDoc, params);
+        return parseTranslationFile(rawDoc, filterParams);
     }
 
     private TranslationsResource parseTranslationFile(RawDocument rawDoc,
@@ -257,16 +299,18 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    if (tu.isTranslatable()) {
-                        TextFlowTarget tft =
-                                new TextFlowTarget(getIdFor(tu, subDocName));
-                        tft.setContents(GenericContent
-                                .fromFragmentToLetterCoded(tu.getSource()
-                                        .getFirstContent(), true));
-                        tft.setState(ContentState.NeedReview);
-                        if (shouldAdd(tft.getResId(), tft, addedResources)) {
-                            addedResources.put(tft.getResId(), tft);
-                            translations.add(tft);
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+                        String content = getTranslatableText(tu);
+                        if (!content.isEmpty()) {
+                            TextFlowTarget tft =
+                                    new TextFlowTarget(getIdFor(tu, content, subDocName));
+                            tft.setContents(content);
+                            tft.setState(ContentState.NeedReview);
+                            if (shouldAdd(tft.getResId(), tft, addedResources)) {
+                                addedResources.put(tft.getResId(), tft);
+                                translations.add(tft);
+                            }
+
                         }
                     }
                 }
@@ -288,7 +332,7 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
         net.sf.okapi.common.LocaleId localeId =
                 net.sf.okapi.common.LocaleId.fromString(locale);
         IFilterWriter writer = filter.createFilterWriter();
-        writer.setOptions(localeId, "UTF-8");
+        writer.setOptions(localeId, getOutputEncoding());
 
         if (requireFileOutput) {
             writeTranslatedFileWithFileOutput(output, originalFile,
@@ -298,6 +342,10 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
             generateTranslatedFile(originalFile, translations, localeId,
                     writer, params);
         }
+    }
+
+    protected String getOutputEncoding() {
+        return "UTF-8";
     }
 
     private void writeTranslatedFileWithFileOutput(OutputStream output,
@@ -358,14 +406,28 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
                     subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
-                    TextFlowTarget tft =
-                            translations.get(getIdFor(tu, subDocName));
-                    if (tft != null) {
-                        tu.setTargetContent(localeId, GenericContent
-                                .fromLetterCodedToFragment(tft.getContents()
-                                        .get(0), tu.getSource()
-                                        .getFirstContent().clone(), true, true));
+                    if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
+                        String translatable = getTranslatableText(tu);
+
+                        if (!translatable.isEmpty()) {
+                            TextFlowTarget tft =
+                                    translations.get(getIdFor(tu,
+                                            translatable, subDocName));
+
+                            if (tft != null) {
+                                String translated = tft.getContents().get(0);
+
+                                translated =
+                                        getFullTranslationText(tu, translated);
+                                tu.setTargetContent(localeId, GenericContent
+                                        .fromLetterCodedToFragment(
+                                                translated, tu.getSource()
+                                                .getFirstContent()
+                                                .clone(), true, true));
+                            }
+                        }
                     }
+
                 }
                 writer.handleEvent(event);
             }
@@ -378,6 +440,16 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
         }
     }
 
+    private String getFullTranslationText(TextUnit tu, String translated) {
+        if (separateNonTranslatable) {
+            Map<String, String> partitionedContent = getPartitionedText(tu);
+            return partitionedContent.get("pre") + translated
+                    + partitionedContent.get("suf");
+        } else {
+            return translated;
+        }
+    }
+
     /**
      * Return the id for a TextUnit based on id assignment rules. This method
      * can be overridden for more complex id assignment.
@@ -387,9 +459,13 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
      * @return the id for the given tu
      */
     protected String getIdFor(TextUnit tu, String subDocName) {
+        return getIdFor(tu, tu.getSource().toString(), subDocName);
+    }
+
+    protected String getIdFor(TextUnit tu, String content, String subDocName) {
         switch (idSource) {
         case contentHash:
-            return HashUtil.generateHash(tu.getSource().toString());
+            return HashUtil.generateHash(content);
         case textUnitName:
             return tu.getName();
         case subDocNameAndTextUnitId:
@@ -402,9 +478,15 @@ public class GenericOkapiFilterAdapter implements FileFormatAdapter {
 
     private void updateParams(Optional<String> params) {
         filter.getParameters().reset();
+        updateParamsWithDefaults(filter.getParameters());
         if (params.isPresent()) {
             filter.getParameters().fromString(params.get());
         }
+    }
+
+    protected void updateParamsWithDefaults(IParameters params) {
+        // default empty implementation is provided so that subclasses are not
+        // forced to override when defaults are not needed.
     }
 
 }

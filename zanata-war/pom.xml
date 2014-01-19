@@ -1304,6 +1304,10 @@
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
+      <artifactId>okapi-filter-html</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-idml</artifactId>
     </dependency>
     <dependency>
