@@ -29,6 +29,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
+@NoScreenshot
 public class UsernameValidationTest {
     @DataPoint
     public static String INVALID_PIPE = "user|name";

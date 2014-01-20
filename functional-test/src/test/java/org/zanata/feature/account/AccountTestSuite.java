@@ -22,6 +22,7 @@ package org.zanata.feature.account;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.zanata.util.NoScreenshot;
 
 /**
  * @author Damian Jansen <a

@@ -52,17 +52,17 @@ public class CreateVersionPage extends BasePage {
         super(driver);
     }
 
-    public CreateVersionPage inputVersionId(String versionId) {
+    public CreateVersionPage inputVersionId(final String versionId) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 getVersionIdField().clear();
-                return getVersionIdField().getAttribute("value").equals("");
+                new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
+                getVersionIdField().sendKeys(versionId);
+                defocus();
+                return true;
             }
         });
-        new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
-        getVersionIdField().sendKeys(versionId);
-        defocus();
         return new CreateVersionPage(getDriver());
     }
 
