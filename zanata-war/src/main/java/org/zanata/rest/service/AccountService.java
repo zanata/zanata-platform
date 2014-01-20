@@ -19,6 +19,7 @@ import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -34,6 +35,7 @@ import org.zanata.rest.dto.Account;
 @Path(AccountResource.SERVICE_PATH)
 @Slf4j
 @Transactional
+@Restrict("#{s:hasRole('admin')}")
 public class AccountService implements AccountResource {
     /** User name that identifies an account. */
     @PathParam("username")

@@ -47,8 +47,7 @@ public class AccountCompatibilityITCase extends RestTest {
     @RunAsClient
     public void getAccountXml() throws Exception {
         IAccountResource accountClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
                         IAccountResource.class, "/accounts/u/demo");
         ClientResponse<Account> accountResponse = accountClient.get();
         Account account = accountResponse.getEntity();
@@ -62,6 +61,21 @@ public class AccountCompatibilityITCase extends RestTest {
         assertThat(account.getRoles().size(), is(1));
         // assertThat(account.getTribes().size(), is(1)); // Language teams are
         // not being returned
+    }
+
+    @Test
+    @RunAsClient
+    public void getAccountXmlUnauthorized() throws Exception {
+        IAccountResource accountClient =
+                super.createProxy(
+                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IAccountResource.class, "/accounts/u/demo");
+        ClientResponse<Account> accountResponse = accountClient.get();
+        accountResponse.releaseConnection();
+
+        // Not authorized for non-admins
+        assertThat(accountResponse.getResponseStatus().getStatusCode(),
+                is(Status.UNAUTHORIZED.getStatusCode()));
     }
 
     @Test
@@ -99,6 +113,24 @@ public class AccountCompatibilityITCase extends RestTest {
         assertThat(a2.getRoles().size(), is(0));
         // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
         // being returned
+    }
+
+    @Test
+    @RunAsClient
+    public void putAccountXmlUnauthorized() throws Exception {
+        // New Account
+        Account a =
+                new Account("aacount2@localhost.com", "Sample Account",
+                        "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
+
+        IAccountResource accountClient =
+                super.createProxy(createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                        IAccountResource.class, "/accounts/u/sampleaccount");
+        ClientResponse putResponse = accountClient.put(a);
+
+        // Assert initial put
+        assertThat(putResponse.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
+        putResponse.releaseConnection();
     }
 
 }

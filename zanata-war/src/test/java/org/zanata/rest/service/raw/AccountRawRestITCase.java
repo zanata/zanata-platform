@@ -73,7 +73,8 @@ public class AccountRawRestITCase extends RestTest {
     @Test
     @RunAsClient
     public void xmlGet() throws Exception {
-        new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET") {
+        new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -100,7 +101,8 @@ public class AccountRawRestITCase extends RestTest {
     @Test
     @RunAsClient
     public void jsonGet() throws Exception {
-        new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET") {
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
