@@ -90,8 +90,9 @@
                   </s:fragment>
                   <s:fragment
                     rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
-                    <s:link view="#{applicationConfiguration.registerPath}"
-                      value="#{messages['jsf.Signup']}" />
+                    <h:outputLink value="#{applicationConfiguration.registerPath}">
+                      <h:outputText value="#{messages['jsf.Signup']}"/>
+                    </h:outputLink>
                   </s:fragment>
                 </div>
               </h:form>
