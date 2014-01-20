@@ -14,8 +14,11 @@
 
   <hooks>
     <hook command="push">
-      <before>mvn -Dgwt-i18n groovy:execute -Dgroovy.script=CopyGWTDefaultProperties.groovy</before>
-      <after>mvn -Dgwt-i18n groovy:execute -Dgroovy.script=RemoveJavaDefaultProperties.groovy</after>
+      <before>mvn -Dgwt-i18n process-test-resources</before>
+    </hook>
+    <hook command="pull">
+      <before>mvn -Dgwt-i18n process-test-resources</before>
+      <after>mvn -Dgwt-i18n groovy:execute -Dgroovy.script=FillInTranslationGap.groovy</after>
     </hook>
   </hooks>
 

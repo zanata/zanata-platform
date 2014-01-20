@@ -1,19 +1,17 @@
 import com.google.common.io.Files
 
-// This script will be executed by gmaven plugin.
-// Although gmaven supports inline scripting in pom, it will escape / in the
-// regex and the script therefore won't work.
-log.info "===== Synchronize GWT generated properties files ====="
+// This script will rename GWT generated properties for Zanata to use.
+log.info "===== Preparing GWT generated properties files ====="
 
-def baseDir = new File(project.build.directory + "/gwt-extra/webtrans")
+def gwtGenDir = new File(project.build.directory + "/gwt-extra/webtrans")
 
-assert baseDir.isDirectory()
+assert gwtGenDir.isDirectory()
 
 def nameFilter = { dir, name ->
     name.endsWith(".properties")
 } as FilenameFilter
 
-def properties = baseDir.listFiles(nameFilter)
+def properties = gwtGenDir.listFiles(nameFilter)
 
 
 if (!properties) {
@@ -23,34 +21,38 @@ if (!properties) {
 // scrip off the file name part to get package name
 def packageName = properties[0].name.replaceAll(/\.\w+\.properties/, "")
 def packagePath = packageName.replaceAll(/\./, "/")
-def destDir = new File(pom.basedir.absolutePath + "/src/main/resources/$packagePath")
-destDir.mkdirs()
+
+def resourceDir = new File("$gwtGenDir.absolutePath/$packagePath")
+resourceDir.mkdirs()
 
 int sourceCount = 0
 int targetCount = 0
 
 properties.each {
-    def fileName = (it.name - "$packageName.")
-    def destFile = new File(destDir, fileName)
     if (it.name.endsWith("_default.properties")) {
         log.debug "   * found source: $it.name"
-        // we always copy over source file
-        log.debug "     copy over to: $destFile"
-        Files.copy(it, destFile)
+        // change the name of the file
+        def fileName = (it.name - "$packageName.").replace("_default", "")
+        def destFile = new File(resourceDir, fileName)
+        log.info "     moved to: $destFile"
+        Files.move(it, destFile)
         sourceCount++
     } else {
         log.debug "   * found target: $it.name"
+        def fileName = (it.name - "$packageName.")
+        def destFile = new File(resourceDir, fileName)
         // we ALWAYS copy generated target skeleton to make sure target is in sync if source has changed.
-        // It rely on zanata's merge auto feature.
-        // Merge type import will override everything!!
-        log.debug "     copy over to :$destFile"
-        Files.copy(it, destFile);
+        // Also to make sure enabled locale (in Application.gwt.xml) has something to display if translation is not yet available.
+        // Later we will base on pulled translation to repopulate the file.
+        // see FillInTranslationGap.groovy
+        log.info "     moved to :$destFile"
+        Files.move(it, destFile);
         targetCount++
     }
 }
 
-log.info "Copied $sourceCount source(s) and $targetCount target(s) in $baseDir"
-log.info "===== Synchronize GWT generated properties files ====="
+log.info "Generated $sourceCount source(s) and $targetCount target(s) in $resourceDir"
+log.info "===== Prepared GWT generated properties files ====="
 
 // below procedure is to fix GWT's bizarre behavior.
 // if we have properties files on classpath (i.e. compile with extra already),
@@ -65,16 +67,11 @@ log.info "===== Synchronize GWT generated properties files ====="
 // We can either add extra plural count in the [] i.e. turn [one] to [one|one]. But Zanata doesn't support mismatch source and target.
 // So I removing those extra plural entries which allows GWT to compile again (with a warning).
 // see https://github.com/zanata/zanata-server/wiki/Localize-Zanata for more detail.
-File pomBase = pom.basedir
-baseDir = new File(pomBase.absolutePath + "/src/main/resources/org/zanata/webtrans/client/resources/")
-
-assert baseDir.isDirectory()
 
 def filter = {
-    // we won't touch source properties
-    it.name.endsWith(".properties") && !it.name.endsWith("_default.properties")
+    it.name.endsWith(".properties")
 } as FileFilter
-properties = baseDir.listFiles(filter)
+properties = resourceDir.listFiles(filter)
 
 def ln = System.getProperty("line.separator")
 

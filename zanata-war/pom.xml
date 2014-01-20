@@ -408,10 +408,10 @@
         <!-- server pom has same plugin definition with different includes -->
         <groupId>org.zanata</groupId>
         <configuration>
-          <srcDir>.</srcDir>
-          <transDir>.</transDir>
-          <includes>src/main/resources/org/zanata/webtrans/client/resources/*.properties</includes>
-          <excludes>src/main/resources/org/zanata/webtrans/client/resources/*_default.properties</excludes>
+          <srcDir>${project.build.directory}/gwt-extra/webtrans</srcDir>
+          <transDir>src/main/resources/zanata-editor</transDir>
+          <includes>**/*.properties</includes>
+          <excludes>**/*_default.properties</excludes>
         </configuration>
         <artifactId>zanata-maven-plugin</artifactId>
         <version>3.3.0</version>
@@ -1079,7 +1079,7 @@
                       <artifactId>guava</artifactId>
                     </element>
                   </classpath>
-                  <source>${pom.basedir}/src/etc/SyncGWTI18NProperties.groovy</source>
+                  <source>${pom.basedir}/src/etc/PrepareGWTI18NProperties.groovy</source>
                 </configuration>
               </execution>
             </executions>
