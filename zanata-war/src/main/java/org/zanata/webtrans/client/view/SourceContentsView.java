@@ -129,6 +129,7 @@ public class SourceContentsView extends Composite implements
         for (String source : value.getSources()) {
             SourcePanel sourcePanel =
                     new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
+            sourcePanel.ensureDebugId(value.getRowIndex() + "-source-panel-" + rowIndex);
             sourcePanel.setValue(source, value.getSourceComment(),
                     value.isPlural());
             sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);

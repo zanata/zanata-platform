@@ -121,6 +121,8 @@
             <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
             <!-- used for arquillian tests -->
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
+            <!-- used for gwt super devmode -->
+            <usedDependency>org.json:json</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
@@ -1095,6 +1097,13 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20090211</version>
       <scope>provided</scope>
     </dependency>
 

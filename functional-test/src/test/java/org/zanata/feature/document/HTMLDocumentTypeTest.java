@@ -53,12 +53,11 @@ public class HTMLDocumentTypeTest {
             new CleanDocumentStorageRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
-    private String documentStorageDirectory;
 
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        documentStorageDirectory =
+        String documentStorageDirectory =
                 CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator);
@@ -92,15 +91,11 @@ public class HTMLDocumentTypeTest {
                 .translate("pl").clickDocumentLink("", testFileName);
 
         assertThat("The first translation source is correct",
-                editorPage.getTranslationSourceTexts().get(0),
+                editorPage.getTranslationSourceAtRowIndex(0),
                 Matchers.equalTo("Test content"));
-        assertThat("The second translation source content is correct",
-                editorPage.getTranslationSourceContents().get(1),
-                Matchers.equalTo("This<span class=\"cm-space\"> </span>is"+
-                        "<span class=\"cm-space\"> </span><span class=\""+
-                        "cm-tag\">&lt;g2&gt;</span>Bold<span class=\"cm-tag\""+
-                        ">&lt;/g2&gt;</span><span class=\"cm-space\"> "+
-                        "</span>text"));
+        assertThat("The second translation source is correct",
+                editorPage.getTranslationSourceAtRowIndex(1),
+                Matchers.equalTo("This is <g2>Bold</g2> text"));
 
 
     }

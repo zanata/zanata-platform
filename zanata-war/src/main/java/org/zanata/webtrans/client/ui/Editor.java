@@ -121,6 +121,11 @@ public class Editor extends Composite implements ToggleEditor {
     }
 
     @Override
+    protected void onEnsureDebugId(String baseID) {
+        textArea.ensureDebugId(baseID+ "target-" + index);
+    }
+
+    @Override
     public void setEnableSpellCheck(Boolean enabled) {
         targetWrapper.getElement().setAttribute("contenteditable",
                 enabled.toString());
