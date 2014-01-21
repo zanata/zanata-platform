@@ -4,12 +4,14 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -70,4 +72,53 @@ public class EditorPage extends BasePage {
                 });
     }
 
+    /**
+     * Get a list of all source strings on the current page.
+     * These strings do not contain the tags, only the visible text.
+     * @return String list of source translation targets
+     */
+    public List<String> getTranslationSourceTexts() {
+        return waitForTenSec().until(
+                new Function<WebDriver, List<String>>() {
+                    @Override
+                    public List<String> apply(WebDriver input) {
+                        List<String> texts = new ArrayList<String>();
+                        List<WebElement> sourceElements = getDriver()
+                            .findElements(By.className("sourceTable"));
+                        for (WebElement element : sourceElements) {
+                            texts.add(element
+                                    .findElement(By.tagName("pre")).getText());
+                        }
+                        return texts;
+                    }
+                });
+    }
+
+    /**
+     * Get a list of all source strings on the current page.
+     * These strings contain the tags in ASCII.
+     * @return String list of source translation targets HTML content
+     */
+    public List<String> getTranslationSourceContents() {
+        return waitForTenSec().until(
+                new Function<WebDriver, List<String>>() {
+                    @Override
+                    public List<String> apply(WebDriver input) {
+                        List<String> texts = new ArrayList<String>();
+                        List<WebElement> sourceElements = getDriver()
+                            .findElements(By.className("sourceTable"));
+                        for (WebElement element : sourceElements) {
+                            WebElement textElement = element
+                                .findElement(By.tagName("pre"));
+                            String elementContent =
+                                    (String)((JavascriptExecutor)getDriver())
+                                        .executeScript(
+                                            "return arguments[0].innerHTML;",
+                                                textElement);
+                            texts.add(elementContent);
+                        }
+                        return texts;
+                    }
+                });
+    }
 }
