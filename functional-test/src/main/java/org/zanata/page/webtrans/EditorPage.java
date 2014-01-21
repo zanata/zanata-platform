@@ -1,19 +1,18 @@
 package org.zanata.page.webtrans;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
@@ -21,6 +20,14 @@ import java.util.List;
  */
 @Slf4j
 public class EditorPage extends BasePage {
+    // first %d is row index, second %d is plural form index (i.e. 0 or 1)
+    private static final String SOURCE_ID_FMT =
+            "gwt-debug-%d-source-panel-%d-container";
+    private static final int SINGULAR = 0;
+
+    // first %d is row index, second %d is plural form index (i.e. 0-6)
+    private static final String TARGET_ID_FMT = "gwt-debug-%d-target-%d";
+
     private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
     private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
 
@@ -73,52 +80,44 @@ public class EditorPage extends BasePage {
     }
 
     /**
-     * Get a list of all source strings on the current page.
-     * These strings do not contain the tags, only the visible text.
-     * @return String list of source translation targets
+     * Get content of a text flow source at given row.
+     * This assumes the text flow has singular form (i.e. no plural).
+     * If a test requires to access plural content, this can be changed.
+     *
+     * @param rowIndex
+     *            row index
+     * @return content of the source
      */
-    public List<String> getTranslationSourceTexts() {
-        return waitForTenSec().until(
-                new Function<WebDriver, List<String>>() {
-                    @Override
-                    public List<String> apply(WebDriver input) {
-                        List<String> texts = new ArrayList<String>();
-                        List<WebElement> sourceElements = getDriver()
-                            .findElements(By.className("sourceTable"));
-                        for (WebElement element : sourceElements) {
-                            texts.add(element
-                                    .findElement(By.tagName("pre")).getText());
-                        }
-                        return texts;
-                    }
-                });
+    public String getTranslationSourceAtRowIndex(final int rowIndex) {
+        return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, SINGULAR);
     }
 
     /**
-     * Get a list of all source strings on the current page.
-     * These strings contain the tags in ASCII.
-     * @return String list of source translation targets HTML content
+     * Get content of a text flow target at given row.
+     * This assumes the text flow has singular form (i.e. no plural).
+     * If a test requires to access plural content, this can be changed.
+     *
+     * @param rowIndex
+     *            row index
+     * @return content of the target
      */
-    public List<String> getTranslationSourceContents() {
-        return waitForTenSec().until(
-                new Function<WebDriver, List<String>>() {
-                    @Override
-                    public List<String> apply(WebDriver input) {
-                        List<String> texts = new ArrayList<String>();
-                        List<WebElement> sourceElements = getDriver()
-                            .findElements(By.className("sourceTable"));
-                        for (WebElement element : sourceElements) {
-                            WebElement textElement = element
-                                .findElement(By.tagName("pre"));
-                            String elementContent =
-                                    (String)((JavascriptExecutor)getDriver())
-                                        .executeScript(
-                                            "return arguments[0].innerHTML;",
-                                                textElement);
-                            texts.add(elementContent);
-                        }
-                        return texts;
-                    }
-                });
+    public String getTranslationTargetAtRowIndex(final int rowIndex) {
+        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, SINGULAR);
+    }
+
+    private String getCodeMirrorContent(final long rowIndex,
+            final String idFormat, final int pluralIndex) {
+        return waitForTenSec().until(new Function<WebDriver, String>() {
+            @Override
+            public String apply(WebDriver input) {
+                // code mirror will turn text into list of <pre>.
+                List<WebElement> cmTextLines = input.findElement(
+                        By.id(String.format(idFormat, rowIndex, pluralIndex)))
+                        .findElements(By.tagName("pre"));
+                List<String> contents =
+                        WebElementUtil.elementsToText(cmTextLines);
+                return Joiner.on("\n").skipNulls().join(contents);
+            }
+        });
     }
 }
