@@ -74,11 +74,22 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
                 try {
                     super.invoke(request, response);
                 } catch (UnhandledException e) {
-                    log.error("Failed to process REST request", e.getCause());
+                    Throwable cause = e.getCause();
+                    log.error("Failed to process REST request", cause);
                     try {
-                        response.sendError(
-                                Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                                "Error processing Request");
+                        // see https://issues.jboss.org/browse/RESTEASY-411
+                        if (cause instanceof IllegalArgumentException
+                                && cause.getMessage().contains(
+                                        "Failure parsing MediaType")) {
+                            response.sendError(
+                                    Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
+                                    cause.getMessage());
+                        } else {
+                            response.sendError(
+                                    Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                                    "Error processing Request");
+                        }
+
                     } catch (IOException ioe) {
                         log.error(
                                 "Failed to send error on failed REST request",
