@@ -28,6 +28,6 @@ import org.junit.runners.Suite;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ UploadTest.class })
+@Suite.SuiteClasses({ HTMLDocumentTypeTest.class, UploadTest.class })
 public class DocumentTestSuite {
 }
