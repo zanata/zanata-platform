@@ -140,6 +140,7 @@ public class TargetContentsView extends Composite implements
         for (String target : cachedTargets) {
             Editor editor =
                     new Editor(target, rowIndex, listener, transUnit.getId());
+            editor.ensureDebugId(transUnit.getRowIndex() + "-");
             editor.setEnableSpellCheck(listener.getConfigState()
                     .isSpellCheckEnabled());
             editorGrid.setWidget(rowIndex, 0, editor);

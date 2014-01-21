@@ -7,4 +7,6 @@ public interface SourceContentWrapper extends HasText, NeedsRefresh {
     void setTitle(String title);
 
     void highlight(String searchTerm);
+
+    void ensureDebugId(String baseID);
 }
