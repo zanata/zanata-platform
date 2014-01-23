@@ -104,7 +104,7 @@ public class RevertTransUnitUpdatesHandlerTest {
                 Matchers.equalTo(ContentState.NeedReview));
         assertThat(updateInfo.getPreviousVersionNum(), Matchers.equalTo(0));
         assertThat(transUnitUpdated.getUpdateType(),
-                Matchers.equalTo(TransUnitUpdated.UpdateType.Revert));
+                Matchers.equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
     }
 
     private static TranslationService.TranslationResult mockTranslationResult(

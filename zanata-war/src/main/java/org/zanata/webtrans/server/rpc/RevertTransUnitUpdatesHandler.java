@@ -67,7 +67,7 @@ public class RevertTransUnitUpdatesHandler extends
                         hLocale.getLocaleId(), action.getUpdatesToRevert());
 
         return transUnitUpdateHelper.generateUpdateTransUnitResult(
-                revertResults, action.getEditorClientId(), UpdateType.Revert,
+                revertResults, action.getEditorClientId(), UpdateType.NonEditorSave,
                 workspace);
     }
 

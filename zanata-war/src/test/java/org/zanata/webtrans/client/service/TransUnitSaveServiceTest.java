@@ -136,7 +136,7 @@ public class TransUnitSaveServiceTest {
         UpdateTransUnit updateTransUnit = actionCaptor.getValue();
         assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
         assertThat(updateTransUnit.getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSaveReview));
+                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
 
         TransUnitUpdateRequest request =
                 updateTransUnit.getUpdateRequests().get(0);
@@ -167,7 +167,7 @@ public class TransUnitSaveServiceTest {
         UpdateTransUnit updateTransUnit = actionCaptor.getValue();
         assertThat(updateTransUnit.getUpdateRequests(), hasSize(1));
         assertThat(updateTransUnit.getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSaveReview));
+                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
 
         TransUnitUpdateRequest request =
                 updateTransUnit.getUpdateRequests().get(0);
@@ -195,7 +195,7 @@ public class TransUnitSaveServiceTest {
         verify(dispatcher).execute(actionCaptor.capture(),
                 resultCaptor.capture());
         assertThat(actionCaptor.getValue().getUpdateType(),
-                equalTo(TransUnitUpdated.UpdateType.WebEditorSaveFuzzy));
+                equalTo(TransUnitUpdated.UpdateType.WebEditorSave));
 
         // on save success
         // Given: result comes back with saving successful

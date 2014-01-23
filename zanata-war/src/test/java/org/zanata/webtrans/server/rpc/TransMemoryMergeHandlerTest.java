@@ -219,7 +219,7 @@ public class TransMemoryMergeHandlerTest {
                 same(hLocale.getLocaleId()), same(workspace),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));
@@ -270,7 +270,7 @@ public class TransMemoryMergeHandlerTest {
                 same(hLocale.getLocaleId()), same(workspace),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));
@@ -487,7 +487,7 @@ public class TransMemoryMergeHandlerTest {
                 same(hLocale.getLocaleId()), same(workspace),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(2));
@@ -551,7 +551,7 @@ public class TransMemoryMergeHandlerTest {
                 same(hLocale.getLocaleId()), same(workspace),
                 updateRequestCaptor.capture(),
                 same(mergeAction.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));

@@ -22,6 +22,8 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.*;
 
+import javax.annotation.Nullable;
+
 import org.jboss.seam.*;
 import org.jboss.seam.annotations.*;
 import org.zanata.common.*;
@@ -34,6 +36,9 @@ import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import net.customware.gwt.dispatch.server.*;
 import net.customware.gwt.dispatch.shared.*;
 
@@ -56,7 +61,15 @@ public class UpdateTransUnitHandler extends
             ExecutionContext context) throws ActionException {
         SecurityService.SecurityCheckResult securityCheckResult;
 
-        if (action.getUpdateType() == UpdateType.WebEditorSaveReview) {
+        Optional<TransUnitUpdateRequest> hasReviewUpdate =
+                Iterables.tryFind(action.getUpdateRequests(),
+                        new Predicate<TransUnitUpdateRequest>() {
+                            @Override
+                            public boolean apply(TransUnitUpdateRequest input) {
+                                return input.getNewContentState().isReviewed();
+                            }
+                        });
+        if (hasReviewUpdate.isPresent()) {
             securityCheckResult =
                     securityServiceImpl.checkPermission(action,
                             SecurityService.TranslationAction.REVIEW);

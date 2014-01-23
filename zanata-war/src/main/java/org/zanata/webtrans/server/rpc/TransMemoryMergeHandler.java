@@ -140,7 +140,7 @@ public class TransMemoryMergeHandler extends
         }
         return updateTransUnitHandler.doTranslation(hLocale.getLocaleId(),
                 workspace, updateRequests, action.getEditorClientId(),
-                TransUnitUpdated.UpdateType.TMMerge);
+                TransUnitUpdated.UpdateType.NonEditorSave);
     }
 
     private Map<Long, TransUnitUpdateRequest> transformToMap(

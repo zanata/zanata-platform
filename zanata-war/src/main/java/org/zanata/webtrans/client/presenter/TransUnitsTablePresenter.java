@@ -297,7 +297,7 @@ public class TransUnitsTablePresenter extends
             TransUnitUpdated.UpdateType updateType) {
         return Objects.equal(editorClientId,
                 translatorService.getCurrentEditorClientId())
-                && (updateType == TransUnitUpdated.UpdateType.WebEditorSave || updateType == TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+                && (updateType == TransUnitUpdated.UpdateType.WebEditorSave);
     }
 
     @Override
