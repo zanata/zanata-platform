@@ -262,8 +262,7 @@ public class TransUnitsTablePresenter extends
         }
 
         if (Objects.equal(selectedId, updatedTransUnit.getId())
-                && !Objects.equal(editorClientId,
-                        translatorService.getCurrentEditorClientId())) {
+                && fromDifferentUser(editorClientId)) {
             // updatedTU is our active row but done by another user
             eventBus.fireEvent(new NotificationEvent(Error, messages
                     .concurrentEdit()));
@@ -282,6 +281,12 @@ public class TransUnitsTablePresenter extends
             }
         }
         targetContentsPresenter.updateRow(updatedTransUnit);
+    }
+
+    // we only compare session id. If user open multiple tab and made change in one, it shouldn't surprise himself on another tab.
+    private boolean fromDifferentUser(EditorClientId editorClientId) {
+        return !editorClientId.getHttpSessionId().equals(
+                translatorService.getCurrentEditorClientId().getHttpSessionId());
     }
 
     // update type is web editor save or web editor save fuzzy and coming from
