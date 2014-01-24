@@ -47,6 +47,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -169,7 +170,7 @@ public class AddReviewCommentHandlerTest {
                 hPerson);
         inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
         inOrder.verify(textFlowTargetDAO).flush();
-        inOrder.verify(workspace).publish(isA(TransUnitUpdated.class));
+        inOrder.verify(workspace).publish(isA(AddReviewComment.class));
 
         assertThat(result.getComment().getId(),
                 Matchers.equalTo(new ReviewCommentId(1L)));

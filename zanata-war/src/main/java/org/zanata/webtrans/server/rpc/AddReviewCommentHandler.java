@@ -43,8 +43,10 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -115,8 +117,10 @@ public class AddReviewCommentHandler extends
         textFlowTargetDAO.makePersistent(hTextFlowTarget);
         textFlowTargetDAO.flush();
 
-        publishTransUnitUpdatedEvent(action, locale, hTextFlowTarget, workspace);
-
+        AddReviewComment commentEvent = new AddReviewComment(
+                new TransUnitId(hTextFlowTarget.getTextFlow().getId()),
+                hTextFlowTarget.getReviewComments().size());
+        workspace.publish(commentEvent);
         return new AddReviewCommentResult(toDTO(hComment));
     }
 
@@ -126,23 +130,6 @@ public class AddReviewCommentHandler extends
         if (StringUtils.isBlank(action.getContent())) {
             throw new ActionException("comment can not be blank");
         }
-    }
-
-    private void publishTransUnitUpdatedEvent(AddReviewCommentAction action,
-            HLocale hLocale, HTextFlowTarget hTextFlowTarget,
-            TranslationWorkspace workspace) {
-        HTextFlow textFlow = hTextFlowTarget.getTextFlow();
-        TransUnit transUnit =
-                transUnitTransformer.transform(textFlow, hTextFlowTarget,
-                        hLocale);
-        TransUnitUpdated transUnitUpdated =
-                new TransUnitUpdated(new TransUnitUpdateInfo(true, false,
-                        action.getDocumentId(), transUnit, textFlow
-                                .getWordCount().intValue(),
-                        transUnit.getVerNum(), transUnit.getStatus()),
-                        action.getEditorClientId(),
-                        TransUnitUpdated.UpdateType.AddComment);
-        workspace.publish(transUnitUpdated);
     }
 
     private static ReviewComment toDTO(HTextFlowTargetReviewComment hComment) {

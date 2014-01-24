@@ -5,6 +5,7 @@ import java.util.HashMap;
 import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.zanata.webtrans.client.events.CommentChangedEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
@@ -12,6 +13,7 @@ import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.EnterWorkspace;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.HasEnterWorkspaceData;
@@ -117,6 +119,13 @@ public class EventProcessor implements RemoteEventListener {
                                     (HasWorkspaceChatData) event);
                         }
                     });
+            factories.put(AddReviewComment.class, new EventFactory<CommentChangedEvent>() {
+                @Override
+                public CommentChangedEvent create(SessionEventData event) {
+                    AddReviewComment comment = (AddReviewComment) event;
+                    return new CommentChangedEvent(comment.getTransUnitId(), comment.getCommentCount());
+                }
+            });
 
         }
 

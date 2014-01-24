@@ -59,6 +59,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
+import org.zanata.webtrans.client.events.CommentChangedEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -165,6 +166,7 @@ public class TargetContentsPresenterTest {
         verify(eventBus).addHandler(TransUnitEditEvent.getType(), presenter);
         verify(eventBus).addHandler(WorkspaceContextUpdateEvent.getType(),
                 presenter);
+        verify(eventBus).addHandler(CommentChangedEvent.TYPE, presenter);
         verify(saveAsApprovedConfirmation).setListener(presenter);
         verify(validationWarning).setListener(presenter);
 

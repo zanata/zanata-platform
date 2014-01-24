@@ -260,12 +260,6 @@ public class TransUnitsTablePresenter extends
             // Ignored.
             return;
         }
-        if (updateType == TransUnitUpdated.UpdateType.AddComment) {
-            targetContentsPresenter.updateCommentCount(
-                    updatedTransUnit.getId(),
-                    updatedTransUnit.getCommentsCount());
-            return;
-        }
 
         if (Objects.equal(selectedId, updatedTransUnit.getId())
                 && !Objects.equal(editorClientId,
