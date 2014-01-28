@@ -22,17 +22,15 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import com.google.common.base.Objects;
 
 //@ExposeEntity
 public class TransUnitUpdated implements SessionEventData,
         HasTransUnitUpdatedData {
 
     public enum UpdateType {
-        WebEditorSave,
-        NonEditorSave,
-        // TODO move add comment to its own event
-        AddComment
-        // TODO add types for updates through REST, copytrans, etc.
+        WebEditorSave, // save as Translated or Fuzzy for an individual message
+        NonEditorSave // all other type of saving. Include: revert, TM merge, search & replace, non webtrans actions like REST, copyTrans
     }
 
     private static final long serialVersionUID = 1L;
@@ -65,4 +63,12 @@ public class TransUnitUpdated implements SessionEventData,
         return updateType;
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("tuUpdateInfo", tuUpdateInfo)
+                .add("updatedInSession", updatedInSession)
+                .add("updateType", updateType)
+                .toString();
+    }
 }

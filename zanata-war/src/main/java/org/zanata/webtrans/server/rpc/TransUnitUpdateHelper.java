@@ -44,13 +44,11 @@ public class TransUnitUpdateHelper {
     private TransUnitTransformer transUnitTransformer;
 
     public UpdateTransUnitResult generateUpdateTransUnitResult(
-            List<TranslationService.TranslationResult> translationResults,
-            EditorClientId editorClientId,
-            TransUnitUpdated.UpdateType updateType,
-            TranslationWorkspace workspace) {
+            List<TranslationService.TranslationResult> translationResults) {
         UpdateTransUnitResult result = new UpdateTransUnitResult();
 
         for (TranslationService.TranslationResult translationResult : translationResults) {
+            // All these information is gathered in TranslationUpdateListener.
             HTextFlowTarget newTarget =
                     translationResult.getTranslatedTextFlowTarget();
             HTextFlow hTextFlow = newTarget.getTextFlow();
@@ -62,9 +60,6 @@ public class TransUnitUpdateHelper {
                     build(translationResult, new DocumentId(hTextFlow
                             .getDocument().getId(), hTextFlow.getDocument()
                             .getDocId()), tu, wordCount);
-
-            workspace.publish(new TransUnitUpdated(updateInfo, editorClientId,
-                    updateType));
 
             result.addUpdateResult(updateInfo);
         }

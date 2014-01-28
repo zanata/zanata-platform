@@ -22,11 +22,11 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.*;
 
-import javax.annotation.Nullable;
-
 import org.jboss.seam.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.core.Events;
 import org.zanata.common.*;
+import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
 import org.zanata.service.TranslationService.*;
@@ -34,7 +34,6 @@ import org.zanata.webtrans.server.*;
 import org.zanata.webtrans.shared.auth.*;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -92,10 +91,20 @@ public class UpdateTransUnitHandler extends
             List<TransUnitUpdateRequest> updateRequests,
             EditorClientId editorClientId,
             TransUnitUpdated.UpdateType updateType) {
+        if (Events.exists()) {
+            for (TransUnitUpdateRequest updateRequest : updateRequests) {
+                Events.instance().raiseEvent(
+                        TextFlowTargetUpdateContextEvent.EVENT_NAME,
+                        new TextFlowTargetUpdateContextEvent(updateRequest
+                                .getTransUnitId(), localeId, editorClientId,
+                                updateType));
+            }
+        }
+
         List<TranslationResult> translationResults =
                 translationServiceImpl.translate(localeId, updateRequests);
         return transUnitUpdateHelper.generateUpdateTransUnitResult(
-                translationResults, editorClientId, updateType, workspace);
+                translationResults);
     }
 
     @Override

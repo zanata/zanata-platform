@@ -23,6 +23,7 @@ package org.zanata.webtrans.server;
 
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import com.google.common.base.Optional;
 
 /**
  * @author Sean Flanigan <a
@@ -31,7 +32,8 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
  */
 public interface TranslationWorkspaceManager {
 
-    public TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId)
+    TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId)
             throws NoSuchWorkspaceException;
 
+    Optional<TranslationWorkspace> tryGetWorkspace(WorkspaceId workspaceId);
 }

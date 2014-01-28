@@ -46,6 +46,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -255,6 +256,11 @@ public class TranslationWorkspaceManagerImpl implements
             return prev == null ? workspace : prev;
         }
         return workspace;
+    }
+
+    @Override
+    public Optional<TranslationWorkspace> tryGetWorkspace(WorkspaceId workspaceId) {
+        return Optional.fromNullable(workspaceMap.get(workspaceId));
     }
 
     private WorkspaceContext validateAndGetWorkspaceContext(

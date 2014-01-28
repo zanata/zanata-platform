@@ -24,10 +24,13 @@ import java.util.*;
 
 import org.jboss.seam.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.core.Events;
+import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
 import org.zanata.service.TranslationService.*;
 import org.zanata.webtrans.server.*;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.*;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
 
@@ -62,13 +65,25 @@ public class RevertTransUnitUpdatesHandler extends
         HLocale hLocale = securityCheckResult.getLocale();
         TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
+        if (Events.exists()) {
+            for (TransUnitUpdateInfo updateInfo : action.getUpdatesToRevert()) {
+                Events.instance().raiseEvent(
+                        TextFlowTargetUpdateContextEvent.EVENT_NAME,
+                        new TextFlowTargetUpdateContextEvent(updateInfo
+                                .getTransUnit().getId(), hLocale.getLocaleId(),
+                                action.getEditorClientId(),
+                                UpdateType.NonEditorSave));
+            }
+        }
+
         List<TranslationResult> revertResults =
                 translationServiceImpl.revertTranslations(
                         hLocale.getLocaleId(), action.getUpdatesToRevert());
 
+
         return transUnitUpdateHelper.generateUpdateTransUnitResult(
-                revertResults, action.getEditorClientId(), UpdateType.NonEditorSave,
-                workspace);
+                revertResults
+        );
     }
 
     @Override
