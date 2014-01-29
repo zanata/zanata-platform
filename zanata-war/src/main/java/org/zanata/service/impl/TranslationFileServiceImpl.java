@@ -25,16 +25,10 @@ import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT;
 import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_DATABASE;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_FORMULA;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_GRAPHICS;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_GRAPHICS_FLAT;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_PRESENTATION;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_PRESENTATION_FLAT;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_SPREADSHEET;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_SPREADSHEET_FLAT;
 import static org.zanata.common.DocumentType.OPEN_DOCUMENT_TEXT;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_TEXT_FLAT;
 import static org.zanata.common.DocumentType.PLAIN_TEXT;
 import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 
@@ -89,11 +83,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
             new MapMaker().makeMap();
     private static DocumentType[] ODF_TYPES = { OPEN_DOCUMENT_TEXT,
-            OPEN_DOCUMENT_TEXT_FLAT, OPEN_DOCUMENT_PRESENTATION,
-            OPEN_DOCUMENT_PRESENTATION_FLAT, OPEN_DOCUMENT_SPREADSHEET,
-            OPEN_DOCUMENT_SPREADSHEET_FLAT, OPEN_DOCUMENT_GRAPHICS,
-            OPEN_DOCUMENT_GRAPHICS_FLAT, OPEN_DOCUMENT_DATABASE,
-            OPEN_DOCUMENT_FORMULA };
+            OPEN_DOCUMENT_PRESENTATION, OPEN_DOCUMENT_SPREADSHEET,
+            OPEN_DOCUMENT_GRAPHICS };
 
     static {
         for (DocumentType type : ODF_TYPES) {
