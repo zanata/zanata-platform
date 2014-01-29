@@ -21,6 +21,7 @@
 package org.zanata.feature.glossary;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 import java.io.File;
 import java.util.List;
@@ -102,9 +103,8 @@ public class GlossaryDeleteTest {
     }
 
     public EditorPage translate(String locale) {
-        return new BasicWorkFlow().goToPage(
-                "webtrans/translate?project=about-fedora&iteration=master&localeId="
-                        + locale + "&locale=en#view:doc;doc:About_Fedora",
-                EditorPage.class);
+        return new BasicWorkFlow().goToPage(String.format(
+                EDITOR_TEMPLATE, "about-fedora", "master",
+                locale, "About_Fedora"), EditorPage.class);
     }
 }

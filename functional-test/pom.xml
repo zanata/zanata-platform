@@ -130,6 +130,7 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -171,6 +172,25 @@
       <artifactId>entityunit</artifactId>
       <version>0.2</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- to use rest client in test -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-rest-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
     </dependency>
 
     <!-- to be able to create entities in functional test -->
@@ -619,6 +639,7 @@
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.javassist:javassist</usedDependency>
             <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
+            <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>
         </configuration>

@@ -2,7 +2,13 @@ package org.zanata.page.webtrans;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import javax.activation.CommandObject;
+import javax.annotation.Nullable;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,6 +18,7 @@ import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
 /**
