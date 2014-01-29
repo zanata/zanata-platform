@@ -1,18 +1,38 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.page.webtrans;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a
@@ -119,5 +139,86 @@ public class EditorPage extends BasePage {
                 return Joiner.on("\n").skipNulls().join(contents);
             }
         });
+    }
+
+    public EditorPage setSyntaxHighlighting(boolean option) {
+        openConfigurationPanel();
+        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected() != option) {
+            getDriver().findElement(By.id("gwt-uid-144")).click();
+        }
+        return new EditorPage(getDriver());
+    }
+
+    private Boolean openConfigurationPanel() {
+        getDriver().findElement(By.className("icon-cog")).click();
+        return waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver input) {
+                return input.findElement(
+                        By.className("gwt-TabLayoutPanelContentContainer"))
+                        .isDisplayed();
+            }
+        });
+
+    }
+
+    public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, SINGULAR);
+    }
+
+    /**
+     * Get content from a target using the non-CodeMirror configuration
+     * @param rowIndex
+     * @return row target content
+     */
+    private String getContentAtRowIndex(final long rowIndex,
+                                        final String idFormat,
+                                        final int pluralIndex) {
+        return waitForTenSec().until(new Function<WebDriver, String>() {
+            @Override
+            public String apply(WebDriver input) {
+                return input.findElement(By.id(String.format(idFormat, rowIndex, pluralIndex))).getAttribute("value");
+            }
+        });
+    }
+
+    /**
+     * Translate a target using the non-CodeMirror field
+     * @param rowIndex
+     * @param text
+     * @return updated EditorPage
+     */
+    public EditorPage translateTargetAtRowIndex(final int rowIndex, String text) {
+        setTargetContent(rowIndex, text, TARGET_ID_FMT, SINGULAR);
+        return new EditorPage(getDriver());
+    }
+
+    private void setTargetContent(final long rowIndex, final String text,
+            final String idFormat, final int pluralIndex) {
+        WebElement we = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(
+                        By.id(String.format(idFormat, rowIndex, pluralIndex)));
+            }
+        });
+        we.click();
+        we.sendKeys(text);
+    }
+
+    /**
+     * Press the Approve button for the currently selected translation row
+     * @return new Editor page object
+     */
+    public EditorPage approveSelectedTranslation() {
+        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(By.className("selected"))
+                        .findElement(By.className("icon-install"));
+            }
+        });
+        approve.click();
+        return new EditorPage(getDriver());
     }
 }
