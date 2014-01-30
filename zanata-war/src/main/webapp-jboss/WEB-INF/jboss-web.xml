@@ -19,7 +19,7 @@ in case changes are required for production deployment (eg cfengine).
 
   <security-domain>zanata</security-domain>
   <valve>
-    <class-name>org.jboss.security.negotiation.NegotiationAuthenticator</class-name>
+    <class-name>org.zanata.security.negotiation.NegotiationAuthenticator</class-name>
   </valve>
 
 
