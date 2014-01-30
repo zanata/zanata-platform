@@ -76,7 +76,7 @@
         <redirect view-id="/account/login.xhtml" />
       </rule>
       <rule if-outcome="edit">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule if-outcome="inactive">
         <redirect view-id="/account/inactive_account.xhtml" />
@@ -110,7 +110,7 @@
     <navigation from-action="#{loginAction.login}">
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule if-outcome="inactive">
         <begin-conversation />
@@ -465,7 +465,7 @@
       <redirect view-id="/home.xhtml" />
     </navigation>
     <navigation from-action="#{newProfileAction.cancel}">
-      <redirect view-id="/account/register.xhtml" />
+      <redirect view-id="/home.xhtml" />
     </navigation>
   </page>
 
