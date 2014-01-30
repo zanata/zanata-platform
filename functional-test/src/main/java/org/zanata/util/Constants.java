@@ -58,7 +58,7 @@ public enum Constants {
         Map<String, String> projectTypeOptions = new HashMap<String, String>();
         projectTypeOptions.put("None", "-- No selection --");
         projectTypeOptions.put("File",
-                "File. For plain text, LibreOffice, InDesign.");
+                "File. For plain text, LibreOffice, InDesign, HTML.");
         projectTypeOptions.put("Gettext",
                 "Gettext. For gettext software strings.");
         projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
