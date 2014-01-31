@@ -127,6 +127,7 @@ public class TargetContentsView extends Composite implements
 
     @Override
     public void setValueAndCreateNewEditors(TransUnit transUnit) {
+        buttons.ensureDebugId("target-" + transUnit.getRowIndex());
         setCachedTU(transUnit);
         updateCommentIndicator(transUnit.getCommentsCount());
 

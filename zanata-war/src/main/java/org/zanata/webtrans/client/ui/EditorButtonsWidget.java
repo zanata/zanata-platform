@@ -46,6 +46,17 @@ public class EditorButtonsWidget extends Composite {
             && listener.canEditTranslation());
     }
 
+    @Override
+    protected void onEnsureDebugId(String baseID) {
+        saveIcon.ensureDebugId(baseID + "-save-approve");
+        fuzzyIcon.ensureDebugId(baseID + "-save-fuzzy");
+        cancelIcon.ensureDebugId(baseID + "-cancel");
+        historyIcon.ensureDebugId(baseID + "-history");
+        undoContainer.ensureDebugId(baseID + "-undo");
+        acceptIcon.ensureDebugId(baseID + "-accept");
+        rejectIcon.ensureDebugId(baseID + "-reject");
+    }
+
     private void setDisplayReviewButtons(boolean canReview) {
         acceptIcon.setVisible(canReview);
         rejectIcon.setVisible(canReview);
