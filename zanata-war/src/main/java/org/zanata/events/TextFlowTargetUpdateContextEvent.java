@@ -9,13 +9,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * This event is raised by text flow target update initiator before making a
+ * change. Hibernate entity listener will be triggered after the change is made
+ * and at that point this context information is retrieved from cache.
+ *
+ * @see org.zanata.webtrans.server.TranslationUpdateListener
+ *
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequiredArgsConstructor
 @Getter
 public class TextFlowTargetUpdateContextEvent {
-    public static final String EVENT_NAME = "org.zanata.event.TextFlowTargetUpdateContextEvent";
+    public static final String EVENT_NAME =
+            "org.zanata.event.TextFlowTargetUpdateContextEvent";
 
     private final TransUnitId transUnitId;
     private final LocaleId localeId;

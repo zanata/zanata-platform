@@ -13,6 +13,8 @@ import org.jboss.seam.contexts.Contexts;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Hibernate SPI. Register event listener for entity lifecycle events.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -29,6 +31,9 @@ public class HibernateIntegrator implements Integrator {
                     (TranslationUpdateListener) Component
                             .getInstance(TranslationUpdateListener.class);
             log.info("register event listener: {}", updateListener);
+            // We have to use POST_UPDATE not POST_UPDATE_COMMIT. Because we
+            // still need to access some other entities to make transunit. After
+            // commit the transaction is closed.
             eventListenerRegistry.appendListeners(EventType.POST_UPDATE,
                     updateListener);
             eventListenerRegistry.appendListeners(EventType.POST_INSERT,

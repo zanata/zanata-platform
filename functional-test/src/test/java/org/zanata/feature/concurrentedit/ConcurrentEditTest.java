@@ -60,7 +60,6 @@ public class ConcurrentEditTest {
                 sourceResource, false);
 
         // open editor
-        // open editor
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
         final EditorPage editorPage =
