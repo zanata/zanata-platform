@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config xmlns="http://zanata.org/namespace/config/">
+  <url>https://translate.zanata.org/zanata/</url>
+  <project>zanata-editor</project>
+  <project-version>master</project-version>
+  <project-type>utf8properties</project-type>
+
+  <locales>
+    <locale>uk</locale>
+    <locale>ja</locale>
+    <locale>en</locale>
+    <locale>zh-Hant-TW</locale>
+  </locales>
+
+  <hooks>
+    <hook command="push">
+      <before>mvn -Dgwt-i18n process-test-resources</before>
+    </hook>
+    <hook command="pull">
+      <before>mvn -Dgwt-i18n process-test-resources</before>
+      <after>mvn -Dgwt-i18n groovy:execute -Dgroovy.script=FillInTranslationGap.groovy</after>
+    </hook>
+  </hooks>
+
+</config>

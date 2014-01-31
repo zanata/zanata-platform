@@ -124,10 +124,12 @@ public interface WebTransMessages extends Messages {
     String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
     @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
-    @AlternateMessage({ "one|one",
-            "Showing results for search \"{0}\" (1 text flow in 1 document)",
-            "other|one",
-            "Showing results for search \"{0}\" ({1} text flows in 1 document)" })
+    // @formatter:off
+    @AlternateMessage({
+            "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
+            "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"
+    })
+    // @formatter:on
             String showingResultsForProjectWideSearch(String searchString,
                     @PluralCount int textFlows, @PluralCount int documents);
 
@@ -465,7 +467,7 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Text contain in both search term and result")
     String tmPlainTextDesc();
 
-    @DefaultMessage("New replacement text ")
+    @DefaultMessage("New replacement text")
     String searchReplaceInsertTagDesc();
 
     @DefaultMessage("Old text to be replaced")
