@@ -139,7 +139,7 @@ public class TransMemoryMergeHandler extends
             return new UpdateTransUnitResult();
         }
         return updateTransUnitHandler.doTranslation(hLocale.getLocaleId(),
-                workspace, updateRequests, action.getEditorClientId(),
+                updateRequests, action.getEditorClientId(),
                 TransUnitUpdated.UpdateType.NonEditorSave);
     }
 

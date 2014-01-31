@@ -9,6 +9,7 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.jboss.seam.Component;
+import org.jboss.seam.contexts.Contexts;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,22 +22,18 @@ public class HibernateIntegrator implements Integrator {
     public void integrate(Configuration configuration,
             SessionFactoryImplementor sessionFactory,
             SessionFactoryServiceRegistry serviceRegistry) {
-        // As you might expect, an EventListenerRegistry is the thing with which
-        // event listeners are registered It is a
-        // service so we look it up using the service registry
-
-        final EventListenerRegistry eventListenerRegistry =
-                serviceRegistry.getService(EventListenerRegistry.class);
-
-
-        TranslationUpdateListener updateListener =
-                (TranslationUpdateListener) Component
-                        .getInstance(TranslationUpdateListener.class);
-        log.info("register event listener: {}", updateListener);
-        eventListenerRegistry.appendListeners(EventType.POST_UPDATE,
-                updateListener);
-        eventListenerRegistry.appendListeners(EventType.POST_INSERT,
-                updateListener);
+        if (Contexts.isApplicationContextActive()) {
+            final EventListenerRegistry eventListenerRegistry =
+                    serviceRegistry.getService(EventListenerRegistry.class);
+            TranslationUpdateListener updateListener =
+                    (TranslationUpdateListener) Component
+                            .getInstance(TranslationUpdateListener.class);
+            log.info("register event listener: {}", updateListener);
+            eventListenerRegistry.appendListeners(EventType.POST_UPDATE,
+                    updateListener);
+            eventListenerRegistry.appendListeners(EventType.POST_INSERT,
+                    updateListener);
+        }
     }
 
     @Override

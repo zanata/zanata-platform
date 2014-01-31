@@ -20,26 +20,29 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.*;
+import java.util.List;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
-import org.zanata.common.*;
+import org.zanata.common.LocaleId;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
-import org.zanata.model.*;
-import org.zanata.service.*;
-import org.zanata.service.TranslationService.*;
-import org.zanata.webtrans.server.*;
-import org.zanata.webtrans.shared.auth.*;
-import org.zanata.webtrans.shared.model.*;
-import org.zanata.webtrans.shared.rpc.*;
-
+import org.zanata.service.SecurityService;
+import org.zanata.service.TranslationService;
+import org.zanata.service.TranslationService.TranslationResult;
+import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import net.customware.gwt.dispatch.server.*;
-import net.customware.gwt.dispatch.shared.*;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 @Name("webtrans.gwt.UpdateTransUnitHandler")
 @Scope(ScopeType.STATELESS)
@@ -58,7 +61,6 @@ public class UpdateTransUnitHandler extends
     @Override
     public UpdateTransUnitResult execute(UpdateTransUnit action,
             ExecutionContext context) throws ActionException {
-        SecurityService.SecurityCheckResult securityCheckResult;
 
         Optional<TransUnitUpdateRequest> hasReviewUpdate =
                 Iterables.tryFind(action.getUpdateRequests(),
@@ -69,25 +71,19 @@ public class UpdateTransUnitHandler extends
                             }
                         });
         if (hasReviewUpdate.isPresent()) {
-            securityCheckResult =
-                    securityServiceImpl.checkPermission(action,
-                            SecurityService.TranslationAction.REVIEW);
+            securityServiceImpl.checkPermission(action,
+                    SecurityService.TranslationAction.REVIEW);
         } else {
-            securityCheckResult =
-                    securityServiceImpl.checkPermission(action,
-                            SecurityService.TranslationAction.MODIFY);
+            securityServiceImpl.checkPermission(action,
+                    SecurityService.TranslationAction.MODIFY);
         }
 
-        HLocale hLocale = securityCheckResult.getLocale();
-        TranslationWorkspace workspace = securityCheckResult.getWorkspace();
-
-        return doTranslation(hLocale.getLocaleId(), workspace,
+        return doTranslation(action.getWorkspaceId().getLocaleId(),
                 action.getUpdateRequests(), action.getEditorClientId(),
                 action.getUpdateType());
     }
 
     protected UpdateTransUnitResult doTranslation(LocaleId localeId,
-            TranslationWorkspace workspace,
             List<TransUnitUpdateRequest> updateRequests,
             EditorClientId editorClientId,
             TransUnitUpdated.UpdateType updateType) {

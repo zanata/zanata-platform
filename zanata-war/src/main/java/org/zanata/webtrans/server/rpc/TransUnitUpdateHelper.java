@@ -24,49 +24,76 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.seam.*;
 import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Observer;
+import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
-import org.zanata.webtrans.server.*;
-import org.zanata.webtrans.shared.auth.*;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("webtrans.gwt.TransUnitUpdateHelper")
-@Scope(ScopeType.STATELESS)
+@Scope(ScopeType.APPLICATION)
+@AutoCreate
 public class TransUnitUpdateHelper {
+    private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
+            .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
+            .softValues().maximumSize(100).build();
     @In
     private TransUnitTransformer transUnitTransformer;
+
+    @Observer(TextFlowTargetUpdatedEvent.EVENT_NAME)
+    public void onTargetUpdatedSuccessful(TextFlowTargetUpdatedEvent event) {
+        TransUnitUpdated transUnitUpdated = event.getTransUnitUpdated();
+        event.getWorkspace().publish(transUnitUpdated);
+        TransUnit transUnit = transUnitUpdated.getUpdateInfo().getTransUnit();
+        cache.put(
+                new CacheKey(event.getTextFlowTargetId(), transUnit.getVerNum()),
+                transUnitUpdated.getUpdateInfo());
+    }
 
     public UpdateTransUnitResult generateUpdateTransUnitResult(
             List<TranslationService.TranslationResult> translationResults) {
         UpdateTransUnitResult result = new UpdateTransUnitResult();
 
         for (TranslationService.TranslationResult translationResult : translationResults) {
-            // All these information is gathered in TranslationUpdateListener.
+            translationResult.getTranslatedTextFlowTarget().getId();
             HTextFlowTarget newTarget =
                     translationResult.getTranslatedTextFlowTarget();
-            HTextFlow hTextFlow = newTarget.getTextFlow();
-            int wordCount = hTextFlow.getWordCount().intValue();
-            TransUnit tu =
-                    transUnitTransformer.transform(hTextFlow,
-                            newTarget.getLocale());
-            TransUnitUpdateInfo updateInfo =
-                    build(translationResult, new DocumentId(hTextFlow
-                            .getDocument().getId(), hTextFlow.getDocument()
-                            .getDocId()), tu, wordCount);
+            TransUnitUpdateInfo transUnitUpdateInfo =
+                    cache.getIfPresent(new CacheKey(newTarget.getId(),
+                            newTarget.getVersionNum()));
+            if (transUnitUpdateInfo != null) {
+                // All these information is gathered in
+                // TranslationUpdateListener.
+                result.addUpdateResult(transUnitUpdateInfo);
+            } else {
+                HTextFlow hTextFlow = newTarget.getTextFlow();
+                int wordCount = hTextFlow.getWordCount().intValue();
+                TransUnit tu =
+                        transUnitTransformer.transform(hTextFlow,
+                                newTarget.getLocale());
+                TransUnitUpdateInfo updateInfo =
+                        build(translationResult, new DocumentId(hTextFlow
+                                .getDocument().getId(), hTextFlow.getDocument()
+                                .getDocId()), tu, wordCount);
 
-            result.addUpdateResult(updateInfo);
+                result.addUpdateResult(updateInfo);
+            }
         }
         return result;
     }
 
-    private TransUnitUpdateInfo build(
+    private static TransUnitUpdateInfo build(
             TranslationService.TranslationResult translationResult,
             DocumentId documentId, TransUnit transUnit, int wordCount) {
         return new TransUnitUpdateInfo(
@@ -75,5 +102,11 @@ public class TransUnitUpdateHelper {
                 wordCount, translationResult.getBaseVersionNum(),
                 translationResult.getBaseContentState(),
                 translationResult.getErrorMessage());
+    }
+
+    @RequiredArgsConstructor
+    private static class CacheKey {
+        private final Long textFlowTargetId;
+        private final Integer versionNum;
     }
 }

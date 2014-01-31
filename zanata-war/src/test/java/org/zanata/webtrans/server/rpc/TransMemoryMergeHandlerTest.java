@@ -216,7 +216,7 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
                 eq(TransUnitUpdated.UpdateType.NonEditorSave));
@@ -267,7 +267,7 @@ public class TransMemoryMergeHandlerTest {
 
         // Then: we should have translation auto filled
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
                 eq(TransUnitUpdated.UpdateType.NonEditorSave));
@@ -484,7 +484,7 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
                 eq(TransUnitUpdated.UpdateType.NonEditorSave));
@@ -548,7 +548,7 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(mergeAction.getEditorClientId()),
                 eq(TransUnitUpdated.UpdateType.NonEditorSave));

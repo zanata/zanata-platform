@@ -17,6 +17,7 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.SessionContext;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.jboss.seam.web.Session;
@@ -24,6 +25,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
+import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
@@ -158,7 +160,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
             updated = new TransUnitUpdated(updateInfo, new EditorClientId("unknown", -1),
                     TransUnitUpdated.UpdateType.NonEditorSave);
         }
-        workspaceOptional.get().publish(updated);
+        if (Events.exists()) {
+            Events.instance().raiseTransactionSuccessEvent(
+                    TextFlowTargetUpdatedEvent.EVENT_NAME, new TextFlowTargetUpdatedEvent(workspaceOptional.get(), target.getId(), updated));
+        }
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

@@ -31,7 +31,6 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.security.ZanataIdentity;
@@ -42,14 +41,11 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
-import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -72,9 +68,6 @@ public class AddReviewCommentHandler extends
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
-
-    @In
-    TransUnitTransformer transUnitTransformer;
 
     @In
     private LocaleService localeServiceImpl;
