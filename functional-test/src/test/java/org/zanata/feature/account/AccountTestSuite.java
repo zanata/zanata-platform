@@ -31,6 +31,6 @@ import org.zanata.util.NoScreenshot;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ ChangePasswordTest.class, RegisterTest.class,
         UsernameValidationTest.class, ValidEmailAddressTest.class,
-        InvalidEmailAddressTest.class })
+        InvalidEmailAddressTest.class, InactiveUserLoginTest.class })
 public class AccountTestSuite {
 }
