@@ -20,10 +20,14 @@
  */
 package org.zanata.feature.account;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.NoScreenshot;
@@ -48,7 +52,9 @@ public class InactiveUserLoginTest {
                 .editUserAccount("translator").clickEnabled().saveUser()
                 .logout();
 
-        new LoginWorkFlow().signInFailure("translator", "translator");
+        SignInPage signInPage =
+                new LoginWorkFlow().signInFailure("translator", "translator");
+        assertThat(signInPage.getNotificationMessage(), is("Login failed"));
     }
 
 }
