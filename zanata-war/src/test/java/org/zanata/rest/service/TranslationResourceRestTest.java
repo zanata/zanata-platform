@@ -1064,9 +1064,7 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         int versionNum = 0; // no previous translation
 
         // Translate using webtrans
-        UpdateType updateType =
-                (translationState == ContentState.Approved ? UpdateType.WebEditorSave
-                        : UpdateType.WebEditorSaveFuzzy);
+        UpdateType updateType = UpdateType.WebEditorSave;
         UpdateTransUnit action =
                 new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(
                         textFlowId), Lists.newArrayList(translation),

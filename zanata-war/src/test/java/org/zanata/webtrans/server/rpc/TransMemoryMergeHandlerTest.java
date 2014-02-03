@@ -216,10 +216,10 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));
@@ -267,10 +267,10 @@ public class TransMemoryMergeHandlerTest {
 
         // Then: we should have translation auto filled
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));
@@ -484,10 +484,10 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(action.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(2));
@@ -548,10 +548,10 @@ public class TransMemoryMergeHandlerTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(updateTransUnitHandler).doTranslation(
-                same(hLocale.getLocaleId()), same(workspace),
+                same(hLocale.getLocaleId()),
                 updateRequestCaptor.capture(),
                 same(mergeAction.getEditorClientId()),
-                eq(TransUnitUpdated.UpdateType.TMMerge));
+                eq(TransUnitUpdated.UpdateType.NonEditorSave));
         List<TransUnitUpdateRequest> updateRequest =
                 updateRequestCaptor.getValue();
         assertThat(updateRequest, Matchers.hasSize(1));

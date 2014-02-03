@@ -47,6 +47,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ReviewCommentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -77,8 +78,6 @@ public class AddReviewCommentHandlerTest {
     @Mock
     private HTextFlowTargetReviewComment hReviewComment;
     private DocumentId documentId = new DocumentId(1L, "my/doc");
-    @Mock
-    private TransUnitTransformer transUnitTransformer;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private HTextFlow hTextFlow;
     @Mock
@@ -103,7 +102,6 @@ public class AddReviewCommentHandlerTest {
                         .use("textFlowTargetDAO", textFlowTargetDAO)
                         .use(JpaIdentityStore.AUTHENTICATED_USER,
                                 authenticatedAccount)
-                        .use("transUnitTransformer", transUnitTransformer)
                         .use("localeServiceImpl", localeService)
                         .use("translationWorkspaceManager",
                                 translationWorkspaceManager)
@@ -144,10 +142,6 @@ public class AddReviewCommentHandlerTest {
                         hLocale.getLocaleId())).thenReturn(hTextFlowTarget);
         when(hTextFlowTarget.getState()).thenReturn(ContentState.Rejected);
         when(hTextFlowTarget.getTextFlow()).thenReturn(hTextFlow);
-        when(
-                transUnitTransformer.transform(hTextFlow, hTextFlowTarget,
-                        hLocale)).thenReturn(
-                TestFixture.makeTransUnit(transUnitId.getId()));
         when(hTextFlowTarget.addReviewComment(commentContent, hPerson))
                 .thenReturn(hReviewComment);
         when(hReviewComment.getId()).thenReturn(1L);
@@ -169,7 +163,7 @@ public class AddReviewCommentHandlerTest {
                 hPerson);
         inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
         inOrder.verify(textFlowTargetDAO).flush();
-        inOrder.verify(workspace).publish(isA(TransUnitUpdated.class));
+        inOrder.verify(workspace).publish(isA(AddReviewComment.class));
 
         assertThat(result.getComment().getId(),
                 Matchers.equalTo(new ReviewCommentId(1L)));

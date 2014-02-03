@@ -161,6 +161,8 @@ public class AppView extends Composite implements AppDisplay,
         notificationDetailsBox =
                 new NotificationDetailsBox(messages, keyShortcutPresenter);
 
+        notifications.ensureDebugId("notifications");
+
         Window.enableScrolling(false);
     }
 

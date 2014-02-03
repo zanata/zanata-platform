@@ -50,8 +50,6 @@ public class RevertTransUnitUpdatesHandlerTest {
     private SecurityService.SecurityCheckResult checkResult;
     @Mock
     private TranslationWorkspace translationWorkspace;
-    @Captor
-    private ArgumentCaptor<TransUnitUpdated> updatedCaptor;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -97,14 +95,6 @@ public class RevertTransUnitUpdatesHandlerTest {
         assertThat(result.getUpdateInfoList(), Matchers.hasSize(1));
         assertThat(result.getUpdateInfoList().get(0).getPreviousState(),
                 Matchers.equalTo(ContentState.NeedReview));
-        verify(translationWorkspace).publish(updatedCaptor.capture());
-        TransUnitUpdated transUnitUpdated = updatedCaptor.getValue();
-        TransUnitUpdateInfo updateInfo = transUnitUpdated.getUpdateInfo();
-        assertThat(updateInfo.getPreviousState(),
-                Matchers.equalTo(ContentState.NeedReview));
-        assertThat(updateInfo.getPreviousVersionNum(), Matchers.equalTo(0));
-        assertThat(transUnitUpdated.getUpdateType(),
-                Matchers.equalTo(TransUnitUpdated.UpdateType.Revert));
     }
 
     private static TranslationService.TranslationResult mockTranslationResult(

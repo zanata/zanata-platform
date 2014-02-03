@@ -22,9 +22,12 @@ package org.zanata.page;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -120,4 +123,32 @@ public class AbstractPage {
         return done;
     }
 
+    /**
+     * Wait for certain condition to happen.
+     *
+     * For example, wait for a translation updated event gets broadcast to editor.
+     *
+     * @param callable a callable that returns a result
+     * @param matcher a matcher that matches to expected result
+     * @param <T> result type
+     */
+    public <T> void
+            waitFor(final Callable<T> callable, final Matcher<T> matcher) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                try {
+                    T result = callable.call();
+                    if (!matcher.matches(result)) {
+                        matcher.describeMismatch(result,
+                                new Description.NullDescription());
+                    }
+                    return matcher.matches(result);
+                } catch (Exception e) {
+                    log.warn("exception", e);
+                    return false;
+                }
+            }
+        });
+    }
 }
