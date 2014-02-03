@@ -1628,6 +1628,18 @@
       <artifactId>commons-httpclient</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.web</groupId>
+      <artifactId>jbossweb</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.security</groupId>
+      <artifactId>jboss-negotiation-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- needed by H2 triggers -->
     <dependency>
       <groupId>com.h2database</groupId>
