@@ -24,7 +24,18 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.zip.*;
+import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import lombok.Setter;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -155,6 +166,55 @@ public class TestFileGenerator {
             throw new RuntimeException("Expected files in dir " + directory
                     + " but none found.");
         }
+    }
+
+    /**
+     * Generates a zanata.xml with url default to test instance.
+     *
+     * @param output where to write it
+     * @param projectSlug project slug
+     * @param versionSlug version slug
+     * @param projectType project type
+     * @param locales locales
+     */
+    public void generateZanataXml(File output, String projectSlug, String versionSlug, String projectType, List<String> locales) {
+        ZanataXml zanataXml = new ZanataXml();
+        zanataXml.setProject(projectSlug);
+        zanataXml.setProjectVersion(versionSlug);
+        zanataXml.setProjectType(projectType);
+        zanataXml.setLocales(locales);
+        marshall(output, zanataXml, ZanataXml.class);
+    }
+
+    private static <T> void marshall(File output, T object, Class<T> xmlClass) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(xmlClass);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.marshal(object, output);
+        }
+        catch (JAXBException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    @XmlRootElement(namespace = "http://zanata.org/namespace/config/",
+            name = "config")
+    @Setter
+    private static class ZanataXml {
+        @XmlElement
+        private String url = PropertiesHolder
+                .getProperty(Constants.zanataInstance.value());
+        @XmlElement
+        private String project;
+        @XmlElement(name = "project-version")
+        private String projectVersion;
+        @XmlElement(name = "project-type")
+        private String projectType;
+        @XmlElementWrapper(name="locales")
+        @XmlElements(
+                @XmlElement(name = "locale")
+        )
+        private List<String> locales;
     }
 
     public File openTestFile(String filename) {

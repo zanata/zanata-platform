@@ -30,6 +30,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +49,7 @@ public class EditorPage extends BasePage {
     private static final String SOURCE_ID_FMT =
             "gwt-debug-%d-source-panel-%d-container";
     private static final int SINGULAR = 0;
+    private static final int PLURAL = 1;
 
     // first %d is row index, second %d is plural form index (i.e. 0-6)
     private static final String TARGET_ID_FMT = "gwt-debug-%d-target-%d";
@@ -103,6 +109,7 @@ public class EditorPage extends BasePage {
      * Get content of a text flow source at given row.
      * This assumes the text flow has singular form (i.e. no plural).
      * If a test requires to access plural content, this can be changed.
+     * TODO pahuang rename method name
      *
      * @param rowIndex
      *            row index
@@ -110,6 +117,13 @@ public class EditorPage extends BasePage {
      */
     public String getTranslationSourceAtRowIndex(final int rowIndex) {
         return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, SINGULAR);
+    }
+
+    public String getMessageSourceAtRowIndex(int rowIndex, int pluralIndex) {
+        Preconditions.checkArgument(
+                pluralIndex == SINGULAR || pluralIndex == PLURAL,
+                "plural index must be 0 or 1");
+        return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, pluralIndex);
     }
 
     /**
@@ -220,5 +234,11 @@ public class EditorPage extends BasePage {
         });
         approve.click();
         return new EditorPage(getDriver());
+    }
+
+    public String getMessageTargetAtRowIndex(int rowIndex, int pluralIndex) {
+        Preconditions.checkArgument(pluralIndex >= 0 && pluralIndex <= 6,
+                "plural index must be in range [0,6]");
+        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, pluralIndex);
     }
 }
