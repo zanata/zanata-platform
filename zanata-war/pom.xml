@@ -1558,9 +1558,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.web</groupId>
+      <artifactId>jbossweb</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.security</groupId>
-      <artifactId>jboss-negotiation-spnego</artifactId>
-      <version>2.2.5.Final</version>
+      <artifactId>jboss-negotiation-common</artifactId>
       <scope>provided</scope>
     </dependency>
 
