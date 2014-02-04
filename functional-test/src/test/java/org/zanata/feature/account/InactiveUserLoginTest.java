@@ -26,9 +26,8 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.SignInPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
@@ -37,7 +36,7 @@ import org.zanata.workflow.LoginWorkFlow;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Category(BasicAcceptanceTest.class)
+@Category(DetailedTest.class)
 @NoScreenshot
 public class InactiveUserLoginTest {
 
@@ -46,11 +45,9 @@ public class InactiveUserLoginTest {
 
     @Test
     public void loginWithInactiveUser() {
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("admin", "admin");
-        dashboardPage.goToAdministration().goToManageUserPage()
-                .editUserAccount("translator").clickEnabled().saveUser()
-                .logout();
+        new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
+                .goToManageUserPage().editUserAccount("translator")
+                .clickEnabled().saveUser().logout();
 
         SignInPage signInPage =
                 new LoginWorkFlow().signInFailure("translator", "translator");
