@@ -236,6 +236,104 @@ public class EditorPage extends BasePage {
         return new EditorPage(getDriver());
     }
 
+    public EditorPage setSyntaxHighlighting(boolean option) {
+        openConfigurationPanel();
+        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected() != option) {
+            getDriver().findElement(By.id("gwt-uid-144")).click();
+        }
+        return new EditorPage(getDriver());
+    }
+
+    private Boolean openConfigurationPanel() {
+        getDriver().findElement(By.className("icon-cog")).click();
+        return waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver input) {
+                return input.findElement(
+                        By.className("gwt-TabLayoutPanelContentContainer"))
+                        .isDisplayed();
+            }
+        });
+
+    }
+
+    public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, SINGULAR);
+    }
+
+    /**
+     * Get content from a target using the non-CodeMirror configuration
+     * @param rowIndex
+     * @return row target content
+     */
+    private String getContentAtRowIndex(final long rowIndex,
+            final String idFormat,
+            final int pluralIndex) {
+        return waitForTenSec().until(new Function<WebDriver, String>() {
+            @Override
+            public String apply(WebDriver input) {
+                return input.findElement(By.id(String.format(idFormat, rowIndex, pluralIndex))).getAttribute("value");
+            }
+        });
+    }
+
+    /**
+     * Translate a target using the non-CodeMirror field
+     * @param rowIndex
+     * @param text
+     * @return updated EditorPage
+     */
+    public EditorPage translateTargetAtRowIndex(final int rowIndex, String text) {
+        setTargetContent(rowIndex, text, TARGET_ID_FMT, SINGULAR);
+        return new EditorPage(getDriver());
+    }
+
+    private void setTargetContent(final long rowIndex, final String text,
+            final String idFormat, final int pluralIndex) {
+        WebElement we = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(
+                        By.id(String.format(idFormat, rowIndex, pluralIndex)));
+            }
+        });
+        we.click();
+        we.clear();
+        we.sendKeys(text);
+    }
+
+    /**
+     * Press the Approve button for the currently selected translation row
+     * @return new Editor page object
+     */
+    public EditorPage approveSelectedTranslation() {
+        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(By.className("selected"))
+                        .findElement(By.className("icon-install"));
+            }
+        });
+        approve.click();
+        return new EditorPage(getDriver());
+    }
+
+    /**
+     * Press the Save as Fuzzy button for the currently selected translation row
+     * @return new Editor page object
+     */
+    public EditorPage saveAsFuzzySelectedTranslation() {
+        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(By.className("selected"))
+                        .findElement(By.className("icon-flag-1"));
+            }
+        });
+        approve.click();
+        return new EditorPage(getDriver());
+    }
+
     public String getMessageTargetAtRowIndex(int rowIndex, int pluralIndex) {
         Preconditions.checkArgument(pluralIndex >= 0 && pluralIndex <= 6,
                 "plural index must be in range [0,6]");

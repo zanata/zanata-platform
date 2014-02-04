@@ -14,7 +14,7 @@ import org.junit.experimental.categories.Category;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Category(BasicAcceptanceTest.class)
+@Category(DetailedTest.class)
 public class GettextPluralSupportTest {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -102,16 +102,22 @@ public class GettextPluralSupportTest {
                 getTextFlowTargets(new File(pullDir + "/pl/test.po"));
         assertThat(pulledTargets, Matchers.equalTo(originalTargets));
 
-        // TODO translate some text in UI and then pull and compare
+        // translate on web UI and pull again
+        editorPage.setSyntaxHighlighting(false)
+                .translateTargetAtRowIndex(0, "one aoeuaouaou")
+                .saveAsFuzzySelectedTranslation();
+
+
+        client.callWithTimeout(tempDir, command);
+        List<String> newContents =
+                getTextFlowTargets(new File(pullDir + "/pl/test.po")).get(0)
+                        .getContents();
+        assertThat(newContents, Matchers.hasItem("one aoeuaouaou"));
+
     }
 
     private static EditorPage verifyPluralPushedToEditor() {
-        // first message
-        // msgid "One file removed"
-        // msgid_plural "%d files removed"
-        // msgstr[0] "1 aoeuaouaou"
-        // msgstr[1] "%d aoeuaouao"
-
+        // verify first message
         new LoginWorkFlow().signIn("admin", "admin");
         EditorPage editorPage =
                 new BasicWorkFlow().goToPage(String.format(
