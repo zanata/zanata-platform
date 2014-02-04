@@ -190,6 +190,7 @@ public class TestFileGenerator {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(xmlClass);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(object, output);
         }
         catch (JAXBException e) {
@@ -197,22 +198,23 @@ public class TestFileGenerator {
         }
     }
 
-    @XmlRootElement(namespace = "http://zanata.org/namespace/config/",
+    @XmlRootElement(namespace = ZanataXml.NS,
             name = "config")
     @Setter
     private static class ZanataXml {
-        @XmlElement
+        static final String NS = "http://zanata.org/namespace/config/";
+        @XmlElement(namespace = ZanataXml.NS)
         private String url = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value());
-        @XmlElement
+        @XmlElement(namespace = ZanataXml.NS)
         private String project;
-        @XmlElement(name = "project-version")
+        @XmlElement(name = "project-version", namespace = ZanataXml.NS)
         private String projectVersion;
-        @XmlElement(name = "project-type")
+        @XmlElement(name = "project-type", namespace = ZanataXml.NS)
         private String projectType;
-        @XmlElementWrapper(name="locales")
+        @XmlElementWrapper(name="locales", namespace = ZanataXml.NS)
         @XmlElements(
-                @XmlElement(name = "locale")
+                @XmlElement(name = "locale", namespace = ZanataXml.NS)
         )
         private List<String> locales;
     }
