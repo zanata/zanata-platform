@@ -15,7 +15,8 @@ import org.junit.runners.Suite;
     GlossaryPushCSVTest.class,
     UnauthorizedGlossaryDeleteTest.class,
     UnauthorizedGlossaryPushTest.class,
-    GlossaryDeleteTest.class
+    GlossaryDeleteTest.class,
+    GlossaryAdminTest.class
 })
 // @formatter:on
 public class GlossaryTestSuite {

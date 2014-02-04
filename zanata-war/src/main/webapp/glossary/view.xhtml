@@ -99,7 +99,7 @@
 
 <ui:define name="page_title">#{messages['jsf.Glossary']}</ui:define>
 <ui:define name="center_content">
-  <h:form>
+  <h:form id="glossary_form">
     <s:token allowMultiplePosts="true"/>
     <rich:dataTable id="data_table" width="100%"
       value="#{glossaryAction.getStats()}" var="language"

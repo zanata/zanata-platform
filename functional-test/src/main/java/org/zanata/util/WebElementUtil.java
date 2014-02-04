@@ -153,20 +153,25 @@ public class WebElementUtil {
 
     public static List<String> getColumnContents(WebDriver driver, final By by,
             final int columnIndex) {
+        WebElement table;
+        try {
+            table = driver.findElement(by);
+        } catch (NoSuchElementException noElement) {
+            // Some pages don't show a table, if there's no
+            // items to show
+            return Collections.emptyList();
+        }
+        return getColumnContents(driver, table, columnIndex);
+    }
+
+    public static List<String> getColumnContents(WebDriver driver,
+            final WebElement table, final int columnIndex) {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(@Nullable WebDriver input) {
                         if (input == null) {
                             throw new RuntimeException("Driver is null");
-                        }
-                        WebElement table;
-                        try {
-                            table = input.findElement(by);
-                        } catch (NoSuchElementException noElement) {
-                            // Some pages don't show a table, if there's no
-                            // items to show
-                            return Collections.emptyList();
                         }
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
@@ -188,7 +193,6 @@ public class WebElementUtil {
                                 }));
                     }
                 });
-
     }
 
     public static List<List<String>> getTwoDimensionList(WebDriver driver,

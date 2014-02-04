@@ -33,6 +33,7 @@ import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
@@ -62,6 +63,9 @@ public class BasePage extends CorePage {
     @FindBy(id = "languages_link")
     private WebElement languagesLink;
 
+    @FindBy(id = "glossary_link")
+    private WebElement glossaryLink;
+
     @FindBy(id = "user--avatar")
     private WebElement userAvatar;
 
@@ -90,6 +94,11 @@ public class BasePage extends CorePage {
     public VersionGroupsPage goToGroups() {
         groupsLink.click();
         return new VersionGroupsPage(getDriver());
+    }
+
+    public GlossaryPage goToGlossary() {
+        glossaryLink.click();
+        return new GlossaryPage(getDriver());
     }
 
     public AdministrationPage goToAdministration() {
