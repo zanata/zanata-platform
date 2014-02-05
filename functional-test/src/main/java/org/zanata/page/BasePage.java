@@ -28,7 +28,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
@@ -84,12 +83,28 @@ public class BasePage extends CorePage {
     }
 
     public ProjectsPage goToProjects() {
-        projectsLink.click();
+        clickNavMenuItem(projectsLink);
         return new ProjectsPage(getDriver());
     }
 
+    private void clickNavMenuItem(final WebElement menuItem) {
+        if (!menuItem.isDisplayed()) {
+            // screen is too small the menu become dropdown
+            getDriver().findElement(By.id("nav-main"))
+                    .findElement(By.tagName("a"))
+                    .click();
+        }
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return menuItem.isDisplayed();
+            }
+        });
+        menuItem.click();
+    }
+
     public VersionGroupsPage goToGroups() {
-        groupsLink.click();
+        clickNavMenuItem(groupsLink);
         return new VersionGroupsPage(getDriver());
     }
 
