@@ -54,6 +54,14 @@ public class GlossaryAdminTest {
 
     private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
 
+    /**
+     * Validates that a pushed glossary appears in the Glossary table.
+     * After pushing, a table with Glossary statistics should be shown.
+     * Validate that the the number of glossary entries per language matches
+     * the number of entries pushed from each of the test cases metnioned in the
+     * Setup.
+     * @see TCMS Test Case 181711
+     */
     @Test
     public void testGlossaryView() {
         // Push a glossary

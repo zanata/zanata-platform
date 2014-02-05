@@ -63,9 +63,6 @@ public class BasePage extends CorePage {
     @FindBy(id = "languages_link")
     private WebElement languagesLink;
 
-    @FindBy(id = "glossary_link")
-    private WebElement glossaryLink;
-
     @FindBy(id = "user--avatar")
     private WebElement userAvatar;
 
@@ -97,7 +94,8 @@ public class BasePage extends CorePage {
     }
 
     public GlossaryPage goToGlossary() {
-        glossaryLink.click();
+        // Dynamically find the link, as it is not present for every user
+        getDriver().findElement(By.id("glossary_link")).click();
         return new GlossaryPage(getDriver());
     }
 
