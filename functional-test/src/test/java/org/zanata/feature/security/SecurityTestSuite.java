@@ -29,8 +29,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        SecurityTest.class,
-        /* LoginTest.class, DISABLED (RHBZ-1016937) TODO: FIX */
         SecurityFullTest.class })
 public class SecurityTestSuite {
 }
