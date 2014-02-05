@@ -33,6 +33,7 @@ import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HomePage;
@@ -90,6 +91,12 @@ public class BasePage extends CorePage {
     public VersionGroupsPage goToGroups() {
         groupsLink.click();
         return new VersionGroupsPage(getDriver());
+    }
+
+    public GlossaryPage goToGlossary() {
+        // Dynamically find the link, as it is not present for every user
+        getDriver().findElement(By.id("glossary_link")).click();
+        return new GlossaryPage(getDriver());
     }
 
     public AdministrationPage goToAdministration() {
