@@ -232,6 +232,7 @@
           <!-- report violations to stdout (not console!) -->
           <consoleOutput>true</consoleOutput>
           <includes>*.xml,*.txt,*.md,etc/**,src/**</includes>
+          <excludes>src/test/resources/**</excludes>
           <sourceDirectory>${project.basedir}</sourceDirectory>
         </configuration>
         <!--
