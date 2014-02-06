@@ -15,9 +15,9 @@ includes:
 - htmlmixed.js
 - javascript.js
 - xml.js
+- overlay.js (to support visible space)
 - runmode.js
 - searchcursor.js (to enable highlight search term within codemirror"
-- overlay.js (to support visible space)
 
 added following custom code when generating the codemirror-compressed.js (to support visible space):
 
@@ -34,3 +34,11 @@ CodeMirror.defineMode("visibleSpace", function(config, parserConfig) {
   };
   return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "htmlmixed"), visibleSpaceOverlay);
 });
+
+Also download new css file from codemirror and compare it with current one. Add the missing bits.
+hint:
+.CodeMirror {
+  min-height: 4em;
+  height: auto;
+}
+and last a few classes with comment "show visible tab" etc.
