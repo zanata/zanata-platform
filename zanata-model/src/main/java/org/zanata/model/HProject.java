@@ -148,6 +148,7 @@ public class HProject extends SlugEntityBase implements Serializable,
 
     @Type(type = "entityStatus")
     @NotNull
+    @Field
     private EntityStatus status = EntityStatus.ACTIVE;
 
     public void addIteration(HProjectIteration iteration) {

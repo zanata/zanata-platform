@@ -235,10 +235,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
             int maxResult, int firstResult, boolean includeObsolete)
             throws ParseException {
         FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
-        query.setMaxResults(maxResult).setFirstResult(firstResult)
+        return query.setMaxResults(maxResult).setFirstResult(firstResult)
                 .getResultList();
-
-        return query.getResultList();
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,
@@ -264,7 +262,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =
                     new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
-                            EntityStatus.OBSOLETE.toString()));
+                            EntityStatus.OBSOLETE.toString().toLowerCase()));
             booleanQuery.add(obsoleteStateQuery, BooleanClause.Occur.MUST_NOT);
         }
 
