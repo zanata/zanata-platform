@@ -40,7 +40,8 @@ public class DocumentTypeTest {
                 allExtensions,
                 containsInAnyOrder("po", "pot", "txt", "dtd", "idml", "html",
                         "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
-                        "odg", "fodg", "odb", "odf"));
+                        "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
+                        "vtt"));
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
