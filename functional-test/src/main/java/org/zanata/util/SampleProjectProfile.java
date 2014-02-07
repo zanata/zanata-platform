@@ -30,6 +30,7 @@ import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HDocument;
+import org.zanata.model.HDocumentHistory;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HIterationGroup;
@@ -89,7 +90,9 @@ public class SampleProjectProfile {
                 HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
                 // tex flows and targets
                 HPoTargetHeader.class, HTextFlowTargetHistory.class,
-                HTextFlowTarget.class, HTextFlow.class, HDocument.class,
+                HTextFlowTarget.class, HTextFlow.class,
+                // documents
+                HDocumentHistory.class, HDocument.class,
                 // locales
                 HLocaleMember.class, HLocale.class,
                 // version group

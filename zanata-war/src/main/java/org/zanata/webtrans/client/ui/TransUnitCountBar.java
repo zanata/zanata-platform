@@ -108,6 +108,7 @@ public class TransUnitCountBar extends Composite implements
         }
 
         sinkEvents(Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONCLICK);
+        label.ensureDebugId("statistics-label");
     }
 
     public void setStatOption(boolean statsByWords) {

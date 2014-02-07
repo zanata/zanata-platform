@@ -339,4 +339,9 @@ public class EditorPage extends BasePage {
                 "plural index must be in range [0,6]");
         return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, pluralIndex);
     }
+
+    public String getStatistics() {
+        return getDriver().findElement(By.id("gwt-debug-statistics-label"))
+                .getText();
+    }
 }

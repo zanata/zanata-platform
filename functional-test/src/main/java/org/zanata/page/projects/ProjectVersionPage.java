@@ -37,6 +37,8 @@ import java.util.List;
 
 @Slf4j
 public class ProjectVersionPage extends BasePage {
+    public static final String STATS_TEMPLATE =
+            "iterationLanguageForm:data_table:%d:statistics";
     @FindBy(id = "iterationLanguageForm:data_table:tb")
     private WebElement localeTableTBody;
 
@@ -120,5 +122,21 @@ public class ProjectVersionPage extends BasePage {
     public CreateVersionPage clickEditVersion() {
         editVersionButton.click();
         return new CreateVersionPage(getDriver());
+    }
+
+    public String getStatisticsForLocale(String locale) {
+        List<WebElement> localeTableRows = getLocaleTableRows();
+        for (int rowIndex = 0; rowIndex < localeTableRows.size(); rowIndex++) {
+            WebElement tableRow = localeTableRows.get(rowIndex);
+            WebElement firstLink = tableRow.findElement(By.tagName("a"));
+            if (getLocaleLinkText(firstLink).equals(locale)) {
+                WebElement stats =
+                        getDriver().findElement(
+                                By.id(String.format(STATS_TEMPLATE, rowIndex)));
+                return stats.getText();
+            }
+        }
+        throw new IllegalArgumentException(
+                "can not find statistics for locale:" + locale);
     }
 }
