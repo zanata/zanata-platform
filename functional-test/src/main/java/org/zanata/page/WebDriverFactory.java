@@ -60,9 +60,7 @@ public enum WebDriverFactory {
     }
 
     public WebDriver createDriver() {
-        WebDriver driver =
-                new EventFiringWebDriver(
-                        new Augmenter().augment(createPlainDriver()));
+        WebDriver driver = createPlainDriver();
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -131,7 +129,10 @@ public enum WebDriverFactory {
         } catch (IOException e) {
             throw new RuntimeException("fail to start chrome driver service");
         }
-        return new RemoteWebDriver(driverService.getUrl(), capabilities);
+        return new EventFiringWebDriver(
+                new Augmenter().augment(new RemoteWebDriver(driverService
+                        .getUrl(),
+                                capabilities)));
     }
 
     private WebDriver configureFirefoxDriver() {
