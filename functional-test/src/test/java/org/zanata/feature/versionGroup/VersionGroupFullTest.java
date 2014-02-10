@@ -73,7 +73,7 @@ public class VersionGroupFullTest {
                 .contains(groupName));
         VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
         assertThat("The group is displayed", groupView.getTitle(),
-                Matchers.equalTo("Groups:".concat(groupName)));
+                Matchers.equalTo("Groups - ".concat(groupName)));
     }
 
     @Test
