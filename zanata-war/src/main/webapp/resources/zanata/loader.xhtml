@@ -6,27 +6,13 @@
 
 <composite:interface>
   <composite:attribute name="type" type="java.lang.String"
-    shortDescription="size of the loader, large or huge" default=""/>
+    shortDescription="size of the loader, loader--large or loader--huge"
+    default="loader"/>
 </composite:interface>
 
 <composite:implementation>
-  <s:div styleClass="loader is-active" rendered="#{cc.attrs.type eq ''}">
-    <span class="loader__spinner">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </s:div>
 
-  <s:div styleClass="loader--large is-active" rendered="#{cc.attrs.type eq 'large'}">
-    <span class="loader__spinner">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </s:div>
-
-  <s:div styleClass="loader--huge is-active" rendered="#{cc.attrs.type eq 'huge'}">
+  <s:div styleClass="#{cc.attrs.type} is-active">
     <span class="loader__spinner">
       <span></span>
       <span></span>
