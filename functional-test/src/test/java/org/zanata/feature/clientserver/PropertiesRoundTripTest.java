@@ -115,7 +115,7 @@ public class PropertiesRoundTripTest {
                 new BasicWorkFlow().goToPage(String.format(
                         BasicWorkFlow.EDITOR_TEMPLATE, "properties-test",
                         "master", "pl", "test"), EditorPage.class);
-        assertThat(editor.getTranslationTargetAtRowIndex(1),
+        assertThat(editor.getMessageTargetAtRowIndex(1),
                 Matchers.equalTo("translation updated on client"));
     }
 
@@ -126,11 +126,11 @@ public class PropertiesRoundTripTest {
                         BasicWorkFlow.EDITOR_TEMPLATE, "properties-test",
                         "master", "pl", "test"), EditorPage.class);
 
-        assertThat(editorPage.getTranslationSourceAtRowIndex(0),
+        assertThat(editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("hello world"));
-        assertThat(editorPage.getTranslationSourceAtRowIndex(1),
+        assertThat(editorPage.getMessageSourceAtRowIndex(1),
                 Matchers.equalTo("this is from Huston"));
-        assertThat(editorPage.getTranslationSourceAtRowIndex(2),
+        assertThat(editorPage.getMessageSourceAtRowIndex(2),
                 Matchers.equalTo("hey hey"));
 
         return editorPage;

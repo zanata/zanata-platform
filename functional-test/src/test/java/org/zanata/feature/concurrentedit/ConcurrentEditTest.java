@@ -67,7 +67,7 @@ public class ConcurrentEditTest {
                         EDITOR_TEMPLATE, "base", "master", "pl",
                         "test.pot"), EditorPage.class);
 
-        String translation = editorPage.getTranslationTargetAtRowIndex(0);
+        String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
         assertThat(translation.trim(), Matchers.isEmptyString());
 
@@ -82,7 +82,7 @@ public class ConcurrentEditTest {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getTranslationTargetAtRowIndex(0);
+                return editorPage.getMessageTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }
@@ -123,7 +123,7 @@ public class ConcurrentEditTest {
                         EDITOR_TEMPLATE, "base", "beta", "pl",
                         "test.pot"), EditorPage.class);
 
-        String translation = editorPage.getTranslationTargetAtRowIndex(0);
+        String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
         assertThat(translation.trim(), Matchers.isEmptyString());
 
@@ -134,7 +134,7 @@ public class ConcurrentEditTest {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getTranslationTargetAtRowIndex(0);
+                return editorPage.getMessageTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }

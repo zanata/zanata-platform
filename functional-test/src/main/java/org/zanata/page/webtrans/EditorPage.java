@@ -105,13 +105,12 @@ public class EditorPage extends BasePage {
      * Get content of a text flow source at given row.
      * This assumes the text flow has singular form (i.e. no plural).
      * If a test requires to access plural content, this can be changed.
-     * TODO pahuang rename method name
      *
      * @param rowIndex
      *            row index
      * @return content of the source
      */
-    public String getTranslationSourceAtRowIndex(final int rowIndex) {
+    public String getMessageSourceAtRowIndex(final int rowIndex) {
         return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, SINGULAR);
     }
 
@@ -131,7 +130,7 @@ public class EditorPage extends BasePage {
      *            row index
      * @return content of the target
      */
-    public String getTranslationTargetAtRowIndex(final int rowIndex) {
+    public String getMessageTargetAtRowIndex(final int rowIndex) {
         return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, SINGULAR);
     }
 
