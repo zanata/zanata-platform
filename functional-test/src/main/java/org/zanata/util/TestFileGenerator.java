@@ -20,9 +20,11 @@
  */
 package org.zanata.util;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
@@ -33,8 +35,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.io.FileUtils;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import lombok.Setter;
 
 /**
