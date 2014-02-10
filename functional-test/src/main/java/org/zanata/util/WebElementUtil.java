@@ -225,6 +225,24 @@ public class WebElementUtil {
                 });
     }
 
+    /**
+     * This method is used to set JSF rich text editor (KCEditor) content.
+     * @param driver web driver
+     * @param richEditorWrapperField the wrapper div of the editor
+     * @param content content wants to set
+     */
+    public static void setRichTextEditorContent(WebDriver driver,
+            WebElement richEditorWrapperField,
+            String content) {
+        // This is how we can change JSF rich text editor content.
+        WebElement richTextEditorFrame =
+                richEditorWrapperField.findElement(By.tagName("iframe"));
+        driver.switchTo().frame(richTextEditorFrame);
+        ((JavascriptExecutor) driver)
+                .executeScript("document.body.innerHTML='" + content + "'");
+        driver.switchTo().defaultContent();
+    }
+
     private static class WebElementToInnerHTMLFunction implements
             Function<WebElement, String> {
         private final WebDriver driver;
