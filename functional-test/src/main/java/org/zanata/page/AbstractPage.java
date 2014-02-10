@@ -52,6 +52,10 @@ public class AbstractPage {
     private final WebDriver driver;
     private final FluentWait<WebDriver> ajaxWaitForTenSec;
 
+    public void reload() {
+        getDriver().navigate().refresh();
+    }
+
     public void deleteCookiesAndRefresh() {
         getDriver().manage().deleteAllCookies();
         Set<Cookie> cookies = getDriver().manage().getCookies();

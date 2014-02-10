@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.zip.*;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -87,7 +88,8 @@ public class TestFileGenerator {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
                     new FileOutputStream(testFile),
                     Charset.forName("UTF-8").newEncoder());
-            outputStreamWriter.write(testContent);
+            outputStreamWriter.write(testContent
+                    .replaceAll("\n", System.getProperty("line.separator")));
             outputStreamWriter.flush();
             outputStreamWriter.close();
         } catch (IOException ioException) {
@@ -153,5 +155,13 @@ public class TestFileGenerator {
             throw new RuntimeException("Expected files in dir " + directory
                     + " but none found.");
         }
+    }
+
+    public File openTestFile(String filename) {
+        String relativePath = "functional-test/target/test-classes/"
+                .concat(filename);
+        File testFile = new File(relativePath);
+        assert testFile.exists();
+        return testFile;
     }
 }

@@ -605,6 +605,17 @@
         </includes>
       </testResource>
       <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+          <includes>
+          <include>**/*.odt</include>
+          <include>**/*.odg</include>
+          <include>**/*.ods</include>
+          <include>**/*.odp</include>
+          <include>**/*.idml</include>
+        </includes>
+      </testResource>
+      <testResource>
         <directory>src/test/resources/zanata-user-config</directory>
         <filtering>true</filtering>
       </testResource>
