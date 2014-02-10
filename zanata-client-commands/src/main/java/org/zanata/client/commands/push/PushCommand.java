@@ -697,6 +697,10 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     }
 
     private void copyTransForDocument(String docName) {
+        if (getOpts().isDryRun()) {
+            log.info("Skipping Copy Trans for " + docName + " (due to dry run)");
+            return;
+        }
         log.info("Running Copy Trans for " + docName);
         try {
             this.copyTransResource.startCopyTrans(getOpts().getProj(),
