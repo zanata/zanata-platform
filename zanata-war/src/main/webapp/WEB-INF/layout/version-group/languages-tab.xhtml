@@ -48,8 +48,8 @@
       <div class="panel__results__type">
         <i class="i i--language txt--neutral"></i>
       </div>
-        <span
-          class="txt--meta"><strong>#{versionGroupHomeAction.activeLocales.size()}</strong></span>
+      <span
+        class="txt--meta"><strong>#{versionGroupHomeAction.activeLocales.size()}</strong></span>
     </div>
   </div>
   <h:form id="languages-language_form" styleClass="l--push-bottom-0">
@@ -84,28 +84,28 @@
               styleClass="bx--block">
               <div class="list__item">
                 <div class="list__item__info">
-                    <span class="list__title">
-                      #{hLocale.retrieveDisplayName()}
-                      <s:span
-                        rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
-                        styleClass="badge--danger"
-                        title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
-                        #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
-                      </s:span>
-                    </span>
+                  <span class="list__title">
+                    #{hLocale.retrieveDisplayName()}
+                    <s:span
+                      rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
+                      styleClass="badge--danger"
+                      title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
+                      #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
+                    </s:span>
+                  </span>
                 </div>
                 <s:div styleClass="list__item__stats"
                   rendered="#{versionGroupHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                     <span class="stats--small #{displayUnit.cssClass}">
-                        <span class="stats__figure">
-                          #{displayUnit.figure}
-                        </span>
-                        <span class="stats__unit">
-                          #{displayUnit.unit}
-                        </span>
-                     </span>
+                   <span class="stats--small #{displayUnit.cssClass}">
+                      <span class="stats__figure">
+                        #{displayUnit.figure}
+                      </span>
+                      <span class="stats__unit">
+                        #{displayUnit.unit}
+                      </span>
+                   </span>
                 </s:div>
               </div>
 
@@ -191,28 +191,28 @@
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">#{version.project.name}</h3>
-                      <span class="list__item__meta">
-                        <i
-                          class="txt--neutral i i--version"></i> #{version.slug}
+                  <span class="list__item__meta">
+                    <i
+                      class="txt--neutral i i--version"></i> #{version.slug}
 
-                        <s:fragment
-                          rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
-                          <span
-                            class="badge--danger l--push-left-quarter">#{messages['jsf.Missing']}</span>
-                        </s:fragment>
-                      </span>
+                    <s:fragment
+                      rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
+                      <span
+                        class="badge--danger l--push-left-quarter">#{messages['jsf.Missing']}</span>
+                    </s:fragment>
+                  </span>
                 </div>
                 <div class="list__item__stats">
                   <ui:param name="displayUnit"
                     value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.projectSortingList.selectedSortOption, versionGroupHomeAction.selectedLocale.localeId, version.id)}"/>
-                      <span class="stats--small #{displayUnit.cssClass}">
-                        <span class="stats__figure">
-                          #{displayUnit.figure}
-                        </span>
-                        <span class="stats__unit txt--lowercase">
-                          #{displayUnit.unit}
-                        </span>
-                      </span>
+                  <span class="stats--small #{displayUnit.cssClass}">
+                    <span class="stats__figure">
+                      #{displayUnit.figure}
+                    </span>
+                    <span class="stats__unit txt--lowercase">
+                      #{displayUnit.unit}
+                    </span>
+                  </span>
                 </div>
               </div>
 

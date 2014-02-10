@@ -33,8 +33,9 @@ public class SortingType implements Serializable {
     }
 
     public enum SortOption {
-        PERCENTAGE("%"), HOURS("hours"), WORDS("words"), ALPHABETICAL(
-                "alphabetical");
+        PERCENTAGE("percent translated"), HOURS("hours remaining"), WORDS(
+            "words remaining"), ALPHABETICAL("alphabetical"), LAST_UPDATED(
+            "last updated"), LAST_TRANSLATED("last translated");
 
         @Getter
         String display;

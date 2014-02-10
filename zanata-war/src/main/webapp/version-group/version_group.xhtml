@@ -55,7 +55,7 @@
           </p>
         </div>
       </s:div>
-      <s:div id="overall_statistic" styleClass="progress-bar__expander">
+      <s:div id="overall_statistic" styleClass="progress-bar--large__expander">
         <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
           <p class="d--top l--pad-top-half txt--mini">
             #{messages['jsf.TotalSourceContains']}
@@ -84,11 +84,8 @@
             </span>
             </li>
           </ul>
-          <div class="l--push-v-1">
-            <zanata:statistic
-              value="#{versionGroupHomeAction.overallStatistic}"
-              type="large"/>
-          </div>
+          <zanata:statistic value="#{versionGroupHomeAction.overallStatistic}"
+            type="large"/>
         </s:fragment>
         <zanata:loader type="large"
           rendered="#{!versionGroupHomeAction.pageRendered}"/>

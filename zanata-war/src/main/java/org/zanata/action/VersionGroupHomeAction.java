@@ -27,7 +27,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.Nullable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -48,13 +52,11 @@ import org.zanata.service.VersionLocaleKey;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.ZanataMessages;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -127,7 +129,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     public void setPageRendered(boolean pageRendered) {
         if (pageRendered) {
-            loadStatistic();
+            loadStatistics();
         }
         this.pageRendered = pageRendered;
     }
@@ -176,17 +178,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                                     selectedVersionId, item2.getLocaleId()));
                 }
 
-                if (selectedSortOption
-                        .equals(SortingType.SortOption.PERCENTAGE)) {
+                switch (selectedSortOption) {
+                case PERCENTAGE:
                     return Double.compare(
                             wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.HOURS)) {
+                case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.WORDS)) {
+                case WORDS:
                     return Double.compare(wordStatistic1.getUntranslated(),
                             wordStatistic2.getUntranslated());
                 }
@@ -239,23 +239,17 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                     wordStatistic2 = getStatisticForProject(item2.getId());
                 }
 
-                if (selectedSortOption
-                        .equals(SortingType.SortOption.PERCENTAGE)) {
+                switch (selectedSortOption) {
+                case PERCENTAGE:
                     return Double.compare(
                             wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.HOURS)) {
+                case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.WORDS)) {
-                    if (wordStatistic1.getUntranslated() == wordStatistic2
-                            .getUntranslated()) {
-                        return 0;
-                    }
-                    return wordStatistic1.getTotal() > wordStatistic2
-                            .getTotal() ? 1 : -1;
+                case WORDS:
+                    return Double.compare(wordStatistic1.getUntranslated(),
+                            wordStatistic2.getUntranslated());
                 }
             } else {
                 return item1.getProject().getName().toLowerCase()
@@ -331,13 +325,13 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     }
 
     public List<HLocale> getFilteredLocales() {
-        List<HLocale> list = getActiveLocales();
+        List<HLocale> unfiltered = getActiveLocales();
         if (StringUtils.isEmpty(languageQuery)) {
-            return list;
+            return unfiltered;
         }
 
         Collection<HLocale> filtered =
-                Collections2.filter(list, new Predicate<HLocale>() {
+                Collections2.filter(unfiltered, new Predicate<HLocale>() {
                     @Override
                     public boolean apply(@Nullable HLocale input) {
                         return input.retrieveDisplayName().toLowerCase()
@@ -487,7 +481,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
      * group.
      */
     @Override
-    protected void loadStatistic() {
+    protected void loadStatistics() {
         statisticMap = Maps.newHashMap();
 
         for (HLocale locale : getActiveLocales()) {
@@ -515,20 +509,22 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     }
 
     public List<HProjectIteration> getFilteredProjectIterations() {
-        List<HProjectIteration> list = getProjectIterations();
+        List<HProjectIteration> unfiltered = getProjectIterations();
         if (StringUtils.isEmpty(projectQuery)) {
-            return list;
+            return unfiltered;
         }
 
         Collection<HProjectIteration> filtered =
-                Collections2.filter(list, new Predicate<HProjectIteration>() {
-                    @Override
-                    public boolean apply(@Nullable HProjectIteration input) {
-                        HProject project = input.getProject();
-                        return project.getName().toLowerCase()
-                                .contains(projectQuery.toLowerCase());
-                    }
-                });
+                Collections2.filter(unfiltered,
+                        new Predicate<HProjectIteration>() {
+                            @Override
+                            public boolean apply(
+                                    @Nullable HProjectIteration input) {
+                                HProject project = input.getProject();
+                                return project.getName().toLowerCase()
+                                        .contains(projectQuery.toLowerCase());
+                            }
+                        });
 
         return Lists.newArrayList(filtered);
     }
@@ -540,7 +536,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         selectedLocale = null;
         selectedVersion = null;
         missingLocaleVersionMap = null;
-        loadStatistic();
+        loadStatistics();
     }
 
     @Override

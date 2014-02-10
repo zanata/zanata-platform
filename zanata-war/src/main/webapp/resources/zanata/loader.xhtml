@@ -5,11 +5,19 @@
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <composite:interface>
-  <composite:attribute name="type" type="java.lang.String" required="true"
-    shortDescription="size of the loader: large or huge"/>
+  <composite:attribute name="type" type="java.lang.String"
+    shortDescription="size of the loader, large or huge" default=""/>
 </composite:interface>
 
 <composite:implementation>
+  <s:div styleClass="loader is-active" rendered="#{cc.attrs.type eq ''}">
+    <span class="loader__spinner">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </s:div>
+
   <s:div styleClass="loader--large is-active" rendered="#{cc.attrs.type eq 'large'}">
     <span class="loader__spinner">
       <span></span>
