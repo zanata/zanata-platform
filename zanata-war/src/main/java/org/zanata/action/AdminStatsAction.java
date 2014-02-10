@@ -100,6 +100,10 @@ public class AdminStatsAction implements Serializable {
         return personDAO.getTotalTranslator();
     }
 
+    public int getTotalReviewer() {
+        return personDAO.getTotalReviewer();
+    }
+
     public int getTotalDocuments() {
         return documentDAO.getTotalDocument();
     }
@@ -136,8 +140,8 @@ public class AdminStatsAction implements Serializable {
         return textFlowTargetDAO.getTotalObsoleteTextFlowTargets();
     }
 
-    public int getTotalApprovedTextFlowTargets() {
-        return textFlowTargetDAO.getTotalTranslatedTextFlowTargets();
+    public int getTotalApprovedOrTranslatedTextFlowTargets() {
+        return textFlowTargetDAO.getTotalApprovedOrTranslatedTextFlowTargets();
     }
 
     public int getTotalRejectedOrFuzzyTextFlowTargets() {

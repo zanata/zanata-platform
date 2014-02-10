@@ -80,13 +80,13 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
         return totalCount.intValue();
     }
 
-    public int getTotalTranslatedTextFlowTargets() {
+    public int getTotalApprovedOrTranslatedTextFlowTargets() {
         Query q =
                 getSession()
                         .createQuery(
                                 "select count(*) from HTextFlowTarget t where t.state = :state or t.state = :state2 and t.textFlow.obsolete=0");
         q.setCacheable(true);
-        q.setComment("TextFlowTargetDAO.getTotalTranslatedTextFlowTargets");
+        q.setComment("TextFlowTargetDAO.getTotalApprovedOrTranslatedTextFlowTargets");
         Long totalCount =
                 (Long) q.setParameter("state", ContentState.Approved)
                         .setParameter("state2", ContentState.Translated)
