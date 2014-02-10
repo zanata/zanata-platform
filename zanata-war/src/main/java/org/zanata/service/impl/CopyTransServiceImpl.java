@@ -274,8 +274,8 @@ public class CopyTransServiceImpl implements CopyTransService {
             }
             hcomment.setComment(createComment(matchingTarget));
 
-            // TODO Maybe we should think about registering an integrator for
-            // these updates
+            // TODO Maybe we should think about registering a Hibernate
+            // integrator for these updates
             signalCopiedTranslation(hTarget, prevState);
         }
     }
@@ -517,6 +517,11 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     private void signalCopiedTranslation(HTextFlowTarget target,
             ContentState previousState) {
+        /* Using a direct method call instead of an event because it's easier to
+         * read. Since these events are being called synchronously (as opposed
+         * to an 'after Transaction' events), there is no big performance gain
+         * and makes the code easier to read and navigate.
+         */
         HDocument document = target.getTextFlow()
                 .getDocument();
         TextFlowTargetStateEvent updateEvent =

@@ -148,7 +148,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                 .useImpl(DocumentServiceImpl.class)
                 .useImpl(ResourceUtils.class)
                 .useImpl(SecurityServiceImpl.class)
-                .useImpl(ValidationServiceImpl.class);
+                .useImpl(ValidationServiceImpl.class)
+                .useImpl(VersionStateCacheImpl.class);
 
         TranslatedDocResourceService translatedDocResourceService =
                 seamAutowire.autowire(TranslatedDocResourceService.class);

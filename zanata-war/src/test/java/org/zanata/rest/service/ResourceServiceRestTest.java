@@ -23,6 +23,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.VersionStateCacheImpl;
 
 public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest {
     private final Logger log = LoggerFactory
@@ -40,7 +41,8 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest 
         seamAutowire.use("session", getSession()).use("entityManager", getEm())
                 .use("identity", mockIdentity).useImpl(LocaleServiceImpl.class)
                 .useImpl(CopyTransServiceImpl.class)
-                .useImpl(DocumentServiceImpl.class);
+                .useImpl(DocumentServiceImpl.class)
+                .useImpl(VersionStateCacheImpl.class);
 
         SourceDocResourceService sourceDocResourceService =
                 seamAutowire.autowire(SourceDocResourceService.class);
