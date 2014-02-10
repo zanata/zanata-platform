@@ -130,3 +130,7 @@ function registerMouseEvent(autocompleteId, selectItemAction,
     selectRow(firstResult);
   }
 }
+
+function filterList(input, filterFn) {
+  filterFn(jQuery(input).val());
+}

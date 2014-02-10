@@ -10,126 +10,60 @@
   template="../WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">
-  #{messages['jsf.Groups']}:#{versionGroupHome.instance.name}
+  #{messages['jsf.Groups']} - #{versionGroupHome.instance.name}
 </ui:define>
 
-
 <ui:define name="center_content">
-<script type="text/javascript">
-  jQuery(document).ready(function () {
-    checkHashUrl();
-    renderStatistics();
-  });
+  <script type="text/javascript">
+    jQuery(document).ready(function () {
+      checkHashUrl('#languages_tab', '#settings-general_tab');
+      renderStatistics();
+    });
 
-  function checkHashUrl() {
-    var selectedTabId = "#languages_tab"; //default to language tab
-    var originalHashUrl = window.location.hash;
-
-    if (window.location.hash) {
-      if (window.location.hash.substring(0, 9) == '#settings') {
-        window.location.hash = "#settings";
-      }
-
-      if (elementExist(window.location.hash + "_tab")) {
-        selectedTabId = window.location.hash + "_tab";
-      }
+    function updateHashAndGotoUrl(anchor) {
+      window.location.hash = jQuery(anchor).attr('href');
+      checkHashUrl('#languages_tab', '#settings-general_tab');
     }
+  </script>
 
-    jQuery(selectedTabId)[0].click();
-    window.location.hash = selectedTabId;
+  <h:form>
+    <a4j:jsFunction name="refreshStatistics"
+      action="#{versionGroupHomeAction.resetPageData}"
+      render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
 
-    if (window.location.hash.substring(0, 9) == "#settings") {
-      handleSettingsTab(originalHashUrl);
-    }
-  }
+    <a4j:jsFunction name="renderStatistics"
+      render="overall_statistic, languages-language_form, projects-project_form"
+      action="#{versionGroupHomeAction.setPageRendered(true)}"/>
+  </h:form>
 
-  function updateHashAndGotoUrl(anchor) {
-    window.location.hash = jQuery(anchor).attr('href');
-    checkHashUrl();
-  }
+  <div class="g">
+    <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
+      <p class="txt--meta l--push-all-0">
+        <s:link view="/version-group/home.xhtml" propagation="none">
+          #{messages['jsf.Groups']}
+        </s:link>
+      </p>
 
-  function handleSettingsTab(hashUrl) {
-    var selectedSettingsTabId = "#settings-general_tab"; //default to general tab
-    if (elementExist(hashUrl)) {
-      selectedSettingsTabId = hashUrl + "_tab";
-    }
-    jQuery(selectedSettingsTabId)[0].click();
-  }
+      <s:div styleClass="media l--push-bottom-half" id="group-info">
+        <div class="media__body">
+          <h1 class="l--push-all-0">
+            #{versionGroupHome.instance.name}
+          </h1>
 
-  function elementExist(hashId) {
-    return jQuery(hashId).length != 0;
-  }
-
-  function setActiveTab(clickedTab) {
-    jQuery(clickedTab).parent().siblings("li").children("a").removeClass('is-active');
-    jQuery(clickedTab).addClass("is-active");
-
-    jQuery("[id$=_content]").addClass('is-hidden');
-    jQuery(jQuery(clickedTab).attr('href') +
-      '_content').removeClass('is-hidden');
-  }
-
-  function updateActiveRow(clickedElement) {
-    var parent = jQuery(clickedElement).parent();
-
-    jQuery(clickedElement).addClass("is-active");
-
-    jQuery(parent).siblings("li").removeClass('is-active');
-    jQuery(parent).addClass('is-active');
-    jQuery(parent).siblings("li").children("a").removeClass('is-active');
-  }
-
-  function removeActiveRows(listId) {
-    jQuery('#' + listId).children('li').removeClass('is-active');
-    jQuery('#' + listId).children('li').children("a").removeClass('is-active');
-  }
-
-  function toggleColumn(tabId) {
-    jQuery('#' + tabId).find('.panels--2').toggleClass('panel__active-2');
-    jQuery('#' + tabId).find('.panel__active-2').find('.panels__panel').addClass('is-active');
-  }
-</script>
-
-<h:form>
-  <a4j:jsFunction name="refreshStatistics"
-    action="#{versionGroupHomeAction.resetPageData}"
-    render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
-
-  <a4j:jsFunction name="renderStatistics"
-    render="overall_statistic, languages-language_form, projects-project_form"
-    action="#{versionGroupHomeAction.setPageRendered(true)}"/>
-</h:form>
-
-<div class="g">
-  <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
-    <p class="txt--meta l--push-all-0">
-      <s:link view="/version-group/home.xhtml" propagation="none">
-        #{messages['jsf.Groups']}
-      </s:link>
-    </p>
-
-    <s:div styleClass="media l--push-bottom-half" id="group-info">
-      <div class="media__body">
-        <h1 class="l--push-all-0">
-          #{versionGroupHome.instance.name}
-        </h1>
-
-        <p class="txt--understated">
-          #{versionGroupHome.instance.description}
-        </p>
-      </div>
-    </s:div>
-
-    <a4j:outputPanel id="overall_statistic" layout="block"
-      styleClass="progress-bar__expander">
-      <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
-        <p class="d--top l--pad-top-half txt--mini">
-          #{messages['jsf.TotalSourceContains']}
-          <strong>#{versionGroupHomeAction.overallStatistic.total}
-            words</strong>
-        </p>
-        <ul class="g g--fit">
-          <li class="g__item">
+          <p class="txt--understated">
+            #{versionGroupHome.instance.description}
+          </p>
+        </div>
+      </s:div>
+      <s:div id="overall_statistic" styleClass="progress-bar__expander">
+        <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+          <p class="d--top l--pad-top-half txt--mini">
+            #{messages['jsf.TotalSourceContains']}
+            <strong>#{versionGroupHomeAction.overallStatistic.total}
+              words</strong>
+          </p>
+          <ul class="g g--fit">
+            <li class="g__item">
             <span class="stats--large txt--state-success">
               <span class="stats__figure">
                 #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
@@ -138,8 +72,8 @@
                 #{messages['jsf.stats.Translated']}
               </span>
             </span>
-          </li>
-          <li class="g__item">
+            </li>
+            <li class="g__item">
             <span class="stats--large">
               <span class="stats__figure">
                 #{statisticBar.formatHours(versionGroupHomeAction.overallStatistic.remainingHours)}
@@ -148,121 +82,132 @@
                 #{messages['jsf.stats.TotalHoursRemaining']}
               </span>
             </span>
-          </li>
-        </ul>
-        <div class="l--push-v-1">
-          <zanata:statistic
-            value="#{versionGroupHomeAction.overallStatistic}"
-            type="large"/>
-        </div>
-      </s:fragment>
-      <zanata:loader type="large"
-        rendered="#{!versionGroupHomeAction.pageRendered}"/>
-    </a4j:outputPanel>
-    <s:fragment rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
-      <ul class="list--slat">
-        <li>
-          <s:link view="/version-group/request_to_join.xhtml"
-            propagation="none">
-            <f:param name="emailType" value="request_to_join_group"/>
-            <f:param name="versionGroupSlug"
-              value="#{versionGroupHomeAction.slug}"/>
-            <i class="i--left i--project"></i>
-            <h:outputFormat
-              value="#{messages['jsf.RequestAddProjectToGroup']}">
-              <f:param value="#{versionGroupHome.instance.name}"/>
-            </h:outputFormat>
-          </s:link>
-        </li>
-      </ul>
-    </s:fragment>
-  </div>
+            </li>
+          </ul>
+          <div class="l--push-v-1">
+            <zanata:statistic
+              value="#{versionGroupHomeAction.overallStatistic}"
+              type="large"/>
+          </div>
+        </s:fragment>
+        <zanata:loader type="large"
+          rendered="#{!versionGroupHomeAction.pageRendered}"/>
+      </s:div>
+    </div>
 
 
-  <div class="g__item w--1-2-m w--5-8-l w--2-3">
-    <div class="tabs--lined">
-      <nav class="tabs__nav">
-        <ul>
-          <li>
-            <a href="#languages" id="languages_tab"
-              onclick="setActiveTab(this)" title="#{messages['Languages']}">
-              <i class="i i--language"></i>
+    <div class="g__item w--1-2-m w--5-8-l w--2-3">
+      <div class="tabs--lined">
+        <nav class="tabs__nav">
+          <ul>
+            <li>
+              <a href="#languages" id="languages_tab" class="js-tab">
+                <i class="i i--language"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Languages']}
               </span>
-              <a4j:outputPanel styleClass="txt--neutral" id="languages-size">
-                #{versionGroupHomeAction.activeLocales.size}
-              </a4j:outputPanel>
-            </a>
-          </li>
-          <li>
-            <a href="#projects" id="projects_tab" onclick="setActiveTab(this)"
-              title="#{messages['Projects']}">
-              <i class="i i--project"></i>
+                <s:span styleClass="txt--neutral" id="languages-size">
+                  #{versionGroupHomeAction.activeLocales.size}
+                </s:span>
+              </a>
+            </li>
+            <li>
+              <a href="#projects" id="projects_tab" class="js-tab">
+                <i class="i i--project"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Projects']}
               </span>
-              <a4j:outputPanel styleClass="txt--neutral" id="projects-size">
-                #{versionGroupHomeAction.getProjectIterations().size}
-              </a4j:outputPanel>
-            </a>
-          </li>
-          <li>
-            <a href="#maintainers" id="maintainers_tab"
-              title="#{messages['Maintainers']}" onclick="setActiveTab(this)">
-              <i class="i i--users"></i>
+                <s:span styleClass="txt--neutral" id="projects-size">
+                  #{versionGroupHomeAction.getProjectIterations().size}
+                </s:span>
+              </a>
+            </li>
+            <li>
+              <a href="#maintainers" id="maintainers_tab" class="js-tab">
+                <i class="i i--users"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Maintainers']}
               </span>
-              <a4j:outputPanel styleClass="txt--neutral"
-                id="maintainers-size">
-                #{versionGroupHome.instance.maintainers.size}
-              </a4j:outputPanel>
-            </a>
-          </li>
-          <s:fragment
-            rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-            <li>
-              <a href="#settings" id="settings_tab"
-                title="#{messages['Settings']}" onclick="setActiveTab(this)">
-                <i class="i i--settings"></i>
-                <span class="is-hidden--m-down i__text--right">
-                  #{messages['jsf.Settings']}
-                </span>
+                <s:span styleClass="txt--neutral" id="maintainers-size">
+                  #{versionGroupHome.instance.maintainers.size}
+                </s:span>
               </a>
             </li>
-          </s:fragment>
-        </ul>
-      </nav>
 
-      <div class="tabs__content panels__container l--push-top-1">
-        <div id="languages_content" class="is-hidden">
-          <ui:include
-            src="../WEB-INF/layout/version-group/languages-tab.xhtml">
-          </ui:include>
-        </div>
+            <li class="tab__end">
+              <div
+                class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+                <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                  title="#{messages['jsf.tooltip.MoreActions']}"
+                  data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
+                  class="i i--ellipsis"></i></a>
+                <ul class="dropdown__content js-dropdown__content"
+                  role="content"
+                  aria-labelledby="dropdownContent">
+                  <s:fragment
+                    rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+                    <li>
+                      <s:link view="/version-group/request_to_join.xhtml"
+                        styleClass="i__item--right"
+                        propagation="none">
+                        <f:param name="emailType"
+                          value="request_to_join_group"/>
+                        <f:param name="versionGroupSlug"
+                          value="#{versionGroupHomeAction.slug}"/>
+                        <h:outputFormat
+                          value="#{messages['jsf.RequestAddProjectToGroup']}">
+                          <f:param value="#{versionGroupHome.instance.name}"/>
+                        </h:outputFormat>
+                        <i class="i i--project i__item__icon"></i>
+                      </s:link>
+                    </li>
+                  </s:fragment>
+                </ul>
+              </div>
+            </li>
 
-        <div id="projects_content" class="is-hidden">
-          <ui:include
-            src="../WEB-INF/layout/version-group/projects-tab.xhtml"/>
-        </div>
+            <s:fragment
+              rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+              <li class="tab__end">
+                <a href="#settings" id="settings_tab" class="js-tab">
+                <span class="is-hidden--m-down i__text--left">
+                  #{messages['jsf.Settings']}
+                </span>
+                  <i class="i i--settings"></i>
+                </a>
+              </li>
+            </s:fragment>
+          </ul>
+        </nav>
 
-        <div id="maintainers_content" class="is-hidden">
-          <ui:include
-            src="../WEB-INF/layout/version-group/maintainers-tab.xhtml"/>
-        </div>
-
-        <s:fragment
-          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-          <div id="settings_content" class="is-hidden">
+        <div class="tabs__content panels__container l--push-top-1">
+          <div id="languages_content" class="is-hidden">
             <ui:include
-              src="../WEB-INF/layout/version-group/settings-tab.xhtml"/>
+              src="../WEB-INF/layout/version-group/languages-tab.xhtml">
+            </ui:include>
           </div>
-        </s:fragment>
+
+          <div id="projects_content" class="is-hidden">
+            <ui:include
+              src="../WEB-INF/layout/version-group/projects-tab.xhtml"/>
+          </div>
+
+          <div id="maintainers_content" class="is-hidden">
+            <zanata:maintainers-tab
+              value="#{versionGroupHomeAction.maintainers.toArray()}"/>
+          </div>
+
+          <s:fragment
+            rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+            <div id="settings_content" class="is-hidden">
+              <ui:include
+                src="../WEB-INF/layout/version-group/settings-tab.xhtml"/>
+            </div>
+          </s:fragment>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </ui:define>
 
 </ui:composition>
