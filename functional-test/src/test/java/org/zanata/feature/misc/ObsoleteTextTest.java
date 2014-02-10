@@ -88,7 +88,7 @@ public class ObsoleteTextTest {
         new LoginWorkFlow().signIn("admin", "admin");
         final EditorPage editorPage = openEditor();
         editorPage.translateTargetAtRowIndex(0, "message one translated")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(0);
 
         // delete resource 2
         resource2.getTextFlows().clear();
@@ -101,9 +101,9 @@ public class ObsoleteTextTest {
         final EditorPage editorPageFinal =
                 openEditor()
                         .translateTargetAtRowIndex(1, "message two translated")
-                        .approveSelectedTranslation()
+                        .approveTranslationAtRow(1)
                         .translateTargetAtRowIndex(2, "translated")
-                        .approveSelectedTranslation();
+                        .approveTranslationAtRow(2);
 
         editorPageFinal.waitFor(new Callable<String>() {
             @Override

@@ -107,15 +107,15 @@ public class TranslateOdsTest {
                 Matchers.equalTo("Line Three"));
 
         editorPage = editorPage.translateTargetAtRowIndex(0, "TestODS")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(0);
         editorPage = editorPage.translateTargetAtRowIndex(1, "Début")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(1);
         editorPage = editorPage.translateTargetAtRowIndex(2, "Une Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(2);
         editorPage = editorPage.translateTargetAtRowIndex(3, "Deux Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(3);
         editorPage = editorPage.translateTargetAtRowIndex(4, "Ligne Trois")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(4);
 
         assertThat("Item 1 shows a translation of the sheet name",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),

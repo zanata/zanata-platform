@@ -1,23 +1,20 @@
 package org.zanata.feature.misc;
 
-import javax.mail.internet.MimeMultipart;
+import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.PropertiesHolder;
+import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
-import com.google.common.base.Throwables;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -32,19 +29,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ContactAdminTest {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
-    private Wiser wiser = new Wiser();
-
-    @Before
-    public void setUp() {
-        String port = PropertiesHolder.getProperty("smtp.port");
-        wiser.setPort(Integer.parseInt(port));
-        wiser.start();
-    }
-
-    @After
-    public void cleanUp() {
-        wiser.stop();
-    }
+    @ClassRule
+    public static HasEmailRule emailRule = new HasEmailRule();
 
     @Test
     public void testContactAdmin() {
@@ -60,21 +46,14 @@ public class ContactAdminTest {
         assertThat(
                 helpPage.getNotificationMessage(),
                 Matchers.equalTo("Your message has been sent to the administrator"));
-        assertThat(wiser.getMessages(), Matchers.hasSize(1));
-        WiserMessage wiserMessage = wiser.getMessages().get(0);
+        List<WiserMessage> messages = emailRule.getMessages();
+        assertThat(messages, Matchers.hasSize(1));
+        WiserMessage wiserMessage = messages.get(0);
         assertThat(wiserMessage.getEnvelopeReceiver(),
                 Matchers.equalTo("admin@example.com"));
 
-        String content = getEmailContent(wiserMessage);
+        String content = HasEmailRule.getEmailContent(wiserMessage);
         assertThat(content, Matchers.containsString("I love Zanata"));
     }
 
-    private static String getEmailContent(WiserMessage wiserMessage) {
-        try {
-            return ((MimeMultipart) wiserMessage.getMimeMessage().getContent())
-                    .getBodyPart(0).getContent().toString();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
-    }
 }

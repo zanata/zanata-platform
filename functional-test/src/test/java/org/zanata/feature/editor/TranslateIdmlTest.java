@@ -101,11 +101,11 @@ public class TranslateIdmlTest {
                 Matchers.equalTo("Line Three"));
 
         editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(0);
         editorPage = editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(1);
         editorPage = editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(2);
 
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),

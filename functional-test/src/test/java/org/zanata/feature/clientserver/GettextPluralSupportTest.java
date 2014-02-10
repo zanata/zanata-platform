@@ -105,7 +105,7 @@ public class GettextPluralSupportTest {
         // translate on web UI and pull again
         editorPage.setSyntaxHighlighting(false)
                 .translateTargetAtRowIndex(0, "one aoeuaouaou")
-                .saveAsFuzzySelectedTranslation();
+                .saveAsFuzzyAtRow(0);
 
 
         client.callWithTimeout(tempDir, command);

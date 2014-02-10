@@ -82,10 +82,10 @@ public class PropertiesRoundTripTest {
         editorPage =
                 editorPage.translateTargetAtRowIndex(2,
                         "translation updated approved")
-                        .approveSelectedTranslation();
+                        .approveTranslationAtRow(2);
 
         editorPage.translateTargetAtRowIndex(1, "translation updated fuzzy")
-                .saveAsFuzzySelectedTranslation();
+                .saveAsFuzzyAtRow(1);
 
         output =
                 client.callWithTimeout(tempDir,

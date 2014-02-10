@@ -50,6 +50,10 @@ public class EditorPage extends BasePage {
     // first %d is row index, second %d is plural form index (i.e. 0-6)
     private static final String TARGET_ID_FMT = "gwt-debug-%d-target-%d";
 
+    // buttons id format
+    private static final String APPROVE_FMT = "gwt-debug-target-%d-save-approve";
+    private static final String FUZZY_FMT = "gwt-debug-target-%d-save-fuzzy";
+
     private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
     private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
 
@@ -218,36 +222,18 @@ public class EditorPage extends BasePage {
         we.sendKeys(text);
     }
 
-    /**
-     * Press the Approve button for the currently selected translation row
-     * @return new Editor page object
-     */
-    public EditorPage approveSelectedTranslation() {
-        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return input.findElement(By.className("selected"))
-                        .findElement(By.className("icon-install"));
-            }
-        });
-        approve.click();
-        return new EditorPage(getDriver());
+    public EditorPage approveTranslationAtRow(int rowIndex) {
+        WebElement button = getDriver()
+                .findElement(By.id(String.format(APPROVE_FMT, rowIndex)));
+        button.click();
+        return this;
     }
 
-    /**
-     * Press the Save as Fuzzy button for the currently selected translation row
-     * @return new Editor page object
-     */
-    public EditorPage saveAsFuzzySelectedTranslation() {
-        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return input.findElement(By.className("selected"))
-                        .findElement(By.className("icon-flag-1"));
-            }
-        });
-        approve.click();
-        return new EditorPage(getDriver());
+    public EditorPage saveAsFuzzyAtRow(int rowIndex) {
+        WebElement button = getDriver()
+                .findElement(By.id(String.format(FUZZY_FMT, rowIndex)));
+        button.click();
+        return this;
     }
 
     public String getMessageTargetAtRowIndex(int rowIndex, int pluralIndex) {
