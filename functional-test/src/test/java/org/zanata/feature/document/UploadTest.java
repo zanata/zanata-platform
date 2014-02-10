@@ -237,4 +237,24 @@ public class UploadTest {
                         .getName()));
     }
 
+    @Test
+    public void rejectUnsupportedValidFiletype() {
+        File unsupportedFile =
+                testFileGenerator.generateTestFileWithContent("testfodt",
+                        ".fodt", "<xml></xml>");
+        String uploadFailed = "Unrecognized file extension for " +
+                unsupportedFile.getName() + ".";
+
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(unsupportedFile.getAbsolutePath())
+                        .submitUpload();
+
+        assertThat("File is not recognised",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.equalTo(uploadFailed));
+    }
+
 }
