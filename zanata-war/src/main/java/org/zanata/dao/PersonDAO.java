@@ -138,9 +138,9 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
     public int getTotalReviewer() {
         Query query =
-            getSession()
-                .createQuery(
-                    "select count(distinct id.person) from HLocaleMember where isReviewer = :isReviewer");
+                getSession()
+                        .createQuery(
+                                "select count(distinct id.person) from HLocaleMember where isReviewer = :isReviewer");
         query.setParameter("isReviewer", true);
 
         Long totalCount = (Long) query.uniqueResult();
@@ -149,20 +149,6 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
             return 0;
         return totalCount.intValue();
     }
-
-//    public int getTotalTranslator() {
-//        Query query =
-//            getSession()
-//                .createQuery(
-//                    "select count(*) from HLocaleMember where isTranslator = :isTranslator");
-//        query.setParameter("isTranslator", true);
-//
-//        Long totalCount = (Long) query.uniqueResult();
-//        query.setCacheable(true).setComment("PersonDAO.getTotalTranslator");
-//        if (totalCount == null)
-//            return 0;
-//        return totalCount.intValue();
-//    }
 
     /**
      * Indicates if a Person is a member of a language team with selected roles.
