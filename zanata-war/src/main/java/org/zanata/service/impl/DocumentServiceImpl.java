@@ -45,6 +45,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
+import org.zanata.service.VersionStateCache;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -73,6 +74,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private LockManagerService lockManagerServiceImpl;
+
+    @In
+    private VersionStateCache versionStateCacheImpl;
 
     @In
     private ResourceUtils resourceUtils;
@@ -154,11 +158,14 @@ public class DocumentServiceImpl implements DocumentService {
         documentDAO.flush();
 
         long actorId = authenticatedAccount.getPerson().getId();
-        if (changed && Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    DocumentUploadedEvent.EVENT_NAME,
-                    new DocumentUploadedEvent(actorId, document.getId(), true, hLocale
-                            .getLocaleId()));
+        if (changed) {
+            if( Events.exists() ) {
+                Events.instance().raiseTransactionSuccessEvent(
+                        DocumentUploadedEvent.EVENT_NAME,
+                        new DocumentUploadedEvent(actorId, document.getId(),
+                                true, hLocale.getLocaleId()));
+            }
+            clearStatsCacheForUpdatedDocument(document);
         }
 
         if (copyTrans && nextDocRev == 1) {
@@ -176,6 +183,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setObsolete(true);
         documentDAO.makePersistent(document);
         documentDAO.flush();
+        clearStatsCacheForUpdatedDocument(document);
     }
 
     /**
@@ -188,5 +196,10 @@ public class DocumentServiceImpl implements DocumentService {
         if (applicationConfiguration.isCopyTransEnabled()) {
             copyTransServiceImpl.copyTransForDocument(document);
         }
+    }
+
+    private void clearStatsCacheForUpdatedDocument(HDocument document) {
+        versionStateCacheImpl.clearVersionStatsCache(document.getProjectIteration()
+                .getId());
     }
 }

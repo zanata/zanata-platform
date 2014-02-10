@@ -47,6 +47,7 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -58,6 +59,7 @@ import org.zanata.rest.service.TranslatedDocResourceService;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
+import org.zanata.service.VersionStateCache;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.google.common.base.Optional;
@@ -69,9 +71,6 @@ import com.google.common.collect.ImmutableList;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class CopyTransServiceImpl implements CopyTransService {
-    @In
-    private EntityManager entityManager;
-
     @In
     private LocaleService localeServiceImpl;
 
@@ -86,6 +85,9 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     @In
     private ValidationService validationServiceImpl;
+
+    @In
+    private VersionStateCache versionStateCacheImpl;
 
     @Observer(TranslatedDocResourceService.EVENT_COPY_TRANS)
     public void runCopyTrans(Long docId, String project, String iterationSlug) {
@@ -250,6 +252,7 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         HTextFlowTarget hTarget =
             textFlowTargetDAO.getOrCreateTarget(originalTf, matchingTarget.getLocale());
+        ContentState prevState = hTarget.getId() == null ? New : hTarget.getState();
         if (shouldOverwrite(hTarget, copyState)) {
             // NB we don't touch creationDate
             hTarget.setTextFlowRevision(originalTf.getRevision());
@@ -270,6 +273,10 @@ public class CopyTransServiceImpl implements CopyTransService {
                 hTarget.setComment(hcomment);
             }
             hcomment.setComment(createComment(matchingTarget));
+
+            // TODO Maybe we should think about registering a Hibernate
+            // integrator for these updates
+            signalCopiedTranslation(hTarget, prevState);
         }
     }
 
@@ -506,6 +513,23 @@ public class CopyTransServiceImpl implements CopyTransService {
             }
         }
         return false;
+    }
+
+    private void signalCopiedTranslation(HTextFlowTarget target,
+            ContentState previousState) {
+        /* Using a direct method call instead of an event because it's easier to
+         * read. Since these events are being called synchronously (as opposed
+         * to an 'after Transaction' events), there is no big performance gain
+         * and makes the code easier to read and navigate.
+         */
+        HDocument document = target.getTextFlow()
+                .getDocument();
+        TextFlowTargetStateEvent updateEvent =
+                new TextFlowTargetStateEvent(null, document
+                        .getProjectIteration().getId(), document.getId(), target
+                        .getTextFlow().getId(), target.getLocaleId(),
+                        target.getId(), target.getState(), previousState);
+        versionStateCacheImpl.textFlowStateUpdated(updateEvent);
     }
 
     /**

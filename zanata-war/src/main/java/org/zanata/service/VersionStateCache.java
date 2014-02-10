@@ -42,4 +42,10 @@ public interface VersionStateCache {
 
     WordStatistic getVersionStatistics(Long projectIterationId,
             LocaleId localeId);
+
+    /**
+     * Clears all caches for a single project version (all locales).
+     * @param versionId All cached stats for this version will be cleared.
+     */
+    void clearVersionStatsCache(Long versionId);
 }

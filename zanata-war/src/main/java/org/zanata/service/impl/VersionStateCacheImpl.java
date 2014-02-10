@@ -28,14 +28,19 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.EhcacheWrapper;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
@@ -52,6 +57,12 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
+
+    @In
+    private LocaleDAO localeDAO;
+
+    @In
+    private TextFlowDAO textFlowDAO;
 
     private CacheManager cacheManager;
 
@@ -89,10 +100,13 @@ public class VersionStateCacheImpl implements VersionStateCache {
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
+        HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
 
         if (stats != null) {
-            stats.decrement(event.getPreviousState(), 1);
-            stats.increment(event.getNewState(), 1);
+            stats.decrement(event.getPreviousState(),
+                    textFlow.getWordCount().intValue());
+            stats.increment(event.getNewState(),
+                    textFlow.getWordCount().intValue());
             versionStatisticCache.put(key, stats);
         }
     }
@@ -102,6 +116,15 @@ public class VersionStateCacheImpl implements VersionStateCache {
         LocaleId localeId) {
         return versionStatisticCache.getWithLoader(new VersionLocaleKey(
                 projectIterationId, localeId));
+    }
+
+    @Override
+    public void clearVersionStatsCache(Long versionId) {
+        for (HLocale locale : localeDAO.findAll()) {
+            VersionLocaleKey key =
+                    new VersionLocaleKey(versionId, locale.getLocaleId());
+            versionStatisticCache.remove(key);
+        }
     }
 
     private static class VersionStatisticLoader extends
