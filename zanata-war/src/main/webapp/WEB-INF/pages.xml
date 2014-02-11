@@ -424,8 +424,7 @@
     <navigation from-action="#{versionGroupJoinAction.send}">
       <rule if-outcome="success">
         <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug"
-            value="#{versionGroupJoinAction.slug}" />
+          <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
@@ -433,12 +432,9 @@
       </rule>
     </navigation>
     <navigation from-action="#{versionGroupJoinAction.cancel}">
-      <rule>
-        <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug"
-            value="#{versionGroupJoinAction.slug}" />
-        </redirect>
-      </rule>
+      <redirect view-id="/version-group/version_group.xhtml">
+        <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
+      </redirect>
     </navigation>
   </page>
 
@@ -1118,9 +1114,12 @@
     <http-error error-code="503" />
   </exception>
 
-  <exception class="javax.validation.ConstraintViolationException" log-level="debug">
+  <exception class="javax.validation.ConstraintViolationException"
+    log-level="debug">
     <redirect view-id="/error.xhtml">
-      <message severity="warn">#{messages['jsf.Error']} #{org.jboss.seam.handledException.message}</message>
+      <message
+        severity="warn">#{messages['jsf.Error']} #{org.jboss.seam.handledException.message}
+      </message>
     </redirect>
   </exception>
 
