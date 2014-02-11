@@ -59,13 +59,16 @@ public class VersionGroupJoinAction implements Serializable {
     private VersionGroupDAO versionGroupDAO;
 
     @In
+    private ProjectDAO projectDAO;
+
+    @In
     private ProjectIterationDAO projectIterationDAO;
 
     @In(create = true)
     private SendEmailAction sendEmail;
 
-    @Getter
-    private HProjectIteration selectedVersion;
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    private HAccount authenticatedAccount;
 
     @Getter
     @Setter
@@ -79,6 +82,21 @@ public class VersionGroupJoinAction implements Serializable {
     @Setter
     private String projectSlug;
 
+    @Getter
+    private List<SelectableProject> projectVersions = Lists.newArrayList();
+
+    public void searchMaintainedProjectVersion() {
+        Set<HProject> maintainedProjects =
+                authenticatedAccount.getPerson().getMaintainerProjects();
+        for (HProject project : maintainedProjects) {
+            for (HProjectIteration projectIteration : projectDAO
+                    .getAllIterations(project.getSlug())) {
+                projectVersions.add(new SelectableProject(projectIteration,
+                        false));
+            }
+        }
+    }
+
     public String getGroupName() {
         return versionGroupDAO.getBySlug(slug).getName();
     }
@@ -86,8 +104,12 @@ public class VersionGroupJoinAction implements Serializable {
     public void searchProjectVersion() {
         if (StringUtils.isNotEmpty(iterationSlug)
                 && StringUtils.isNotEmpty(projectSlug)) {
-            selectedVersion =
+            HProjectIteration projectIteration =
                     projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+            if (projectIteration != null) {
+                projectVersions.add(new SelectableProject(projectIteration,
+                        true));
+            }
         }
     }
 
@@ -101,8 +123,14 @@ public class VersionGroupJoinAction implements Serializable {
     }
 
     public String send() {
-        if (selectedVersion != null
-                && !isVersionInGroup(selectedVersion.getId())) {
+        boolean isAnyVersionSelected = false;
+        for (SelectableProject projectVersion : projectVersions) {
+            if (projectVersion.isSelected()) {
+                isAnyVersionSelected = true;
+                break;
+            }
+        }
+        if (isAnyVersionSelected) {
             List<HPerson> maintainers = new ArrayList<HPerson>();
             for (HPerson maintainer : versionGroupServiceImpl
                     .getMaintainersBySlug(slug)) {
@@ -114,6 +142,16 @@ public class VersionGroupJoinAction implements Serializable {
                     "#{messages['jsf.NoProjectVersionSelected']}");
             return "success";
         }
+    }
 
+    @AllArgsConstructor
+    public final class SelectableProject {
+
+        @Getter
+        private HProjectIteration projectIteration;
+
+        @Getter
+        @Setter
+        private boolean selected;
     }
 }
