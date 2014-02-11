@@ -47,6 +47,9 @@ public class ProjectPage extends BasePage {
     @FindBy(id = "loggedIn_body")
     private WebElement loggedInBody;
 
+    @FindBy(id = "main_content:iterationsForm")
+    private WebElement iterationForm;
+
     public ProjectPage(final WebDriver driver) {
         super(driver);
     }
