@@ -57,7 +57,7 @@
       <rich:dataTable id="data_table" width="100%"
         value="#{viewAllStatusAction.getAllStatus().toArray()}" var="status"
         styleClass="iteration_inline_tribes">
-        <rich:column sortBy="#{status.locale}"
+        <rich:column sortBy="#{status.locale}" id="locale"
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
           <f:facet name="header">#{messages['jsf.Language']}
             <richext:columnSorter/></f:facet>
@@ -104,7 +104,7 @@
             <span class="icon-download icon"/>
           </h:outputLink>
         </rich:column>
-        <rich:column
+        <rich:column id="statistics"
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
           <f:facet name="header">
             <h:panelGroup>

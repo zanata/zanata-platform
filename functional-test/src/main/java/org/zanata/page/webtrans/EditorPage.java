@@ -20,19 +20,19 @@
  */
 package org.zanata.page.webtrans;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-
-import java.util.Collections;
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
@@ -43,10 +43,15 @@ public class EditorPage extends BasePage {
     // first %d is row index, second %d is plural form index (i.e. 0 or 1)
     private static final String SOURCE_ID_FMT =
             "gwt-debug-%d-source-panel-%d-container";
-    private static final int SINGULAR = 0;
 
     // first %d is row index, second %d is plural form index (i.e. 0-6)
     private static final String TARGET_ID_FMT = "gwt-debug-%d-target-%d";
+
+    // buttons id format
+    private static final String APPROVE_BUTTON_ID_FMT =
+            "gwt-debug-target-%d-save-approve";
+    private static final String FUZZY_BUTTON_ID_FMT =
+            "gwt-debug-target-%d-save-fuzzy";
 
     private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
     private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
@@ -108,8 +113,12 @@ public class EditorPage extends BasePage {
      *            row index
      * @return content of the source
      */
-    public String getTranslationSourceAtRowIndex(final int rowIndex) {
-        return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, SINGULAR);
+    public String getMessageSourceAtRowIndex(final int rowIndex) {
+        return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, Plurals.SourceSingular);
+    }
+
+    public String getMessageSourceAtRowIndex(int rowIndex, Plurals plural) {
+        return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, plural);
     }
 
     /**
@@ -121,18 +130,18 @@ public class EditorPage extends BasePage {
      *            row index
      * @return content of the target
      */
-    public String getTranslationTargetAtRowIndex(final int rowIndex) {
-        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, SINGULAR);
+    public String getMessageTargetAtRowIndex(final int rowIndex) {
+        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
     }
 
     private String getCodeMirrorContent(final long rowIndex,
-            final String idFormat, final int pluralIndex) {
+            final String idFormat, final Plurals plurals) {
         return waitForTenSec().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver input) {
                 // code mirror will turn text into list of <pre>.
                 List<WebElement> cmTextLines = input.findElement(
-                        By.id(String.format(idFormat, rowIndex, pluralIndex)))
+                        By.id(String.format(idFormat, rowIndex, plurals.index())))
                         .findElements(By.tagName("pre"));
                 List<String> contents =
                         WebElementUtil.elementsToText(cmTextLines);
@@ -163,7 +172,7 @@ public class EditorPage extends BasePage {
     }
 
     public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
-        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, SINGULAR);
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
     }
 
     /**
@@ -172,12 +181,14 @@ public class EditorPage extends BasePage {
      * @return row target content
      */
     private String getContentAtRowIndex(final long rowIndex,
-                                        final String idFormat,
-                                        final int pluralIndex) {
+            final String idFormat,
+            final Plurals plural) {
         return waitForTenSec().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver input) {
-                return input.findElement(By.id(String.format(idFormat, rowIndex, pluralIndex))).getAttribute("value");
+                return input.findElement(
+                        By.id(String.format(idFormat, rowIndex, plural.index())))
+                        .getAttribute("value");
             }
         });
     }
@@ -189,36 +200,44 @@ public class EditorPage extends BasePage {
      * @return updated EditorPage
      */
     public EditorPage translateTargetAtRowIndex(final int rowIndex, String text) {
-        setTargetContent(rowIndex, text, TARGET_ID_FMT, SINGULAR);
+        setTargetContent(rowIndex, text, TARGET_ID_FMT, Plurals.SourceSingular);
         return new EditorPage(getDriver());
     }
 
     private void setTargetContent(final long rowIndex, final String text,
-            final String idFormat, final int pluralIndex) {
+            final String idFormat, final Plurals plural) {
         WebElement we = waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return input.findElement(
-                        By.id(String.format(idFormat, rowIndex, pluralIndex)));
+                        By.id(String.format(idFormat, rowIndex, plural.index())));
             }
         });
         we.click();
+        we.clear();
         we.sendKeys(text);
     }
 
-    /**
-     * Press the Approve button for the currently selected translation row
-     * @return new Editor page object
-     */
-    public EditorPage approveSelectedTranslation() {
-        WebElement approve = waitForTenSec().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return input.findElement(By.className("selected"))
-                        .findElement(By.className("icon-install"));
-            }
-        });
-        approve.click();
-        return new EditorPage(getDriver());
+    public EditorPage approveTranslationAtRow(int rowIndex) {
+        WebElement button = getDriver()
+                .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
+        button.click();
+        return this;
+    }
+
+    public EditorPage saveAsFuzzyAtRow(int rowIndex) {
+        WebElement button = getDriver()
+                .findElement(By.id(String.format(FUZZY_BUTTON_ID_FMT, rowIndex)));
+        button.click();
+        return this;
+    }
+
+    public String getMessageTargetAtRowIndex(int rowIndex, Plurals plurals) {
+        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, plurals);
+    }
+
+    public String getStatistics() {
+        return getDriver().findElement(By.id("gwt-debug-statistics-label"))
+                .getText();
     }
 }

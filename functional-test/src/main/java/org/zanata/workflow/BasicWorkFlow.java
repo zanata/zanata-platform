@@ -9,6 +9,7 @@ import org.zanata.page.AbstractPage;
  */
 public class BasicWorkFlow extends AbstractWebWorkFlow {
     public static final String EDITOR_TEMPLATE = "webtrans/translate?project=%s&iteration=%s&localeId=%s&locale=en#view:doc;doc:%s";
+    public static final String PROJECT_VERSION_TEMPLATE = "iteration/view/%s/%s";
 
     public <P extends AbstractPage> P goToPage(String url, Class<P> pageClass) {
         driver.get(toUrl(url));

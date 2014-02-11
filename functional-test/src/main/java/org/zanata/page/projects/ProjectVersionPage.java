@@ -21,7 +21,9 @@
 package org.zanata.page.projects;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,8 @@ import java.util.List;
 
 @Slf4j
 public class ProjectVersionPage extends BasePage {
+    public static final String STATS_TEMPLATE =
+            "iterationLanguageForm:data_table:%d:statistics";
     @FindBy(id = "iterationLanguageForm:data_table:tb")
     private WebElement localeTableTBody;
 
@@ -120,5 +124,14 @@ public class ProjectVersionPage extends BasePage {
     public CreateVersionPage clickEditVersion() {
         editVersionButton.click();
         return new CreateVersionPage(getDriver());
+    }
+
+    public String getStatisticsForLocale(String locale) {
+        int rowIndex = getTranslatableLocales().indexOf(locale);
+        Preconditions.checkState(rowIndex >= 0, "can not find statistics for locale: %s", locale);
+        WebElement stats =
+                getDriver().findElement(
+                        By.id(String.format(STATS_TEMPLATE, rowIndex)));
+        return stats.getText();
     }
 }

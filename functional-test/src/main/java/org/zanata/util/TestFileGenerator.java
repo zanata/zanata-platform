@@ -20,11 +20,24 @@
  */
 package org.zanata.util;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
-import java.util.zip.*;
+import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.io.FileUtils;
+import com.google.common.base.Throwables;
+import lombok.Setter;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -155,6 +168,57 @@ public class TestFileGenerator {
             throw new RuntimeException("Expected files in dir " + directory
                     + " but none found.");
         }
+    }
+
+    /**
+     * Generates a zanata.xml with url default to test instance.
+     *
+     * @param output where to write it
+     * @param projectSlug project slug
+     * @param versionSlug version slug
+     * @param projectType project type
+     * @param locales locales
+     */
+    public void generateZanataXml(File output, String projectSlug, String versionSlug, String projectType, List<String> locales) {
+        ZanataXml zanataXml = new ZanataXml();
+        zanataXml.setProject(projectSlug);
+        zanataXml.setProjectVersion(versionSlug);
+        zanataXml.setProjectType(projectType);
+        zanataXml.setLocales(locales);
+        marshall(output, zanataXml, ZanataXml.class);
+    }
+
+    private static <T> void marshall(File output, T object, Class<T> xmlClass) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(xmlClass);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(object, output);
+        }
+        catch (JAXBException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    @XmlRootElement(namespace = ZanataXml.NS,
+            name = "config")
+    @Setter
+    private static class ZanataXml {
+        static final String NS = "http://zanata.org/namespace/config/";
+        @XmlElement(namespace = ZanataXml.NS)
+        private String url = PropertiesHolder
+                .getProperty(Constants.zanataInstance.value());
+        @XmlElement(namespace = ZanataXml.NS)
+        private String project;
+        @XmlElement(name = "project-version", namespace = ZanataXml.NS)
+        private String projectVersion;
+        @XmlElement(name = "project-type", namespace = ZanataXml.NS)
+        private String projectType;
+        @XmlElementWrapper(name="locales", namespace = ZanataXml.NS)
+        @XmlElements(
+                @XmlElement(name = "locale", namespace = ZanataXml.NS)
+        )
+        private List<String> locales;
     }
 
     public File openTestFile(String filename) {

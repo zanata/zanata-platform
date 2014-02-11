@@ -4,6 +4,10 @@
   <artifactId>null</artifactId>
   <version>0</version>
 
+  <properties>
+    <zanata.srcDir>pot</zanata.srcDir>
+    <zanata.transDir>.</zanata.transDir>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -11,8 +15,8 @@
         <artifactId>zanata-maven-plugin</artifactId>
         <version>${zanata.client.version}</version>
         <configuration>
-          <srcDir>pot</srcDir>
-          <transDir>.</transDir>
+          <srcDir>${zanata.srcDir}</srcDir>
+          <transDir>${zanata.transDir}</transDir>
         </configuration>
       </plugin>
     </plugins>

@@ -91,21 +91,21 @@ public class TranslateIdmlTest {
         editorPage.setSyntaxHighlighting(false);
 
         assertThat("Item 1 shows Line One",
-                editorPage.getTranslationSourceAtRowIndex(0),
+                editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("Line One"));
         assertThat("Item 2 shows Line Two",
-                editorPage.getTranslationSourceAtRowIndex(1),
+                editorPage.getMessageSourceAtRowIndex(1),
                 Matchers.equalTo("Line Two"));
         assertThat("Item 3 shows Line Three",
-                editorPage.getTranslationSourceAtRowIndex(2),
+                editorPage.getMessageSourceAtRowIndex(2),
                 Matchers.equalTo("Line Three"));
 
         editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(0);
         editorPage = editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(1);
         editorPage = editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(2);
 
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
@@ -121,13 +121,13 @@ public class TranslateIdmlTest {
         editorPage.reload();
 
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(0),
+                editorPage.getMessageTargetAtRowIndex(0),
                 Matchers.equalTo("Une Ligne"));
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(1),
+                editorPage.getMessageTargetAtRowIndex(1),
                 Matchers.equalTo("Deux Ligne"));
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(2),
+                editorPage.getMessageTargetAtRowIndex(2),
                 Matchers.equalTo("Ligne Trois"));
     }
 }

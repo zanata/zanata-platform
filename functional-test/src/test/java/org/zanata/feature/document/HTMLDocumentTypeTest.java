@@ -91,10 +91,10 @@ public class HTMLDocumentTypeTest {
                 .translate("pl").clickDocumentLink("", testFileName);
 
         assertThat("The first translation source is correct",
-                editorPage.getTranslationSourceAtRowIndex(0),
+                editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("Test content"));
         assertThat("The second translation source is correct",
-                editorPage.getTranslationSourceAtRowIndex(1),
+                editorPage.getMessageSourceAtRowIndex(1),
                 Matchers.equalTo("This is <g2>Bold</g2> text"));
 
 

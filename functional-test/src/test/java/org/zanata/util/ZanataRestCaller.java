@@ -20,7 +20,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -75,12 +74,31 @@ public class ZanataRestCaller {
         iterationResponse.releaseConnection();
     }
 
+    public void deleteSourceDoc(String projectSlug, String iterationSlug,
+            String resourceName) {
+        ClientResponse<String> response = zanataProxyFactory
+                .getSourceDocResource(projectSlug, iterationSlug)
+                .deleteResource(resourceName);
+        ClientUtility.checkResult(response);
+        response.releaseConnection();
+    }
+
     public void postSourceDocResource(String projectSlug, String iterationSlug,
             Resource resource, boolean copytrans) {
         ClientResponse<String> response = zanataProxyFactory
                 .getSourceDocResource(projectSlug, iterationSlug).post(
                         resource,
                         Collections.<String>emptySet(), copytrans);
+        ClientUtility.checkResult(response);
+        response.releaseConnection();
+    }
+
+    public void putSourceDocResource(String projectSlug, String iterationSlug,
+            String idNoSlash, Resource resource, boolean copytrans) {
+        ClientResponse<String> response =
+                zanataProxyFactory.getSourceDocResource(projectSlug,
+                        iterationSlug).putResource(idNoSlash, resource,
+                        Collections.<String> emptySet(), copytrans);
         ClientUtility.checkResult(response);
         response.releaseConnection();
     }

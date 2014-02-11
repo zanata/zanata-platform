@@ -35,6 +35,7 @@ import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.utility.HelpPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Optional;
@@ -206,5 +207,10 @@ public class BasePage extends CorePage {
         JavascriptExecutor executor = (JavascriptExecutor) getDriver();
         executor.executeScript("arguments[0].click();", getDriver()
                 .findElement(locator));
+    }
+
+    public HelpPage goToHelp() {
+        getDriver().findElement(By.id("help_link")).click();
+        return new HelpPage(getDriver());
     }
 }

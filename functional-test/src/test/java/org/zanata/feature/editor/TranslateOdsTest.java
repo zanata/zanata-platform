@@ -91,31 +91,31 @@ public class TranslateOdsTest {
         editorPage.setSyntaxHighlighting(false);
 
         assertThat("Item 1 shows TestODS (the sheet name)",
-                editorPage.getTranslationSourceAtRowIndex(0),
+                editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("TestODS"));
         assertThat("Item 2 shows First (the page name)",
-                editorPage.getTranslationSourceAtRowIndex(1),
+                editorPage.getMessageSourceAtRowIndex(1),
                 Matchers.equalTo("First"));
         assertThat("Item 3 shows Line One",
-                editorPage.getTranslationSourceAtRowIndex(2),
+                editorPage.getMessageSourceAtRowIndex(2),
                 Matchers.equalTo("Line One"));
         assertThat("Item 4 shows Line Two",
-                editorPage.getTranslationSourceAtRowIndex(3),
+                editorPage.getMessageSourceAtRowIndex(3),
                 Matchers.equalTo("Line Two"));
         assertThat("Item 5 shows Line Three",
-                editorPage.getTranslationSourceAtRowIndex(4),
+                editorPage.getMessageSourceAtRowIndex(4),
                 Matchers.equalTo("Line Three"));
 
         editorPage = editorPage.translateTargetAtRowIndex(0, "TestODS")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(0);
         editorPage = editorPage.translateTargetAtRowIndex(1, "Début")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(1);
         editorPage = editorPage.translateTargetAtRowIndex(2, "Une Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(2);
         editorPage = editorPage.translateTargetAtRowIndex(3, "Deux Ligne")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(3);
         editorPage = editorPage.translateTargetAtRowIndex(4, "Ligne Trois")
-                .approveSelectedTranslation();
+                .approveTranslationAtRow(4);
 
         assertThat("Item 1 shows a translation of the sheet name",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
@@ -137,19 +137,19 @@ public class TranslateOdsTest {
         editorPage.reload();
 
         assertThat("Item 1 shows a translation of the sheet name",
-                editorPage.getTranslationTargetAtRowIndex(0),
+                editorPage.getMessageTargetAtRowIndex(0),
                 Matchers.equalTo("TestODS"));
         assertThat("Item 1 shows a translation of page name",
-                editorPage.getTranslationTargetAtRowIndex(1),
+                editorPage.getMessageTargetAtRowIndex(1),
                 Matchers.equalTo("Début"));
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(2),
+                editorPage.getMessageTargetAtRowIndex(2),
                 Matchers.equalTo("Une Ligne"));
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(3),
+                editorPage.getMessageTargetAtRowIndex(3),
                 Matchers.equalTo("Deux Ligne"));
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getTranslationTargetAtRowIndex(4),
+                editorPage.getMessageTargetAtRowIndex(4),
                 Matchers.equalTo("Ligne Trois"));
     }
 }
