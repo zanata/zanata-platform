@@ -22,24 +22,20 @@
 
 <composite:implementation>
   <div
-    class="dropdown dropdown--small dropdown--right dropdown--inline js-dropdown">
+    class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
     <a class="dropdown__toggle js-dropdown__toggle" href="#">
-      <h:outputText id="#{cc.attrs.id}-selected_sort"
-        value="#{cc.attrs.sortingList.selectedSortOption.display}"/>
+      #{messages['jsf.Sort']}
       <i class="i i--arrow-down dropdown__toggle__icon"></i>
     </a>
     <h:form styleClass="l--push-bottom-0" id="#{cc.attrs.id}-sort_options">
       <ul class="dropdown__content js-dropdown__content" role="content"
         aria-labelledby="dropdownContent">
-        <li class="dropdown__header">
-          #{messages['jsf.Sort']}
-        </li>
         <ui:repeat value="#{cc.attrs.sortingList.sortOptions}" var="sortOption">
           <li>
             <a4j:commandLink tabindex="-1"
               action="#{cc.attrs.sortAction}"
-              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''}"
-              render="#{rich:clientId(cc.attrs.id.concat('-selected_sort'))},#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
+              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''} txt--lowercase"
+              render="#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
               #{sortOption.display}
               <f:setPropertyActionListener
                 target="#{cc.attrs.sortingList.selectedSortOption}"

@@ -21,16 +21,19 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
+import javax.annotation.Nullable;
+
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -42,6 +45,7 @@ import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
@@ -49,6 +53,8 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.ZanataMessages;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -58,7 +64,8 @@ import com.google.common.collect.Maps;
 
 @Name("versionGroupHomeAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupHomeAction implements Serializable {
+public class VersionGroupHomeAction extends AbstractSortAction implements
+        Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
@@ -91,6 +98,14 @@ public class VersionGroupHomeAction implements Serializable {
     @Getter
     private WordStatistic overallStatistic;
 
+    @Setter
+    @Getter
+    private String projectQuery;
+
+    @Setter
+    @Getter
+    private String languageQuery;
+
     private List<HLocale> activeLocales;
 
     private List<HProjectIteration> projectIterations;
@@ -98,12 +113,6 @@ public class VersionGroupHomeAction implements Serializable {
     private Map<VersionLocaleKey, WordStatistic> statisticMap;
 
     private Map<LocaleId, List<HProjectIteration>> missingLocaleVersionMap;
-
-    @Getter
-    private final SortingType languageSortingList = new SortingType(
-            Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.HOURS,
-                    SortingType.SortOption.PERCENTAGE));
 
     @Getter
     private SortingType projectSortingList = new SortingType(
@@ -120,7 +129,7 @@ public class VersionGroupHomeAction implements Serializable {
 
     public void setPageRendered(boolean pageRendered) {
         if (pageRendered) {
-            loadStatistic();
+            loadStatistics();
         }
         this.pageRendered = pageRendered;
     }
@@ -169,15 +178,17 @@ public class VersionGroupHomeAction implements Serializable {
                                     selectedVersionId, item2.getLocaleId()));
                 }
 
-                if (selectedSortOption
-                        .equals(SortingType.SortOption.PERCENTAGE)) {
+                switch (selectedSortOption) {
+                case PERCENTAGE:
                     return Double.compare(
                             wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.HOURS)) {
+                case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
+                case WORDS:
+                    return Double.compare(wordStatistic1.getUntranslated(),
+                            wordStatistic2.getUntranslated());
                 }
             } else {
                 return item1.retrieveDisplayName().compareTo(
@@ -228,22 +239,17 @@ public class VersionGroupHomeAction implements Serializable {
                     wordStatistic2 = getStatisticForProject(item2.getId());
                 }
 
-                if (selectedSortOption
-                        .equals(SortingType.SortOption.PERCENTAGE)) {
+                switch (selectedSortOption) {
+                case PERCENTAGE:
                     return Double.compare(
                             wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.HOURS)) {
+                case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
-                } else if (selectedSortOption
-                        .equals(SortingType.SortOption.WORDS)) {
-                    if (wordStatistic1.getTotal() == wordStatistic2.getTotal()) {
-                        return 0;
-                    }
-                    return wordStatistic1.getTotal() > wordStatistic2
-                            .getTotal() ? 1 : -1;
+                case WORDS:
+                    return Double.compare(wordStatistic1.getUntranslated(),
+                            wordStatistic2.getUntranslated());
                 }
             } else {
                 return item1.getProject().getName().toLowerCase()
@@ -256,6 +262,22 @@ public class VersionGroupHomeAction implements Serializable {
     public boolean isUserProjectMaintainer() {
         return authenticatedAccount != null
                 && authenticatedAccount.getPerson().isMaintainerOfProjects();
+    }
+
+    public int getFilteredProjectSize() {
+        if (getSelectedLocale() == null) {
+            return 0;
+        } else {
+            return getFilteredProjectIterations().size();
+        }
+    }
+
+    public int getFilteredLocalesSize() {
+        if (getSelectedVersion() == null) {
+            return 0;
+        } else {
+            return getFilteredLocales().size();
+        }
     }
 
     /**
@@ -302,6 +324,24 @@ public class VersionGroupHomeAction implements Serializable {
         return activeLocales;
     }
 
+    public List<HLocale> getFilteredLocales() {
+        List<HLocale> unfiltered = getActiveLocales();
+        if (StringUtils.isEmpty(languageQuery)) {
+            return unfiltered;
+        }
+
+        Collection<HLocale> filtered =
+                Collections2.filter(unfiltered, new Predicate<HLocale>() {
+                    @Override
+                    public boolean apply(@Nullable HLocale input) {
+                        return input.retrieveDisplayName().toLowerCase()
+                                .contains(languageQuery.toLowerCase());
+                    }
+                });
+
+        return Lists.newArrayList(filtered);
+    }
+
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForProjectWithLocale(
             SortingType.SortOption sortOption, LocaleId localeId,
@@ -324,45 +364,6 @@ public class VersionGroupHomeAction implements Serializable {
             SortingType.SortOption sortOption, Long projectIterationId) {
         WordStatistic statistic = getStatisticForProject(projectIterationId);
         return getDisplayUnit(sortOption, statistic);
-    }
-
-    private DisplayUnit getDisplayUnit(SortingType.SortOption sortOption,
-            WordStatistic statistic) {
-        DisplayUnit displayUnit;
-
-        if (sortOption.equals(SortingType.SortOption.HOURS)) {
-            displayUnit =
-                    new DisplayUnit("", StatisticsUtil.formatHours(statistic
-                            .getRemainingHours()),
-                            zanataMessages
-                                    .getMessage("jsf.stats.HoursRemaining"));
-        } else if (sortOption.equals(SortingType.SortOption.WORDS)) {
-            displayUnit =
-                    new DisplayUnit("", String.valueOf(statistic.getTotal()),
-                            zanataMessages.getMessage("jsf.Words"));
-        } else {
-            String figure =
-                    StatisticsUtil.formatPercentage(statistic
-                            .getPercentTranslated()) + "%";
-            if (statistic.getPercentTranslated() == 0) {
-                displayUnit =
-                        new DisplayUnit("txt--neutral", figure,
-                                zanataMessages.getMessage("jsf.Translated"));
-            } else {
-                displayUnit =
-                        new DisplayUnit("txt--success", figure,
-                                zanataMessages.getMessage("jsf.Translated"));
-            }
-        }
-        return displayUnit;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public final class DisplayUnit {
-        private String cssClass;
-        private String figure;
-        private String unit;
     }
 
     @CachedMethodResult
@@ -479,7 +480,8 @@ public class VersionGroupHomeAction implements Serializable {
      * Load up statistics for all project versions in all active locales in the
      * group.
      */
-    private void loadStatistic() {
+    @Override
+    protected void loadStatistics() {
         statisticMap = Maps.newHashMap();
 
         for (HLocale locale : getActiveLocales()) {
@@ -506,13 +508,39 @@ public class VersionGroupHomeAction implements Serializable {
         return projectIterations;
     }
 
-    // reset all page cached statistics
+    public List<HProjectIteration> getFilteredProjectIterations() {
+        List<HProjectIteration> unfiltered = getProjectIterations();
+        if (StringUtils.isEmpty(projectQuery)) {
+            return unfiltered;
+        }
+
+        Collection<HProjectIteration> filtered =
+                Collections2.filter(unfiltered,
+                        new Predicate<HProjectIteration>() {
+                            @Override
+                            public boolean apply(
+                                    @Nullable HProjectIteration input) {
+                                HProject project = input.getProject();
+                                return project.getName().toLowerCase()
+                                        .contains(projectQuery.toLowerCase());
+                            }
+                        });
+
+        return Lists.newArrayList(filtered);
+    }
+
+    @Override
     public void resetPageData() {
         projectIterations = null;
         activeLocales = null;
         selectedLocale = null;
         selectedVersion = null;
         missingLocaleVersionMap = null;
-        loadStatistic();
+        loadStatistics();
+    }
+
+    @Override
+    String getMessage(String key, Object... args) {
+        return zanataMessages.getMessage(key, args);
     }
 }
