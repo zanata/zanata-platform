@@ -47,7 +47,7 @@ public class PropertiesRoundTripTest {
 
     @Before
     public void setUp() throws IOException {
-        restCaller = new ZanataRestCaller("admin");
+        restCaller = new ZanataRestCaller();
         // generate a properties source
         Properties properties = new Properties();
         properties.setProperty("hello", "hello world");
@@ -55,10 +55,6 @@ public class PropertiesRoundTripTest {
         properties.setProperty("hey", "hey hey");
         File propertiesSource = new File(tempDir, "test.properties");
         properties.store(new FileWriter(propertiesSource), "comment");
-        // copy a pom file
-        File pluralProjectRoot = client.getProjectRootPath("plural");
-        Files.copy(new File(pluralProjectRoot, "pom.xml"), new File(tempDir,
-                "pom.xml"));
     }
 
     @Test
@@ -67,12 +63,12 @@ public class PropertiesRoundTripTest {
         restCaller.createProjectAndVersion("properties-test", "master",
                 "properties");
         // generate a zanata.xml
-        new TestFileGenerator().generateZanataXml(new File(tempDir,
+        TestFileGenerator.generateZanataXml(new File(tempDir,
                 "zanata.xml"), "properties-test", "master", "properties", Lists
                 .newArrayList("pl"));
         List<String> output =
                 client.callWithTimeout(tempDir,
-                        "mvn -B zanata:push -Dzanata.srcDir=. -Dzanata.userConfig="
+                        "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. -Dzanata.userConfig="
                                 + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.equalTo(true));
@@ -89,7 +85,7 @@ public class PropertiesRoundTripTest {
 
         output =
                 client.callWithTimeout(tempDir,
-                        "mvn -B zanata:pull -Dzanata.userConfig="
+                        "mvn -B org.zanata:zanata-maven-plugin:pull -Dzanata.userConfig="
                                 + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.is(true));
@@ -108,7 +104,7 @@ public class PropertiesRoundTripTest {
         // push again
         client.callWithTimeout(
                 tempDir,
-                "mvn -B zanata:push -Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
+                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
                         + userConfigPath);
 
         final EditorPage editor =

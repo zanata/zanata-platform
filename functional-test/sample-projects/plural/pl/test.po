@@ -54,7 +54,7 @@ msgstr[2] ""
 
 #, c-format
 msgid "msgid"
-msgstr ""
+msgstr "message string"
 
 #, c-format
 msgid "%d files removed"
@@ -66,9 +66,9 @@ msgstr[2] ""
 #, c-format
 msgid "aaaaaaaaaaaa"
 msgid_plural "bbbbbbbbbbb"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "aaaaaaaaaaaa"
+msgstr[1] "bbbbbbbbbbb"
+msgstr[2] "bbbbbbbbbbb"
 
 #, c-format
 msgid "bbbbbbbbbbb"

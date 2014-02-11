@@ -39,7 +39,7 @@ public class ConcurrentEditTest {
 
     @Before
     public void setUp() {
-        restCaller = new ZanataRestCaller("admin");
+        restCaller = new ZanataRestCaller();
     }
 
     @Test

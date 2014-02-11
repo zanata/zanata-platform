@@ -65,7 +65,7 @@ public class GettextPluralSupportTest {
                 potDir, "test.pot"));
         Files.copy(new File(projectRootPath + "/pl", "test.po"), new File(
                 plDir, "test.po"));
-        restCaller = new ZanataRestCaller("admin");
+        restCaller = new ZanataRestCaller();
     }
 
     @Test
