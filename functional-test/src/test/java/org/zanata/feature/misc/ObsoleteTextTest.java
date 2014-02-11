@@ -41,25 +41,24 @@ public class ObsoleteTextTest {
     }
 
     /**
-     * Project "AboutFedora" is created, and version "master" is created, and
-     * source texts are pushed. Language bem should be enabled. User "admin"
-     * exists and join bem language team.
+     * Below is a modified version of what's in TCMS test cases.
+     *
+     * Project "obsolete-test" is created, and version "master" is created, and
+     * source texts (message1 and message2) are pushed. Language fr should be
+     * enabled. User "admin" exists and join fr language team.
      *
      * <pre>
-     * 1. Open About_Fedora in lang bem (or whichever unlikely to be translated).
+     * 1. Open obsolete-test in lang fr.
      * 2. Start editing the first entry and save.
      * 3. Leave the translation editor.
-     * 4. In command line: remove files under pot except About_Fedora.pot.
-     * 5. In command line: edit About_Fedora.pot, remove other entries except the first three.
-     * 6. mvn push with pushTrans=true and copyTrans=true.
+     * 4. In command line: remove message2 but keep message1.
+     * 5. In command line: edit message1, remove other entries except the first three.
+     * 6. Push with pushTrans=true and copyTrans=true.
      * 7. Back to Web UI: translate and save the 2nd and 3rd entries.
      * 8. Click on "Leave Workspace".
      * 9. Go project page of AboutFedora and Check whether the bem is 100% translated.
      * 10. Enter translation editor for bem and see whether the project and document are 100%translated.
      * </pre>
-     *
-     * P.S. Above is copied from the test case and the test below doesn't follow
-     * exactly.
      */
     @Test
     public void obsoleteTextTest() {

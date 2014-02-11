@@ -13,7 +13,9 @@ import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.Constants;
 import org.zanata.util.HasEmailRule;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,7 +55,17 @@ public class ContactAdminTest {
                 Matchers.equalTo("admin@example.com"));
 
         String content = HasEmailRule.getEmailContent(wiserMessage);
+        assertThat(
+                content,
+                Matchers.containsString("Zanata user 'translator' with id 'translator' has sent the following message:"));
         assertThat(content, Matchers.containsString("I love Zanata"));
+        assertThat(
+                content,
+                Matchers.containsString("You can reply to translator at translator@example.com"));
+        // contains instance url (without last slash)
+        String instanceUrl = PropertiesHolder
+                .getProperty(Constants.zanataInstance.value()).replaceAll("/$", "");
+        assertThat(content, Matchers.containsString(instanceUrl));
     }
 
 }
