@@ -407,6 +407,41 @@
     <action execute="#{versionGroupHome.validateSuppliedId}" />
   </page>
 
+  <page view-id="/version-group/request_to_join.xhtml">
+    <param name="emailType" value="#{sendEmail.emailType}" />
+    <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
+    <action
+      execute="#{versionGroupJoinAction.searchMaintainedProjectVersion()}" />
+
+    <action execute="#{breadcrumbs.clear}" />
+    <action
+      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
+    <action
+      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
+    <action
+      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestJoinGroup'])}" />
+
+    <navigation from-action="#{versionGroupJoinAction.send}">
+      <rule if-outcome="success">
+        <redirect view-id="/version-group/version_group.xhtml">
+          <param name="versionGroupSlug"
+            value="#{versionGroupJoinAction.slug}" />
+        </redirect>
+      </rule>
+      <rule if-outcome="failure">
+        <redirect view-id="/version-group/request_to_join.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{versionGroupJoinAction.cancel}">
+      <rule>
+        <redirect view-id="/version-group/version_group.xhtml">
+          <param name="versionGroupSlug"
+            value="#{versionGroupJoinAction.slug}" />
+        </redirect>
+      </rule>
+    </navigation>
+  </page>
+
   <!-- Profile -->
   <page view-id="/profile/edit.xhtml">
     <restrict>#{identity.preAuthenticated}</restrict>

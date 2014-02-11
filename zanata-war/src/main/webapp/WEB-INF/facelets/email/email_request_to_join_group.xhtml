@@ -1,10 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:rich="http://richfaces.org/rich"
   template="/WEB-INF/facelets/email/template_email.xhtml">
 
   <ui:param name="toName" value="#{emailServiceImpl.toName}"/>
@@ -18,6 +15,16 @@
     <p>#{messages['jsf.email.maintainer.DearMaintainer']}</p>
 
     <p>#{messages['jsf.email.joingrouprequest.RequestingToJoinGroup']}</p>
+    <ul class="list--slat">
+      <ui:repeat value="#{versionGroupJoinAction.projectVersions}"
+        var="version">
+        <s:fragment rendered="#{version.selected}">
+          <li>
+            #{messages['jsf.Project']}:#{version.projectIteration.project.slug} - #{messages['jsf.Version']}:#{version.projectIteration.slug}
+          </li>
+        </s:fragment>
+      </ui:repeat>
+    </ul>
     <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
       <p>#{messages['jsf.email.UserMessageIntro']}</p>
       <hr/>
