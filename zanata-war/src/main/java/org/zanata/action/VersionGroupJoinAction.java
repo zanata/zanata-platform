@@ -140,7 +140,7 @@ public class VersionGroupJoinAction implements Serializable {
         } else {
             FacesMessages.instance().add(
                     "#{messages['jsf.NoProjectVersionSelected']}");
-            return "success";
+            return "failure";
         }
     }
 
