@@ -60,6 +60,9 @@ public class CreateProjectPage extends BasePage {
     @FindBy(id = "projectForm:save")
     private WebElement saveButton;
 
+    @FindBy(id = "projectForm:update")
+    private WebElement updateButton;
+
     private static final Map<String, String> projectTypeOptions =
             Constants.projectTypeOptions();
 
@@ -114,6 +117,11 @@ public class CreateProjectPage extends BasePage {
 
     public ProjectPage saveProject() {
         clickAndCheckErrors(saveButton);
+        return new ProjectPage(getDriver());
+    }
+
+    public ProjectPage updateProject() {
+        clickAndCheckErrors(updateButton);
         return new ProjectPage(getDriver());
     }
 }
