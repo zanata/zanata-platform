@@ -16,6 +16,7 @@ import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
+import org.zanata.page.webtrans.Plurals;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.util.SampleProjectRule;
@@ -124,16 +125,16 @@ public class GettextPluralSupportTest {
                         BasicWorkFlow.EDITOR_TEMPLATE, "plurals", "master",
                         "pl", "test"), EditorPage.class);
 
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, 0),
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
                 Matchers.equalTo("One file removed"));
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, 1),
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
                 Matchers.equalTo("%d files removed"));
         // nplural for Polish is 3
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, 0),
+        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetSingular),
                 Matchers.equalTo("1 aoeuaouaou"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, 1),
+        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralOne),
                 Matchers.equalTo("%d aoeuaouao"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, 2),
+        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralTwo),
                 Matchers.equalTo(" "));
 
         return editorPage;
