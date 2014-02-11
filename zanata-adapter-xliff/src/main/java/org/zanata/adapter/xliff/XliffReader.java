@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -36,6 +38,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.HashUtil;
 
 import com.google.common.base.Charsets;
 
@@ -104,8 +107,9 @@ public class XliffReader extends XliffCommon {
         }
     }
 
-    private void extractXliff(File file, Resource document,
-            TranslationsResource transDoc) throws FileNotFoundException {
+    private void extractXliff(@Nonnull File file, @Nullable Resource document,
+            @Nullable TranslationsResource transDoc)
+            throws FileNotFoundException {
 
         if (validationType == ValidationType.XSD) {
             InputSource inputSource =
@@ -140,9 +144,7 @@ public class XliffReader extends XliffCommon {
                         && getLocalName(xmlr).equals(ELE_TRANS_UNIT)) {
                     if (document != null) {
                         TextFlow textFlow = extractTransUnit(xmlr);
-                        if (textFlow != null) {
-                            document.getTextFlows().add(textFlow);
-                        }
+                        document.getTextFlows().add(textFlow);
                     } else {
                         TextFlowTarget tfTarget = extractTransUnitTarget(xmlr);
                         List<String> contents = tfTarget.getContents();
@@ -150,7 +152,6 @@ public class XliffReader extends XliffCommon {
                                 contents.isEmpty()
                                         || StringUtils.isEmpty(contents.get(0));
                         if (!targetEmpty) {
-                            tfTarget.setState(ContentState.Translated);
                             transDoc.getTextFlowTargets().add(tfTarget);
                         }
                     }
@@ -215,18 +216,26 @@ public class XliffReader extends XliffCommon {
             if (endElement && localName.equals(ELE_TRANS_UNIT)) {
                 endTransUnit = true;
             } else {
-                if (xmlr.isStartElement() && localName.equals(ELE_TARGET)) {
+                boolean startElement = xmlr.isStartElement();
+                if (startElement && localName.equals(ELE_SOURCE)) {
+                    String content =
+                            getElementValue(xmlr, ELE_SOURCE,
+                                    getContentElementList());
+                    String sourceHash = HashUtil.sourceHash(content);
+                    textFlowTarget.setSourceHash(sourceHash);
+                } else if (startElement && localName.equals(ELE_TARGET)) {
                     String content =
                             getElementValue(xmlr, ELE_TARGET,
                                     getContentElementList());
                     textFlowTarget.setContents(asList(content));
-                } else if (xmlr.isStartElement()
+                } else if (startElement
                         && localName.equals(ELE_CONTEXT_GROUP)) {
                     textFlowTarget.getExtensions(true).addAll(
                             extractContextList(xmlr));
                 }
             }
         }
+        textFlowTarget.setState(ContentState.Translated);
         return textFlowTarget;
     }
 

@@ -38,6 +38,14 @@ public class HashUtil {
         }
     }
 
+    public static String sourceHash(@Nonnull String sourceContent) {
+        if (sourceContent.isEmpty()) {
+            return null;
+        } else {
+            return generateHash(sourceContent);
+        }
+    }
+
     public static String md5Hex(String message) {
         return DigestUtils.md5Hex(message);
     }
