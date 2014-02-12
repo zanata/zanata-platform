@@ -27,12 +27,14 @@ import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -71,6 +73,9 @@ import com.google.common.collect.ImmutableList;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class CopyTransServiceImpl implements CopyTransService {
+    
+    private static final int COPY_TRANS_BATCH_SIZE = 20;
+    
     @In
     private LocaleService localeServiceImpl;
 
@@ -128,16 +133,51 @@ public class CopyTransServiceImpl implements CopyTransService {
         this.copyTransForLocale(document.getId(), locale, new HCopyTransOptions());
     }
 
-    public void copyTransForLocale(final Long documentId,
+    public void copyTransForLocale(final Long documentId, final HLocale locale,
+            final HCopyTransOptions options) {
+
+        int copyCount = 0;
+        int start = 0;
+        HDocument document = documentDAO.findById(documentId);
+
+        while (start < document.getTextFlows().size()) {
+            copyCount +=
+                    copyTransForSegment(documentId, start,
+                            COPY_TRANS_BATCH_SIZE, locale, options);
+            start += COPY_TRANS_BATCH_SIZE-1;
+        }
+
+        // Advance the task handler if there is one
+        Optional<CopyTransTaskHandle> taskHandle =
+                AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
+        if (taskHandle.isPresent()) {
+            taskHandle.get().increaseProgress(1);
+        }
+
+        log.info("copyTrans: {} {} translations for document \"{}{}\" ",
+                copyCount, locale.getLocaleId(), document.getPath(),
+                document.getName());
+    }
+
+    /**
+     * Perform copy trans on a segment of text flows for a document.
+     * @param segmentStart The text flow position to start copying.
+     * @param segmentLength The number of text flows on which to perform copy
+     *                      trans, starting from segmentStart.
+     * @return The number of actual copied translations for the segment.
+     */
+    private int copyTransForSegment(final Long documentId,
+            final int segmentStart, final int segmentLength,
             final HLocale locale, final HCopyTransOptions options) {
+
+        final CopyCount copyCount = new CopyCount(0);
         try {
             new Work<Void>() {
                 @Override
                 protected Void work() throws Exception {
-                    int copyCount = 0;
 
-                    boolean checkContext = false, checkProject = false,
-                        checkDocument = false;
+                    boolean checkContext = false, checkProject = false, checkDocument =
+                            false;
                     HDocument document = documentDAO.findById(documentId);
                     boolean requireTranslationReview =
                             document.getProjectIteration()
@@ -154,18 +194,28 @@ public class CopyTransServiceImpl implements CopyTransService {
                         checkContext = true;
                     }
 
-                    for (HTextFlow textFlow : document.getTextFlows()) {
+                    int segmentEnd = segmentStart + segmentLength;
+                    List<HTextFlow> docTextFlowTargets =
+                            document.getTextFlows();
+                    if (segmentEnd > docTextFlowTargets.size()) {
+                        segmentEnd = docTextFlowTargets.size();
+                    }
+                    List<HTextFlow> copyTargets =
+                            docTextFlowTargets
+                                    .subList(segmentStart, segmentEnd);
+
+                    for (HTextFlow textFlow : copyTargets) {
                         if (shouldFindMatch(textFlow, locale,
                                 requireTranslationReview)) {
                             Optional<HTextFlowTarget> bestMatch =
                                     textFlowTargetDAO
                                             .findBestMatchingTranslation(
-                                                textFlow, locale,
-                                                checkContext,
-                                                checkDocument, checkProject);
+                                                    textFlow, locale,
+                                                    checkContext,
+                                                    checkDocument, checkProject);
 
                             if (bestMatch.isPresent()) {
-                                copyCount++;
+                                copyCount.plusOne();
 
                                 saveCopyTransMatch(bestMatch.get(), textFlow,
                                         options, requireTranslationReview);
@@ -174,24 +224,14 @@ public class CopyTransServiceImpl implements CopyTransService {
                         }
                     }
 
-                    log.info(
-                            "copyTrans: {} {} translations for document \"{}{}\" ",
-                            copyCount, locale.getLocaleId(),
-                            document.getPath(), document.getName());
-
                     return null;
                 }
             }.workInTransaction();
-
-            // Advance the task handler if there is one
-            Optional<CopyTransTaskHandle> taskHandle =
-                    AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
-            if (taskHandle.isPresent()) {
-                taskHandle.get().increaseProgress(1);
-            }
         } catch (Exception e) {
             log.warn("exception during copy trans", e);
         }
+
+        return copyCount.getValue();
     }
 
     /**
@@ -541,5 +581,21 @@ public class CopyTransServiceImpl implements CopyTransService {
     static final class MatchRulePair {
         private final Boolean matchResult;
         private final HCopyTransOptions.ConditionRuleAction ruleAction;
+    }
+
+    /**
+     * Keeps a mutable count of translation copies done.
+     * It's a simple mutable java.lang.Integer wrapper to be able to declare
+     * final and still modify.
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    private static final class CopyCount {
+        private int value;
+        
+        public void plusOne() {
+            this.value++;
+        }
     }
 }
