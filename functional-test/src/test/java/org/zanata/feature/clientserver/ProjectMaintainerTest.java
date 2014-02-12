@@ -1,6 +1,7 @@
 package org.zanata.feature.clientserver;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,6 +42,12 @@ public class ProjectMaintainerTest {
     private File projectRootPath = client.getProjectRootPath("plural");
     private String translatorConfig = ClientWorkFlow
             .getUserConfigPath("translator");
+    private FilenameFilter propFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".properties");
+        }
+    };
 
     /**
      * TCMS test case <a
@@ -163,7 +170,7 @@ public class ProjectMaintainerTest {
         client.callWithTimeout(workDir,
                 "mvn -B org.zanata:zanata-maven-plugin:pull -DdryRun -Dzanata.userConfig="
                         + translatorConfig + " -Dzanata.transDir=" + transDir);
-        assertThat(transDir.listFiles(), Matchers.arrayWithSize(0));
+        assertThat(transDir.listFiles(propFilter), Matchers.arrayWithSize(0));
 
         // create skeletons is false will only pull translated files
         client.callWithTimeout(
@@ -173,7 +180,7 @@ public class ProjectMaintainerTest {
                         + " -Dzanata.transDir="
                         + transDir.getAbsolutePath());
 
-        assertThat(transDir.listFiles(), Matchers.arrayContaining(new File(
+        assertThat(transDir.listFiles(propFilter), Matchers.arrayContaining(new File(
                 transDir, "prop1_pl.properties")));
 
         // pull both
@@ -184,14 +191,13 @@ public class ProjectMaintainerTest {
                         + " -Dzanata.transDir="
                         + transDir.getAbsolutePath());
 
-        assertThat(transDir.listFiles(),
+        assertThat(transDir.listFiles(propFilter),
                 Matchers.arrayContainingInAnyOrder(new File(transDir,
                         "prop1_pl.properties")));
         // @formatter:off
-        assertThat(workDir.listFiles(), Matchers.arrayContainingInAnyOrder(
+        assertThat(workDir.listFiles(propFilter), Matchers.arrayContainingInAnyOrder(
                 new File(workDir, "prop1.properties"),
-                new File(workDir, "prop2.properties"),
-                new File(workDir, "zanata.xml")));
+                new File(workDir, "prop2.properties")));
         // @formatter:on
     }
 
