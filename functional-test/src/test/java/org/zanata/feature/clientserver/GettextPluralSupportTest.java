@@ -22,7 +22,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.io.Files;
 
@@ -41,12 +41,12 @@ public class GettextPluralSupportTest {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientPushWorkFlow client = new ClientPushWorkFlow();
+    private ClientWorkFlow client = new ClientWorkFlow();
     private ZanataRestCaller restCaller;
 
     private File tempDir = Files.createTempDir();
 
-    private String userConfigPath = ClientPushWorkFlow
+    private String userConfigPath = ClientWorkFlow
             .getUserConfigPath("admin");
     private File projectRootPath;
 

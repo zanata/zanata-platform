@@ -37,7 +37,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.RetryRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -55,31 +55,31 @@ public class GlossaryDeleteTest {
     @Rule
     public RetryRule retryRule = new RetryRule(3);
 
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     @Test
     public void testGlossaryDelete() {
         File projectRootPath =
-                clientPushWorkFlow.getProjectRootPath("glossary");
+                clientWorkFlow.getProjectRootPath("glossary");
         String userConfigPath =
-                ClientPushWorkFlow.getUserConfigPath("glossaryadmin");
+                ClientWorkFlow.getUserConfigPath("glossaryadmin");
 
         List<String> result =
-                clientPushWorkFlow
+                clientWorkFlow
                         .callWithTimeout(
                             projectRootPath,
                             "mvn --batch-mode zanata:glossary-push -Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv -Dzanata.userConfig="
                                 + userConfigPath);
 
-        assertThat(clientPushWorkFlow.isPushSuccessful(result),
+        assertThat(clientWorkFlow.isPushSuccessful(result),
                 Matchers.is(true));
 
         result =
-                clientPushWorkFlow.callWithTimeout(projectRootPath,
+                clientWorkFlow.callWithTimeout(projectRootPath,
                     "mvn --batch-mode zanata:glossary-delete -Dzanata.lang=hi -Dzanata.userConfig="
                         + userConfigPath);
 
-        assertThat(clientPushWorkFlow.isPushSuccessful(result),
+        assertThat(clientWorkFlow.isPushSuccessful(result),
                 Matchers.is(true));
 
         new LoginWorkFlow().signIn("admin", "admin");

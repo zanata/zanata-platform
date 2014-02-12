@@ -12,7 +12,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.util.SampleProjectRule;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -31,26 +31,26 @@ public class UnauthorizedGlossaryDeleteTest {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
     private File projectRootPath;
 
     public String getUserConfigPath() {
-        return ClientPushWorkFlow.getUserConfigPath("glossarist");
+        return ClientWorkFlow.getUserConfigPath("glossarist");
     }
 
     public String getProjectLocation(String project) {
-        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        projectRootPath = clientWorkFlow.getProjectRootPath(project);
         return projectRootPath.getAbsolutePath();
     }
 
     public List<String> push(String command, String configPath)
             throws Exception {
-        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+        return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
     }
 
     public boolean isPushFailed(List<String> output) {
-        return !clientPushWorkFlow.isPushSuccessful(output);
+        return !clientWorkFlow.isPushSuccessful(output);
     }
 
     public String resultByLines(List<String> output) {

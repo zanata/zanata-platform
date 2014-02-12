@@ -15,7 +15,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
@@ -37,9 +37,9 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 public class ProjectMaintainerTest {
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
-    private ClientPushWorkFlow client = new ClientPushWorkFlow();
+    private ClientWorkFlow client = new ClientWorkFlow();
     private File projectRootPath = client.getProjectRootPath("plural");
-    private String translatorConfig = ClientPushWorkFlow
+    private String translatorConfig = ClientWorkFlow
             .getUserConfigPath("translator");
 
     /**

@@ -45,7 +45,7 @@ import com.google.common.util.concurrent.SimpleTimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ClientPushWorkFlow {
+public class ClientWorkFlow {
 
     public File getProjectRootPath(String sampleProject) {
         String baseDir =
@@ -56,7 +56,7 @@ public class ClientPushWorkFlow {
                 "base dir and sample project can't be empty");
 
         File projectDir = new File(baseDir, sampleProject);
-        log.info("about to push project at: {}", projectDir.getAbsolutePath());
+        ClientWorkFlow.log.info("about to push project at: {}", projectDir.getAbsolutePath());
         return projectDir;
     }
 
@@ -79,10 +79,10 @@ public class ClientPushWorkFlow {
             @Override
             public List<String> call() throws Exception {
                 Process process =
-                        ClientPushWorkFlow.invokeClient(workingDirectory,
+                        ClientWorkFlow.invokeClient(workingDirectory,
                                 commands);
                 process.waitFor();
-                List<String> output = ClientPushWorkFlow.getOutput(process);
+                List<String> output = ClientWorkFlow.getOutput(process);
                 logOutputLines(output);
                 return output;
             }
@@ -112,8 +112,8 @@ public class ClientPushWorkFlow {
                 new ProcessBuilder(command).redirectErrorStream(true);
         Map<String, String> env = processBuilder.environment();
         // mvn and java home
-        log.info("M2: {}", env.get("M2"));
-        log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
+        ClientWorkFlow.log.info("M2: {}", env.get("M2"));
+        ClientWorkFlow.log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
         // log.debug("env: {}", env);
         processBuilder.directory(projectDir);
         return processBuilder.start();
@@ -121,7 +121,7 @@ public class ClientPushWorkFlow {
 
     private void logOutputLines(List<String> output) {
         for (String line : output) {
-            log.info(line);
+            ClientWorkFlow.log.info(line);
         }
     }
 
