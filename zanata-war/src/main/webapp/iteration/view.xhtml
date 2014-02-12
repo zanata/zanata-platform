@@ -32,10 +32,27 @@
     <!-- This is a place holder to avoid using FacesMessages, as they are lost on redirects or Ajax requests
          TODO: Use JSF2 Flash Scope-->
   </ui:remove>
-  <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
-    <ul id="messages" class="message">
-      <li
-        class="icon-info-circle-2 infomsg">#{flashScope.getAndClearAttribute('message')}</li>
+  <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}" styleClass="new-zanata">
+    <ul class="list--no-bullets l--push-top-1">
+      <ui:repeat value="#{flashScope.getAndClearAttribute('message')}"
+        var="message">
+        <s:fragment rendered="#{message.severity eq 'INFO'}">
+          <li class="message--highlight l--push-bottom-half">
+            #{message.summary}
+          </li>
+        </s:fragment>
+        <s:fragment rendered="#{message.severity eq 'WARN'}">
+          <li class="message--warning l--push-bottom-half">
+            #{message.summary}
+          </li>
+        </s:fragment>
+        <s:fragment
+          rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
+          <li class="message--danger l--push-bottom-half">
+            #{message.summary}
+          </li>
+        </s:fragment>
+      </ui:repeat>
     </ul>
   </a4j:outputPanel>
 
