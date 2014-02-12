@@ -13,6 +13,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
+import com.google.common.base.Strings;
 
 /**
  * @author Patrick Huang
@@ -71,6 +72,7 @@ public abstract class AbstractProfileAction {
     }
 
     @Email
+    @NotEmpty
     public String getEmail() {
         return email;
     }
