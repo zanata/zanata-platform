@@ -30,7 +30,7 @@ import org.junit.rules.TestRule;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.util.SampleProjectRule;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import java.io.File;
@@ -52,7 +52,7 @@ public class GlossaryAdminTest {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     /**
      * Validates that a pushed glossary appears in the Glossary table.
@@ -66,18 +66,18 @@ public class GlossaryAdminTest {
     public void testGlossaryView() {
         // Push a glossary
         File projectRootPath =
-                clientPushWorkFlow.getProjectRootPath("glossary");
+                clientWorkFlow.getProjectRootPath("glossary");
         String userConfigPath =
-                ClientPushWorkFlow.getUserConfigPath("glossaryadmin");
+                ClientWorkFlow.getUserConfigPath("glossaryadmin");
 
         List<String> result =
-                clientPushWorkFlow
+                clientWorkFlow
                         .callWithTimeout(
                                 projectRootPath,
                                 "mvn --batch-mode zanata:glossary-push -Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv -Dzanata.userConfig="
                                         + userConfigPath);
 
-        assertThat(clientPushWorkFlow.isPushSuccessful(result),
+        assertThat(clientWorkFlow.isPushSuccessful(result),
                 Matchers.is(true));
 
         // Make sure glossary shows up on the page

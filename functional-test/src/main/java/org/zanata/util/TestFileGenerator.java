@@ -22,11 +22,13 @@ package org.zanata.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -36,6 +38,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.io.FileUtils;
+import org.fedorahosted.openprops.Properties;
 import com.google.common.base.Throwables;
 import lombok.Setter;
 
@@ -179,7 +182,7 @@ public class TestFileGenerator {
      * @param projectType project type
      * @param locales locales
      */
-    public void generateZanataXml(File output, String projectSlug, String versionSlug, String projectType, List<String> locales) {
+    public static void generateZanataXml(File output, String projectSlug, String versionSlug, String projectType, List<String> locales) {
         ZanataXml zanataXml = new ZanataXml();
         zanataXml.setProject(projectSlug);
         zanataXml.setProjectVersion(versionSlug);
@@ -198,6 +201,15 @@ public class TestFileGenerator {
         catch (JAXBException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    public static void makePropertiesFile(File file,
+            Map<String, String> entries) throws IOException {
+        Properties resource = new Properties();
+        for (Map.Entry<String, String> entry : entries.entrySet()) {
+            resource.setProperty(entry.getKey(), entry.getValue());
+        }
+        resource.store(new FileWriter(file), null);
     }
 
     @XmlRootElement(namespace = ZanataXml.NS,

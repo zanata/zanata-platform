@@ -1,27 +1,18 @@
 package org.zanata.util;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
-import com.github.huangp.entityunit.entity.Callbacks;
-import com.github.huangp.entityunit.entity.EntityCleaner;
-import com.github.huangp.entityunit.entity.EntityMaker;
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.entity.FixIdCallback;
-import com.github.huangp.entityunit.entity.TakeCopyCallback;
-import com.github.huangp.entityunit.entity.WireManyToManyCallback;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.security.Identity;
-import org.zanata.common.ActivityType;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.model.Activity;
@@ -43,22 +34,25 @@ import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.IsEntityWithType;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import com.github.huangp.entityunit.entity.Callbacks;
+import com.github.huangp.entityunit.entity.EntityCleaner;
+import com.github.huangp.entityunit.entity.EntityMaker;
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.entity.FixIdCallback;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-@Getter
 @Name("sampleProjectProfile")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
@@ -68,18 +62,12 @@ public class SampleProjectProfile {
     @In
     private EntityManager entityManager;
 
-    private HLocale frLocale;
+    @In
+    private EntityManagerFactory entityManagerFactory;
+
     private HLocale enUSLocale;
-    private HLocale hiLocale;
-    private HLocale plLocale;
 
-    private HPerson translator;
     private HPerson admin;
-    private HPerson glossarist;
-    private HPerson glossaryAdmin;
-
-    @Getter
-    private TakeCopyCallback projectCopy;
 
     public void deleteExceptEssentialData() {
         EntityCleaner.deleteAll(entityManager, Lists.<Class>newArrayList(
@@ -111,21 +99,33 @@ public class SampleProjectProfile {
         query.setParameter("key", HApplicationConfiguration.KEY_HELP_CONTENT);
         query.executeUpdate();
 
+        purgeLuceneIndexes();
         // TODO probably should delete cache as well
     }
 
+    private void purgeLuceneIndexes() {
+        FullTextSession fullTextSession =
+                Search.getFullTextSession((Session) entityManagerFactory
+                        .createEntityManager().getDelegate());
+
+        fullTextSession.purgeAll(HAccount.class);
+        fullTextSession.purgeAll(HGlossaryEntry.class);
+        fullTextSession.purgeAll(HGlossaryTerm.class);
+        fullTextSession.purgeAll(HProject.class);
+        fullTextSession.purgeAll(HProjectIteration.class);
+        fullTextSession.purgeAll(TransMemoryUnit.class);
+        fullTextSession.purgeAll(HTextFlowTarget.class);
+    }
+
     public void makeSampleLanguages() {
-        frLocale =
-                forLocale(true, LocaleId.FR).makeAndPersist(entityManager,
-                        HLocale.class);
+        forLocale(true, LocaleId.FR).makeAndPersist(entityManager,
+                HLocale.class);
 
-        hiLocale =
-                forLocale(true, new LocaleId("hi")).makeAndPersist(
-                        entityManager, HLocale.class);
+        forLocale(true, new LocaleId("hi")).makeAndPersist(entityManager,
+                HLocale.class);
 
-        plLocale =
-                forLocale(true, new LocaleId("pl")).makeAndPersist(
-                        entityManager, HLocale.class);
+        forLocale(true, new LocaleId("pl")).makeAndPersist(entityManager,
+                HLocale.class);
     }
 
     private static EntityMaker forLocale(boolean enabledByDefault,
@@ -153,21 +153,22 @@ public class SampleProjectProfile {
                 makeAccount("translator", "Fr5JHlcaEqKLSHjnBm4gXg==",
                         "d83882201764f7d339e97c4b087f0806", 2L);
         assignAccountRole(2L, "user");
-        translator = makePerson(2L, "translator", "translator");
+        HPerson translator = makePerson(2L, "translator", "translator");
         assignAccountToPerson(translatorAccount, translator);
 
         HAccount glossaristAccount =
                 makeAccount("glossarist", "fRIeiPDPlSMtHbBNoqDjNQ==",
                         "b1e3daa18e41c0ce79829e87ce66b201", 3L);
         assignAccountRole(3L, "glossarist");
-        glossarist = makePerson(3L, "glossarist", "glossarist");
+        HPerson glossarist = makePerson(3L, "glossarist", "glossarist");
         assignAccountToPerson(glossaristAccount, glossarist);
 
         HAccount gAdminAccount =
                 makeAccount("glossaryadmin", "/W0YpteXk+WtymQ7H84kPQ==",
                         "5a6a34d28d39ff90ea47402311f339d4", 4L);
         assignAccountRole(4L, "glossary-admin");
-        glossaryAdmin = makePerson(4L, "glossary-admin", "glossary-admin");
+        HPerson glossaryAdmin =
+                makePerson(4L, "glossary-admin", "glossary-admin");
         assignAccountToPerson(gAdminAccount, glossaryAdmin);
     }
 
@@ -255,48 +256,9 @@ public class SampleProjectProfile {
                                 FixedValueMaker.fix(ContentType.PO))
                         .reuseEntity(enUSLocale).build();
 
-        projectCopy = Callbacks.takeCopy();
-        maker.makeAndPersist(entityManager, HTextFlowTarget.class, Callbacks.chain(
-                Callbacks.wireManyToMany(HProject.class, admin), projectCopy));
+        maker.makeAndPersist(entityManager, HTextFlowTarget.class,
+                Callbacks.wireManyToMany(HProject.class, admin));
 
-        WireManyToManyCallback manyToManyCallback = Callbacks
-                .wireManyToMany(HProject.class, admin);
-        TakeCopyCallback copyCallback = Callbacks.takeCopy();
-        EntityMakerBuilder
-                .builder()
-                .reuseEntities(admin, admin.getAccount())
-                .build()
-                .makeAndPersist(entityManager, HDocument.class,
-                        Callbacks.chain(manyToManyCallback, copyCallback));
-
-        // make some fake activities for admin user
-        HDocument hDocument = copyCallback.getByType(HDocument.class);
-
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 1);
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 2);
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 3);
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 4);
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 5);
-        makeActivity(copyCallback, hDocument,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 6);
-    }
-
-    private void makeActivity(TakeCopyCallback copyCallback,
-            IsEntityWithType activityTarget, ActivityType activityType,
-            int pastDays) {
-        Activity activity = new Activity(admin,
-                copyCallback.getByType(HProjectIteration.class),
-                activityTarget,
-                activityType, 10);
-        Date now = new Date();
-        long timestamp = now.getTime() - TimeUnit.DAYS.toMillis(pastDays);
-        activity.setCreationDate(new Date(timestamp));
-        entityManager.persist(activity);
     }
 
 }

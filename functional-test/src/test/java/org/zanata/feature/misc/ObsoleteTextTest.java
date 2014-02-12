@@ -37,7 +37,7 @@ public class ObsoleteTextTest {
 
     @Before
     public void setUp() throws Exception {
-        restCaller = new ZanataRestCaller("admin");
+        restCaller = new ZanataRestCaller();
     }
 
     /**

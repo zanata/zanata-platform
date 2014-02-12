@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,11 +58,11 @@ public class PushPodirPluralProjectTest {
     public ConcordionExtension extension = new LoggingTooltipExtension(
             PushPodirPluralProjectTest.class.getName(), Level.INFO, false);
 
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
     private File projectRootPath;
 
     public String getUserConfigPath() {
-        return ClientPushWorkFlow.getUserConfigPath("admin");
+        return ClientWorkFlow.getUserConfigPath("admin");
     }
 
     public String getUserConfigContent(String path) throws IOException {
@@ -72,7 +72,7 @@ public class PushPodirPluralProjectTest {
     }
 
     public String getProjectLocation(String project) {
-        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        projectRootPath = clientWorkFlow.getProjectRootPath(project);
         tooltipLog.info("project root path:"
                 + projectRootPath.getAbsolutePath());
         return projectRootPath.getAbsolutePath();
@@ -80,12 +80,12 @@ public class PushPodirPluralProjectTest {
 
     public List<String> push(String command, String configPath)
             throws Exception {
-        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+        return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
     }
 
     public boolean isPushSuccessful(List<String> output) {
-        return clientPushWorkFlow.isPushSuccessful(output);
+        return clientWorkFlow.isPushSuccessful(output);
     }
 
     public String resultByLines(List<String> output) {

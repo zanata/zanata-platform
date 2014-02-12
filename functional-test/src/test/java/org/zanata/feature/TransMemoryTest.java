@@ -49,7 +49,7 @@ public class TransMemoryTest {
                         "trans memory test");
         projectWorkFlow.createNewProjectVersion("trans memory test", "master");
 
-        // int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
+        // int exitCode = new ClientWorkFlow().mvnPush("trans-memory",
         // "-Dzanata.merge=import", "-Dzanata.projectVersion=master",
         // "-Dzanata.pushType=Both");
 
@@ -71,7 +71,7 @@ public class TransMemoryTest {
                 "master");
 
 // @formatter:off
-//      int exitCode = new ClientPushWorkFlow().mvnPush("trans-memory",
+//      int exitCode = new ClientWorkFlow().mvnPush("trans-memory",
 //            "-Dzanata.projectConfig=differentProject/zanata.xml",
 //            "-Dzanata.projectVersion=master",
 //            "-Dzanata.copyTrans=false",

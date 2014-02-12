@@ -33,12 +33,22 @@ public class ZanataRestCaller {
 
     private final ZanataProxyFactory zanataProxyFactory;
 
-    public ZanataRestCaller(String username) {
+    /**
+     * Rest client as user admin.
+     */
+    public ZanataRestCaller() {
+        this("admin", PropertiesHolder.getProperty(Constants.zanataApiKey
+                .value()));
+    }
+
+    /**
+     * Rest client as given user.
+     * @param username username
+     * @param apiKey user api key
+     */
+    public ZanataRestCaller(String username, String apiKey) {
         try {
             VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
-            String apiKey =
-                    PropertiesHolder
-                            .getProperty(Constants.zanataApiKey.value());
             String baseUrl =
                     PropertiesHolder.getProperty(Constants.zanataInstance
                             .value());
@@ -98,7 +108,7 @@ public class ZanataRestCaller {
         ClientResponse<String> response =
                 zanataProxyFactory.getSourceDocResource(projectSlug,
                         iterationSlug).putResource(idNoSlash, resource,
-                        Collections.<String> emptySet(), copytrans);
+                        Collections.<String>emptySet(), copytrans);
         ClientUtility.checkResult(response);
         response.releaseConnection();
     }

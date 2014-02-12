@@ -36,7 +36,7 @@ import org.zanata.feature.ConcordionTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.base.Joiner;
 
@@ -56,27 +56,27 @@ public class GlossaryPushTest {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
     private File projectRootPath;
     private EditorPage editorPage;
 
     public String getUserConfigPath() {
-        return ClientPushWorkFlow.getUserConfigPath("glossarist");
+        return ClientWorkFlow.getUserConfigPath("glossarist");
     }
 
     public String getProjectLocation(String project) {
-        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        projectRootPath = clientWorkFlow.getProjectRootPath(project);
         return projectRootPath.getAbsolutePath();
     }
 
     public List<String> push(String command, String configPath)
             throws Exception {
-        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+        return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
     }
 
     public boolean isPushSuccessful(List<String> output) {
-        return clientPushWorkFlow.isPushSuccessful(output);
+        return clientWorkFlow.isPushSuccessful(output);
     }
 
     public String resultByLines(List<String> output) {
