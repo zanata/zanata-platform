@@ -133,12 +133,12 @@ public class CopyTransServiceImpl implements CopyTransService {
     public void copyTransForLocale(final Long documentId, final HLocale locale,
             final HCopyTransOptions options) {
 
-        int copyCount = 0;
+        int numCopied = 0;
         int start = 0;
         HDocument document = documentDAO.findById(documentId);
 
         while (start < document.getTextFlows().size()) {
-            copyCount +=
+            numCopied +=
                     copyTransForBatch(documentId, start,
                             COPY_TRANS_BATCH_SIZE, locale, options);
             start += COPY_TRANS_BATCH_SIZE;
@@ -152,7 +152,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         }
 
         log.info("copyTrans: {} {} translations for document \"{}{}\" ",
-                copyCount, locale.getLocaleId(), document.getPath(),
+                numCopied, locale.getLocaleId(), document.getPath(),
                 document.getName());
     }
 
