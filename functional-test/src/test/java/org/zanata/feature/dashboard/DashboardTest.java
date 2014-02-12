@@ -25,15 +25,21 @@ import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.utility.DashboardPage;
+import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 @RunWith(ConcordionRunner.class)
 @Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
@@ -46,6 +52,22 @@ public class DashboardTest {
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private DashboardPage dashboardPage;
+
+    @Before
+    public void setUp() {
+        ZanataRestCaller restCaller = new ZanataRestCaller();
+        Resource resource =
+                buildSourceResource("a", buildTextFlow("res1", "content"));
+        // create 6 activities
+        for (int i = 0; i < 6; i++) {
+            String projectSlug = "activity" + i;
+            String iterationSlug = "v" + i;
+            restCaller.createProjectAndVersion(projectSlug, iterationSlug,
+                    "gettext");
+            restCaller.postSourceDocResource(projectSlug, iterationSlug,
+                    resource, false);
+        }
+    }
 
     public boolean signInAs(String username, String password) {
         dashboardPage = new LoginWorkFlow().signIn(username, password);

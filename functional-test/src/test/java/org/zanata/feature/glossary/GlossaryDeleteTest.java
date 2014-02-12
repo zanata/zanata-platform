@@ -52,9 +52,6 @@ public class GlossaryDeleteTest {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    @Rule
-    public RetryRule retryRule = new RetryRule(3);
-
     private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     @Test
@@ -83,12 +80,6 @@ public class GlossaryDeleteTest {
                 Matchers.is(true));
 
         new LoginWorkFlow().signIn("admin", "admin");
-        // for some reason on jenkins sometimes the index is out of sync.
-        ManageSearchPage manageSearchPage =
-                new BasicWorkFlow().goToPage("admin/search", ManageSearchPage.class);
-        manageSearchPage.selectAllActionsFor("HGlossaryEntry");
-        manageSearchPage.selectAllActionsFor("HGlossaryTerm");
-        manageSearchPage.performSelectedActions();
 
         List<List<String>> hiGlossaryResult =
                 translate("hi").searchGlossary("hello")
