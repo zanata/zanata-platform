@@ -1,6 +1,8 @@
 package org.zanata.util;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.github.huangp.entityunit.entity.Callbacks;
@@ -14,6 +16,9 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -24,6 +29,7 @@ import org.jboss.seam.security.Identity;
 import org.zanata.common.ActivityType;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
+import org.zanata.lock.Lock;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
@@ -51,6 +57,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
 /**
@@ -58,7 +65,6 @@ import javax.persistence.Query;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-@Getter
 @Name("sampleProjectProfile")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
@@ -67,6 +73,9 @@ public class SampleProjectProfile {
 
     @In
     private EntityManager entityManager;
+
+    @In
+    private EntityManagerFactory entityManagerFactory;
 
     private HLocale frLocale;
     private HLocale enUSLocale;
@@ -80,6 +89,7 @@ public class SampleProjectProfile {
 
     @Getter
     private TakeCopyCallback projectCopy;
+    private FullTextSession fullTextSession;
 
     public void deleteExceptEssentialData() {
         EntityCleaner.deleteAll(entityManager, Lists.<Class>newArrayList(
@@ -111,7 +121,22 @@ public class SampleProjectProfile {
         query.setParameter("key", HApplicationConfiguration.KEY_HELP_CONTENT);
         query.executeUpdate();
 
+        purgeLuceneIndexes();
         // TODO probably should delete cache as well
+    }
+
+    private void purgeLuceneIndexes() {
+        fullTextSession =
+                Search.getFullTextSession((Session) entityManagerFactory
+                        .createEntityManager().getDelegate());
+
+        fullTextSession.purgeAll(HAccount.class);
+        fullTextSession.purgeAll(HGlossaryEntry.class);
+        fullTextSession.purgeAll(HGlossaryTerm.class);
+        fullTextSession.purgeAll(HProject.class);
+        fullTextSession.purgeAll(HProjectIteration.class);
+        fullTextSession.purgeAll(TransMemoryUnit.class);
+        fullTextSession.purgeAll(HTextFlowTarget.class);
     }
 
     public void makeSampleLanguages() {
