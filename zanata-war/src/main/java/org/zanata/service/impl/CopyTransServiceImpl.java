@@ -27,10 +27,7 @@ import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
-import java.util.Collection;
 import java.util.List;
-
-import javax.persistence.EntityManager;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -73,9 +70,9 @@ import com.google.common.collect.ImmutableList;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class CopyTransServiceImpl implements CopyTransService {
-    
+
     private static final int COPY_TRANS_BATCH_SIZE = 20;
-    
+
     @In
     private LocaleService localeServiceImpl;
 
@@ -142,9 +139,9 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         while (start < document.getTextFlows().size()) {
             copyCount +=
-                    copyTransForSegment(documentId, start,
+                    copyTransForBatch(documentId, start,
                             COPY_TRANS_BATCH_SIZE, locale, options);
-            start += COPY_TRANS_BATCH_SIZE-1;
+            start += COPY_TRANS_BATCH_SIZE;
         }
 
         // Advance the task handler if there is one
@@ -160,24 +157,25 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     /**
-     * Perform copy trans on a segment of text flows for a document.
-     * @param segmentStart The text flow position to start copying.
-     * @param segmentLength The number of text flows on which to perform copy
-     *                      trans, starting from segmentStart.
+     * Perform copy trans on a batch of text flows for a document.
+     * @param batchStart The text flow position to start copying.
+     * @param batchLength The number of text flows on which to perform copy
+     *                      trans, starting from batchStart.
      * @return The number of actual copied translations for the segment.
      */
-    private int copyTransForSegment(final Long documentId,
-            final int segmentStart, final int segmentLength,
+    private int copyTransForBatch(final Long documentId,
+            final int batchStart, final int batchLength,
             final HLocale locale, final HCopyTransOptions options) {
 
-        final CopyCount copyCount = new CopyCount(0);
         try {
-            new Work<Void>() {
+            return new Work<Integer>() {
                 @Override
-                protected Void work() throws Exception {
+                protected Integer work() throws Exception {
 
-                    boolean checkContext = false, checkProject = false, checkDocument =
-                            false;
+                    int numCopied = 0;
+                    boolean checkContext = false,
+                            checkProject = false,
+                            checkDocument = false;
                     HDocument document = documentDAO.findById(documentId);
                     boolean requireTranslationReview =
                             document.getProjectIteration()
@@ -194,15 +192,13 @@ public class CopyTransServiceImpl implements CopyTransService {
                         checkContext = true;
                     }
 
-                    int segmentEnd = segmentStart + segmentLength;
                     List<HTextFlow> docTextFlowTargets =
                             document.getTextFlows();
-                    if (segmentEnd > docTextFlowTargets.size()) {
-                        segmentEnd = docTextFlowTargets.size();
-                    }
+                    int batchEnd = Math.min(batchStart + batchLength,
+                            docTextFlowTargets.size());
                     List<HTextFlow> copyTargets =
                             docTextFlowTargets
-                                    .subList(segmentStart, segmentEnd);
+                                    .subList(batchStart, batchEnd);
 
                     for (HTextFlow textFlow : copyTargets) {
                         if (shouldFindMatch(textFlow, locale,
@@ -215,7 +211,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                                                     checkDocument, checkProject);
 
                             if (bestMatch.isPresent()) {
-                                copyCount.plusOne();
+                                numCopied++;
 
                                 saveCopyTransMatch(bestMatch.get(), textFlow,
                                         options, requireTranslationReview);
@@ -224,14 +220,13 @@ public class CopyTransServiceImpl implements CopyTransService {
                         }
                     }
 
-                    return null;
+                    return numCopied;
                 }
             }.workInTransaction();
         } catch (Exception e) {
             log.warn("exception during copy trans", e);
+            return 0;
         }
-
-        return copyCount.getValue();
     }
 
     /**
@@ -581,21 +576,5 @@ public class CopyTransServiceImpl implements CopyTransService {
     static final class MatchRulePair {
         private final Boolean matchResult;
         private final HCopyTransOptions.ConditionRuleAction ruleAction;
-    }
-
-    /**
-     * Keeps a mutable count of translation copies done.
-     * It's a simple mutable java.lang.Integer wrapper to be able to declare
-     * final and still modify.
-     */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    private static final class CopyCount {
-        private int value;
-        
-        public void plusOne() {
-            this.value++;
-        }
     }
 }
