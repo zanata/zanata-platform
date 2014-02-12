@@ -37,14 +37,17 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.ZanataMessages;
 
 /**
  * Sends an email to a specified role.
@@ -115,6 +118,15 @@ public class SendEmailAction implements Serializable {
 
     private List<HPerson> groupMaintainers;
 
+    @In
+    private FlashScopeBean flashScope;
+
+    @In
+    private ZanataMessages zanataMessages;
+
+    public static final String SUCCESS = "success";
+    public static final String FAILED = "failure";
+
     @Create
     public void onCreate() {
         if (authenticatedAccount == null) {
@@ -153,6 +165,7 @@ public class SendEmailAction implements Serializable {
      *         in pages.xml
      */
     public String send() {
+        clearMessage();
         Locale pervLocale = localeSelector.getLocale();
         localeSelector.setLocale(new Locale("en"));
 
@@ -165,7 +178,8 @@ public class SendEmailAction implements Serializable {
                                         fromName, fromLoginName, replyEmail,
                                         subject, htmlMessage);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
@@ -173,7 +187,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
@@ -181,7 +196,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
@@ -189,7 +205,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
                 String msg =
                         emailServiceImpl
@@ -198,8 +215,8 @@ public class SendEmailAction implements Serializable {
                                         groupMaintainers, fromName,
                                         fromLoginName, replyEmail, subject,
                                         htmlMessage);
-                FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else {
                 throw new Exception("Invalid email type: " + emailType);
             }
@@ -211,7 +228,7 @@ public class SendEmailAction implements Serializable {
                     "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                     e, fromName, fromLoginName, replyEmail, subject,
                     htmlMessage);
-            return "failure";
+            return FAILED;
         } finally {
             localeSelector.setLocale(pervLocale);
         }
@@ -221,14 +238,35 @@ public class SendEmailAction implements Serializable {
      * @return string 'canceled'
      */
     public void cancel() {
+        clearMessage();
         log.info(
                 "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, htmlMessage);
         FacesMessages.instance().add("Sending message canceled");
+        addMessage(StatusMessage.Severity.INFO, "Sending message canceled");
     }
 
     public String sendToVersionGroupMaintainer(List<HPerson> maintainers) {
         groupMaintainers = maintainers;
         return send();
     }
+
+    /**
+     * Use FlashScopeBean to store message in page. Multiple ajax requests for
+     * re-rendering statistics after updating will clear FacesMessages.
+     *
+     * @param severity
+     * @param message
+     */
+    private void addMessage(StatusMessage.Severity severity, String message) {
+        StatusMessage statusMessage =
+                new StatusMessage(severity, null, null, message, null);
+        statusMessage.interpolate();
+        flashScope.setAttribute("message", statusMessage);
+    }
+
+    private void clearMessage() {
+        flashScope.getAndClearAttribute("message");
+    }
+
 }

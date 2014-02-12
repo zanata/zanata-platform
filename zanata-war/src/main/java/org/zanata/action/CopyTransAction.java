@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.international.StatusMessage;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
@@ -100,14 +101,27 @@ public class CopyTransAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(copyTransAction.projectIteration, 'copy-trans')}")
-    public void startCopyTrans() {
+    public
+            void startCopyTrans() {
         if (isCopyTransRunning()) {
-            flashScope.setAttribute("message", messages
-                    .get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
+            StatusMessage statusMessage =
+                    new StatusMessage(
+                            StatusMessage.Severity.INFO,
+                            null,
+                            null,
+                            messages.get("jsf.iteration.CopyTrans.AlreadyStarted.flash"),
+                            null);
+            flashScope.setAttribute("message", statusMessage);
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            flashScope.setAttribute("message",
-                    messages.get("jsf.iteration.CopyTrans.NoDocuments"));
+            StatusMessage statusMessage =
+                    new StatusMessage(
+                            StatusMessage.Severity.INFO,
+                            null,
+                            null,
+                            messages.get("jsf.iteration.CopyTrans.NoDocuments"),
+                            null);
+            flashScope.setAttribute("message", statusMessage);
             return;
         }
 
