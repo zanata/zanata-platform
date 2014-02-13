@@ -20,11 +20,6 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import net.customware.gwt.presenter.client.PresenterRevealedHandler;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -59,11 +54,16 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         ShowSideMenuEventHandler, WorkspaceContextUpdateEventHandler,
@@ -128,12 +128,17 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                         .getLocaleId();
 
         projectStats = new ContainerTranslationStatistics();
-        projectStats.addStats(new TranslationStatistics(new TransUnitCount(0,
-                0, 0), localeId.getId()));
-        projectStats.addStats(new TranslationStatistics(new TransUnitWords(0,
-                0, 0), localeId.getId()));
+        resetProjectStats();
 
         display.setListener(this);
+    }
+
+    private void resetProjectStats() {
+        projectStats.setStats(Lists.newArrayList(
+                new TranslationStatistics(new TransUnitCount(0, 0, 0), localeId
+                        .getId()),
+                new TranslationStatistics(new TransUnitWords(0, 0, 0), localeId
+                        .getId())));
     }
 
     @Override
@@ -446,6 +451,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     @Override
     public void onProjectStatsUpdated(RefreshProjectStatsEvent event) {
+        resetProjectStats();
+
         for (DocumentNode documentNode : event.getDocumentNodes()) {
             ContainerTranslationStatistics statsContainer =
                     documentNode.getDocInfo().getStats();
