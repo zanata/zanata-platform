@@ -57,7 +57,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  * Default implementation for the
  * {@link org.zanata.rest.service.StatisticsResource} interface. This is a
  * business/REST service.
- *
+ * 
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -127,8 +127,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 .generatePathForProjectIteration(iteration)), "statSource",
                 "PROJ_ITER"));
         long iterationTotalMssgs =
-                projectIterationDAO
-                        .getTotalMessageCountForIteration(iteration.getId());
+                projectIterationDAO.getTotalMessageCountForIteration(iteration
+                        .getId());
         long iterationTotalWords =
                 projectIterationDAO.getTotalWordCountForIteration(iteration
                         .getId());
@@ -252,6 +252,17 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 transUnitStats =
                         stats.getStats(locale.getId(), StatUnit.MESSAGE);
             }
+
+            // word stats
+            TranslationStatistics wordsStats;
+            if (stats == null) {
+                wordsStats =
+                        new TranslationStatistics(new TransUnitWords(0, 0,
+                                (int) docTotalWords), locale.getId());
+            } else {
+                wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
+            }
+
             DocumentStatus docStat =
                     translationStateCacheImpl.getDocumentStatus(
                             document.getId(), locale);
@@ -264,20 +275,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
                     docStat.getLastTranslatedBy()));
 
             transUnitStats.setRemainingHours(StatisticsUtil
-                    .getRemainingHours(transUnitStats));
+                    .getRemainingHours(wordsStats));
             docStats.addStats(transUnitStats);
 
             // word level stats
             if (includeWordStats) {
-                TranslationStatistics wordsStats;
-                if (stats == null) {
-                    wordsStats =
-                            new TranslationStatistics(new TransUnitWords(0, 0,
-                                    (int) docTotalWords), locale.getId());
-                } else {
-                    wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
-                }
-
                 wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
                 wordsStats.setLastTranslatedDate(docStat
                         .getLastTranslatedDate());
@@ -337,7 +339,6 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         TranslationStatistics wordStatistics =
                 result.getStats(localeId.getId(), StatUnit.WORD);
-
 
         TranslationStatistics msgStatistics =
                 result.getStats(localeId.getId(), StatUnit.MESSAGE);
