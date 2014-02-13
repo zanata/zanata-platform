@@ -324,7 +324,7 @@ public class ProjectIterationFilesAction implements Serializable {
             FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
         } catch (WebApplicationException e) {
             FacesMessages.instance().add(Severity.ERROR,
-                    e.getResponse().getEntity().toString());
+                    "Failed to upload POT file: " + e.getResponse().getEntity().toString());
         }
     }
 
