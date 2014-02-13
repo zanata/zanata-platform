@@ -40,9 +40,10 @@
           <div class="l--push-top-half form__item">
             <h:outputLabel for="email">
               #{messages['jsf.Email']}
+              <s:span styleClass="txt--required">*</s:span>
             </h:outputLabel>
             <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
-              <h:inputText id="email" required="false"
+              <h:inputText id="email" required="true"
                 value="#{profileAction.email}">
                 <a4j:ajax event="blur" render="emailField" execute="@this"/>
               </h:inputText>

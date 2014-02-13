@@ -38,6 +38,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.WebApplicationException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -321,6 +322,9 @@ public class ProjectIterationFilesAction implements Serializable {
                     documentFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
             FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
+        } catch (WebApplicationException e) {
+            FacesMessages.instance().add(Severity.ERROR,
+                    "Failed to upload POT file: " + e.getResponse().getEntity().toString());
         }
     }
 
