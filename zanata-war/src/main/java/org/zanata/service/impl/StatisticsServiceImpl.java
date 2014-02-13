@@ -57,7 +57,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
  * Default implementation for the
  * {@link org.zanata.rest.service.StatisticsResource} interface. This is a
  * business/REST service.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
