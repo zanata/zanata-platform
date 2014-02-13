@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -34,15 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.WebApplicationException;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -90,10 +83,14 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.util.StringUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
@@ -103,10 +100,16 @@ public class ProjectIterationFilesAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Getter
+    @Setter
     private String projectSlug;
 
+    @Getter
+    @Setter
     private String iterationSlug;
 
+    @Getter
+    @Setter
     private String localeId;
 
     @In
@@ -148,8 +151,12 @@ public class ProjectIterationFilesAction implements Serializable {
     @In
     private ZanataMessages zanataMessages;
 
+    @Getter
+    @Setter
     private List<HDocument> iterationDocuments;
 
+    @Getter
+    @Setter
     private String documentNameFilter;
 
     private TranslationFileUploadHelper translationFileUpload;
@@ -158,6 +165,8 @@ public class ProjectIterationFilesAction implements Serializable {
 
     private HProjectIteration projectIteration;
 
+    @Getter
+    @Setter
     private StatUnit statsOption = WORD;
 
     private Map<String, TranslationStatistics> statisticMap;
@@ -449,38 +458,6 @@ public class ProjectIterationFilesAction implements Serializable {
         return this.isDocumentUploadAllowed();
     }
 
-    public List<HDocument> getIterationDocuments() {
-        return iterationDocuments;
-    }
-
-    public void setIterationDocuments(List<HDocument> iterationDocuments) {
-        this.iterationDocuments = iterationDocuments;
-    }
-
-    public String getProjectSlug() {
-        return projectSlug;
-    }
-
-    public void setProjectSlug(String projectSlug) {
-        this.projectSlug = projectSlug;
-    }
-
-    public String getIterationSlug() {
-        return iterationSlug;
-    }
-
-    public void setIterationSlug(String iterationSlug) {
-        this.iterationSlug = iterationSlug;
-    }
-
-    public String getLocaleId() {
-        return localeId;
-    }
-
-    public void setLocaleId(String localeId) {
-        this.localeId = localeId;
-    }
-
     public boolean isKnownProjectType() {
         ProjectType type =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug)
@@ -516,14 +493,6 @@ public class ProjectIterationFilesAction implements Serializable {
                         iterationSlug, docPath, docName);
     }
 
-    public String getDocumentNameFilter() {
-        return documentNameFilter;
-    }
-
-    public void setDocumentNameFilter(String documentNameFilter) {
-        this.documentNameFilter = documentNameFilter;
-    }
-
     public TranslationFileUploadHelper getTranslationFileUpload() {
         return translationFileUpload;
     }
@@ -538,14 +507,6 @@ public class ProjectIterationFilesAction implements Serializable {
                     projectIterationDAO.getBySlug(projectSlug, iterationSlug);
         }
         return this.projectIteration;
-    }
-
-    public StatUnit getStatsOption() {
-        return statsOption;
-    }
-
-    public void setStatsOption(StatUnit statsOption) {
-        this.statsOption = statsOption;
     }
 
     public boolean isUserAllowedToTranslate() {
