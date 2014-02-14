@@ -252,11 +252,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     }
 
     /**
-     * 
+     *
      * This method is currently returning wrong statistics -
      * https://bugzilla.redhat.com/show_bug.cgi?id=1064737 Returns document
      * statistics for multiple locales.
-     * 
+     *
      * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
      * @param docId
      * @param localeIds
@@ -418,7 +418,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
 
     /**
      * Calculates a translated document's hash.
-     * 
+     *
      * @param projectSlug
      *            Project identifier
      * @param iterationSlug
@@ -503,7 +503,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     /**
      * Do not use this method when adding a new raw document, instead use
      * {@link #addRawDocument(HDocument, HRawDocument)}
-     * 
+     *
      * @see AbstractDAOImpl#makePersistent(Object)
      */
     @Override
@@ -518,7 +518,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     /**
      * Add a raw document to a document, cleanly removing any existing raw
      * document associated with the document.
-     * 
+     *
      * @param doc
      * @param rawDoc
      * @return
