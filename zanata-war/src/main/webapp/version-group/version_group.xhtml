@@ -131,18 +131,18 @@
               </a>
             </li>
 
-            <li class="tab__end">
-              <div
-                class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
-                <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                  title="#{messages['jsf.tooltip.MoreActions']}"
-                  data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
-                  class="i i--ellipsis"></i></a>
-                <ul class="dropdown__content js-dropdown__content"
-                  role="content"
-                  aria-labelledby="dropdownContent">
-                  <s:fragment
-                    rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+            <s:fragment
+              rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+              <li class="tab__end">
+                <div
+                  class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+                  <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                    title="#{messages['jsf.tooltip.MoreActions']}"
+                    data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
+                    class="i i--ellipsis"></i></a>
+                  <ul class="dropdown__content js-dropdown__content"
+                    role="content"
+                    aria-labelledby="dropdownContent">
                     <li>
                       <s:link view="/version-group/request_to_join.xhtml"
                         styleClass="i__item--right"
@@ -158,10 +158,10 @@
                         <i class="i i--project i__item__icon"></i>
                       </s:link>
                     </li>
-                  </s:fragment>
-                </ul>
-              </div>
-            </li>
+                  </ul>
+                </div>
+              </li>
+            </s:fragment>
 
             <s:fragment
               rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">

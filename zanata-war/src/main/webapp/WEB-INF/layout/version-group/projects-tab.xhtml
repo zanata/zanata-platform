@@ -16,27 +16,28 @@
         render="projects-project_form"
         sortingList="#{versionGroupHomeAction.projectSortingList}"/>
 
-      <div
-        class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
-        <a class="dropdown__toggle js-dropdown__toggle" href="#"
-          title="#{messages['jsf.tooltip.MoreActions']}"
-          data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
-          class="i i--ellipsis"></i>
-        </a>
-        <ul class="dropdown__content js-dropdown__content" role="content"
-          aria-labelledby="dropdownContent">
-          <s:fragment
-            rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+      <s:fragment
+        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        <div
+          class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+          <a class="dropdown__toggle js-dropdown__toggle" href="#"
+            title="#{messages['jsf.tooltip.MoreActions']}"
+            data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
+            class="i i--ellipsis"></i>
+          </a>
+          <ul class="dropdown__content js-dropdown__content" role="content"
+            aria-labelledby="dropdownContent">
             <li>
               <a
-                href="#settings-projects" onclick="updateHashAndGotoUrl(this)">
+                href="#settings-projects"
+                onclick="updateHashAndGotoUrl(this)">
                 #{messages['jsf.ManageProjects']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
             </li>
-          </s:fragment>
-        </ul>
-      </div>
+          </ul>
+        </div>
+      </s:fragment>
 
     </div>
     <h2 class="panel__heading">
