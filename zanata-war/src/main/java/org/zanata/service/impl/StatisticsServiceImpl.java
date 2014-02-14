@@ -223,77 +223,46 @@ public class StatisticsServiceImpl implements StatisticsResource {
                     + "/" + docId);
         }
 
-        Map<LocaleId, ContainerTranslationStatistics> statsMap =
-                documentDAO.getStatistics(document.getId(), localeIds);
-
-        ContainerTranslationStatistics docStats =
+        ContainerTranslationStatistics docStatistics =
                 new ContainerTranslationStatistics();
-        docStats.setId(docId);
-        docStats.addRef(new Link(URI.create(zPathService
+        docStatistics.setId(docId);
+        docStatistics.addRef(new Link(URI.create(zPathService
                 .generatePathForDocument(document)), "statSource", "DOC"));
 
-        long docTotalMssgs = documentDAO.getTotalCountForDocument(document);
+        for (LocaleId localeId : localeIds) {
+            ContainerTranslationStatistics docStats =
+                    getDocStatistics(document.getId(), localeId);
 
-        long docTotalWords = 0;
-        if (includeWordStats) {
-            docTotalWords = documentDAO.getTotalWordCountForDocument(document);
-        }
-
-        for (LocaleId locale : localeIds) {
-            ContainerTranslationStatistics stats = statsMap.get(locale);
-
-            // trans unit level stats
-            TranslationStatistics transUnitStats;
-            if (stats == null) {
-                transUnitStats =
-                        new TranslationStatistics(new TransUnitCount(0, 0,
-                                (int) docTotalMssgs), locale.getId());
-            } else {
-                transUnitStats =
-                        stats.getStats(locale.getId(), StatUnit.MESSAGE);
-            }
-
-            // word stats
-            TranslationStatistics wordsStats;
-            if (stats == null) {
-                wordsStats =
-                        new TranslationStatistics(new TransUnitWords(0, 0,
-                                (int) docTotalWords), locale.getId());
-            } else {
-                wordsStats = stats.getStats(locale.getId(), StatUnit.WORD);
-            }
-
-            DocumentStatus docStat =
+            DocumentStatus docStatus =
                     translationStateCacheImpl.getDocumentStatus(
-                            document.getId(), locale);
+                            document.getId(), localeId);
 
-            transUnitStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
-            transUnitStats.setLastTranslatedDate(docStat
+            TranslationStatistics docWordStatistic =
+                    docStats.getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics docMsgStatistic =
+                    docStats.getStats(localeId.getId(), StatUnit.MESSAGE);
+
+            docMsgStatistic
+                    .setLastTranslatedBy(docStatus.getLastTranslatedBy());
+            docMsgStatistic.setLastTranslatedDate(docStatus
                     .getLastTranslatedDate());
-            transUnitStats.setLastTranslated(getLastTranslated(
-                    docStat.getLastTranslatedDate(),
-                    docStat.getLastTranslatedBy()));
+            docMsgStatistic.setLastTranslated(getLastTranslated(
+                    docStatus.getLastTranslatedDate(),
+                    docStatus.getLastTranslatedBy()));
+            docStatistics.addStats(docMsgStatistic);
 
-            transUnitStats.setRemainingHours(StatisticsUtil
-                    .getRemainingHours(wordsStats));
-            docStats.addStats(transUnitStats);
-
-            // word level stats
             if (includeWordStats) {
-                wordsStats.setLastTranslatedBy(docStat.getLastTranslatedBy());
-                wordsStats.setLastTranslatedDate(docStat
+                docWordStatistic.setLastTranslatedBy(docStatus
+                        .getLastTranslatedBy());
+                docWordStatistic.setLastTranslatedDate(docStatus
                         .getLastTranslatedDate());
-                wordsStats.setLastTranslated(getLastTranslated(
-                        docStat.getLastTranslatedDate(),
-                        docStat.getLastTranslatedBy()));
-
-                wordsStats.setRemainingHours(StatisticsUtil
-                        .getRemainingHours(wordsStats));
-                docStats.addStats(wordsStats);
+                docWordStatistic.setLastTranslated(getLastTranslated(
+                        docStatus.getLastTranslatedDate(),
+                        docStatus.getLastTranslatedBy()));
+                docStatistics.addStats(docWordStatistic);
             }
         }
-
-        return docStats;
+        return docStatistics;
     }
 
     private TranslationStatistics getWordsStats(TransUnitWords wordCount,
@@ -339,10 +308,13 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         TranslationStatistics wordStatistics =
                 result.getStats(localeId.getId(), StatUnit.WORD);
+        wordStatistics.setRemainingHours(StatisticsUtil
+                .getRemainingHours(wordStatistics));
 
         TranslationStatistics msgStatistics =
                 result.getStats(localeId.getId(), StatUnit.MESSAGE);
-        msgStatistics.setRemainingHours(wordStatistics.getRemainingHours());
+        msgStatistics.setRemainingHours(StatisticsUtil
+                .getRemainingHours(wordStatistics));
 
         return result;
     }

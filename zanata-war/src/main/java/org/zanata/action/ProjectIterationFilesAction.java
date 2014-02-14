@@ -28,7 +28,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +85,7 @@ import org.zanata.util.ZanataMessages;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -177,25 +177,25 @@ public class ProjectIterationFilesAction implements Serializable {
                         this.iterationSlug);
         this.translationFileUpload = new TranslationFileUploadHelper();
         this.documentFileUpload = new DocumentFileUploadHelper();
-        this.statisticMap = new HashMap<String, TranslationStatistics>();
+        this.statisticMap = Maps.newHashMap();
     }
 
     public HLocale getLocale() {
         return localeDAO.findByLocaleId(new LocaleId(localeId));
     }
 
-    public TranslationStatistics getStatsForDocument(HDocument doc) {
-        if (!statisticMap.containsKey(doc.getDocId())) {
+    public TranslationStatistics getStatsForDocument(String docId) {
+        if (!statisticMap.containsKey(docId)) {
             ContainerTranslationStatistics docStatistics =
                     statisticsServiceImpl.getStatistics(this.projectSlug,
-                            this.iterationSlug, doc.getDocId(), true,
+                            this.iterationSlug, docId, true,
                             new String[] { this.localeId });
             TranslationStatistics stats =
                     docStatistics.getStats(this.localeId, statsOption);
-            statisticMap.put(doc.getDocId(), stats);
+            statisticMap.put(docId, stats);
             return stats;
         } else {
-            return statisticMap.get(doc.getDocId());
+            return statisticMap.get(docId);
         }
     }
 
@@ -332,8 +332,10 @@ public class ProjectIterationFilesAction implements Serializable {
         } catch (ConstraintViolationException e) {
             FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
         } catch (WebApplicationException e) {
-            FacesMessages.instance().add(Severity.ERROR,
-                    "Failed to upload POT file: " + e.getResponse().getEntity().toString());
+            FacesMessages.instance().add(
+                    Severity.ERROR,
+                    "Failed to upload POT file: "
+                            + e.getResponse().getEntity().toString());
         }
     }
 
