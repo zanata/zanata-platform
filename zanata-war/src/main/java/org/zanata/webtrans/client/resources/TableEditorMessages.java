@@ -140,4 +140,7 @@ public interface TableEditorMessages extends Messages {
 
     @DefaultMessage("Error message")
     String errorMessage();
+
+    @DefaultMessage("Switch between syntax highlighting editor and plain text")
+    String switchBetweenEditor();
 }

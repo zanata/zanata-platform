@@ -76,6 +76,8 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
 
     ContentState getCachedState();
 
+    void switchEditor();
+
     interface Listener {
         void validate(ToggleEditor editor);
 

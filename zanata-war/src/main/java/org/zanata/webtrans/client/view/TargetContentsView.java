@@ -167,6 +167,13 @@ public class TargetContentsView extends Composite implements
     }
 
     @Override
+    public void switchEditor() {
+        for (ToggleEditor editor : editors) {
+            editor.switchType();
+        }
+    }
+
+    @Override
     public void setState(EditingState editingState) {
         this.editingState = editingState;
         if (editingState == EditingState.UNSAVED) {

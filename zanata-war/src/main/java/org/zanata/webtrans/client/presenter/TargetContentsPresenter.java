@@ -721,4 +721,10 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             this.display = display;
         }
     }
+
+    public void switchEditor() {
+        if (hasSelectedRow()) {
+            getCurrentDisplay().switchEditor();
+        }
+    }
 }

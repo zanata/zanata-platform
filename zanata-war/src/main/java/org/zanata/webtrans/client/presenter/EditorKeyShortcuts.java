@@ -225,6 +225,20 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                             }
                         }).build();
         keyShortcutPresenter.register(copySourceShortcut);
+
+        KeyShortcut switchEditorShortcut =
+                KeyShortcut.Builder.builder()
+                        .addKey(new Keys(Keys.CTRL_ALT_KEYS, 'H'))
+                        .setContext(ShortcutContext.Edit)
+                        .setDescription(messages.switchBetweenEditor())
+                        .setStopPropagation(true).setPreventDefault(true)
+                        .setHandler(new KeyShortcutEventHandler() {
+                            @Override
+                            public void onKeyShortcut(KeyShortcutEvent event) {
+                                targetContentsPresenter.switchEditor();
+                            }
+                        }).build();
+        keyShortcutPresenter.register(switchEditorShortcut);
     }
 
     @Override

@@ -31,6 +31,8 @@ public interface ToggleEditor extends IsWidget, HasText,
 
     TransUnitId getId();
 
+    void switchType();
+
     static enum ViewMode {
         VIEW, EDIT
 

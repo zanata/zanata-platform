@@ -88,20 +88,20 @@ public class Editor extends Composite implements ToggleEditor {
             }
         }
     };
+    private final Command onCodeMirrorFocusCallback;
 
     public Editor(String displayString, final int index,
             final TargetContentsDisplay.Listener listener, final TransUnitId id) {
         this.listener = listener;
         this.index = index;
         this.id = id;
+        onCodeMirrorFocusCallback = new Command() {
+            @Override
+            public void execute() {
+                listener.onEditorClicked(id, index);
+            }
+        };
         if (listener.getConfigState().isUseCodeMirrorEditor()) {
-            Command onCodeMirrorFocusCallback = new Command() {
-
-                @Override
-                public void execute() {
-                    listener.onEditorClicked(id, index);
-                }
-            };
             textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
         } else {
             textArea = new EditorTextArea(displayString);
@@ -251,6 +251,27 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public TransUnitId getId() {
         return id;
+    }
+
+    @Override
+    public void switchType() {
+        String currentText = textArea.getText();
+        int cursorPos = textArea.getCursorPos();
+        boolean editing = textArea.isEditing();
+        textAreaTable.remove(textArea);
+        if (textArea instanceof EditorTextArea) {
+            textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
+        } else {
+            textArea = new EditorTextArea(currentText);
+        }
+        textAreaTable.insert(textArea, 0);
+        textAreaTable.setCellWidth(textArea, "100%");
+        textArea.setText(currentText);
+        if (editing) {
+            // avoid focusing on wrong editor (in plural mode)
+            textArea.setCursorPos(cursorPos);
+            textArea.setEditing(editing);
+        }
     }
 
     @Override
