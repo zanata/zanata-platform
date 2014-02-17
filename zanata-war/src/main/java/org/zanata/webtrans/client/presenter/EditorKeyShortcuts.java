@@ -229,6 +229,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
         KeyShortcut switchEditorShortcut =
                 KeyShortcut.Builder.builder()
                         .addKey(new Keys(Keys.CTRL_ALT_KEYS, 'H'))
+                        .addAttentionKey(new Keys('H'))
                         .setContext(ShortcutContext.Edit)
                         .setDescription(messages.switchBetweenEditor())
                         .setStopPropagation(true).setPreventDefault(true)
