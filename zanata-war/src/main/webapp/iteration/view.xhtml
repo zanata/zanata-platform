@@ -70,7 +70,8 @@
         rendered="#{identity.loggedIn}"/>
       <a4j:commandButton title="#{messages['jsf.RefreshTable']}"
         action="#{viewAllStatusAction.refreshStatistic}" render="data_table"
-        value="#{messages['jsf.Refresh']}" styleClass="float-right">
+        value="#{messages['jsf.Refresh']}" styleClass="float-right"
+        status="spinning-loader">
       </a4j:commandButton>
       <br/><br/>
       <rich:dataTable id="data_table" width="100%"
@@ -135,7 +136,7 @@
                   itemValue="WORD"/>
                 <f:selectItem itemLabel="#{messages['jsf.Message']}"
                   itemValue="MESSAGE"/>
-                <a4j:ajax event="change" render="data_table"
+                <a4j:ajax event="change" render="data_table" status="spinning-loader"
                   listener="#{viewAllStatusAction.refreshStatistic}"/>
               </h:selectOneMenu>
             </h:panelGroup>
