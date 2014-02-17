@@ -252,7 +252,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     }
 
     /**
-     * Returns document statistics for multiple locales.
+     *
+     * This method is currently returning wrong statistics -
+     * https://bugzilla.redhat.com/show_bug.cgi?id=1064737 Returns document
+     * statistics for multiple locales.
      *
      * @see DocumentDAO#getStatistics(long, org.zanata.common.LocaleId)
      * @param docId
@@ -322,14 +325,17 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
             transUnitWords.set(state, wordCount.intValue());
         }
 
-
         for (TransUnitCount stat : transUnitCountMap.values()) {
-            stat.set(ContentState.New,
-                    StatisticsUtil.calculateUntranslated(new Long(stat.getTotal()), stat));
+            stat.set(
+                    ContentState.New,
+                    StatisticsUtil.calculateUntranslated(
+                            new Long(stat.getTotal()), stat));
         }
         for (TransUnitWords stat : transUnitWordsMap.values()) {
-            stat.set(ContentState.New,
-                    StatisticsUtil.calculateUntranslated(new Long(stat.getTotal()), stat));
+            stat.set(
+                    ContentState.New,
+                    StatisticsUtil.calculateUntranslated(
+                            new Long(stat.getTotal()), stat));
         }
 
         // Merge into a single Stats object

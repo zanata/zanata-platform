@@ -27,11 +27,11 @@
   </script>
 
   <h:form>
-    <a4j:jsFunction name="refreshStatistics"
+    <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
       action="#{versionGroupHomeAction.resetPageData}"
       render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
 
-    <a4j:jsFunction name="renderStatistics"
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       render="overall_statistic, languages-language_form, projects-project_form"
       action="#{versionGroupHomeAction.setPageRendered(true)}"/>
   </h:form>
@@ -87,8 +87,12 @@
           <zanata:statistic value="#{versionGroupHomeAction.overallStatistic}"
             type="large"/>
         </s:fragment>
-        <zanata:loader type="loader--large"
-          rendered="#{!versionGroupHomeAction.pageRendered}"/>
+
+        <a4j:status name="statistic-loader">
+          <f:facet name="start">
+            <zanata:loader type="loader--large"/>
+          </f:facet>
+        </a4j:status>
       </s:div>
     </div>
 
@@ -131,18 +135,18 @@
               </a>
             </li>
 
-            <li class="tab__end">
-              <div
-                class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
-                <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                  title="#{messages['jsf.tooltip.MoreActions']}"
-                  data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
-                  class="i i--ellipsis"></i></a>
-                <ul class="dropdown__content js-dropdown__content"
-                  role="content"
-                  aria-labelledby="dropdownContent">
-                  <s:fragment
-                    rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+            <s:fragment
+              rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+              <li class="tab__end">
+                <div
+                  class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+                  <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                    title="#{messages['jsf.tooltip.MoreActions']}"
+                    data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
+                    class="i i--ellipsis"></i></a>
+                  <ul class="dropdown__content js-dropdown__content"
+                    role="content"
+                    aria-labelledby="dropdownContent">
                     <li>
                       <s:link view="/version-group/request_to_join.xhtml"
                         styleClass="i__item--right"
@@ -158,10 +162,10 @@
                         <i class="i i--project i__item__icon"></i>
                       </s:link>
                     </li>
-                  </s:fragment>
-                </ul>
-              </div>
-            </li>
+                  </ul>
+                </div>
+              </li>
+            </s:fragment>
 
             <s:fragment
               rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
