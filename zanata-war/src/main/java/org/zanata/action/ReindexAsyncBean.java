@@ -22,6 +22,7 @@ import org.jboss.seam.annotations.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -57,7 +58,7 @@ public class ReindexAsyncBean implements Serializable {
             new LinkedHashMap<Class<?>, ReindexClassOptions>();
     private Class<?> currentClass;
 
-    private AsyncTaskHandle<Boolean> handle;
+    private TimedAsyncHandle<Boolean> handle;
 
     @Create
     public void create() {
@@ -111,7 +112,7 @@ public class ReindexAsyncBean implements Serializable {
         return result;
     }
 
-    public AsyncTaskHandle<Boolean> getProcessHandle() {
+    public TimedAsyncHandle<Boolean> getProcessHandle() {
         return handle;
     }
 
@@ -156,7 +157,7 @@ public class ReindexAsyncBean implements Serializable {
     public void startProcess() {
         String taskId =
                 asyncTaskManagerServiceImpl.startTask(new ReindexTask());
-        this.handle = asyncTaskManagerServiceImpl.getHandle(taskId);
+        this.handle = (TimedAsyncHandle) asyncTaskManagerServiceImpl.getHandle(taskId);
     }
 
     @SuppressWarnings("rawtypes")
@@ -176,14 +177,15 @@ public class ReindexAsyncBean implements Serializable {
      * as it is not recommended to reuse async tasks.
      */
     private class ReindexTask implements
-            AsyncTask<Boolean, AsyncTaskHandle<Boolean>> {
-        private AsyncTaskHandle<Boolean> handle;
+            AsyncTask<Boolean, TimedAsyncHandle<Boolean>> {
+
+        private TimedAsyncHandle<Boolean> handle;
 
         @Override
-        public AsyncTaskHandle<Boolean> getHandle() {
+        public TimedAsyncHandle<Boolean> getHandle() {
             if (handle == null) {
                 String name = getClass().getSimpleName(); //+":"+indexingOptions
-                handle = new AsyncTaskHandle<Boolean>(name);
+                handle = new TimedAsyncHandle<Boolean>(name);
                 handle.setMaxProgress(getTotalOperations());
             }
             return handle;
