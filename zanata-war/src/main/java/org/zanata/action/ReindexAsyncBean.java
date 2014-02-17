@@ -200,6 +200,7 @@ public class ReindexAsyncBean implements Serializable {
                 log.info("Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
                 return null;
             }
+            getHandle().startTiming();
             for (Class<?> clazz : indexables) {
                 if (!getHandle().isCancelled()
                         && indexingOptions.get(clazz).isPurge()) {
@@ -240,6 +241,7 @@ public class ReindexAsyncBean implements Serializable {
 
                 log.info("Re-indexing finished");
             }
+            getHandle().finishTiming();
             return true;
         }
     }

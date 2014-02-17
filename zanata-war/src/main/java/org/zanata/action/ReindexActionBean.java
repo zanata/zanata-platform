@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -15,9 +17,13 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.TimedAsyncHandle;
+
+import com.google.common.base.Optional;
 
 @AutoCreate
 @Name("reindexAction")
+@Slf4j
 @Scope(ScopeType.STATELESS)
 @Restrict("#{s:hasRole('admin')}")
 public class ReindexActionBean implements Serializable {
@@ -83,6 +89,10 @@ public class ReindexActionBean implements Serializable {
         }
     }
 
+    public boolean isReindexedSinceServerRestart() {
+        return reindexAsync.getProcessHandle() != null;
+    }
+
     public boolean isInProgress() {
         return reindexAsync.getProcessHandle() != null
                 && !reindexAsync.getProcessHandle().isDone();
@@ -143,30 +153,41 @@ public class ReindexActionBean implements Serializable {
     }
 
     // TODO move to common location with ViewAllStatusAction
-    private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER =
+    private static final PeriodFormatter PERIOD_FORMATTER =
             new PeriodFormatterBuilder().appendDays()
                     .appendSuffix(" day", " days").appendSeparator(", ")
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins");
+                    .appendSuffix(" min", " mins")
+                    .toFormatter();
 
     private String formatTimePeriod(long durationInMillis) {
-        PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
         Period period = new Period(durationInMillis);
 
         if (period.toStandardMinutes().getMinutes() <= 0) {
             return "less than a minute"; // TODO Localize
         } else {
-            return formatter.print(period.normalizedStandard());
+            return PERIOD_FORMATTER.print(period.normalizedStandard());
         }
     }
 
-    /*
-     * public String getElapsedTime() { return
-     * formatTimePeriod(reindexAsync.getProcessHandle().getElapsedTime()); }
-     *
-     * public String getEstimatedTimeRemaining() { return
-     * formatTimePeriod(reindexAsync
-     * .getProcessHandle().getEstimatedTimeRemaining()); }
-     */
+    public String getElapsedTime() {
+        TimedAsyncHandle<Boolean> processHandle = reindexAsync.getProcessHandle();
+        if (processHandle == null) {
+            log.error("processHandle is null when looking up elapsed time");
+            return "";
+        } else {
+            long elapsedTime = processHandle.getElapsedTime();
+            return formatTimePeriod(elapsedTime);
+        }
+    }
+
+    public String getEstimatedTimeRemaining() {
+        Optional<Long> estimate = reindexAsync.getProcessHandle().getEstimatedTimeRemaining();
+        if (estimate.isPresent()) {
+            return formatTimePeriod(estimate.get());
+        }
+        // TODO localize (not expecting to display estimate when it is unavailable anyway).
+        return "unknown";
+    }
 }

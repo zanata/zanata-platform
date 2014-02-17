@@ -135,12 +135,9 @@
             <p><h:outputText escape="false"
                 value="#{messages['jsf.ManageSearch.NoOperationsRunning']}" /></p>
           </s:fragment>
-          <ui:remove>
-            <!-- FIXME this shows even if no reindex has been done at all. -->
-            <s:fragment rendered="#{!reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
-              <p><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
-            </s:fragment>
-          </ui:remove>
+          <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
+            <p><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
+          </s:fragment>
           <s:fragment rendered="#{reindexAction.canceled}">
             <p><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
           </s:fragment>
@@ -172,13 +169,10 @@
             <s:fragment rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
               <p><h:outputText value="#{messages['jsf.manageSearch.CurrentTable']}" /></p>
             </s:fragment>
-            <ui:remove>
-              <!-- FIXME action bean needs to be updated with working methods for elapsed and remaining time -->
-              <s:fragment rendered="#{reindexAction.inProgress}">
+            <s:fragment rendered="#{reindexAction.inProgress}">
                 <p><h:outputText value="#{messages['jsf.ManageSearch.ElapsedTime']}" /></p>
                 <p><h:outputText value="#{messages['jsf.ManageSearch.RemainingTime']}" /></p>
-              </s:fragment>
-            </ui:remove>
+            </s:fragment>
           </a4j:outputPanel>
 
           <a4j:commandButton id="cancel"
