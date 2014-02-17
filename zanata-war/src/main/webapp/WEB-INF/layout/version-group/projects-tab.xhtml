@@ -114,8 +114,12 @@
                 value="#{versionGroupHomeAction.getStatisticForProject(version.id)}"
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
 
-              <zanata:loader
-                rendered="#{!versionGroupHomeAction.pageRendered}"/>
+              <a4j:status name="statistic-loader">
+                <f:facet name="start">
+                  <zanata:loader/>
+                </f:facet>
+              </a4j:status>
+
             </a4j:commandLink>
           </li>
         </ui:repeat>

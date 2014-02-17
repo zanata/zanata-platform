@@ -27,11 +27,11 @@
   </script>
 
   <h:form>
-    <a4j:jsFunction name="refreshStatistics"
+    <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
       action="#{versionGroupHomeAction.resetPageData}"
       render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
 
-    <a4j:jsFunction name="renderStatistics"
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       render="overall_statistic, languages-language_form, projects-project_form"
       action="#{versionGroupHomeAction.setPageRendered(true)}"/>
   </h:form>
@@ -87,8 +87,12 @@
           <zanata:statistic value="#{versionGroupHomeAction.overallStatistic}"
             type="large"/>
         </s:fragment>
-        <zanata:loader type="loader--large"
-          rendered="#{!versionGroupHomeAction.pageRendered}"/>
+
+        <a4j:status name="statistic-loader">
+          <f:facet name="start">
+            <zanata:loader type="loader--large"/>
+          </f:facet>
+        </a4j:status>
       </s:div>
     </div>
 
