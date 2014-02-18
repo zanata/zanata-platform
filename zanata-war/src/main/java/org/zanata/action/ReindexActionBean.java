@@ -103,7 +103,7 @@ public class ReindexActionBean implements Serializable {
     }
 
     public boolean isError() {
-        AsyncTaskHandle<Boolean> taskHandle = reindexAsync.getProcessHandle();
+        AsyncTaskHandle<Void> taskHandle = reindexAsync.getProcessHandle();
         if (taskHandle == null) {
             return false;
         } else if (taskHandle.isDone()) {
@@ -172,7 +172,7 @@ public class ReindexActionBean implements Serializable {
     }
 
     public String getElapsedTime() {
-        TimedAsyncHandle<Boolean> processHandle = reindexAsync.getProcessHandle();
+        TimedAsyncHandle<Void> processHandle = reindexAsync.getProcessHandle();
         if (processHandle == null) {
             log.error("processHandle is null when looking up elapsed time");
             return "";

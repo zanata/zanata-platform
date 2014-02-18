@@ -58,7 +58,7 @@ public class ReindexAsyncBean implements Serializable {
             new LinkedHashMap<Class<?>, ReindexClassOptions>();
     private Class<?> currentClass;
 
-    private TimedAsyncHandle<Boolean> handle;
+    private TimedAsyncHandle<Void> handle;
 
     @Create
     public void create() {
@@ -112,7 +112,7 @@ public class ReindexAsyncBean implements Serializable {
         return result;
     }
 
-    public TimedAsyncHandle<Boolean> getProcessHandle() {
+    public TimedAsyncHandle<Void> getProcessHandle() {
         return handle;
     }
 
@@ -177,22 +177,22 @@ public class ReindexAsyncBean implements Serializable {
      * as it is not recommended to reuse async tasks.
      */
     private class ReindexTask implements
-            AsyncTask<Boolean, TimedAsyncHandle<Boolean>> {
+            AsyncTask<Void, TimedAsyncHandle<Void>> {
 
-        private TimedAsyncHandle<Boolean> handle;
+        private TimedAsyncHandle<Void> handle;
 
         @Override
-        public TimedAsyncHandle<Boolean> getHandle() {
+        public TimedAsyncHandle<Void> getHandle() {
             if (handle == null) {
                 String name = getClass().getSimpleName(); //+":"+indexingOptions
-                handle = new TimedAsyncHandle<Boolean>(name);
+                handle = new TimedAsyncHandle<Void>(name);
                 handle.setMaxProgress(getTotalOperations());
             }
             return handle;
         }
 
         @Override
-        public Boolean call() throws Exception {
+        public Void call() throws Exception {
             // TODO this is necessary because isInProgress checks number of
             // operations, which may be 0
             // look at updating isInProgress not to care about count
@@ -242,7 +242,7 @@ public class ReindexAsyncBean implements Serializable {
                 log.info("Re-indexing finished");
             }
             getHandle().finishTiming();
-            return true;
+            return null;
         }
     }
 }
