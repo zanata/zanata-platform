@@ -27,7 +27,7 @@ import com.google.common.base.Optional;
 @Slf4j
 @Scope(ScopeType.STATELESS)
 @Restrict("#{s:hasRole('admin')}")
-public class ReindexActionBean implements Serializable {
+public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In

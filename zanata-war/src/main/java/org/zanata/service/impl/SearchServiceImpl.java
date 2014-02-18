@@ -36,7 +36,7 @@ import org.zanata.service.SearchService;
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- * @see org.zanata.action.ReindexActionBean
+ * @see org.zanata.action.ReindexAction
  */
 @Name("searchServiceImpl")
 @Path("/search")
