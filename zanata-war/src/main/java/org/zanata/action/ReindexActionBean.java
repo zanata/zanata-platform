@@ -18,6 +18,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.TimedAsyncHandle;
+import org.zanata.service.SearchIndexManager;
 
 import com.google.common.base.Optional;
 
@@ -30,14 +31,14 @@ public class ReindexActionBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    ReindexAsyncBean reindexAsync;
+    SearchIndexManager searchIndexManager;
 
     public List<ReindexClassOptions> getClasses() {
-        return reindexAsync.getReindexOptions();
+        return searchIndexManager.getReindexOptions();
     }
 
     public void selectAll(boolean selected) {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             opts.setPurge(selected);
             opts.setReindex(selected);
             opts.setOptimize(selected);
@@ -45,7 +46,7 @@ public class ReindexActionBean implements Serializable {
     }
 
     public boolean isPurgeAll() {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             if (!opts.isPurge()) {
                 return false;
             }
@@ -54,13 +55,13 @@ public class ReindexActionBean implements Serializable {
     }
 
     public void setPurgeAll(boolean selected) {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             opts.setPurge(selected);
         }
     }
 
     public boolean isReindexAll() {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             if (!opts.isReindex()) {
                 return false;
             }
@@ -69,13 +70,13 @@ public class ReindexActionBean implements Serializable {
     }
 
     public void setReindexAll(boolean selected) {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             opts.setReindex(selected);
         }
     }
 
     public boolean isOptimizeAll() {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             if (!opts.isOptimize()) {
                 return false;
             }
@@ -84,26 +85,26 @@ public class ReindexActionBean implements Serializable {
     }
 
     public void setOptimizeAll(boolean selected) {
-        for (ReindexClassOptions opts : reindexAsync.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
             opts.setOptimize(selected);
         }
     }
 
     public boolean isReindexedSinceServerRestart() {
-        return reindexAsync.getProcessHandle() != null;
+        return searchIndexManager.getProcessHandle() != null;
     }
 
     public boolean isInProgress() {
-        return reindexAsync.getProcessHandle() != null
-                && !reindexAsync.getProcessHandle().isDone();
+        return searchIndexManager.getProcessHandle() != null
+                && !searchIndexManager.getProcessHandle().isDone();
     }
 
     public String getCurrentClass() {
-        return reindexAsync.getCurrentClassName();
+        return searchIndexManager.getCurrentClassName();
     }
 
     public boolean isError() {
-        AsyncTaskHandle<Void> taskHandle = reindexAsync.getProcessHandle();
+        AsyncTaskHandle<Void> taskHandle = searchIndexManager.getProcessHandle();
         if (taskHandle == null) {
             return false;
         } else if (taskHandle.isDone()) {
@@ -121,35 +122,35 @@ public class ReindexActionBean implements Serializable {
     }
 
     public int getReindexCount() {
-        if (reindexAsync.getProcessHandle() == null) {
+        if (searchIndexManager.getProcessHandle() == null) {
             return 0;
         } else {
-            return reindexAsync.getProcessHandle().getMaxProgress();
+            return searchIndexManager.getProcessHandle().getMaxProgress();
         }
     }
 
     public int getReindexProgress() {
-        if (reindexAsync.getProcessHandle() == null) {
+        if (searchIndexManager.getProcessHandle() == null) {
             return 0;
         } else {
-            return reindexAsync.getProcessHandle().getCurrentProgress();
+            return searchIndexManager.getProcessHandle().getCurrentProgress();
         }
     }
 
     public void reindexDatabase() {
-        if (reindexAsync.getProcessHandle() == null
-                || reindexAsync.getProcessHandle().isDone()) {
-            reindexAsync.startProcess();
+        if (searchIndexManager.getProcessHandle() == null
+                || searchIndexManager.getProcessHandle().isDone()) {
+            searchIndexManager.startProcess();
         }
     }
 
     public void cancel() {
-        reindexAsync.getProcessHandle().cancel();
+        searchIndexManager.getProcessHandle().cancel();
     }
 
     public boolean isCanceled() {
-        return reindexAsync.getProcessHandle() != null
-                && reindexAsync.getProcessHandle().isCancelled();
+        return searchIndexManager.getProcessHandle() != null
+                && searchIndexManager.getProcessHandle().isCancelled();
     }
 
     // TODO move to common location with ViewAllStatusAction
@@ -172,7 +173,7 @@ public class ReindexActionBean implements Serializable {
     }
 
     public String getElapsedTime() {
-        TimedAsyncHandle<Void> processHandle = reindexAsync.getProcessHandle();
+        TimedAsyncHandle<Void> processHandle = searchIndexManager.getProcessHandle();
         if (processHandle == null) {
             log.error("processHandle is null when looking up elapsed time");
             return "";
@@ -183,7 +184,7 @@ public class ReindexActionBean implements Serializable {
     }
 
     public String getEstimatedTimeRemaining() {
-        Optional<Long> estimate = reindexAsync.getProcessHandle().getEstimatedTimeRemaining();
+        Optional<Long> estimate = searchIndexManager.getProcessHandle().getEstimatedTimeRemaining();
         if (estimate.isPresent()) {
             return formatTimePeriod(estimate.get());
         }

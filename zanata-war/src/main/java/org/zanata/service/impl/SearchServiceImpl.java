@@ -26,9 +26,9 @@ import javax.ws.rs.QueryParam;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.action.ReindexAsyncBean;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;
+import org.zanata.service.SearchIndexManager;
 import org.zanata.service.SearchService;
 
 /**
@@ -43,18 +43,18 @@ import org.zanata.service.SearchService;
 @Restrict("#{s:hasRole('admin')}")
 public class SearchServiceImpl implements SearchService {
     @In
-    private ReindexAsyncBean reindexAsync;
+    private SearchIndexManager searchIndexManager;
 
     @Override
     public ReindexStatus startReindex(@QueryParam("purge") boolean purgeAll,
             @QueryParam("index") boolean indexAll,
             @QueryParam("optimize") boolean optimizeAll) {
-        reindexAsync.setOptions(purgeAll, indexAll, optimizeAll);
+        searchIndexManager.setOptions(purgeAll, indexAll, optimizeAll);
         boolean startedReindex = false;
 
-        if (reindexAsync.getProcessHandle().isDone()) {
+        if (searchIndexManager.getProcessHandle().isDone()) {
             startedReindex = true;
-            reindexAsync.startProcess();
+            searchIndexManager.startProcess();
         }
 
         ReindexStatus status = this.getReindexStatus();
@@ -64,21 +64,21 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public ReindexStatus getReindexStatus() {
-        if (reindexAsync.getProcessHandle().isDone()) {
+        if (searchIndexManager.getProcessHandle().isDone()) {
             throw new ZanataServiceException(
                     "Reindexing not in currently in progress", 404);
         }
 
         ReindexStatus status = new ReindexStatus();
-        status.setCurrentElementType(reindexAsync.getCurrentClassName());
-        status.setIndexedElements(reindexAsync.getProcessHandle()
+        status.setCurrentElementType(searchIndexManager.getCurrentClassName());
+        status.setIndexedElements(searchIndexManager.getProcessHandle()
                 .getCurrentProgress());
-        status.setTotalElements(reindexAsync.getProcessHandle()
+        status.setTotalElements(searchIndexManager.getProcessHandle()
                 .getMaxProgress());
         // TODO This service is currently not being used
         // To re-add these properties, just implement TimedAsyncHandle
-        // status.setTimeElapsed(reindexAsync.getProcessHandle().getElapsedTime());
-        // status.setTimeRemaining(reindexAsync.getProcessHandle().getEstimatedTimeRemaining());
+        // status.setTimeElapsed(searchIndexManager.getProcessHandle().getElapsedTime());
+        // status.setTimeRemaining(searchIndexManager.getProcessHandle().getEstimatedTimeRemaining());
 
         return status;
     }

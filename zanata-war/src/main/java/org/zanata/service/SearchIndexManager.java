@@ -1,4 +1,4 @@
-package org.zanata.action;
+package org.zanata.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Synchronized;
 import org.zanata.ServerConstants;
+import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.TimedAsyncHandle;
@@ -34,14 +35,13 @@ import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
-import org.zanata.service.AsyncTaskManagerService;
 
-@Name("reindexAsync")
+@Name("searchIndexManager")
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
-public class ReindexAsyncBean implements Serializable {
+public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
