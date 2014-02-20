@@ -35,7 +35,7 @@ import org.zanata.util.ZanataMessages;
 
 /**
  * Copy Trans page action bean.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -127,7 +127,7 @@ public class CopyTransAction implements Serializable {
     /**
      * Use FlashScopeBean to store message in page. Multiple ajax requests for
      * re-rendering statistics after updating will clear FacesMessages.
-     * 
+     *
      * @param severity
      * @param message
      */
