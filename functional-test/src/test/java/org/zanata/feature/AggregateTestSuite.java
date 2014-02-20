@@ -49,6 +49,6 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
         CreateSampleProjectTestSuite.class, VersionGroupTestSuite.class,
         DocumentTestSuite.class, DashboardTestSuite.class,
         GoogleOpenIDTestSuite.class, ProjectTestSuite.class,
-        LanguageTestSuite.class})
+        LanguageTestSuite.class, DetailedTestSuite.class})
 public class AggregateTestSuite {
 }
