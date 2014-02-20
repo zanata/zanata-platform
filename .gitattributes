@@ -34,3 +34,8 @@
 *.jar binary
 *.jpg binary
 *.png binary
+*.idml binary
+*.odt binary
+*.odg binary
+*.odp binary
+*.ods binary
