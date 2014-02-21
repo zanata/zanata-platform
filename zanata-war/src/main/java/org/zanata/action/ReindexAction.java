@@ -178,7 +178,7 @@ public class ReindexAction implements Serializable {
             log.error("processHandle is null when looking up elapsed time");
             return "";
         } else {
-            long elapsedTime = processHandle.getElapsedTime();
+            long elapsedTime = processHandle.getExecutingTime();
             return formatTimePeriod(elapsedTime);
         }
     }
