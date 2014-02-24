@@ -214,6 +214,8 @@ public class TranslationServiceImpl implements TranslationService {
             // trigger an implicit flush
             // (which will save this target even if it's not fully ready!!!)
             if (request.hasTargetComment()) {
+                // FIXME this creates orphan comments, and replaces identical
+                // comments with copies
                 hTextFlowTarget.setComment(new HSimpleComment(request
                         .getTargetComment()));
             }

@@ -215,7 +215,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-        if (document.isObsolete()) {
+        if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
         List<HTextFlowTarget> targets =

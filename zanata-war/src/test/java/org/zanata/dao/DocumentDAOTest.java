@@ -24,6 +24,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
+import javax.annotation.Nullable;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,6 +36,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+
+import com.google.common.base.Function;
 
 /**
  * @author Carlos Munoz <a
@@ -48,7 +52,7 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
     private static final String DOC_ID = "my/path/document.txt";
 
     private HLocale as;
-    private HLocale bn;
+    private HLocale de;
 
     private DocumentDAO documentDAO;
 
@@ -59,7 +63,7 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
         documentDAO = new DocumentDAO(getSession());
         localeDAO = new LocaleDAO(getSession());
         as = localeDAO.findByLocaleId(new LocaleId("as"));
-        bn = localeDAO.findByLocaleId(new LocaleId("bn"));
+        de = localeDAO.findByLocaleId(new LocaleId("de"));
     }
 
     @Override
@@ -98,94 +102,113 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
         }
     }
 
-    @Test
-    public void simpleDocumentUpdateChangesHash() throws Exception {
+    private void testHashChange(Function<HDocument, Void> mutator,
+            boolean expectHashChange) throws Exception {
         String docHash =
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID, as);
-
-        // Change the document's name
+        // Translate something in the document
         HDocument doc =
                 documentDAO.getByProjectIterationAndDocId(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID);
-        doc.setName("newdocname.txt");
+        mutator.apply(doc);
 
-        documentDAO.makePersistent(doc);
-        documentDAO.flush();
+        // force a flush on the DB
+        getSession().flush();
 
         // Hash must change
         String changedDocHash =
                 documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
                         ITERATION_SLUG, DOC_ID, as);
+        if (expectHashChange) {
+            assertThat(
+                    "Translated document hash must change when something is changed",
+                    changedDocHash, not(equalTo(docHash)));
+        } else {
+            assertThat(
+                    "Translated document hash must not change when nothing is changed",
+                    changedDocHash, equalTo(docHash));
+        }
+    }
 
-        assertThat(
-                "Translated document hash must change when document is changed",
-                changedDocHash, not(equalTo(docHash)));
+    @Test()
+    public void noChangeMeansNoHashChange() throws Exception {
+        testHashChange(new Function<HDocument, Void>() {
+            @Override
+            @Nullable
+            public Void apply(@Nullable HDocument doc) {
+                // change nothing
+                return null;
+            }
+        }, false);
+    }
+
+    @Test
+    public void simpleDocumentUpdateChangesHash() throws Exception {
+        testHashChange(new Function<HDocument, Void>() {
+            @Override
+            @Nullable
+            public Void apply(@Nullable HDocument doc) {
+                doc.setName("newdocname.txt");
+                return null;
+            }
+        }, true);
     }
 
     @Test
     public void translationChangesHash() throws Exception {
-        String docHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, as);
-        String bnDocHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, bn);
-
-        // Translate something in the document
-        HDocument doc =
-                documentDAO.getByProjectIterationAndDocId(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID);
-        HTextFlow tf = doc.getTextFlows().get(0);
-        HTextFlowTarget tft = tf.getTargets().get(new Long(1)); // 'as' target
-        tft.setContent0("new Translation for as");
-
-        // force a flush on the DB
-        getSession().flush();
-
-        // Hash must change
-        String changedDocHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, bn);
-
-        assertThat(
-                "Translated document hash must change when translation is changed",
-                changedDocHash, not(equalTo(docHash)));
-
-        // Make sure other language's state hash did not change
-        String changedBnDocHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, bn);
-
-        assertThat(
-                "Translated document hash must not change when translation for other language is changed",
-                changedBnDocHash, equalTo(bnDocHash));
+        testHashChange(new Function<HDocument, Void>() {
+            @Override
+            @Nullable
+            public Void apply(@Nullable HDocument doc) {
+                HTextFlow tf = doc.getTextFlows().get(0);
+                HTextFlowTarget tft = tf.getTargets().get(as.getId());
+                tft.setContent0("new Translation for as");
+                return null;
+            }
+        }, true);
     }
 
     @Test
-    public void tftCommentChangesHash() throws Exception {
-        String docHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, as);
-
-        // Translate something in the document
-        HDocument doc =
-                documentDAO.getByProjectIterationAndDocId(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID);
-        HTextFlow tf = doc.getTextFlows().get(0);
-        HTextFlowTarget tft = tf.getTargets().get(new Long(1)); // 'as' target
-        tft.setComment(new HSimpleComment("This is a new comment"));
-
-        // force a flush on the DB
-        getSession().flush();
-
-        // Hash must change
-        String changedDocHash =
-                documentDAO.getTranslatedDocumentStateHash(PROJECT_SLUG,
-                        ITERATION_SLUG, DOC_ID, bn);
-
-        assertThat(
-                "Translated document hash must change when translation is changed",
-                changedDocHash, not(equalTo(docHash)));
+    public void otherLangDoesNotChangeHash() throws Exception {
+        testHashChange(new Function<HDocument, Void>() {
+            @Override
+            @Nullable
+            public Void apply(@Nullable HDocument doc) {
+                HTextFlow tf = doc.getTextFlows().get(0);
+                HTextFlowTarget tft = tf.getTargets().get(de.getId());
+                tft.setContent0("new Translation for de");
+                return null;
+            }
+        }, false);
     }
+
+    @Test
+    public void tftNewCommentChangesHash() throws Exception {
+        testHashChange(new Function<HDocument, Void>() {
+            @Override
+            @Nullable
+            public Void apply(@Nullable HDocument doc) {
+                HTextFlow tf = doc.getTextFlows().get(0);
+                HTextFlowTarget tft = tf.getTargets().get(as.getId());
+                tft.setComment(new HSimpleComment("This is a new comment"));
+                return null;
+            }
+        }, true);
+    }
+
+//    @Test
+//    public void tftCommentChangesHash() throws Exception {
+//        testHashChange(new Function<HDocument, Void>() {
+//            @Override
+//            @Nullable
+//            public Void apply(@Nullable HDocument doc) {
+//                HTextFlow tf = doc.getTextFlows().get(0);
+//                HTextFlowTarget tft = tf.getTargets().get(as.getId());
+//                // this requires changes to our dbunit config:
+//                tft.getComment().setComment("This is a modified comment");
+//                return null;
+//            }
+//        }, true);
+//    }
 }
