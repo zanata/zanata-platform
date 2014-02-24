@@ -1205,6 +1205,12 @@
       <artifactId>commons-collections</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.isomorphism</groupId>
+      <artifactId>token-bucket</artifactId>
+      <version>1.1</version>
+    </dependency>
+
     <!-- Seam Dependencies -->
 
     <dependency>

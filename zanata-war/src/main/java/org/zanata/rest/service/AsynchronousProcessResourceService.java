@@ -29,6 +29,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.annotation.RateLimitingResource;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.SimpleAsyncTask;
 import org.zanata.common.EntityStatus;
@@ -70,6 +71,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 @Name("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
+@RateLimitingResource
 @Slf4j
 public class AsynchronousProcessResourceService implements
         AsynchronousProcessResource {

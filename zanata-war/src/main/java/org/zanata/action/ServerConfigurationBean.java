@@ -96,6 +96,7 @@ public class ServerConfigurationBean implements Serializable {
     private String termsOfUseUrl;
 
     @Digits(integer = 10, fraction = 0)
+    // TODO this won't allow empty string
     private String rateLimitPerSecond;
 
     public String getHomeContent() {

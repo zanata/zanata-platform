@@ -391,4 +391,14 @@ public class ApplicationConfiguration implements Serializable {
         return Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(),
                 "//assets-zanata.rhcloud.com");
     }
+
+    public int getRateLimitPerSecond() {
+        String limitPerSecond =
+                databaseBackedConfig.getRateLimitPerSecond();
+        if (Strings.isNullOrEmpty(limitPerSecond)) {
+            // default no limit
+            return 0;
+        }
+        return Integer.parseInt(limitPerSecond);
+    }
 }

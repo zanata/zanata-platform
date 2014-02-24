@@ -45,6 +45,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.annotation.RateLimiting;
+import org.zanata.annotation.RateLimitingResource;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -71,6 +73,7 @@ import org.zanata.service.LocaleService;
 @Path(SourceDocResource.SERVICE_PATH)
 @Slf4j
 @Transactional
+@RateLimitingResource
 public class SourceDocResourceService implements SourceDocResource {
 
     @Context
@@ -148,6 +151,7 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
+    @RateLimiting
     @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
     public
             Response post(Resource resource, Set<String> extensions,
