@@ -22,6 +22,10 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,70 +48,55 @@ import org.zanata.model.validator.Url;
 @Name("serverConfigurationBean")
 @Scope(ScopeType.PAGE)
 @Restrict("#{s:hasRole('admin')}")
+@Getter
+@Setter
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     @In
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private ApplicationConfiguration applicationConfiguration;
 
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String registerUrl;
 
     @Url(canEndInSlash = false)
-    @Getter
-    @Setter
     private String serverUrl;
 
-    @Getter
-    @Setter
     private String emailDomain;
 
-    @Getter
-    @Setter
     @EmailList
     private String adminEmail;
 
     @Email
-    @Getter
-    @Setter
     private String fromEmailAddr;
 
-    @Setter
     private String homeContent;
 
-    @Setter
     private String helpContent;
 
-    @Getter
-    @Setter
     private boolean enableLogEmail;
 
-    @Getter
-    @Setter
     private String logDestinationEmails;
 
-    @Getter
-    @Setter
     private String logEmailLevel;
 
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String piwikUrl;
 
-    @Getter
-    @Setter
     private String piwikIdSite;
 
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String termsOfUseUrl;
+
+    @Digits(integer = 10, fraction = 0)
+    private String rateLimitPerSecond;
 
     public String getHomeContent() {
         HApplicationConfiguration var =
@@ -215,6 +204,12 @@ public class ServerConfigurationBean implements Serializable {
         if (termsOfUseUrlValue != null) {
             this.termsOfUseUrl = termsOfUseUrlValue.getValue();
         }
+
+        HApplicationConfiguration rateLimitValue = applicationConfigurationDAO
+                .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
+        if (rateLimitValue != null) {
+            this.rateLimitPerSecond = rateLimitValue.getValue();
+        }
     }
 
     @Transactional
@@ -294,6 +289,13 @@ public class ServerConfigurationBean implements Serializable {
         persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
                 termsOfUseUrlValue, termsOfUseUrl);
+
+        HApplicationConfiguration rateLimitValue =
+                applicationConfigurationDAO
+                        .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
+        persistApplicationConfig(
+                HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND,
+                rateLimitValue, rateLimitPerSecond);
 
         applicationConfigurationDAO.flush();
         FacesMessages.instance().add("Configuration was successfully updated.");
