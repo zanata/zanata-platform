@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,8 +36,14 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 import org.zanata.util.Constants;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
 
 public class CreateVersionPage extends BasePage {
+
+    private static int NAME_COLUMN = 0;
+    private static int DESCRIPTION_COLUMN = 1;
+    private static int OPTION_COLUMN = 2;
 
     @FindBy(id = "iterationForm:projectTypeField:projectType")
     private WebElement projectTypeSelection;
@@ -52,6 +61,11 @@ public class CreateVersionPage extends BasePage {
         super(driver);
     }
 
+    /**
+     * Enter a version ID - only available on creating a new version
+     * @param versionId
+     * @return new CreateVersionPage
+     */
     public CreateVersionPage inputVersionId(final String versionId) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -83,6 +97,12 @@ public class CreateVersionPage extends BasePage {
 
     public ProjectVersionPage saveVersion() {
         clickAndCheckErrors(saveButton);
+        return new ProjectVersionPage(getDriver());
+    }
+
+    public ProjectVersionPage clickUpdate() {
+        clickAndCheckErrors(
+                getDriver().findElement(By.id("iterationForm:update")));
         return new ProjectVersionPage(getDriver());
     }
 
@@ -174,4 +194,53 @@ public class CreateVersionPage extends BasePage {
         return new CreateVersionPage(getDriver());
     }
 
+    public boolean isValidationLevel(String optionName, String level) {
+        String cssPath = ".//*[@value='" + level + "']";
+        WebElement option =
+                getValidationOption(optionName).getCells().get(OPTION_COLUMN)
+                        .findElement(By.xpath(cssPath));
+        return option.getAttribute("checked").equals("true");
+    }
+
+    private TableRow getValidationOption(final String optionName) {
+        TableRow matchedRow = waitForTenSec()
+                .until(new Function<WebDriver, TableRow>() {
+                    @Override
+                    public TableRow apply(WebDriver driver) {
+                        List<TableRow> tableRows = WebElementUtil
+                                .getTableRows(getDriver(), driver.findElement(By
+                                        .id("iterationForm:validationOptionsTable")));
+                        Optional<TableRow> matchedRow = Iterables
+                                .tryFind(tableRows,
+                                        new Predicate<TableRow>() {
+                                            @Override
+                                            public boolean apply(TableRow input) {
+                                                List<String> cellContents = input
+                                                        .getCellContents();
+                                                String nameCell = cellContents
+                                                        .get(NAME_COLUMN)
+                                                        .trim();
+                                                return nameCell
+                                                        .equalsIgnoreCase(optionName);
+                                            }
+                                        });
+
+                        // we keep looking for the option until timeout
+                        return matchedRow.isPresent() ? matchedRow.get() : null;
+                    }
+                });
+           return matchedRow;
+    }
+
+    public CreateVersionPage setValidationLevel(String optionName, String level) {
+        String cssPath = ".//input[@value='" + level + "']";
+        getValidationOption(optionName).getCells().get(OPTION_COLUMN)
+                .findElement(By.xpath(cssPath)).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            // Wait for half a second before continuing
+        }
+        return new CreateVersionPage(getDriver());
+    }
 }

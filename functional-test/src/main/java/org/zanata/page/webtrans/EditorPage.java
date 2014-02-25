@@ -20,12 +20,13 @@
  */
 package org.zanata.page.webtrans;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.Collections;
 import java.util.List;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
@@ -40,6 +41,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class EditorPage extends BasePage {
+
+    public enum Validations {
+        HTML, JAVAVARIABLES, NEWLINE, POSITIONAL, PRINTF, TABS, XML
+    }
+
     // first %d is row index, second %d is plural form index (i.e. 0 or 1)
     private static final String SOURCE_ID_FMT =
             "gwt-debug-%d-source-panel-%d-container";
@@ -152,7 +158,8 @@ public class EditorPage extends BasePage {
 
     public EditorPage setSyntaxHighlighting(boolean option) {
         openConfigurationPanel();
-        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected() != option) {
+        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected()
+                != option) {
             getDriver().findElement(By.id("gwt-uid-144")).click();
         }
         return new EditorPage(getDriver());
@@ -171,15 +178,15 @@ public class EditorPage extends BasePage {
 
     }
 
-    public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
-        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
-    }
-
     /**
      * Get content from a target using the non-CodeMirror configuration
      * @param rowIndex
      * @return row target content
      */
+    public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
+    }
+
     private String getContentAtRowIndex(final long rowIndex,
             final String idFormat,
             final Plurals plural) {
@@ -218,6 +225,29 @@ public class EditorPage extends BasePage {
         we.sendKeys(text);
     }
 
+    /**
+     * Simulate a paste from the user's clipboard into the indicated row
+     *
+     * @param rowIndex row to enter text
+     * @param text text to be entered
+     * @return new EditorPage
+     */
+    public EditorPage pasteIntoRowAtIndex(final long rowIndex,
+                                          final String text) {
+        WebElement we = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return input.findElement(By.id(String.format(TARGET_ID_FMT,
+                        rowIndex, Plurals.SourceSingular.index())));
+            }
+        });
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(text), null);
+        we.click();
+        we.sendKeys(Keys.LEFT_CONTROL + "v");
+        return new EditorPage(getDriver());
+    }
+
     public EditorPage approveTranslationAtRow(int rowIndex) {
         WebElement button = getDriver()
                 .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
@@ -239,5 +269,147 @@ public class EditorPage extends BasePage {
     public String getStatistics() {
         return getDriver().findElement(By.id("gwt-debug-statistics-label"))
                 .getText();
+    }
+
+    /**
+     * Get the validation error messages for the currently translated row
+     * @return error string
+     */
+    public String getValidationMessageCurrentTarget() {
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                WebElement webElement = getDriver()
+                        .findElement(By.className("selected"))
+                        .findElements(By.className("gwt-DisclosurePanel"))
+                        .get(2);
+                return webElement.isDisplayed()
+                        && !webElement.getText().isEmpty();
+            }
+        });
+        return getDriver().findElements(By.className("gwt-DisclosurePanel"))
+                .get(2).getText();
+    }
+
+    /**
+     * Query whether the first validation messages box is displayed
+     *
+     * @return is/not displayed
+     */
+    public boolean isValidationMessageCurrentTargetVisible() {
+        return getDriver()
+                .findElement(By.className("selected"))
+                .findElements(By.className("gwt-DisclosurePanel"))
+                .get(2).isDisplayed();
+    }
+
+    /**
+     * Wait for a delayed validation error panel to display
+     */
+    public void waitForValidationErrorsVisible() {
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return isValidationMessageCurrentTargetVisible();
+            }
+        });
+    }
+
+    /**
+     * Click on the validation error box to view details
+     *
+     * @return new EditorPage
+     */
+    public EditorPage openValidationBox() {
+        getDriver().findElements(By.className("gwt-DisclosurePanel")).get(2)
+                .click();
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                String errorText = getValidationMessageCurrentTarget();
+                return errorText.contains("Unexpected")
+                        || errorText.contains("Target");
+            }
+        });
+        return new EditorPage(getDriver());
+    }
+
+    /**
+     * Opens the validation options sidebar
+     *
+     * @return new EditorPage
+     */
+    public EditorPage openValidationOptions() {
+        getDriver().findElement(By.className("icon-check")).click();
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return getDriver().findElement(By.id("validationOptionsView"))
+                        .isDisplayed();
+            }
+        });
+        return new EditorPage(getDriver());
+    }
+
+    /**
+     * Check if a validation option is available
+     *
+     * @param validation the option to check
+     * @return new EditorPage
+     */
+    public boolean validationOptionIsAvailable(Validations validation) {
+        String checkTitle = getValidationTitle(validation);
+        return getDriver()
+                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
+                .findElement(By.tagName("input")).isEnabled();
+    }
+
+    /**
+     * Check if a validation option is selected
+     *
+     * @param validation the option to check
+     * @return new EditorPage
+     */
+    public boolean validationOptionIsSelected(Validations validation) {
+        String checkTitle = getValidationTitle(validation);
+        return getDriver()
+                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
+                .findElement(By.tagName("input")).isSelected();
+    }
+
+    /**
+     * Click a validation option
+     * @param validation
+     *            the option to click
+     * @return new EditorPage
+     */
+    public EditorPage clickValidationCheckbox(Validations validation) {
+        String checkTitle = getValidationTitle(validation);
+        getDriver().findElement(By.xpath("//*[@title='" + checkTitle + "']"))
+                .findElement(By.tagName("input")).click();
+        return new EditorPage(getDriver());
+    }
+
+    private String getValidationTitle(Validations validation) {
+        switch (validation) {
+            case HTML:
+                return "Check that XML/HTML tags are consistent";
+            case JAVAVARIABLES:
+                return "Check that java style ({x}) variables are consistent";
+            case NEWLINE:
+                return "Check for consistent leading and trailing newline (\\n)";
+            case POSITIONAL:
+                return "Check that positional printf style " +
+                        "(%n$x) variables are consistent";
+            case PRINTF:
+                return "Check that printf style (%x) variables are consistent";
+            case TABS:
+                return "Check whether source and target have the same " +
+                        "number of tabs";
+            case XML:
+                return "Check that XML entity are complete";
+            default:
+                throw new RuntimeException("Unknown validation!");
+        }
     }
 }
