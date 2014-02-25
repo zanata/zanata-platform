@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ConcurrentEditTest.class })
+@Suite.SuiteClasses({ ConcurrentEditTest.class, ConcurrentAccessTest.class })
 
 public class ConcurrentEditTestSuite {
 }

@@ -58,12 +58,6 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    @In
-    private LocaleDAO localeDAO;
-
-    @In
-    private TextFlowDAO textFlowDAO;
-
     private CacheManager cacheManager;
 
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
@@ -100,7 +94,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
-        HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
+        HTextFlow textFlow = getTextFlowDAO().findById(event.getTextFlowId());
 
         if (stats != null) {
             stats.decrement(event.getPreviousState(),
@@ -120,7 +114,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Override
     public void clearVersionStatsCache(Long versionId) {
-        for (HLocale locale : localeDAO.findAll()) {
+        for (HLocale locale : getLocaleDAO().findAll()) {
             VersionLocaleKey key =
                     new VersionLocaleKey(versionId, locale.getLocaleId());
             versionStatisticCache.remove(key);
@@ -144,5 +138,13 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
             return wordStatistic;
         }
+    }
+
+    public LocaleDAO getLocaleDAO() {
+        return (LocaleDAO) Component.getInstance(LocaleDAO.class);
+    }
+
+    public TextFlowDAO getTextFlowDAO() {
+        return (TextFlowDAO) Component.getInstance(TextFlowDAO.class);
     }
 }
