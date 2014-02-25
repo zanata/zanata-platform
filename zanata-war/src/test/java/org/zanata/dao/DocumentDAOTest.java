@@ -197,6 +197,7 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
         }, true);
     }
 
+    // TODO set up the dbunit data with a pre-existing comment so that we can use this test
 //    @Test
 //    public void tftCommentChangesHash() throws Exception {
 //        testHashChange(new Function<HDocument, Void>() {

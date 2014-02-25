@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.transform.ResultTransformer;
+import org.hibernate.type.TimestampType;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -448,7 +448,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 "  max(ifnull(tft.lastChanged, {d '1753-01-01'})),\n" +
                 "  max(ifnull(c.lastChanged, {d '1753-01-01'})),\n" +
                 "  max(ifnull(poth.lastChanged, {d '1753-01-01'}))\n" +
-                ")\n" +
+                ") as latest\n" +
                 "from HDocument d\n" +
                 "  left outer join HTextFlow tf\n" +
                 "    on d.id = tf.document_id\n" +
@@ -464,6 +464,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
 
         Query query =
                 getSession().createSQLQuery(sql)
+                        // ensure that mysql driver doesn't return byte[] :
+                        .addScalar("latest", TimestampType.INSTANCE)
                         .setParameter("locale", locale)
                         .setParameter("doc", doc);
         Timestamp timestamp = (Timestamp) query.uniqueResult();
