@@ -48,8 +48,6 @@ public class TransUnitUpdateHelper {
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
             .softValues().maximumSize(100).build();
-    @In
-    private TransUnitTransformer transUnitTransformer;
 
     @Observer(TextFlowTargetUpdatedEvent.EVENT_NAME)
     public void onTargetUpdatedSuccessful(TextFlowTargetUpdatedEvent event) {
@@ -63,6 +61,7 @@ public class TransUnitUpdateHelper {
 
     public UpdateTransUnitResult generateUpdateTransUnitResult(
             List<TranslationService.TranslationResult> translationResults) {
+        TransUnitTransformer transUnitTransformer = getTransUnitTransformer();
         UpdateTransUnitResult result = new UpdateTransUnitResult();
 
         for (TranslationService.TranslationResult translationResult : translationResults) {
@@ -91,6 +90,10 @@ public class TransUnitUpdateHelper {
             }
         }
         return result;
+    }
+
+    private static TransUnitTransformer getTransUnitTransformer() {
+        return (TransUnitTransformer) Component.getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo build(

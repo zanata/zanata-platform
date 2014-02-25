@@ -6,6 +6,7 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -33,12 +34,14 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +68,6 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
 
     @In(create = true)
     private TranslationWorkspaceManager translationWorkspaceManager;
-
-    @In
-    private TransUnitTransformer transUnitTransformer;
 
     /**
      * Event raised by Text flow target update initiator containing update
@@ -132,7 +132,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         }
 
         TransUnit transUnit =
-                transUnitTransformer.transform(textFlow, target,
+                getTransUnitTransformer().transform(textFlow, target,
                         target.getLocale());
 
         DocumentId documentId =
@@ -173,6 +173,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                     new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
                             target.getId(), updated));
         }
+    }
+
+    private static TransUnitTransformer getTransUnitTransformer() {
+        return (TransUnitTransformer) Component.getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

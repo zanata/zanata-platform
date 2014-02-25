@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -48,9 +49,6 @@ import org.zanata.model.HApplicationConfiguration;
 public class DatabaseBackedConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @In
-    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     private Map<String, String> configurationValues;
 
@@ -77,7 +75,7 @@ public class DatabaseBackedConfig implements Serializable {
     private String getConfigValue(String key) {
         if (!configurationValues.containsKey(key)) {
             HApplicationConfiguration configRecord =
-                    applicationConfigurationDAO.findByKey(key);
+                    getApplicationConfigurationDAO().findByKey(key);
             String storedVal = null;
             if (configRecord != null) {
                 storedVal = configRecord.getValue();
@@ -85,6 +83,10 @@ public class DatabaseBackedConfig implements Serializable {
             configurationValues.put(key, storedVal);
         }
         return configurationValues.get(key);
+    }
+
+    private static ApplicationConfigurationDAO getApplicationConfigurationDAO() {
+        return (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class);
     }
 
     private boolean containsKey(String key) {
