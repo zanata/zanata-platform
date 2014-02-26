@@ -25,6 +25,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -68,6 +69,9 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
 
     @In(create = true)
     private TranslationWorkspaceManager translationWorkspaceManager;
+
+    @In
+    private ServiceLocator serviceLocator;
 
     /**
      * Event raised by Text flow target update initiator containing update
@@ -131,8 +135,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
             return;
         }
 
+        TransUnitTransformer transUnitTransformer =
+                serviceLocator.getInstance(TransUnitTransformer.class);
         TransUnit transUnit =
-                getTransUnitTransformer().transform(textFlow, target,
+                transUnitTransformer.transform(textFlow, target,
                         target.getLocale());
 
         DocumentId documentId =
@@ -173,10 +179,6 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                     new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
                             target.getId(), updated));
         }
-    }
-
-    private static TransUnitTransformer getTransUnitTransformer() {
-        return (TransUnitTransformer) Component.getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

@@ -28,6 +28,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -43,6 +44,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
 
@@ -61,6 +63,9 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+
+    @In
+    private ServiceLocator serviceLocator;
 
     // constructor for Seam
     public VersionStateCacheImpl() {
@@ -93,7 +98,8 @@ public class VersionStateCacheImpl implements VersionStateCache {
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
-        HTextFlow textFlow = getTextFlowDAO().findById(event.getTextFlowId());
+        TextFlowDAO textFlowDAO = serviceLocator.getInstance(TextFlowDAO.class);
+        HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
 
         if (stats != null) {
             stats.decrement(event.getPreviousState(),
@@ -113,7 +119,8 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Override
     public void clearVersionStatsCache(Long versionId) {
-        for (HLocale locale : getLocaleDAO().findAll()) {
+        LocaleDAO localeDAO = serviceLocator.getInstance(LocaleDAO.class);
+        for (HLocale locale : localeDAO.findAll()) {
             VersionLocaleKey key =
                     new VersionLocaleKey(versionId, locale.getLocaleId());
             versionStatisticCache.remove(key);
@@ -137,13 +144,5 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
             return wordStatistic;
         }
-    }
-
-    public LocaleDAO getLocaleDAO() {
-        return (LocaleDAO) Component.getInstance(LocaleDAO.class);
-    }
-
-    public TextFlowDAO getTextFlowDAO() {
-        return (TextFlowDAO) Component.getInstance(TextFlowDAO.class);
     }
 }

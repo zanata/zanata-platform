@@ -35,6 +35,7 @@ import org.jboss.seam.annotations.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Configuration store implementation that is backed by database tables.
@@ -51,6 +52,9 @@ public class DatabaseBackedConfig implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Map<String, String> configurationValues;
+
+    @In
+    private ServiceLocator serviceLocator;
 
     /**
      * Resets the store by clearing out all values. This means that values will
@@ -74,8 +78,10 @@ public class DatabaseBackedConfig implements Serializable {
 
     private String getConfigValue(String key) {
         if (!configurationValues.containsKey(key)) {
+            ApplicationConfigurationDAO appConfigDAO =
+                    serviceLocator.getInstance(ApplicationConfigurationDAO.class);
             HApplicationConfiguration configRecord =
-                    getApplicationConfigurationDAO().findByKey(key);
+                    appConfigDAO.findByKey(key);
             String storedVal = null;
             if (configRecord != null) {
                 storedVal = configRecord.getValue();
@@ -83,10 +89,6 @@ public class DatabaseBackedConfig implements Serializable {
             configurationValues.put(key, storedVal);
         }
         return configurationValues.get(key);
-    }
-
-    private static ApplicationConfigurationDAO getApplicationConfigurationDAO() {
-        return (ApplicationConfigurationDAO) Component.getInstance(ApplicationConfigurationDAO.class);
     }
 
     private boolean containsKey(String key) {
