@@ -32,10 +32,13 @@ import org.jboss.seam.annotations.Observer;
 import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -45,6 +48,10 @@ import lombok.RequiredArgsConstructor;
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
 public class TransUnitUpdateHelper {
+
+    @In
+    private ServiceLocator serviceLocator;
+
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
             .softValues().maximumSize(100).build();
@@ -61,7 +68,8 @@ public class TransUnitUpdateHelper {
 
     public UpdateTransUnitResult generateUpdateTransUnitResult(
             List<TranslationService.TranslationResult> translationResults) {
-        TransUnitTransformer transUnitTransformer = getTransUnitTransformer();
+        TransUnitTransformer transUnitTransformer =
+                serviceLocator.getInstance(TransUnitTransformer.class);
         UpdateTransUnitResult result = new UpdateTransUnitResult();
 
         for (TranslationService.TranslationResult translationResult : translationResults) {
