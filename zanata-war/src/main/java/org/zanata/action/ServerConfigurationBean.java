@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -118,7 +117,7 @@ public class ServerConfigurationBean implements Serializable {
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HOME_CONTENT);
         persistApplicationConfig(HApplicationConfiguration.KEY_HOME_CONTENT,
-                var, homeContent);
+                var, homeContent, applicationConfigurationDAO);
         applicationConfigurationDAO.flush();
 
         FacesMessages.instance().add("Home content was successfully updated.");
@@ -130,7 +129,7 @@ public class ServerConfigurationBean implements Serializable {
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
         persistApplicationConfig(HApplicationConfiguration.KEY_HELP_CONTENT,
-                var, helpContent);
+                var, helpContent, applicationConfigurationDAO);
         applicationConfigurationDAO.flush();
 
         FacesMessages.instance().add(
@@ -219,32 +218,32 @@ public class ServerConfigurationBean implements Serializable {
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_REGISTER);
         persistApplicationConfig(HApplicationConfiguration.KEY_REGISTER,
-                registerUrlValue, registerUrl);
+                registerUrlValue, registerUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration serverUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HOST);
         persistApplicationConfig(HApplicationConfiguration.KEY_HOST,
-                serverUrlValue, serverUrl);
+                serverUrlValue, serverUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration emailDomainValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_DOMAIN);
         persistApplicationConfig(HApplicationConfiguration.KEY_DOMAIN,
-                emailDomainValue, emailDomain);
+                emailDomainValue, emailDomain, applicationConfigurationDAO);
 
         HApplicationConfiguration adminEmailValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
         persistApplicationConfig(HApplicationConfiguration.KEY_ADMIN_EMAIL,
-                adminEmailValue, adminEmail);
+                adminEmailValue, adminEmail, applicationConfigurationDAO);
 
         HApplicationConfiguration fromEmailAddrValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
         persistApplicationConfig(
                 HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
-                fromEmailAddrValue, fromEmailAddr);
+                fromEmailAddrValue, fromEmailAddr, applicationConfigurationDAO);
 
         HApplicationConfiguration emailLogEventsValue =
                 applicationConfigurationDAO
@@ -264,46 +263,49 @@ public class ServerConfigurationBean implements Serializable {
                         .findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
         persistApplicationConfig(
                 HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL,
-                logDestEmailValue, logDestinationEmails);
+                logDestEmailValue, logDestinationEmails,
+                applicationConfigurationDAO);
 
         HApplicationConfiguration logEmailLevelValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
         persistApplicationConfig(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
-                logEmailLevelValue, logEmailLevel);
+                logEmailLevelValue, logEmailLevel, applicationConfigurationDAO);
 
         HApplicationConfiguration piwikUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_URL);
         persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_URL,
-                piwikUrlValue, piwikUrl);
+                piwikUrlValue, piwikUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration piwikIdSiteValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
         persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_IDSITE,
-                piwikIdSiteValue, piwikIdSite);
+                piwikIdSiteValue, piwikIdSite, applicationConfigurationDAO);
 
         HApplicationConfiguration termsOfUseUrlValue =
                 applicationConfigurationDAO
-                        .findByKey(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
+                        .findByKey(
+                                HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
         persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
-                termsOfUseUrlValue, termsOfUseUrl);
+                termsOfUseUrlValue, termsOfUseUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration rateLimitValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
         persistApplicationConfig(
                 HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND,
-                rateLimitValue, rateLimitPerSecond);
+                rateLimitValue, rateLimitPerSecond, applicationConfigurationDAO);
 
         applicationConfigurationDAO.flush();
         FacesMessages.instance().add("Configuration was successfully updated.");
     }
 
-    private void persistApplicationConfig(String key,
-            HApplicationConfiguration appConfig, String newValue) {
+    private static void persistApplicationConfig(String key,
+            HApplicationConfiguration appConfig, String newValue,
+            ApplicationConfigurationDAO applicationConfigurationDAO) {
         if (appConfig != null) {
             if (newValue == null || newValue.isEmpty()) {
                 applicationConfigurationDAO.makeTransient(appConfig);
