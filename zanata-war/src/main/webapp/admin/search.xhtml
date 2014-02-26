@@ -132,14 +132,14 @@
         <a4j:outputPanel id="progress">
           <h2>#{messages['jsf.ManageSearch.CurrentProgress']}</h2>
           <s:fragment rendered="#{!reindexAction.inProgress}">
-            <p><h:outputText escape="false"
+            <p id="noOperationsRunning"><h:outputText escape="false"
                 value="#{messages['jsf.ManageSearch.NoOperationsRunning']}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
-            <p><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
+            <p id="completed"><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.canceled}">
-            <p><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
+            <p id="aborted"><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.error}">
             <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.ErrorMessage']}" /></p>
