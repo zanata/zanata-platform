@@ -48,6 +48,7 @@ public class RateLimitTest {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
+    // because of the time based nature, tests may fail occasionally
     @Rule
     public RetryRule retryRule = new RetryRule(3);
 

@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -89,19 +90,33 @@ public class ServerConfigurationService implements ServerConfigurationResource {
         }
         HApplicationConfiguration configuration =
                 applicationConfigurationDAO.findByKey(configKey);
-        if (configuration == null) {
-            HApplicationConfiguration newConfig =
-                    new HApplicationConfiguration(configKey, configValue);
-            applicationConfigurationDAO.makePersistent(newConfig);
+        boolean created = configuration == null;
+        persistApplicationConfig(configKey, configuration, configValue,
+                applicationConfigurationDAO);
+        if (created) {
             return Response.created(URI.create("c/" + configKey)).build();
         } else {
-            configuration.setValue(configValue);
             return Response.ok().build();
         }
     }
 
+    /**
+     * This method is shared by REST service and JSF backend bean. It will raise
+     * event to notify configuration change.
+     *
+     * @see org.zanata.action.ServerConfigurationBean
+     * @param key
+     *            config key
+     * @param appConfig
+     *            configuration entity
+     * @param newValue
+     *            new config value (if null or empty will remove the config
+     *            entity)
+     * @param applicationConfigurationDAO
+     *            dao
+     */
     public static void persistApplicationConfig(String key,
-            HApplicationConfiguration appConfig, String newValue,
+            @Nullable HApplicationConfiguration appConfig, String newValue,
             ApplicationConfigurationDAO applicationConfigurationDAO) {
         if (appConfig != null) {
             if (newValue == null || newValue.isEmpty()) {
@@ -124,6 +139,10 @@ public class ServerConfigurationService implements ServerConfigurationResource {
         return getAvailableKeys().contains(configKey);
     }
 
+    /**
+     * Using reflection to get defined configuration key constants in
+     * HApplicationConfiguration.
+     */
     private static List<String> getAvailableKeys() {
         if (availableKeys != null) {
             return availableKeys;
@@ -139,6 +158,7 @@ public class ServerConfigurationService implements ServerConfigurationResource {
                             input.setAccessible(true);
                             return (String) input.get(dummy);
                         } catch (IllegalAccessException e) {
+                            log.error("unable to get server configuration keys using reflection!");
                             throw Throwables.propagate(e);
                         }
                     }
