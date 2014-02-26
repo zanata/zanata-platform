@@ -36,13 +36,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
+import org.zanata.rest.service.ServerConfigurationService;
 
 @Name("serverConfigurationBean")
 @Scope(ScopeType.PAGE)
@@ -116,7 +116,8 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration var =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HOME_CONTENT);
-        persistApplicationConfig(HApplicationConfiguration.KEY_HOME_CONTENT,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_HOME_CONTENT,
                 var, homeContent, applicationConfigurationDAO);
         applicationConfigurationDAO.flush();
 
@@ -128,7 +129,8 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration var =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HELP_CONTENT);
-        persistApplicationConfig(HApplicationConfiguration.KEY_HELP_CONTENT,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_HELP_CONTENT,
                 var, helpContent, applicationConfigurationDAO);
         applicationConfigurationDAO.flush();
 
@@ -217,31 +219,36 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration registerUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_REGISTER);
-        persistApplicationConfig(HApplicationConfiguration.KEY_REGISTER,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_REGISTER,
                 registerUrlValue, registerUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration serverUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_HOST);
-        persistApplicationConfig(HApplicationConfiguration.KEY_HOST,
-                serverUrlValue, serverUrl, applicationConfigurationDAO);
+        ServerConfigurationService
+                .persistApplicationConfig(HApplicationConfiguration.KEY_HOST,
+                        serverUrlValue, serverUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration emailDomainValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_DOMAIN);
-        persistApplicationConfig(HApplicationConfiguration.KEY_DOMAIN,
-                emailDomainValue, emailDomain, applicationConfigurationDAO);
+        ServerConfigurationService
+                .persistApplicationConfig(HApplicationConfiguration.KEY_DOMAIN,
+                        emailDomainValue, emailDomain,
+                        applicationConfigurationDAO);
 
         HApplicationConfiguration adminEmailValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_ADMIN_EMAIL);
-        persistApplicationConfig(HApplicationConfiguration.KEY_ADMIN_EMAIL,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_ADMIN_EMAIL,
                 adminEmailValue, adminEmail, applicationConfigurationDAO);
 
         HApplicationConfiguration fromEmailAddrValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS);
-        persistApplicationConfig(
+        ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
                 fromEmailAddrValue, fromEmailAddr, applicationConfigurationDAO);
 
@@ -261,7 +268,7 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration logDestEmailValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
-        persistApplicationConfig(
+        ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL,
                 logDestEmailValue, logDestinationEmails,
                 applicationConfigurationDAO);
@@ -269,58 +276,41 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration logEmailLevelValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
-        persistApplicationConfig(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
                 logEmailLevelValue, logEmailLevel, applicationConfigurationDAO);
 
         HApplicationConfiguration piwikUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_URL);
-        persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_URL,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_PIWIK_URL,
                 piwikUrlValue, piwikUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration piwikIdSiteValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_PIWIK_IDSITE);
-        persistApplicationConfig(HApplicationConfiguration.KEY_PIWIK_IDSITE,
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_PIWIK_IDSITE,
                 piwikIdSiteValue, piwikIdSite, applicationConfigurationDAO);
 
         HApplicationConfiguration termsOfUseUrlValue =
                 applicationConfigurationDAO
                         .findByKey(
                                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
-        persistApplicationConfig(
+        ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
                 termsOfUseUrlValue, termsOfUseUrl, applicationConfigurationDAO);
 
         HApplicationConfiguration rateLimitValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
-        persistApplicationConfig(
+        ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND,
                 rateLimitValue, rateLimitPerSecond, applicationConfigurationDAO);
 
         applicationConfigurationDAO.flush();
         FacesMessages.instance().add("Configuration was successfully updated.");
-    }
-
-    private static void persistApplicationConfig(String key,
-            HApplicationConfiguration appConfig, String newValue,
-            ApplicationConfigurationDAO applicationConfigurationDAO) {
-        if (appConfig != null) {
-            if (newValue == null || newValue.isEmpty()) {
-                applicationConfigurationDAO.makeTransient(appConfig);
-            } else {
-                appConfig.setValue(newValue);
-            }
-        } else if (newValue != null && !newValue.isEmpty()) {
-            appConfig = new HApplicationConfiguration(key, newValue);
-            applicationConfigurationDAO.makePersistent(appConfig);
-        }
-
-        if (Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED, key);
-        }
     }
 
     public String cancel() {

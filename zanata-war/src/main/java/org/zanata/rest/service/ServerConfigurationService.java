@@ -19,6 +19,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.core.Events;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.rest.MediaTypes;
@@ -95,6 +97,26 @@ public class ServerConfigurationService implements ServerConfigurationResource {
         } else {
             configuration.setValue(configValue);
             return Response.ok().build();
+        }
+    }
+
+    public static void persistApplicationConfig(String key,
+            HApplicationConfiguration appConfig, String newValue,
+            ApplicationConfigurationDAO applicationConfigurationDAO) {
+        if (appConfig != null) {
+            if (newValue == null || newValue.isEmpty()) {
+                applicationConfigurationDAO.makeTransient(appConfig);
+            } else {
+                appConfig.setValue(newValue);
+            }
+        } else if (newValue != null && !newValue.isEmpty()) {
+            appConfig = new HApplicationConfiguration(key, newValue);
+            applicationConfigurationDAO.makePersistent(appConfig);
+        }
+
+        if (Events.exists()) {
+            Events.instance().raiseTransactionSuccessEvent(
+                    ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED, key);
         }
     }
 
