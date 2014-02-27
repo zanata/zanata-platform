@@ -3,9 +3,8 @@ package org.zanata.page.groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -19,6 +18,9 @@ import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Patrick Huang <a
@@ -130,23 +132,66 @@ public class VersionGroupPage extends BasePage {
         tab.click();
     }
 
-    public VersionGroupPage clickProjectsTab() {
-        getDriver().findElement(By.id("projects_tab")).click();
-        return new VersionGroupPage(getDriver());
-    }
-
     public VersionGroupPage clickAddProjectVersionsButton() {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 WebElement addProjectVersionButton =
                         driver.findElement(By
-                                .xpath("//*[@href='#settings-projects']"));
+                                .id("settings-projects_tab"));
                 addProjectVersionButton.click();
                 return true;
             }
         });
         return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickLanguagesTab() {
+        getDriver().findElement(By.id("languages")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickProjectsTab() {
+        getDriver().findElement(By.id("projects")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickMaintainersTab() {
+        getDriver().findElement(By.id("maintainers")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickSettingsTab() {
+        getDriver().findElement(By.id("settings")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage clickLanguagesSettingsTab() {
+        clickSettingsTab();
+        getDriver().findElement(By.id("settings-languages_tab")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public Boolean isLanguagesTabActive() {
+        final WebElement languagesTab = getDriver().findElement(By.id("languages"));
+        waitForTenSec().until( new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(@Nullable WebDriver webDriver) {
+                return languagesTab.getAttribute("class").contains("is-active");
+            }
+        } );
+        return languagesTab.getAttribute("class").contains("is-active");
+    }
+
+    public Boolean isProjectsTabActive() {
+        final WebElement languagesTab = getDriver().findElement(By.id("projects"));
+        waitForTenSec().until( new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(@Nullable WebDriver webDriver) {
+                return languagesTab.getAttribute("class").contains("is-active");
+            }
+        } );
+        return languagesTab.getAttribute("class").contains("is-active");
     }
 
     /**
@@ -155,14 +200,14 @@ public class VersionGroupPage extends BasePage {
      * @return new VersionGroupPage
      */
     public VersionGroupPage enterProjectVersion(String projectVersion) {
-        getDriver().findElement(By.id("settings-projects-form:new--versionInput"))
+        getDriver().findElement(By.id("versionAutocomplete-autocomplete__input"))
                 .sendKeys(projectVersion);
         return new VersionGroupPage(getDriver());
     }
+
 
     public VersionGroupPage confirmAddProject() {
         new Actions(getDriver()).sendKeys(Keys.ENTER);
         return new VersionGroupPage(getDriver());
     }
-
 }

@@ -15,16 +15,56 @@
 
 <ui:define name="center_content">
   <script type="text/javascript">
-    jQuery(document).ready(function () {
-      checkHashUrl('#languages_tab', '#settings-general_tab');
-      renderStatistics();
-    });
+    //<![CDATA[
+    jQuery(function() {
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:', function(pre, slug, lang) {
+        onTabClick(jQuery('#languages'));
+        if(lang) {
+          updateActiveRow(jQuery('a.' + lang))
+          toggleColumn('languages_content')
+          reloadLocale(lang)
+        }
+      });
 
-    function updateHashAndGotoUrl(anchor) {
-      window.location.hash = jQuery(anchor).attr('href');
-      checkHashUrl('#languages_tab', '#settings-general_tab');
-    }
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/:proj:', function(pre, slug, proj) {
+        onTabClick(jQuery('#projects'));
+        if(proj) {
+          updateActiveRow(jQuery('#' + jqSelector(proj) + " a"));
+          toggleColumn('projects_content');
+          var projSlug = proj.slice(0, proj.indexOf('['))
+          var verSlug = proj.slice(proj.indexOf('[') + 1, proj.indexOf(']'))
+          reloadVersion(projSlug, verSlug)
+        }
+      });
+
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:', function(pre, slug, setting) {
+        onTabClick(jQuery('#settings'));
+        if(setting)
+          zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) + "_tab"))
+      });
+
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:', function(pre, slug, section) {
+        if(!section)
+          section = "languages"
+        onTabClick(jQuery('#' + section));
+      });
+
+      renderStatistics();
+    })
+    //]]>
   </script>
+
+  <a4j:jsFunction name="reloadLocale"
+    render="languages-project_list, language-label">
+    <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="reloadVersion"
+    render="projects-language_list, project-label"
+    action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
+    <a4j:param name="val1" assignTo="#{projSlug}"/>
+    <a4j:param name="val2" assignTo="#{verSlug}"/>
+  </a4j:jsFunction>
 
   <h:form>
     <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
@@ -33,7 +73,8 @@
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       render="overall_statistic, languages-language_form, projects-project_form"
-      action="#{versionGroupHomeAction.setPageRendered(true)}"/>
+      action="#{versionGroupHomeAction.setPageRendered(true)}"
+      oncomplete="updateStateFromUrl()"/>
   </h:form>
 
   <div class="g">
@@ -102,7 +143,8 @@
         <nav class="tabs__nav">
           <ul>
             <li>
-              <a href="#languages" id="languages_tab" class="js-tab">
+              <a href="javascript:void(0);" id="languages" class="js-tab"
+                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages')">
                 <i class="i i--language"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Languages']}
@@ -113,7 +155,8 @@
               </a>
             </li>
             <li>
-              <a href="#projects" id="projects_tab" class="js-tab">
+              <a href="javascript:void(0)" id="projects" class="js-tab"
+                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects')">
                 <i class="i i--project"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Projects']}
@@ -124,7 +167,8 @@
               </a>
             </li>
             <li>
-              <a href="#maintainers" id="maintainers_tab" class="js-tab">
+              <a href="javascript:void(0)" id="maintainers" class="js-tab"
+                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/maintainers')">
                 <i class="i i--users"></i>
               <span class="is-hidden--m-down i__text--right">
                 #{messages['jsf.Maintainers']}
@@ -170,7 +214,8 @@
             <s:fragment
               rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
               <li class="tab__end">
-                <a href="#settings" id="settings_tab" class="js-tab">
+                <a href="javascript:void(0)" id="settings" class="js-tab"
+                  onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings')">
                 <span class="is-hidden--m-down i__text--left">
                   #{messages['jsf.Settings']}
                 </span>

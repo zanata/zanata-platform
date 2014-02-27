@@ -29,8 +29,8 @@
             aria-labelledby="dropdownContent">
             <li>
               <a
-                href="#settings-projects"
-                onclick="updateHashAndGotoUrl(this)">
+                href="javascript:void(0)"
+                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects');">
                 #{messages['jsf.ManageProjects']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -61,8 +61,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="#settings-projects" class="button--primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a href="javascript:void(0)" class="button--primary"
+              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects');">
               #{messages['jsf.AddProjectVersions']}
             </a>
           </p>
@@ -76,11 +76,12 @@
           value="#{versionGroupHomeAction.projectIterations}"
           var="version">
           <li
+            id="#{version.project.slug}[#{version.slug}]"
             class="progress-bar__expander">
             <a4j:commandLink
               action="#{versionGroupHomeAction.setSelectedVersion(version)}"
-              render="projects-language_list, project-label, #{rich:clientId('languageFilter-size')}"
-              onclick="updateActiveRow(this);toggleColumn('projects_content')"
+              render="projects-language_list, project-label, languageFilter-size"
+              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects/#{version.project.slug}[#{version.slug}]')"
               styleClass="bx--block">
               <div class="list__item">
                 <div class="list__item__info">

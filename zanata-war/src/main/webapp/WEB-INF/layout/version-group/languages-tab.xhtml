@@ -28,8 +28,8 @@
             aria-labelledby="dropdownContent">
             <li>
               <a
-                href="#settings-languages"
-                onclick="updateHashAndGotoUrl(this)">
+                href="javascript:void(0)"
+                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -60,8 +60,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="#settings-languages" class="button--primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a href="javascript:void(0)" class="button--primary"
+              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
               #{messages['jsf.AddLanguages']}
             </a>
           </p>
@@ -80,8 +80,8 @@
             <a4j:commandLink
               action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
               render="languages-project_list, language-label, #{rich:clientId('projectFilter-size')}"
-              onclick="updateActiveRow(this);toggleColumn('languages_content')"
-              styleClass="bx--block">
+              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
+              styleClass="bx--block #{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
                   <span class="list__title">
