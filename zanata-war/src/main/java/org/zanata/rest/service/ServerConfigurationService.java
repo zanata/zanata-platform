@@ -46,8 +46,6 @@ public class ServerConfigurationService implements ServerConfigurationResource {
 
     private static List<String> availableKeys;
 
-    @Context
-    private UriInfo uriInfo;
     /** Type of media requested. */
     @HeaderParam("Accept")
     @DefaultValue(MediaType.APPLICATION_XML)
