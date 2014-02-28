@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,30 +20,21 @@
  */
 package org.zanata.feature.administration;
 
-import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
-import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.feature.ConcordionTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-@RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
-        CustomResourceExtension.class })
-@Category(ConcordionTest.class)
-public class ManageSearchTest {
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+@Category(DetailedTest.class)
+public class ManageSearchTest {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -55,40 +46,47 @@ public class ManageSearchTest {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    public ManageSearchPage goToSearchAdministration() {
-        return dashboardPage.goToAdministration().goToManageSeachPage();
+    @Test
+    public void regenerateSearchIndexes() {
+        ManageSearchPage manageSearchPage = dashboardPage
+                .goToAdministration()
+                .goToManageSeachPage()
+                .clickSelectAll();
+
+        assertThat("All actions are selected",
+                manageSearchPage.allActionsSelected());
+        assertThat("No operations are running",
+                manageSearchPage.noOperationsRunningIsDisplayed());
+
+        manageSearchPage = manageSearchPage
+                .performSelectedActions()
+                .waitForActionsToFinish();
+
+        assertThat("Completed is displayed",
+                manageSearchPage.completedIsDisplayed());
+
+        assertThat("No operations are running",
+                manageSearchPage.noOperationsRunningIsDisplayed());
     }
 
-    public ManageSearchPage clickSelectAll(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.clickSelectAll();
-    }
+    @Test
+    @Ignore("Data set not large enough to achieve stable test")
+    public void abortReindexes() {
+        ManageSearchPage manageSearchPage = dashboardPage
+                .goToAdministration()
+                .goToManageSeachPage()
+                .clickSelectAll();
 
-    public ManageSearchPage performSelectedActions(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.performSelectedActions();
-    }
+        assertThat("All actions are selected",
+                manageSearchPage.allActionsSelected());
+        assertThat("No operations are running",
+                manageSearchPage.noOperationsRunningIsDisplayed());
 
-    public ManageSearchPage waitForActionsToFinish(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.waitForActionsToFinish();
-    }
+        manageSearchPage = manageSearchPage
+                .performSelectedActions()
+                .abort();
 
-    public boolean allActionsSelected(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.allActionsSelected();
+        assertThat("Aborted is displayed",
+                manageSearchPage.abortedIsDisplayed());
     }
-
-    public ManageSearchPage abortActions(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.abort();
-    }
-
-    public boolean noOperationsRunning(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.noOperationsRunningIsDisplayed();
-    }
-
-    public boolean showsAborted(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.abortedIsDisplayed();
-    }
-
-    public boolean showsCompleted(ManageSearchPage manageSearchPage) {
-        return manageSearchPage.completedIsDisplayed();
-    }
-
 }
