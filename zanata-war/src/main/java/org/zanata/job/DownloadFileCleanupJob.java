@@ -24,8 +24,10 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.service.FileSystemService;
 
 /**
@@ -35,6 +37,7 @@ import org.zanata.service.FileSystemService;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("downloadFileCleanupJob")
+@Scope(ScopeType.STATELESS)
 @Slf4j
 public class DownloadFileCleanupJob extends ZanataSchedulableJob {
     @In

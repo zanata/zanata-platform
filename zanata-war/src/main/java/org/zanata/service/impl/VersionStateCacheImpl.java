@@ -44,6 +44,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
 
@@ -58,16 +59,13 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    @In
-    private LocaleDAO localeDAO;
-
-    @In
-    private TextFlowDAO textFlowDAO;
-
     private CacheManager cacheManager;
 
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+
+    @In
+    private ServiceLocator serviceLocator;
 
     // constructor for Seam
     public VersionStateCacheImpl() {
@@ -100,6 +98,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
+        TextFlowDAO textFlowDAO = serviceLocator.getInstance(TextFlowDAO.class);
         HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
 
         if (stats != null) {
@@ -120,6 +119,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Override
     public void clearVersionStatsCache(Long versionId) {
+        LocaleDAO localeDAO = serviceLocator.getInstance(LocaleDAO.class);
         for (HLocale locale : localeDAO.findAll()) {
             VersionLocaleKey key =
                     new VersionLocaleKey(versionId, locale.getLocaleId());
