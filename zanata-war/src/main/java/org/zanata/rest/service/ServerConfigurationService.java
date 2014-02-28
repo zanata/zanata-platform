@@ -6,15 +6,20 @@ import java.net.URI;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -22,11 +27,13 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.common.Namespaces;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Configuration;
 import org.zanata.rest.dto.Link;
+import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
@@ -34,15 +41,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * This API is experimental only and subject to change or even removal.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("serverConfigurationResource")
-@Path(ServerConfigurationResource.SERVICE_PATH)
+@Path("/configurations")
+@Produces("application/xml")
+@Consumes("application/xml")
 @Transactional
 @Restrict("#{s:hasRole('admin')}")
 @Slf4j
-public class ServerConfigurationService implements ServerConfigurationResource {
+@Beta
+public class ServerConfigurationService {
 
     private static List<String> availableKeys;
 
@@ -54,7 +66,17 @@ public class ServerConfigurationService implements ServerConfigurationResource {
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
-    @Override
+    /**
+     * Retrieves all existing server configurations.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing value for the config key.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Wrapped(element = "configurations", namespace = Namespaces.ZANATA_API)
     public Response get() {
         List<HApplicationConfiguration> all =
                 applicationConfigurationDAO.findAll();
@@ -68,8 +90,19 @@ public class ServerConfigurationService implements ServerConfigurationResource {
 
     }
 
-    @Override
-    public Response get(@Nonnull String configKey) {
+    /**
+     * Retrieves a specific server configuration.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing value for the config key.<br>
+     *         NOT_FOUND(404) - If server does not have given configuration set.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Path("c/{configKey}")
+    public Response get(@PathParam("configKey") @Nonnull String configKey) {
         HApplicationConfiguration config =
                 applicationConfigurationDAO.findByKey(configKey);
         if (config == null) {
@@ -80,8 +113,25 @@ public class ServerConfigurationService implements ServerConfigurationResource {
         return Response.ok().entity(configuration).build();
     }
 
-    @Override
-    public Response put(@Nonnull String configKey, String configValue) {
+    /**
+     * Creates or updates a server configuration. If a configuration with the
+     * given key already exists, the value will be overwritten with the provided
+     * data. Otherwise, a new config will be created.
+     *
+     * @param configKey
+     *            The configuration item to be created/updated.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - If an existing configuration was modified.<br>
+     *         CREATED(201) - If a new configuration was created.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Path("/c/{configKey}")
+    public Response put(@PathParam("configKey") @Nonnull String configKey, String configValue) {
         if (!isConfigKeyValid(configKey)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("config key not supported: " + configKey).build();

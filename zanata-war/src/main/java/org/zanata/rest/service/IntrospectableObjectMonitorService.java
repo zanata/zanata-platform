@@ -26,6 +26,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.seam.interceptor.RateLimitingInterceptor;
 import org.zanata.util.Introspectable;
+import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -35,6 +36,8 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * This API is experimental only and subject to change or even removal.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -45,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Restrict("#{s:hasRole('admin')}")
 @Slf4j
+@Beta
 public class IntrospectableObjectMonitorService {
     // TODO check http://code.google.com/p/reflections/ and re-implement this
     private static List<Introspectable> introspectables = ImmutableList
