@@ -6,6 +6,7 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -24,6 +25,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -33,12 +35,14 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Predicates;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +71,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @In
-    private TransUnitTransformer transUnitTransformer;
+    private ServiceLocator serviceLocator;
 
     /**
      * Event raised by Text flow target update initiator containing update
@@ -131,6 +135,8 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
             return;
         }
 
+        TransUnitTransformer transUnitTransformer =
+                serviceLocator.getInstance(TransUnitTransformer.class);
         TransUnit transUnit =
                 transUnitTransformer.transform(textFlow, target,
                         target.getLocale());
