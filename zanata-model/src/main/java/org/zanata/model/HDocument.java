@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -80,6 +81,7 @@ import com.google.common.collect.ImmutableList;
  *
  */
 @Entity
+@EntityListeners({HDocument.EntityListener.class})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
@@ -304,25 +306,26 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
         return rawDocument;
     }
 
-    @PreUpdate
-    public void onUpdate() {
-        if (Contexts.isSessionContextActive()) {
-            HAccount account =
-                    (HAccount) Component.getInstance(
-                            JpaIdentityStore.AUTHENTICATED_USER,
-                            ScopeType.SESSION);
-            // TODO In some cases there is no session ( such as when pushing
-            // async )
-            if (account != null) {
-                setLastModifiedBy(account.getPerson());
-            }
-        }
-    }
-
     @Override
     @Transient
     public EntityType getEntityType() {
         return EntityType.HDocument;
     }
 
+    public static class EntityListener {
+        @PreUpdate
+        private void onUpdate(HDocument doc) {
+            if (Contexts.isSessionContextActive()) {
+                HAccount account =
+                        (HAccount) Component.getInstance(
+                                JpaIdentityStore.AUTHENTICATED_USER,
+                                ScopeType.SESSION);
+                // TODO In some cases there is no session ( such as when pushing
+                // async )
+                if (account != null) {
+                    doc.setLastModifiedBy(account.getPerson());
+                }
+            }
+        }
+    }
 }

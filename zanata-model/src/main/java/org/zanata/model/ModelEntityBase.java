@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -40,6 +41,7 @@ import javax.persistence.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EntityListeners({ModelEntityBase.EntityListener.class})
 @MappedSuperclass
 public class ModelEntityBase implements Serializable, HashableState {
 
@@ -80,6 +82,8 @@ public class ModelEntityBase implements Serializable, HashableState {
         this.creationDate = creationDate;
     }
 
+    // TODO extract lastChanged from ModelEntityBase and use with @Embedded
+    // NB: also used in HSimpleComment
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getLastChanged() {
@@ -88,42 +92,6 @@ public class ModelEntityBase implements Serializable, HashableState {
 
     public void setLastChanged(Date lastChanged) {
         this.lastChanged = lastChanged;
-    }
-
-    @SuppressWarnings("unused")
-    @PrePersist
-    private void onPersist() {
-        Date now = new Date();
-        if (creationDate == null) {
-            creationDate = now;
-        }
-        if (lastChanged == null) {
-            lastChanged = now;
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @PostPersist
-    private void postPersist() {
-        if (logPersistence()) {
-            Logger log = LoggerFactory.getLogger(getClass());
-            log.info("persist entity: {}", this);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @PreUpdate
-    private void onUpdate() {
-        lastChanged = new Date();
-    }
-
-    @SuppressWarnings("unused")
-    @PreRemove
-    private void onRemove() {
-        if (logPersistence()) {
-            Logger log = LoggerFactory.getLogger(getClass());
-            log.info("remove entity: {}", this);
-        }
     }
 
     @Override
@@ -182,5 +150,44 @@ public class ModelEntityBase implements Serializable, HashableState {
     @Override
     public void writeHashState(ByteArrayOutputStream buff) throws IOException {
         buff.write(versionNum.byteValue());
+    }
+
+    public static class EntityListener {
+        @SuppressWarnings("unused")
+        @PrePersist
+        private void onPersist(ModelEntityBase meb) {
+            Date now = new Date();
+            if (meb.creationDate == null) {
+                meb.creationDate = now;
+            }
+            if (meb.lastChanged == null) {
+                meb.lastChanged = now;
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @PostPersist
+        private void postPersist(ModelEntityBase meb) {
+            if (meb.logPersistence()) {
+                Logger log = LoggerFactory.getLogger(meb.getClass());
+                log.info("persist entity: {}", meb);
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @PreUpdate
+        private void onUpdate(ModelEntityBase meb) {
+            meb.lastChanged = new Date();
+        }
+
+        @SuppressWarnings("unused")
+        @PreRemove
+        private void onRemove(ModelEntityBase meb) {
+            if (meb.logPersistence()) {
+                Logger log = LoggerFactory.getLogger(meb.getClass());
+                log.info("remove entity: {}", meb);
+            }
+        }
+
     }
 }

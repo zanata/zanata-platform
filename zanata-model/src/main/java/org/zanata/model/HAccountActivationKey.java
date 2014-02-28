@@ -25,6 +25,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,6 +35,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
+@EntityListeners({HAccountActivationKey.EntityListener.class})
 @Setter
 @ToString
 @NoArgsConstructor
@@ -49,10 +51,11 @@ public class HAccountActivationKey extends AccountKeyBase implements
         return creationDate;
     }
 
-    @SuppressWarnings("unused")
-    @PrePersist
-    private void onPersist() {
-        creationDate = new Date();
+    public static class EntityListener {
+        @SuppressWarnings("unused")
+        @PrePersist
+        private void onPersist(HAccountActivationKey key) {
+            key.creationDate = new Date();
+        }
     }
-
 }
