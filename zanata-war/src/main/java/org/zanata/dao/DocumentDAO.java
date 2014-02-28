@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,7 @@ import javax.annotation.Nullable;
 import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.transform.ResultTransformer;
+import org.hibernate.type.TimestampType;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -46,7 +47,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         super(HDocument.class, session);
     }
 
-    public HDocument getByDocIdAndIteration(HProjectIteration iteration,
+    public @Nullable HDocument getByDocIdAndIteration(HProjectIteration iteration,
             String id) {
         return (HDocument) getSession().byNaturalId(HDocument.class)
                 .using("docId", id).using("projectIteration", iteration).load();
@@ -433,71 +434,42 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
             getTranslatedDocumentStateHash(final String projectSlug,
                     final String iterationSlug, final String docId,
                     final HLocale locale) {
+        HDocument doc =
+                getByProjectIterationAndDocId(projectSlug,
+                        iterationSlug, docId);
+        if (doc == null) {
+            return "";
+        }
         // NB: This method uses a native SQL query tested on mysql and h2
         // databases.
-        Session session = getSession();
-        StringBuilder nativeSql = new StringBuilder();
-        nativeSql.append("select MD5(group_concat(hashState)) from ");
-        nativeSql.append("( ");
-        nativeSql.append("   select ");
-        nativeSql.append("   concat( ");
-        nativeSql.append("   d.id, '|',  ");
-        nativeSql.append("   d.versionNum, '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(poth.versionNum separator '|'), ''), '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(tft.id separator '|'), ''), '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(tft.versionNum separator '|'), ''),  '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(tf.id separator '|'), ''),  '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(tf.revision separator '|'), ''),  '|',  ");
-        nativeSql
-                .append("   ifnull(group_concat(c.comment separator '|'), '')) as hashState  ");
-        nativeSql.append("   from  ");
-        nativeSql.append("   HDocument d ");
-        nativeSql
-                .append("   inner join HTextFlow tf on tf.document_id = d.id ");
-        nativeSql
-                .append("   inner join HProjectIteration i on d.project_iteration_id = i.id ");
-        nativeSql.append("   inner join HProject p on i.project_id = p.id ");
-        nativeSql
-                .append("   left outer join HTextFlowTarget tft on tft.tf_id = tf.id and tft.locale = :localeId ");
-        nativeSql
-                .append("   left outer join HSimpleComment c on c.id = tft.comment_id  ");
-        nativeSql
-                .append("   left outer join HPoTargetHeader poth on poth.document_id = d.id and poth.targetLanguage = :localeId ");
-        nativeSql.append("   where  ");
-        nativeSql.append("   d.docId = :docId ");
-        nativeSql.append("   and p.slug = :projectSlug ");
-        nativeSql.append("   and i.slug = :iterationSlug ");
-        nativeSql.append("   group by d.id, d.versionNum ");
-        nativeSql.append(")  as T");
+        String sql =
+                "select greatest(\n" +
+                "  d.lastChanged,\n" +
+                "  max(ifnull(tft.lastChanged, {d '1753-01-01'})),\n" +
+                "  max(ifnull(c.lastChanged, {d '1753-01-01'})),\n" +
+                "  max(ifnull(poth.lastChanged, {d '1753-01-01'}))\n" +
+                ") as latest\n" +
+                "from HDocument d\n" +
+                "  left outer join HTextFlow tf\n" +
+                "    on d.id = tf.document_id\n" +
+                "  left outer join HTextFlowTarget tft\n" +
+                "    on tft.tf_id = tf.id and tft.locale = :locale\n" +
+                "  left outer join HSimpleComment c\n" +
+                "    on c.id = tft.comment_id\n" +
+                "  left outer join HPoTargetHeader poth\n" +
+                "    on poth.document_id = d.id\n" +
+                "    and poth.targetLanguage = :locale\n" +
+                "where d.id = :doc\n" +
+                "group by d.lastChanged";
 
         Query query =
-                session.createSQLQuery(nativeSql.toString())
-                        .setParameter("localeId", locale.getId())
-                        .setParameter("docId", docId)
-                        .setParameter("projectSlug", projectSlug)
-                        .setParameter("iterationSlug", iterationSlug);
-        // Transform the results from byte[] into Strings when necessary
-        query.setResultTransformer(new ResultTransformer() {
-            @Override
-            public Object transformTuple(Object[] tuple, String[] aliases) {
-                if (tuple[0] instanceof byte[]) {
-                    return new String((byte[]) tuple[0]);
-                }
-                return tuple[0];
-            }
-
-            @Override
-            public List transformList(List collection) {
-                return collection; // no transformation needed
-            }
-        });
-        String stateHash = (String) query.uniqueResult();
-        return stateHash;
+                getSession().createSQLQuery(sql)
+                        // ensure that mysql driver doesn't return byte[] :
+                        .addScalar("latest", TimestampType.INSTANCE)
+                        .setParameter("locale", locale)
+                        .setParameter("doc", doc);
+        Timestamp timestamp = (Timestamp) query.uniqueResult();
+        return timestamp.toString();
     }
 
     /**

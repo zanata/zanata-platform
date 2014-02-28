@@ -204,10 +204,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 restSlugValidator.validateTargetLocale(locale, projectSlug,
                         iterationSlug);
 
-        // TODO find correct etag
         EntityTag etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>());
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -216,7 +215,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-        if (document.isObsolete()) {
+        if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
         List<HTextFlowTarget> targets =
@@ -255,11 +254,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        HLocale hLocale =
+                restSlugValidator.validateTargetLocale(locale, projectSlug,
+                        iterationSlug);
 
-        // TODO create valid etag
         EntityTag etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>(0));
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -273,10 +274,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                         mergeType);
 
         // Regenerate etag in case it has changed
-        // TODO create valid etag
         etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>(0));
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         log.debug("successful put translation");
         // TODO lastChanged

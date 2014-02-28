@@ -25,6 +25,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,6 +42,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@EntityListeners({HPersonEmailValidationKey.EntityListener.class})
 @Setter
 @ToString
 @NoArgsConstructor
@@ -93,10 +95,12 @@ public class HPersonEmailValidationKey implements Serializable {
         return email;
     }
 
-    @SuppressWarnings("unused")
-    @PrePersist
-    private void onPersist() {
-        creationDate = new Date();
-    }
+    public static class EntityListener {
+        @SuppressWarnings("unused")
+        @PrePersist
+        private void onPersist(HPersonEmailValidationKey key) {
+            key.creationDate = new Date();
+        }
 
+    }
 }

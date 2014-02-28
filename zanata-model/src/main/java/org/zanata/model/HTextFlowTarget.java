@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -82,6 +83,7 @@ import com.google.common.collect.Lists;
  *
  */
 @Entity
+@EntityListeners({HTextFlowTarget.EntityListener.class})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
@@ -377,22 +379,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         return reviewComment;
     }
 
-    @PreUpdate
-    private void preUpdate() {
-        // insert history if this has changed from its initial state
-        if (this.initialState != null && this.initialState.hasChanged(this)) {
-            this.getHistory().put(this.oldVersionNum, this.initialState);
-        }
-    }
-
-    @PostUpdate
-    @PostPersist
-    @PostLoad
-    private void updateInternalHistory() {
-        this.oldVersionNum = this.getVersionNum();
-        this.initialState = new HTextFlowTargetHistory(this);
-    }
-
     @Override
     public String toString() {
         return Objects.toStringHelper(this).add("contents", getContents())
@@ -419,5 +405,24 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Transient
     public EntityType getEntityType() {
         return EntityType.HTexFlowTarget;
+    }
+
+    public static class EntityListener {
+        @PreUpdate
+        private void preUpdate(HTextFlowTarget tft) {
+            // insert history if this has changed from its initial state
+            if (tft.initialState != null && tft.initialState.hasChanged(tft)) {
+                tft.getHistory().put(tft.oldVersionNum, tft.initialState);
+            }
+        }
+
+        @PostUpdate
+        @PostPersist
+        @PostLoad
+        private void updateInternalHistory(HTextFlowTarget tft) {
+            tft.oldVersionNum = tft.getVersionNum();
+            tft.initialState = new HTextFlowTargetHistory(tft);
+        }
+
     }
 }
