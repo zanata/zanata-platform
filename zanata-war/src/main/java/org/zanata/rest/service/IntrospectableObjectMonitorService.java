@@ -24,7 +24,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
-import org.zanata.seam.interceptor.RateLimitingInterceptor;
+import org.zanata.seam.interceptor.TokenBucketsHolder;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 public class IntrospectableObjectMonitorService {
     // TODO check http://code.google.com/p/reflections/ and re-implement this
     private static List<Introspectable> introspectables = ImmutableList
-            .<Introspectable> builder().add(new RateLimitingInterceptor())
+            .<Introspectable> builder().add(TokenBucketsHolder.HOLDER)
             .build();
 
     /** Type of media requested. */
@@ -81,7 +81,7 @@ public class IntrospectableObjectMonitorService {
                             public LinkRoot apply(Introspectable input) {
                                 return new LinkRoot(
                                         URI.create("/"
-                                                + new RateLimitingInterceptor()
+                                                + TokenBucketsHolder.HOLDER
                                                         .getId()), "self",
                                         MediaTypes.createFormatSpecificType(
                                                 MediaType.APPLICATION_XML,
