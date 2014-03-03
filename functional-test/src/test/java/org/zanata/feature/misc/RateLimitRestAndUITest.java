@@ -45,7 +45,7 @@ import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class RateLimitTest {
+public class RateLimitRestAndUITest {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
@@ -110,7 +110,7 @@ public class RateLimitTest {
 
         List<Configuration> configurations =
                 (List<Configuration>) baseClientResponse.getEntity(listGenericType);
-        log.info("result {}", configurations);
+        RateLimitRestAndUITest.log.info("result {}", configurations);
 
         assertThat(getStatusAndReleaseConnection(getAllResponse),
                 Matchers.is(200));
@@ -220,7 +220,7 @@ public class RateLimitTest {
         List<Integer> result = getResultStatusCodes(futures);
 
         // 1 request from translator should get 503 and fail
-        log.info("result: {}", result);
+        RateLimitRestAndUITest.log.info("result: {}", result);
         assertThat(result,
                 Matchers.containsInAnyOrder(201, 201, 201, 201, 201, 201, 403));
     }
@@ -268,7 +268,7 @@ public class RateLimitTest {
         // new requests is rate limited
         List<Integer> resultAfter = getResultStatusCodes(
                 executorService.invokeAll(tasks));
-        log.info("result: {}", resultAfter);
+        RateLimitRestAndUITest.log.info("result: {}", resultAfter);
         assertThat(resultAfter, Matchers.containsInAnyOrder(201, 403));
     }
 
@@ -282,7 +282,7 @@ public class RateLimitTest {
                             ZanataRestCaller.buildTextFlow("res" + counter,
                                     "content" + counter)), false);
         } catch (Exception e) {
-            log.info("rest call failed: {}", e.getMessage());
+            RateLimitRestAndUITest.log.info("rest call failed: {}", e.getMessage());
             return 500;
         }
     }
