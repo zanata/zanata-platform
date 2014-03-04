@@ -30,6 +30,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ ManageUsersTest.class, ManageUsersFullTest.class,
         AdministrationTest.class, EditHomePageTest.class,
-        EditTranslationMemoryTest.class })
+        EditTranslationMemoryTest.class, ManageSearchTest.class })
 public class AdministrationTestSuite {
 }

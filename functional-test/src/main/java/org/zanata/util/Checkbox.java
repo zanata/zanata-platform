@@ -48,14 +48,18 @@ public class Checkbox {
         return new Checkbox(webElement);
     }
 
+    public boolean checked() {
+        return chkElement.isSelected();
+    }
+
     public void check() {
-        if (!chkElement.isSelected()) {
+        if (!checked()) {
             chkElement.click();
         }
     }
 
     public void uncheck() {
-        if (chkElement.isSelected()) {
+        if (checked()) {
             chkElement.click();
         }
     }
