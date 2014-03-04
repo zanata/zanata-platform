@@ -48,6 +48,7 @@ public class ValidationOptionsView extends Composite implements
     @Inject
     public ValidationOptionsView() {
         initWidget(uiBinder.createAndBindUi(this));
+        this.getElement().setId("validationOptionsView");
     }
 
     @Override
