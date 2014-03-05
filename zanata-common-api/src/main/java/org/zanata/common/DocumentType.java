@@ -18,7 +18,9 @@ public enum DocumentType {
     OPEN_DOCUMENT_GRAPHICS("odg"), OPEN_DOCUMENT_GRAPHICS_FLAT("fodg"),
     OPEN_DOCUMENT_DATABASE("odb"), OPEN_DOCUMENT_FORMULA("odf"),
 
-    HTML("html", "htm"), IDML("idml");
+    HTML("html", "htm"), IDML("idml"),
+
+    SUBTITLE("srt", "sbt", "sub", "vtt");
 
     private static final List<String> allExtensions = buildExtensionsList();
 
