@@ -1,8 +1,9 @@
 package org.zanata.seam.interceptor;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
-import org.isomorphism.util.TokenBucket;
 import org.jboss.seam.intercept.InvocationContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,14 +14,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class RateLimiter {
 
-    public Object consume(InvocationContextMeasurer measurer) throws Exception {
+    private final long capacityTokens;
+    private final String apiKey;
+
+    public RateLimiter(long capacityTokens, String apiKey) {
+        this.capacityTokens = capacityTokens;
+        this.apiKey = apiKey;
+    }
+
+    public Object consume(final InvocationContextMeasurer measurer) throws Exception {
 
         TokenBucket tokenBucket = TokenBucketsHolder.HOLDER
-                .getIfPresent(measurer.getApiKey());
-        if (tokenBucket != null) {
-            consumeFromTokenBucket(measurer, tokenBucket);
-        }
-        return measurer.proceedAndMeasure();
+                .get(apiKey, new Callable<TokenBucket>() {
+                    @Override
+                    public TokenBucket call() throws Exception {
+                        return TokenBucket.newFixedIntervalRefill(
+                                        capacityTokens, 1, 1, TimeUnit.MILLISECONDS);
+                    }
+                });
+        consumeFromTokenBucket(measurer, tokenBucket);
+        return measurer.proceedAndMeasure(tokenBucket);
     }
 
     /**
@@ -35,18 +48,13 @@ class RateLimiter {
             TokenBucket tokenBucket) {
         if (log.isDebugEnabled()) {
             InvocationContext ic = measurer.getInvocationContext();
-            Class<?> target = ic.getTarget().getClass();
-            Method method = ic.getMethod();
+//            Class<?> target = ic.getTarget().getClass();
+//            Method method = ic.getMethod();
 
             log.debug(
-                    "accessing {}#{} will be rate limited to {} per second. Current size {}",
-                    target, method.getName(), measurer.getRateLimit(),
-                    TokenBucketsHolder.getSize(tokenBucket));
+                    "accessing {} may be rate limited. Current bucket: {}",
+                    ic, tokenBucket);
         }
-        // current bucket size is 0 doesn't mean request can't be served.
-        // org.isomorphism.util.TokenBucket.tryConsume()() will always try
-        // refill before checking.
-        // @see org.isomorphism.util.TokenBucket
         tokenBucket.consume();
     }
 

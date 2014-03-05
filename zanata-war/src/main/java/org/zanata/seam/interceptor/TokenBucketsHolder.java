@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
-import org.isomorphism.util.TokenBucket;
 import org.zanata.util.Introspectable;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
@@ -52,18 +51,6 @@ public enum TokenBucketsHolder implements Introspectable {
         }
     }
 
-    public static Object getSize(TokenBucket bucket) {
-        try {
-            Field field = TokenBucket.class.getDeclaredField("size");
-            field.setAccessible(true);
-            return field.get(bucket);
-        } catch (NoSuchFieldException e) {
-            throw Throwables.propagate(e);
-        } catch (IllegalAccessException e) {
-            throw Throwables.propagate(e);
-        }
-    }
-
     private Iterable<String> peekCurrentBuckets() {
         ConcurrentMap<String, TokenBucket> map = activeCallers.asMap();
         return Iterables.transform(map.entrySet(),
@@ -73,14 +60,7 @@ public enum TokenBucketsHolder implements Introspectable {
                     public String apply(Map.Entry<String, TokenBucket> input) {
 
                         TokenBucket bucket = input.getValue();
-                        try {
-                            Object size = getSize(bucket);
-                            return input.getKey() + ":" + size;
-                        } catch (Exception e) {
-                            String msg = "can not peek bucket size";
-                            log.warn(msg);
-                            return msg;
-                        }
+                        return input.getKey() + ":" + bucket.currentSize();
                     }
                 });
     }

@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Interceptor(stateless = true, around = JavaBeanInterceptor.class)
 @Slf4j
 public class RateLimitingInterceptor implements OptimizedInterceptor {
-    private static int rateLimit;
+    private static long capacityTokens;
 
     @AroundInvoke
     @Override
@@ -36,18 +36,17 @@ public class RateLimitingInterceptor implements OptimizedInterceptor {
             return ic.proceed();
         }
 
-        int oldRateLimit = rateLimit;
-        rateLimit = readRateLimitConfig();
+        long oldRateLimit = capacityTokens;
+        capacityTokens = readRateLimitConfig();
 
-        cleanUpBucketIfRateChanged(oldRateLimit, rateLimit);
+        cleanUpBucketIfRateChanged(oldRateLimit, capacityTokens);
 
-        if (rateLimit == 0) {
+        if (capacityTokens == 0) {
             return ic.proceed();
         }
 
-        RateLimiter rateLimiter = new RateLimiter();
-        InvocationContextMeasurer measurer =
-                InvocationContextMeasurer.of(ic, apiKey, rateLimit);
+        RateLimiter rateLimiter = new RateLimiter(capacityTokens, apiKey);
+        InvocationContextMeasurer measurer = InvocationContextMeasurer.of(ic);
         return rateLimiter.consume(measurer);
     }
 
@@ -68,7 +67,7 @@ public class RateLimitingInterceptor implements OptimizedInterceptor {
         return appConfig.getRateLimitPerSecond();
     }
 
-    private static void cleanUpBucketIfRateChanged(int oldRate, int newRate) {
+    private static void cleanUpBucketIfRateChanged(long oldRate, long newRate) {
         if (oldRate != newRate) {
             log.info("rate limit has changed from {} to {}", oldRate, newRate);
             TokenBucketsHolder.HOLDER.invalidateAll();
