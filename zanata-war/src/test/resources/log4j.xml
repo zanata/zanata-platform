@@ -30,7 +30,7 @@
   <logger name="gwt-log">
     <level value="OFF" />
   </logger>
-  <logger name="org.zanata.seam.interceptor">
+  <logger name="org.zanata.rest">
     <level value="DEBUG"/>
   </logger>
   <root>

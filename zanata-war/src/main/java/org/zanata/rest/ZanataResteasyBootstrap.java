@@ -9,12 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.SynchronousDispatcher;
+import org.jboss.resteasy.core.interception.InterceptorRegistry;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.UnhandledException;
+import org.jboss.resteasy.spi.interception.PostProcessInterceptor;
+import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -57,12 +61,20 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
     @Override
     protected void initDispatcher() {
         super.initDispatcher();
-        getDispatcher().getProviderFactory()
-                .getServerPreProcessInterceptorRegistry()
-                .register(ZanataRestSecurityInterceptor.class);
-        getDispatcher().getProviderFactory()
-                .getServerPreProcessInterceptorRegistry()
-                .register(ZanataRestVersionInterceptor.class);
+        InterceptorRegistry<PreProcessInterceptor>
+                preRegistry =
+                getDispatcher().getProviderFactory()
+                        .getServerPreProcessInterceptorRegistry();
+        preRegistry.register(ZanataRestSecurityInterceptor.class);
+
+        ZanataRestRateLimiterInterceptor zanataRestRateLimiterInterceptor =
+                new ZanataRestRateLimiterInterceptor();
+        preRegistry.register(zanataRestRateLimiterInterceptor);
+        InterceptorRegistry<PostProcessInterceptor>
+                postRegistry =
+                getDispatcher().getProviderFactory()
+                        .getServerPostProcessInterceptorRegistry();
+        postRegistry.register(zanataRestRateLimiterInterceptor);
     }
 
     @Override

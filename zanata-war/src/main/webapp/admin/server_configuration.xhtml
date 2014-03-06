@@ -221,6 +221,40 @@
           </s:span>
         </s:decorate>
 
+        <s:decorate id="maxConcurrentPerApiKeyField"
+          template="../WEB-INF/layout/edit.xhtml" enclose="true">
+          <ui:define
+            name="label">#{messages['jsf.config.MaxConcurrentRequestsPerApiKey']}</ui:define>
+          <h:inputText id="maxConcurrentPerApiKeyEml"
+            value="#{serverConfigurationBean.maxConcurrentRequestsPerApiKey}">
+            <a4j:ajax event="blur" render="maxConcurrentPerApiKeyField"/>
+          </h:inputText>
+
+          <s:span styleClass="icon-info-circle-2 input_help"
+            id="maxConcurrentRequestPerApiKeyHelp">
+            <rich:tooltip>
+              #{messages['jsf.config.MaxConcurrentRequestsPerApiKeytooltip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
+
+        <s:decorate id="maxActiveRequestsPerApiKeyField"
+          template="../WEB-INF/layout/edit.xhtml" enclose="true">
+          <ui:define
+            name="label">#{messages['jsf.config.MaxActiveRequestsPerApiKey']}</ui:define>
+          <h:inputText id="maxActiveRequestsPerApiKeyEml"
+            value="#{serverConfigurationBean.maxActiveRequestsPerApiKey}">
+            <a4j:ajax event="blur" render="maxActiveRequestsPerApiKeyField"/>
+          </h:inputText>
+
+          <s:span styleClass="icon-info-circle-2 input_help"
+            id="maxActiveRequestsPerApiKeyHelp">
+            <rich:tooltip>
+              #{messages['jsf.config.MaxActiveRequestsPerApiKeytooltip']}
+            </rich:tooltip>
+          </s:span>
+        </s:decorate>
+
 
         <div style="clear:both"/>
 

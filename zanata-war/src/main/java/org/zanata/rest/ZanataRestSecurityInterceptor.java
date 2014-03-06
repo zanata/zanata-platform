@@ -20,20 +20,15 @@ import org.zanata.security.ZanataIdentity;
 @Slf4j
 public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
 
-    public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
-    public static final String X_AUTH_USER_HEADER = "X-Auth-User";
-
     @Override
     public ServerResponse
             preProcess(HttpRequest request, ResourceMethod method)
                     throws Failure, WebApplicationException {
 
         String username =
-                request.getHttpHeaders().getRequestHeaders()
-                        .getFirst(X_AUTH_USER_HEADER);
+                HeaderHelper.getUserName(request);
         String apiKey =
-                request.getHttpHeaders().getRequestHeaders()
-                        .getFirst(X_AUTH_TOKEN_HEADER);
+                HeaderHelper.getApiKey(request);
 
         if (username != null && apiKey != null) {
             ZanataIdentity.instance().getCredentials().setUsername(username);

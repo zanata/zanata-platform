@@ -392,13 +392,31 @@ public class ApplicationConfiguration implements Serializable {
                 "//assets-zanata.rhcloud.com");
     }
 
-    public int getRateLimitPerSecond() {
+    public double getRateLimitPerSecond() {
         String limitPerSecond =
                 databaseBackedConfig.getRateLimitPerSecond();
         if (Strings.isNullOrEmpty(limitPerSecond)) {
             // default no limit
-            return 0;
+            return Integer.MAX_VALUE;
         }
-        return Integer.parseInt(limitPerSecond);
+        return Double.parseDouble(limitPerSecond);
+    }
+
+    public int getMaxConcurrentRequestsPerApiKey() {
+        String max =
+                databaseBackedConfig.getMaxConcurrentRequestsPerApiKey();
+        if (Strings.isNullOrEmpty(max)) {
+            return 6;
+        }
+        return Integer.parseInt(max);
+    }
+
+    public int getMaxActiveRequestsPerApiKey() {
+        String max =
+                databaseBackedConfig.getMaxActiveRequestsPerApiKey();
+        if (Strings.isNullOrEmpty(max)) {
+            return 3;
+        }
+        return Integer.parseInt(max);
     }
 }

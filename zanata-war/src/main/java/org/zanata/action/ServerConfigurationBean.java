@@ -98,6 +98,12 @@ public class ServerConfigurationBean implements Serializable {
     // TODO this won't allow empty string
     private String rateLimitPerSecond;
 
+    @Digits(integer = 5, fraction = 0)
+    private String maxConcurrentRequestsPerApiKey;
+
+    @Digits(integer = 5, fraction = 0)
+    private String maxActiveRequestsPerApiKey;
+
     public String getHomeContent() {
         HApplicationConfiguration var =
                 applicationConfigurationDAO
@@ -139,6 +145,7 @@ public class ServerConfigurationBean implements Serializable {
         return "/help/view.xhtml";
     }
 
+    // TODO tech debt: all below code should really be cleaned up
     @Create
     public void onCreate() {
         HApplicationConfiguration registerUrlValue =
@@ -211,6 +218,18 @@ public class ServerConfigurationBean implements Serializable {
                 .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
         if (rateLimitValue != null) {
             this.rateLimitPerSecond = rateLimitValue.getValue();
+        }
+
+        HApplicationConfiguration maxConcurrent = applicationConfigurationDAO.findByKey(
+                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
+        if (maxConcurrent != null) {
+            this.maxConcurrentRequestsPerApiKey = maxConcurrent.getValue();
+        }
+
+        HApplicationConfiguration maxActive = applicationConfigurationDAO.findByKey(
+                HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY);
+        if (maxActive != null) {
+            this.maxActiveRequestsPerApiKey = maxActive.getValue();
         }
     }
 
@@ -308,6 +327,23 @@ public class ServerConfigurationBean implements Serializable {
         ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND,
                 rateLimitValue, rateLimitPerSecond, applicationConfigurationDAO);
+
+        HApplicationConfiguration maxConcurrent =
+                applicationConfigurationDAO
+                        .findByKey(
+                                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY,
+                maxConcurrent, maxConcurrentRequestsPerApiKey,
+                applicationConfigurationDAO);
+
+        HApplicationConfiguration maxActive =
+                applicationConfigurationDAO
+                        .findByKey(HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY);
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY,
+                maxActive, maxActiveRequestsPerApiKey,
+                applicationConfigurationDAO);
 
         applicationConfigurationDAO.flush();
         FacesMessages.instance().add("Configuration was successfully updated.");
