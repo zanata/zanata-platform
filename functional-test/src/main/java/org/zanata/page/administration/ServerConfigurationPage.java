@@ -7,8 +7,8 @@ import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ServerConfigurationPage extends BasePage {
     @FindBy(id = "serverConfigForm:urlField")
@@ -16,6 +16,14 @@ public class ServerConfigurationPage extends BasePage {
 
     @FindBy(id = "serverConfigForm:rateLimitField:rateLimitEml")
     private WebElement rateLimitField;
+
+    @FindBy(
+            id = "serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml")
+    private WebElement maxConcurrentField;
+
+    @FindBy(
+            id = "serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml")
+    private WebElement maxActiveField;
 
     @FindBy(id = "serverConfigForm:save")
     private WebElement saveButton;
@@ -32,6 +40,26 @@ public class ServerConfigurationPage extends BasePage {
 
     public String getRateLimit() {
         return rateLimitField.getAttribute("value");
+    }
+
+    public ServerConfigurationPage inputMaxConcurrent(int max) {
+        maxConcurrentField.clear();
+        maxConcurrentField.sendKeys(max + "");
+        return this;
+    }
+
+    public String getMaxConcurrentRequestsPerApiKey() {
+        return maxConcurrentField.getAttribute("value");
+    }
+
+    public ServerConfigurationPage inputMaxActive(int max) {
+        maxActiveField.clear();
+        maxActiveField.sendKeys(max + "");
+        return this;
+    }
+
+    public String getMaxActiveRequestsPerApiKey() {
+        return maxActiveField.getAttribute("value");
     }
 
     public AdministrationPage save() {

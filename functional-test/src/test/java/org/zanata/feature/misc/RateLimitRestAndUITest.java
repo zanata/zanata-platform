@@ -71,9 +71,12 @@ public class RateLimitRestAndUITest {
                         ServerConfigurationPage.class);
 
         assertThat(serverConfigPage.getRateLimit(), Matchers.isEmptyString());
+        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(), Matchers.isEmptyString());
+        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(), Matchers.isEmptyString());
 
         AdministrationPage administrationPage =
-                serverConfigPage.inputRateLimit(1).save();
+                serverConfigPage.inputRateLimit(1).inputMaxConcurrent(5)
+                        .inputMaxActive(3).save();
 
         assertThat(administrationPage.getNotificationMessage(),
                 Matchers.equalTo("Configuration was successfully updated."));

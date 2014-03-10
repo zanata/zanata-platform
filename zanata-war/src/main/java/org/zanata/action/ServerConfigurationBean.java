@@ -23,6 +23,7 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -94,14 +95,13 @@ public class ServerConfigurationBean implements Serializable {
     @Url(canEndInSlash = true)
     private String termsOfUseUrl;
 
-    @Digits(integer = 10, fraction = 0)
-    // TODO this won't allow empty string
+    @Pattern(regexp = "\\d{0,5}")
     private String rateLimitPerSecond;
 
-    @Digits(integer = 5, fraction = 0)
+    @Pattern(regexp = "\\d{0,5}")
     private String maxConcurrentRequestsPerApiKey;
 
-    @Digits(integer = 5, fraction = 0)
+    @Pattern(regexp = "\\d{0,5}")
     private String maxActiveRequestsPerApiKey;
 
     public String getHomeContent() {
