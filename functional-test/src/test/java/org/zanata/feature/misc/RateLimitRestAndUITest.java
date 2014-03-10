@@ -12,14 +12,12 @@ import javax.ws.rs.core.Response;
 import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.core.BaseClientResponse;
-import org.jboss.resteasy.util.GenericType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
-import org.zanata.rest.dto.Configuration;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
@@ -102,29 +100,25 @@ public class RateLimitRestAndUITest {
                 "rest/configurations/" + rateLimitingPathParam).get();
 
         assertThat(getResponse.getStatus(), Matchers.is(200));
-        Configuration rateLimitConfig =
-                ((BaseClientResponse<Configuration>) getResponse)
-                        .getEntity(Configuration.class);
-        assertThat(rateLimitConfig.getKey(),
-                Matchers.equalTo(KEY_RATE_LIMIT_PER_SECOND));
-        assertThat(rateLimitConfig.getValue(), Matchers.equalTo("1"));
+        String rateLimitConfig =
+                ((BaseClientResponse<String>) getResponse)
+                        .getEntity(String.class);
+        assertThat(rateLimitConfig,
+                Matchers.containsString(KEY_RATE_LIMIT_PER_SECOND));
+        assertThat(rateLimitConfig, Matchers.containsString("<value>1</value>"));
 
         // can get all configurations
         Response getAllResponse = clientRequestAsAdmin(
                 "rest/configurations/").get();
-        BaseClientResponse baseClientResponse =
+        BaseClientResponse<String> baseClientResponse =
                 (BaseClientResponse) getAllResponse;
-        GenericType<List<Configuration>> listGenericType =
-                new GenericType<List<Configuration>>() {
-                };
 
-        List<Configuration> configurations =
-                (List<Configuration>) baseClientResponse.getEntity(listGenericType);
+        String configurations = baseClientResponse.getEntity(String.class);
         log.info("result {}", configurations);
 
         assertThat(getStatusAndReleaseConnection(getAllResponse),
                 Matchers.is(200));
-        assertThat(configurations, Matchers.hasItem(rateLimitConfig));
+        assertThat(configurations, Matchers.notNullValue());
     }
 
     private static ClientRequest clientRequestAsAdmin(String path) {
