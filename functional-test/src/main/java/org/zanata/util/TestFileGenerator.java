@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.fedorahosted.openprops.Properties;
 import com.google.common.base.Throwables;
@@ -234,10 +236,10 @@ public class TestFileGenerator {
     }
 
     public File openTestFile(String filename) {
-        String relativePath = "functional-test/target/test-classes/"
-                .concat(filename);
-        File testFile = new File(relativePath);
-        assert testFile.exists();
+        URL url = Thread.currentThread().getContextClassLoader()
+                .getResource(filename);
+        File testFile = new File(url.getPath());
+        Preconditions.checkArgument(testFile.exists(), "%s not found", testFile);
         return testFile;
     }
 }
