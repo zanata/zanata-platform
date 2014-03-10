@@ -24,6 +24,7 @@ package org.zanata.page;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class CorePage extends AbstractPage {
 
     @FindBy(id = "home")
@@ -131,7 +133,12 @@ public class CorePage extends AbstractPage {
      * only exhibit behaviour on losing focus.
      */
     public void defocus() {
-        getDriver().findElement(By.tagName("body")).click();
+        List<WebElement> elements = getDriver().findElements(By.id("container"));
+        if (elements.size() > 0) {
+            elements.get(0).click();
+        } else {
+            log.warn("Unable to focus page container");
+        }
     }
 
     public List<String> waitForFieldErrors() {

@@ -27,6 +27,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 import org.zanata.util.Constants;
+import org.zanata.util.WebElementUtil;
 
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class CreateProjectPage extends BasePage {
             "machineReadableSourceUrlField:machineReadableSourceUrl")
     private WebElement downloadSourceURLField;
 
-    @FindBy(id = "cke_projectForm:homeContentField:homeContent:inp")
+    @FindBy(id = "projectForm:homeContentField:homeContent")
     private WebElement homeContentTextArea;
 
     @FindBy(id = "projectForm:statusField:selectField")
@@ -111,7 +112,8 @@ public class CreateProjectPage extends BasePage {
     }
 
     public CreateProjectPage enterHomepageContent(String content) {
-        homeContentTextArea.sendKeys(content);
+        WebElementUtil.setRichTextEditorContent(getDriver(),
+                homeContentTextArea, content);
         return this;
     }
 
