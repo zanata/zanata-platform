@@ -73,7 +73,8 @@
 
 
   <!--
-  Make sure Liquibase is the first listener, so that it can update the database schema before
+  Make sure Liquibase is the first listener (after ClassLoaderLeakPreventor),
+  so that it can update the database schema before
   anyone uses the database.
    -->
 
@@ -109,6 +110,11 @@
     <param-name>javamelody.datasources</param-name>
     <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
   </context-param>
+
+  <!-- ClassLoaderLeakPreventor needs to be first, so that it can stop all leaks -->
+  <listener>
+    <listener-class>se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor</listener-class>
+  </listener>
 
   <listener>
     <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>

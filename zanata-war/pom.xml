@@ -144,6 +144,8 @@
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!-- used for gwt super devmode -->
             <usedDependency>org.json:json</usedDependency>
+            <!-- used for leak detection (servlet listener) -->
+            <usedDependency>se.jiderhamn:classloader-leak-prevention</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
@@ -2014,6 +2016,18 @@
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>se.jiderhamn</groupId>
+      <artifactId>classloader-leak-prevention</artifactId>
+      <version>1.9.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--  missing dependencies identified by mvn dependency:analyze: -->
