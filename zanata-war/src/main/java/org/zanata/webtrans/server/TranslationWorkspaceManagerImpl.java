@@ -105,13 +105,6 @@ public class TranslationWorkspaceManagerImpl implements
     @Observer(ZanataInit.EVENT_Zanata_Startup)
     public void start() {
         log.info("starting...");
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                TranslationWorkspaceManagerImpl.this.stop();
-            }
-        });
     }
 
     @Observer(ZanataIdentity.USER_LOGOUT_EVENT)
@@ -218,10 +211,7 @@ public class TranslationWorkspaceManagerImpl implements
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());
-        stopListeners();
-    }
 
-    private void stopListeners() {
         // Stopping the listeners frees up the EventServiceImpl servlet, which
         // would otherwise prevent Apache Coyote from shutting down quickly.
         // Note that the servlet may still hang around up to the max timeout
