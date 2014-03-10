@@ -8,11 +8,9 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.util.Introspectable;
 import com.google.common.base.Function;
@@ -21,7 +19,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.Delegate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +39,11 @@ public class RateLimiterHolder implements Introspectable {
 
     @Getter
     private RestRateLimiter.RateLimitConfig limitConfig;
+
+    public static RateLimiterHolder getInstance() {
+        return (RateLimiterHolder) Component
+                .getInstance(RateLimiterHolder.class);
+    }
 
     @Create
     public void loadConfig() {
@@ -67,13 +69,22 @@ public class RateLimiterHolder implements Introspectable {
         if (!Objects.equal(old, limitConfig)) {
             log.info("application configuration changed. Old: {}, New: {}",
                     old, limitConfig);
-            changeRate();
+            for (RestRateLimiter restRateLimiter : activeCallers.asMap().values()) {
+                restRateLimiter.changeConfig(limitConfig);
+            }
         }
     }
 
-    private void changeRate() {
-        for (RestRateLimiter restRateLimiter : activeCallers.asMap().values()) {
-            restRateLimiter.changeConfig(limitConfig);
+    public void releaseSemaphoreForCurrentThread() {
+        ActiveApiKeys apiKeys = ActiveApiKeys.getInstance();
+        String apiKey = apiKeys.getApiKeyForCurrentThread();
+        if (apiKey != null) {
+            apiKeys.removeApiKeyFromCurrentThread();
+            RestRateLimiter rateLimiter = getIfPresent(apiKey);
+            if (rateLimiter != null) {
+                log.debug("releasing semaphore for:{} - {}", apiKey, rateLimiter);
+                rateLimiter.release();
+            }
         }
     }
 

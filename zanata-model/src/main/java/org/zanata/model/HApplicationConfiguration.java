@@ -53,6 +53,8 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
     public static String KEY_TERMS_CONDITIONS_URL = "terms.conditions.url";
     public static String KEY_RATE_LIMIT_PER_SECOND = "rate.limit.per.second";
+    public static String KEY_MAX_CONCURRENT_REQ_PER_API_KEY = "max.concurrent.req.per.apikey";
+    public static String KEY_MAX_ACTIVE_REQ_PER_API_KEY = "max.active.req.per.apikey";
     private static final long serialVersionUID = 8652817113098817448L;
 
     private String key;

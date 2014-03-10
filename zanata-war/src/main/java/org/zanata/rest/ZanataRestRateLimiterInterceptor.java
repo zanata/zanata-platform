@@ -13,7 +13,6 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PostProcessInterceptor;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.jboss.seam.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
         PostProcessInterceptor {
-    private ThreadLocal<String> apiKeys = new ThreadLocal<String>();
 
     @Override
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method)
@@ -36,9 +34,10 @@ public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
         if (apiKey == null) {
             return null;
         }
-        apiKeys.set(apiKey);
+        ActiveApiKeys apiKeys = ActiveApiKeys.getInstance();
+        apiKeys.setApiKeyForCurrentThread(apiKey);
 
-        RateLimiterHolder rateLimiterHolder = getRateLimiterHolder();
+        RateLimiterHolder rateLimiterHolder = RateLimiterHolder.getInstance();
         final RestRateLimiter.RateLimitConfig limitConfig =
                 rateLimiterHolder.getLimitConfig();
 
@@ -72,20 +71,10 @@ public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
         return null;
     }
 
-    private static RateLimiterHolder getRateLimiterHolder() {
-        return (RateLimiterHolder) Component
-                .getInstance(RateLimiterHolder.class);
-    }
 
     @Override
     public void postProcess(ServerResponse response) {
-        String apiKey = apiKeys.get();
-        if (apiKey != null) {
-            apiKeys.remove();
-            RestRateLimiter rateLimiter = getRateLimiterHolder().getIfPresent(apiKey);
-            log.debug("releasing semaphore for:{} - {}", apiKey, rateLimiter);
-            rateLimiter.release();
-        }
+        RateLimiterHolder.getInstance().releaseSemaphoreForCurrentThread();
     }
 
     @RequiredArgsConstructor(staticName = "of")

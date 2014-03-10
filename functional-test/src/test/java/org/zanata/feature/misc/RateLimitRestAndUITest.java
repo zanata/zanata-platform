@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.jboss.resteasy.util.GenericType;
 import org.junit.Rule;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.model.HApplicationConfiguration.KEY_ADMIN_EMAIL;
+import static org.zanata.model.HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
 import static org.zanata.model.HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND;
 import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
 import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
@@ -50,13 +52,14 @@ public class RateLimitRestAndUITest {
     public AddUsersRule addUsersRule = new AddUsersRule();
 
     // because of the time based nature, tests may fail occasionally
-    @Rule
+//    @Rule
     public RetryRule retryRule = new RetryRule(3);
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             "d83882201764f7d339e97c4b087f0806";
     private String rateLimitingPathParam = "c/" + KEY_RATE_LIMIT_PER_SECOND;
+    private String maxConcurrentPathParam = "c/" + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
 
     @Test
     public void canConfigureRateLimitByWebUI() {
@@ -82,7 +85,8 @@ public class RateLimitRestAndUITest {
 
     @Test
     public void canCallServerConfigurationRestService() throws Exception {
-        ClientRequest clientRequest = getClientRequest(rateLimitingPathParam);
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/configurations/" + rateLimitingPathParam);
         clientRequest.body("text/plain", "1");
         // can put
         Response putResponse = clientRequest.put();
@@ -90,7 +94,8 @@ public class RateLimitRestAndUITest {
         assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(201));
 
         // can get single configuration
-        Response getResponse = getClientRequest(rateLimitingPathParam).get();
+        Response getResponse = clientRequestAsAdmin(
+                "rest/configurations/" + rateLimitingPathParam).get();
 
         assertThat(getResponse.getStatus(), Matchers.is(200));
         Configuration rateLimitConfig =
@@ -101,7 +106,8 @@ public class RateLimitRestAndUITest {
         assertThat(rateLimitConfig.getValue(), Matchers.equalTo("1"));
 
         // can get all configurations
-        Response getAllResponse = getClientRequest("").get();
+        Response getAllResponse = clientRequestAsAdmin(
+                "rest/configurations/").get();
         BaseClientResponse baseClientResponse =
                 (BaseClientResponse) getAllResponse;
         GenericType<List<Configuration>> listGenericType =
@@ -110,17 +116,17 @@ public class RateLimitRestAndUITest {
 
         List<Configuration> configurations =
                 (List<Configuration>) baseClientResponse.getEntity(listGenericType);
-        RateLimitRestAndUITest.log.info("result {}", configurations);
+        log.info("result {}", configurations);
 
         assertThat(getStatusAndReleaseConnection(getAllResponse),
                 Matchers.is(200));
         assertThat(configurations, Matchers.hasItem(rateLimitConfig));
     }
 
-    private static ClientRequest getClientRequest(String pathParam) {
+    private static ClientRequest clientRequestAsAdmin(String path) {
         ClientRequest clientRequest = new ClientRequest(
                 PropertiesHolder.getProperty(Constants.zanataInstance.value()) +
-                        "rest/configurations/" + pathParam);
+                        path);
         clientRequest.header("X-Auth-User", "admin");
         clientRequest.header("X-Auth-Token", PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
         clientRequest.header("Content-Type", "application/xml");
@@ -131,23 +137,27 @@ public class RateLimitRestAndUITest {
     public void serverConfigurationRestServiceOnlyAvailableToAdmin()
             throws Exception {
         // all request should be rejected
-        Response response = createRequestAsTranslator("").get();
+        Response response =
+                clientRequestAsTranslator("rest/configurations/").get();
         assertThat(getStatusAndReleaseConnection(response), Matchers.is(401));
 
-        Response response1 = createRequestAsTranslator("c/" + KEY_ADMIN_EMAIL).get();
+        Response response1 =
+                clientRequestAsTranslator(
+                        "rest/configurations/c/" + KEY_ADMIN_EMAIL).get();
         assertThat(getStatusAndReleaseConnection(response1), Matchers.is(401));
 
         ClientRequest request =
-                createRequestAsTranslator("c/" + KEY_ADMIN_EMAIL);
+                clientRequestAsTranslator("rest/configurations/c/"
+                        + KEY_ADMIN_EMAIL);
         request.body("text/plain", "admin@email.com");
         Response response2 = request.put();
         assertThat(getStatusAndReleaseConnection(response2), Matchers.is(401));
     }
 
-    private static ClientRequest createRequestAsTranslator(Object pathParam) {
+    private static ClientRequest clientRequestAsTranslator(String path) {
         ClientRequest clientRequest = new ClientRequest(
                 PropertiesHolder.getProperty(Constants.zanataInstance.value()) +
-                        "rest/configurations/" + pathParam);
+                        path);
         clientRequest.header("X-Auth-User", TRANSLATOR);
         clientRequest.header("X-Auth-Token", TRANSLATOR_API);
         clientRequest.header("Content-Type", "application/xml");
@@ -156,33 +166,36 @@ public class RateLimitRestAndUITest {
 
     @Test
     public void canOnlyDealWithKnownConfiguration() throws Exception {
-        ClientRequest clientRequest = getClientRequest("c/arbitrary");
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/configurations/c/abc");
 
         Response putResponse = clientRequest.put();
         assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(400));
 
-        Response getResponse = getClientRequest("c/arbitrary").get();
+        Response getResponse = clientRequestAsAdmin(
+                "rest/configurations/c/abc").get();
         assertThat(getStatusAndReleaseConnection(getResponse), Matchers.is(404));
     }
 
     @Test
-    public void canRateLimitRestRequestsPerAPIKey() throws Exception {
-        ClientRequest clientRequest = getClientRequest(rateLimitingPathParam);
-        clientRequest.body("text/plain", "3");
+    public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/configurations/" + maxConcurrentPathParam);
+        clientRequest.body("text/plain", "2");
 
         Response putResponse = clientRequest.put();
         checkStatusAndReleaseConnection(putResponse);
 
         // prepare to fire multiple REST requests
         final AtomicInteger atomicInteger = new AtomicInteger(1);
-        // translator creates the project/version
+//        translator creates the project/version
         final String projectSlug = "project";
         final String iterationSlug = "version";
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
 
         // requests from translator user
-        final int translatorThreads = 4;
+        final int translatorThreads = 3;
         Callable<Integer> translatorTask = new Callable<Integer>() {
 
             @Override
@@ -196,7 +209,7 @@ public class RateLimitRestAndUITest {
                 Collections.nCopies(translatorThreads, translatorTask);
 
         // requests from admin user
-        int adminThreads = 3;
+        int adminThreads = 2;
         Callable<Integer> adminTask = new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -219,57 +232,10 @@ public class RateLimitRestAndUITest {
 
         List<Integer> result = getResultStatusCodes(futures);
 
-        // 1 request from translator should get 503 and fail
-        RateLimitRestAndUITest.log.info("result: {}", result);
+        // 1 request from translator should get 403 and fail
+        log.info("result: {}", result);
         assertThat(result,
-                Matchers.containsInAnyOrder(201, 201, 201, 201, 201, 201, 403));
-    }
-
-    @Test
-    public void rateLimitChangeTakesEffectImmediately()
-            throws Exception {
-        // we start allowing 10 request per second
-        ClientRequest clientRequest = getClientRequest(rateLimitingPathParam);
-        clientRequest.body("text/plain", "10");
-        checkStatusAndReleaseConnection(clientRequest.put());
-
-        // prepare to fire multiple REST requests
-        final AtomicInteger atomicInteger = new AtomicInteger(1);
-        // translator creates the project/version
-        final String projectSlug = "project";
-        final String iterationSlug = "version";
-        new ZanataRestCaller().createProjectAndVersion(projectSlug,
-                iterationSlug, "gettext");
-
-        // requests from admin user
-        final int threads = 2;
-        Callable<Integer> translatorTask = new Callable<Integer>() {
-
-            @Override
-            public Integer call() {
-                return invokeRestService(new ZanataRestCaller(), projectSlug,
-                        iterationSlug, atomicInteger);
-            }
-        };
-        // two tasks should work fine
-        List<Callable<Integer>> tasks =
-                Collections.nCopies(threads, translatorTask);
-        ExecutorService executorService =
-                Executors.newFixedThreadPool(threads);
-        List<Integer> result = getResultStatusCodes(
-                executorService.invokeAll(tasks));
-        assertThat(result, Matchers.contains(201, 201));
-
-        // we now change rate limit to 1
-        clientRequest = getClientRequest(rateLimitingPathParam);
-        clientRequest.body("text/plain", "1");
-        checkStatusAndReleaseConnection(clientRequest.put());
-
-        // new requests is rate limited
-        List<Integer> resultAfter = getResultStatusCodes(
-                executorService.invokeAll(tasks));
-        RateLimitRestAndUITest.log.info("result: {}", resultAfter);
-        assertThat(resultAfter, Matchers.containsInAnyOrder(201, 403));
+                Matchers.containsInAnyOrder(201, 201, 201, 201, 403));
     }
 
     private static Integer invokeRestService(ZanataRestCaller restCaller,
@@ -282,7 +248,7 @@ public class RateLimitRestAndUITest {
                             ZanataRestCaller.buildTextFlow("res" + counter,
                                     "content" + counter)), false);
         } catch (Exception e) {
-            RateLimitRestAndUITest.log.info("rest call failed: {}", e.getMessage());
+            log.info("rest call failed: {}", e.getMessage());
             return 500;
         }
     }
