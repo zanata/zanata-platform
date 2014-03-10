@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.jboss.resteasy.util.GenericType;
 import org.junit.Rule;
@@ -36,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.model.HApplicationConfiguration.KEY_ADMIN_EMAIL;
+import static org.zanata.model.HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 import static org.zanata.model.HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
 import static org.zanata.model.HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND;
 import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
@@ -53,13 +53,14 @@ public class RateLimitRestAndUITest {
 
     // because of the time based nature, tests may fail occasionally
 //    @Rule
-    public RetryRule retryRule = new RetryRule(3);
+    public RetryRule retryRule = new RetryRule(2);
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             "d83882201764f7d339e97c4b087f0806";
     private String rateLimitingPathParam = "c/" + KEY_RATE_LIMIT_PER_SECOND;
     private String maxConcurrentPathParam = "c/" + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
+    private String maxActivePathParam = "c/" + KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 
     @Test
     public void canConfigureRateLimitByWebUI() {
@@ -236,6 +237,46 @@ public class RateLimitRestAndUITest {
         log.info("result: {}", result);
         assertThat(result,
                 Matchers.containsInAnyOrder(201, 201, 201, 201, 403));
+    }
+
+    @Test(timeout = 5000)
+    public void exceptionWillReleaseSemaphore() throws Exception {
+        // Given: max active is set to 1
+        ClientRequest configRequest = clientRequestAsAdmin(
+                "rest/configurations/" + maxActivePathParam);
+        configRequest.body("text/plain", "1");
+        checkStatusAndReleaseConnection(configRequest.put());
+
+        // When: multiple requests that will result in a mapped exception
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+
+        // Then: request that result in exception should still release semaphore. i.e. no permit leak
+        assertThat(1, Matchers.is(1));
+    }
+
+    @Test(timeout = 5000)
+    public void unmappedExceptionWillAlsoReleaseSemaphore() throws Exception {
+        // Given: max active is set to 1
+        ClientRequest configRequest = clientRequestAsAdmin(
+                "rest/configurations/" + maxActivePathParam);
+        configRequest.body("text/plain", "1");
+        checkStatusAndReleaseConnection(configRequest.put());
+
+        // When: multiple requests that will result in an unmapped exception
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+        getStatusAndReleaseConnection(clientRequest.get());
+
+        // Then: request that result in exception should still release semaphore. i.e. no permit leak
+        assertThat(1, Matchers.is(1));
     }
 
     private static Integer invokeRestService(ZanataRestCaller restCaller,

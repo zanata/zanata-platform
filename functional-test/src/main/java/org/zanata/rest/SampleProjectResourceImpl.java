@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,6 +16,11 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.util.SampleProjectProfile;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.Uninterruptibles;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
@@ -22,6 +28,7 @@ import org.zanata.util.SampleProjectProfile;
  */
 @Path("/test/data/sample")
 @Name("sampleProjectResourceImpl")
+@Slf4j
 public class SampleProjectResourceImpl implements SampleProjectResource {
 
     @In(create = true)
@@ -90,5 +97,35 @@ public class SampleProjectResourceImpl implements SampleProjectResource {
             }
         }.addRole("admin").run();
         return Response.ok().build();
+    }
+
+    @Override
+    public Response dummyService(long timeInMillis,
+            String qualifiedExceptionClass) throws Throwable {
+        if (timeInMillis > 0) {
+            log.info("I am going to take a nap for {} ms", timeInMillis);
+            Uninterruptibles.sleepUninterruptibly(timeInMillis,
+                    TimeUnit.MILLISECONDS);
+        }
+        if (Strings.isNullOrEmpty(qualifiedExceptionClass)) {
+            return Response.ok().build();
+        }
+
+        try {
+            Class<?> exceptionClass = Class.forName(qualifiedExceptionClass);
+            boolean isThrowable =
+                    Throwable.class.isAssignableFrom(exceptionClass);
+            if (!isThrowable) {
+                return Response
+                        .status(Response.Status.BAD_REQUEST)
+                        .entity(qualifiedExceptionClass + " is not a Throwable")
+                        .build();
+            }
+            log.info("about to throw exception: {}", exceptionClass);
+            throw (Throwable) exceptionClass.newInstance();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build();
+        }
     }
 }

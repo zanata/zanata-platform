@@ -31,10 +31,12 @@ import javax.ws.rs.ext.Provider;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
-public class ZanataServiceExceptionMapper implements
+public class ZanataServiceExceptionMapper extends
+        RateLimitingAwareExceptionMapper implements
         ExceptionMapper<ZanataServiceException> {
     @Override
     public Response toResponse(ZanataServiceException exception) {
+        releaseSemaphoreBeforeReturnResponse();
         return Response.status(exception.getHttpStatus())
                 .entity(exception.getMessage()).build();
     }

@@ -13,10 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Provider
 @Slf4j
-public class ConstraintViolationExceptionMapper implements
+public class ConstraintViolationExceptionMapper extends
+        RateLimitingAwareExceptionMapper implements
         ExceptionMapper<ConstraintViolationException> {
     @Override
     public Response toResponse(ConstraintViolationException e) {
+        releaseSemaphoreBeforeReturnResponse();
         Set<ConstraintViolation<?>> invalidValues = e.getConstraintViolations();
         for (ConstraintViolation<?> invalidValue : invalidValues) {
             log.error("Invalid state for leaf bean {}: {}", e,

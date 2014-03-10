@@ -106,6 +106,9 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
                         log.error(
                                 "Failed to send error on failed REST request",
                                 ioe);
+                    } finally {
+                        RateLimiterHolder.getInstance()
+                                .releaseSemaphoreForCurrentThread();
                     }
                 }
             }

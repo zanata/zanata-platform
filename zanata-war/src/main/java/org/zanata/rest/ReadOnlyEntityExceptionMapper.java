@@ -6,13 +6,14 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ReadOnlyEntityExceptionMapper implements
+public class ReadOnlyEntityExceptionMapper extends
+        RateLimitingAwareExceptionMapper implements
         ExceptionMapper<ReadOnlyEntityException> {
 
     @Override
     public Response toResponse(ReadOnlyEntityException exception) {
+        releaseSemaphoreBeforeReturnResponse();
         return Response.status(Status.FORBIDDEN).entity(exception.getMessage())
                 .build();
     }
-
 }

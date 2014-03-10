@@ -36,4 +36,17 @@ public interface SampleProjectResource {
 
     @DELETE
     Response deleteExceptEssentialData();
+
+    /**
+     * This dummy service can be used to simulate long running operation or throws exception.
+     *
+     * @param timeInMillis time used running this service
+     * @param qualifiedExceptionClass exception to be thrown if not null
+     * @return ok otherwise
+     * @throws Throwable represented by qualifiedExceptionClass
+     */
+    @GET
+    @Path("/dummy")
+    Response dummyService(@QueryParam("timeUsedInMillis") long timeInMillis,
+            @QueryParam("exception") String qualifiedExceptionClass) throws Throwable;
 }

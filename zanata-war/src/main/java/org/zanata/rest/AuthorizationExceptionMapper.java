@@ -8,11 +8,12 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.seam.security.AuthorizationException;
 
 @Provider
-public class AuthorizationExceptionMapper implements
-        ExceptionMapper<AuthorizationException> {
+public class AuthorizationExceptionMapper extends
+        RateLimitingAwareExceptionMapper implements ExceptionMapper<AuthorizationException> {
 
     @Override
     public Response toResponse(AuthorizationException exception) {
+        releaseSemaphoreBeforeReturnResponse();
         return Response.status(Status.UNAUTHORIZED).build();
     }
 
