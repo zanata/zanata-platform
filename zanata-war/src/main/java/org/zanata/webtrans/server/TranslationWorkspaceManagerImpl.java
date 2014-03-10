@@ -56,6 +56,8 @@ import com.ibm.icu.util.ULocale;
 
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
@@ -107,7 +109,7 @@ public class TranslationWorkspaceManagerImpl implements
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                stopListeners();
+                TranslationWorkspaceManagerImpl.this.stop();
             }
         });
     }
@@ -216,6 +218,7 @@ public class TranslationWorkspaceManagerImpl implements
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());
+        stopListeners();
     }
 
     private void stopListeners() {
@@ -233,6 +236,9 @@ public class TranslationWorkspaceManagerImpl implements
         log.info(
                 "Removed {} client(s).  Waiting for outstanding polls to time out...",
                 clientCount);
+        UserManager userManager =
+                UserManagerFactory.getInstance().getUserManager();
+        userManager.getUserActivityScheduler().stop();
     }
 
     @Override
