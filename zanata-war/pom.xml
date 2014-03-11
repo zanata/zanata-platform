@@ -134,7 +134,6 @@
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- used by REST API interfaces -->
-            <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
             <!-- used indirectly by drools -->
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
@@ -1232,6 +1231,18 @@
     <dependency>
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-remoting</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- RestEasy dependencies -->

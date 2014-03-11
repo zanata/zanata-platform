@@ -16,8 +16,11 @@ import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.zanata.config.JndiBackedConfig;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.AuthorizationExceptionMapper;
@@ -29,6 +32,10 @@ import org.zanata.rest.NotLoggedInExceptionMapper;
 import org.zanata.rest.ZanataServiceExceptionMapper;
 import org.zanata.rest.client.TraceDebugInterceptor;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.security.AuthenticationType;
+import com.google.gwt.thirdparty.guava.common.collect.Sets;
+
+import static org.mockito.Mockito.when;
 
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
@@ -41,10 +48,14 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     protected final Set<Object> resources = new HashSet<Object>();
     protected final Set<Class<?>> providers = new HashSet<Class<?>>();
     protected final Set<Object> providerInstances = new HashSet<Object>();
+    @Mock
+    private JndiBackedConfig jndiBackedConfig;
 
     @BeforeMethod
     public final void prepareRestEasyFramework() {
-
+        MockitoAnnotations.initMocks(this);
+        when(jndiBackedConfig.getEnabledAuthenticationPolicies()).thenReturn(
+                Sets.newHashSet(AuthenticationType.INTERNAL.name()));
         Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
         prepareSeamAutowire();
         prepareAccount();
@@ -145,7 +156,11 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      * Override this method to add custom Seam autowire preparations.
      */
     protected void prepareSeamAutowire() {
-        seamAutowire.reset().ignoreNonResolvable();
+        seamAutowire
+                .reset()
+                .ignoreNonResolvable()
+                .use(SeamAutowire.getComponentName(JndiBackedConfig.class),
+                        jndiBackedConfig);
     }
 
     /**
