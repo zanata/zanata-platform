@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
 
 import lombok.AccessLevel;
@@ -38,12 +37,14 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
+import com.google.common.base.Strings;
 
 @Name("serverConfigurationBean")
 @Scope(ScopeType.PAGE)
@@ -234,7 +235,11 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     @Transactional
-    public void update() {
+    public String update() {
+        boolean valid = validateRateLimitingSettings();
+        if (!valid) {
+            return null;
+        }
         HApplicationConfiguration registerUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_REGISTER);
@@ -346,7 +351,36 @@ public class ServerConfigurationBean implements Serializable {
                 applicationConfigurationDAO);
 
         applicationConfigurationDAO.flush();
-        FacesMessages.instance().add("Configuration was successfully updated.");
+        FacesMessages facesMessages = FacesMessages.instance();
+        facesMessages.clearGlobalMessages();
+        facesMessages.add("Configuration was successfully updated.");
+        return "success";
+    }
+
+    private boolean validateRateLimitingSettings() {
+        boolean allGreaterThanZeroOrEmpty = greaterThanZeroOrEmpty(rateLimitPerSecond)
+                && greaterThanZeroOrEmpty(maxConcurrentRequestsPerApiKey)
+                && greaterThanZeroOrEmpty(maxActiveRequestsPerApiKey);
+        return allGreaterThanZeroOrEmpty && maxActiveLessOrEqualToMaxConcurrent();
+    }
+
+    private static boolean greaterThanZeroOrEmpty(String value) {
+        return Strings.isNullOrEmpty(value) || Long.parseLong(value) > 0;
+    }
+
+    private boolean maxActiveLessOrEqualToMaxConcurrent() {
+        if (!Strings.isNullOrEmpty(maxConcurrentRequestsPerApiKey)
+                && !Strings.isNullOrEmpty(maxActiveRequestsPerApiKey)) {
+            FacesMessages
+                    .instance()
+                    .add(StatusMessage.Severity.ERROR,
+                            "Max active requests can not exceed max concurrent requests");
+            return Long.parseLong(maxConcurrentRequestsPerApiKey) >= Long
+                    .parseLong(maxActiveRequestsPerApiKey);
+        }
+        FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                "Max concurrent and max active requests must both be set");
+        return false;
     }
 
     public String cancel() {
