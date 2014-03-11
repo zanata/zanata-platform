@@ -131,11 +131,16 @@ public class CorePage extends AbstractPage {
     /**
      * Shift focus to the page, in order to activate some elements that
      * only exhibit behaviour on losing focus.
+     * Some pages with contained objects cause object behaviour to occur
+     * when interacted with, so in this case interact with the container
+     * instead.
      */
     public void defocus() {
-        List<WebElement> elements = getDriver().findElements(By.id("container"));
-        if (elements.size() > 0) {
-            elements.get(0).click();
+        List<WebElement> webElements = getDriver()
+                .findElements(By.id("container"));
+        webElements.addAll(getDriver().findElements(By.tagName("body")));
+        if (webElements.size() > 0) {
+            webElements.get(0).click();
         } else {
             log.warn("Unable to focus page container");
         }
