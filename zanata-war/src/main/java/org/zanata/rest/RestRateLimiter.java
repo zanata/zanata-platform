@@ -118,9 +118,8 @@ public class RestRateLimiter {
     public String toString() {
         return Objects
                 .toStringHelper(this)
+                .add("id", super.toString())
                 .add("maxConcurrent", maxConcurrentSemaphore.availablePermits())
-                .add("maxConcurrent queue",
-                        maxConcurrentSemaphore.getQueueLength())
                 .add("maxActive", maxActiveSemaphore.availablePermits())
                 .add("maxActive queue", maxActiveSemaphore.getQueueLength())
                 .add("rateLimiter", rateLimiter).toString();

@@ -29,6 +29,7 @@ import org.zanata.rest.HibernateValidationInterceptor;
 import org.zanata.rest.ConstraintViolationExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
+import org.zanata.rest.RateLimiterHolder;
 import org.zanata.rest.ZanataServiceExceptionMapper;
 import org.zanata.rest.client.TraceDebugInterceptor;
 import org.zanata.seam.SeamAutowire;
@@ -160,7 +161,9 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                 .reset()
                 .ignoreNonResolvable()
                 .use(SeamAutowire.getComponentName(JndiBackedConfig.class),
-                        jndiBackedConfig);
+                        jndiBackedConfig)
+                .use(SeamAutowire.getComponentName(RateLimiterHolder.class),
+                        new RateLimiterHolder());
     }
 
     /**

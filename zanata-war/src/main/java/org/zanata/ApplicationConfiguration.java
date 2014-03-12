@@ -392,6 +392,10 @@ public class ApplicationConfiguration implements Serializable {
                 "//assets-zanata.rhcloud.com");
     }
 
+    public boolean getRateLimitSwitch() {
+        String rateLimitSwitch = databaseBackedConfig.getRateLimitSwitch();
+        return Boolean.parseBoolean(rateLimitSwitch);
+    }
     public double getRateLimitPerSecond() {
         String limitPerSecond =
                 databaseBackedConfig.getRateLimitPerSecond();

@@ -42,7 +42,7 @@ public class RateLimiterHolder implements Introspectable {
 
     public static RateLimiterHolder getInstance() {
         return (RateLimiterHolder) Component
-                .getInstance(RateLimiterHolder.class);
+                .getInstance("rateLimiterHolder");
     }
 
     @Create
@@ -53,7 +53,7 @@ public class RateLimiterHolder implements Introspectable {
     private void readRateLimitState() {
         ApplicationConfiguration appConfig =
                 (ApplicationConfiguration) Component
-                        .getInstance(ApplicationConfiguration.class);
+                        .getInstance("applicationConfiguration");
         int maxConcurrent = appConfig.getMaxConcurrentRequestsPerApiKey();
         int maxActive = appConfig.getMaxActiveRequestsPerApiKey();
         double rateLimitPerSecond = appConfig.getRateLimitPerSecond();

@@ -27,6 +27,7 @@ import javax.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
@@ -51,6 +52,7 @@ import com.google.common.base.Strings;
 @Restrict("#{s:hasRole('admin')}")
 @Getter
 @Setter
+@Slf4j
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -104,6 +106,8 @@ public class ServerConfigurationBean implements Serializable {
 
     @Pattern(regexp = "\\d{0,5}")
     private String maxActiveRequestsPerApiKey;
+
+    private boolean rateLimitSwitch;
 
     public String getHomeContent() {
         HApplicationConfiguration var =
@@ -213,6 +217,12 @@ public class ServerConfigurationBean implements Serializable {
                         .findByKey(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
         if (termsOfUseUrlValue != null) {
             this.termsOfUseUrl = termsOfUseUrlValue.getValue();
+        }
+
+        HApplicationConfiguration rateLimitSwitch = applicationConfigurationDAO
+                .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
+        if (rateLimitSwitch != null) {
+            this.rateLimitSwitch = Boolean.valueOf(rateLimitSwitch.getValue());
         }
 
         HApplicationConfiguration rateLimitValue = applicationConfigurationDAO
@@ -325,6 +335,14 @@ public class ServerConfigurationBean implements Serializable {
         ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
                 termsOfUseUrlValue, termsOfUseUrl, applicationConfigurationDAO);
+
+        HApplicationConfiguration rateLimitSwitchValue =
+                applicationConfigurationDAO
+                        .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
+        ServerConfigurationService.persistApplicationConfig(
+                HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH,
+                rateLimitSwitchValue, "" + rateLimitSwitch,
+                applicationConfigurationDAO);
 
         HApplicationConfiguration rateLimitValue =
                 applicationConfigurationDAO

@@ -158,6 +158,10 @@ public class DatabaseBackedConfig implements Serializable {
         return getConfigValue(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
     }
 
+    public String getRateLimitSwitch() {
+        return getConfigValue(HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
+    }
+
     public String getRateLimitPerSecond() {
         return getConfigValue(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
     }

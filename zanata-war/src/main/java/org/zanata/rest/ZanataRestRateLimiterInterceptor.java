@@ -13,6 +13,8 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PostProcessInterceptor;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
+import org.jboss.seam.Component;
+import org.zanata.ApplicationConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +32,15 @@ public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
     @Override
     public ServerResponse preProcess(HttpRequest request, ResourceMethod method)
             throws Failure, WebApplicationException {
-        String apiKey = HeaderHelper.getApiKey(request);
+        final String apiKey = HeaderHelper.getApiKey(request);
         if (apiKey == null) {
+            return null;
+        }
+
+        ApplicationConfiguration appConfig =
+                (ApplicationConfiguration) Component
+                        .getInstance("applicationConfiguration");
+        if (!appConfig.getRateLimitSwitch()) {
             return null;
         }
         ActiveApiKeys apiKeys = ActiveApiKeys.getInstance();
@@ -46,6 +55,7 @@ public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
             rateLimiter = rateLimiterHolder.get(apiKey, new Callable<RestRateLimiter>() {
                 @Override
                 public RestRateLimiter call() throws Exception {
+                    log.info("creating for api key: {}", apiKey);
                     return new RestRateLimiter(limitConfig);
                 }
             });
@@ -54,7 +64,6 @@ public class ZanataRestRateLimiterInterceptor implements PreProcessInterceptor,
             throw new WebApplicationException(e,
                     Response.Status.INTERNAL_SERVER_ERROR);
         }
-        rateLimiterHolder.put(apiKey, rateLimiter);
         ContextInfo contextInfo = ContextInfo.of(apiKey, request.getUri().getPath(), rateLimiter);
         log.debug("check semaphore for {}", contextInfo);
         if (!rateLimiter.tryAcquireConcurrentPermit()) {
