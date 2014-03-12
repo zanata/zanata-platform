@@ -1,20 +1,24 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
+import org.zanata.security.ZanataIdentity;
+
+import javax.faces.model.DataModel;
+import java.io.Serializable;
+import java.util.List;
 
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
@@ -23,88 +27,84 @@ public class ProjectSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int pageSize = 30;
+    private final static int DEFAULT_PAGE_SIZE = 30;
 
-    private String searchQuery;
+    @Getter
+    @Setter
+    private int scrollerPage = 1;
 
-    private List<HProject> searchResults;
+    @Setter
+    @Getter
+    // project slug
+    private String selectedItem;
 
-    private int currentPage = 1;
-
-    private int resultSize;
-
-    private boolean includeObsolete;
+    @Setter
+    @Getter
+    private String suggestQuery;
 
     @In
     private ProjectDAO projectDAO;
 
-    public String getSearchQuery() {
-        return searchQuery;
-    }
+    @In
+    private ZanataIdentity identity;
 
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
-    }
+    private QueryProjectPagedListDataModel queryProjectPagedListDataModel =
+            new QueryProjectPagedListDataModel(DEFAULT_PAGE_SIZE);
 
-    public List<HProject> getSearchResults() {
-        return searchResults;
-    }
+    // Count of result to be return as part of autocomplete
+    private final static int INITIAL_RESULT_COUNT = 5;
 
-    public void setSearchResults(List<HProject> projects) {
-        this.searchResults = projects;
-    }
-
-    public int getResultSize() {
-        return resultSize;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int page) {
-        if (page < 1)
-            this.currentPage = 1;
-        else
-            this.currentPage = page;
-    }
-
-    @Begin(join = true)
-    public void search() {
+    /**
+     * Return results on project search
+     */
+    public List<SearchResult> suggestProjects() {
+        List<SearchResult> result = Lists.newArrayList();
+        if (StringUtils.isEmpty(suggestQuery)) {
+            return result;
+        }
         try {
-            searchResults =
-                    projectDAO.searchQuery(searchQuery, pageSize + 1, pageSize
-                            * (currentPage - 1));
+            List<HProject> searchResult =
+                    projectDAO
+                            .searchProjects(suggestQuery, INITIAL_RESULT_COUNT,
+                                    0, identity.hasPermission("HProject",
+                                            "view-obsolete"));
+
+            for (HProject project : searchResult) {
+                result.add(new SearchResult(project));
+            }
+            result.add(new SearchResult());
+            return result;
         } catch (ParseException pe) {
-            return;
+            return result;
         }
-        // Manually filtering collection as status field is not indexed by
-        // hibernate search
-        if (!this.includeObsolete) {
-            CollectionUtils.filter(searchResults, new Predicate() {
-                @Override
-                public boolean evaluate(Object arg0) {
-                    return ((HProject) arg0).getStatus() != EntityStatus.OBSOLETE;
-                }
-            });
-        }
-        resultSize = searchResults.size();
     }
 
     public int getPageSize() {
-        return pageSize;
+        return queryProjectPagedListDataModel.getPageSize();
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public DataModel getProjectPagedListDataModel() {
+        queryProjectPagedListDataModel.setIncludeObsolete(identity
+                .hasPermission("HProject", "view-obsolete"));
+        return queryProjectPagedListDataModel;
     }
 
-    public boolean isIncludeObsolete() {
-        return includeObsolete;
+    public void setSearchQuery(String searchQuery) {
+        queryProjectPagedListDataModel.setQuery(searchQuery);
     }
 
-    public void setIncludeObsolete(boolean includeObsolete) {
-        this.includeObsolete = includeObsolete;
+    public String getSearchQuery() {
+        return queryProjectPagedListDataModel.getQuery();
     }
 
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class SearchResult {
+        @Getter
+        private HProject project;
+
+        public boolean isProjectNull() {
+            return project == null;
+        }
+    }
 }

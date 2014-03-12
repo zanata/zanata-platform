@@ -28,11 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -47,7 +46,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -75,7 +73,6 @@ import org.zanata.model.type.EntityType;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -86,25 +83,54 @@ import com.google.common.collect.Maps;
  *
  */
 @Entity
+@EntityListeners({HTextFlowTarget.EntityListener.class})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
-@Getter
 @NoArgsConstructor
-@Access(AccessType.FIELD)
 public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         HasSimpleComment, ITextFlowTargetHistory, Serializable,
         ITextFlowTarget, IsEntityWithType {
+
     private static final long serialVersionUID = 302308010797605435L;
 
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "tf_id")
-    // @Field(index = Index.UN_TOKENIZED)
-    // @FieldBridge(impl = ContainingWorkspaceBridge.class)
-    @IndexedEmbedded
     private HTextFlow textFlow;
+    private @Nonnull
+    HLocale locale;
+
+    private String content0;
+    private String content1;
+    private String content2;
+    private String content3;
+    private String content4;
+    private String content5;
+
+    private ContentState state = ContentState.New;
+    private Integer textFlowRevision;
+    private HPerson lastModifiedBy;
+
+    private HPerson translator;
+    private HPerson reviewer;
+
+    private HSimpleComment comment;
+
+    private Map<Integer, HTextFlowTargetHistory> history;
+
+    private List<HTextFlowTargetReviewComment> reviewComments;
+
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    private Integer oldVersionNum;
+
+    // Only for internal use (persistence transient)
+    @Setter(AccessLevel.PRIVATE)
+    private HTextFlowTargetHistory initialState;
+
+    public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale) {
+        this.locale = locale;
+        this.textFlow = textFlow;
+        this.textFlowRevision = textFlow.getRevision();
+    }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
@@ -112,82 +138,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @JoinColumn(name = "locale", nullable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = LocaleIdBridge.class)
-    private @Nonnull
-    HLocale locale;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content0;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content1;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content2;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content3;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content4;
-
-    @Getter(AccessLevel.PROTECTED)
-    private String content5;
-
-    @NotNull
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = ContentStateBridge.class)
-    private @Nonnull
-    ContentState state = ContentState.New;
-
-    @NotNull
-    @Column(name = "tf_revision")
-    private Integer textFlowRevision;
-
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "last_modified_by_id", nullable = true)
-    private HPerson lastModifiedBy;
-
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "translated_by_id", nullable = true)
-    private HPerson translator;
-
-    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewed_by_id", nullable = true)
-    private HPerson reviewer;
-
-    // TODO use orphanRemoval=true: requires JPA 2.0
-    @OneToOne(optional = true, fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-    @JoinColumn(name = "comment_id")
-    private HSimpleComment comment;
-
-    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
-            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
-    @MapKey(name = "versionNum")
-    private Map<Integer, HTextFlowTargetHistory> history = Maps.newHashMap();
-
-    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
-            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
-    private List<HTextFlowTargetReviewComment> reviewComments = Lists
-            .newArrayList();
-
-    // Only for internal use (persistence transient)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter(AccessLevel.NONE)
-    @Transient
-    private Integer oldVersionNum;
-
-    // Only for internal use (persistence transient)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter(AccessLevel.NONE)
-    @Transient
-    private HTextFlowTargetHistory initialState;
-
-    public HTextFlowTarget(HTextFlow textFlow, @Nonnull HLocale locale) {
-        this.locale = locale;
-        this.textFlow = textFlow;
-        this.textFlowRevision = textFlow.getRevision();
+    public @Nonnull
+    HLocale getLocale() {
+        return locale;
     }
 
     @Transient
@@ -197,8 +150,61 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         return locale.getLocaleId();
     }
 
+    @NotNull
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = ContentStateBridge.class)
+    @Override
+    public @Nonnull
+    ContentState getState() {
+        return state;
+    }
+
+    @NotNull
+    @Column(name = "tf_revision")
+    @Override
+    public Integer getTextFlowRevision() {
+        return textFlowRevision;
+    }
+
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    @Override
+    public HPerson getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(HPerson date) {
+        lastModifiedBy = date;
+    }
+
+    @Override
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "translated_by_id", nullable = true)
+    public HPerson getTranslator() {
+        return translator;
+    }
+
+    @Override
+    @ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by_id", nullable = true)
+    public HPerson getReviewer() {
+        return reviewer;
+    }
+
     public boolean hasReviewer() {
         return reviewer != null;
+    }
+
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
+    @NaturalId
+    @ManyToOne
+    @JoinColumn(name = "tf_id")
+    // @Field(index = Index.UN_TOKENIZED)
+    // @FieldBridge(impl = ContainingWorkspaceBridge.class)
+            @IndexedEmbedded
+            public
+            HTextFlow getTextFlow() {
+        return textFlow;
     }
 
     /**
@@ -311,8 +317,58 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         }
     }
 
+    protected String getContent0() {
+        return content0;
+    }
+
+    protected String getContent1() {
+        return content1;
+    }
+
+    protected String getContent2() {
+        return content2;
+    }
+
+    protected String getContent3() {
+        return content3;
+    }
+
+    protected String getContent4() {
+        return content4;
+    }
+
+    protected String getContent5() {
+        return content5;
+    }
+
     public void setContents(String... contents) {
         this.setContents(Arrays.asList(contents));
+    }
+
+    @OneToOne(optional = true, fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "comment_id")
+    public HSimpleComment getComment() {
+        return comment;
+    }
+
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
+    @MapKey(name = "versionNum")
+    public Map<Integer, HTextFlowTargetHistory> getHistory() {
+        if (this.history == null) {
+            this.history = new HashMap<Integer, HTextFlowTargetHistory>();
+        }
+        return history;
+    }
+
+    @OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE,
+            CascadeType.PERSIST }, mappedBy = "textFlowTarget")
+    public List<HTextFlowTargetReviewComment> getReviewComments() {
+        if (reviewComments == null) {
+            reviewComments = Lists.newArrayList();
+        }
+        return reviewComments;
     }
 
     public HTextFlowTargetReviewComment addReviewComment(String comment,
@@ -321,22 +377,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
                 new HTextFlowTargetReviewComment(this, comment, commenter);
         getReviewComments().add(reviewComment);
         return reviewComment;
-    }
-
-    @PreUpdate
-    private void preUpdate() {
-        // insert history if this has changed from its initial state
-        if (this.initialState != null && this.initialState.hasChanged(this)) {
-            this.getHistory().put(this.oldVersionNum, this.initialState);
-        }
-    }
-
-    @PostUpdate
-    @PostPersist
-    @PostLoad
-    private void updateInternalHistory() {
-        this.oldVersionNum = this.getVersionNum();
-        this.initialState = new HTextFlowTargetHistory(this);
     }
 
     @Override
@@ -365,5 +405,24 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Transient
     public EntityType getEntityType() {
         return EntityType.HTexFlowTarget;
+    }
+
+    public static class EntityListener {
+        @PreUpdate
+        private void preUpdate(HTextFlowTarget tft) {
+            // insert history if this has changed from its initial state
+            if (tft.initialState != null && tft.initialState.hasChanged(tft)) {
+                tft.getHistory().put(tft.oldVersionNum, tft.initialState);
+            }
+        }
+
+        @PostUpdate
+        @PostPersist
+        @PostLoad
+        private void updateInternalHistory(HTextFlowTarget tft) {
+            tft.oldVersionNum = tft.getVersionNum();
+            tft.initialState = new HTextFlowTargetHistory(tft);
+        }
+
     }
 }

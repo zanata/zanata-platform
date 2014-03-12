@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.view;
 
 import java.util.ArrayList;
 
-import org.zanata.webtrans.client.resources.Resources;
+import com.google.gwt.user.client.ui.Anchor;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
@@ -17,7 +17,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -41,37 +40,22 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
     interface GlossaryViewUiBinder extends UiBinder<Widget, GlossaryView> {
     }
 
-    interface Styles extends CssResource {
-        String rootContainer();
-
-        String searchBox();
-
-        String topBar();
-
-        String headerLabel();
-    }
-
-    @UiField
-    Styles style;
-
     @UiField
     TextBox glossaryTextBox;
 
     @UiField
     Button searchButton, clearButton;
 
-    @UiField
-    Label headerLabel;
-
     @UiField(provided = true)
     ValueListBox<SearchType> searchType;
 
     @UiField
-    HTMLPanel container;
+    HTMLPanel data;
+
+    @UiField
+    UiMessages messages;
 
     private final FlexTable resultTable;
-
-    private final UiMessages messages;
 
     private final Label loadingLabel, noResultFoundLabel;
 
@@ -83,19 +67,23 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
     private final static int DETAILS_COL = 3;
 
     @Inject
-    public GlossaryView(final UiMessages messages,
-            SearchTypeRenderer searchTypeRenderer, Resources resources) {
-        this.messages = messages;
+    public GlossaryView(SearchTypeRenderer searchTypeRenderer) {
+        searchType =
+            new EnumListBox<SearchType>(SearchType.class,
+                searchTypeRenderer);
+
+        initWidget(uiBinder.createAndBindUi(this));
+
         resultTable = new FlexTable();
         resultTable.setStyleName("resultTable");
         resultTable.setCellSpacing(0);
         resultTable.setCellPadding(3);
 
         FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
-        formatter.setStyleName(0, SOURCE_COL, "th");
-        formatter.setStyleName(0, TARGET_COL, "th");
-        formatter.setStyleName(0, ACTION_COL, "th centered actionCol");
-        formatter.setStyleName(0, DETAILS_COL, "th centered detailCol");
+        formatter.setStyleName(0, SOURCE_COL, "epsilon");
+        formatter.setStyleName(0, TARGET_COL, "epsilon");
+        formatter.setStyleName(0, ACTION_COL, "epsilon txt--align-center smallCol");
+        formatter.setStyleName(0, DETAILS_COL, "epsilon txt--align-center smallCol");
 
         resultTable
                 .setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
@@ -106,20 +94,11 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
                 new Label(messages.detailsLabel()));
 
         loadingLabel = new Label(messages.searching());
-        loadingLabel.setStyleName("tableMsg");
+        loadingLabel.setStyleName("gamma");
         noResultFoundLabel = new Label(messages.foundNoGlossaryResults());
-        noResultFoundLabel.setStyleName("tableMsg");
+        noResultFoundLabel.setStyleName("gamma");
 
-        searchType =
-                new EnumListBox<SearchType>(SearchType.class,
-                        searchTypeRenderer);
-        initWidget(uiBinder.createAndBindUi(this));
-
-        container.add(loadingLabel);
-
-        headerLabel.setText(messages.glossaryHeading());
-        clearButton.setText(messages.clearButtonLabel());
-        searchButton.setText(messages.searchButtonLabel());
+        data.add(loadingLabel);
 
         // debug id
         glossaryTextBox.ensureDebugId("glossaryTextBox");
@@ -158,19 +137,19 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
     @Override
     public void startProcessing() {
-        container.clear();
-        container.add(loadingLabel);
+        data.clear();
+        data.add(loadingLabel);
 
         clearTableContent();
     }
 
     @Override
     public void stopProcessing(boolean showResult) {
-        container.clear();
+        data.clear();
         if (!showResult) {
-            container.add(noResultFoundLabel);
+            data.add(noResultFoundLabel);
         } else {
-            container.add(resultTable);
+            data.add(resultTable);
         }
     }
 
@@ -218,10 +197,10 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
             resultTable.setWidget(i + 1, ACTION_COL, copyButton);
             resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL,
-                    "centered actionCol");
+                    "txt--align-center smallCol");
 
-            InlineLabel infoCell = new InlineLabel();
-            infoCell.setStyleName("icon-info-circle-2 details");
+            Anchor infoCell = new Anchor();
+            infoCell.setStyleName("icon-info-circle-2  txt--lead");
             infoCell.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -231,7 +210,7 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
             resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
             resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL,
-                    "centered detailCol");
+                    "txt--align-center smallCol");
         }
     }
 

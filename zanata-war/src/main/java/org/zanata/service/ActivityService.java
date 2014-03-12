@@ -26,7 +26,6 @@ import java.util.List;
 import org.zanata.common.ActivityType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
-import org.zanata.model.HPerson;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 
@@ -74,13 +73,13 @@ public interface ActivityService {
     /**
      * Log activity, records roll up in hourly basis
      *
-     * @param actor
+     * @param actorId
      * @param context
      * @param target
      * @param activityType
      * @param wordCount
      */
-    void logActivity(HPerson actor, IsEntityWithType context,
+    void logActivity(long actorId, IsEntityWithType context,
             IsEntityWithType target, ActivityType activityType, int wordCount);
 
     /**

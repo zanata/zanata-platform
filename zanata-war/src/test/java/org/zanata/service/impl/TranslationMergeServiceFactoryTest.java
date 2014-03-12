@@ -21,7 +21,7 @@ public class TranslationMergeServiceFactoryTest {
     @BeforeClass
     public void beforeClass() {
         factory =
-                SeamAutowire.instance().ignoreNonResolvable()
+                SeamAutowire.instance().reset().ignoreNonResolvable()
                         .autowire(TranslationMergeServiceFactory.class);
     }
 

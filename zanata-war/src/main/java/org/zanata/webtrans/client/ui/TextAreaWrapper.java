@@ -30,4 +30,6 @@ public interface TextAreaWrapper extends IsWidget, HasText,
     void setEditing(boolean isEditing);
 
     boolean isEditing();
+
+    void ensureDebugId(String baseID);
 }

@@ -77,6 +77,7 @@ public class GetTranslationHistoryHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("textFlowDAO", textFlowDAO)

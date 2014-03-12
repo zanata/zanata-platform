@@ -98,7 +98,7 @@ public class TransMemoryDetailsPresenterTest {
         verify(display).setDocumentName("docId");
         verify(display).setLastModified("admin", lastModifiedDate);
 
-        inOrder.verify(display).show();
+        inOrder.verify(display).center();
     }
 
     @Test

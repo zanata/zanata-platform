@@ -20,22 +20,19 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import javax.validation.constraints.NotNull;
 import org.zanata.model.type.ConditionRuleActionType;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Persistent representation of Copy Trans options.
@@ -48,8 +45,6 @@ import lombok.ToString;
         typeClass = ConditionRuleActionType.class)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -92,18 +87,30 @@ public class HCopyTransOptions extends ModelEntityBase {
         }
     }
 
-    @Type(type = "conditionRuleAction")
-    @NotNull
     private ConditionRuleAction contextMismatchAction =
             ConditionRuleAction.REJECT;
 
-    @Type(type = "conditionRuleAction")
-    @NotNull
     private ConditionRuleAction docIdMismatchAction =
+            ConditionRuleAction.REJECT;
+
+    private ConditionRuleAction projectMismatchAction =
             ConditionRuleAction.REJECT;
 
     @Type(type = "conditionRuleAction")
     @NotNull
-    private ConditionRuleAction projectMismatchAction =
-            ConditionRuleAction.REJECT;
+    public ConditionRuleAction getContextMismatchAction() {
+        return contextMismatchAction;
+    }
+
+    @Type(type = "conditionRuleAction")
+    @NotNull
+    public ConditionRuleAction getDocIdMismatchAction() {
+        return docIdMismatchAction;
+    }
+
+    @Type(type = "conditionRuleAction")
+    @NotNull
+    public ConditionRuleAction getProjectMismatchAction() {
+        return projectMismatchAction;
+    }
 }

@@ -20,48 +20,49 @@
  */
 package org.zanata;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
+import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
 @Startup
-@BypassInterceptors
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
+@Slf4j
 public class ApplicationConfiguration implements Serializable {
-
-    private static final Log log = Logging
-            .getLog(ApplicationConfiguration.class);
     private static final long serialVersionUID = -4970657841198107092L;
 
     private static final String EMAIL_APPENDER_NAME =
@@ -69,21 +70,36 @@ public class ApplicationConfiguration implements Serializable {
     public static final String EVENT_CONFIGURATION_CHANGED =
             "zanata.configuration.changed";
 
-    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.css";
+    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.min.css";
 
+    @In
     private DatabaseBackedConfig databaseBackedConfig;
+    @In
     private JndiBackedConfig jndiBackedConfig;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
 
+    @Getter
     private boolean debug;
+
+    @Getter
     private int authenticatedSessionTimeoutMinutes = 0;
+
+    @Getter
+    @Setter
     private String version;
+
+    @Getter
+    @Setter
     private String buildTimestamp;
-    private boolean enableCopyTrans = true;
-    private Map<AuthenticationType, String> loginModuleNames =
-            new HashMap<AuthenticationType, String>();
+
+    @Getter
+    private boolean copyTransEnabled = true;
+
+    private Map<AuthenticationType, String> loginModuleNames = Maps
+            .newHashMap();
+
     private Set<String> adminUsers;
 
     private String webAssetsUrl;
@@ -95,13 +111,6 @@ public class ApplicationConfiguration implements Serializable {
     @Create
     public void load() {
         log.info("Reloading configuration");
-        databaseBackedConfig =
-                (DatabaseBackedConfig) Component
-                        .getInstance(DatabaseBackedConfig.class);
-        jndiBackedConfig =
-                (JndiBackedConfig) Component
-                        .getInstance(JndiBackedConfig.class);
-
         this.loadLoginModuleNames();
         this.validateConfiguration();
         this.applyLoggingConfiguration();
@@ -156,7 +165,8 @@ public class ApplicationConfiguration implements Serializable {
      * Apply logging configuration.
      */
     public void applyLoggingConfiguration() {
-        final Logger rootLogger = Logger.getRootLogger();
+        // TODO is this still working with jboss logging?
+        final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
 
         if (isEmailLogAppenderEnabled()) {
             // NB: This appender uses Seam's email configuration (no need for
@@ -277,34 +287,6 @@ public class ApplicationConfiguration implements Serializable {
         return this.loginModuleNames.get(authType);
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public int getAuthenticatedSessionTimeoutMinutes() {
-        return authenticatedSessionTimeoutMinutes;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getBuildTimestamp() {
-        return buildTimestamp;
-    }
-
-    void setBuildTimestamp(String buildTimestamp) {
-        this.buildTimestamp = buildTimestamp;
-    }
-
-    public boolean getEnableCopyTrans() {
-        return enableCopyTrans;
-    }
-
     public Set<String> getAdminUsers() {
         String configValue =
                 Strings.nullToEmpty(jndiBackedConfig.getAdminUsersList());
@@ -345,6 +327,10 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getPiwikIdSite() {
         return databaseBackedConfig.getPiwikSiteId();
+    }
+
+    public String getTermsOfUseUrl() {
+        return databaseBackedConfig.getTermsOfUseUrl();
     }
 
     public String getEmailServerHost() {

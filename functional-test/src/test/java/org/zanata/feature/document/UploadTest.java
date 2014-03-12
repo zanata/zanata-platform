@@ -29,8 +29,9 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectSourceDocumentsPage;
-import org.zanata.util.PropertiesHolder;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.CleanDocumentStorageRule;
+import org.zanata.util.NoScreenshot;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -38,17 +39,24 @@ import org.zanata.workflow.LoginWorkFlow;
 import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.FunctionalTestHelper.*;
+import static org.zanata.util.FunctionalTestHelper.assumeFalse;
+import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class UploadTest {
+
     @Rule
-    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.WithData);
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @Rule
+    public CleanDocumentStorageRule documentStorageRule =
+            new CleanDocumentStorageRule();
+
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
@@ -56,7 +64,7 @@ public class UploadTest {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         documentStorageDirectory =
-                PropertiesHolder.getProperty("document.storage.directory")
+                CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator);
         assumeFalse("", new File(documentStorageDirectory).exists());
@@ -227,6 +235,26 @@ public class UploadTest {
         assertThat("Document shows in table",
                 projectSourceDocumentsPage.sourceDocumentsContains(emptyFile
                         .getName()));
+    }
+
+    @Test
+    public void rejectUnsupportedValidFiletype() {
+        File unsupportedFile =
+                testFileGenerator.generateTestFileWithContent("testfodt",
+                        ".fodt", "<xml></xml>");
+        String uploadFailed = "Unrecognized file extension for " +
+                unsupportedFile.getName() + ".";
+
+        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").goToVersion("master")
+                        .goToSourceDocuments().pressUploadFileButton()
+                        .enterFilePath(unsupportedFile.getAbsolutePath())
+                        .submitUpload();
+
+        assertThat("File is not recognised",
+                projectSourceDocumentsPage.getNotificationMessage(),
+                Matchers.equalTo(uploadFailed));
     }
 
 }

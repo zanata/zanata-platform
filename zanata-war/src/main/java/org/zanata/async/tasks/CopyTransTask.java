@@ -20,13 +20,12 @@
  */
 package org.zanata.async.tasks;
 
-import org.jboss.seam.security.Identity;
+import lombok.Getter;
+import lombok.Setter;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
-
-import lombok.Getter;
-import lombok.Setter;
+import org.zanata.security.ZanataIdentity;
 
 /**
  * Asynchronous Task that runs copy trans. Subclasses should allow for running
@@ -40,10 +39,11 @@ public abstract class CopyTransTask implements
 
     protected HCopyTransOptions copyTransOptions;
 
-    private final CopyTransTaskHandle handle = new CopyTransTaskHandle();
+    private final CopyTransTaskHandle handle;
 
-    public CopyTransTask(HCopyTransOptions copyTransOptions) {
+    public CopyTransTask(HCopyTransOptions copyTransOptions, String taskName) {
         this.copyTransOptions = copyTransOptions;
+        this.handle = new CopyTransTaskHandle(taskName);
     }
 
     @Override
@@ -62,7 +62,7 @@ public abstract class CopyTransTask implements
     public Void call() throws Exception {
         getHandle().startTiming();
         getHandle()
-                .setTriggeredBy(Identity.instance().getPrincipal().getName());
+                .setTriggeredBy(ZanataIdentity.instance().getAccountUsername());
         getHandle().setMaxProgress(getMaxProgress());
 
         callCopyTrans();
@@ -87,6 +87,10 @@ public abstract class CopyTransTask implements
         @Getter
         @Setter
         private String triggeredBy;
+
+        public CopyTransTaskHandle(String taskName) {
+            super(taskName);
+        }
 
         /**
          * Increments the processed documents by 1

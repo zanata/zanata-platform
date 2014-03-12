@@ -26,4 +26,10 @@ public class DocumentsViewPage extends BasePage {
                 By.id("gwt-debug-documentListTable"));
     }
 
+    public EditorPage clickDocumentLink(String path, String name) {
+        String id = "gwt-debug-docLabel-" + path + name;
+        getDriver().findElement(By.id(id)).click();
+        return new EditorPage(getDriver());
+    }
+
 }

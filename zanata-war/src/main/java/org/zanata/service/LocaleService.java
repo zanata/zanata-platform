@@ -92,5 +92,4 @@ public interface LocaleService {
 
     HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug,
             LocaleId localeId);
-
 }

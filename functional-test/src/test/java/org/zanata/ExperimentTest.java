@@ -20,21 +20,18 @@
  */
 package org.zanata;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.SampleProjectRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Slf4j
 public class ExperimentTest {
-    @ClassRule
-    public static ResetDatabaseRule rule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.NoResetAfter,
-            ResetDatabaseRule.Config.WithData);
-
-    // public static ResetDatabaseRule rule = new
-    // ResetDatabaseRule(ResetDatabaseRule.Config.NoResetAfter);
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
     public void canFindText() {

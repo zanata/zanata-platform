@@ -9,7 +9,7 @@
 
   </ui:style>
   <g:DialogBox autoHide="false" modal="true"
-    styleName="gwt-DialogBox-fixedSize">
+    styleName="gwt-DialogBox">
 
   </g:DialogBox>
 </ui:UiBinder>

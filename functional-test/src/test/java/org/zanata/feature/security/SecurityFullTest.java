@@ -23,9 +23,10 @@ package org.zanata.feature.security;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
@@ -33,7 +34,8 @@ import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -42,9 +44,10 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class SecurityFullTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Before
     public void before() {
@@ -62,12 +65,14 @@ public class SecurityFullTest {
     }
 
     @Test
+    @Category(BasicAcceptanceTest.class)
     public void signInFailure() {
-        SignInPage signInPage =
-                new LoginWorkFlow().signInFailure("nosuchuser", "password");
+        SignInPage signInPage = new LoginWorkFlow()
+                .signInFailure("nosuchuser", "password");
+
         assertThat("Error message is shown",
-                signInPage.getNotificationMessage(), equalTo("Login failed"));
-        assertThat("User has failed to log in", !signInPage.hasLoggedIn());
+                signInPage.waitForFieldErrors(),
+                Matchers.hasItem("Login failed"));
     }
 
     @Test

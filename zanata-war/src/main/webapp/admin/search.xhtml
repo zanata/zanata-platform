@@ -12,7 +12,7 @@
 
   <ui:define name="page_title">#{messages['jsf.ManageSearch']}</ui:define>
   <ui:define name="center_content">
-    <h:form>
+    <h:form id="form">
       <s:token allowMultiplePosts="true"/>
       <a4j:region>
 
@@ -22,7 +22,7 @@
             <rich:dataTable id="classList" rows="#{reindexAction.classes.size}"
               value="#{reindexAction.classes.toArray()}" var="clazz"
               render="actions">
-              <rich:column width="auto" styleClass="centered">
+              <rich:column width="auto" styleClass="centered" id="col">
                 <f:facet
                   name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
                 <h:selectBooleanCheckbox value="#{clazz.selectAll}">
@@ -61,7 +61,7 @@
                 <f:facet
                   name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
                 <f:facet name="footer">
-                  <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}">
+                  <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}" id="reindexAllChk">
                     <a4j:ajax event="click" render="actions" execute="@this"/>
                   </h:selectBooleanCheckbox>
                 </f:facet>
@@ -131,21 +131,20 @@
 
         <a4j:outputPanel id="progress">
           <h2>#{messages['jsf.ManageSearch.CurrentProgress']}</h2>
-          <h:outputText rendered="#{!reindexAction.inProgress}" escape="false">
-            <p>#{messages['jsf.ManageSearch.NoOperationsRunning']}</p>
-          </h:outputText>
-          <h:outputText
-            rendered="#{!reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
-            <p>#{messages['jsf.ManageSearch.Completed']}</p>
-          </h:outputText>
-          <h:outputText rendered="#{reindexAction.canceled}" escape="false">
-            <p>#{messages['jsf.ManageSearch.Aborted']}</p>
-          </h:outputText>
-          <h:outputText rendered="#{reindexAction.error}" escape="false">
-            <p>#{messages['jsf.manageSearch.ErrorMessage']}</p>
-
-            <p>#{messages['jsf.manageSearch.PleaseReindex']}</p>
-          </h:outputText>
+          <s:fragment rendered="#{!reindexAction.inProgress}">
+            <p id="noOperationsRunning"><h:outputText escape="false"
+                value="#{messages['jsf.ManageSearch.NoOperationsRunning']}" /></p>
+          </s:fragment>
+          <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
+            <p id="completed"><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
+          </s:fragment>
+          <s:fragment rendered="#{reindexAction.canceled}">
+            <p id="aborted"><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
+          </s:fragment>
+          <s:fragment rendered="#{reindexAction.error}">
+            <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.ErrorMessage']}" /></p>
+            <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.PleaseReindex']}" /></p>
+          </s:fragment>
 
           <a4j:outputPanel>
             <!-- Using a js function to rerender as reRenderAfterComplete is not working properly -->
@@ -167,15 +166,13 @@
           </a4j:outputPanel>
 
           <a4j:outputPanel id="timeEstimate">
-            <h:outputText
-              rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
-              <p>#{messages['jsf.manageSearch.CurrentTable']}</p>
-            </h:outputText>
-            <h:outputText rendered="#{reindexAction.inProgress}">
-              <p>#{messages['jsf.ManageSearch.ElapsedTime']}</p>
-
-              <p>#{messages['jsf.ManageSearch.RemainingTime']}</p>
-            </h:outputText>
+            <s:fragment rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
+              <p><h:outputText value="#{messages['jsf.manageSearch.CurrentTable']}" /></p>
+            </s:fragment>
+            <s:fragment rendered="#{reindexAction.inProgress}">
+                <p><h:outputText value="#{messages['jsf.ManageSearch.ElapsedTime']}" /></p>
+                <p><h:outputText value="#{messages['jsf.ManageSearch.RemainingTime']}" /></p>
+            </s:fragment>
           </a4j:outputPanel>
 
           <a4j:commandButton id="cancel"

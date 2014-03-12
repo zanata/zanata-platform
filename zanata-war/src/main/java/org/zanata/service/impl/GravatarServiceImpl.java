@@ -12,7 +12,7 @@ import org.zanata.util.HashUtil;
 @Name("gravatarServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class GravatarServiceImpl implements GravatarService {
-    private static String GRAVATAR_URL = "http://www.gravatar.com/avatar/";
+    private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;

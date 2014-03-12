@@ -27,11 +27,14 @@ import org.concordion.api.extension.Extensions;
 import org.concordion.ext.ScreenshotExtension;
 import org.concordion.ext.TimestampFormatterExtension;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.workflow.ClientPushWorkFlow;
+import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.ClientWorkFlow;
 import com.google.common.base.Joiner;
 
 /**
@@ -46,26 +49,29 @@ import com.google.common.base.Joiner;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class GlossaryPushCSVTest {
-    private ClientPushWorkFlow clientPushWorkFlow = new ClientPushWorkFlow();
+    @Rule
+    public TestRule sampleProjectRule = new SampleProjectRule();
+
+    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
     private File projectRootPath;
 
     public String getUserConfigPath() {
-        return ClientPushWorkFlow.getUserConfigPath("glossarist");
+        return ClientWorkFlow.getUserConfigPath("glossarist");
     }
 
     public String getProjectLocation(String project) {
-        projectRootPath = clientPushWorkFlow.getProjectRootPath(project);
+        projectRootPath = clientWorkFlow.getProjectRootPath(project);
         return projectRootPath.getAbsolutePath();
     }
 
     public List<String> push(String command, String configPath)
             throws Exception {
-        return clientPushWorkFlow.callWithTimeout(projectRootPath, command
+        return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
     }
 
     public boolean isPushSuccessful(List<String> output) {
-        return clientPushWorkFlow.isPushSuccessful(output);
+        return clientWorkFlow.isPushSuccessful(output);
     }
 
     public boolean isPushFailed(List<String> output) {

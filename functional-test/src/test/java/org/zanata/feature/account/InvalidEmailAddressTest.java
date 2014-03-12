@@ -20,9 +20,9 @@
  */
 package org.zanata.feature.account;
 
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -30,7 +30,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -43,9 +43,8 @@ import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.*;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
+@NoScreenshot
 public class InvalidEmailAddressTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
 
     @DataPoint
     public static InvalidEmailAddressRFC2822 TEST_PLAIN_ADDRESS = PLAIN_ADDRESS;
@@ -178,10 +177,11 @@ public class InvalidEmailAddressTest {
         String errorMsg = "not a well-formed email address";
         RegisterPage registerPage =
                 new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage =
-                registerPage.enterEmail(emailAddress.toString()).clickTerms();
+        registerPage = registerPage.enterEmail(emailAddress.toString());
+        registerPage.defocus();
+
         assertThat("Email validation errors are not shown",
-                registerPage.waitForErrors(), Matchers.hasItem(errorMsg));
+                registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
 }

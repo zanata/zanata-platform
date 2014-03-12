@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -22,6 +22,8 @@ package org.zanata.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -69,34 +71,36 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         return query.list();
     }
 
-    public HIterationGroup getBySlug(String slug) {
-        return (HIterationGroup) getSession()
-                .byNaturalId(HIterationGroup.class).using("slug", slug).load();
+    public HIterationGroup getBySlug(@Nonnull String slug) {
+        if (!StringUtils.isEmpty(slug)) {
+            return (HIterationGroup) getSession()
+                    .byNaturalId(HIterationGroup.class).using("slug", slug)
+                    .load();
+        }
+        return null;
     }
 
-    public List<HPerson> getMaintainerBySlug(String slug) {
+    public List<HPerson> getMaintainersBySlug(String slug) {
         Query q =
                 getSession()
                         .createQuery(
                                 "select g.maintainers from HIterationGroup as g where g.slug = :slug");
         q.setParameter("slug", slug);
-        q.setComment("VersionGroupDAO.getMaintainerBySlug");
-        @SuppressWarnings("unchecked")
-        List<HPerson> results = q.list();
-        return results;
+        q.setComment("VersionGroupDAO.getMaintainersBySlug");
+        return q.list();
     }
 
-    public List<HIterationGroup> searchLikeSlugAndName(String searchTerm) {
+    public List<HIterationGroup> searchGroupBySlugAndName(String searchTerm) {
         if (StringUtils.isEmpty(searchTerm)) {
             return new ArrayList<HIterationGroup>();
         }
         Query query =
                 getSession()
                         .createQuery(
-                                "from HIterationGroup g where lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm AND g.status = :status");
+                                "from HIterationGroup g where (lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm) AND g.status = :status");
         query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
         query.setParameter("status", EntityStatus.ACTIVE);
-        query.setComment("VersionGroupDAO.searchLikeSlugAndName");
+        query.setComment("VersionGroupDAO.searchGroupBySlugAndName");
         return query.list();
     }
 }

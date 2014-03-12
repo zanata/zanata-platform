@@ -20,8 +20,17 @@
  */
 package org.zanata.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+import javax.annotation.Nullable;
+
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -30,22 +39,42 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class WebElementUtil {
     private WebElementUtil() {
     }
 
+    /**
+     * This method potentially will suffer from StaleElementException if the
+     * WebElements given are dynamic elements on the page. If so consider using
+     * #elementsToText(org.openqa.selenium.WebDriver, org.openqa.selenium.By)
+     *  instead.
+     *
+     * @param webElements
+     *            collection of WebElement
+     * @return text representation of the elements
+     */
     public static List<String>
             elementsToText(Collection<WebElement> webElements) {
         return ImmutableList.copyOf(Collections2.transform(webElements,
                 WebElementToTextFunction.FUNCTION));
+    }
+
+
+    public static List<String> elementsToText(WebDriver driver, final By by) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<String>>() {
+                    @Override
+                    public List<String> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
+                        List<WebElement> elements = input.findElements(by);
+                        return ImmutableList.copyOf(Lists.transform(elements,
+                                WebElementToTextFunction.FUNCTION));
+                    }
+                });
     }
 
     public static String getInnerHTML(WebDriver driver, WebElement element) {
@@ -64,7 +93,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
-                    public List<TableRow> apply(WebDriver webDriver) {
+                    public List<TableRow> apply(@Nullable WebDriver webDriver) {
+                        if (webDriver == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         final WebElement table =
                                 webDriver.findElement(byQueryForTable);
                         List<WebElement> rows =
@@ -80,7 +112,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
-                    public List<TableRow> apply(WebDriver webDriver) {
+                    public List<TableRow> apply(@Nullable WebDriver webDriver) {
+                        if (webDriver == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
                         return ImmutableList.copyOf(Lists.transform(rows,
@@ -94,7 +129,10 @@ public class WebElementUtil {
         return ImmutableList.copyOf(Lists.transform(tableRows,
                 new Function<TableRow, List<String>>() {
                     @Override
-                    public List<String> apply(TableRow from) {
+                    public List<String> apply(@Nullable TableRow from) {
+                        if (from == null) {
+                            throw new RuntimeException("Source table is null");
+                        }
                         return from.getCellContents();
                     }
                 }));
@@ -115,18 +153,21 @@ public class WebElementUtil {
 
     public static List<String> getColumnContents(WebDriver driver, final By by,
             final int columnIndex) {
-        try {
-            driver.findElement(by);
-        } catch (NoSuchElementException noElement) {
-            // Some pages don't show a table, if there's no items to show
-            return Collections.emptyList();
-        }
-
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
-                    public List<String> apply(WebDriver input) {
-                        WebElement table = input.findElement(by);
+                    public List<String> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
+                        WebElement table;
+                        try {
+                            table = input.findElement(by);
+                        } catch (NoSuchElementException noElement) {
+                            // Some pages don't show a table, if there's no
+                            // items to show
+                            return Collections.emptyList();
+                        }
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
                         List<TableRow> tableRows =
@@ -155,7 +196,10 @@ public class WebElementUtil {
         return waitForTenSeconds(driver).until(
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
-                    public List<List<String>> apply(WebDriver input) {
+                    public List<List<String>> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
                         final WebElement table = input.findElement(by);
                         List<WebElement> rows =
                                 table.findElements(By.xpath(".//tbody[1]/tr"));
@@ -165,6 +209,38 @@ public class WebElementUtil {
                         return transformToTwoDimensionList(tableRows);
                     }
                 });
+    }
+
+    public static List<WebElement> getListItems(WebDriver driver, final By by) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<WebElement>>() {
+                    @Override
+                    public List<WebElement> apply(@Nullable WebDriver input) {
+                        if (input == null) {
+                            throw new RuntimeException("Driver is null");
+                        }
+                        final WebElement list = input.findElement(by);
+                        return list.findElements(By.xpath(".//li"));
+                    }
+                });
+    }
+
+    /**
+     * This method is used to set JSF rich text editor (KCEditor) content.
+     * @param driver web driver
+     * @param richEditorWrapperField the wrapper div of the editor
+     * @param content content wants to set
+     */
+    public static void setRichTextEditorContent(WebDriver driver,
+            WebElement richEditorWrapperField,
+            String content) {
+        // This is how we can change JSF rich text editor content.
+        WebElement richTextEditorFrame =
+                richEditorWrapperField.findElement(By.tagName("iframe"));
+        driver.switchTo().frame(richTextEditorFrame);
+        ((JavascriptExecutor) driver)
+                .executeScript("document.body.innerHTML='" + content + "'");
+        driver.switchTo().defaultContent();
     }
 
     private static class WebElementToInnerHTMLFunction implements
@@ -197,7 +273,10 @@ public class WebElementUtil {
         FUNCTION;
 
         @Override
-        public String apply(WebElement from) {
+        public String apply(@Nullable WebElement from) {
+            if (from == null) {
+                throw new RuntimeException("Source element is null");
+            }
             return from.getText();
         }
     }

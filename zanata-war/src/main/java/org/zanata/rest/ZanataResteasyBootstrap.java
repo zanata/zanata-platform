@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.SynchronousDispatcher;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -14,14 +16,12 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.resteasy.ResteasyBootstrap;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 
@@ -31,10 +31,8 @@ import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 @AutoCreate
 @Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
         precedence = Install.DEPLOYMENT)
+@Slf4j
 public class ZanataResteasyBootstrap extends ResteasyBootstrap {
-
-    @Logger
-    Log log;
 
     @Observer("org.jboss.seam.postReInitialization")
     public void registerHotDeployedClasses() {
@@ -76,11 +74,22 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
                 try {
                     super.invoke(request, response);
                 } catch (UnhandledException e) {
-                    log.error("Failed to process REST request", e.getCause());
+                    Throwable cause = e.getCause();
+                    log.error("Failed to process REST request", cause);
                     try {
-                        response.sendError(
-                                Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                                "Error processing Request");
+                        // see https://issues.jboss.org/browse/RESTEASY-411
+                        if (cause instanceof IllegalArgumentException
+                                && cause.getMessage().contains(
+                                        "Failure parsing MediaType")) {
+                            response.sendError(
+                                    Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
+                                    cause.getMessage());
+                        } else {
+                            response.sendError(
+                                    Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                                    "Error processing Request");
+                        }
+
                     } catch (IOException ioe) {
                         log.error(
                                 "Failed to send error on failed REST request",

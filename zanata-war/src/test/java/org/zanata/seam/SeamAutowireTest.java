@@ -22,19 +22,23 @@ package org.zanata.seam;
 
 import org.hamcrest.Matchers;
 import org.jboss.seam.Component;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.seam.test.CyclicParentComponent;
-import org.zanata.seam.test.TestComponent;
+import org.zanata.seam.test.ComponentWithNonRequiredChild;
+import org.zanata.seam.test.ComponentWithRequiredAutoCreateChild;
+import org.zanata.seam.test.ComponentWithRequiredBrokenChild;
+import org.zanata.seam.test.ComponentWithRequiredNoCreateChild;
+import org.zanata.seam.test.ComponentWithChildCycle;
+import org.zanata.seam.test.ComponentWithNonRequiredBrokenChild;
+import org.zanata.seam.test.ComponentWithRequiredCreateChild;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests for the {@link SeamAutowire} component. Also useful as a template for
@@ -48,7 +52,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
     protected void prepareDBUnitOperations() {
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void resetSeamAutowire() {
         SeamAutowire.instance().reset();
     }
@@ -96,35 +100,61 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
 
     @Test(
             expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Could not auto-wire component of type org.zanata.seam.test.UnbuildableTestComponent. No no-args constructor.")
-    public
-            void nonResolvableNotAllowed() {
-        SeamAutowire.instance().reset().autowire(TestComponent.class);
+            expectedExceptionsMessageRegExp = "Could not auto-wire component of type .*. No no-args constructor.")
+    public void brokenChild() {
+        SeamAutowire.instance().autowire(ComponentWithNonRequiredBrokenChild.class);
     }
 
     @Test
-    public void nonResolvableAllowed() {
-        TestComponent test =
+    public void ignoreBrokenChild() {
+        ComponentWithNonRequiredBrokenChild test =
                 SeamAutowire.instance().ignoreNonResolvable()
-                        .autowire(TestComponent.class);
-
+                        .autowire(ComponentWithNonRequiredBrokenChild.class);
         assertThat(test.getUnbuildableTestComponent(), nullValue());
     }
 
     @Test
     public void postConstructInvoked() {
-        TestComponent test =
-                SeamAutowire.instance().ignoreNonResolvable()
-                        .autowire(TestComponent.class);
+        ComponentWithRequiredAutoCreateChild test =
+                SeamAutowire.instance()
+                        .autowire(ComponentWithRequiredAutoCreateChild.class);
 
         assertThat(test.isPostConstructInvoked(), is(true));
     }
 
+    @Test(dataProvider = "workingComponents")
+    public void buildWorkingComponents(Class<?> componentClass) {
+        Object comp = SeamAutowire.instance().autowire(componentClass);
+        assertThat(comp, notNullValue());
+    }
+
+    @DataProvider(name = "workingComponents")
+    public Object[][] workingComponents() {
+        return new Object[][] {
+                {ComponentWithRequiredCreateChild.class},
+                {ComponentWithRequiredAutoCreateChild.class},
+                {ComponentWithNonRequiredChild.class}
+        };
+    }
+
+    @Test(dataProvider = "brokenComponents", expectedExceptions=RuntimeException.class)
+    public void buildBrokenComponents(Class<?> componentClass) {
+        SeamAutowire.instance().autowire(componentClass);
+    }
+
+    @DataProvider(name = "brokenComponents")
+    public Object[][] brokenComponents() {
+        return new Object[][] {
+                {ComponentWithRequiredBrokenChild.class},
+                {ComponentWithRequiredNoCreateChild.class}
+        };
+    }
+
     @Test
     public void cyclesAllowed() {
-        CyclicParentComponent parent =
-                SeamAutowire.instance().reset().allowCycles()
-                        .autowire(CyclicParentComponent.class);
+        ComponentWithChildCycle parent =
+                SeamAutowire.instance().allowCycles()
+                        .autowire(ComponentWithChildCycle.class);
 
         assertThat(parent.getCyclicChildComponent(), notNullValue());
         assertThat(parent.getCyclicChildComponent().getCyclicParentComponent(),
@@ -133,9 +163,9 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
 
     @Test(
             expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject cyclicChildComponent into component of type org.zanata.seam.test.CyclicParentComponent")
+            expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject .* into component of type .*")
     public
             void cyclesNotAllowed() {
-        SeamAutowire.instance().reset().autowire(CyclicParentComponent.class);
+        SeamAutowire.instance().autowire(ComponentWithChildCycle.class);
     }
 }

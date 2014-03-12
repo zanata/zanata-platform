@@ -42,13 +42,12 @@ import org.zanata.workflow.ProjectWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class CreateNewProjectTest {
-
     @Before
     public void beforeMethod() {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
     public ProjectPage createNewProject(String projectSlug, String projectName) {
-        return new ProjectWorkFlow().createNewProject(projectSlug, projectName);
+        return new ProjectWorkFlow().createNewSimpleProject(projectSlug, projectName);
     }
 }

@@ -123,9 +123,28 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
     }
 
     public int getTotalTranslator() {
-        Query q = getSession().createQuery("select count(*) from HPerson");
-        Long totalCount = (Long) q.uniqueResult();
-        q.setCacheable(true).setComment("PersonDAO.getTotalTranslator");
+        Query query =
+                getSession()
+                        .createQuery(
+                                "select count(distinct id.person) from HLocaleMember where isTranslator = :isTranslator");
+        query.setParameter("isTranslator", true);
+
+        Long totalCount = (Long) query.uniqueResult();
+        query.setCacheable(true).setComment("PersonDAO.getTotalTranslator");
+        if (totalCount == null)
+            return 0;
+        return totalCount.intValue();
+    }
+
+    public int getTotalReviewer() {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "select count(distinct id.person) from HLocaleMember where isReviewer = :isReviewer");
+        query.setParameter("isReviewer", true);
+
+        Long totalCount = (Long) query.uniqueResult();
+        query.setCacheable(true).setComment("PersonDAO.getTotalReviewer");
         if (totalCount == null)
             return 0;
         return totalCount.intValue();

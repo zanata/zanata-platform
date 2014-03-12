@@ -20,11 +20,16 @@
  */
 package org.zanata.page.projects;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
+import org.zanata.util.Constants;
+import org.zanata.util.WebElementUtil;
+
+import java.util.Map;
 
 public class CreateProjectPage extends BasePage {
     @FindBy(id = "projectForm:slugField:slug")
@@ -36,11 +41,19 @@ public class CreateProjectPage extends BasePage {
     @FindBy(id = "projectForm:descriptionField:description")
     private WebElement descriptionField;
 
-    @FindBy(id = "projectForm:homeContentField:homeContentTextArea")
-    private WebElement homeContentTextArea;
-
     @FindBy(id = "projectForm:projectTypeField:selectField")
     private WebElement projectTypeSelect;
+
+    @FindBy(id =
+            "projectForm:humanViewableSourceUrlField:humanViewableSourceUrl")
+    private WebElement viewSourceURLField;
+
+    @FindBy(id = "projectForm:"+
+            "machineReadableSourceUrlField:machineReadableSourceUrl")
+    private WebElement downloadSourceURLField;
+
+    @FindBy(id = "projectForm:homeContentField:homeContent")
+    private WebElement homeContentTextArea;
 
     @FindBy(id = "projectForm:statusField:selectField")
     private WebElement statusSelection;
@@ -48,17 +61,38 @@ public class CreateProjectPage extends BasePage {
     @FindBy(id = "projectForm:save")
     private WebElement saveButton;
 
+    @FindBy(id = "projectForm:update")
+    private WebElement updateButton;
+
+    private static final Map<String, String> projectTypeOptions =
+            Constants.projectTypeOptions();
+
     public CreateProjectPage(final WebDriver driver) {
         super(driver);
     }
 
     public CreateProjectPage inputProjectId(String projectId) {
         projectIdField.sendKeys(projectId);
-        return this;
+        defocus();
+        return new CreateProjectPage(getDriver());
     }
 
-    public CreateProjectPage inputProjectName(String projectName) {
-        projectNameField.sendKeys(projectName);
+    public CreateProjectPage inputProjectName(final String projectName) {
+        getDriver().findElement(By.id("projectForm:nameField:name"))
+        .sendKeys(projectName);
+        defocus();
+        return new CreateProjectPage(getDriver());
+    }
+
+    public CreateProjectPage enterDescription(String projectDescription) {
+        descriptionField.sendKeys(projectDescription);
+        defocus();
+        return new CreateProjectPage(getDriver());
+    }
+
+    public CreateProjectPage selectProjectType(String projectType) {
+        new Select(projectTypeSelect)
+                .selectByVisibleText(projectTypeOptions.get(projectType));
         return this;
     }
 
@@ -67,8 +101,29 @@ public class CreateProjectPage extends BasePage {
         return this;
     }
 
+    public CreateProjectPage enterViewSourceURL(String url) {
+        viewSourceURLField.sendKeys(url);
+        return this;
+    }
+
+    public CreateProjectPage enterDownloadSourceURL(String url) {
+        downloadSourceURLField.sendKeys(url);
+        return this;
+    }
+
+    public CreateProjectPage enterHomepageContent(String content) {
+        WebElementUtil.setRichTextEditorContent(getDriver(),
+                homeContentTextArea, content);
+        return this;
+    }
+
     public ProjectPage saveProject() {
         clickAndCheckErrors(saveButton);
+        return new ProjectPage(getDriver());
+    }
+
+    public ProjectPage updateProject() {
+        clickAndCheckErrors(updateButton);
         return new ProjectPage(getDriver());
     }
 }

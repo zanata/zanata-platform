@@ -37,7 +37,7 @@ public class TranslationFileServiceImplTest {
     @BeforeMethod
     public void beforeTest() {
         transFileService =
-                SeamAutowire.instance().ignoreNonResolvable()
+                SeamAutowire.instance().reset().ignoreNonResolvable()
                         .autowire(TranslationFileServiceImpl.class);
     }
 

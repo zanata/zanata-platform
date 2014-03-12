@@ -23,48 +23,65 @@ package org.zanata.model;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PostPersist;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import javax.validation.constraints.NotNull;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
  *
  */
 @Entity
+@EntityListeners({HSimpleComment.EntityListener.class})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 @NoArgsConstructor
 public class HSimpleComment implements HashableState, Serializable {
     private static final long serialVersionUID = 5684831285769022524L;
-
-    @Id
-    @GeneratedValue
-    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
-    @NotNull
-    @Type(type = "text")
     private String comment;
+    protected Date lastChanged;
 
     public HSimpleComment(String comment) {
         this.comment = comment;
+    }
+
+    @Id
+    @GeneratedValue
+    public Long getId() {
+        return id;
+    }
+
+    protected void setId(Long id) {
+        this.id = id;
+    }
+
+    @NotNull
+    @Type(type = "text")
+    public String getComment() {
+        return comment;
     }
 
     public static String toString(HSimpleComment comment) {
@@ -82,4 +99,33 @@ public class HSimpleComment implements HashableState, Serializable {
     public String toString() {
         return "HSimpleComment(" + toString(this) + ")";
     }
+
+    // TODO extract lastChanged from ModelEntityBase and use with @Embedded
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    public Date getLastChanged() {
+        return lastChanged;
+    }
+
+    public void setLastChanged(Date lastChanged) {
+        this.lastChanged = lastChanged;
+    }
+
+    public static class EntityListener {
+        @SuppressWarnings("unused")
+        @PrePersist
+        private void onPersist(HSimpleComment hsc) {
+            if (hsc.lastChanged == null) {
+                hsc.lastChanged = new Date();
+            }
+        }
+
+        @SuppressWarnings("unused")
+        @PreUpdate
+        private void onUpdate(HSimpleComment hsc) {
+            hsc.lastChanged = new Date();
+        }
+    }
+
 }

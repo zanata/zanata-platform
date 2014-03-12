@@ -1,6 +1,5 @@
 package org.zanata.webtrans.client.ui;
 
-import com.allen_sauer.gwt.log.client.*;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -19,7 +18,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -62,6 +60,7 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     codeMirrorEditor.on("change", function() {
       self.@org.zanata.webtrans.client.ui.CodeMirrorEditor::onChange()();
     });
+
     return codeMirrorEditor;
 
     }-*/;

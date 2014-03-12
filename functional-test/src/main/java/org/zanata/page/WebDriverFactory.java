@@ -20,60 +20,76 @@
  */
 package org.zanata.page;
 
-import static org.zanata.util.Constants.chrome;
-import static org.zanata.util.Constants.firefox;
-import static org.zanata.util.Constants.webDriverType;
-import static org.zanata.util.Constants.zanataInstance;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.zanata.util.PropertiesHolder;
-
 import com.google.common.base.Strings;
-
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ScreenshotDirForTest;
+import org.zanata.util.TestEventForScreenshotListener;
+
+import static org.zanata.util.Constants.chrome;
+import static org.zanata.util.Constants.firefox;
+import static org.zanata.util.Constants.webDriverType;
+import static org.zanata.util.Constants.zanataInstance;
 
 @Slf4j
 public enum WebDriverFactory {
     INSTANCE;
 
-    private WebDriver driver;
+    private volatile WebDriver driver = createDriver();
     private DriverService driverService;
+    private TestEventForScreenshotListener eventListener;
 
     public WebDriver getDriver() {
-        if (driver == null) {
-            synchronized (this) {
-                if (driver == null) {
-                    driver = createDriver();
-                    driver.manage().timeouts()
-                            .implicitlyWait(3, TimeUnit.SECONDS);
-                    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-                }
-            }
-        }
+        return driver;
+    }
+
+    public WebDriver createDriver() {
+        WebDriver driver = createPlainDriver();
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         return driver;
     }
 
     public String getHostUrl() {
-        if (driver == null) {
-            getDriver();
-        }
         return PropertiesHolder.getProperty(zanataInstance.value());
     }
 
-    private WebDriver createDriver() {
+    public void updateListenerTestName(String testName) {
+        if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
+            eventListener  = new TestEventForScreenshotListener(driver);
+        }
+        enableScreenshots();
+        eventListener.updateTestID(testName);
+    }
+
+
+    private WebDriver enableScreenshots() {
+        log.debug("Enabling screenshot module...");
+        return EventFiringWebDriver.class.cast(driver).register(eventListener);
+    }
+
+    public void unregisterScreenshot() {
+        EventFiringWebDriver.class.cast(driver).unregister(eventListener);
+    }
+
+    private WebDriver createPlainDriver() {
         String driverType =
                 PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
         if (driverType.equalsIgnoreCase(chrome.value())) {
@@ -113,7 +129,10 @@ public enum WebDriverFactory {
         } catch (IOException e) {
             throw new RuntimeException("fail to start chrome driver service");
         }
-        return new RemoteWebDriver(driverService.getUrl(), capabilities);
+        return new EventFiringWebDriver(
+                new Augmenter().augment(new RemoteWebDriver(driverService
+                        .getUrl(),
+                                capabilities)));
     }
 
     private WebDriver configureFirefoxDriver() {

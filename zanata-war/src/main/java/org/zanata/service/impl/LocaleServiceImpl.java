@@ -21,6 +21,8 @@
 package org.zanata.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,18 +31,19 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -56,6 +59,7 @@ import com.ibm.icu.util.ULocale;
  */
 @Name("localeServiceImpl")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class LocaleServiceImpl implements LocaleService {
     private LocaleDAO localeDAO;
 
@@ -65,22 +69,22 @@ public class LocaleServiceImpl implements LocaleService {
 
     private PersonDAO personDAO;
 
-    private TextFlowTargetDAO textFlowTargetDAO;
+    private VersionGroupDAO versionGroupDAO;
 
-    @Logger
-    Log log;
+    private TextFlowTargetDAO textFlowTargetDAO;
 
     public LocaleServiceImpl() {
     }
 
     public LocaleServiceImpl(LocaleDAO localeDAO, ProjectDAO projectDAO,
             ProjectIterationDAO projectIterationDAO, PersonDAO personDAO,
-            TextFlowTargetDAO textFlowTargetDAO) {
+            TextFlowTargetDAO textFlowTargetDAO, VersionGroupDAO versionGroupDAO) {
         setLocaleDAO(localeDAO);
         setProjectDAO(projectDAO);
         setProjectIterationDAO(projectIterationDAO);
         setPersonDAO(personDAO);
         setTextFlowTargetDAO(textFlowTargetDAO);
+        setVersionGroupDAO(versionGroupDAO);
     }
 
     @In
@@ -106,6 +110,11 @@ public class LocaleServiceImpl implements LocaleService {
     @In
     public void setPersonDAO(PersonDAO personDAO) {
         this.personDAO = personDAO;
+    }
+
+    @In
+    public void setVersionGroupDAO(VersionGroupDAO versionGroupDAO) {
+        this.versionGroupDAO = versionGroupDAO;
     }
 
     public List<HLocale> getAllLocales() {
@@ -164,7 +173,15 @@ public class LocaleServiceImpl implements LocaleService {
 
     @Override
     public List<HLocale> getSupportedLocales() {
-        return localeDAO.findAllActive();
+        List<HLocale> activeLocales = localeDAO.findAllActive();
+        Collections.sort(activeLocales, new Comparator<HLocale>() {
+            @Override
+            public int compare(HLocale hLocale, HLocale hLocale2) {
+                return hLocale.retrieveDisplayName().compareTo(
+                        hLocale2.retrieveDisplayName());
+            }
+        });
+        return activeLocales;
     }
 
     @Override

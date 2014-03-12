@@ -62,7 +62,7 @@ public class ConditionRuleActionType extends ImmutableType implements
             throws HibernateException, SQLException {
         st.setString(index, String
                 .valueOf(((HCopyTransOptions.ConditionRuleAction) value)
-                        .getInitial()));
+                    .getInitial()));
     }
 
     @Override

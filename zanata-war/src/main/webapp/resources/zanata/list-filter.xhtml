@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich">
+
+<composite:interface>
+  <composite:attribute name="id" type="java.lang.String"
+    shortDescription="id of component (java naming)" required="true"/>
+
+  <composite:attribute name="placeholder" type="java.lang.String"
+    shortDescription="placeholder text for input field" default=""/>
+
+  <composite:attribute name="iconClass" type="java.lang.String"
+    shortDescription="css class for icon display" default=""/>
+
+  <composite:attribute name="getFilteredSize" required="true"
+    shortDescription="method to get result's size"/>
+
+  <composite:attribute name="render" required="true"
+    shortDescription="element to re-render after filter"/>
+
+  <composite:attribute name="queryField" required="true"
+    shortDescription="The current value of this component."/>
+</composite:interface>
+
+<composite:implementation>
+
+  <a4j:jsFunction name="#{cc.attrs.id}FilterList"
+    render="#{cc.attrs.render}, #{rich:clientId(cc.attrs.id.concat('-size'))}"
+    limitRender="true">
+    <a4j:param name="val" assignTo="#{cc.attrs.queryField}"/>
+  </a4j:jsFunction>
+
+  <div class="panel__sub-header js-reveal">
+    <div class="form--search panel__search reveal__target--appear"
+      id="#{cc.attrs.id}">
+      <label for="#{cc.attrs.id}" class="form--search__label"></label>
+      <input id="#{cc.attrs.id}__input" type="search"
+        placeholder="#{cc.attrs.placeholder}" onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
+        class="form--search__input js-reveal__target__input"/>
+      <button class="button--link panel__search__cancel js-reveal__cancel"
+        onclick="#{cc.attrs.id}FilterList('')"
+        data-target="##{cc.attrs.id}">#{messages['jsf.Cancel']}</button>
+    </div>
+    <div class="panel__results">
+      <div class="panel__results__type">
+        <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
+      </div>
+        <span class="txt--meta">
+          <a4j:outputPanel id="#{cc.attrs.id}-size"><strong>#{cc.attrs.getFilteredSize}</strong></a4j:outputPanel>
+          <button
+            class="button--link panel__search__reset js-reveal__reset is-hidden"
+            data-target="##{cc.attrs.id}" onclick="#{cc.attrs.id}FilterList('')"
+            data-original-title="#{messages['jsf.ClearSearch']}">
+            <i class="i--right i--cancel"></i>
+          </button>
+          <button class="button--link panel__search__button js-reveal__show"
+            data-target="##{cc.attrs.id}">
+            #{messages['jsf.Search']}<i class="i--right i--search"></i>
+          </button>
+        </span>
+    </div>
+  </div>
+</composite:implementation>
+</html>

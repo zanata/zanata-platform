@@ -5,29 +5,24 @@
 
   <ui:style>
     .filterTextBox {
-      margin: 0px;
-      font-size: 16px;
-      border: 2px solid #C5C5C5;
-      border-radius: 3px;
-      width: 305px;
-      line-height: 18px;
-      padding-left: 22px;
-      padding-right: 20px;
+      margin: 0 !important;
+      padding-left: 1.6em !important;
+      padding-right: 1.6em !important;
     }
 
     .searchIcon {
       position: absolute;
-      font-size: 20px;
+      font-size: 1.5em;
       opacity: 0.8;
-      left: 4px;
-      top: 5px;
+      left: 0.15em;
+      bottom: 0.34em;
     }
 
     .cancelBtn {
       position: absolute;
-      top: 7px;
-      left: 330px;
-      font-size: 16px;
+      bottom: 0.5em;
+      right: 0.1em;
+      font-size: 1.2em;
       cursor: pointer;
     }
 
@@ -36,16 +31,17 @@
     }
 
     .container {
-      display: inline-block;
+      width: 25em;
+      position: relative;
     }
 
 
   </ui:style>
   <g:HTMLPanel styleName="{style.container}">
-    <g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}' />
-    <g:InlineLabel ui:field="cancelBtn"
-      styleName="{style.cancelBtn} icon-cancel-circle" />
     <g:InlineLabel styleName="icon-search {style.searchIcon}" />
+    <g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}' />
+    <g:Anchor ui:field="cancelBtn"
+      styleName="{style.cancelBtn} icon-cancel-circle" />
   </g:HTMLPanel>
 
 

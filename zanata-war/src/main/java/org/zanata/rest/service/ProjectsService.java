@@ -39,10 +39,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
 import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
@@ -57,9 +55,6 @@ public class ProjectsService implements ProjectsResource {
 
     @In
     private Session session;
-
-    @Logger
-    private Log log;
 
     /** Type of media requested. */
     @HeaderParam("Accept")

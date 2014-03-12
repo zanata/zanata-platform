@@ -47,5 +47,5 @@ abstract class ComponentAccessor {
 
     public abstract String getComponentName();
 
-    public abstract Class getComponentType();
+    public abstract Class<?> getComponentType();
 }

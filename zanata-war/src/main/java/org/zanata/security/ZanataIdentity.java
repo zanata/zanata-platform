@@ -22,6 +22,7 @@ package org.zanata.security;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -40,10 +41,12 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
+import org.zanata.model.HAccount;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -240,5 +243,25 @@ public class ZanataIdentity extends Identity {
             this.preAuthenticated = true;
         }
         return result;
+    }
+
+    /**
+     * Utility method to get the authenticated account username. This differs
+     * from {@link org.jboss.seam.security.Credentials#getUsername()} in that
+     * this returns the actual account's username, not the user provided one
+     * (which for some authentication systems is non-existent).
+     *
+     * @return The currently authenticated account username, or null if the
+     *         session is not authenticated.
+     */
+    @Nullable
+    public String getAccountUsername() {
+        HAccount authenticatedAccount =
+                (HAccount) Component
+                        .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+        if (authenticatedAccount != null) {
+            return authenticatedAccount.getUsername();
+        }
+        return null;
     }
 }

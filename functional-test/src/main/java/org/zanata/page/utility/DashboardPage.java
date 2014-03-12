@@ -29,6 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.BasePage;
+import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.util.WebElementUtil;
 
 public class DashboardPage extends BasePage {
@@ -82,5 +83,10 @@ public class DashboardPage extends BasePage {
 
     public WebElement getMoreActivityElement() {
         return getDriver().findElement(By.id("moreActivity"));
+    }
+
+    public CreateProjectPage clickCreateYourOwn() {
+        getDriver().findElement(By.linkText("create your own")).click();
+        return new CreateProjectPage(getDriver());
     }
 }

@@ -55,6 +55,7 @@ public class GetTransMemoryDetailsHandlerTest {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
             .use("localeServiceImpl", localeServiceImpl)

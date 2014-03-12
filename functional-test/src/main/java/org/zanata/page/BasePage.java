@@ -20,48 +20,39 @@
  */
 package org.zanata.page;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.google.common.base.Function;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.utility.HelpPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import lombok.extern.slf4j.Slf4j;
 
 /**
+ * A Base Page is an extension of the Core Page, providing the navigation bar
+ * and sidebar links common to most pages outside of the editor.
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- *
- *         This is a basic page that contains features all pages of Zanata
- *         share, eg. the main navigation menu.
  */
 @Slf4j
-public class BasePage extends AbstractPage {
-    private List<WebElement> navMenuItems = Collections.emptyList();
-
-    @FindBy(id = "nav-main")
-    WebElement navBar;
+public class BasePage extends CorePage {
+    private final By NavMenuBy = By.id("nav-main");
 
     @FindBy(id = "projects_link")
     private WebElement projectsLink;
@@ -72,11 +63,8 @@ public class BasePage extends AbstractPage {
     @FindBy(id = "languages_link")
     private WebElement languagesLink;
 
-    @FindBy(id = "user_avatar")
+    @FindBy(id = "user--avatar")
     private WebElement userAvatar;
-
-    @FindBy(id = "home")
-    private WebElement homeLink;
 
     private static final By BY_SIGN_IN = By.id("signin_link");
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
@@ -85,36 +73,50 @@ public class BasePage extends AbstractPage {
 
     public BasePage(final WebDriver driver) {
         super(driver);
-        navMenuItems = navBar.findElements(By.tagName("a"));
     }
 
     public MyAccountPage goToMyProfile() {
         userAvatar.click();
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_PROFILE_LINK);
 
         return new MyAccountPage(getDriver());
     }
 
-    public HomePage goToHomePage() {
-        homeLink.click();
-        return new HomePage(getDriver());
-    }
-
     public ProjectsPage goToProjects() {
-        projectsLink.click();
+        clickNavMenuItem(projectsLink);
         return new ProjectsPage(getDriver());
     }
 
+    private void clickNavMenuItem(final WebElement menuItem) {
+        if (!menuItem.isDisplayed()) {
+            // screen is too small the menu become dropdown
+            getDriver().findElement(By.id("nav-main"))
+                    .findElement(By.tagName("a"))
+                    .click();
+        }
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return menuItem.isDisplayed();
+            }
+        });
+        menuItem.click();
+    }
+
     public VersionGroupsPage goToGroups() {
-        groupsLink.click();
+        clickNavMenuItem(groupsLink);
         return new VersionGroupsPage(getDriver());
+    }
+
+    public GlossaryPage goToGlossary() {
+        // Dynamically find the link, as it is not present for every user
+        getDriver().findElement(By.id("glossary_link")).click();
+        return new GlossaryPage(getDriver());
     }
 
     public AdministrationPage goToAdministration() {
         userAvatar.click();
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
 
@@ -144,13 +146,11 @@ public class BasePage extends AbstractPage {
     }
 
     public String loggedInAs() {
-        return userAvatar.getAttribute("title");
+        return userAvatar.getAttribute("data-original-title");
     }
 
     public HomePage logout() {
         userAvatar.click();
-
-        waitForSideMenuOpened();
 
         clickLinkAfterAnimation(BY_SIGN_OUT);
         return new HomePage(getDriver());
@@ -190,44 +190,10 @@ public class BasePage extends AbstractPage {
                 + WebElementUtil.elementsToText(breadcrumbs));
     }
 
-    public List<String> getNavigationMenuItems() {
-        Collection<String> linkTexts =
-                Collections2.transform(navMenuItems,
-                        new Function<WebElement, String>() {
-                            @Override
-                            public String apply(WebElement link) {
-                                return link.getText();
-                            }
-                        });
-        return ImmutableList.copyOf(linkTexts);
-    }
-
     public <P> P goToPage(String navLinkText, Class<P> pageClass) {
-        log.info("click {} and go to page {}", navLinkText, pageClass.getName());
-        List<String> navigationMenuItems = getNavigationMenuItems();
-        int menuItemIndex = navigationMenuItems.indexOf(navLinkText);
-
-        Preconditions.checkState(menuItemIndex >= 0, navLinkText
-                + " is not available in navigation menu");
-
-        navMenuItems.get(menuItemIndex).click();
+        getDriver().findElement(NavMenuBy)
+                .findElement(By.linkText(navLinkText)).click();
         return PageFactory.initElements(getDriver(), pageClass);
-    }
-
-    public String getNotificationMessage() {
-        List<WebElement> messages = getDriver().findElements(By.id("messages"));
-        return messages.size() > 0 ? messages.get(0).getText() : "";
-    }
-
-    public List<String> waitForErrors() {
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.xpath("//span[@class='errors']"));
-            }
-        });
-        return getErrors();
     }
 
     /**
@@ -243,25 +209,67 @@ public class BasePage extends AbstractPage {
                 .findElement(locator));
     }
 
-    public void waitForSideMenuClosed() {
-        WebElementUtil.waitForTenSeconds(getDriver()).until(
-                ExpectedConditions.invisibilityOfElementLocated(By
-                        .className("off-canvas--right-under")));
+    public HelpPage goToHelp() {
+        getDriver().findElement(By.id("help_link")).click();
+        return new HelpPage(getDriver());
     }
 
-    public void waitForSideMenuOpened() {
-        WebElementUtil.waitForTenSeconds(getDriver()).until(
-                ExpectedConditions.visibilityOfElementLocated(By
-                        .className("off-canvas--right-under")));
+    public BasePage enterSearch(String searchText) {
+        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
+                .sendKeys(searchText);
+        return new BasePage(getDriver());
     }
 
-    public void assertNoCriticalErrors() {
-        List<WebElement> errors =
-                getDriver().findElements(By.id("errorMessage"));
-        if (errors.size() > 0) {
-            throw new RuntimeException("Critical error: \n"
-                    + errors.get(0).getText());
+    public ProjectsPage submitSearch() {
+        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
+                .sendKeys(Keys.ENTER);
+        return new ProjectsPage(getDriver());
+    }
+
+    public void waitForSearchListContains(final String expected) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getSearchAutocompleteItems().contains(expected);
+            }
+        });
+    }
+
+    public List<String> getSearchAutocompleteItems() {
+        List<String> resultsText = new ArrayList<String>();
+        List<WebElement> results = waitForTenSec()
+                .until(new Function<WebDriver, List<WebElement>>() {
+                    @Override
+                    public List<WebElement> apply(WebDriver driver) {
+                        return getDriver().findElement(
+                                By.className("autocomplete__results"))
+                                .findElements(By.className("autocomplete__result"));
+                    }
+                });
+
+        for (WebElement result : results) {
+            resultsText.add(result.getText());
         }
+        return resultsText;
     }
 
+    public ProjectPage clickSearchEntry(final String searchEntry) {
+        WebElement searchItem = waitForTenSec()
+                .until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        List <WebElement> items = getDriver().findElement(
+                                By.className("autocomplete__results"))
+                                .findElements(By.className("autocomplete__result"));
+                        for (WebElement item : items) {
+                            if (item.getText().equals(searchEntry)) {
+                                return item;
+                            }
+                        }
+                        return null;
+                    }
+                });
+        searchItem.click();
+        return new ProjectPage(getDriver());
+    }
 }

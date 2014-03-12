@@ -29,7 +29,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 /**
- * Producer for Bean Validators.
+ * Singleton producer for Bean Validators.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -37,13 +37,10 @@ import org.jboss.seam.annotations.Scope;
 @Name("validatorFactory")
 @Scope(ScopeType.APPLICATION)
 public class ValidatorFactory {
-    private javax.validation.ValidatorFactory beanValidatorFactory;
+    private javax.validation.ValidatorFactory beanValidatorFactory = Validation.buildDefaultValidatorFactory();
 
     @Factory(scope = ScopeType.EVENT, autoCreate = true)
     public Validator getValidator() {
-        if (beanValidatorFactory == null) {
-            beanValidatorFactory = Validation.buildDefaultValidatorFactory();
-        }
         return beanValidatorFactory.getValidator();
     }
 }

@@ -35,7 +35,7 @@ public class ReplaceText extends UpdateTransUnit {
     private boolean caseSensitive;
 
     private ReplaceText() {
-        super(UpdateType.ReplaceText);
+        super(UpdateType.NonEditorSave);
     }
 
     public ReplaceText(TransUnit transUnit, String searchText,

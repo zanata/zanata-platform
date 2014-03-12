@@ -1,2 +1,14 @@
 language: java
-script: "mvn test -Dgwt.compiler.skip -q"
+install: true
+script: mvn test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - jdk: oraclejdk8

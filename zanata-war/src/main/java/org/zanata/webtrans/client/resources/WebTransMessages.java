@@ -1,7 +1,5 @@
 package org.zanata.webtrans.client.resources;
 
-import java.util.List;
-
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -21,15 +19,12 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("(No Content)")
     String noContent();
 
-    @DefaultMessage("{0}% ({1,number,#.#}hrs) {2}")
-    String statusBarPercentageHrs(double approved, double remainingHours,
+    @DefaultMessage("{0}% ({1}hrs) {2}")
+    String statusBarPercentageHrs(String approved, String remainingHours,
             String by);
 
-    @DefaultMessage("{0,number,#.#}")
-    String statusBarLabelHours(double remainingHours);
-
-    @DefaultMessage("{0}%")
-    String statusBarLabelPercentage(double approved);
+    @DefaultMessage("{0}")
+    String statusBarLabelHours(String remainingHours);
 
     @DefaultMessage("http://zanata.org/")
     String hrefHelpLink();
@@ -129,10 +124,12 @@ public interface WebTransMessages extends Messages {
     String searchFoundResultsInDocuments(@PluralCount int numDocs);
 
     @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
-    @AlternateMessage({ "one|one",
-            "Showing results for search \"{0}\" (1 text flow in 1 document)",
-            "other|one",
-            "Showing results for search \"{0}\" ({1} text flows in 1 document)" })
+    // @formatter:off
+    @AlternateMessage({
+            "one|one", "Showing results for search \"{0}\" (1 text flow in 1 document)",
+            "other|one", "Showing results for search \"{0}\" ({1} text flows in 1 document)"
+    })
+    // @formatter:on
             String showingResultsForProjectWideSearch(String searchString,
                     @PluralCount int textFlows, @PluralCount int documents);
 
@@ -255,9 +252,9 @@ public interface WebTransMessages extends Messages {
         "one|=0", "Item can not be undone",
         "other|=0", "Items can not be undone"
         // @formatter:on
-    })
+            })
     String undoUnsuccessful(@PluralCount int unsuccessfulCount,
-            @PluralCount int successfulCount);
+        @PluralCount int successfulCount);
 
     @DefaultMessage("Undo failed")
     String undoFailure();
@@ -434,6 +431,9 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("When unexpected error happens, a popup window will display and show it")
             String showErrorsTooltip();
 
+    @DefaultMessage("Show System Errors")
+    String showSystemErrors();
+
     @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
             String useCodeMirrorEditorTooltip();
 
@@ -467,7 +467,7 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Text contain in both search term and result")
     String tmPlainTextDesc();
 
-    @DefaultMessage("New replacement text ")
+    @DefaultMessage("New replacement text")
     String searchReplaceInsertTagDesc();
 
     @DefaultMessage("Old text to be replaced")
@@ -505,6 +505,9 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Display configuration")
     String displayConfiguration();
+
+    @DefaultMessage("Enable Reference for Source Language")
+    String enableReferenceForSourceLang();
 
     @DefaultMessage("Configure how you want your editor to look like")
     String displayConfigurationTooltip();
@@ -571,4 +574,19 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("More details")
     String moreDetais();
+
+    @DefaultMessage("Editor Buttons")
+    String editorButtons();
+
+    @DefaultMessage("'Enter' key saves immediately")
+    String enterKeySaves();
+
+    @DefaultMessage("Use syntax highlighting Editor")
+    String useSyntaxHighlight();
+
+    @DefaultMessage("Show 'Save as Approved' warning")
+    String showSaveApproveWarning();
+
+    @DefaultMessage("Enable Spell Check")
+    String enabledSpellCheck();
 }

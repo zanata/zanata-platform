@@ -282,7 +282,7 @@ public class TransUnitsTablePresenterTest {
 
         // When: refreshRow from same user
         presenter.refreshRow(updatedTransUnit, editorClientId,
-                TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+                TransUnitUpdated.UpdateType.WebEditorSave);
 
         // Then:
         verifyZeroInteractions(eventBus, targetContentsPresenter);
@@ -299,7 +299,7 @@ public class TransUnitsTablePresenterTest {
 
         // When: refreshRow from same user but update type is replace
         presenter.refreshRow(updatedTransUnit, editorClientId,
-                TransUnitUpdated.UpdateType.ReplaceText);
+                TransUnitUpdated.UpdateType.NonEditorSave);
 
         // Then:
         verify(targetContentsPresenter).updateRow(updatedTransUnit);
@@ -325,7 +325,7 @@ public class TransUnitsTablePresenterTest {
         // When: update type is save fuzzy
         presenter.refreshRow(updatedTransUnit,
                 new EditorClientId("session2", 2),
-                TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+                TransUnitUpdated.UpdateType.WebEditorSave);
 
         // Then:
         ArgumentCaptor<NotificationEvent> eventCaptor =
@@ -354,10 +354,10 @@ public class TransUnitsTablePresenterTest {
         when(targetContentsPresenter.currentEditorContentHasChanged())
                 .thenReturn(true);
 
-        // When: update type is save fuzzy
+        // When: update type is save
         presenter.refreshRow(updatedTransUnit,
                 new EditorClientId("session2", 2),
-                TransUnitUpdated.UpdateType.WebEditorSaveFuzzy);
+                TransUnitUpdated.UpdateType.WebEditorSave);
 
         // Then:
         ArgumentCaptor<NotificationEvent> eventCaptor =

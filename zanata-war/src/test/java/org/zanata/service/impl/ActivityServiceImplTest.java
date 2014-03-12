@@ -52,6 +52,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
     private Long personId = new Long(1L);
+    private Long versionId = new Long(1L);
     private Long projectVersionId = new Long(1L);
     private Long documentId = new Long(1L);
     private Long textFlowTargetId = new Long(1L);
@@ -82,7 +83,7 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         seam.reset().use("activityDAO", new ActivityDAO(getSession()))
                 .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
                 .use("documentDAO", new DocumentDAO(getSession()))
-                .ignoreNonResolvable();
+                .use("session", getSession()).ignoreNonResolvable();
 
         activityService = seam.autowire(ActivityServiceImpl.class);
     }
@@ -90,8 +91,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     public void testNewReviewActivityInserted() throws Exception {
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Approved));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Approved,
+                ContentState.NeedReview));
         Activity activity =
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
@@ -103,8 +105,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     public void testNewReviewActivityUpdated() throws Exception {
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Approved));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Approved,
+                ContentState.NeedReview));
 
         List<Activity> activities =
                 activityService.findLatestActivitiesForContext(personId,
@@ -112,8 +115,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(activities.size(), equalTo(1));
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Rejected));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Rejected,
+                ContentState.NeedReview));
 
         activities =
                 activityService.findLatestActivitiesForContext(personId,
@@ -130,8 +134,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     public void testActivityInsertAndUpdate() throws Exception {
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Translated));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Translated,
+                ContentState.NeedReview));
 
         Activity activity =
                 activityService.findActivity(personId,
@@ -142,8 +147,8 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         Long id = activity.getId();
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.NeedReview));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.NeedReview, ContentState.New));
 
         activity =
                 activityService.findActivity(personId,
@@ -155,14 +160,16 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     @Test
     public void testActivityInsertMultipleTypeActivities() throws Exception {
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Translated));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Translated,
+                ContentState.NeedReview));
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId, null, new LocaleId("as"), textFlowTargetId,
-                ContentState.Approved));
+                personId, versionId, documentId, null, new LocaleId("as"),
+                textFlowTargetId, ContentState.Approved,
+                ContentState.NeedReview));
 
-        activityService.onDocumentUploaded(new DocumentUploadedEvent(
+        activityService.onDocumentUploaded(new DocumentUploadedEvent(personId,
                 documentId, false, new LocaleId("as")));
 
         List<Activity> activities =
@@ -176,23 +183,23 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         Long documentId2 = new Long(2L);
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId2, null, LocaleId.EN_US, new Long(5),
-                ContentState.Translated));
+                personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(5), ContentState.Translated, ContentState.NeedReview));
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId2, null, LocaleId.EN_US, new Long(5),
-                ContentState.Approved));
+                personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(5), ContentState.Approved, ContentState.NeedReview));
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId2, null, LocaleId.EN_US, new Long(6),
-                ContentState.Rejected));
+                personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(6), ContentState.Rejected, ContentState.Translated));
 
         activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                documentId2, null, LocaleId.EN_US, new Long(6),
-                ContentState.NeedReview));
+                personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(6), ContentState.NeedReview, ContentState.New));
 
         List<Activity> activities =
-                activityService.findLatestActivitiesForContext(documentId2,
+                activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 10);
 
         assertThat(activities.size(), equalTo(2));

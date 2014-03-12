@@ -20,14 +20,12 @@
  */
 package org.zanata.model.security;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import org.zanata.model.HAccount;
-
 import lombok.NoArgsConstructor;
+
+import org.zanata.model.HAccount;
 
 /**
  * @author Carlos Munoz <a
@@ -35,7 +33,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @DiscriminatorValue("OPENID")
-@Access(AccessType.FIELD)
 @NoArgsConstructor
 public class HOpenIdCredentials extends HCredentials {
     public HOpenIdCredentials(HAccount account, String user, String email) {

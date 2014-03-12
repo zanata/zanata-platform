@@ -111,7 +111,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     // public List<HAccount> searchQuery(String searchQuery) throws
     // ParseException
     // {
-    // log.info("start searching {0}", searchQuery);
+    // log.info("start searching {}", searchQuery);
     // TermQuery tq = new TermQuery(new Term("username", searchQuery));
     // EdgeNGramTokenFilter
 

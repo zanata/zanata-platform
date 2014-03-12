@@ -70,45 +70,4 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest {
                 new TextFlowTargetDAO((Session) getEm().getDelegate());
     }
 
-    // FIXME broken test
-    @Test(enabled = false)
-    public void findLatestEquivalentTranslation() throws Exception {
-        HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
-        HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
-
-        ScrollableResults results =
-                this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale,
-                        true, true, true, true);
-
-        int rows = 0;
-
-        // TODO Have more comprehensive results
-        while (results.next()) {
-            final HTextFlowTarget oldTFT = (HTextFlowTarget) results.get(0);
-            final HTextFlow textFlow = (HTextFlow) results.get(1);
-
-            // make sure that each result is valid
-            assertThat(oldTFT.getTextFlow(), equalTo(textFlow));
-            assertThat(oldTFT.getLocale().getId(), equalTo(hLocale.getId()));
-            assertThat(textFlow.getDocument().getDocId(),
-                    is("/my/path/document.txt"));
-            assertThat(oldTFT.getState(), is(ContentState.Approved));
-
-            rows++;
-        }
-
-        // make sure there where results
-        assertThat(rows, greaterThan(0));
-    }
-
-    @Test
-    public void testQuery() {
-        HDocument doc = (HDocument) getSession().get(HDocument.class, 1L);
-        HLocale hLocale = (HLocale) getSession().get(HLocale.class, 1L);
-        @Cleanup
-        ScrollableResults scroll =
-                this.textFlowTargetDAO.findMatchingTranslations(doc, hLocale,
-                        true, true, true, true);
-    }
-
 }

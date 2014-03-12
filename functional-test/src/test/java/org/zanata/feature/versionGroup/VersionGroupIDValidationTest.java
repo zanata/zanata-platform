@@ -23,8 +23,8 @@ package org.zanata.feature.versionGroup;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.hamcrest.Matchers;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -32,7 +32,8 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -41,10 +42,11 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
+@NoScreenshot
 public class VersionGroupIDValidationTest {
 
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @DataPoint
     public static String INVALID_CHARACTER_PIPE = "Group|ID";
@@ -94,27 +96,29 @@ public class VersionGroupIDValidationTest {
     public static String MUST_END_ALPHANUMERIC = "GroupID-";
     private static CreateVersionGroupPage groupPage;
 
-    @BeforeClass
-    public static void beforeClass() {
-        groupPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToGroups()
-                        .createNewGroup();
+    @Before
+    public void goToGroupPage() {
+        if (groupPage == null) {
+            groupPage =
+                    new LoginWorkFlow().signIn("admin", "admin").goToGroups()
+                            .createNewGroup();
+        }
     }
 
     @Theory
     public void inputValidationForID(String inputText) {
         String errorMsg =
-                "must start and end with letter or number, and contain only letters, numbers, underscores and hyphens.";
+                "must start and end with letter or number, and "
+                        + "contain only letters, numbers, underscores and hyphens.";
+
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
         groupPage =
                 groupPage.clearFields().inputGroupId(inputText)
-                        .inputGroupName(inputText).selectStatus("OBSOLETE")
-                        .selectStatus("ACTIVE") // this is to avoid
-                                                // ConcurrentModificationException
-                                                // thanks to JSF!!
-                        .saveGroupFailure();
+                        .inputGroupName(inputText)
+                    .saveGroupFailure();
+
         assertThat("Validation error is displayed for input:" + inputText,
-                groupPage.getErrors(1), Matchers.contains(errorMsg));
+                groupPage.getFieldErrors(), Matchers.hasItem(errorMsg));
     }
 }

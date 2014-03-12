@@ -86,7 +86,8 @@ public class ZipFileBuildTask implements
     }
 
     private AsyncTaskHandle<String> buildHandle() {
-        AsyncTaskHandle<String> newHandle = new AsyncTaskHandle<String>();
+        String name = "ZipFileBuildTask: "+projectSlug+"-"+iterationSlug+"-"+localeId;
+        AsyncTaskHandle<String> newHandle = new AsyncTaskHandle<String>(name);
 
         // Max documents to process
         DocumentDAO documentDAO =

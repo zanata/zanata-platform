@@ -163,6 +163,11 @@
   </rule>
 
   <rule>
+    <from casesensitive="true">^/account/klogin(\?.+)?$</from>
+    <to last="true">/account/klogin.seam$1</to>
+  </rule>
+
+  <rule>
     <from casesensitive="true">^/account/sign_form(.+)?$</from>
     <to last="true">/account/login_input.seam$1</to>
   </rule>
@@ -215,6 +220,11 @@
   <rule>
     <from casesensitive="true">^/profile/edit(.+)?$</from>
     <to last="true">/profile/edit.seam$1</to>
+  </rule>
+
+  <rule>
+    <from casesensitive="true">^/profile/create(.+)?$</from>
+    <to last="true">/profile/create_user.seam$1</to>
   </rule>
 
   <rule>
@@ -313,16 +323,6 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/version-group/edit(.+)$</from>
-    <to last="true">/version-group/edit.seam?$1</to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/version-group/maintainer/(.+)?$</from>
-    <to last="true">/version-group/assign_maintainer.seam$1</to>
-  </rule>
-
-  <rule>
     <from casesensitive="true">^/version-group/join/(.+)$</from>
     <to
       last="true">/version-group/request_to_join.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1
@@ -393,7 +393,7 @@
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/copy_trans_options.seam\?projectSlug=(.+)$</from>
+    <from>^(/.+)?/project/copy_trans_options.seam\?projectSlug=([^&amp;]+)(&amp;.+)?$</from>
     <to>$1/project/view/$2/copy_trans_opts</to>
   </outbound-rule>
   <outbound-rule>
@@ -447,6 +447,10 @@
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>
     <to>$1/account/sign_in$2</to>
+  </outbound-rule>
+  <outbound-rule>
+    <from>^(/.+)?/account/klogin.seam(.+)?$</from>
+    <to>$1/account/klogin$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login_input.seam(.+)?$</from>
@@ -505,14 +509,6 @@
   </outbound-rule>
 
   <outbound-rule>
-    <from>^(/.+)?/version-group/edit.seam(.+)$</from>
-    <to>$1/version-group/edit/$2</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/version-group/assign_maintainer.seam(.+)?$</from>
-    <to>$1/version-group/maintainer/$2</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/version-group/request_to_join.seam\?emailType=(.+)&amp;versionGroupSlug=(.+)</from>
     <to>$1/version-group/join/$3</to>
   </outbound-rule>
@@ -525,6 +521,11 @@
   <outbound-rule>
     <from>^(/.+)?/profile/edit.seam(.+)?$</from>
     <to>$1/profile/edit$2</to>
+  </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/profile/create_user.seam(.+)?$</from>
+    <to>$1/profile/create$2</to>
   </outbound-rule>
 
   <outbound-rule>

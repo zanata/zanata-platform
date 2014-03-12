@@ -100,7 +100,7 @@ public class ProjectRawRestITCase extends RestTest {
                 assertThat(project.getName(), is("Sample Project"));
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(2));
+                assertThat(project.getIterations().size(), is(3));
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);
@@ -138,7 +138,7 @@ public class ProjectRawRestITCase extends RestTest {
                 assertThat(project.getName(), is("Sample Project"));
                 // assertThat(project.getType(),
                 // is(ProjectType.IterationProject));
-                assertThat(project.getIterations().size(), is(2));
+                assertThat(project.getIterations().size(), is(3));
 
                 // Iteration 1
                 ProjectIteration iteration = project.getIterations().get(0);

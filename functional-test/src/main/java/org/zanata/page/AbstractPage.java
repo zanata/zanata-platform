@@ -22,9 +22,12 @@ package org.zanata.page;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -40,10 +43,18 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 
+/**
+ * The base class for the page driver. Contains functionality not generally of
+ * a user visible nature.
+ */
 @Slf4j
 public class AbstractPage {
     private final WebDriver driver;
     private final FluentWait<WebDriver> ajaxWaitForTenSec;
+
+    public void reload() {
+        getDriver().navigate().refresh();
+    }
 
     public void deleteCookiesAndRefresh() {
         getDriver().manage().deleteAllCookies();
@@ -65,56 +76,12 @@ public class AbstractPage {
         return driver;
     }
 
-    public String getTitle() {
-        return driver.getTitle();
-    }
-
     public String getUrl() {
         return driver.getCurrentUrl();
     }
 
     public FluentWait<WebDriver> waitForTenSec() {
         return ajaxWaitForTenSec;
-    }
-
-    protected void clickAndCheckErrors(WebElement button) {
-        button.click();
-        List<String> errors = getErrors();
-        if (!errors.isEmpty()) {
-            throw new RuntimeException(Joiner.on(";").join(errors));
-        }
-    }
-
-    protected void clickAndExpectErrors(WebElement button) {
-        button.click();
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() > 0;
-            }
-        });
-    }
-
-    public List<String> getErrors() {
-        List<WebElement> errorSpans =
-                getDriver().findElements(By.xpath("//span[@class='errors']"));
-        return WebElementUtil.elementsToText(errorSpans);
-    }
-
-    /**
-     * Wait until expected number of errors presented on page or timeout.
-     * @param expectedNumber
-     *            expected number of errors on page
-     * @return list of error message
-     */
-    public List<String> getErrors(final int expectedNumber) {
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() == expectedNumber;
-            }
-        });
-        return getErrors();
     }
 
     /**
@@ -160,4 +127,32 @@ public class AbstractPage {
         return done;
     }
 
+    /**
+     * Wait for certain condition to happen.
+     *
+     * For example, wait for a translation updated event gets broadcast to editor.
+     *
+     * @param callable a callable that returns a result
+     * @param matcher a matcher that matches to expected result
+     * @param <T> result type
+     */
+    public <T> void
+            waitFor(final Callable<T> callable, final Matcher<T> matcher) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                try {
+                    T result = callable.call();
+                    if (!matcher.matches(result)) {
+                        matcher.describeMismatch(result,
+                                new Description.NullDescription());
+                    }
+                    return matcher.matches(result);
+                } catch (Exception e) {
+                    log.warn("exception", e);
+                    return false;
+                }
+            }
+        });
+    }
 }

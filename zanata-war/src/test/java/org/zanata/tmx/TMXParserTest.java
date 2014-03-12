@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import nu.xom.Element;
 
@@ -146,11 +147,11 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
         assertThat(tm.getTranslationUnits().size(), is(4));
 
         // Dates were modified to match the TM header in the file
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTime(tm.getCreationDate());
         assertThat(cal.get(Calendar.YEAR), is(2013));
         assertThat(cal.get(Calendar.MONTH), is(4));
-        assertThat(cal.get(Calendar.DATE), is(10));
+        assertThat(cal.get(Calendar.DATE), is(9));
 
         assertThat(tm.getSourceLanguage(), equalTo("en"));
 

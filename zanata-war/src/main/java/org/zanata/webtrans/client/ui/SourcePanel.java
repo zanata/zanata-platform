@@ -81,6 +81,11 @@ public class SourcePanel extends Composite implements HasSelectableSource {
         sinkEvents(Event.ONCLICK);
     }
 
+    @Override
+    protected void onEnsureDebugId(String baseID) {
+        sourceContent.ensureDebugId(baseID + "-container");
+    }
+
     public void setValue(String source, String sourceComment, boolean isPlural) {
         this.source = source;
 

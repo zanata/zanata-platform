@@ -26,18 +26,19 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.web.RequestParameter;
-import org.jboss.seam.log.Log;
 import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
 
 @Name("configurationAction")
 @Scope(ScopeType.EVENT)
+@Slf4j
 public class ConfigurationAction implements Serializable {
     private static final long serialVersionUID = 1L;
     @RequestParameter
@@ -45,8 +46,6 @@ public class ConfigurationAction implements Serializable {
     @RequestParameter
     private String projectSlug;
 
-    @Logger
-    private Log log;
     @In
     private ConfigurationService configurationServiceImpl;
 

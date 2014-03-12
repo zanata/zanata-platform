@@ -76,6 +76,8 @@ public class ValidationMessagePanelView extends Composite implements
     public ValidationMessagePanelView(TableEditorMessages messages) {
         this.messages = messages;
         initWidget(uiBinder.createAndBindUi(this));
+        Widget header = disclosurePanel.getHeader();
+        header.getParent().getElement().removeClassName("header");
         clear();
     }
 

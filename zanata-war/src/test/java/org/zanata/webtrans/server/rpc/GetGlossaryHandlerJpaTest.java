@@ -60,6 +60,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
 
         // @formatter:off
       handler = SeamAutowire.instance()
+            .reset()
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("glossaryDAO", glossaryDAOSpy)

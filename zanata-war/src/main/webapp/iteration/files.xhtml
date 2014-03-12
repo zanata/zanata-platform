@@ -204,7 +204,7 @@
         </h:panelGroup>
       </f:facet>
       <ui:param name="tstatus"
-        value="#{projectIterationFilesAction.getStatsForDocument(doc)}"/>
+        value="#{projectIterationFilesAction.getStatsForDocument(doc.docId)}"/>
       <ui:include src="../WEB-INF/layout/statsbar.xhtml">
         <ui:param name="status" value="#{tstatus}"/>
       </ui:include>
@@ -360,7 +360,7 @@
         styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
         rendered="#{projectIterationFilesAction.poProject or not downloadAllAllowed}"
         value="#{messages['jsf.iteration.files.DownloadAllFiles']}"
-        action="#{projectIterationZipFileAction.prepareIterationZipFile(false)}"
+        action="#{projectIterationZipFileAction.prepareIterationZipFile(projectIterationFilesAction.poProject)}"
         onclick="if(!downloadAllFilesClick()){ return false; }"
         render="downloadProgressBar"
         disabled="#{not downloadAllAllowed}"
@@ -370,7 +370,7 @@
         styleClass="action_link #{downloadAllAllowed ? '' : 'disabled'}"
         rendered="#{downloadAllAllowed and !projectIterationFilesAction.poProject}"
         value="#{messages['jsf.iteration.files.DownloadAllFilesOfflinePo']}"
-        action="#{projectIterationZipFileAction.prepareIterationZipFile(true)}"
+        action="#{projectIterationZipFileAction.prepareIterationZipFile(projectIterationFilesAction.poProject)}"
         onclick="if(!downloadAllFilesClick()){ return false; }"
         render="downloadProgressBar"
         disabled="#{not downloadAllAllowed}"

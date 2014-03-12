@@ -33,6 +33,8 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
+import org.zanata.webtrans.client.events.CommentChangedEvent;
+import org.zanata.webtrans.client.events.CommentChangedEventHandler;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorHandler;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
@@ -82,7 +84,8 @@ import com.google.inject.Singleton;
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         TransUnitEditEventHandler, UserConfigChangeHandler,
         RequestValidationEventHandler, InsertStringInEditorHandler,
-        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler {
+        CopyDataToEditorHandler, WorkspaceContextUpdateEventHandler,
+        CommentChangedEventHandler {
     protected static final int LAST_INDEX = -2;
     private final EventBus eventBus;
     private final TableEditorMessages messages;
@@ -151,6 +154,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         eventBus.addHandler(CopyDataToEditorEvent.getType(), this);
         eventBus.addHandler(TransUnitEditEvent.getType(), this);
         eventBus.addHandler(WorkspaceContextUpdateEvent.getType(), this);
+        eventBus.addHandler(CommentChangedEvent.TYPE, this);
     }
 
     public void savePendingChangesIfApplicable() {
@@ -595,8 +599,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             ViewMode viewMode =
                     canEditTranslation() ? ViewMode.EDIT : ViewMode.VIEW;
             boolean showButtons =
-                    userWorkspaceContext.hasReadOnlyAccess() ? false
-                            : isDisplayButtons();
+                    !userWorkspaceContext.hasReadOnlyAccess() &&
+                            isDisplayButtons();
 
             targetContentsDisplay.setToMode(viewMode);
             targetContentsDisplay.showButtons(showButtons);
@@ -689,11 +693,13 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         }
     }
 
-    public void updateCommentCount(TransUnitId id, int commentsCount) {
+    @Override
+    public void onCommentChanged(CommentChangedEvent event) {
         Optional<TargetContentsDisplay> displayOptional =
-                Finds.findDisplayById(displayList, id);
+                Finds.findDisplayById(displayList, event.getTransUnitId());
         if (displayOptional.isPresent()) {
-            displayOptional.get().updateCommentIndicator(commentsCount);
+            displayOptional.get().updateCommentIndicator(
+                    event.getCommentCount());
         }
     }
 

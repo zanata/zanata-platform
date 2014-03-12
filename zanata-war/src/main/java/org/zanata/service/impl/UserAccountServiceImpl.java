@@ -23,15 +23,15 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HAccount;
@@ -47,10 +47,8 @@ import org.zanata.util.HashUtil;
  */
 @Name("userAccountServiceImpl")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class UserAccountServiceImpl implements UserAccountService {
-    @Logger
-    private Log log;
-
     @In
     private Session session;
 
@@ -90,7 +88,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                 + account.getPerson().getName() + System.currentTimeMillis()));
         session.persist(key);
 
-        log.info("Sent password reset key to {0} ({1})", account.getPerson()
+        log.info("Sent password reset key to {} ({})", account.getPerson()
                 .getName(), account.getUsername());
         return key;
     }

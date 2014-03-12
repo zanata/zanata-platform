@@ -26,11 +26,11 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import lombok.Data;
+
 import org.zanata.common.LocaleId;
 
 import com.google.common.collect.ImmutableList;
-
-import lombok.Data;
 
 /**
  * @author Sean Flanigan <a

@@ -22,8 +22,6 @@ package org.zanata.model.po;
 
 import java.io.Serializable;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +30,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import lombok.Setter;
+
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -39,10 +39,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -54,38 +50,84 @@ import lombok.Setter;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
-@Getter
-@Access(AccessType.FIELD)
 public class HPotEntryData implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
+    private Long id;
+    private HTextFlow textFlow;
+    private String context;
+    @Deprecated
+    // use HTextFlow.comment
+    private HSimpleComment extractedComment;
+    private String flags;
+    private String references;
 
     @Id
     @GeneratedValue
-    @Setter(AccessLevel.PROTECTED)
-    private Long id;
+    public Long getId() {
+        return id;
+    }
+
+    protected void setId(Long id) {
+        this.id = id;
+    }
 
     @OneToOne
     @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
     @NaturalId
-    private HTextFlow textFlow;
+    public HTextFlow getTextFlow() {
+        return textFlow;
+    }
 
-    private String context;
+    public String getContext() {
+        return context;
+    }
 
     @Deprecated
     // use HTextFlow.comment
+            public
+            void setExtractedComment(HSimpleComment extractedComment) {
+        this.extractedComment = extractedComment;
+    }
+
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
-    private HSimpleComment extractedComment;
+    @Deprecated
+    // use HTextFlow.comment
+            public
+            HSimpleComment getExtractedComment() {
+        return extractedComment;
+    }
 
     /**
      * Gettext message flags, delimited by ',' (comma)
      */
-    private String flags;
+    public void setFlags(String flags) {
+        this.flags = flags;
+    }
+
+    /**
+     * Gettext message flags, delimited by ',' (comma)
+     */
+    public String getFlags() {
+        return flags;
+    }
+
+    /**
+     * Gettext message references, delimited by ',' (comma)
+     */
+    public void setReferences(String references) {
+        this.references = references;
+    }
 
     /**
      * Gettext message references, delimited by ',' (comma)
      */
     @Column(name = "refs")
     @Type(type = "text")
-    private String references;
+    public String getReferences() {
+        return references;
+    }
+
 }

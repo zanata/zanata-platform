@@ -21,6 +21,8 @@
 
 package org.zanata.events;
 
+import javax.annotation.Nullable;
+
 import lombok.Data;
 
 import org.zanata.common.ContentState;
@@ -35,10 +37,14 @@ import org.zanata.common.LocaleId;
 public final class TextFlowTargetStateEvent {
     public static final String EVENT_NAME =
             "org.zanata.event.HTextFlowTranslated";
-
+    // this may be null in the case of document uploads
+    private final @Nullable
+    Long actorId;
+    private final Long projectIterationId;
     private final Long documentId;
     private final Long textFlowId;
     private final LocaleId localeId;
     private final Long textFlowTargetId;
     private final ContentState newState;
+    private final ContentState previousState;
 }

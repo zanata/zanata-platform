@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
@@ -46,6 +46,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -61,20 +62,6 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 @Slf4j
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
-    @In
-    private AccountDAO accountDAO;
-
-    @In
-    private GravatarService gravatarServiceImpl;
-
-    @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
-    private LocaleService localeServiceImpl;
-
-    @In
-    private ValidationService validationServiceImpl;
 
     private static final String EVENT_WORKSPACE_CREATED =
             "webtrans.WorkspaceCreated";
@@ -91,6 +78,26 @@ public class TranslationWorkspaceManagerImpl implements
         this.projIterWorkspaceMap = Multimaps.synchronizedMultimap(piwm);
         this.eventRegistry =
                 EventRegistryFactory.getInstance().getEventRegistry();
+    }
+
+    AccountDAO getAccountDAO() {
+        return (AccountDAO) Component.getInstance("accountDAO");
+    }
+
+    GravatarService getGravatarService() {
+        return (GravatarService) Component.getInstance("gravatarServiceImpl");
+    }
+
+    ProjectIterationDAO getProjectIterationDAO() {
+        return (ProjectIterationDAO) Component.getInstance("projectIterationDAO");
+    }
+
+    LocaleService getLocaleService() {
+        return (LocaleService) Component.getInstance("localeServiceImpl");
+    }
+
+    ValidationService getValidationService() {
+        return (ValidationService) Component.getInstance("validationServiceImpl");
     }
 
     @Observer(ZanataInit.EVENT_Zanata_Startup)
@@ -116,7 +123,7 @@ public class TranslationWorkspaceManagerImpl implements
                 username, httpSessionId);
         String personName = "<unknown>";
         String personEmail = "<unknown>";
-        HAccount account = accountDAO.getByUsername(username);
+        HAccount account = getAccountDAO().getByUsername(username);
         if (account != null) {
             HPerson person = account.getPerson();
             if (person != null) {
@@ -138,7 +145,7 @@ public class TranslationWorkspaceManagerImpl implements
                 ExitWorkspace event =
                         new ExitWorkspace(editorClientId, new Person(
                                 new PersonId(username), personName,
-                                gravatarServiceImpl.getUserImageUrl(16,
+                                getGravatarService().getUserImageUrl(16,
                                         personEmail)));
                 workspace.publish(event);
             }
@@ -168,7 +175,7 @@ public class TranslationWorkspaceManagerImpl implements
     public void projectIterationUpdate(HProjectIteration projectIteration) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
-        for (ValidationAction validationAction : validationServiceImpl
+        for (ValidationAction validationAction : getValidationService()
                 .getValidationActions(projectIteration.getProject().getSlug(),
                         projectIteration.getSlug())) {
             validationStates.put(validationAction.getId(),
@@ -251,6 +258,11 @@ public class TranslationWorkspaceManagerImpl implements
         return workspace;
     }
 
+    @Override
+    public Optional<TranslationWorkspace> tryGetWorkspace(WorkspaceId workspaceId) {
+        return Optional.fromNullable(workspaceMap.get(workspaceId));
+    }
+
     private WorkspaceContext validateAndGetWorkspaceContext(
             WorkspaceId workspaceId) throws NoSuchWorkspaceException {
         String projectSlug =
@@ -258,7 +270,7 @@ public class TranslationWorkspaceManagerImpl implements
         String iterationSlug =
                 workspaceId.getProjectIterationId().getIterationSlug();
         HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+                getProjectIterationDAO().getBySlug(projectSlug, iterationSlug);
 
         if (projectIteration == null) {
             throw new NoSuchWorkspaceException("Invalid workspace Id");
@@ -271,7 +283,7 @@ public class TranslationWorkspaceManagerImpl implements
             throw new NoSuchWorkspaceException("Project Iteration is obsolete");
         }
         HLocale locale =
-                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
+                getLocaleService().getByLocaleId(workspaceId.getLocaleId());
         if (locale == null) {
             throw new NoSuchWorkspaceException("Invalid Workspace Locale");
         }

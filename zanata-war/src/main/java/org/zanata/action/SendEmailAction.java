@@ -25,24 +25,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
-import org.jboss.seam.log.Log;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.seam.scope.FlashScopeBean;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.ZanataMessages;
 
 /**
  * Sends an email to a specified role.
@@ -54,6 +59,7 @@ import org.zanata.service.LocaleService;
  */
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class SendEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -79,20 +85,47 @@ public class SendEmailAction implements Serializable {
     @In
     private LocaleSelector localeSelector;
 
-    @Logger
-    private Log log;
-
+    @Getter
+    @Setter
     private String fromName;
+
+    @Getter
+    @Setter
     private String fromLoginName;
+
+    @Email
+    @Getter
+    @Setter
     private String replyEmail;
+
+    @Getter
+    @Setter
     private String subject;
-    private String message;
+
+    @Getter
+    @Setter
+    private String htmlMessage;
+
+    @Getter
+    @Setter
     private String emailType;
 
+    @Getter
     private String language;
+
+    @Getter
     private HLocale locale;
 
     private List<HPerson> groupMaintainers;
+
+    @In
+    private FlashScopeBean flashScope;
+
+    @In
+    private ZanataMessages zanataMessages;
+
+    public static final String SUCCESS = "success";
+    public static final String FAILED = "failure";
 
     @Create
     public void onCreate() {
@@ -105,70 +138,12 @@ public class SendEmailAction implements Serializable {
         replyEmail = authenticatedAccount.getPerson().getEmail();
 
         subject = "";
-        message = "";
-    }
-
-    public String getFromName() {
-        return fromName;
-    }
-
-    public void setFromName(String name) {
-        fromName = name;
-    }
-
-    public String getFromLoginName() {
-        return fromLoginName;
-    }
-
-    public void setFromLoginName(String fromLoginName) {
-        this.fromLoginName = fromLoginName;
-    }
-
-    @Email
-    public String getReplyEmail() {
-        return replyEmail;
-    }
-
-    @Email
-    public void setReplyEmail(String replyEmail) {
-        this.replyEmail = replyEmail;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getHtmlMessage() {
-        return message;
-    }
-
-    public void setHtmlMessage(String encodedMessage) {
-        this.message = encodedMessage;
-    }
-
-    public String getEmailType() {
-        return emailType;
-    }
-
-    public void setEmailType(String emailType) {
-        this.emailType = emailType;
-    }
-
-    public String getLanguage() {
-        return language;
+        htmlMessage = "";
     }
 
     public void setLanguage(String language) {
         this.language = language;
         locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
-    }
-
-    public HLocale getLocale() {
-        return locale;
     }
 
     private List<HPerson> getCoordinators() {
@@ -190,41 +165,48 @@ public class SendEmailAction implements Serializable {
      *         in pages.xml
      */
     public String send() {
+        clearMessage();
         Locale pervLocale = localeSelector.getLocale();
         localeSelector.setLocale(new Locale("en"));
 
         try {
             if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN)) {
                 String msg =
-                        emailServiceImpl.sendToAdminEmails(
-                                EmailService.ADMIN_EMAIL_TEMPLATE, fromName,
-                                fromLoginName, replyEmail, subject, message);
+                        emailServiceImpl
+                                .sendToAdminEmails(
+                                        EmailService.ADMIN_EMAIL_TEMPLATE,
+                                        fromName, fromLoginName, replyEmail,
+                                        subject, htmlMessage);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.COORDINATOR_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.REQUEST_TO_JOIN_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
                 String msg =
                         emailServiceImpl.sendToLanguageCoordinators(
                                 EmailService.REQUEST_ROLE_EMAIL_TEMPLATE,
                                 getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, message, language);
+                                replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                return "success";
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
                 String msg =
                         emailServiceImpl
@@ -232,9 +214,9 @@ public class SendEmailAction implements Serializable {
                                         EmailService.REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE,
                                         groupMaintainers, fromName,
                                         fromLoginName, replyEmail, subject,
-                                        message);
-                FacesMessages.instance().add(msg);
-                return "success";
+                                        htmlMessage);
+                addMessage(StatusMessage.Severity.INFO, msg);
+                return SUCCESS;
             } else {
                 throw new Exception("Invalid email type: " + emailType);
             }
@@ -243,9 +225,10 @@ public class SendEmailAction implements Serializable {
                     "There was a problem sending the message: "
                             + e.getMessage());
             log.error(
-                    "Failed to send email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
-                    e, fromName, fromLoginName, replyEmail, subject, message);
-            return "failure";
+                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
+                    e, fromName, fromLoginName, replyEmail, subject,
+                    htmlMessage);
+            return FAILED;
         } finally {
             localeSelector.setLocale(pervLocale);
         }
@@ -254,16 +237,36 @@ public class SendEmailAction implements Serializable {
     /**
      * @return string 'canceled'
      */
-    public String cancel() {
+    public void cancel() {
+        clearMessage();
         log.info(
-                "Canceled sending email: fromName '{0}', fromLoginName '{1}', replyEmail '{2}', subject '{3}', message '{4}'",
-                fromName, fromLoginName, replyEmail, subject, message);
+                "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
+                fromName, fromLoginName, replyEmail, subject, htmlMessage);
         FacesMessages.instance().add("Sending message canceled");
-        return "canceled";
+        addMessage(StatusMessage.Severity.INFO, "Sending message canceled");
     }
 
     public String sendToVersionGroupMaintainer(List<HPerson> maintainers) {
         groupMaintainers = maintainers;
         return send();
     }
+
+    /**
+     * Use FlashScopeBean to store message in page. Multiple ajax requests for
+     * re-rendering statistics after updating will clear FacesMessages.
+     *
+     * @param severity
+     * @param message
+     */
+    private void addMessage(StatusMessage.Severity severity, String message) {
+        StatusMessage statusMessage =
+                new StatusMessage(severity, null, null, message, null);
+        statusMessage.interpolate();
+        flashScope.setAttribute("message", statusMessage);
+    }
+
+    private void clearMessage() {
+        flashScope.getAndClearAttribute("message");
+    }
+
 }

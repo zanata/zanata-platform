@@ -16,10 +16,10 @@
   <ui:define name="right_content">
     <rich:panel rendered="#{identity.loggedIn}">
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
+      <s:link styleClass="action_link" id="group-create"
         view="/version-group/create_version_group.xhtml"
         rendered="#{s:hasPermission(versionGroupHome.instance, 'insert')}"
-        value="#{messages['jsf.CreateNewGroup']}"/>
+        value="#{messages['jsf.NewGroup.Label']}"/>
     </rich:panel>
   </ui:define>
 

@@ -18,7 +18,9 @@
   <script type="text/javascript">
     function submitSearchOnEnter(e) {
       if (e.keyCode == 13) {
-        #{rich:element('searchBtn')}.click();
+        #{rich:element('searchBtn')}
+      .
+        click();
         return false;
       }
     }
@@ -31,17 +33,35 @@
          TODO: Use JSF2 Flash Scope-->
   </ui:remove>
   <a4j:outputPanel rendered="#{flashScope.hasAttribute('message')}">
-    <ul id="messages" class="message">
-      <li
-        class="icon-info-circle-2 infomsg">#{flashScope.getAndClearAttribute('message')}</li>
-    </ul>
+    <div class="new-zanata">
+      <ul class="list--no-bullets l--push-top-1">
+        <ui:repeat value="#{flashScope.getAndClearAttribute('message')}"
+          var="message">
+          <s:fragment rendered="#{message.severity eq 'INFO'}">
+            <li class="message--highlight l--push-bottom-half">
+              #{message.summary}
+            </li>
+          </s:fragment>
+          <s:fragment rendered="#{message.severity eq 'WARN'}">
+            <li class="message--warning l--push-bottom-half">
+              #{message.summary}
+            </li>
+          </s:fragment>
+          <s:fragment
+            rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
+            <li class="message--danger l--push-bottom-half">
+              #{message.summary}
+            </li>
+          </s:fragment>
+        </ui:repeat>
+      </ul>
+    </div>
   </a4j:outputPanel>
 
-  <ui:include src="/WEB-INF/layout/loading.xhtml">
-    <ui:param name="regionId" value="langTableRegion"/>
-  </ui:include>
-
   <h:form id="iterationLanguageForm">
+    <ui:include src="/WEB-INF/layout/loading.xhtml">
+      <ui:param name="regionId" value="langTableRegion"/>
+    </ui:include>
     <a4j:region id="langTableRegion">
       <s:token allowMultiplePosts="true"/>
 
@@ -50,13 +70,14 @@
         rendered="#{identity.loggedIn}"/>
       <a4j:commandButton title="#{messages['jsf.RefreshTable']}"
         action="#{viewAllStatusAction.refreshStatistic}" render="data_table"
-        value="#{messages['jsf.Refresh']}" styleClass="float-right">
+        value="#{messages['jsf.Refresh']}" styleClass="float-right"
+        status="spinning-loader">
       </a4j:commandButton>
       <br/><br/>
       <rich:dataTable id="data_table" width="100%"
         value="#{viewAllStatusAction.getAllStatus().toArray()}" var="status"
         styleClass="iteration_inline_tribes">
-        <rich:column sortBy="#{status.locale}"
+        <rich:column sortBy="#{status.locale}" id="locale"
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
           <f:facet name="header">#{messages['jsf.Language']}
             <richext:columnSorter/></f:facet>
@@ -103,7 +124,7 @@
             <span class="icon-download icon"/>
           </h:outputLink>
         </rich:column>
-        <rich:column
+        <rich:column id="statistics"
           styleClass="#{status.userInLanguageTeam ? 'highlighted_datatable_row' : ''}">
           <f:facet name="header">
             <h:panelGroup>
@@ -115,7 +136,7 @@
                   itemValue="WORD"/>
                 <f:selectItem itemLabel="#{messages['jsf.Message']}"
                   itemValue="MESSAGE"/>
-                <a4j:ajax event="change" render="data_table"
+                <a4j:ajax event="change" render="data_table" status="spinning-loader"
                   listener="#{viewAllStatusAction.refreshStatistic}"/>
               </h:selectOneMenu>
             </h:panelGroup>
@@ -178,7 +199,7 @@
     <s:fragment
       rendered="#{s:hasPermission(viewAllStatusAction.projectIteration, 'update')}">
       <a href="#" class="action_link"
-        onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestToJoinVersionGroup']}</a>
+        onclick="#{rich:component('versionSearchPanel')}.show()">#{messages['jsf.RequestJoinGroup']}</a>
     </s:fragment>
     <h:outputLink id="exportTMXIterLink" styleClass="action_link"
       onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
@@ -215,7 +236,7 @@
 
       <!-- Using js function due to reRenderAfterComplete not working properly. -->
       <a4j:jsFunction name="reRenderAfterCopyTrans"
-        render="copyTransIndicator,copyTransLink,blah" limitRender="true"/>
+        render="copyTransIndicator,copyTransLink" limitRender="true"/>
       <rich:progressBar id="copyTransProgressBar"
         mode="ajax"
         value="#{viewAllStatusAction.copyTransProgress}"
@@ -295,7 +316,7 @@
             </f:facet>
 
             <s:link view="/iteration/request_to_join_group.xhtml"
-              rendered="#{!viewAllStatusAction.isGroupInVersion(group.slug)}"
+              rendered="#{!viewAllStatusAction.isVersionInGroup(group.slug)}"
               title="#{messages['jsf.SelectGroup']}"
               value="#{messages['jsf.Select']}" propagation="none"
               styleClass="button">
@@ -309,7 +330,7 @@
             </s:link>
 
             <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-              rendered="#{viewAllStatusAction.isGroupInVersion(group.slug)}"/>
+              rendered="#{viewAllStatusAction.isVersionInGroup(group.slug)}"/>
 
           </rich:column>
         </rich:dataTable>

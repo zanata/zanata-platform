@@ -1,19 +1,21 @@
-<header role="banner" class="bg--pop-highest txt--s-align-center"
+<header role="banner" class="header bg--highest"
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:a="http://richfaces.org/a4j"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:rich="http://richfaces.org/rich">
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
-  <a href="#off-canvas--left"
-    class="off-canvas__toggle--left is-hidden--m-up l--float-left">
-    <i class="i i--huge i--list"></i>
-    <span class="is-invisible">#{messages['jsf.Menu']}</span>
-  </a>
+  <script type="text/javascript"
+    src="#{request.contextPath}/resources/script/components-script.js"></script>
 
-  <h1 class="header__title heading--sub">
+  <script type="text/javascript">
+    function selectItem(item) {
+      window.location.href = jQuery(item).find('a').attr("href");
+    }
+  </script>
+
+  <h1 class="header__title">
     <s:link view="/home.xhtml" propagation="none" id="home">
       <img class="header__site-logo"
         src="#{applicationConfiguration.webAssetsUrl}/logo.svg"/>
@@ -21,26 +23,139 @@
     </s:link>
   </h1>
 
-  <s:fragment rendered="#{identity.loggedIn}">
-    <a href="#off-canvas--right" id="user_avatar"
-      class="off-canvas__toggle--right l--float-right"
-      title="#{personHome.instance.account.username}">
-      <i class="i i--huge i--list l--float-left l--pad-left-0"></i>
-      <span class="badge__container">
-        <span class="badge--bl"><!--  This is for notification count --></span>
-        <img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
-          alt="#{personHome.instance.name}"/>
-      </span>
+  <nav id="nav-main" class="header__main-nav js-dropdown">
+    <a href="#nav-main" class="header__main-nav__toggle js-dropdown__toggle">
+      <i class="i i--huge i--list"></i>
+      <span class="is-invisible">#{messages['jsf.Menu']}</span>
     </a>
+
+    <div class="header__main-nav__group js-dropdown__content">
+      <h:form styleClass="form--search header__search js-form--search">
+        <label class="form--search__label"
+          for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
+          #{messages['jsf.SearchProjects']}
+        </label>
+
+        <zanata:autocomplete
+          selectedField="#{projectSearch.selectedItem}"
+          getResultAction="#{projectSearch.suggestProjects()}"
+          maxlength="100" minlength="1" id="projectAutocomplete"
+          queryField="#{projectSearch.suggestQuery}"
+          fetchValue="#{result.project.slug}"
+          placeholder="#{messages['jsf.SearchProjects']}"
+          onSelectItem="selectItem"
+          inputClass="form--search__input js-form--search__input">
+
+          <s:link propagation="none" view="/project/project.xhtml"
+            rendered="#{!result.isProjectNull()}">
+            <i class="i i--project"></i> #{result.project.name}
+            <f:param name="slug" value="#{result.project.slug}"/>
+          </s:link>
+
+          <s:link view="/search.xhtml" rendered="#{result.isProjectNull()}">
+            <i class="i i--search"></i> Search Zanata for
+            '#{projectSearch.suggestQuery}'
+            <f:param name="query" value="#{projectSearch.suggestQuery}"/>
+          </s:link>
+
+        </zanata:autocomplete>
+
+      </h:form>
+      <ul class="header__main-nav__menu">
+        <li>
+          <s:link id="projects_link" view="/project/home.xhtml"
+            propagation="none">#{messages['jsf.Projects']}
+            <i class="is-hidden--m-up l--float-right i--inline i--project"></i>
+          </s:link>
+        </li>
+        <li>
+          <s:link id="version-groups_link" view="/version-group/home.xhtml"
+            propagation="none">#{messages['jsf.Groups']}
+            <i class="is-hidden--m-up l--float-right i--inline i--group"></i>
+          </s:link>
+        </li>
+        <li>
+          <s:link id="languages_link" view="/language/home.xhtml"
+            propagation="none">#{messages['jsf.Languages']}
+            <i class="is-hidden--m-up l--float-right i--inline i--language"></i>
+          </s:link>
+        </li>
+        <s:fragment rendered="#{identity.loggedIn}">
+          <li>
+            <s:link id="glossary_link" view="/glossary/view.xhtml"
+              propagation="none">#{messages['jsf.Glossary']}
+              <i
+                class="is-hidden--m-up l--float-right i--inline i--glossary"></i>
+            </s:link>
+          </li>
+        </s:fragment>
+
+        <li>
+          <s:link id="help_link" view="/help/view.xhtml"
+            propagation="none">#{messages['jsf.Help']}
+            <i class="is-hidden--m-up l--float-right i--inline i--help"></i>
+          </s:link>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <s:fragment
+    rendered="#{identity.loggedIn and personHome.instance.account.enabled}">
+    <nav class="header__user-nav js-dropdown">
+      <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
+        id="user--avatar"
+        title="#{personHome.instance.account.username}">
+        <div class="badge__container">
+          <div class="bx--round header__avatar">
+            <img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
+              alt="#{personHome.instance.name}"/>
+          </div>
+        </div>
+      </a>
+      <ul id="nav-user" class="header__user-nav__menu js-dropdown__content">
+        <li>
+          <s:link id="dashboard" view="/dashboard/home.xhtml"
+            propagation="none">
+            #{messages['jsf.Dashboard']} <i
+            class="l--float-right i--inline i--dashboard"></i>
+          </s:link>
+        </li>
+        <li>
+          <s:link id="profile" view="/profile/view.xhtml" propagation="none">
+            #{messages['jsf.Settings']} <i
+            class="l--float-right i--inline i--settings"></i>
+          </s:link>
+        </li>
+        <s:fragment rendered="#{s:hasRole('admin')}">
+          <li>
+            <s:link id="administration" view="/admin/home.xhtml"
+              propagation="none">
+              #{messages['jsf.Administration']} <i
+              class="l--float-right i--inline i--admin"></i>
+            </s:link>
+          </li>
+        </s:fragment>
+        <li>
+          <s:link id="right_menu_sign_out_link" view="/account/logout.seam"
+            propagation="none">
+            #{messages['jsf.Logout']} <i
+            class="l--float-right i--inline i--logout"></i>
+          </s:link>
+        </li>
+      </ul>
+    </nav>
   </s:fragment>
+
   <s:fragment rendered="#{not identity.loggedIn}">
-    <div class="header__login l--float-right">
+    <s:div styleClass="header__login l--float-right">
       <s:link id="register_link_internal_auth" view="/account/register.xhtml"
         value="#{messages['jsf.Signup']}"
         propagation="none" styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
-      <s:fragment rendered="#{not applicationConfiguration.internalAuth}">
+      <s:fragment
+        rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{messages['jsf.Signup']}</a>
       </s:fragment>
@@ -58,33 +173,7 @@
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{messages['jsf.Login']}
       </h:outputLink>
-    </div>
+    </s:div>
   </s:fragment>
 
-  <nav id="nav-main" class="header__menu is-hidden--s l--push-left-half">
-    <ul class="list--horizontal">
-      <li class="l--push-left-half">
-        <s:link id="projects_link" view="/project/home.xhtml"
-          propagation="none">#{messages['jsf.Projects']}</s:link>
-      </li>
-      <li class="l--push-left-half">
-        <s:link id="version-groups_link" view="/version-group/home.xhtml"
-          propagation="none">#{messages['jsf.Groups']}</s:link>
-      </li>
-      <li class="l--push-left-half">
-        <s:link id="languages_link" view="/language/home.xhtml"
-          propagation="none">#{messages['jsf.Languages']}</s:link>
-      </li>
-      <s:fragment rendered="#{identity.loggedIn}">
-        <li class="l--push-left-half">
-          <s:link id="glossary_link" view="/glossary/view.xhtml"
-            propagation="none">#{messages['jsf.Glossary']}</s:link>
-        </li>
-      </s:fragment>
-
-      <li class="l--push-left-half"><s:link id="help_link"
-        view="/help/view.xhtml"
-        propagation="none">#{messages['jsf.Help']}</s:link></li>
-    </ul>
-  </nav>
 </header>

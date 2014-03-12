@@ -56,7 +56,8 @@ public class AccountRawCompatibilityITCase extends RestTest {
     @RunAsClient
     public void getAccountJson() throws Exception {
         // No client method for Json Get, so testing raw compatibility
-        new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET") {
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -80,6 +81,26 @@ public class AccountRawCompatibilityITCase extends RestTest {
                 assertThat(account.getRoles().size(), is(1));
                 // assertThat(account.getTribes().size(), is(1)); // Language
                 // teams are not being returned
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void getAccountJsonUnauthorized() throws Exception {
+        // No client method for Json Get, so testing raw compatibility
+        new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.UNAUTHORIZED.getStatusCode()));
+                response.releaseConnection();
             }
         }.run();
     }
@@ -125,6 +146,27 @@ public class AccountRawCompatibilityITCase extends RestTest {
         assertThat(a2.getRoles().size(), is(0));
         // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
         // being returned
+    }
+
+    @Test
+    @RunAsClient
+    public void putAccountJsonUnauthorized() throws Exception {
+        // New Account
+        Account a =
+                new Account("aacount2@localhost.com", "Sample Account",
+                        "sampleaccount", "/9Se/pfHeUH8FJ4asBD6jQ==");
+
+        ZanataProxyFactory proxyFactory =
+                createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY);
+        UnimplementedIAccountResource accountClient =
+                super.createProxy(proxyFactory,
+                        UnimplementedIAccountResource.class,
+                        "/accounts/u/sampleaccount");
+        ClientResponse putResponse = accountClient.putJson(a);
+
+        // Assert initial put
+        assertThat(putResponse.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
+        putResponse.releaseConnection();
     }
 
     /**

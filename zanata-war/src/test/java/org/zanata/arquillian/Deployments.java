@@ -87,9 +87,7 @@ public class Deployments {
             public boolean include(ArchivePath object) {
                 // Avoid the model package (for some reason it's being included
                 // as a class file)
-                return !object.get().startsWith("/org/zanata/model/") &&
-                // and the ui package (not needed)
-                        !object.get().startsWith("/org/zanata/ui");
+                return !object.get().startsWith("/org/zanata/model/");
             }
         }, "org.zanata");
 
@@ -112,8 +110,6 @@ public class Deployments {
         archive.addAsResource("security.drl");
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
-        archive.addAsWebInfResource(new ClassLoaderAsset(
-                "arquillian/zanata.properties"), "classes/zanata.properties");
         archive.setWebXML("arquillian/test-web.xml");
 
         addRemoteHelpers(archive);

@@ -47,7 +47,8 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             log.warn("Login failed. May due to some weird issue. Will Try again.");
             doSignIn(username, password);
         } catch (TimeoutException e) {
-            log.error("timeout on login. If you are running tests manually with cargo.wait, you probably forget to create the user admin/admin. See ManualRunHelper.");
+            log.error("timeout on login. If you are running tests manually"
+                    + " with cargo.wait, you probably forget to create the user admin/admin.");
             throw e;
         }
         return PageFactory.initElements(driver, pageClass);
@@ -59,38 +60,29 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
     }
 
     public SignInPage signInFailure(String username, String password) {
-        SignInPage signInPage = new BasePage(driver).clickSignInLink();
         log.info("log in as username: {}", username);
-        signInPage.enterUsername(username);
-        signInPage.enterPassword(password);
-        signInPage.clickSignIn();
-        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                List<WebElement> messages =
-                        driver.findElements(By.id("messages"));
-                return messages.size() > 0
-                        && messages.get(0).getText().contains("Login failed");
-            }
-        });
-        return new SignInPage(driver);
+        return new BasePage(driver)
+            .clickSignInLink()
+            .enterUsername(username)
+            .enterPassword(password)
+            .clickSignInExpectError();
     }
 
     private void doSignIn(String username, String password) {
+        log.info("log in as username: {}", username);
         BasePage basePage = new BasePage(driver);
         basePage.deleteCookiesAndRefresh();
-        SignInPage signInPage = basePage.clickSignInLink();
-        log.info("log in as username: {}", username);
-        signInPage.enterUsername(username);
-        signInPage.enterPassword(password);
-        signInPage.clickSignIn();
-        signInPage.waitForTenSec().until(new Predicate<WebDriver>() {
+        basePage.clickSignInLink()
+            .enterUsername(username)
+            .enterPassword(password)
+            .clickSignIn()
+            .waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 List<WebElement> messages =
-                        driver.findElements(By.id("messages"));
-                if (messages.size() > 0
-                        && messages.get(0).getText().contains("Login failed")) {
+                        driver.findElements(By.className("message--danger"));
+                if (messages.size() > 0 && messages.get(0)
+                        .getText().contains(" Login failed ")) {
                     throw new IllegalAccessError("Login failed");
                 }
                 List<WebElement> signIn = driver.findElements(By.id("Sign_in"));

@@ -1,0 +1,63 @@
+<!--
+  ~ /*
+  ~  * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+  ~  * @author tags. See the copyright.txt file in the distribution for a full
+  ~  * listing of individual contributors.
+  ~  *
+  ~  * This is free software; you can redistribute it and/or modify it under the
+  ~  * terms of the GNU Lesser General Public License as published by the Free
+  ~  * Software Foundation; either version 2.1 of the License, or (at your option)
+  ~  * any later version.
+  ~  *
+  ~  * This software is distributed in the hope that it will be useful, but WITHOUT
+  ~  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~  * details.
+  ~  *
+  ~  * You should have received a copy of the GNU Lesser General Public License
+  ~  * along with this software; if not, write to the Free Software Foundation,
+  ~  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~  * site: http://www.fsf.org.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<composite:interface>
+  <composite:attribute name="value"
+    shortDescription="maintainer list" required="true"/>
+</composite:interface>
+
+<composite:implementation>
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__heading">
+        <i class="i--left i--maintain"></i>#{messages['jsf.Maintainers']}
+      </h2>
+    </div>
+
+    <s:fragment rendered="#{not empty cc.attrs.value}">
+      <ul class="list--slat">
+        <ui:repeat value="#{cc.attrs.value}" var="maintainer">
+          <li class="l--pad-all-half">
+            <span class="w--r-1 bx--round l--push-right-quarter">
+              <img
+                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
+                alt="#{maintainer.name}"/>
+            </span>
+            #{maintainer.name}
+            <span class="txt--meta">@#{maintainer.account.username}</span>
+          </li>
+        </ui:repeat>
+      </ul>
+    </s:fragment>
+    <s:fragment rendered="#{empty cc.attrs.value}">
+      #{messages['jsf.NoMaintainersDefined']}
+    </s:fragment>
+  </div>
+</composite:implementation>
+</html>

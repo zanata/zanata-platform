@@ -3,8 +3,6 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
-  <ui:with field="resources"
-    type="org.zanata.webtrans.client.resources.Resources" />
   <ui:style>
     .editor {
       background-color: #ffffff;
@@ -13,48 +11,57 @@
 
     .topBar {
       border-bottom: 1px solid lightGrey;
-      width: 100%;
-      height: 100%;
     }
 
-    .iconButton {
-      font-size: 20px;
+    .right-refresh {
+      position: absolute;
+      right: 0;
+      top: 0.6em;
+    }
+
+    .right-nav {
+      position: absolute;
+      right: 3em;
+      top: 0.5em;
+    }
+
+    .toggle-south-button {
+      font-size: 1.5em;
       cursor: pointer;
       color: #4E4E4E;
     }
 
-    .iconButton:hover {
+    .toggle-south-button:hover {
       color: #0085CC;
     }
+
   </ui:style>
 
   <g:LayoutPanel styleName="translatorEditorContainer">
     <g:layer top="0" height="2.5em">
-      <g:HorizontalPanel styleName="{style.topBar}"
-        verticalAlignment="ALIGN_MIDDLE">
-        <g:cell>
-          <g:HTMLPanel ui:field="filterPanelContainer" />
-        </g:cell>
-        <g:cell horizontalAlignment="ALIGN_RIGHT" width="115px">
-          <g:HTMLPanel ui:field="transUnitNavigationContainer" />
-        </g:cell>
-        <g:cell horizontalAlignment="ALIGN_RIGHT" width="35px">
-          <g:InlineLabel ui:field="refreshCurrentPage"
-            styleName="icon-arrows-cw {style.iconButton}" />
-        </g:cell>
-      </g:HorizontalPanel>
+      <g:HTMLPanel styleName="new-zanata">
+        <ul class="list--horizontal {style.topBar}">
+          <li>
+            <g:Widget ui:field="transFilterView" />
+          </li>
+          <li class="{style.right-nav}">
+            <g:Widget ui:field="transUnitNavigationView" />
+          </li>
+          <li class="{style.right-refresh}">
+            <g:Anchor ui:field="refreshCurrentPage"
+              styleName="icon-arrows-cw gamma" />
+          </li>
+        </ul>
+      </g:HTMLPanel>
     </g:layer>
-    <g:layer top="2.5em" bottom="2em">
-      <g:LayoutPanel ui:field="editor" styleName="{style.editor}" />
+    <g:layer top="3em" bottom="2.5em">
+      <g:Widget ui:field="transUnitsTableView" styleName="{style.editor}" />
     </g:layer>
-    <g:layer bottom="0px" height="2em" left="0" right="16px">
-      <g:FlowPanel>
-        <fui:Pager ui:field="pager" />
-
-      </g:FlowPanel>
+    <g:layer bottom="0" height="2.5em" left="0" right="0">
+      <fui:Pager ui:field="pager" />
     </g:layer>
-    <g:layer bottom="0px" height="24px" right="0" width="24px">
-      <g:InlineLabel ui:field="resize" styleName="{style.iconButton}" />
+    <g:layer bottom="0px" height="1.8em" right="0" width="1.8em">
+      <g:Anchor ui:field="resize" styleName="{style.toggle-south-button}" />
     </g:layer>
   </g:LayoutPanel>
 </ui:UiBinder>

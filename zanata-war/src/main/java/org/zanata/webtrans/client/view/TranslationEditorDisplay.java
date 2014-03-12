@@ -5,19 +5,12 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.webtrans.client.ui.HasPager;
 
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
 public interface TranslationEditorDisplay extends WidgetDisplay {
-    void setEditorView(IsWidget widget);
-
-    void setTransUnitNavigation(IsWidget widget);
-
-    void setFilterView(IsWidget filterView);
-
     HasPager getPageNavigation();
 
     boolean isPagerFocused();

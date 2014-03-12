@@ -20,34 +20,22 @@
  */
 package org.zanata.webtrans.client.view;
 
-import java.util.Date;
-
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
-import org.zanata.webtrans.client.presenter.NotificationPresenter.DisplayOrder;
+import org.zanata.webtrans.client.presenter.NotificationDetailListener;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.NotificationDetailsBox;
-import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.client.ui.NotificationItem;
+import org.zanata.webtrans.client.ui.UnorderedListWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -56,7 +44,8 @@ import com.google.inject.Inject;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class NotificationView extends Composite implements NotificationDisplay {
+public class NotificationView extends Composite implements NotificationDisplay,
+        NotificationDetailListener {
 
     private static NotificationPanelUiBinder uiBinder = GWT
             .create(NotificationPanelUiBinder.class);
@@ -65,29 +54,6 @@ public class NotificationView extends Composite implements NotificationDisplay {
             UiBinder<Widget, NotificationView> {
     }
 
-    interface Styles extends CssResource {
-        String messageRow();
-
-        String severity();
-
-        String timeLabel();
-
-        String inlineLink();
-
-        String messagePanel();
-
-        String mainPanel();
-
-        String link();
-
-        String msgLabel();
-
-        String disabledInlineLink();
-    }
-
-    @UiField
-    VerticalPanel messagePanel;
-
     @UiField
     Anchor clearLink;
 
@@ -95,22 +61,22 @@ public class NotificationView extends Composite implements NotificationDisplay {
     Resources resources;
 
     @UiField
-    Styles style;
-
-    @UiField
-    ScrollPanel scrollPanel;
+    UnorderedListWidget messagePanel;
 
     private int messagesToKeep;
     private Listener listener;
 
-    private final NotificationDetailsBox detailBox;
+    private final NotificationDetailsBox notificationDetailsBox;
 
-    private DisplayOrder displayOrder = DisplayOrder.ASCENDING;
+    private final WebTransMessages messages;
 
     @Inject
-    public NotificationView(WebTransMessages messages, KeyShortcutPresenter keyShortcutPresenter) {
+    public NotificationView(WebTransMessages messages,
+            KeyShortcutPresenter keyShortcutPresenter) {
         initWidget(uiBinder.createAndBindUi(this));
-        detailBox = new NotificationDetailsBox(messages, keyShortcutPresenter);
+        this.messages = messages;
+        notificationDetailsBox =
+                new NotificationDetailsBox(messages, keyShortcutPresenter);
     }
 
     @UiHandler("clearLink")
@@ -130,81 +96,12 @@ public class NotificationView extends Composite implements NotificationDisplay {
 
     @Override
     public void appendMessage(final NotificationEvent notificationEvent) {
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        messagePanel.addOnTop(new NotificationItem(messages, notificationEvent,
+                this, true));
 
-        InlineLabel severityImg;
-
-        panel.setWidth("100%");
-
-        severityImg = createSeverityImage(notificationEvent.getSeverity());
-        panel.add(severityImg);
-
-        final String time = "[" + DateUtil.formatTime(new Date()) + "]";
-        Label timeLabel = new Label(time);
-        timeLabel.setStyleName(style.timeLabel());
-        panel.add(timeLabel);
-
-        Label msgLabel = new Label(notificationEvent.getMessage());
-        msgLabel.setStyleName(style.msgLabel());
-        msgLabel.addStyleName("pointer");
-
-        msgLabel.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                detailBox.setMessage(notificationEvent);
-                detailBox.center();
-            }
-        });
-        InlineLink inlineLink = notificationEvent.getInlineLink();
-        panel.add(msgLabel);
-        if (inlineLink != null) {
-            inlineLink.setLinkStyle(style.inlineLink());
-            inlineLink.setDisabledStyle(style.disabledInlineLink());
-            panel.add(inlineLink);
-            panel.setCellWidth(inlineLink, "16px");
+        while (messagePanel.getWidgetCount() > messagesToKeep) {
+            messagePanel.remove(messagePanel.getWidgetCount() - 1);
         }
-
-        panel.setCellWidth(severityImg, "20px");
-        panel.setCellWidth(timeLabel, "42px");
-        panel.setCellHorizontalAlignment(msgLabel,
-                HasHorizontalAlignment.ALIGN_LEFT);
-
-        if (displayOrder == DisplayOrder.ASCENDING) {
-            messagePanel.insert(panel, 0);
-
-            while (messagePanel.getWidgetCount() > messagesToKeep) {
-                messagePanel.remove(messagePanel.getWidgetCount() - 1);
-            }
-            scrollPanel.scrollToTop();
-        } else if (displayOrder == DisplayOrder.DESCENDING) {
-            messagePanel.add(panel);
-
-            while (messagePanel.getWidgetCount() > messagesToKeep) {
-                messagePanel.remove(0);
-            }
-            scrollPanel.scrollToBottom();
-        }
-
-        messagePanel.getWidget(messagePanel.getWidgetIndex(panel))
-                .setStyleName(style.messageRow());
-    }
-
-    private InlineLabel createSeverityImage(Severity severity) {
-        InlineLabel severityImg = new InlineLabel();
-
-        severityImg.setStyleName("icon-info-circle-2");
-        severityImg.addStyleName(style.severity());
-
-        if (severity == Severity.Error) {
-            severityImg.addStyleName("severity_error");
-        } else if (severity == Severity.Warning) {
-            severityImg.addStyleName("severity_warning");
-        } else {
-            severityImg.addStyleName("severity_info");
-        }
-
-        return severityImg;
     }
 
     @Override
@@ -213,12 +110,18 @@ public class NotificationView extends Composite implements NotificationDisplay {
     }
 
     @Override
-    public void setMessageOrder(DisplayOrder displayOrder) {
-        this.displayOrder = displayOrder;
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public void showNotificationDetail(NotificationEvent notificationEvent) {
+        notificationDetailsBox.setMessage(notificationEvent);
+        notificationDetailsBox.center();
+    }
+
+    @Override
+    public void closeMessage(NotificationEvent notificationEvent) {
+        // not supported on side notification
     }
 }

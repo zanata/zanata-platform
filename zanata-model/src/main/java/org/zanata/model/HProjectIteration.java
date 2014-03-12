@@ -69,7 +69,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.model.type.EntityType;
-import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;

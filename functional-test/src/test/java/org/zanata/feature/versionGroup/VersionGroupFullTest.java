@@ -20,30 +20,34 @@
  */
 package org.zanata.feature.versionGroup;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.utility.DashboardPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.NoScreenshot;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class VersionGroupFullTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
     private DashboardPage dashboardPage;
 
     @Before
@@ -63,14 +67,13 @@ public class VersionGroupFullTest {
         createVersionGroupPage.inputGroupName(groupName);
         createVersionGroupPage
                 .inputGroupDescription("A basic group can be saved");
-        createVersionGroupPage.selectStatus("ACTIVE");
         VersionGroupsPage versionGroupsPage =
                 createVersionGroupPage.saveGroup();
         assertThat("Group was created", versionGroupsPage.getGroupNames()
                 .contains(groupName));
         VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
         assertThat("The group is displayed", groupView.getTitle(),
-                Matchers.equalTo("Zanata: Groups:".concat(groupName)));
+                Matchers.equalTo("Groups - ".concat(groupName)));
     }
 
     @Test
@@ -82,47 +85,41 @@ public class VersionGroupFullTest {
         CreateVersionGroupPage groupPage =
                 dashboardPage.goToGroups().createNewGroup().saveGroupFailure();
         assertThat("The two errors are value is required",
-                groupPage.getErrors(), Matchers.contains(errorMsg, errorMsg));
+                groupPage.getFieldValidationErrors(), Matchers.contains(errorMsg, errorMsg));
 
         groupPage =
                 groupPage.clearFields().inputGroupName(groupName)
                         .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getErrors(),
+        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
 
         groupPage =
                 groupPage.clearFields().inputGroupId(groupID)
                         .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getErrors(),
+        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
     }
 
     @Test
     public void groupIDFieldSize() {
-        String errorMsg = "size must be between 1 and 40";
-        String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmno";
+        String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmn";
+        String groupIDExtra = "xyz";
         String groupName = "verifyIDFieldSizeName";
 
-        CreateVersionGroupPage groupPage =
-                dashboardPage.goToGroups().createNewGroup();
-        groupPage.inputGroupId(groupID).inputGroupName(groupName)
-                .saveGroupFailure();
-        assertThat("Invalid length error is shown", groupPage.getErrors(),
-                Matchers.contains(errorMsg));
+        CreateVersionGroupPage groupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID + groupIDExtra)
+                .inputGroupName(groupName);
 
-        groupPage.clearFields();
-        groupID = groupID.substring(0, 40);
-        assertThat("GroupID is now 40 characters long", groupID.length(),
-                Matchers.equalTo(40));
-        groupPage.inputGroupId(groupID).inputGroupName(groupName);
-        VersionGroupsPage versionGroupsPage = groupPage.saveGroup();
-        assertThat("A group ID of 40 chars is valid",
-                versionGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
+        assertThat("User cannot enter more than 40 characters",
+                groupPage.getGroupIdValue(),
+                Matchers.equalTo(groupID));
     }
 
     @Test
     public void groupDescriptionFieldSize() {
-        String errorMsg = "size must be between 0 and 100";
+        String errorMsg = "value must be shorter than or equal to 100 characters";
         String groupID = "verifyDescriptionFieldSizeID";
         String groupName = "verifyDescriptionFieldSizeName";
         String groupDescription =
@@ -135,7 +132,8 @@ public class VersionGroupFullTest {
         groupPage.inputGroupId(groupID).inputGroupName(groupName)
                 .inputGroupDescription(groupDescription);
         groupPage.saveGroupFailure();
-        assertThat("Invalid length error is shown", groupPage.getErrors(),
+        assertThat("Invalid length error is shown",
+                groupPage.getFieldValidationErrors(),
                 Matchers.contains(errorMsg));
 
         groupPage.clearFields();
@@ -148,6 +146,31 @@ public class VersionGroupFullTest {
                 groupPage.inputGroupDescription(groupDescription).saveGroup();
         assertThat("A group description of 100 chars is valid",
                 verGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
+
+    }
+
+    @Test
+    @Ignore("at the moment direct input project version to add without auto-complete will not work")
+    public void addANewProjectVersionToAnEmptyGroup()
+        throws InterruptedException {
+        String groupID = "add-version-to-empty-group";
+        String groupName = "AddVersionToEmptyGroup";
+        VersionGroupPage versionGroupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .saveGroup()
+                .goToGroup(groupName)
+                .clickProjectsTab()
+                .clickAddProjectVersionsButton()
+                .enterProjectVersion("about-fedora master")
+                .confirmAddProject()
+                .clickProjectsTab();
+
+        assertThat("The version group shows in the list",
+                versionGroupPage.getProjectVersionsInGroup(),
+                Matchers.hasItem("about-fedora master"));
 
     }
 

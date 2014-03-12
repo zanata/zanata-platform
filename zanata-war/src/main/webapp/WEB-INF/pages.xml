@@ -10,10 +10,16 @@
         <redirect view-id="/home.xhtml" />
       </rule>
     </navigation>
-    <navigation from-action="#{projectSearch.search}">
-      <redirect view-id="/search.xhtml" />
-    </navigation>
   </page>
+
+  <!-- Project Search -->
+  <page view-id="/search.xhtml">
+    <param name="query" value="#{projectSearch.searchQuery}" />
+    <action execute="#{breadcrumbs.clear}" />
+    <action
+      execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
+  </page>
+
 
   <page view-id="/dashboard/*" login-required="true">
     <restrict>#{identity.loggedIn}</restrict>
@@ -33,20 +39,12 @@
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
 
-  <!-- Project Search -->
-  <!-- TODO this rule is a duplicate, should be combined with first * rule -->
-  <page view-id="/search.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
-  </page>
-
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
     <navigation>
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule
         if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
@@ -67,7 +65,7 @@
   </page>
 
 
-  <!-- Landing page for Kerberos Authentication -->
+  <!-- Landing page for Kerberos ticket-based Authentication -->
   <page view-id="/account/klogin.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
@@ -78,7 +76,7 @@
         <redirect view-id="/account/login.xhtml" />
       </rule>
       <rule if-outcome="edit">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule if-outcome="inactive">
         <redirect view-id="/account/inactive_account.xhtml" />
@@ -96,17 +94,23 @@
     </navigation>
   </page>
 
-  <!-- Landing page for Internal and JAAS authentication -->
+  <!-- Landing page for Internal, JAAS and Kerberos form-based
+       authentication -->
   <page view-id="/account/login.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Login'])}" />
+
+    <action execute="#{identity.isLoggedIn()}" />
+    <navigation from-action="#{identity.isLoggedIn()}">
+      <rule if-outcome="true">
+        <redirect view-id="/dashboard/home.xhtml" />
+      </rule>
+    </navigation>
     <navigation from-action="#{loginAction.login}">
       <rule
         if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/edit.xhtml" />
+        <redirect view-id="/profile/create_user.xhtml" />
       </rule>
       <rule if-outcome="inactive">
         <begin-conversation />
@@ -160,11 +164,9 @@
   </page>
 
   <page view-id="/account/register.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Register'])}" />
-    <navigation>
-      <rule if="#{identity.loggedIn}">
+    <action execute="#{identity.isLoggedIn()}" />
+    <navigation from-action="#{identity.isLoggedIn()}">
+      <rule if-outcome="true">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
     </navigation>
@@ -389,11 +391,6 @@
 
   <page view-id="/version-group/create_version_group.xhtml">
     <restrict>#{s:hasPermission(versionGroupHome.instance, 'insert')}</restrict>
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.CreateNewGroup'])}" />
     <navigation from-action="#{versionGroupHome.persist}">
       <rule if="#{versionGroupHome.managed}">
         <redirect view-id="/version-group/home.xhtml" />
@@ -405,58 +402,9 @@
   </page>
 
   <page view-id="/version-group/version_group.xhtml">
+    <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
     <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-
     <action execute="#{versionGroupHome.validateSuppliedId}" />
-    <action execute="#{versionGroupAction.init(versionGroupSlug)}" />
-    <action execute="#{versionGroupAction.executePreSearch()}"
-      on-postback="false" />
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
-    <action execute="#{breadcrumbs.addLocation('', versionGroupHome.slug)}" />
-
-  </page>
-
-  <page view-id="/version-group/edit.xhtml" login-required="true">
-    <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-    <action
-      execute="#{identity.checkPermission(versionGroupHome.instance, 'update')}" />
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupHome.slug).param('versionGroupSlug', versionGroupHome.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.EditGroup'])}" />
-
-    <navigation from-action="#{versionGroupHome.update}">
-      <redirect view-id="/version-group/version_group.xhtml">
-        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{versionGroupHome.cancel}">
-      <redirect view-id="/version-group/version_group.xhtml">
-        <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/version-group/assign_maintainer.xhtml">
-    <param name="versionGroupSlug"
-      value="#{versionGroupMaintainerManageAction.slug}" />
-    <action execute="#{versionGroupMaintainerManageAction.init()}" />
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupMaintainerManageAction.slug).param('versionGroupSlug', versionGroupMaintainerManageAction.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}" />
-
   </page>
 
   <page view-id="/version-group/request_to_join.xhtml">
@@ -471,13 +419,12 @@
     <action
       execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinVersionGroup'])}" />
+      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestJoinGroup'])}" />
 
     <navigation from-action="#{versionGroupJoinAction.send}">
       <rule if-outcome="success">
         <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug"
-            value="#{versionGroupJoinAction.slug}" />
+          <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
@@ -485,17 +432,13 @@
       </rule>
     </navigation>
     <navigation from-action="#{versionGroupJoinAction.cancel}">
-      <rule>
-        <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug"
-            value="#{versionGroupJoinAction.slug}" />
-        </redirect>
-      </rule>
+      <redirect view-id="/version-group/version_group.xhtml">
+        <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
+      </redirect>
     </navigation>
   </page>
 
   <!-- Profile -->
-
   <page view-id="/profile/edit.xhtml">
     <restrict>#{identity.preAuthenticated}</restrict>
     <action execute="#{breadcrumbs.clear}" />
@@ -504,20 +447,20 @@
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.EditProfile'])}" />
     <navigation from-action="#{profileAction.edit}">
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if-outcome="updated">
-        <redirect view-id="/profile/view.xhtml" />
-      </rule>
+      <redirect view-id="/profile/view.xhtml" />
     </navigation>
     <navigation from-action="#{profileAction.cancel}">
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if-outcome="view">
-        <redirect view-id="/profile/view.xhtml" />
-      </rule>
+      <redirect view-id="/profile/view.xhtml" />
+    </navigation>
+  </page>
+
+  <page view-id="/profile/create_user.xhtml">
+    <restrict>#{identity.preAuthenticated}</restrict>
+    <navigation from-action="#{newProfileAction.createUser}">
+      <redirect view-id="/home.xhtml" />
+    </navigation>
+    <navigation from-action="#{newProfileAction.cancel}">
+      <redirect view-id="/home.xhtml" />
     </navigation>
   </page>
 
@@ -589,11 +532,6 @@
       execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}" />
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.ContactAdmin'])}" />
-    <navigation from-action="#{sendEmail.cancel}">
-      <rule>
-        <redirect view-id="/help/view.xhtml" />
-      </rule>
-    </navigation>
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">
         <redirect view-id="/help/view.xhtml" />
@@ -925,9 +863,9 @@
     <action
       execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', versionGroupJoinAction.iterationSlug).param('projectSlug', versionGroupJoinAction.projectSlug).param('iterationSlug', versionGroupJoinAction.iterationSlug)}" />
     <action
-      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.group.slug).param('versionGroupSlug', versionGroupJoinAction.group.slug)}" />
+      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestToJoinVersionGroup'])}" />
+      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestJoinGroup'])}" />
 
 
     <navigation from-action="#{versionGroupJoinAction.send}">
@@ -944,14 +882,12 @@
       </rule>
     </navigation>
     <navigation from-action="#{versionGroupJoinAction.cancel}">
-      <rule>
-        <redirect view-id="/iteration/view.xhtml">
-          <param name="projectSlug"
-            value="#{versionGroupJoinAction.projectSlug}" />
-          <param name="iterationSlug"
-            value="#{versionGroupJoinAction.iterationSlug}" />
-        </redirect>
-      </rule>
+      <redirect view-id="/iteration/view.xhtml">
+        <param name="projectSlug"
+          value="#{versionGroupJoinAction.projectSlug}" />
+        <param name="iterationSlug"
+          value="#{versionGroupJoinAction.iterationSlug}" />
+      </redirect>
     </navigation>
   </page>
 
@@ -1027,11 +963,9 @@
       </rule>
     </navigation>
     <navigation from-action="#{sendEmail.cancel}">
-      <rule>
-        <redirect view-id="/language/language.xhtml">
-          <param name="id" value="#{sendEmail.language}" />
-        </redirect>
-      </rule>
+      <redirect view-id="/language/language.xhtml">
+        <param name="id" value="#{sendEmail.language}" />
+      </redirect>
     </navigation>
   </page>
 
@@ -1059,11 +993,9 @@
       </rule>
     </navigation>
     <navigation from-action="#{sendEmail.cancel}">
-      <rule>
-        <redirect view-id="/language/language.xhtml">
-          <param name="id" value="#{sendEmail.language}" />
-        </redirect>
-      </rule>
+      <redirect view-id="/language/language.xhtml">
+        <param name="id" value="#{sendEmail.language}" />
+      </redirect>
     </navigation>
   </page>
 
@@ -1180,6 +1112,15 @@
   <exception class="org.jboss.seam.ConcurrentRequestTimeoutException"
     log-level="trace">
     <http-error error-code="503" />
+  </exception>
+
+  <exception class="javax.validation.ConstraintViolationException"
+    log-level="debug">
+    <redirect view-id="/error.xhtml">
+      <message
+        severity="warn">#{messages['jsf.Error']} #{org.jboss.seam.handledException.message}
+      </message>
+    </redirect>
   </exception>
 
   <exception class="org.jboss.seam.web.FileUploadException" log-level="warn">

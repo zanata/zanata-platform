@@ -1,12 +1,20 @@
 package org.zanata.rest.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import javax.ws.rs.core.Response.Status;
+
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -15,11 +23,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.DocumentServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
-
-import javax.ws.rs.core.Response.Status;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.zanata.service.impl.VersionStateCacheImpl;
 
 public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest {
     private final Logger log = LoggerFactory
@@ -37,7 +41,8 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest 
         seamAutowire.use("session", getSession()).use("entityManager", getEm())
                 .use("identity", mockIdentity).useImpl(LocaleServiceImpl.class)
                 .useImpl(CopyTransServiceImpl.class)
-                .useImpl(DocumentServiceImpl.class);
+                .useImpl(DocumentServiceImpl.class)
+                .useImpl(VersionStateCacheImpl.class);
 
         SourceDocResourceService sourceDocResourceService =
                 seamAutowire.autowire(SourceDocResourceService.class);

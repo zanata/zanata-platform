@@ -118,7 +118,8 @@ public class AsynchronousProcessResourceService implements
             }
         }
 
-        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>() {
+        String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>(name) {
             @Override
             public Void call() throws Exception {
                 DocumentService documentServiceImpl =
@@ -126,13 +127,8 @@ public class AsynchronousProcessResourceService implements
                                 .getInstance(DocumentServiceImpl.class);
                 documentServiceImpl.saveDocument(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true);
-                getHandle().setCurrentProgress(getHandle().getMaxProgress()); // TODO
-                                                                              // This
-                                                                              // should
-                                                                              // update
-                                                                              // with
-                                                                              // real
-                                                                              // progress
+                // TODO This should update with real progress
+                getHandle().setCurrentProgress(getHandle().getMaxProgress());
                 return null;
             }
         };
@@ -153,7 +149,8 @@ public class AsynchronousProcessResourceService implements
 
         resourceUtils.validateExtensions(extensions); // gettext, comment
 
-        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>() {
+        String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>(name) {
             @Override
             public Void call() throws Exception {
                 DocumentService documentServiceImpl =
@@ -198,8 +195,9 @@ public class AsynchronousProcessResourceService implements
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
 
+        String name = "TranslatedDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash+"-"+locale;
         SimpleAsyncTask<List<String>> task =
-                new SimpleAsyncTask<List<String>>() {
+                new SimpleAsyncTask<List<String>>(name) {
                     @Override
                     public List<String> call() throws Exception {
                         TranslationService translationServiceImpl =

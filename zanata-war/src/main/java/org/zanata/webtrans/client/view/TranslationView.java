@@ -47,17 +47,12 @@ public class TranslationView extends Composite implements
     private final HasVisibility resizeButton;
 
     @UiField(provided = true)
-    LayoutPanel southPanelContainer;
-
-    @UiField
-    LayoutPanel southPanel;
-
-    @UiField
-    LayoutPanel editorContainer;
+    Widget translationEditorView;
 
     @UiField(provided = true)
     SplitLayoutPanel mainSplitPanel;
 
+    @UiField(provided = true)
     SplitLayoutPanel tmGlossaryPanel;
 
     @Inject
@@ -68,19 +63,13 @@ public class TranslationView extends Composite implements
         this.glossaryView = glossaryView;
         resizeButton = translationEditorView.getResizeButton();
 
-        southPanelContainer = new LayoutPanel();
-
-        tmGlossaryPanel = new SplitLayoutPanel(2);
-
         mainSplitPanel = new SplitLayoutPanel(2);
+        tmGlossaryPanel = new SplitLayoutPanel(2);
+        this.translationEditorView = translationEditorView.asWidget();
 
         initWidget(uiBinder.createAndBindUi(this));
-        mainSplitPanel.setWidgetMinSize(southPanelContainer,
+        mainSplitPanel.setWidgetMinSize(tmGlossaryPanel,
                 (int) MIN_SOUTH_PANEL_HEIGHT);
-
-        southPanel.add(tmGlossaryPanel);
-
-        setEditorView(translationEditorView.asWidget());
 
         setGlossaryView();
         setTranslationMemoryView();
@@ -96,10 +85,6 @@ public class TranslationView extends Composite implements
         tmGlossaryPanel.addEast(glossaryView.asWidget(), GLOSSARY_PANEL_WIDTH);
     }
 
-    protected void setEditorView(Widget editorView) {
-        this.editorContainer.add(editorView);
-    }
-
     @Override
     public Widget asWidget() {
         return this;
@@ -110,16 +95,16 @@ public class TranslationView extends Composite implements
         mainSplitPanel.forceLayout();
         Widget splitter =
                 SplitLayoutPanelHelper.getAssociatedSplitter(mainSplitPanel,
-                        southPanelContainer);
+                        tmGlossaryPanel);
         if (expanded) {
-            mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(),
+            mainSplitPanel.setWidgetSize(tmGlossaryPanel.asWidget(),
                     SOUTH_PANEL_HEIGHT);
         } else {
-            mainSplitPanel.setWidgetSize(southPanelContainer.asWidget(),
+            mainSplitPanel.setWidgetSize(tmGlossaryPanel.asWidget(),
                     MIN_SOUTH_PANEL_HEIGHT);
             SOUTH_PANEL_HEIGHT =
-                    mainSplitPanel.getWidgetContainerElement(
-                            southPanelContainer).getOffsetHeight();
+                    mainSplitPanel.getWidgetContainerElement(tmGlossaryPanel)
+                            .getOffsetHeight();
         }
         splitter.setVisible(expanded);
         mainSplitPanel.animate(ANIMATE_DURATION);

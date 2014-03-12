@@ -1,8 +1,8 @@
 package org.zanata
 
 import org.hibernate.Session
-import org.jboss.seam.log.Log
-import org.jboss.seam.log.Logging
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
@@ -27,13 +27,12 @@ import javax.persistence.Persistence
  */
 @Listeners(TestMethodListener.class)
 abstract class ZanataGroovyJpaTest {
+    private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
     private static final String PERSIST_NAME = "zanataTestDatasourcePU";
 
     private static EntityManagerFactory emf;
 
     protected EntityManager em;
-
-    Log log = Logging.getLog(ZanataJpaTest.class);
 
     /**
      * @return A list of Hibernate Entities to create

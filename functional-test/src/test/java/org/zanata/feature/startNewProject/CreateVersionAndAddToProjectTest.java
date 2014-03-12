@@ -35,7 +35,6 @@ import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**

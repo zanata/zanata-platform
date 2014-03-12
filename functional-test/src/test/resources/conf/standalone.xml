@@ -233,7 +233,7 @@
         <smtp-server outbound-socket-binding-ref="mail-smtp" />
       </mail-session>
     </subsystem>
-    <subsystem xmlns="urn:jboss:domain:naming:1.3">
+    <subsystem xmlns="urn:jboss:domain:naming:1.2">
       <bindings>
         <simple name="java:global/zanata/security/auth-policy-names/internal"
           value="zanata.internal" />
@@ -242,8 +242,11 @@
         <simple name="java:global/zanata/security/admin-users" value="admin" />
         <simple name="java:global/zanata/email/default-from-address"
           value="no-reply@zanata.org" />
+        <simple name="java:global/zanata/smtp/port" value="${smtp.port}" />
         <simple name="java:global/zanata/files/document-storage-directory"
           value="${project.build.directory}/zanata-documents" />
+        <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
+          lookup="java:global/zanata/files/document-storage-directory" />
       </bindings>
       <remote-naming />
     </subsystem>
@@ -333,10 +336,10 @@
   </profile>
   <interfaces>
     <interface name="management">
-      <inet-address value="${jboss.bind.address.management:127.0.0.1}" />
+      <inet-address value="${jboss.bind.address.management:0.0.0.0}" />
     </interface>
     <interface name="public">
-      <inet-address value="${jboss.bind.address:127.0.0.1}" />
+      <inet-address value="${jboss.bind.address:0.0.0.0}" />
     </interface>
     <!-- TODO - only show this if the jacorb subsystem is added  -->
     <interface name="unsecure">
@@ -358,7 +361,6 @@
     <socket-binding name="ajp" port="8009" />
     <socket-binding name="http" port="8080" />
     <socket-binding name="https" port="8443" />
-    <socket-binding name="osgi-http" interface="management" port="8090" />
     <socket-binding name="remoting" port="4447" />
     <socket-binding name="txn-recovery-environment" port="4712" />
     <socket-binding name="txn-status-manager" port="4713" />

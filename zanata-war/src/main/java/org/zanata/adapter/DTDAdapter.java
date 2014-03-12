@@ -29,7 +29,7 @@ import net.sf.okapi.filters.dtd.DTDFilter;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  * @see DTDFilter
  */
-public class DTDAdapter extends GenericOkapiFilterAdapter {
+public class DTDAdapter extends OkapiFilterAdapter {
     public DTDAdapter() {
         super(new DTDFilter(), IdSource.textUnitName);
     }

@@ -21,16 +21,17 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.international.StatusMessage;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.FlashScopeBean;
+import org.zanata.util.ZanataMessages;
 
 /**
  * Copy Trans page action bean.
@@ -52,7 +53,7 @@ public class CopyTransAction implements Serializable {
     private FlashScopeBean flashScope;
 
     @In
-    private Map<String, String> messages;
+    private ZanataMessages zanataMessages;
 
     @In
     private CopyTransOptionsModel copyTransOptionsModel;
@@ -103,12 +104,15 @@ public class CopyTransAction implements Serializable {
     public
             void startCopyTrans() {
         if (isCopyTransRunning()) {
-            flashScope.setAttribute("message", messages
-                    .get("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
+            addMessage(
+                    StatusMessage.Severity.INFO,
+                    zanataMessages
+                            .getMessage("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            flashScope.setAttribute("message",
-                    messages.get("jsf.iteration.CopyTrans.NoDocuments"));
+            addMessage(StatusMessage.Severity.INFO,
+                    zanataMessages
+                            .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
@@ -116,8 +120,23 @@ public class CopyTransAction implements Serializable {
         HCopyTransOptions options = copyTransOptionsModel.getInstance();
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
-        flashScope.setAttribute("message",
-                messages.get("jsf.iteration.CopyTrans.Started"));
+        addMessage(StatusMessage.Severity.INFO,
+                zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
+    }
+
+    /**
+     * Use FlashScopeBean to store message in page. Multiple ajax requests for
+     * re-rendering statistics after updating will clear FacesMessages.
+     *
+     * @param severity
+     * @param message
+     */
+    private void addMessage(StatusMessage.Severity severity, String message) {
+        StatusMessage statusMessage =
+                new StatusMessage(severity, null, null, message, null);
+        statusMessage.interpolate();
+
+        flashScope.setAttribute("message", statusMessage);
     }
 
     public void cancel() {

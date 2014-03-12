@@ -21,8 +21,6 @@
 
 package org.zanata.webtrans.client.service;
 
-import java.util.List;
-
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.ContentState;
@@ -49,7 +47,6 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -124,13 +121,12 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler,
 
         targetContentsPresenter.setEditingState(idToSave,
                 TargetContentsDisplay.EditingState.SAVING);
-        TransUnitUpdated.UpdateType updateType =
-                workoutUpdateType(forSaving.getStatus());
 
         UpdateTransUnit updateTransUnit =
                 new UpdateTransUnit(new TransUnitUpdateRequest(idToSave,
                         forSaving.getTargets(), forSaving.getAdjustedStatus(),
-                        forSaving.getVerNum()), updateType);
+                        forSaving.getVerNum()),
+                        TransUnitUpdated.UpdateType.WebEditorSave);
         Log.info("about to save translation: " + updateTransUnit);
         dispatcher.execute(
                 updateTransUnit,
@@ -178,16 +174,6 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler,
                 + transUnit.getTargets() + " state: " + transUnit.getStatus());
         return Objects.equal(transUnit.getStatus(), event.getAdjustedStatus())
                 && Objects.equal(transUnit.getTargets(), event.getTargets());
-    }
-
-    private TransUnitUpdated.UpdateType workoutUpdateType(ContentState status) {
-        if (status == ContentState.Approved || status == ContentState.Rejected) {
-            return TransUnitUpdated.UpdateType.WebEditorSaveReview;
-        } else if (status == ContentState.NeedReview) {
-            return TransUnitUpdated.UpdateType.WebEditorSaveFuzzy;
-        } else {
-            return TransUnitUpdated.UpdateType.WebEditorSave;
-        }
     }
 
     private class UpdateTransUnitCallback implements

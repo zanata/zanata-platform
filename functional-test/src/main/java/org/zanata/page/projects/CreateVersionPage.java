@@ -20,18 +20,30 @@
  */
 package org.zanata.page.projects;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
+import org.zanata.util.Constants;
+import org.zanata.util.TableRow;
+import org.zanata.util.WebElementUtil;
 
 public class CreateVersionPage extends BasePage {
-    @FindBy(id = "iterationForm:slugField:slug")
-    private WebElement versionIdField;
+
+    private static int NAME_COLUMN = 0;
+    private static int DESCRIPTION_COLUMN = 1;
+    private static int OPTION_COLUMN = 2;
 
     @FindBy(id = "iterationForm:projectTypeField:projectType")
     private WebElement projectTypeSelection;
@@ -43,28 +55,33 @@ public class CreateVersionPage extends BasePage {
     private WebElement saveButton;
 
     private static final Map<String, String> projectTypeOptions =
-            new HashMap<String, String>();
-    static {
-        projectTypeOptions.put("File",
-                "File. For plain text, LibreOffice, InDesign.");
-        projectTypeOptions.put("Gettext",
-                "Gettext. For gettext software strings.");
-        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
-        projectTypeOptions.put("Properties",
-                "Properties. For Java properties files.");
-        projectTypeOptions.put("Utf8Properties",
-                "Utf8Properties. For UTF8-encoded Java properties.");
-        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
-        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
-    }
+            Constants.projectTypeOptions();
 
     public CreateVersionPage(final WebDriver driver) {
         super(driver);
     }
 
-    public CreateVersionPage inputVersionId(String versionId) {
-        versionIdField.sendKeys(versionId);
-        return this;
+    /**
+     * Enter a version ID - only available on creating a new version
+     * @param versionId
+     * @return new CreateVersionPage
+     */
+    public CreateVersionPage inputVersionId(final String versionId) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                getVersionIdField().clear();
+                new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
+                getVersionIdField().sendKeys(versionId);
+                defocus();
+                return true;
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    private WebElement getVersionIdField() {
+        return getDriver().findElement(By.id("iterationForm:slugField:slug"));
     }
 
     public CreateVersionPage selectProjectType(String projectType) {
@@ -81,5 +98,149 @@ public class CreateVersionPage extends BasePage {
     public ProjectVersionPage saveVersion() {
         clickAndCheckErrors(saveButton);
         return new ProjectVersionPage(getDriver());
+    }
+
+    public ProjectVersionPage clickUpdate() {
+        clickAndCheckErrors(
+                getDriver().findElement(By.id("iterationForm:update")));
+        return new ProjectVersionPage(getDriver());
+    }
+
+    public CreateVersionPage showLocalesOverride() {
+        getDriver().findElement(By.id("iterationForm:overrideLocales"))
+                .click();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                        .findElement(By.id("iterationForm:languagelist1"))
+                        .isDisplayed();
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage selectEnabledLanguage(String language) {
+        getDriver()
+                .findElement(By.id("iterationForm:languagelist1"))
+                .findElement(By.xpath(".//option[@value='"+language+"']"))
+                .click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage selectDisabledLanguage(String language) {
+        getDriver()
+                .findElement(By.id("iterationForm:languagelist2"))
+                .findElement(By.xpath(".//option[@value='"+language+"']"))
+                .click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage clickAddLanguage() {
+        getDriver().findElement(By.xpath("//*[@value='Add >']")).click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage clickRemoveLanguage() {
+        getDriver().findElement(By.xpath("//*[@value='< Remove']")).click();
+        return new CreateVersionPage(getDriver());
+    }
+
+    public List<String> getEnabledLanguages() {
+        List<String> languages = new ArrayList<String>();
+        for (WebElement element : getDriver()
+                .findElement(By.id("iterationForm:languagelist1"))
+                .findElements(By.tagName("option"))) {
+            languages.add(element.getText());
+        }
+        return languages;
+    }
+
+    public List<String> getDisabledLanguages() {
+        List<String> languages = new ArrayList<String>();
+        for (WebElement element : getDriver()
+                .findElement(By.id("iterationForm:languagelist2"))
+                .findElements(By.tagName("option"))) {
+            languages.add(element.getText());
+        }
+        return languages;
+    }
+
+    public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getErrors().size() == numberOfErrors;
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    public CreateVersionPage waitForListCount(final int enabled,
+                                              final int disabled) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                    .findElement(By.id("iterationForm:languagelist1"))
+                    .findElements(By.tagName("option"))
+                        .size() == enabled &&
+                    getDriver()
+                        .findElement(By.id("iterationForm:languagelist2"))
+                        .findElements(By.tagName("option"))
+                            .size() == disabled;
+            }
+        });
+        return new CreateVersionPage(getDriver());
+    }
+
+    public boolean isValidationLevel(String optionName, String level) {
+        String cssPath = ".//*[@value='" + level + "']";
+        WebElement option =
+                getValidationOption(optionName).getCells().get(OPTION_COLUMN)
+                        .findElement(By.xpath(cssPath));
+        return option.getAttribute("checked").equals("true");
+    }
+
+    private TableRow getValidationOption(final String optionName) {
+        TableRow matchedRow = waitForTenSec()
+                .until(new Function<WebDriver, TableRow>() {
+                    @Override
+                    public TableRow apply(WebDriver driver) {
+                        List<TableRow> tableRows = WebElementUtil
+                                .getTableRows(getDriver(), driver.findElement(By
+                                        .id("iterationForm:validationOptionsTable")));
+                        Optional<TableRow> matchedRow = Iterables
+                                .tryFind(tableRows,
+                                        new Predicate<TableRow>() {
+                                            @Override
+                                            public boolean apply(TableRow input) {
+                                                List<String> cellContents = input
+                                                        .getCellContents();
+                                                String nameCell = cellContents
+                                                        .get(NAME_COLUMN)
+                                                        .trim();
+                                                return nameCell
+                                                        .equalsIgnoreCase(optionName);
+                                            }
+                                        });
+
+                        // we keep looking for the option until timeout
+                        return matchedRow.isPresent() ? matchedRow.get() : null;
+                    }
+                });
+           return matchedRow;
+    }
+
+    public CreateVersionPage setValidationLevel(String optionName, String level) {
+        String cssPath = ".//input[@value='" + level + "']";
+        getValidationOption(optionName).getCells().get(OPTION_COLUMN)
+                .findElement(By.xpath(cssPath)).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            // Wait for half a second before continuing
+        }
+        return new CreateVersionPage(getDriver());
     }
 }

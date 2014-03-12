@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,22 +36,22 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.framework.EntityNotFoundException;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.annotation.CachedMethods;
+import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
@@ -61,15 +63,11 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.util.DateUtil;
 
 import com.google.common.base.Optional;
-
-import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("viewAllStatusAction")
 @Scope(ScopeType.PAGE)
@@ -77,15 +75,14 @@ import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 public class ViewAllStatusAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final PeriodFormatterBuilder PERIOD_FORMATTER_BUILDER =
+    // Period Formatters are thread safe and immutable according to joda time
+    // docs
+    private static final PeriodFormatter COPY_TRANS_TIME_REMAINING_FORMATTER =
             new PeriodFormatterBuilder().appendDays()
                     .appendSuffix(" day", " days").appendSeparator(", ")
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins");
-
-    @Logger
-    private Log log;
+                    .appendSuffix(" min", " mins").toFormatter();
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -100,10 +97,10 @@ public class ViewAllStatusAction implements Serializable {
     private PersonDAO personDAO;
 
     @In
-    private LocaleService localeServiceImpl;
+    private VersionGroupDAO versionGroupDAO;
 
     @In
-    private CopyTransService copyTransServiceImpl;
+    private LocaleService localeServiceImpl;
 
     @In
     private VersionGroupService versionGroupServiceImpl;
@@ -216,8 +213,8 @@ public class ViewAllStatusAction implements Serializable {
                             .getId());
         } else {
             total =
-                    projectIterationDAO.getTotalCountForIteration(iteration
-                            .getId());
+                    projectIterationDAO
+                            .getTotalMessageCountForIteration(iteration.getId());
         }
 
         for (HLocale locale : localeList) {
@@ -255,8 +252,8 @@ public class ViewAllStatusAction implements Serializable {
                             .getId());
         } else {
             total =
-                    projectIterationDAO.getTotalCountForIteration(iteration
-                            .getId());
+                    projectIterationDAO
+                            .getTotalMessageCountForIteration(iteration.getId());
         }
 
         for (HLocale locale : localeList) {
@@ -465,16 +462,13 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     private String formatTimePeriod(long durationInMillis) {
-        PeriodFormatter formatter = PERIOD_FORMATTER_BUILDER.toFormatter();
-        CopyTransTaskHandle handle =
-                copyTransManager
-                        .getCopyTransProcessHandle(getProjectIteration());
         Period period = new Period(durationInMillis);
 
         if (period.toStandardMinutes().getMinutes() <= 0) {
             return "less than a minute"; // TODO Localize
         } else {
-            return formatter.print(period.normalizedStandard());
+            return COPY_TRANS_TIME_REMAINING_FORMATTER.print(period
+                    .normalizedStandard());
         }
     }
 
@@ -491,12 +485,11 @@ public class ViewAllStatusAction implements Serializable {
     }
 
     public void searchGroup() {
-        searchResults =
-                versionGroupServiceImpl.searchLikeSlugAndName(searchTerm);
+        searchResults = versionGroupDAO.searchGroupBySlugAndName(searchTerm);
     }
 
-    public boolean isGroupInVersion(String groupSlug) {
-        return versionGroupServiceImpl.isGroupInVersion(groupSlug,
+    public boolean isVersionInGroup(String groupSlug) {
+        return versionGroupServiceImpl.isVersionInGroup(groupSlug,
                 getProjectIteration().getId());
     }
 

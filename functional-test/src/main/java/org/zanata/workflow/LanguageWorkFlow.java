@@ -30,15 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LanguageWorkFlow extends AbstractWebWorkFlow {
 
-    public void addLanguageAndJoin(String localeId) {
-        ManageLanguagePage manageLanguagePage = addLanguage(localeId);
-        ManageLanguageTeamMemberPage teamMemberPage =
-                manageLanguagePage.manageTeamMembersFor(localeId);
-        if (!teamMemberPage.getMemberUsernames().contains("admin")) {
-            teamMemberPage.joinLanguageTeam();
-        } else {
+    public ManageLanguageTeamMemberPage addLanguageAndJoin(String localeId) {
+        ManageLanguageTeamMemberPage teamMemberPage = addLanguage(localeId)
+                .manageTeamMembersFor(localeId);
+        if (teamMemberPage.getMemberUsernames().contains("admin")) {
             log.warn("admin has already joined the language [{}]", localeId);
+            return teamMemberPage;
         }
+        return teamMemberPage.joinLanguageTeam();
     }
 
     public ManageLanguagePage addLanguage(String localeId) {

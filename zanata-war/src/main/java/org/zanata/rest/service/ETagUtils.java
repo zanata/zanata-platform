@@ -13,8 +13,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -33,8 +31,6 @@ public class ETagUtils {
 
     @In
     private DocumentDAO documentDAO;
-
-    Log log = Logging.getLog(ETagUtils.class);
 
     /**
      * Retrieves the ETag for the Project

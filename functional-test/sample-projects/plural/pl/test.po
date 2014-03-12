@@ -15,39 +15,64 @@ msgid "One file removed"
 msgid_plural "%d files removed"
 msgstr[0] "1 aoeuaouaou"
 msgstr[1] "%d aoeuaouao"
+msgstr[2] ""
 
 #, c-format
 msgid "One other file removed"
 msgid_plural "%d files removed"
 msgstr[0] ""
 msgstr[1] "%d aoeuaouao"
+msgstr[2] ""
 
 #, c-format
 msgid "One file removed_"
 msgid_plural "%d more files removed"
 msgstr[0] "1 tnhdaoeuaoue"
 msgstr[1] ""
+msgstr[2] ""
 
 #, c-format
 msgid "File removed"
 msgid_plural "%d files removed"
 msgstr[0] "1 tnhdnthdntioei"
+msgstr[1] ""
+msgstr[2] ""
 
-#, c-format, fuzzy
+#, fuzzy, c-format
 msgid "Yet Another File removed"
 msgid_plural "%d files removed"
 msgstr[0] "%d aoenuthaosneuh"
+msgstr[1] ""
+msgstr[2] ""
 
-#, c-format, fuzzy
+#, c-format
 msgid "2 Another File removed"
 msgid_plural "%d files removed"
 msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-# not legal because it has multiple msgstr but no msgid_plural:
 #, c-format
-#msgid "File removed."
-#msgstr[0] ""
-#msgstr[1] ""
+msgid "msgid"
+msgstr "message string"
 
-msgid "pl msgid"
-msgstr "pl msgstr"
+#, c-format
+msgid "%d files removed"
+msgid_plural "One file removed"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, c-format
+msgid "aaaaaaaaaaaa"
+msgid_plural "bbbbbbbbbbb"
+msgstr[0] "aaaaaaaaaaaa"
+msgstr[1] "bbbbbbbbbbb"
+msgstr[2] "bbbbbbbbbbb"
+
+#, c-format
+msgid "bbbbbbbbbbb"
+msgid_plural "aaaaaaaaaaaa"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""

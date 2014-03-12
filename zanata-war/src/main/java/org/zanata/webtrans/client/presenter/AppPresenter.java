@@ -20,12 +20,9 @@
  */
 package org.zanata.webtrans.client.presenter;
 
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.PresenterRevealedEvent;
-import net.customware.gwt.presenter.client.PresenterRevealedHandler;
-import net.customware.gwt.presenter.client.widget.WidgetPresenter;
-
 import org.zanata.common.LocaleId;
+import org.zanata.common.TransUnitCount;
+import org.zanata.common.TransUnitWords;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -38,9 +35,9 @@ import org.zanata.webtrans.client.events.KeyShortcutEventHandler;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.NotificationEventHandler;
-import org.zanata.webtrans.client.events.ProjectStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.ProjectStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
+import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -52,15 +49,21 @@ import org.zanata.webtrans.client.keys.KeyShortcut;
 import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.PresenterRevealedEvent;
+import net.customware.gwt.presenter.client.PresenterRevealedHandler;
+import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         ShowSideMenuEventHandler, WorkspaceContextUpdateEventHandler,
@@ -85,12 +88,15 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     // states
     private DocumentInfo selectedDocument;
+
     private ContainerTranslationStatistics selectedDocumentStats =
             new ContainerTranslationStatistics();
-    private ContainerTranslationStatistics projectStats =
-            new ContainerTranslationStatistics();
+
+    private ContainerTranslationStatistics projectStats;
+
     private ContainerTranslationStatistics currentDisplayStats =
             new ContainerTranslationStatistics();
+
     private MainView currentView = null;
 
     @Inject
@@ -121,7 +127,18 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                         .getLocaleId();
 
+        projectStats = new ContainerTranslationStatistics();
+        resetProjectStats();
+
         display.setListener(this);
+    }
+
+    private void resetProjectStats() {
+        projectStats.setStats(Lists.newArrayList(
+                new TranslationStatistics(new TransUnitCount(0, 0, 0), localeId
+                        .getId()),
+                new TranslationStatistics(new TransUnitWords(0, 0, 0), localeId
+                        .getId())));
     }
 
     @Override
@@ -142,7 +159,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 this));
         registerHandler(eventBus.addHandler(
                 AttentionModeActivationEvent.getType(), this));
-        registerHandler(eventBus.addHandler(ProjectStatsUpdatedEvent.getType(),
+        registerHandler(eventBus.addHandler(RefreshProjectStatsEvent.getType(),
                 this));
         registerHandler(eventBus.addHandler(NotificationEvent.getType(), this));
 
@@ -433,32 +450,28 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     }
 
     @Override
-    public void onProjectStatsUpdated(ProjectStatsUpdatedEvent event) {
-        TranslationStatistics msgStats =
-                event.getNewStats()
-                        .getStats(localeId.getId(), StatUnit.MESSAGE);
-        TranslationStatistics currentMsgStats =
-                projectStats.getStats(localeId.getId(), StatUnit.MESSAGE);
+    public void onProjectStatsUpdated(RefreshProjectStatsEvent event) {
+        resetProjectStats();
 
-        if (currentMsgStats == null) {
+        for (DocumentNode documentNode : event.getDocumentNodes()) {
+            ContainerTranslationStatistics statsContainer =
+                    documentNode.getDocInfo().getStats();
+
+            TranslationStatistics msgStats =
+                    statsContainer.getStats(localeId.getId(), StatUnit.MESSAGE);
+
             if (msgStats != null) {
-                projectStats.addStats(msgStats);
+                projectStats.getStats(localeId.getId(), StatUnit.MESSAGE).add(
+                        msgStats);
             }
-        } else {
-            currentMsgStats.add(msgStats);
-        }
 
-        TranslationStatistics wordStats =
-                event.getNewStats().getStats(localeId.getId(), StatUnit.WORD);
-        TranslationStatistics currentWordStats =
-                projectStats.getStats(localeId.getId(), StatUnit.WORD);
+            TranslationStatistics wordStats =
+                    statsContainer.getStats(localeId.getId(), StatUnit.WORD);
 
-        if (currentWordStats == null) {
             if (wordStats != null) {
-                projectStats.addStats(wordStats);
+                projectStats.getStats(localeId.getId(), StatUnit.WORD).add(
+                        wordStats);
             }
-        } else {
-            currentWordStats.add(wordStats);
         }
         refreshStatsDisplay();
     }

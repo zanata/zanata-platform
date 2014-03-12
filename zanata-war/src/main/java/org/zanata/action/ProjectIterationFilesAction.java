@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -30,27 +28,21 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
-
-import lombok.Getter;
-import lombok.Setter;
+import javax.ws.rs.WebApplicationException;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.Hex;
 import org.zanata.annotation.CachedMethods;
@@ -90,26 +82,35 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.util.StringUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import static org.zanata.rest.dto.stats.TranslationStatistics.StatUnit.WORD;
 
 @Name("projectIterationFilesAction")
 @Scope(ScopeType.PAGE)
 @CachedMethods
+@Slf4j
 public class ProjectIterationFilesAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Getter
+    @Setter
     private String projectSlug;
 
+    @Getter
+    @Setter
     private String iterationSlug;
 
+    @Getter
+    @Setter
     private String localeId;
-
-    @Logger
-    private Log log;
 
     @In
     private ZanataIdentity identity;
@@ -150,8 +151,12 @@ public class ProjectIterationFilesAction implements Serializable {
     @In
     private ZanataMessages zanataMessages;
 
+    @Getter
+    @Setter
     private List<HDocument> iterationDocuments;
 
+    @Getter
+    @Setter
     private String documentNameFilter;
 
     private TranslationFileUploadHelper translationFileUpload;
@@ -160,6 +165,8 @@ public class ProjectIterationFilesAction implements Serializable {
 
     private HProjectIteration projectIteration;
 
+    @Getter
+    @Setter
     private StatUnit statsOption = WORD;
 
     private Map<String, TranslationStatistics> statisticMap;
@@ -170,25 +177,25 @@ public class ProjectIterationFilesAction implements Serializable {
                         this.iterationSlug);
         this.translationFileUpload = new TranslationFileUploadHelper();
         this.documentFileUpload = new DocumentFileUploadHelper();
-        this.statisticMap = new HashMap<String, TranslationStatistics>();
+        this.statisticMap = Maps.newHashMap();
     }
 
     public HLocale getLocale() {
         return localeDAO.findByLocaleId(new LocaleId(localeId));
     }
 
-    public TranslationStatistics getStatsForDocument(HDocument doc) {
-        if (!statisticMap.containsKey(doc.getDocId())) {
+    public TranslationStatistics getStatsForDocument(String docId) {
+        if (!statisticMap.containsKey(docId)) {
             ContainerTranslationStatistics docStatistics =
                     statisticsServiceImpl.getStatistics(this.projectSlug,
-                            this.iterationSlug, doc.getDocId(), true,
+                            this.iterationSlug, docId, true,
                             new String[] { this.localeId });
             TranslationStatistics stats =
                     docStatistics.getStats(this.localeId, statsOption);
-            statisticMap.put(doc.getDocId(), stats);
+            statisticMap.put(docId, stats);
             return stats;
         } else {
-            return statisticMap.get(doc.getDocId());
+            return statisticMap.get(docId);
         }
     }
 
@@ -324,6 +331,11 @@ public class ProjectIterationFilesAction implements Serializable {
                     documentFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
             FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
+        } catch (WebApplicationException e) {
+            FacesMessages.instance().add(
+                    Severity.ERROR,
+                    "Failed to upload POT file: "
+                            + e.getResponse().getEntity().toString());
         }
     }
 
@@ -350,7 +362,7 @@ public class ProjectIterationFilesAction implements Serializable {
                     translationFileServiceImpl.persistToTempFile(fileContents);
             md5hash = md.digest();
         } catch (ZanataServiceException e) {
-            log.error("Failed writing temp file for document {0}", e,
+            log.error("Failed writing temp file for document {}", e,
                     documentFileUpload.getDocId());
             FacesMessages.instance().add(Severity.ERROR,
                     "Error saving uploaded document {0} to server.", fileName);
@@ -448,38 +460,6 @@ public class ProjectIterationFilesAction implements Serializable {
         return this.isDocumentUploadAllowed();
     }
 
-    public List<HDocument> getIterationDocuments() {
-        return iterationDocuments;
-    }
-
-    public void setIterationDocuments(List<HDocument> iterationDocuments) {
-        this.iterationDocuments = iterationDocuments;
-    }
-
-    public String getProjectSlug() {
-        return projectSlug;
-    }
-
-    public void setProjectSlug(String projectSlug) {
-        this.projectSlug = projectSlug;
-    }
-
-    public String getIterationSlug() {
-        return iterationSlug;
-    }
-
-    public void setIterationSlug(String iterationSlug) {
-        this.iterationSlug = iterationSlug;
-    }
-
-    public String getLocaleId() {
-        return localeId;
-    }
-
-    public void setLocaleId(String localeId) {
-        this.localeId = localeId;
-    }
-
     public boolean isKnownProjectType() {
         ProjectType type =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug)
@@ -515,14 +495,6 @@ public class ProjectIterationFilesAction implements Serializable {
                         iterationSlug, docPath, docName);
     }
 
-    public String getDocumentNameFilter() {
-        return documentNameFilter;
-    }
-
-    public void setDocumentNameFilter(String documentNameFilter) {
-        this.documentNameFilter = documentNameFilter;
-    }
-
     public TranslationFileUploadHelper getTranslationFileUpload() {
         return translationFileUpload;
     }
@@ -537,14 +509,6 @@ public class ProjectIterationFilesAction implements Serializable {
                     projectIterationDAO.getBySlug(projectSlug, iterationSlug);
         }
         return this.projectIteration;
-    }
-
-    public StatUnit getStatsOption() {
-        return statsOption;
-    }
-
-    public void setStatsOption(StatUnit statsOption) {
-        this.statsOption = statsOption;
     }
 
     public boolean isUserAllowedToTranslate() {

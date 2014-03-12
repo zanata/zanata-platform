@@ -20,24 +20,24 @@
  */
 package org.zanata.feature.administration;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.io.File;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.TranslationMemoryEditPage;
 import org.zanata.page.administration.TranslationMemoryPage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.RetryRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.TranslationMemoryWorkFlow;
-
-import java.io.File;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -45,9 +45,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Category(DetailedTest.class)
 public class EditTranslationMemoryTest {
-    @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
-    TestFileGenerator testFileGenerator = new TestFileGenerator();
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
+
+    @Rule
+    public RetryRule retryRule = new RetryRule(2);
+
+    private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @Before
     public void before() {

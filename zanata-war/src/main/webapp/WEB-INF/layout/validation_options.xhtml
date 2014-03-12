@@ -9,7 +9,7 @@
   <span class="name">#{messages['jsf.customizedValidationMessage']}</span>
   <s:div id="validationOptionsList" style="clear: both">
     <rich:dataTable value="#{validationOptionsAction.validationList}"
-      var="validationAction">
+      var="validationAction" id="validationOptionsTable">
       <rich:column>
         #{validationAction.id.displayName}
       </rich:column>

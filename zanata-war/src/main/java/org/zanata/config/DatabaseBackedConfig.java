@@ -24,14 +24,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Synchronized;
+import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Configuration store implementation that is backed by database tables.
@@ -42,14 +46,15 @@ import org.zanata.model.HApplicationConfiguration;
 @Name("databaseBackedConfig")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class DatabaseBackedConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @In
-    private ApplicationConfigurationDAO applicationConfigurationDAO;
-
     private Map<String, String> configurationValues;
+
+    @In
+    private ServiceLocator serviceLocator;
 
     /**
      * Resets the store by clearing out all values. This means that values will
@@ -73,8 +78,10 @@ public class DatabaseBackedConfig implements Serializable {
 
     private String getConfigValue(String key) {
         if (!configurationValues.containsKey(key)) {
+            ApplicationConfigurationDAO appConfigDAO =
+                    serviceLocator.getInstance(ApplicationConfigurationDAO.class);
             HApplicationConfiguration configRecord =
-                    applicationConfigurationDAO.findByKey(key);
+                    appConfigDAO.findByKey(key);
             String storedVal = null;
             if (configRecord != null) {
                 storedVal = configRecord.getValue();
@@ -91,9 +98,7 @@ public class DatabaseBackedConfig implements Serializable {
 
     /**
      * ========================================================================
-     * ========================================== Specific property accessor
-     * methods for configuration values
-     * ==========================================
+     * ===== Specific property accessor methods for configuration values ======
      * ========================================================================
      */
     public String getAdminEmailAddress() {
@@ -147,6 +152,10 @@ public class DatabaseBackedConfig implements Serializable {
 
     public String getPiwikSiteId() {
         return getConfigValue(HApplicationConfiguration.KEY_PIWIK_IDSITE);
+    }
+
+    public String getTermsOfUseUrl() {
+        return getConfigValue(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
     }
 
 }

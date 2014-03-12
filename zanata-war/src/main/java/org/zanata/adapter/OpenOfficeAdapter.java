@@ -29,7 +29,7 @@ import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class OpenOfficeAdapter extends GenericOkapiFilterAdapter {
+public class OpenOfficeAdapter extends OkapiFilterAdapter {
     public OpenOfficeAdapter() {
         super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
     }

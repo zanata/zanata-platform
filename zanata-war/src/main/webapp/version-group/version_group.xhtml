@@ -5,194 +5,210 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:richext="http://java.sun.com/jsf/composite/richext"
-  template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  template="../WEB-INF/template/template.xhtml">
 
-  <ui:define
-    name="page_title">#{messages['jsf.Groups']}:#{versionGroupHome.instance.name}</ui:define>
+<ui:define name="page_title">
+  #{messages['jsf.Groups']} - #{versionGroupHome.instance.name}
+</ui:define>
 
-  <ui:define name="head">
-    <!-- Load jQuery -->
-    <rich:jQuery query="jquery"/>
+<ui:define name="center_content">
+  <script type="text/javascript">
+    jQuery(document).ready(function () {
+      checkHashUrl('#languages_tab', '#settings-general_tab');
+      renderStatistics();
+    });
 
-    <script type="text/javascript">
-      function submitSearchOnEnter(e) {
-        if (e.keyCode == 13) {
-          #{rich:element('searchBtn')}
-        .
-          click();
-          return false;
-        }
-      }
-    </script>
-  </ui:define>
+    function updateHashAndGotoUrl(anchor) {
+      window.location.hash = jQuery(anchor).attr('href');
+      checkHashUrl('#languages_tab', '#settings-general_tab');
+    }
+  </script>
 
-  <ui:define name="center_content">
-    <h:form id="iterationGroupForm">
-      <s:formattedText value="#{versionGroupHome.instance.description}"
-        rendered="#{!empty versionGroupHome.instance.description}"/>
+  <h:form>
+    <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+      action="#{versionGroupHomeAction.resetPageData}"
+      render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size,pageMessages"/>
 
-      <rich:dataTable id="iterationsDataTable"
-        value="#{versionGroupHome.instanceProjectIterations}"
-        var="_iteration">
-        <rich:column sortBy="#{_iteration.project.slug}">
-          <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
-          <s:link view="/project/project.xhtml"
-            value="#{_iteration.project.name}" styleClass="table_link">
-            <f:param name="slug" value="#{_iteration.project.slug}"/>
-          </s:link>
-        </rich:column>
-        <rich:column sortBy="#{_iteration.slug}">
-          <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-          <s:link view="/iteration/view.xhtml" styleClass="table_link"
-            value="#{_iteration.slug}">
-            <f:param name="projectSlug" value="#{_iteration.project.slug}"/>
-            <f:param name="iterationSlug" value="#{_iteration.slug}"/>
-          </s:link>
-        </rich:column>
-        <rich:column
-          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}"
-          styleClass="centered">
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-          <a4j:commandButton value="#{messages['jsf.Remove']}"
-            action="#{versionGroupAction.leaveVersionGroup(_iteration.id)}"
-            render="iterationsDataTable, searchResults"/>
-        </rich:column>
-      </rich:dataTable>
-    </h:form>
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      render="overall_statistic, languages-language_form, projects-project_form"
+      action="#{versionGroupHomeAction.setPageRendered(true)}"/>
+  </h:form>
 
-  </ui:define>
-
-  <ui:define name="right_content">
-
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-      <s:fragment
-        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-        <a href="#" class="action_link"
-          onclick="#{rich:component('versionAddPanel')}.show()">#{messages['jsf.AddProjectVersions']}</a>
-
-        <s:link styleClass="action_link" value="#{messages['jsf.EditGroup']}"
-          view="/version-group/edit.xhtml" propagation="none">
-          <f:param name="versionGroupSlug"
-            value="#{versionGroupHome.instance.slug}"/>
+  <div class="g">
+    <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
+      <p class="txt--meta l--push-all-0">
+        <s:link view="/version-group/home.xhtml" propagation="none">
+          #{messages['jsf.Groups']}
         </s:link>
+      </p>
 
-        <s:link styleClass="action_link"
-          view="/version-group/assign_maintainer.xhtml"
-          value="#{messages['jsf.ManageMaintainers']}" propagation="none">
-          <f:param name="versionGroupSlug"
-            value="#{versionGroupHome.instance.slug}"/>
-        </s:link>
-      </s:fragment>
-      <s:link styleClass="action_link"
-        view="/version-group/request_to_join.xhtml"
-        value="#{messages['jsf.RequestToJoinVersionGroup']}" propagation="none"
-        rendered="#{versionGroupAction.isUserProjectMaintainer()}">
-        <f:param name="emailType" value="request_to_join_group"/>
-        <f:param name="versionGroupSlug"
-          value="#{versionGroupHome.instance.slug}"/>
-      </s:link>
-    </rich:panel>
+      <s:div styleClass="media l--push-bottom-half" id="group-info">
+        <div class="media__body">
+          <h1 class="l--push-all-0">
+            #{versionGroupHome.instance.name}
+          </h1>
 
-    <rich:panel>
-      <f:facet name="header">#{messages['jsf.GroupMaintainers']}</f:facet>
-      <h:outputText
-        rendered="#{empty versionGroupHome.instance.maintainers}">#{messages['jsf.NoMaintainersDefined']}</h:outputText>
-      <rich:list value="#{versionGroupHome.instance.maintainers.toArray()}"
-        var="maintainer">
-        <h:outputText value="#{maintainer.name}" styleClass="maintainer"/>
-      </rich:list>
-    </rich:panel>
-
-    <s:fragment
-      rendered="#{versionGroupAction.isParamExists() and s:hasPermission(versionGroupHome.instance, 'update')}">
-      <script>
-        jQuery(document).ready(function () {
-          #{rich:component("versionAddPanel")}
-          .
-          show();
-        });
-      </script>
-    </s:fragment>
-
-
-    <rich:popupPanel id="versionAddPanel" width="530" height="460"
-      rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'update')}">
-      <f:subview id="projectVersionSearch">
-        <h:form id="searchForm">
-          <h1>#{messages['jsf.groups.FindProjectVersion']}</h1>
-
-          <p>
-            <h:inputText id="searchField"
-              value="#{versionGroupAction.searchTerm}"
-              onkeydown="return submitSearchOnEnter(event)"/>
-            <a4j:commandButton id="searchBtn"
-              value="#{messages['jsf.Search']}"
-              action="#{versionGroupAction.searchProjectAndVersion}"
-              render="searchResults"/>
-
-            <a4j:commandButton id="closeBtn" value="#{messages['jsf.Close']}"
-              onclick="#{rich:component('versionAddPanel')}.hide(); return false;"/>
-
+          <p class="txt--understated">
+            #{versionGroupHome.instance.description}
           </p>
-        </h:form>
-        <a4j:region id="region">
-          <h:form id="searchResults">
-            <h:outputText id="noResultsMessage"
-              rendered="#{empty versionGroupAction.searchResults}"
-              value="#{messages['jsf.NoResultToDisplayProjectSearch']}"/>
-            <a4j:outputPanel layout="block" style="overflow:auto;height:320px"
-              rendered="#{not empty versionGroupAction.searchResults}">
-              <rich:dataTable id="resultTable"
-                value="#{versionGroupAction.searchResults}"
-                var="selectableVersion">
-                <rich:column
-                  sortBy="#{selectableVersion.projectIteration.project.name}">
-                  <f:facet
-                    name="header">#{messages['jsf.ProjectName']}</f:facet>
-                  #{selectableVersion.projectIteration.project.name}
-                </rich:column>
-                <rich:column
-                  sortBy="#{selectableVersion.projectIteration.slug}">
-                  <f:facet name="header">#{messages['jsf.Version']}</f:facet>
-                  #{selectableVersion.projectIteration.slug}
-                </rich:column>
+        </div>
+      </s:div>
+      <s:div id="overall_statistic" styleClass="progress-bar--large__expander">
+        <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+          <p class="d--top l--pad-top-half txt--mini">
+            #{messages['jsf.TotalSourceContains']}
+            <strong>#{versionGroupHomeAction.overallStatistic.total}
+              words</strong>
+          </p>
+          <ul class="g g--fit">
+            <li class="g__item">
+            <span class="stats--large txt--state-success">
+              <span class="stats__figure">
+                #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
+              </span>
+              <span class="stats__unit txt--lowercase">
+                #{messages['jsf.stats.Translated']}
+              </span>
+            </span>
+            </li>
+            <li class="g__item">
+            <span class="stats--large">
+              <span class="stats__figure">
+                #{statisticBar.formatHours(versionGroupHomeAction.overallStatistic.remainingHours)}
+              </span>
+              <span class="stats__unit">
+                #{messages['jsf.stats.TotalHoursRemaining']}
+              </span>
+            </span>
+            </li>
+          </ul>
+          <zanata:statistic value="#{versionGroupHomeAction.overallStatistic}"
+            type="large"/>
+        </s:fragment>
 
-                <rich:column styleClass="centered">
-                  <f:facet name="header">
-                    <h:panelGroup>
-                      <h:selectBooleanCheckbox
-                        title="#{messages['jsf.ManageSearch.SelectAll']}"
-                        value="#{versionGroupAction.selectAll}">
-                        <a4j:ajax event="change" render="searchResults"
-                          listener="#{versionGroupAction.selectAll()}"/>
-                      </h:selectBooleanCheckbox>
-                    </h:panelGroup>
-                  </f:facet>
+        <a4j:status name="statistic-loader">
+          <f:facet name="start">
+            <zanata:loader type="loader--large"/>
+          </f:facet>
+        </a4j:status>
+      </s:div>
+    </div>
 
-                  <h:selectBooleanCheckbox title="#{messages['jsf.Select']}"
-                    value="#{selectableVersion.selected}"
-                    rendered="#{!versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
-                  <h:outputText value="#{messages['jsf.AlreadyInGroup']}"
-                    rendered="#{versionGroupAction.isVersionInGroup(selectableVersion.projectIteration.id)}"/>
 
-                </rich:column>
-              </rich:dataTable>
-            </a4j:outputPanel>
-            <richext:spacer height="5"/>
-            <a4j:commandButton id="addSelectedBtn"
-              value="#{messages['jsf.AddSelected']}"
-              action="#{versionGroupAction.addSelected()}"
-              render="searchResults, iterationsDataTable"
-              styleClass="float-right"/>
-          </h:form>
-        </a4j:region>
-      </f:subview>
-    </rich:popupPanel>
+    <div class="g__item w--1-2-m w--5-8-l w--2-3">
+      <div class="tabs--lined">
+        <nav class="tabs__nav">
+          <ul>
+            <li>
+              <a href="#languages" id="languages_tab" class="js-tab">
+                <i class="i i--language"></i>
+              <span class="is-hidden--m-down i__text--right">
+                #{messages['jsf.Languages']}
+              </span>
+                <s:span styleClass="txt--neutral" id="languages-size">
+                  #{versionGroupHomeAction.activeLocales.size}
+                </s:span>
+              </a>
+            </li>
+            <li>
+              <a href="#projects" id="projects_tab" class="js-tab">
+                <i class="i i--project"></i>
+              <span class="is-hidden--m-down i__text--right">
+                #{messages['jsf.Projects']}
+              </span>
+                <s:span styleClass="txt--neutral" id="projects-size">
+                  #{versionGroupHomeAction.getProjectIterations().size}
+                </s:span>
+              </a>
+            </li>
+            <li>
+              <a href="#maintainers" id="maintainers_tab" class="js-tab">
+                <i class="i i--users"></i>
+              <span class="is-hidden--m-down i__text--right">
+                #{messages['jsf.Maintainers']}
+              </span>
+                <s:span styleClass="txt--neutral" id="maintainers-size">
+                  #{versionGroupHome.instance.maintainers.size}
+                </s:span>
+              </a>
+            </li>
 
-  </ui:define>
+            <s:fragment
+              rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+              <li class="tab__end">
+                <div
+                  class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+                  <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                    title="#{messages['jsf.tooltip.MoreActions']}"
+                    data-original-title="#{messages['jsf.tooltip.MoreActions']}"><i
+                    class="i i--ellipsis"></i></a>
+                  <ul class="dropdown__content js-dropdown__content"
+                    role="content"
+                    aria-labelledby="dropdownContent">
+                    <li>
+                      <s:link view="/version-group/request_to_join.xhtml"
+                        styleClass="i__item--right"
+                        propagation="none">
+                        <f:param name="emailType"
+                          value="request_to_join_group"/>
+                        <f:param name="versionGroupSlug"
+                          value="#{versionGroupHomeAction.slug}"/>
+                        <h:outputFormat
+                          value="#{messages['jsf.RequestAddProjectToGroup']}">
+                          <f:param value="#{versionGroupHome.instance.name}"/>
+                        </h:outputFormat>
+                        <i class="i i--project i__item__icon"></i>
+                      </s:link>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </s:fragment>
+
+            <s:fragment
+              rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+              <li class="tab__end">
+                <a href="#settings" id="settings_tab" class="js-tab">
+                <span class="is-hidden--m-down i__text--left">
+                  #{messages['jsf.Settings']}
+                </span>
+                  <i class="i i--settings"></i>
+                </a>
+              </li>
+            </s:fragment>
+          </ul>
+        </nav>
+
+        <div class="tabs__content panels__container l--push-top-1">
+          <div id="languages_content" class="is-hidden">
+            <ui:include
+              src="../WEB-INF/layout/version-group/languages-tab.xhtml">
+            </ui:include>
+          </div>
+
+          <div id="projects_content" class="is-hidden">
+            <ui:include
+              src="../WEB-INF/layout/version-group/projects-tab.xhtml"/>
+          </div>
+
+          <div id="maintainers_content" class="is-hidden">
+            <zanata:maintainers-tab
+              value="#{versionGroupHomeAction.maintainers.toArray()}"/>
+          </div>
+
+          <s:fragment
+            rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+            <div id="settings_content" class="is-hidden">
+              <ui:include
+                src="../WEB-INF/layout/version-group/settings-tab.xhtml"/>
+            </div>
+          </s:fragment>
+        </div>
+      </div>
+    </div>
+  </div>
+</ui:define>
 
 </ui:composition>

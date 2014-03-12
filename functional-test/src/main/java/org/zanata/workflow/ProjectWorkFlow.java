@@ -20,6 +20,7 @@
  */
 package org.zanata.workflow;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.zanata.page.projects.CreateVersionPage;
@@ -30,14 +31,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProjectWorkFlow extends AbstractWebWorkFlow {
-    public ProjectPage createNewProject(String projectId, String projectName) {
+
+    /**
+     * Creates a new project using minimal input, all other items are default.
+     * This function is lenient, i.e. will not fail if the project exists.
+     * @param projectId Project identifier
+     * @param projectName Project short name
+     * @return new Project page for created project
+     */
+    public ProjectPage createNewSimpleProject(String projectId,
+                                              String projectName) {
         ProjectsPage projectsPage = goToHome().goToProjects();
         List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
         log.info("current projects: {}", projects);
 
         if (projects.contains(projectName)) {
-            log.warn(
-                    "{} has already been created. Presumably you are running test manually and more than once.",
+            log.warn("{} already exists. This test environment is not clean.",
                     projectId);
             // since we can't create same project multiple times,
             // if we run this test more than once manually, we don't want it to
@@ -47,6 +56,42 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         return projectsPage.clickOnCreateProjectLink()
                 .inputProjectId(projectId).inputProjectName(projectName)
                 .saveProject();
+    }
+
+    /**
+     * Create a project in full, using the details given in settings.<br/>
+     * All items must be defined.
+     * @param settings A HashMap of project identifiers and settings
+     * @return a new Project page for the created project
+     * @see {@link #projectDefaults()}
+     */
+    public ProjectPage createNewProject(HashMap<String, String> settings) {
+        ProjectsPage projectsPage = goToHome().goToProjects();
+        List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+        log.info("current projects: {}", projects);
+        return projectsPage.clickOnCreateProjectLink()
+                .inputProjectId(settings.get("Project ID"))
+                .inputProjectName(settings.get("Name"))
+                .enterDescription(settings.get("Description"))
+                .selectProjectType(settings.get("Project Type"))
+                .enterHomepageContent(settings.get("Homepage Content"))
+                .enterViewSourceURL(settings.get("View source files"))
+                .enterDownloadSourceURL(settings.get("Source Download/Checkout"))
+                .selectStatus(settings.get("Status"))
+                .saveProject();
+    }
+
+    public static HashMap<String, String> projectDefaults() {
+        HashMap<String, String> defaults = new HashMap<String, String>();
+        defaults.put("Project ID", "");
+        defaults.put("Name", "");
+        defaults.put("Description", "");
+        defaults.put("Project Type", "None");
+        defaults.put("Homepage Content", "");
+        defaults.put("View source files", "");
+        defaults.put("Source Download/Checkout", "");
+        defaults.put("Status", "ACTIVE");
+        return defaults;
     }
 
     /**

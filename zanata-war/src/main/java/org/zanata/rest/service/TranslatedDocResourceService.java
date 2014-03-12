@@ -37,12 +37,12 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -68,6 +68,7 @@ import com.google.common.base.Optional;
  */
 @Name("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class TranslatedDocResourceService implements TranslatedDocResource {
 
@@ -132,8 +133,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     @In
     private TranslationService translationServiceImpl;
-
-    private final Log log = Logging.getLog(TranslatedDocResourceService.class);
 
     @In
     private LocaleService localeServiceImpl;
@@ -205,10 +204,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 restSlugValidator.validateTargetLocale(locale, projectSlug,
                         iterationSlug);
 
-        // TODO find correct etag
         EntityTag etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>());
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -217,7 +215,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
-        if (document.isObsolete()) {
+        if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
         List<HTextFlowTarget> targets =
@@ -256,11 +254,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        HLocale hLocale =
+                restSlugValidator.validateTargetLocale(locale, projectSlug,
+                        iterationSlug);
 
-        // TODO create valid etag
         EntityTag etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>(0));
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -274,10 +274,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                         mergeType);
 
         // Regenerate etag in case it has changed
-        // TODO create valid etag
         etag =
-                eTagUtils.generateETagForDocument(hProjectIteration, id,
-                        new HashSet<String>(0));
+                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                        id, hLocale);
 
         log.debug("successful put translation");
         // TODO lastChanged
@@ -290,7 +289,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     // TODO investigate how this became dead code, then delete
     public void copyClosestEquivalentTranslation(HDocument document) {
-        if (applicationConfiguration.getEnableCopyTrans()) {
+        if (applicationConfiguration.isCopyTransEnabled()) {
             copyTransServiceImpl.copyTransForDocument(document);
         }
     }

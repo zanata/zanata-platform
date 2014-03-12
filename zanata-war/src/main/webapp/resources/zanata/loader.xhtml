@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<composite:interface>
+  <composite:attribute name="type" type="java.lang.String"
+    shortDescription="size of the loader, loader--large or loader--huge"
+    default="loader"/>
+</composite:interface>
+
+<composite:implementation>
+
+  <s:div styleClass="#{cc.attrs.type} is-active">
+    <span class="loader__spinner">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </s:div>
+</composite:implementation>
+</html>

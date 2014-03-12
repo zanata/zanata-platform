@@ -9,13 +9,17 @@ import javax.validation.ValidatorFactory;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.hibernate.Session;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.rest.AuthorizationExceptionMapper;
 import org.zanata.rest.HibernateExceptionMapper;
 import org.zanata.rest.HibernateValidationInterceptor;
@@ -43,6 +47,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
         Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
         prepareSeamAutowire();
+        prepareAccount();
         prepareResources();
         prepareExceptionMappers();
         prepareProviders();
@@ -75,6 +80,23 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
         clientRequestFactory =
                 new ClientRequestFactory(executor, MOCK_BASE_URI);
 
+    }
+
+    private void prepareAccount() {
+        Session session = getSession();
+        String username = "anAuthenticatedAccount";
+        HAccount account = (HAccount) session.byNaturalId(HAccount.class).using("username", username).load();
+        if (account == null) {
+            account = new HAccount();
+            account.setUsername(username);
+            HPerson person = new HPerson();
+            person.setEmail("email@example.com");
+            person.setName("aPerson");
+            person = (HPerson) session.merge(person);
+            account.setPerson(person);
+            account = (HAccount) session.merge(account);
+        }
+        seamAutowire.use(JpaIdentityStore.AUTHENTICATED_USER, account);
     }
 
     @AfterMethod

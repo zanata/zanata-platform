@@ -26,10 +26,10 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -52,6 +51,7 @@ import org.zanata.service.LocaleService;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class LanguageTeamAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -72,9 +72,6 @@ public class LanguageTeamAction implements Serializable {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
-
-    @Logger
-    private Log log;
 
     @Getter
     @Setter
@@ -99,8 +96,7 @@ public class LanguageTeamAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
-    public
-            void addSelected() {
+    public void addSelected() {
         for (SelectablePerson selectablePerson : getSearchResults()) {
             if (selectablePerson.isSelected()) {
                 addTeamMember(selectablePerson.getPerson().getId(),
@@ -144,7 +140,7 @@ public class LanguageTeamAction implements Serializable {
                     this.language, authenticatedAccount.getPerson().getId(),
                     true, true, true);
             Events.instance().raiseEvent("personJoinedTribe");
-            log.info("{0} joined tribe {1}",
+            log.info("{} joined tribe {}",
                     authenticatedAccount.getUsername(), this.language);
             // FIXME use localizable string
             FacesMessages.instance().add(
@@ -165,15 +161,15 @@ public class LanguageTeamAction implements Serializable {
         languageTeamServiceImpl.leaveLanguageTeam(this.language,
                 authenticatedAccount.getPerson().getId());
         Events.instance().raiseEvent("personLeftTribe");
-        log.info("{0} left tribe {1}", authenticatedAccount.getUsername(),
+        log.info("{} left tribe {}", authenticatedAccount.getUsername(),
                 this.language);
+        // FIXME use localizable string
         FacesMessages.instance().add("You have left the {0} language team",
                 getLocale().retrieveNativeName());
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
-    public
-            void saveTeamCoordinator(HLocaleMember member) {
+    public void saveTeamCoordinator(HLocaleMember member) {
         this.localeDAO.makePersistent(getLocale());
         this.localeDAO.flush();
         if (member.isCoordinator()) {
@@ -181,21 +177,22 @@ public class LanguageTeamAction implements Serializable {
                     "{0} has been made a Team Coordinator",
                     member.getPerson().getAccount().getUsername());
         } else {
+            // TODO i18n
             FacesMessages.instance().add(
-                    "{0} has been removed from as Team Coordinators",
+                    "{0} has been removed as Team Coordinator",
                     member.getPerson().getAccount().getUsername());
         }
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
-    public
-            void saveTeamReviewer(HLocaleMember member) {
+    public void saveTeamReviewer(HLocaleMember member) {
         this.localeDAO.makePersistent(getLocale());
         this.localeDAO.flush();
         if (member.isReviewer()) {
             FacesMessages.instance().add("{0} has been made a Team Reviewer",
                     member.getPerson().getAccount().getUsername());
         } else {
+            // TODO i18n
             FacesMessages.instance().add(
                     "{0} has been removed from as Team Reviewer",
                     member.getPerson().getAccount().getUsername());
@@ -203,14 +200,14 @@ public class LanguageTeamAction implements Serializable {
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
-    public
-            void saveTeamTranslator(HLocaleMember member) {
+    public void saveTeamTranslator(HLocaleMember member) {
         this.localeDAO.makePersistent(getLocale());
         this.localeDAO.flush();
         if (member.isReviewer()) {
             FacesMessages.instance().add("{0} has been made a Team Translator",
                     member.getPerson().getAccount().getUsername());
         } else {
+            // TODO i18n
             FacesMessages.instance().add(
                     "{0} has been removed from as Team Translator",
                     member.getPerson().getAccount().getUsername());

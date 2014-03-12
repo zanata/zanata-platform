@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich">
+
+<composite:interface>
+  <composite:attribute name="sortingList" type="org.zanata.action.SortingType"
+    required="true"/>
+  <composite:attribute name="sortAction" required="true"
+    method-signature="void action()"
+    shortDescription="sorting method with signature of void action()"/>
+  <composite:attribute name="id" required="true" type="java.lang.String"
+    shortDescription="id of this component"/>
+  <composite:attribute name="render" required="true" type="java.lang.String"
+    shortDescription="element to re-render after sorting"/>
+</composite:interface>
+
+<composite:implementation>
+  <div
+    class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+    <a class="dropdown__toggle js-dropdown__toggle" href="#">
+      #{messages['jsf.Sort']}
+      <i class="i i--arrow-down dropdown__toggle__icon"></i>
+    </a>
+    <h:form styleClass="l--push-bottom-0" id="#{cc.attrs.id}-sort_options">
+      <ul class="dropdown__content js-dropdown__content" role="content"
+        aria-labelledby="dropdownContent">
+        <ui:repeat value="#{cc.attrs.sortingList.sortOptions}" var="sortOption">
+          <li>
+            <a4j:commandLink tabindex="-1"
+              action="#{cc.attrs.sortAction}"
+              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''} txt--lowercase"
+              render="#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
+              #{sortOption.display}
+              <f:setPropertyActionListener
+                target="#{cc.attrs.sortingList.selectedSortOption}"
+                value="#{sortOption}"/>
+            </a4j:commandLink>
+          </li>
+        </ui:repeat>
+      </ul>
+    </h:form>
+  </div>
+
+</composite:implementation>
+</html>

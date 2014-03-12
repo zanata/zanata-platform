@@ -13,7 +13,7 @@
 
   <ui:define name="page_title">#{messages['jsf.ContactAdmin']}</ui:define>
   <ui:define name="center_content">
-    <h:form>
+    <h:form id="contactAdminForm">
       <s:token allowMultiplePosts="true"/>
 
       <h1>#{messages['jsf.ContactAdmin']}</h1>
@@ -57,8 +57,8 @@
           <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
             action="#{sendEmail.send}"/>
 
-          <s:button id="cancel" value="#{messages['jsf.Cancel']}"
-            propagation="none" action="#{sendEmail.cancel}"/>
+          <s:button view="/help/view.xhtml" action="#{sendEmail.cancel}"
+            value="#{messages['jsf.Cancel']}" id="cancel"/>
         </div>
 
       </rich:panel>

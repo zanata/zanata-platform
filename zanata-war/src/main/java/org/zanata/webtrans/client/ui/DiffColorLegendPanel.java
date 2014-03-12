@@ -54,15 +54,15 @@ public class DiffColorLegendPanel extends PopupPanel {
     @UiField
     Styles style;
 
-    private final WebTransMessages messages;
+    @UiField
+    WebTransMessages messages;
 
     private static DiffColorLegendPanelUiBinder uiBinder = GWT
             .create(DiffColorLegendPanelUiBinder.class);
 
     @Inject
-    public DiffColorLegendPanel(final WebTransMessages messages) {
+    public DiffColorLegendPanel() {
         super(true, true);
-        this.messages = messages;
 
         HTMLPanel container = uiBinder.createAndBindUi(this);
         setStyleName(style.diffLegendPanel());

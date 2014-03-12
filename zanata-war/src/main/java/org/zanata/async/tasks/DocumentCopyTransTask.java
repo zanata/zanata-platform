@@ -43,7 +43,7 @@ public class DocumentCopyTransTask extends CopyTransTask {
 
     public DocumentCopyTransTask(HDocument document,
             HCopyTransOptions copyTransOptions) {
-        super(copyTransOptions);
+        super(copyTransOptions, "DocumentCopyTransTask: "+document.getDocId());
         this.document = document;
     }
 

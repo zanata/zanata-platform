@@ -24,8 +24,6 @@ import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 import org.jboss.seam.security.Identity;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
@@ -42,7 +40,7 @@ import org.zanata.rest.dto.ProjectIteration;
 import com.google.common.base.Objects;
 
 @Name("projectService")
-@Path(ProjectService.SERVICE_PATH)
+@Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
     /** Project Identifier. */
@@ -58,8 +56,6 @@ public class ProjectService implements ProjectResource {
     private UriInfo uri;
     @Context
     private Request request;
-
-    Log log = Logging.getLog(ProjectService.class);
 
     @In
     ProjectDAO projectDAO;

@@ -76,6 +76,7 @@ public class GetProjectTransUnitListsHandlerTest {
     @BeforeMethod
     @SuppressWarnings("unchecked")
     public void beforeMethod() {
+        SeamAutowire.instance().reset();
         MockitoAnnotations.initMocks(this);
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct

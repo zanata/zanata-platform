@@ -27,6 +27,8 @@ import com.google.gwt.event.shared.GwtEvent;
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
+import org.junit.Assert.*;
+import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 
 /**
  * @author Patrick Huang <a
@@ -37,6 +39,8 @@ public class SourceContentsPresenterTest {
     private SourceContentsPresenter presenter;
     @Mock
     private EventBus eventBus;
+    @Mock
+    private CachingDispatchAsync dispatcher;
     @Mock
     private Provider<SourceContentsDisplay> displayProvider;
     @Mock
@@ -57,7 +61,7 @@ public class SourceContentsPresenterTest {
         configHolder = new UserConfigHolder();
         presenter =
                 new SourceContentsPresenter(eventBus, displayProvider,
-                        configHolder);
+                        dispatcher, configHolder);
 
         verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
     }

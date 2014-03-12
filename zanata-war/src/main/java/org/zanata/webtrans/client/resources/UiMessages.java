@@ -191,4 +191,16 @@ public interface UiMessages extends Messages {
 
     @DefaultMessage("Translation that contained validation warning or error.")
     String invalidTooltip();
+
+    @DefaultMessage("Show reference translations from")
+    String changeSourceLangDescription();
+
+    @DefaultMessage("No reference found")
+    String noReferenceFoundText();
+
+    @DefaultMessage("In")
+    String inLocale();
+
+    @DefaultMessage("None")
+    String chooseRefLang();
 }

@@ -108,7 +108,8 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
     }
 
     public void clearTransMemory(final String transMemorySlug) {
-        asyncTaskManagerServiceImpl.startTask(new SimpleAsyncTask<Void>() {
+        String name = "TranslationMemoryAction.clearTransMemory: "+transMemorySlug;
+        asyncTaskManagerServiceImpl.startTask(new SimpleAsyncTask<Void>(name) {
             @Override
             public Void call() throws Exception {
                 TranslationMemoryResourceService tmResource =

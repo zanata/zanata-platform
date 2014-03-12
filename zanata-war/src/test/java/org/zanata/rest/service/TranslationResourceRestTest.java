@@ -148,7 +148,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                 .useImpl(DocumentServiceImpl.class)
                 .useImpl(ResourceUtils.class)
                 .useImpl(SecurityServiceImpl.class)
-                .useImpl(ValidationServiceImpl.class);
+                .useImpl(ValidationServiceImpl.class)
+                .useImpl(VersionStateCacheImpl.class);
 
         TranslatedDocResourceService translatedDocResourceService =
                 seamAutowire.autowire(TranslatedDocResourceService.class);
@@ -1064,9 +1065,7 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         int versionNum = 0; // no previous translation
 
         // Translate using webtrans
-        UpdateType updateType =
-                (translationState == ContentState.Approved ? UpdateType.WebEditorSave
-                        : UpdateType.WebEditorSaveFuzzy);
+        UpdateType updateType = UpdateType.WebEditorSave;
         UpdateTransUnit action =
                 new UpdateTransUnit(new TransUnitUpdateRequest(new TransUnitId(
                         textFlowId), Lists.newArrayList(translation),

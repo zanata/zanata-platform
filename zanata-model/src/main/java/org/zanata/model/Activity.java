@@ -28,6 +28,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
@@ -49,6 +50,7 @@ import org.zanata.model.type.EntityType;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
+@EntityListeners({Activity.EntityListener.class})
 @NoArgsConstructor
 @Access(AccessType.FIELD)
 @Getter
@@ -106,13 +108,6 @@ public class Activity extends ModelEntityBase implements Serializable {
         this.wordCount = wordCount;
     }
 
-    @PrePersist
-    private void onPrePersist() {
-        approxTime = DateUtils.truncate(getCreationDate(), Calendar.HOUR);
-        startOffsetMillis = getCreationDate().getTime() - approxTime.getTime();
-        endOffsetMillis = startOffsetMillis;
-    }
-
     public void updateActivity(Date currentTime, IsEntityWithType target,
             int wordCount) {
         this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
@@ -125,5 +120,15 @@ public class Activity extends ModelEntityBase implements Serializable {
     @Transient
     public Date getEndDate() {
         return DateUtils.addMilliseconds(approxTime, (int) endOffsetMillis);
+    }
+
+    public static class EntityListener {
+        @PrePersist
+        private void onPrePersist(Activity activity) {
+            activity.approxTime = DateUtils.truncate(activity.getCreationDate(), Calendar.HOUR);
+            activity.startOffsetMillis = activity.getCreationDate().getTime() - activity.approxTime.getTime();
+            activity.endOffsetMillis = activity.startOffsetMillis;
+        }
+
     }
 }

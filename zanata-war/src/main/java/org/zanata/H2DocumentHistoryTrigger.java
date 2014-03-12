@@ -5,15 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.h2.tools.TriggerAdapter;
-import org.jboss.seam.log.Log;
-import org.jboss.seam.log.Logging;
 
+@Slf4j
 public class H2DocumentHistoryTrigger extends TriggerAdapter {
-
-    private static final Log log = Logging
-            .getLog(H2DocumentHistoryTrigger.class);
-
     @Override
     public void fire(Connection conn, ResultSet oldRow, ResultSet newRow)
             throws SQLException {
@@ -25,7 +22,7 @@ public class H2DocumentHistoryTrigger extends TriggerAdapter {
         if (oldRev != newRev) {
 
             log.debug(
-                    "revision incremented from {0} to {1}. Executing trigger..",
+                    "revision incremented from {} to {}. Executing trigger..",
                     oldRev, newRev);
 
             PreparedStatement prep =

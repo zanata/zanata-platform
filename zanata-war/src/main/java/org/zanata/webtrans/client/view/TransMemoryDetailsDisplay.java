@@ -14,7 +14,7 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 public interface TransMemoryDetailsDisplay extends WidgetDisplay {
     void hide();
 
-    void show();
+    void center();
 
     int getSelectedDocumentIndex();
 

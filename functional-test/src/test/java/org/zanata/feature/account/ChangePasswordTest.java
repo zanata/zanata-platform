@@ -20,8 +20,6 @@
  */
 package org.zanata.feature.account;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,18 +31,23 @@ import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HomePage;
-import org.zanata.util.ResetDatabaseRule;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@NoScreenshot
 public class ChangePasswordTest {
+
     @Rule
-    public ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule();
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Before
     public void setUp() {

@@ -1,16 +1,17 @@
 package org.zanata.dao;
 
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.TermQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -21,6 +22,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -229,22 +231,41 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return totalCount.intValue();
     }
 
-    public List<HProject> searchQuery(String searchQuery, int maxResult,
-            int firstResult) throws ParseException {
-        String[] projectFields = { "slug", "name", "description" };
-        QueryParser parser =
-                new MultiFieldQueryParser(Version.LUCENE_35, projectFields,
-                        new StandardAnalyzer(Version.LUCENE_35));
-        parser.setAllowLeadingWildcard(true);
-        org.apache.lucene.search.Query luceneQuery =
-                parser.parse(QueryParser.escape(searchQuery));
-        FullTextQuery query =
-                entityManager.createFullTextQuery(luceneQuery, HProject.class);
-        query.setMaxResults(maxResult).setFirstResult(firstResult)
+    public List<HProject> searchProjects(@Nonnull String searchQuery,
+            int maxResult, int firstResult, boolean includeObsolete)
+            throws ParseException {
+        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        return query.setMaxResults(maxResult).setFirstResult(firstResult)
                 .getResultList();
+    }
 
-        @SuppressWarnings("unchecked")
-        List<HProject> resultList = query.getResultList();
-        return resultList;
+    public int getQueryProjectSize(@Nonnull String searchQuery,
+            boolean includeObsolete) throws ParseException {
+        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        return query.getResultSize();
+    }
+
+    private FullTextQuery getTextQuery(@Nonnull String searchQuery,
+            boolean includeObsolete) {
+        searchQuery = QueryParser.escape(searchQuery.toLowerCase());
+
+        PrefixQuery slugQuery = new PrefixQuery(new Term("slug", searchQuery));
+        PrefixQuery nameQuery = new PrefixQuery(new Term("name", searchQuery));
+        PrefixQuery descQuery =
+                new PrefixQuery(new Term("description", searchQuery));
+
+        BooleanQuery booleanQuery = new BooleanQuery();
+        booleanQuery.add(slugQuery, BooleanClause.Occur.SHOULD);
+        booleanQuery.add(nameQuery, BooleanClause.Occur.SHOULD);
+        booleanQuery.add(descQuery, BooleanClause.Occur.SHOULD);
+
+        if (!includeObsolete) {
+            TermQuery obsoleteStateQuery =
+                    new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
+                            EntityStatus.OBSOLETE.toString().toLowerCase()));
+            booleanQuery.add(obsoleteStateQuery, BooleanClause.Occur.MUST_NOT);
+        }
+
+        return entityManager.createFullTextQuery(booleanQuery, HProject.class);
     }
 }

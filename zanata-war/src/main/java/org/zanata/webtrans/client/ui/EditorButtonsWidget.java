@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 public class EditorButtonsWidget extends Composite {
     private static EditorButtonsWidgetUiBinder ourUiBinder = GWT
-            .create(EditorButtonsWidgetUiBinder.class);
+        .create(EditorButtonsWidgetUiBinder.class);
 
     @UiField
     HTMLPanel buttons;
@@ -43,7 +43,18 @@ public class EditorButtonsWidget extends Composite {
         initWidget(ourUiBinder.createAndBindUi(this));
         setDisplayReviewButtons(listener != null && listener.canReview());
         setDisplayModifyTranslationButtons(listener != null
-                && listener.canEditTranslation());
+            && listener.canEditTranslation());
+    }
+
+    @Override
+    protected void onEnsureDebugId(String baseID) {
+        saveIcon.ensureDebugId(baseID + "-save-approve");
+        fuzzyIcon.ensureDebugId(baseID + "-save-fuzzy");
+        cancelIcon.ensureDebugId(baseID + "-cancel");
+        historyIcon.ensureDebugId(baseID + "-history");
+        undoContainer.ensureDebugId(baseID + "-undo");
+        acceptIcon.ensureDebugId(baseID + "-accept");
+        rejectIcon.ensureDebugId(baseID + "-reject");
     }
 
     private void setDisplayReviewButtons(boolean canReview) {
@@ -120,7 +131,7 @@ public class EditorButtonsWidget extends Composite {
     }
 
     interface EditorButtonsWidgetUiBinder extends
-            UiBinder<HTMLPanel, EditorButtonsWidget> {
+        UiBinder<HTMLPanel, EditorButtonsWidget> {
     }
 
     interface Style extends CssResource {

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.persistence.Transient;
 
 import org.apache.solr.analysis.LowerCaseFilterFactory;

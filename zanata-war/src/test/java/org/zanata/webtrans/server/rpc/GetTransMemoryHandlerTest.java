@@ -71,7 +71,9 @@ public class GetTransMemoryHandlerTest extends ZanataDbunitJpaTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         SeamAutowire autoWireInstance = SeamAutowire.instance();
-        autoWireInstance.use("identity", identity)
+        autoWireInstance
+                .reset()
+                .use("identity", identity)
                 .use("localeServiceImpl", localeService)
                 .use("validationServiceImpl", validationServiceImpl)
                 .use("entityManager", new FullTextEntityManagerImpl(getEm()))

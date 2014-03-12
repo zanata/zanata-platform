@@ -60,7 +60,6 @@ public class NotificationPresenter extends WidgetPresenter<NotificationDisplay>
     @Override
     protected void onBind() {
         display.setMessagesToKeep(MESSAGE_TO_KEEP);
-        display.setMessageOrder(DisplayOrder.ASCENDING);
         display.setListener(this);
 
         registerHandler(eventBus.addHandler(NotificationEvent.getType(), this));

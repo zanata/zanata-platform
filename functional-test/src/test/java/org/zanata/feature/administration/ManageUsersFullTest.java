@@ -20,15 +20,23 @@
  */
 package org.zanata.feature.administration;
 
-import org.junit.*;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
-import org.zanata.page.utility.DashboardPage;
-import org.zanata.page.administration.ManageUserPage;
-import org.zanata.page.administration.ManageUserAccountPage;
-import org.zanata.util.ResetDatabaseRule;
-import org.zanata.workflow.LoginWorkFlow;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.subethamail.wiser.Wiser;
+import org.zanata.feature.DetailedTest;
+import org.zanata.page.administration.ManageUserAccountPage;
+import org.zanata.page.administration.ManageUserPage;
+import org.zanata.page.utility.DashboardPage;
+import org.zanata.util.AddUsersRule;
+import org.zanata.util.HasEmailRule;
+import org.zanata.util.NoScreenshot;
+import org.zanata.util.PropertiesHolder;
+import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -38,9 +46,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Category(DetailedTest.class)
 public class ManageUsersFullTest {
+    @Rule
+    public AddUsersRule addUsersRule = new AddUsersRule();
     @ClassRule
-    public static ResetDatabaseRule resetDatabaseRule = new ResetDatabaseRule(
-            ResetDatabaseRule.Config.Empty);
+    public static HasEmailRule emailRule = new HasEmailRule();
+
     private DashboardPage dashboardPage;
 
     @Before

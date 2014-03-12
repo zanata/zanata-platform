@@ -1,108 +1,101 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
-  xmlns:f="urn:import:org.zanata.webtrans.client">
+  xmlns:f="urn:import:org.zanata.webtrans.client.ui">
 
-  <ui:style field="style"
-    type="org.zanata.webtrans.client.view.EditorOptionsView.Styles">
-    .mainPanel {
-      width: 100%;
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
+
+  <ui:style>
+    table.nav-options td {
+      margin: 0;
+      padding: 0;
     }
-
-    .mainPanel td {
-      padding-bottom: 10px;
-    }
-
-    .mainPanel table td {
-      font-size: 13px;
-      color: #FFFFFF;
-    }
-
-    .selectedPageSize {
-      background-color: #B62918;
-    }
-
-    .pageSizeContainer {
-      margin-left: 8px;
-      margin-top: 8px;
-    }
-
-    .pageSizeContainer span {
-      padding: 3px;
-      border: 1px solid #808080;
-      cursor: pointer;
-      display: block;
-      height: 15px;
-      width: 15px;
-      text-align: center;
-      float: left;
-      margin-right: 3px;
-    }
-
   </ui:style>
 
-  <g:VerticalPanel styleName="{style.mainPanel}">
-    <g:cell>
-      <g:VerticalPanel width="100%">
-        <g:Label ui:field="editorOptionHeader"
-          styleName="gwt-sideMenu-header" />
-        <g:CheckBox ui:field="editorButtonsChk">
-          <ui:msg>Editor Buttons</ui:msg>
-        </g:CheckBox>
-        <g:CheckBox ui:field="enterChk">
-          <ui:msg>'Enter' key saves immediately</ui:msg>
-        </g:CheckBox>
-        <g:CheckBox ui:field="useCodeMirrorChk">
-          <ui:msg>Use syntax highlighting Editor</ui:msg>
-        </g:CheckBox>
-        <g:CheckBox ui:field="showSaveApprovedWarningChk">
-          <ui:msg>Show 'Save as Approved' warning</ui:msg>
-        </g:CheckBox>
-        <g:CheckBox ui:field="spellCheckChk">
-          <ui:msg>Enable Spell Check</ui:msg>
-        </g:CheckBox>
-      </g:VerticalPanel>
-    </g:cell>
+  <g:HTMLPanel tag="ul" styleName="list--no-bullets">
+    <li>
+      <h5 class="txt--invert txt--align-center">
+        <ui:text from="{messages.editorOptions}" />
+      </h5>
+    </li>
+    <li>
+      <g:CheckBox ui:field="editorButtonsChk">
+        <ui:text from="{messages.editorButtons}" />
+      </g:CheckBox>
+    </li>
+    <li>
+      <g:CheckBox ui:field="enterChk">
+        <ui:text from="{messages.enterKeySaves}" />
+      </g:CheckBox>
+    </li>
+    <li>
+      <g:CheckBox ui:field="useCodeMirrorChk">
+        <ui:text from="{messages.useSyntaxHighlight}" />
+      </g:CheckBox>
+    </li>
+    <li>
+      <g:CheckBox ui:field="showSaveApprovedWarningChk"
+        styleName="txt--invert">
+        <ui:text from="{messages.showSaveApproveWarning}" />
+      </g:CheckBox>
+    </li>
+    <li>
+      <g:CheckBox ui:field="spellCheckChk">
+        <ui:text from="{messages.enabledSpellCheck}" />
+      </g:CheckBox>
+    </li>
 
-    <g:cell>
-      <g:VerticalPanel width="100%">
-        <g:Label ui:field="navOptionHeader" styleName="gwt-sideMenu-header" />
-        <g:VerticalPanel ui:field="optionsContainer" />
-      </g:VerticalPanel>
-    </g:cell>
+    <li class="l--push-v-half">
+      <h5 class="txt--invert txt--align-center">
+        <ui:text from="{messages.navOption}" />
+      </h5>
+      <g:VerticalPanel ui:field="optionsContainer"
+        styleName="{style.nav-options}" />
+    </li>
+    <li class="l--push-v-half">
+      <h5 class="txt--invert txt--align-center">
+        <ui:text from="{messages.transMemoryOption}" />
+      </h5>
+    </li>
+    <li>
+      <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeDiff" />
+    </li>
+    <li>
+      <g:RadioButton name="transMemoryDisplayMode"
+        ui:field="diffModeHighlight" />
+    </li>
 
-    <g:cell>
-      <g:VerticalPanel width="100%">
-        <g:Label ui:field="transMemoryHeader" styleName="gwt-sideMenu-header" />
-        <g:RadioButton name="transMemoryDisplayMode" ui:field="diffModeDiff" />
-        <g:RadioButton name="transMemoryDisplayMode"
-          ui:field="diffModeHighlight" />
-      </g:VerticalPanel>
-    </g:cell>
+    <li class="l--push-v-half">
+      <h5 class="txt--invert txt--align-center">
+        <ui:text from="{messages.pageSize}" />
+      </h5>
+    </li>
+    <li>
+      <g:Anchor ui:field="five" styleName="txt--lead txt--invert">5</g:Anchor>
+      <g:Anchor ui:field="ten" styleName="txt--lead txt--invert">10</g:Anchor>
+      <g:Anchor ui:field="twentyFive" styleName="txt--lead txt--invert">25</g:Anchor>
+      <g:Anchor ui:field="fifty" styleName="txt--lead txt--invert">50</g:Anchor>
+    </li>
 
-
-    <g:cell>
-      <g:VerticalPanel width="100%">
-        <g:Label ui:field="pageSizeHeader" styleName="gwt-sideMenu-header" />
-        <g:HTMLPanel styleName="{style.pageSizeContainer}">
-          <g:InlineLabel ui:field="five">5</g:InlineLabel>
-          <g:InlineLabel ui:field="ten">10</g:InlineLabel>
-          <g:InlineLabel ui:field="twentyFive">25</g:InlineLabel>
-          <g:InlineLabel ui:field="fifty">50</g:InlineLabel>
-        </g:HTMLPanel>
-      </g:VerticalPanel>
-    </g:cell>
-
-    <g:cell>
-      <g:VerticalPanel width="100%">
-        <g:Label ui:field="displayHeader" styleName="gwt-sideMenu-header" />
-        <g:CheckBox ui:field="showTMChk" />
-        <g:CheckBox ui:field="showGlossaryChk" />
-        <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
-      </g:VerticalPanel>
-    </g:cell>
-
-  </g:VerticalPanel>
-
+    <li class="l--push-v-half">
+      <h5 class="txt--invert txt--align-center"
+        title="{messages.displayConfigurationTooltip}">
+        <ui:text from="{messages.displayConfiguration}" />
+      </h5>
+    </li>
+    <li>
+      <g:CheckBox ui:field="showTMChk" />
+    </li>
+    <li>
+      <g:CheckBox ui:field="showGlossaryChk" />
+    </li>
+    <li>
+      <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
+    </li>
+  <li>
+    <g:HTMLPanel ui:field="sourceLangListBoxContainer" />
+  </li>
+  </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -33,7 +33,7 @@ import lombok.Data;
 public final class DocumentUploadedEvent {
     public static final String EVENT_NAME =
             "org.zanata.event.HDocumentUploaded";
-
+    private final long actorId;
     private final Long documentId;
     private final boolean isSourceDocument;
     private final LocaleId localeId;

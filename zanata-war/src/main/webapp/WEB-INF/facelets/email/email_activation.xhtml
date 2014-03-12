@@ -7,8 +7,8 @@
   xmlns:rich="http://richfaces.org/rich"
   template="/WEB-INF/facelets/email/template_email.xhtml">
 
-  <ui:param name="toName" value="#{profileAction.name}"/>
-  <ui:param name="toEmailAddr" value="#{profileAction.email}"/>
+  <ui:param name="toName" value="#{newProfileAction.name}"/>
+  <ui:param name="toEmailAddr" value="#{newProfileAction.email}"/>
   <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}"/>
 
   <ui:define name="body">
@@ -18,7 +18,7 @@
 
     <p>
       <a
-        href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
+        href="#{applicationConfiguration.serverPath}/account/activate/#{newProfileAction.activationKey}">
         #{messages['jsf.email.activation.Link']}
       </a>
     </p>
@@ -29,8 +29,8 @@
 
     <p>
       <a
-        href="#{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}">
-        #{applicationConfiguration.serverPath}/account/activate/#{profileAction.activationKey}
+        href="#{applicationConfiguration.serverPath}/account/activate/#{newProfileAction.activationKey}">
+        #{applicationConfiguration.serverPath}/account/activate/#{newProfileAction.activationKey}
       </a>
     </p>
 

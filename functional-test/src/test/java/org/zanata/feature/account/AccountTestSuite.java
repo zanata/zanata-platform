@@ -22,6 +22,7 @@ package org.zanata.feature.account;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.zanata.util.NoScreenshot;
 
 /**
  * @author Damian Jansen <a
@@ -30,6 +31,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ ChangePasswordTest.class, RegisterTest.class,
         UsernameValidationTest.class, ValidEmailAddressTest.class,
-        InvalidEmailAddressTest.class })
+        InvalidEmailAddressTest.class, InactiveUserLoginTest.class })
 public class AccountTestSuite {
 }

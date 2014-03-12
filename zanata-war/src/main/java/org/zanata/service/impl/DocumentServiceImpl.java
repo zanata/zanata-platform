@@ -28,11 +28,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.lock.Lock;
+import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -43,6 +45,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
+import org.zanata.service.VersionStateCache;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -73,10 +76,16 @@ public class DocumentServiceImpl implements DocumentService {
     private LockManagerService lockManagerServiceImpl;
 
     @In
+    private VersionStateCache versionStateCacheImpl;
+
+    @In
     private ResourceUtils resourceUtils;
 
     @In
     private ApplicationConfiguration applicationConfiguration;
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+    private HAccount authenticatedAccount;
+
 
     @Override
     @Transactional
@@ -148,11 +157,15 @@ public class DocumentServiceImpl implements DocumentService {
                         extensions, hLocale, nextDocRev);
         documentDAO.flush();
 
-        if (changed && Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    DocumentUploadedEvent.EVENT_NAME,
-                    new DocumentUploadedEvent(document.getId(), true, hLocale
-                            .getLocaleId()));
+        long actorId = authenticatedAccount.getPerson().getId();
+        if (changed) {
+            if( Events.exists() ) {
+                Events.instance().raiseTransactionSuccessEvent(
+                        DocumentUploadedEvent.EVENT_NAME,
+                        new DocumentUploadedEvent(actorId, document.getId(),
+                                true, hLocale.getLocaleId()));
+            }
+            clearStatsCacheForUpdatedDocument(document);
         }
 
         if (copyTrans && nextDocRev == 1) {
@@ -170,6 +183,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setObsolete(true);
         documentDAO.makePersistent(document);
         documentDAO.flush();
+        clearStatsCacheForUpdatedDocument(document);
     }
 
     /**
@@ -179,8 +193,13 @@ public class DocumentServiceImpl implements DocumentService {
      *            The document to copy translations into.
      */
     private void copyTranslations(HDocument document) {
-        if (applicationConfiguration.getEnableCopyTrans()) {
+        if (applicationConfiguration.isCopyTransEnabled()) {
             copyTransServiceImpl.copyTransForDocument(document);
         }
+    }
+
+    private void clearStatsCacheForUpdatedDocument(HDocument document) {
+        versionStateCacheImpl.clearVersionStatsCache(document.getProjectIteration()
+                .getId());
     }
 }

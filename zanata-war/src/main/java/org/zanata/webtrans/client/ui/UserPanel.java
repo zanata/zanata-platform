@@ -1,29 +1,28 @@
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class UserPanel extends HorizontalPanel implements HasManageUserPanel {
+public class UserPanel extends ListItemWidget implements HasManageUserPanel {
     private static final long serialVersionUID = 1L;
-    private Image userImage;
-    private Label personNameLabel;
-    private String personName;
-    private Label colorLabel;
+    private final Image userImage;
+    private final String personName;
+    private final ListItemWidget colorLabel = new ListItemWidget();
 
     public UserPanel(String personName, String imgUrl) {
         super();
+
+        UnorderedListWidget container = new UnorderedListWidget();
+
+        container.setStyleName("list--horizontal");
         this.personName = personName;
-
         userImage = new Image(imgUrl);
-        personNameLabel = new Label(personName);
-        colorLabel = new Label();
 
-        this.add(userImage);
-        this.add(colorLabel);
-        this.add(personNameLabel);
+        container.add(new ListItemWidget(userImage));
+        container.add(new ListItemWidget(colorLabel));
+        container.add(new ListItemWidget(personName));
 
-        this.setCellWidth(userImage, "16px");
+        add(container);
     }
 
     @Override
@@ -31,7 +30,7 @@ public class UserPanel extends HorizontalPanel implements HasManageUserPanel {
         colorLabel.getElement().getStyle().setProperty("borderColor", color);
         colorLabel.getElement().getStyle().setProperty("borderWidth", "1px");
         colorLabel.getElement().getStyle().setProperty("borderStyle", "solid");
-        colorLabel.getElement().getStyle().setProperty("height", "16px");
+        colorLabel.getElement().getStyle().setProperty("height", "1.25em");
     }
 
     @Override

@@ -40,7 +40,7 @@ public class VersionGroupsPage extends BasePage {
 
     public CreateVersionGroupPage createNewGroup() {
         WebElement createLink =
-                getDriver().findElement(By.linkText("Create New Group"));
+                getDriver().findElement(By.id("group-create"));
         createLink.click();
         return new CreateVersionGroupPage(getDriver());
     }
