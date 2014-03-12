@@ -447,8 +447,12 @@ public class HTextFlow extends HTextContainer implements Serializable,
         this.setContentHash(HashUtil.generateHash(contents));
     }
 
-    private String toBCP47(HLocale hLocale) {
-        HLocale docLocale = document.getLocale();
+    private static String toBCP47(HLocale docLocale) {
+        if (docLocale == null) {
+            // *should* only happen in tests
+            log.warn("null locale, assuming 'en'");
+            return "en";
+        }
         LocaleId docLocaleId = docLocale.getLocaleId();
         return docLocaleId.getId();
     }
