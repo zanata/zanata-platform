@@ -113,7 +113,7 @@
 
   <!-- ClassLoaderLeakPreventor needs to be first, so that it can stop all leaks -->
   <listener>
-    <listener-class>se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor</listener-class>
+    <listener-class>org.zanata.servlet.LeakListener</listener-class>
   </listener>
 
   <listener>

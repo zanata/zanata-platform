@@ -144,8 +144,6 @@
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!-- used for gwt super devmode -->
             <usedDependency>org.json:json</usedDependency>
-            <!-- used for leak detection (servlet listener) -->
-            <usedDependency>se.jiderhamn:classloader-leak-prevention</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
