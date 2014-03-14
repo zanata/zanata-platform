@@ -23,14 +23,15 @@ package org.zanata.page.dashboard;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import org.zanata.page.projects.CreateProjectPage;
-
-import com.google.common.base.Predicate;
+import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
+import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
+import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 
 public class DashboardBasePage extends BasePage {
 
@@ -43,6 +44,15 @@ public class DashboardBasePage extends BasePage {
     @FindBy(id = "settings")
     private WebElement settingsTab;
 
+    @FindBy(id = "account-tab")
+    private WebElement settingsAccountTab;
+
+    @FindBy(id = "profile-tab")
+    private WebElement settingsProfileTab;
+
+    @FindBy(id = "client-tab")
+    private WebElement settingsClientTab;
+
     @FindBy(id = "activity-today")
     private WebElement todaysActivityTab;
 
@@ -54,6 +64,11 @@ public class DashboardBasePage extends BasePage {
 
     public DashboardBasePage(final WebDriver driver) {
         super(driver);
+    }
+
+    public String getUserFullName() {
+        return getDriver().findElement(By.id("profile-overview"))
+                .findElement(By.tagName("h1")).getText();
     }
 
     public DashboardActivityTab gotoActivityTab() {
@@ -81,8 +96,38 @@ public class DashboardBasePage extends BasePage {
         return new DashboardProjectsTab(getDriver());
     }
 
-    public DashboardSettingsTab gotoSettingsTab() {
-        settingsTab.click();
-        return new DashboardSettingsTab(getDriver());
+    public DashboardBasePage goToSettingsTab() {
+        clickWhenTabEnabled(settingsTab);
+        return new DashboardBasePage(getDriver());
+    }
+
+    public DashboardAccountTab gotoSettingsAccountTab() {
+        clickWhenTabEnabled(settingsAccountTab);
+        return new DashboardAccountTab(getDriver());
+    }
+
+    public DashboardProfileTab goToSettingsProfileTab() {
+        clickWhenTabEnabled(settingsProfileTab);
+        return new DashboardProfileTab(getDriver());
+    }
+
+    public DashboardClientTab goToSettingsClientTab() {
+        clickWhenTabEnabled(settingsClientTab);
+        return new DashboardClientTab(getDriver());
+    }
+
+    public void waitForLoaderFinished() {
+        slightPause();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return !isLoaderVisible();
+            }
+        });
+    }
+
+    public boolean isLoaderVisible() {
+        return getDriver().findElement(By.className("loader__spinner"))
+                .isDisplayed();
     }
 }

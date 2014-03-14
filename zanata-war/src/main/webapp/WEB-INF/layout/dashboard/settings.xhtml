@@ -224,7 +224,8 @@
             action="#{userSettingsAction.updateProfile}"
             render="profileForm,profile-overview" status="profile-loader"
             execute="@form"/>
-          <input type="submit" value="#{messages['jsf.dashboard.settings.updateProfile.label']}"
+          <input id="updateProfileButton"
+            type="submit" value="#{messages['jsf.dashboard.settings.updateProfile.label']}"
             class="button button--primary l--push-top-1"
             onclick="updateProfile(); return false;"/>
           <a4j:status name="profile-loader">
@@ -294,7 +295,7 @@
               </p>
             </s:fragment>
           </div>
-          <button class="button"
+          <button id="generateKeyButton" class="button"
             onclick="if (confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
             #{messages['jsf.dashboard.settings.generateNewApiKey.label']}
           </button>
