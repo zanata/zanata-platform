@@ -8,13 +8,11 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.seam.security.NotLoggedInException;
 
 @Provider
-public class NotLoggedInExceptionMapper extends
-        RateLimitingAwareExceptionMapper implements
+public class NotLoggedInExceptionMapper implements
         ExceptionMapper<NotLoggedInException> {
 
     @Override
     public Response toResponse(NotLoggedInException exception) {
-        releaseSemaphoreBeforeReturnResponse();
         return Response.status(Status.UNAUTHORIZED).build();
     }
 

@@ -1,4 +1,4 @@
-package org.zanata.rest;
+package org.zanata.servlet;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.servlet.RestRateLimiter;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
@@ -67,7 +68,7 @@ public class RestRateLimiterTest {
         // will block until them finish
         List<Long> timeUsedInMillis =
                 getTimeUsedInMillisRoundedUpToTens(futures);
-        log.info("result: {}", timeUsedInMillis);
+        RestRateLimiterTest.log.info("result: {}", timeUsedInMillis);
         Iterable<Long> blocked =
                 Iterables.filter(timeUsedInMillis, new Predicate<Long>() {
                     @Override
@@ -184,7 +185,7 @@ public class RestRateLimiterTest {
         List<Long> timeUsedInMillis =
                 getTimeUsedInMillisRoundedUpToTens(futures);
 
-        log.info("result: {}", timeUsedInMillis);
+        RestRateLimiterTest.log.info("result: {}", timeUsedInMillis);
         // initial blocked thread's release will happen BEFORE change takes
         // effect (thus permit won't be added to changed semaphore)
         assertThat(rateLimiter.availableActivePermit(), Matchers.is(3));
@@ -217,7 +218,7 @@ public class RestRateLimiterTest {
         rateLimiter.acquire();
         stopwatch.stop();
         long blockedTime = stopwatch.elapsedMillis();
-        log.info("blocked: {}", blockedTime);
+        RestRateLimiterTest.log.info("blocked: {}", blockedTime);
         return roundToTens(blockedTime);
     }
 

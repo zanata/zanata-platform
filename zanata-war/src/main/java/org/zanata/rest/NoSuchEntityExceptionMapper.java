@@ -6,13 +6,11 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class NoSuchEntityExceptionMapper extends
-        RateLimitingAwareExceptionMapper implements
+public class NoSuchEntityExceptionMapper implements
         ExceptionMapper<NoSuchEntityException> {
 
     @Override
     public Response toResponse(NoSuchEntityException exception) {
-        releaseSemaphoreBeforeReturnResponse();
         return Response.status(Status.NOT_FOUND).entity(exception.getMessage())
                 .build();
     }

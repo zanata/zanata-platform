@@ -1,13 +1,9 @@
-package org.zanata.rest;
+package org.zanata.servlet;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-
 import com.google.common.base.Objects;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.EqualsAndHashCode;
@@ -57,18 +53,19 @@ public class RestRateLimiter {
                 }
             }
         }
-        try {
-            boolean gotIt = maxActiveSemaphore.tryAcquire(30, TimeUnit.SECONDS);
-            if (!gotIt) {
-                // timed out
-                throw new WebApplicationException(Response.status(
-                        Response.Status.SERVICE_UNAVAILABLE)
-                        .entity("System too busy").build());
-            }
-        }
-        catch (InterruptedException e) {
-            throw Throwables.propagate(e);
-        }
+        maxActiveSemaphore.acquireUninterruptibly();
+//        try {
+//            boolean gotIt = maxActiveSemaphore.tryAcquire(30, TimeUnit.SECONDS);
+//            if (!gotIt) {
+//                // timed out
+//                throw new WebApplicationException(Response.status(
+//                        Response.Status.SERVICE_UNAVAILABLE)
+//                        .entity("System too busy").build());
+//            }
+//        }
+//        catch (InterruptedException e) {
+//            throw Throwables.propagate(e);
+//        }
         rateLimiter.acquire();
     }
 

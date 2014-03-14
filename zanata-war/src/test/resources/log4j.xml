@@ -30,7 +30,7 @@
   <logger name="gwt-log">
     <level value="OFF" />
   </logger>
-  <logger name="org.zanata.rest">
+  <logger name="org.zanata.servlet">
     <level value="ERROR"/>
   </logger>
   <root>

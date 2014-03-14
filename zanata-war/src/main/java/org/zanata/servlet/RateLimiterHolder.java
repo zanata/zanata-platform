@@ -1,4 +1,4 @@
-package org.zanata.rest;
+package org.zanata.servlet;
 
 import java.util.Collection;
 import java.util.Map;
@@ -67,23 +67,10 @@ public class RateLimiterHolder implements Introspectable {
         RestRateLimiter.RateLimitConfig old = limitConfig;
         readRateLimitState();
         if (!Objects.equal(old, limitConfig)) {
-            log.info("application configuration changed. Old: {}, New: {}",
+            RateLimiterHolder.log.info("application configuration changed. Old: {}, New: {}",
                     old, limitConfig);
             for (RestRateLimiter restRateLimiter : activeCallers.asMap().values()) {
                 restRateLimiter.changeConfig(limitConfig);
-            }
-        }
-    }
-
-    public void releaseSemaphoreForCurrentThread() {
-        ActiveApiKeys apiKeys = ActiveApiKeys.getInstance();
-        String apiKey = apiKeys.getApiKeyForCurrentThread();
-        if (apiKey != null) {
-            apiKeys.removeApiKeyFromCurrentThread();
-            RestRateLimiter rateLimiter = getIfPresent(apiKey);
-            if (rateLimiter != null) {
-                log.debug("releasing semaphore for:{} - {}", apiKey, rateLimiter);
-                rateLimiter.release();
             }
         }
     }
@@ -121,7 +108,7 @@ public class RateLimiterHolder implements Introspectable {
                             apply(Map.Entry<String, RestRateLimiter> input) {
 
                         RestRateLimiter rateLimiter = input.getValue();
-                        // TODO pahuang here
+                        // TODO pahuang may want to show more things
                         return input.getKey() + ":" + rateLimiter;
                     }
                 });

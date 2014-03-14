@@ -6,7 +6,7 @@ import org.jboss.resteasy.spi.HttpRequest;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-final class HeaderHelper {
+public final class HeaderHelper {
     private HeaderHelper() {
     }
 

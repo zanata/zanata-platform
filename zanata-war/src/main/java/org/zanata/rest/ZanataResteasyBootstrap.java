@@ -66,15 +66,6 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
                 getDispatcher().getProviderFactory()
                         .getServerPreProcessInterceptorRegistry();
         preRegistry.register(ZanataRestSecurityInterceptor.class);
-
-        ZanataRestRateLimiterInterceptor zanataRestRateLimiterInterceptor =
-                new ZanataRestRateLimiterInterceptor();
-        preRegistry.register(zanataRestRateLimiterInterceptor);
-        InterceptorRegistry<PostProcessInterceptor>
-                postRegistry =
-                getDispatcher().getProviderFactory()
-                        .getServerPostProcessInterceptorRegistry();
-        postRegistry.register(zanataRestRateLimiterInterceptor);
     }
 
     @Override
@@ -106,9 +97,6 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
                         log.error(
                                 "Failed to send error on failed REST request",
                                 ioe);
-                    } finally {
-                        RateLimiterHolder.getInstance()
-                                .releaseSemaphoreForCurrentThread();
                     }
                 }
             }

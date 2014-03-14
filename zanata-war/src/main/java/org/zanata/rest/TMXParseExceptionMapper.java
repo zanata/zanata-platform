@@ -32,12 +32,10 @@ import org.zanata.util.TMXParseException;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
-public class TMXParseExceptionMapper extends
-        RateLimitingAwareExceptionMapper implements
+public class TMXParseExceptionMapper implements
         ExceptionMapper<TMXParseException> {
     @Override
     public Response toResponse(TMXParseException exception) {
-        releaseSemaphoreBeforeReturnResponse();
         return Response.status(Status.BAD_REQUEST)
                 .entity(exception.getMessage()).build();
     }

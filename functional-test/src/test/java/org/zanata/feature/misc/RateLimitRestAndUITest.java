@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
@@ -16,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.model.HApplicationConfiguration;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.util.AddUsersRule;
@@ -68,6 +70,7 @@ public class RateLimitRestAndUITest {
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
 
+        serverConfigPage = serverConfigPage.turnRateLimitingOn(true);
         assertThat(serverConfigPage.getRateLimit(), Matchers.isEmptyString());
         assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(), Matchers.isEmptyString());
         assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(), Matchers.isEmptyString());
@@ -177,20 +180,27 @@ public class RateLimitRestAndUITest {
 
     @Test
     public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxConcurrentPathParam);
-        clientRequest.body("text/plain", "2");
-
-        Response putResponse = clientRequest.put();
-        checkStatusAndReleaseConnection(putResponse);
-
-        // prepare to fire multiple REST requests
-        final AtomicInteger atomicInteger = new AtomicInteger(1);
-//        translator creates the project/version
+        //        translator creates the project/version
         final String projectSlug = "project";
         final String iterationSlug = "version";
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
+
+
+        ClientRequest request =
+                clientRequestAsAdmin("rest/configurations/c/" +
+                        HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
+        request.body(MediaType.TEXT_PLAIN_TYPE, "true");
+        checkStatusAndReleaseConnection(request.put());
+
+        ClientRequest clientRequest = clientRequestAsAdmin(
+                "rest/configurations/" + maxConcurrentPathParam);
+        clientRequest.body(MediaType.TEXT_PLAIN_TYPE, "2");
+
+        checkStatusAndReleaseConnection(clientRequest.put());
+
+        // prepare to fire multiple REST requests
+        final AtomicInteger atomicInteger = new AtomicInteger(1);
 
         // requests from translator user
         final int translatorThreads = 3;
@@ -233,7 +243,7 @@ public class RateLimitRestAndUITest {
         // 1 request from translator should get 403 and fail
         log.info("result: {}", result);
         assertThat(result,
-                Matchers.containsInAnyOrder(201, 201, 201, 201, 403));
+                Matchers.containsInAnyOrder(201, 201, 201, 201, 429));
     }
 
     @Test(timeout = 5000)
@@ -241,7 +251,7 @@ public class RateLimitRestAndUITest {
         // Given: max active is set to 1
         ClientRequest configRequest = clientRequestAsAdmin(
                 "rest/configurations/" + maxActivePathParam);
-        configRequest.body("text/plain", "1");
+        configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
         checkStatusAndReleaseConnection(configRequest.put());
 
         // When: multiple requests that will result in a mapped exception
@@ -261,7 +271,7 @@ public class RateLimitRestAndUITest {
         // Given: max active is set to 1
         ClientRequest configRequest = clientRequestAsAdmin(
                 "rest/configurations/" + maxActivePathParam);
-        configRequest.body("text/plain", "1");
+        configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
         checkStatusAndReleaseConnection(configRequest.put());
 
         // When: multiple requests that will result in an unmapped exception
@@ -300,6 +310,11 @@ public class RateLimitRestAndUITest {
                         try {
                             return input.get();
                         } catch (Exception e) {
+                            // by using filter we lose RESTeasy's exception translation
+                            String message = e.getMessage().toLowerCase();
+                            if (message.matches(".+429.+too many concurrent request.+")) {
+                                return 429;
+                            }
                             throw Throwables.propagate(e);
                         }
                     }

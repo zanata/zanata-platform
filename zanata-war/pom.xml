@@ -1232,19 +1232,6 @@
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-remoting</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.scannotation</groupId>
-      <artifactId>scannotation</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- RestEasy dependencies -->
 
     <dependency>

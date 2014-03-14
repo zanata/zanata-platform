@@ -29,7 +29,7 @@ import org.zanata.rest.HibernateValidationInterceptor;
 import org.zanata.rest.ConstraintViolationExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
-import org.zanata.rest.RateLimiterHolder;
+import org.zanata.servlet.RateLimiterHolder;
 import org.zanata.rest.ZanataServiceExceptionMapper;
 import org.zanata.rest.client.TraceDebugInterceptor;
 import org.zanata.seam.SeamAutowire;

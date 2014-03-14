@@ -1,5 +1,6 @@
 package org.zanata.page.administration;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -65,5 +66,18 @@ public class ServerConfigurationPage extends BasePage {
     public AdministrationPage save() {
         saveButton.click();
         return new AdministrationPage(getDriver());
+    }
+
+    public ServerConfigurationPage turnRateLimitingOn(boolean onOrOff) {
+        if (onOrOff) {
+            getDriver().findElement(
+                    By.id("serverConfigForm:rateLimitSwitchField:radio:0"))
+                    .click();
+        } else {
+            getDriver().findElement(
+                    By.id("serverConfigForm:rateLimitSwitchField:radio:1"))
+                    .click();
+        }
+        return new ServerConfigurationPage(getDriver());
     }
 }
