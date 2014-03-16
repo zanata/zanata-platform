@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,18 +18,19 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.administration;
+
+package org.zanata.feature.search;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * List of test classes for the Search test suite.
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see org.zanata.feature.AggregateTestSuite
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ManageUsersTest.class, ManageUsersFullTest.class,
-        AdministrationTest.class, EditHomePageTest.class,
-        EditTranslationMemoryTest.class, ManageSearchTest.class })
-public class AdministrationTestSuite {
+@Suite.SuiteClasses({ProjectSearchTest.class})
+public class SearchTestSuite {
 }

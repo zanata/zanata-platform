@@ -31,8 +31,8 @@
   <HTextFlowTarget
     id="1"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="1"
     state="2"
     tf_id="1"
@@ -43,8 +43,8 @@
   <HTextFlowTarget
     id="2"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="3"
     state="2"
     tf_id="1"
@@ -55,8 +55,8 @@
   <HTextFlowTarget
     id="3"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="5"
     state="1"
     tf_id="1"
@@ -66,8 +66,8 @@
   <HTextFlowTarget
     id="4"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="6"
     state="0"
     tf_id="1"
@@ -133,21 +133,24 @@
   <HSimpleComment
     id="1"
     comment="Text Flow Target Comment 1"
+    lastChanged="2010-09-01 20:30:16"
     />
   <HSimpleComment
     id="2"
     comment="Text Flow Target Comment 2"
+    lastChanged="2010-09-01 20:30:16"
     />
   <HSimpleComment
     id="3"
     comment="Text Flow Target Comment 3"
+    lastChanged="2010-09-01 20:30:16"
     />
 
   <HTextFlowTarget
     id="5"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="4"
     state="1"
     tf_id="2"
@@ -159,8 +162,8 @@
   <HTextFlowTarget
     id="6"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="4"
     state="1"
     tf_id="3"
@@ -172,8 +175,8 @@
   <HTextFlowTarget
     id="7"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="4"
     state="1"
     tf_id="4"
@@ -215,8 +218,8 @@
   <HTextFlowTarget
     id="8"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     locale="4"
     state="1"
     tf_id="5"
@@ -228,8 +231,8 @@
   <HTextFlowTargetReviewComment
     id="1"
     versionNum="1"
-    creationDate="2009-09-01 20:30:16"
-    lastChanged="2009-09-01 20:30:16"
+    creationDate="2010-09-01 20:30:16"
+    lastChanged="2010-09-01 20:30:16"
     target_id="8"
     comment="comment 1"
     commenter_id="2"

@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -83,6 +84,7 @@ import com.google.common.collect.ImmutableList;
  *
  */
 @Entity
+@EntityListeners({HTextFlow.EntityListener.class})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @NoArgsConstructor
@@ -456,27 +458,28 @@ public class HTextFlow extends HTextContainer implements Serializable,
         return docLocaleId.getId();
     }
 
-    @PreUpdate
-    private void preUpdate() {
-        if (!this.revision.equals(this.oldRevision)) {
-            // there is an initial state
-            if (this.initialState != null) {
-                this.getHistory().put(this.oldRevision, this.initialState);
-            }
-            if (!isPlural()) {
-                // if plural form has changed, we need to clear out obsolete
-                // contents
-                setContents(content0);
+    public static class EntityListener {
+        @PreUpdate
+        private void preUpdate(HTextFlow tf) {
+            if (!tf.revision.equals(tf.oldRevision)) {
+                // there is an initial state
+                if (tf.initialState != null) {
+                    tf.getHistory().put(tf.oldRevision, tf.initialState);
+                }
+                if (!tf.isPlural()) {
+                    // if plural form has changed, we need to clear out obsolete
+                    // contents
+                    tf.setContents(tf.content0);
+                }
             }
         }
-    }
 
-    @PostUpdate
-    @PostPersist
-    @PostLoad
-    private void updateInternalHistory() {
-        this.oldRevision = this.revision;
-        this.initialState = new HTextFlowHistory(this);
+        @PostUpdate
+        @PostPersist
+        @PostLoad
+        private void updateInternalHistory(HTextFlow tf) {
+            tf.oldRevision = tf.revision;
+            tf.initialState = new HTextFlowHistory(tf);
+        }
     }
-
 }

@@ -93,14 +93,15 @@ public class ZanataRestCaller {
         response.releaseConnection();
     }
 
-    public void postSourceDocResource(String projectSlug, String iterationSlug,
+    public int postSourceDocResource(String projectSlug, String iterationSlug,
             Resource resource, boolean copytrans) {
         ClientResponse<String> response = zanataProxyFactory
                 .getSourceDocResource(projectSlug, iterationSlug).post(
                         resource,
                         Collections.<String>emptySet(), copytrans);
-        ClientUtility.checkResult(response);
+        int status = response.getStatus();
         response.releaseConnection();
+        return status;
     }
 
     public void putSourceDocResource(String projectSlug, String iterationSlug,

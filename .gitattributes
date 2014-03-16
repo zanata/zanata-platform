@@ -39,3 +39,6 @@
 *.odg binary
 *.odp binary
 *.ods binary
+*.ico binary
+*.eot binary
+*.ttf binary

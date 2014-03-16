@@ -33,20 +33,20 @@ Content-Transfer-Encoding=8bit
     contentType="application/x-gettext" docId="test" name="test"
     obsolete="false" path="" revision="1" last_modified_by_id="1" locale="5"
     poHeader_id="1" project_iteration_id="1" />
-  <HSimpleComment id="2" comment="" />
-  <HSimpleComment id="3" comment="" />
-  <HSimpleComment id="4" comment="" />
-  <HSimpleComment id="5" comment="" />
-  <HSimpleComment id="6" comment="" />
-  <HSimpleComment id="7" comment="" />
-  <HSimpleComment id="8" comment="" />
-  <HSimpleComment id="9" comment="" />
-  <HSimpleComment id="10" comment="" />
-  <HSimpleComment id="11" comment="" />
-  <HSimpleComment id="12" comment="" />
-  <HSimpleComment id="3947" comment="auto translated by TM merge" />
-  <HSimpleComment id="3948" comment="auto translated by TM merge" />
-  <HSimpleComment id="3949" comment="auto translated by TM merge" />
+  <HSimpleComment id="2" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="3" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="4" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="5" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="6" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="7" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="8" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="9" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="10" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="11" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="12" comment="" lastChanged="2012-04-03 15:26:57.0" />
+  <HSimpleComment id="3947" comment="auto translated by TM merge" lastChanged="2012-07-09 11:11:21.0" />
+  <HSimpleComment id="3948" comment="auto translated by TM merge" lastChanged="2012-07-09 11:11:21.0" />
+  <HSimpleComment id="3949" comment="auto translated by TM merge" lastChanged="2012-07-09 11:11:21.0" />
   <HPotEntryData id="1" flags="c-format" />
   <HPotEntryData id="2" flags="c-format" />
   <HPotEntryData id="3" flags="c-format" />

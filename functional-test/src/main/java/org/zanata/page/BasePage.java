@@ -20,12 +20,11 @@
  */
 package org.zanata.page;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.google.common.base.Function;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.account.MyAccountPage;
@@ -34,6 +33,7 @@ import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.page.utility.HomePage;
@@ -212,5 +212,64 @@ public class BasePage extends CorePage {
     public HelpPage goToHelp() {
         getDriver().findElement(By.id("help_link")).click();
         return new HelpPage(getDriver());
+    }
+
+    public BasePage enterSearch(String searchText) {
+        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
+                .sendKeys(searchText);
+        return new BasePage(getDriver());
+    }
+
+    public ProjectsPage submitSearch() {
+        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
+                .sendKeys(Keys.ENTER);
+        return new ProjectsPage(getDriver());
+    }
+
+    public void waitForSearchListContains(final String expected) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getSearchAutocompleteItems().contains(expected);
+            }
+        });
+    }
+
+    public List<String> getSearchAutocompleteItems() {
+        List<String> resultsText = new ArrayList<String>();
+        List<WebElement> results = waitForTenSec()
+                .until(new Function<WebDriver, List<WebElement>>() {
+                    @Override
+                    public List<WebElement> apply(WebDriver driver) {
+                        return getDriver().findElement(
+                                By.className("autocomplete__results"))
+                                .findElements(By.className("autocomplete__result"));
+                    }
+                });
+
+        for (WebElement result : results) {
+            resultsText.add(result.getText());
+        }
+        return resultsText;
+    }
+
+    public ProjectPage clickSearchEntry(final String searchEntry) {
+        WebElement searchItem = waitForTenSec()
+                .until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        List <WebElement> items = getDriver().findElement(
+                                By.className("autocomplete__results"))
+                                .findElements(By.className("autocomplete__result"));
+                        for (WebElement item : items) {
+                            if (item.getText().equals(searchEntry)) {
+                                return item;
+                            }
+                        }
+                        return null;
+                    }
+                });
+        searchItem.click();
+        return new ProjectPage(getDriver());
     }
 }

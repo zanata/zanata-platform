@@ -75,7 +75,7 @@ import com.google.common.base.Optional;
 public class ViewAllStatusAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Period Formatters are thread safe and immutableaccording to joda time
+    // Period Formatters are thread safe and immutable according to joda time
     // docs
     private static final PeriodFormatter COPY_TRANS_TIME_REMAINING_FORMATTER =
             new PeriodFormatterBuilder().appendDays()

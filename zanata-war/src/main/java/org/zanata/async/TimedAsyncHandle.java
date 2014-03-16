@@ -32,11 +32,12 @@ import lombok.Getter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class TimedAsyncHandle<V> extends AsyncTaskHandle<V> {
-    @Getter
-    private long startTime;
 
     @Getter
-    private long finishTime;
+    private long startTime = -1;
+
+    @Getter
+    private long finishTime = -1;
 
     public TimedAsyncHandle(String taskName) {
         super(taskName);
@@ -70,13 +71,43 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V> {
     }
 
     /**
+     * @return The time that the task has been executing for, or the total
+     *         execution time if the task has finished (in milliseconds).
+     */
+    public long getExecutingTime() {
+        if (startTime > 0) {
+            if (finishTime > startTime) {
+                return finishTime - startTime;
+            } else {
+                return System.currentTimeMillis() - startTime;
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * @return The estimated elapsed time (in milliseconds) from the start of
      *         the process.
      */
-    public long getElapsedTime() {
+    public long getTimeSinceStart() {
         if (this.startTime > 0) {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
+            return timeElapsed;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @return The estimated elapsed time (in milliseconds) from the finish of
+     *         the process.
+     */
+    public long getTimeSinceFinish() {
+        if (finishTime > 0) {
+            long currentTime = System.currentTimeMillis();
+            long timeElapsed = currentTime - finishTime;
             return timeElapsed;
         } else {
             return 0;
