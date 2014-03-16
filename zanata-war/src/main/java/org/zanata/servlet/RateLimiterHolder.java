@@ -108,7 +108,6 @@ public class RateLimiterHolder implements Introspectable {
                             apply(Map.Entry<String, RestRateLimiter> input) {
 
                         RestRateLimiter rateLimiter = input.getValue();
-                        // TODO pahuang may want to show more things
                         return input.getKey() + ":" + rateLimiter;
                     }
                 });

@@ -31,11 +31,15 @@ public class RestRateLimiter {
         rateLimiter = RateLimiter.create(limitConfig.rateLimitPerSecond);
     }
 
-    public boolean tryAcquireConcurrentPermit() {
-        return maxConcurrentSemaphore.tryAcquire();
+    public boolean tryAcquire() {
+        boolean got = maxConcurrentSemaphore.tryAcquire();
+        if (got) {
+            acquireActiveAndRatePermit();
+        }
+        return got;
     }
 
-    public void acquire() {
+    private void acquireActiveAndRatePermit() {
         if (change != null) {
             synchronized (this) {
                 if (change != null) {
@@ -54,6 +58,8 @@ public class RestRateLimiter {
             }
         }
         maxActiveSemaphore.acquireUninterruptibly();
+// if we want to enable timeout here,
+// we must ensure release is not called when it timed out
 //        try {
 //            boolean gotIt = maxActiveSemaphore.tryAcquire(30, TimeUnit.SECONDS);
 //            if (!gotIt) {
