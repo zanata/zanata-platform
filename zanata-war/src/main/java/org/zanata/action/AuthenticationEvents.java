@@ -42,7 +42,7 @@ public class AuthenticationEvents implements Serializable {
 
     @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
     public void loginSuccessful(HAccount account) {
-        log.info("Account {} authenticated", account.getUsername());
+        log.debug("Account {} authenticated", account.getUsername());
         injectAuthenticatedPersonIntoWorkingMemory(account);
     }
 
