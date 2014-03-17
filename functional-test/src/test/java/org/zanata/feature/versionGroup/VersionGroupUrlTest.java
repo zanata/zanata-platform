@@ -76,13 +76,13 @@ public class VersionGroupUrlTest {
     @Test
     public void testTabClicksChangeUrl() {
         VersionGroupPage versionGroupPage = createVersionGroup();
-        
+
         testLanguageTabClick(versionGroupPage);
         testProjectTabClick(versionGroupPage);
         testMaintainersTabClick(versionGroupPage);
         testSettingsTabClick(versionGroupPage);
     }
-    
+
     private void testLanguageTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickLanguagesTab();
         assertThat(versionGroupPage.getUrl(),

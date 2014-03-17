@@ -81,7 +81,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     @In
     private VersionGroupDAO versionGroupDAO;
-    
+
     @In
     private ProjectIterationDAO projectIterationDAO;
 
@@ -555,7 +555,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void setSelectedLocaleId(String localeId) {
         this.selectedLocale = localeDAO.findByLocaleId(new LocaleId(localeId));
     }
-    
+
     public void setSelectedVersionSlug(String projectSlug, String versionSlug) {
         selectedVersion =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
