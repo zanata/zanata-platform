@@ -32,9 +32,13 @@ public class RestRateLimiter {
     }
 
     public boolean tryAcquire() {
+        log.debug("before try acquire concurrent semaphore:{}",
+                maxConcurrentSemaphore);
         boolean got = maxConcurrentSemaphore.tryAcquire();
+        log.debug("get permit:{}", got);
         if (got) {
             acquireActiveAndRatePermit();
+            log.debug("got all permits and ready to go: {}", this);
         }
         return got;
     }
@@ -48,15 +52,20 @@ public class RestRateLimiter {
                     // thread. It ought to be the last and only one entering in
                     // this block. It will have to wait for all other previous
                     // blocked threads to complete before changing the semaphore
+                    log.debug(
+                            "detects max active permit change [{}]. Will sleep until all blocking threads [#{}] released.",
+                            change, maxActiveSemaphore.getQueueLength());
                     while (maxActiveSemaphore.availablePermits() != change.oldLimit) {
                         Uninterruptibles.sleepUninterruptibly(1,
                                 TimeUnit.NANOSECONDS);
                     }
+                    log.debug("change max active semaphore with new permit");
                     maxActiveSemaphore = new Semaphore(change.newLimit, true);
                     change = null;
                 }
             }
         }
+        log.debug("before acquire active semaphore:{}", maxActiveSemaphore);
         maxActiveSemaphore.acquireUninterruptibly();
 // if we want to enable timeout here,
 // we must ensure release is not called when it timed out
@@ -72,11 +81,16 @@ public class RestRateLimiter {
 //        catch (InterruptedException e) {
 //            throw Throwables.propagate(e);
 //        }
+        log.debug(
+                "got active semaphore and before acquire rate limit permit:{}",
+                rateLimiter);
         rateLimiter.acquire();
     }
 
     public void release() {
+        log.debug("releasing active semaphore");
         maxActiveSemaphore.release();
+        log.debug("releasing concurrent semaphore");
         maxConcurrentSemaphore.release();
     }
 
