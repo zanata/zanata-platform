@@ -246,10 +246,6 @@ public class ServerConfigurationBean implements Serializable {
 
     @Transactional
     public String update() {
-        boolean valid = validateRateLimitingSettings();
-        if (!valid) {
-            return null;
-        }
         HApplicationConfiguration registerUrlValue =
                 applicationConfigurationDAO
                         .findByKey(HApplicationConfiguration.KEY_REGISTER);
@@ -373,32 +369,6 @@ public class ServerConfigurationBean implements Serializable {
         facesMessages.clearGlobalMessages();
         facesMessages.add("Configuration was successfully updated.");
         return "success";
-    }
-
-    private boolean validateRateLimitingSettings() {
-        boolean allGreaterThanZeroOrEmpty = greaterThanZeroOrEmpty(rateLimitPerSecond)
-                && greaterThanZeroOrEmpty(maxConcurrentRequestsPerApiKey)
-                && greaterThanZeroOrEmpty(maxActiveRequestsPerApiKey);
-        return allGreaterThanZeroOrEmpty && maxActiveLessOrEqualToMaxConcurrent();
-    }
-
-    private static boolean greaterThanZeroOrEmpty(String value) {
-        return Strings.isNullOrEmpty(value) || Long.parseLong(value) > 0;
-    }
-
-    private boolean maxActiveLessOrEqualToMaxConcurrent() {
-        if (!Strings.isNullOrEmpty(maxConcurrentRequestsPerApiKey)
-                && !Strings.isNullOrEmpty(maxActiveRequestsPerApiKey)) {
-            FacesMessages
-                    .instance()
-                    .add(StatusMessage.Severity.ERROR,
-                            "Max active requests can not exceed max concurrent requests");
-            return Long.parseLong(maxConcurrentRequestsPerApiKey) >= Long
-                    .parseLong(maxActiveRequestsPerApiKey);
-        }
-        FacesMessages.instance().add(StatusMessage.Severity.ERROR,
-                "Max concurrent and max active requests must both be set");
-        return false;
     }
 
     public String cancel() {

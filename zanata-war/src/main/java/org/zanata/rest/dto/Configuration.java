@@ -11,6 +11,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Patrick Huang
@@ -20,6 +23,9 @@ import org.zanata.common.Namespaces;
 @XmlRootElement(name = "configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@EqualsAndHashCode
+@Setter
+@NoArgsConstructor
 public class Configuration implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -32,26 +38,15 @@ public class Configuration implements Serializable {
         this.value = value;
     }
 
-    public Configuration() {
-    }
-
     @XmlAttribute(required = true)
     @NotNull
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    @XmlElement(nillable = true, namespace = Namespaces.ZANATA_OLD)
+    @XmlElement(nillable = true, namespace = Namespaces.ZANATA_API)
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
@@ -59,36 +54,11 @@ public class Configuration implements Serializable {
         return links;
     }
 
-    public void setLinks(Links links) {
-        this.links = links;
-    }
-
     @JsonIgnore
     public Links getLinks(boolean createIfNull) {
         if (createIfNull && links == null)
             links = new Links();
         return links;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Configuration that = (Configuration) o;
-
-        if (!key.equals(that.key)) return false;
-        if (value != null ? !value.equals(that.value) : that.value != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = key.hashCode();
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        return result;
     }
 
     @Override

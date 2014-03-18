@@ -31,8 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
 @Slf4j
-public class RateLimiterHolder implements Introspectable {
+public class RateLimitManager implements Introspectable {
 
+    public static final String INTROSPECTABLE_FIELD_RATE_LIMITERS =
+            "RateLimiters";
     @Delegate
     private final Cache<String, RestRateLimiter> activeCallers = CacheBuilder
             .newBuilder().maximumSize(100).build();
@@ -40,8 +42,8 @@ public class RateLimiterHolder implements Introspectable {
     @Getter
     private RestRateLimiter.RateLimitConfig limitConfig;
 
-    public static RateLimiterHolder getInstance() {
-        return (RateLimiterHolder) Component
+    public static RateLimitManager getInstance() {
+        return (RateLimitManager) Component
                 .getInstance("rateLimiterHolder");
     }
 
@@ -67,7 +69,7 @@ public class RateLimiterHolder implements Introspectable {
         RestRateLimiter.RateLimitConfig old = limitConfig;
         readRateLimitState();
         if (!Objects.equal(old, limitConfig)) {
-            RateLimiterHolder.log.info("application configuration changed. Old: {}, New: {}",
+            log.info("application configuration changed. Old: {}, New: {}",
                     old, limitConfig);
             for (RestRateLimiter restRateLimiter : activeCallers.asMap().values()) {
                 restRateLimiter.changeConfig(limitConfig);
@@ -77,25 +79,22 @@ public class RateLimiterHolder implements Introspectable {
 
     // below are all monitoring stuff
     @Override
-    public String getId() {
+    public String getIntrospectableId() {
         return getClass().getCanonicalName();
     }
 
     @Override
-    public Collection<String> getFieldNames() {
-        return Lists.newArrayList(IntrospectableFields.RateLimiters.name());
+    public Collection<String> getIntrospectableFieldNames() {
+        return Lists.newArrayList(INTROSPECTABLE_FIELD_RATE_LIMITERS);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public String get(String fieldName) {
-        IntrospectableFields field = IntrospectableFields.valueOf(fieldName);
-        switch (field) {
-        case RateLimiters:
+    public String getFieldValueAsString(String fieldName) {
+        if (INTROSPECTABLE_FIELD_RATE_LIMITERS.equals(fieldName)) {
             return Iterables.toString(peekCurrentBuckets());
-        default:
-            throw new IllegalArgumentException("unknown field:" + fieldName);
         }
+        throw new IllegalArgumentException("unknown field:" + fieldName);
     }
 
     private Iterable<String> peekCurrentBuckets() {
@@ -113,7 +112,4 @@ public class RateLimiterHolder implements Introspectable {
                 });
     }
 
-    private enum IntrospectableFields {
-        RateLimiters
-    }
 }

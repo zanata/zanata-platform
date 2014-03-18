@@ -15,15 +15,22 @@ import org.jboss.seam.Component;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.ApplicationConfiguration;
 import com.google.common.base.Objects;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * This class is used by RateLimitingFilter and have access to seam environment.
+ *
+ * @see org.jboss.seam.servlet.ContextualHttpServletRequest
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
 class RateLimitingProcessor extends ContextualHttpServletRequest {
 
+    // http://tools.ietf.org/html/rfc6585
+    public static final int TOO_MANY_REQUEST = 429;
     private final String apiKey;
     private final FilterChain filterChain;
     private final ServletRequest servletRequest;
@@ -49,14 +56,14 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
             return;
         }
 
-        RateLimiterHolder rateLimiterHolder = getRateLimiterHolder();
+        RateLimitManager rateLimitManager = getRateLimiterHolder();
         final RestRateLimiter.RateLimitConfig limitConfig =
-                rateLimiterHolder.getLimitConfig();
+                rateLimitManager.getLimitConfig();
 
         RestRateLimiter rateLimiter;
         try {
             rateLimiter =
-                    rateLimiterHolder.get(apiKey, new RestRateLimiterCallable(
+                    rateLimitManager.get(apiKey, new RestRateLimiterCallable(
                             limitConfig, apiKey));
         } catch (ExecutionException e) {
             throw new WebApplicationException(e,
@@ -73,19 +80,22 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
                 rateLimiter.release();
             }
         } else {
+            // TODO pahuang rate limit the logging otherwise it may become excessive
             log.warn(
                     "{} has too many concurrent requests. Returning status 429",
                     apiKey);
-            httpResponse.setStatus(429);
+            httpResponse.setStatus(TOO_MANY_REQUEST);
             PrintWriter writer = httpResponse.getWriter();
-            writer.append("Too many concurrent request");
+            writer.append(String.format(
+                    "Too many concurrent request for this API key (maximum is %d)",
+                    appConfig.getMaxConcurrentRequestsPerApiKey()));
             writer.close();
         }
     }
 
     // test override-able
-    protected RateLimiterHolder getRateLimiterHolder() {
-        return RateLimiterHolder.getInstance();
+    protected RateLimitManager getRateLimiterHolder() {
+        return RateLimitManager.getInstance();
     }
 
     // test override-able
@@ -97,8 +107,7 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
     @Override
     public String toString() {
         return Objects.toStringHelper(this).add("id", super.toString())
-                .add("apiKey", apiKey)
-                .toString();
+                .add("apiKey", apiKey).toString();
     }
 
     private static class RestRateLimiterCallable implements
@@ -114,7 +123,7 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
 
         @Override
         public RestRateLimiter call() throws Exception {
-            log.info("creating rate limiter for api key: {}", apiKey);
+            log.debug("creating rate limiter for api key: {}", apiKey);
             return new RestRateLimiter(limitConfig);
         }
     }

@@ -4,9 +4,9 @@ import java.util.Collection;
 
 public interface Introspectable {
 
-    String getId();
+    String getIntrospectableId();
 
-    Collection<String> getFieldNames();
+    Collection<String> getIntrospectableFieldNames();
 
-    String get(String fieldName);
+    String getFieldValueAsString(String fieldName);
 }

@@ -61,11 +61,12 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
     @Override
     protected void initDispatcher() {
         super.initDispatcher();
-        InterceptorRegistry<PreProcessInterceptor>
-                preRegistry =
                 getDispatcher().getProviderFactory()
-                        .getServerPreProcessInterceptorRegistry();
-        preRegistry.register(ZanataRestSecurityInterceptor.class);
+                .getServerPreProcessInterceptorRegistry()
+                .register(ZanataRestSecurityInterceptor.class);
+        getDispatcher().getProviderFactory()
+                .getServerPreProcessInterceptorRegistry()
+                .register(ZanataRestVersionInterceptor.class);
     }
 
     @Override

@@ -59,13 +59,16 @@ public class RestRateLimitingFilter extends AbstractFilter {
         if (Strings.isNullOrEmpty(apiKey)) {
             response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
             PrintWriter writer = response.getWriter();
-            writer.append("You must have a valid API key");
+            writer.append("You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.");
             writer.close();
             return;
         }
 
         RateLimitingProcessor processor =
-                createRateLimitingRequest(apiKey, servletRequest, servletResponse, filterChain);
+                createRateLimitingRequest(apiKey, servletRequest,
+                        servletResponse, filterChain);
+        // RateLimitingProcessor extends ContextualHttpServletRequest. Calling
+        // run() will set up all seam context environment
         processor.run();
 
     }
@@ -73,8 +76,9 @@ public class RestRateLimitingFilter extends AbstractFilter {
     /**
      * Test override-able.
      */
-    protected RateLimitingProcessor createRateLimitingRequest(
-            String apiKey, ServletRequest request, ServletResponse response, FilterChain filterChain) {
+    protected RateLimitingProcessor createRateLimitingRequest(String apiKey,
+            ServletRequest request, ServletResponse response,
+            FilterChain filterChain) {
         return new RateLimitingProcessor(apiKey, request, response, filterChain);
     }
 

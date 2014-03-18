@@ -24,6 +24,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
+import org.zanata.servlet.RateLimitManager;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -52,7 +53,7 @@ public class IntrospectableObjectMonitorService {
     // TODO check http://code.google.com/p/reflections/ and re-implement this
     private static List<Introspectable> introspectables = ImmutableList
             .<Introspectable> builder()
-
+            .add(RateLimitManager.getInstance())
             .build();
 
     /** Type of media requested. */
@@ -114,7 +115,7 @@ public class IntrospectableObjectMonitorService {
                         new Predicate<Introspectable>() {
                             @Override
                             public boolean apply(Introspectable input) {
-                                return input.getId().equals(id);
+                                return input.getIntrospectableId().equals(id);
                             }
                         });
         if (!optional.isPresent()) {
@@ -123,17 +124,18 @@ public class IntrospectableObjectMonitorService {
         final Introspectable introspectable = optional.get();
         final String format = "%s:%s\n";
         Iterable<String> report =
-                Iterables.transform(introspectable.getFieldNames(),
+                Iterables.transform(introspectable.getIntrospectableFieldNames(),
                         new Function<String, String>() {
                             @Override
                             public String apply(String fieldName) {
                                 return String.format(format, fieldName,
-                                        introspectable.get(fieldName));
+                                        introspectable.getFieldValueAsString(
+                                                fieldName));
                             }
                         });
         return Response
                 .ok()
-                .entity(introspectable.getId() + "{"
+                .entity(introspectable.getIntrospectableId() + "{"
                         + Iterables.toString(report) + "}").build();
     }
 

@@ -131,7 +131,8 @@ public class ServerConfigurationService {
      */
     @PUT
     @Path("/c/{configKey}")
-    public Response put(@PathParam("configKey") @Nonnull String configKey, String configValue) {
+    public Response put(@PathParam("configKey") @Nonnull String configKey,
+            String configValue) {
         if (!isConfigKeyValid(configKey)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("config key not supported: " + configKey).build();
@@ -184,36 +185,13 @@ public class ServerConfigurationService {
     }
 
     private boolean isConfigKeyValid(String configKey) {
-        return getAvailableKeys().contains(configKey);
+        return HApplicationConfiguration.getAvailableKeys().contains(configKey);
     }
 
     /**
-     * Using reflection to get defined configuration key constants in
-     * HApplicationConfiguration.
+     * Converts HApplicationConfiguration to dto Configuration. It also contains
+     * a link to the configuration itself.
      */
-    private static List<String> getAvailableKeys() {
-        if (availableKeys != null) {
-            return availableKeys;
-        }
-        final HApplicationConfiguration dummy = new HApplicationConfiguration();
-        List<Field> availableConfigKeys =
-                Lists.newArrayList(HApplicationConfiguration.class.getFields());
-        availableKeys = Lists.transform(availableConfigKeys,
-                new Function<Field, String>() {
-                    @Override
-                    public String apply(Field input) {
-                        try {
-                            input.setAccessible(true);
-                            return (String) input.get(dummy);
-                        } catch (IllegalAccessException e) {
-                            log.error("unable to get server configuration keys using reflection!");
-                            throw Throwables.propagate(e);
-                        }
-                    }
-                });
-        return availableKeys;
-    }
-
     @RequiredArgsConstructor
     private class ToConfigurationFunction implements
             Function<HApplicationConfiguration, Configuration> {
@@ -225,6 +203,7 @@ public class ServerConfigurationService {
             Configuration config =
                     new Configuration(input.getKey(), input.getValue());
             config.getLinks(true).add(
+                    // a link to get this specific configuration details
                     new Link(URI.create("c/" + input.getKey()), "self",
                             MediaTypes.createFormatSpecificType(
                                     MediaType.APPLICATION_XML, accept)));

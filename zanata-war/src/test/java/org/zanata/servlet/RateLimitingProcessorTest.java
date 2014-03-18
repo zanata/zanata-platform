@@ -46,7 +46,7 @@ public class RateLimitingProcessorTest {
     private FilterChain filterChain;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
-    private RateLimiterHolder rateLimiterHolder;
+    private RateLimitManager rateLimitManager;
     private StringWriter responseOut;
 
     @BeforeMethod
@@ -54,14 +54,14 @@ public class RateLimitingProcessorTest {
         MockitoAnnotations.initMocks(this);
 
         // so that we can verify its interaction
-        rateLimiterHolder = spy(new RateLimiterHolder());
+        rateLimitManager = spy(new RateLimitManager());
         processor =
                 spy(new RateLimitingProcessor(API_KEY, request, response,
                         filterChain));
 
         doReturn(applicationConfiguration).when(processor)
                 .getApplicationConfiguration();
-        doReturn(rateLimiterHolder).when(processor).getRateLimiterHolder();
+        doReturn(rateLimitManager).when(processor).getRateLimiterHolder();
 
         responseOut = new StringWriter();
         when(response.getWriter()).thenReturn(new PrintWriter(responseOut));
@@ -74,14 +74,14 @@ public class RateLimitingProcessorTest {
         processor.process();
 
         verify(filterChain).doFilter(request, response);
-        verifyZeroInteractions(rateLimiterHolder);
+        verifyZeroInteractions(rateLimitManager);
     }
 
     @Test
     public void willFirstTryAcquire() throws InterruptedException, IOException,
             ServletException {
 
-        when(rateLimiterHolder.getLimitConfig()).thenReturn(
+        when(rateLimitManager.getLimitConfig()).thenReturn(
                 new RestRateLimiter.RateLimitConfig(1, 1, 100.0));
         when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
         doAnswer(new Answer() {
@@ -120,14 +120,14 @@ public class RateLimitingProcessorTest {
         // one should go through
         verify(filterChain).doFilter(request, response);
         // semaphore is released
-        assertThat(rateLimiterHolder.getIfPresent(API_KEY)
+        assertThat(rateLimitManager.getIfPresent(API_KEY)
                 .availableConcurrentPermit(), Matchers.equalTo(1));
     }
 
     @Test
     public void willReleaseSemaphoreWhenThereIsException() throws IOException,
             ServletException {
-        when(rateLimiterHolder.getLimitConfig()).thenReturn(
+        when(rateLimitManager.getLimitConfig()).thenReturn(
                 new RestRateLimiter.RateLimitConfig(1, 1, 100.0));
         when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
         doThrow(new RuntimeException("bad")).when(filterChain).doFilter(
@@ -139,7 +139,7 @@ public class RateLimitingProcessorTest {
             // I know
         }
 
-        assertThat(rateLimiterHolder.getIfPresent(API_KEY)
+        assertThat(rateLimitManager.getIfPresent(API_KEY)
                 .availableConcurrentPermit(), Matchers.equalTo(1));
     }
 }
