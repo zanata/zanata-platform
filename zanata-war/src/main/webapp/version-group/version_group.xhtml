@@ -26,15 +26,15 @@
         }
       });
 
-      crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/:proj:', function(pre, slug, proj) {
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/projects', function(pre, slug) {
         onTabClick(jQuery('#projects'));
-        if(proj) {
-          updateActiveRow(jQuery('#' + jqSelector(proj) + " a"));
-          toggleColumn('projects_content');
-          var projSlug = proj.slice(0, proj.indexOf('['))
-          var verSlug = proj.slice(proj.indexOf('[') + 1, proj.indexOf(']'))
-          reloadVersion(projSlug, verSlug)
-        }
+      });
+
+      crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}', function(pre, slug, proj, ver) {
+        onTabClick(jQuery('#projects'));
+        updateActiveRow(jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a"));
+        toggleColumn('projects_content');
+        reloadVersion(proj, ver)
       });
 
       crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:', function(pre, slug, setting) {
