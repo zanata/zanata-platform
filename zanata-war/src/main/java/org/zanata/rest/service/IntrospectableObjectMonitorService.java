@@ -24,7 +24,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
-import org.zanata.servlet.RateLimitManager;
+import org.zanata.limits.RateLimitManager;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;

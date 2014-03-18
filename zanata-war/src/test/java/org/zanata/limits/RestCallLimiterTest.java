@@ -1,4 +1,4 @@
-package org.zanata.servlet;
+package org.zanata.limits;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.junit.runners.model.Statement;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.limits.RestCallLimiter;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
@@ -36,12 +37,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Test(groups = "unit-tests")
 @Slf4j
-public class RestRateLimiterTest {
-    private RestRateLimiter rateLimiter;
+public class RestCallLimiterTest {
+    private RestCallLimiter limiter;
     private int maxConcurrent = 4;
     private int maxActive = 2;
     private Logger testLogger = LogManager.getLogger(getClass());
-    private Logger testeeLogger = LogManager.getLogger(RestRateLimiter.class);
+    private Logger testeeLogger = LogManager.getLogger(RestCallLimiter.class);
 
     @Rule
     public TestRule retryOnceRule = new TestRule() {
@@ -78,21 +79,21 @@ public class RestRateLimiterTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        rateLimiter =
-                new RestRateLimiter(new RestRateLimiter.RateLimitConfig(
+        limiter =
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
                         maxConcurrent, maxActive, 1000.0));
     }
 
     @Test
     public void canOnlyHaveMaximumNumberOfConcurrentRequest() {
         // we don't limit active requests
-        rateLimiter =
-                new RestRateLimiter(new RestRateLimiter.RateLimitConfig(
+        limiter =
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
                         maxConcurrent, maxConcurrent, 1000.0));
         for (int i = 0; i < maxConcurrent; i++) {
-            assertThat(rateLimiter.tryAcquire(), Matchers.is(true));
+            assertThat(limiter.tryAcquire(), Matchers.is(true));
         }
-        assertThat(rateLimiter.tryAcquire(), Matchers.is(false));
+        assertThat(limiter.tryAcquire(), Matchers.is(false));
     }
 
     @Test
@@ -126,7 +127,7 @@ public class RestRateLimiterTest {
         // NOW and permits per second is 1
         final int timeSpendDoingWork = 0;
         double permitsPerSecond = 1;
-        rateLimiter.changeRateLimitPermitsPerSecond(permitsPerSecond);
+        limiter.changeRateLimitPermitsPerSecond(permitsPerSecond);
 
         // When: I start working on heavy duty stuff
         Callable<Long> callable = taskAcquireThenRelease(timeSpendDoingWork);
@@ -145,38 +146,38 @@ public class RestRateLimiterTest {
 
     @Test
     public void changeMaxConcurrentLimitWillTakeEffectImmediately() {
-        rateLimiter =
-                new RestRateLimiter(new RestRateLimiter.RateLimitConfig(1, 10,
+        limiter =
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(1, 10,
                         1));
-        assertThat(rateLimiter.tryAcquire(), Matchers.is(true));
-        assertThat(rateLimiter.tryAcquire(), Matchers.is(false));
-        rateLimiter.changeConcurrentLimit(2);
-        assertThat(rateLimiter.tryAcquire(), Matchers.is(true));
+        assertThat(limiter.tryAcquire(), Matchers.is(true));
+        assertThat(limiter.tryAcquire(), Matchers.is(false));
+        limiter.changeConcurrentLimit(2);
+        assertThat(limiter.tryAcquire(), Matchers.is(true));
     }
 
     @Test
     public void changeMaxActiveLimitWhenNoBlockedThreads() {
-        rateLimiter =
-                new RestRateLimiter(new RestRateLimiter.RateLimitConfig(3, 3,
+        limiter =
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(3, 3,
                         1000));
         assertThat(acquireAndMeasureBlockedTime(), Matchers.equalTo(0L));
-        rateLimiter.release();
+        limiter.release();
 
-        rateLimiter.changeActiveLimit(3, 2);
+        limiter.changeActiveLimit(3, 2);
         assertThat(acquireAndMeasureBlockedTime(), Matchers.equalTo(0L));
-        rateLimiter.release();
+        limiter.release();
 
-        rateLimiter.changeActiveLimit(2, 1);
+        limiter.changeActiveLimit(2, 1);
         assertThat(acquireAndMeasureBlockedTime(), Matchers.equalTo(0L));
-        assertThat(rateLimiter.availableActivePermit(), Matchers.is(0));
+        assertThat(limiter.availableActivePermit(), Matchers.is(0));
     }
 
     @Test
     public void changeMaxActiveLimitWhenHasBlockedThreads()
             throws InterruptedException {
         // Given: only 2 active requests allowed
-        rateLimiter =
-                new RestRateLimiter(new RestRateLimiter.RateLimitConfig(10, 2,
+        limiter =
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(10, 2,
                         1000));
 
         // When: below requests are fired simultaneously
@@ -191,7 +192,7 @@ public class RestRateLimiterTest {
             public Long call() throws Exception {
                 // to ensure it happens when there is a blocked request
                 Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS);
-                rateLimiter.changeActiveLimit(2, 3);
+                limiter.changeActiveLimit(2, 3);
                 return -10L;
             }
         };
@@ -205,7 +206,7 @@ public class RestRateLimiterTest {
                 Uninterruptibles
                         .sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
                 long blockedTime = acquireAndMeasureBlockedTime();
-                rateLimiter.release();
+                limiter.release();
                 return blockedTime;
             }
         };
@@ -228,7 +229,7 @@ public class RestRateLimiterTest {
         log.info("result: {}", timeUsedInMillis);
         // initial blocked thread's release will happen BEFORE change takes
         // effect (thus permit won't be added to changed semaphore)
-        assertThat(rateLimiter.availableActivePermit(), Matchers.is(3));
+        assertThat(limiter.availableActivePermit(), Matchers.is(3));
         // 2 request with no block, 1 update request (indicated as -10),
         // 1 initially blocked request, 2 delay requests blocked in which 1 is
         // responsible for making the change
@@ -248,7 +249,7 @@ public class RestRateLimiterTest {
                 // spend some time doing some real work
                 Uninterruptibles.sleepUninterruptibly(
                         timeSpendDoingWorkInMillis, TimeUnit.MILLISECONDS);
-                rateLimiter.release();
+                limiter.release();
                 return blockedTime;
             }
         };
@@ -257,7 +258,7 @@ public class RestRateLimiterTest {
     private long acquireAndMeasureBlockedTime() {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
-        rateLimiter.tryAcquire();
+        limiter.tryAcquire();
         stopwatch.stop();
         long blockedTime = stopwatch.elapsedMillis();
         log.info("blocked: {}", blockedTime);

@@ -1,4 +1,4 @@
-package org.zanata.servlet;
+package org.zanata.limits;
 
 import java.io.PrintWriter;
 import java.util.concurrent.Callable;
@@ -15,7 +15,6 @@ import org.jboss.seam.Component;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.ApplicationConfiguration;
 import com.google.common.base.Objects;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-class RateLimitingProcessor extends ContextualHttpServletRequest {
+public class RateLimitingProcessor extends ContextualHttpServletRequest {
 
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
@@ -37,7 +36,7 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
     private final ServletResponse servletResponse;
     private final HttpServletResponse httpResponse;
 
-    RateLimitingProcessor(String apiKey, ServletRequest servletRequest,
+    public RateLimitingProcessor(String apiKey, ServletRequest servletRequest,
             ServletResponse servletResponse, FilterChain filterChain) {
         super(HttpServletRequest.class.cast(servletRequest));
         this.apiKey = apiKey;
@@ -57,10 +56,10 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
         }
 
         RateLimitManager rateLimitManager = getRateLimiterHolder();
-        final RestRateLimiter.RateLimitConfig limitConfig =
+        final RestCallLimiter.RateLimitConfig limitConfig =
                 rateLimitManager.getLimitConfig();
 
-        RestRateLimiter rateLimiter;
+        RestCallLimiter rateLimiter;
         try {
             rateLimiter =
                     rateLimitManager.get(apiKey, new RestRateLimiterCallable(
@@ -111,20 +110,20 @@ class RateLimitingProcessor extends ContextualHttpServletRequest {
     }
 
     private static class RestRateLimiterCallable implements
-            Callable<RestRateLimiter> {
-        private final RestRateLimiter.RateLimitConfig limitConfig;
+            Callable<RestCallLimiter> {
+        private final RestCallLimiter.RateLimitConfig limitConfig;
         private final String apiKey;
 
         public RestRateLimiterCallable(
-                RestRateLimiter.RateLimitConfig limitConfig, String apiKey) {
+                RestCallLimiter.RateLimitConfig limitConfig, String apiKey) {
             this.limitConfig = limitConfig;
             this.apiKey = apiKey;
         }
 
         @Override
-        public RestRateLimiter call() throws Exception {
+        public RestCallLimiter call() throws Exception {
             log.debug("creating rate limiter for api key: {}", apiKey);
-            return new RestRateLimiter(limitConfig);
+            return new RestCallLimiter(limitConfig);
         }
     }
 }

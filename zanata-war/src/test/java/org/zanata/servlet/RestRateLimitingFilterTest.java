@@ -18,6 +18,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.rest.HeaderHelper;
+import org.zanata.limits.RateLimitingProcessor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;

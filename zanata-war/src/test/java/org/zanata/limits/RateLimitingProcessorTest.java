@@ -1,4 +1,4 @@
-package org.zanata.servlet;
+package org.zanata.limits;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +24,9 @@ import org.mockito.stubbing.Answer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.limits.RateLimitingProcessor;
+import org.zanata.limits.RateLimitManager;
+import org.zanata.limits.RestCallLimiter;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Uninterruptibles;
 
@@ -82,7 +85,7 @@ public class RateLimitingProcessorTest {
             ServletException {
 
         when(rateLimitManager.getLimitConfig()).thenReturn(
-                new RestRateLimiter.RateLimitConfig(1, 1, 100.0));
+                new RestCallLimiter.RateLimitConfig(1, 1, 100.0));
         when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
         doAnswer(new Answer() {
             @Override
@@ -128,7 +131,7 @@ public class RateLimitingProcessorTest {
     public void willReleaseSemaphoreWhenThereIsException() throws IOException,
             ServletException {
         when(rateLimitManager.getLimitConfig()).thenReturn(
-                new RestRateLimiter.RateLimitConfig(1, 1, 100.0));
+                new RestCallLimiter.RateLimitConfig(1, 1, 100.0));
         when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
         doThrow(new RuntimeException("bad")).when(filterChain).doFilter(
                 request, response);

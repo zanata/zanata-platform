@@ -21,6 +21,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.annotations.web.Filter;
 import org.jboss.seam.web.AbstractFilter;
 import org.zanata.rest.HeaderHelper;
+import org.zanata.limits.RateLimitingProcessor;
 
 import com.google.common.base.Strings;
 

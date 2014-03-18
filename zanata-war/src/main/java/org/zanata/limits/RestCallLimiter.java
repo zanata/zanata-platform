@@ -1,4 +1,4 @@
-package org.zanata.servlet;
+package org.zanata.limits;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class RestRateLimiter {
+public class RestCallLimiter {
     private Semaphore maxConcurrentSemaphore;
     private Semaphore maxActiveSemaphore;
     private RateLimiter rateLimiter;
     private RateLimitConfig limitConfig;
     private volatile ActiveLimitChange change;
 
-    public RestRateLimiter(RateLimitConfig limitConfig) {
+    public RestCallLimiter(RateLimitConfig limitConfig) {
         this.limitConfig = limitConfig;
         this.maxConcurrentSemaphore =
                 new Semaphore(limitConfig.maxConcurrent, true);
@@ -119,11 +119,11 @@ public class RestRateLimiter {
         log.info("max active limit changed: {}", change);
     }
 
-    protected int availableConcurrentPermit() {
+    public int availableConcurrentPermit() {
         return maxConcurrentSemaphore.availablePermits();
     }
 
-    protected int availableActivePermit() {
+    public int availableActivePermit() {
         return maxActiveSemaphore.availablePermits();
     }
 

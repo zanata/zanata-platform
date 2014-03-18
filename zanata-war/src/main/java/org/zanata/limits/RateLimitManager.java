@@ -1,4 +1,4 @@
-package org.zanata.servlet;
+package org.zanata.limits;
 
 import java.util.Collection;
 import java.util.Map;
@@ -36,11 +36,11 @@ public class RateLimitManager implements Introspectable {
     public static final String INTROSPECTABLE_FIELD_RATE_LIMITERS =
             "RateLimiters";
     @Delegate
-    private final Cache<String, RestRateLimiter> activeCallers = CacheBuilder
+    private final Cache<String, RestCallLimiter> activeCallers = CacheBuilder
             .newBuilder().maximumSize(100).build();
 
     @Getter
-    private RestRateLimiter.RateLimitConfig limitConfig;
+    private RestCallLimiter.RateLimitConfig limitConfig;
 
     public static RateLimitManager getInstance() {
         return (RateLimitManager) Component
@@ -60,19 +60,19 @@ public class RateLimitManager implements Introspectable {
         int maxActive = appConfig.getMaxActiveRequestsPerApiKey();
         double rateLimitPerSecond = appConfig.getRateLimitPerSecond();
         limitConfig =
-                new RestRateLimiter.RateLimitConfig(maxConcurrent, maxActive,
+                new RestCallLimiter.RateLimitConfig(maxConcurrent, maxActive,
                         rateLimitPerSecond);
     }
 
     @Observer({ ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED })
     public void configurationChanged() {
-        RestRateLimiter.RateLimitConfig old = limitConfig;
+        RestCallLimiter.RateLimitConfig old = limitConfig;
         readRateLimitState();
         if (!Objects.equal(old, limitConfig)) {
             log.info("application configuration changed. Old: {}, New: {}",
                     old, limitConfig);
-            for (RestRateLimiter restRateLimiter : activeCallers.asMap().values()) {
-                restRateLimiter.changeConfig(limitConfig);
+            for (RestCallLimiter restCallLimiter : activeCallers.asMap().values()) {
+                restCallLimiter.changeConfig(limitConfig);
             }
         }
     }
@@ -98,15 +98,15 @@ public class RateLimitManager implements Introspectable {
     }
 
     private Iterable<String> peekCurrentBuckets() {
-        ConcurrentMap<String, RestRateLimiter> map = activeCallers.asMap();
+        ConcurrentMap<String, RestCallLimiter> map = activeCallers.asMap();
         return Iterables.transform(map.entrySet(),
-                new Function<Map.Entry<String, RestRateLimiter>, String>() {
+                new Function<Map.Entry<String, RestCallLimiter>, String>() {
 
                     @Override
                     public String
-                            apply(Map.Entry<String, RestRateLimiter> input) {
+                            apply(Map.Entry<String, RestCallLimiter> input) {
 
-                        RestRateLimiter rateLimiter = input.getValue();
+                        RestCallLimiter rateLimiter = input.getValue();
                         return input.getKey() + ":" + rateLimiter;
                     }
                 });
