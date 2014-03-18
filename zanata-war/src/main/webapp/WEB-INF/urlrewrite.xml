@@ -316,9 +316,9 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/version-group/view/([^/]+)/?(\?(.*))?$</from>
+    <from casesensitive="true">^/version-group/view/([^/]+)(/([^?]*)\??(.*))?$</from>
     <to
-      last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$3
+      last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$4
     </to>
   </rule>
 

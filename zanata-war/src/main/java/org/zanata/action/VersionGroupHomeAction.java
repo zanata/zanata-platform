@@ -41,6 +41,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -79,6 +81,12 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     @In
     private VersionGroupDAO versionGroupDAO;
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+
+    @In
+    private LocaleDAO localeDAO;
 
     @Getter
     @Setter
@@ -542,5 +550,14 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     @Override
     String getMessage(String key, Object... args) {
         return zanataMessages.getMessage(key, args);
+    }
+
+    public void setSelectedLocaleId(String localeId) {
+        this.selectedLocale = localeDAO.findByLocaleId(new LocaleId(localeId));
+    }
+
+    public void setSelectedVersionSlug(String projectSlug, String versionSlug) {
+        selectedVersion =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
     }
 }

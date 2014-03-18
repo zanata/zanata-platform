@@ -9,6 +9,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ VersionGroupTest.class, VersionGroupFullTest.class,
-        VersionGroupBasicTest.class, VersionGroupIDValidationTest.class })
+        VersionGroupBasicTest.class, VersionGroupIDValidationTest.class,
+        VersionGroupUrlTest.class
+})
 public class VersionGroupTestSuite {
 }

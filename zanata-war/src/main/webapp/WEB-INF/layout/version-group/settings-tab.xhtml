@@ -21,25 +21,29 @@
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li class="is-active">
-    <a href="#settings-general" id="settings-general_tab">
+    <a href="#settings-general" id="settings-general_tab"
+      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/general')">
       <i class="i--left i--settings"></i>
       <span class="is-hidden--m-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-languages" id="settings-languages_tab">
+    <a href="#settings-languages" id="settings-languages_tab"
+      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages')">
       <i class="i--left i--language"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-projects" id="settings-projects_tab">
+    <a href="#settings-projects" id="settings-projects_tab"
+      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects')">
       <i class="i--left i--project"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Projects']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-maintainers" id="settings-maintainers_tab">
+    <a href="#settings-maintainers" id="settings-maintainers_tab"
+      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/maintainers')">
       <i class="i--left i--users"></i>
       <span class="is-hidden--m-down">#{messages['jsf.Maintainers']}</span>
     </a>

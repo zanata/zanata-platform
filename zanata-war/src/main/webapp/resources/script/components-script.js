@@ -1,3 +1,8 @@
+// Escapes special characters and returns a valid jQuery selector
+function jqSelector(str) {
+  return str.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+}
+
 jQuery(document).ready(function() {
   registerJsTab();
 });
@@ -15,8 +20,29 @@ function onTabClick(tab) {
   jQuery(tab).addClass("is-active");
   jQuery(tab).parents('.tabs--lined').children('.tabs__content')
     .children('div').addClass('is-hidden');
-  jQuery(jQuery(tab).attr('href') + '_content').removeClass('is-hidden');
+  jQuery('#' + jQuery(tab).attr('id') + '_content').removeClass('is-hidden');
 }
+
+function updateStateFromUrl() {
+  crossroads.parse(window.location.pathname);
+}
+
+function updateUrl(urlPrefix, suffixToUpdate) {
+  var newUrl = window.location.pathname;
+  newUrl = newUrl.substring(0, newUrl.indexOf(urlPrefix) + urlPrefix.length)
+             + suffixToUpdate;
+  var status = {path: newUrl}
+  window.history.pushState(status, document.title, newUrl)
+  updateStateFromUrl();
+}
+
+jQuery(function() {
+  jQuery(window).on("popstate", function(event) {
+    var state = event.originalEvent.state
+    if(state)
+      crossroads.parse(state.path)
+  })
+})
 
 function checkHashUrl(defaultTabId, defaultSettingsTabId) {
   var originalHashUrl = window.location.hash;
