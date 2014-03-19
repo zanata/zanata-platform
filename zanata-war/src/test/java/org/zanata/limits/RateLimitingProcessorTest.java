@@ -122,27 +122,5 @@ public class RateLimitingProcessorTest {
         verify(response, atLeastOnce()).setStatus(429);
         // one should go through
         verify(filterChain).doFilter(request, response);
-        // semaphore is released
-        assertThat(rateLimitManager.getIfPresent(API_KEY)
-                .availableConcurrentPermit(), Matchers.equalTo(1));
-    }
-
-    @Test
-    public void willReleaseSemaphoreWhenThereIsException() throws IOException,
-            ServletException {
-        when(rateLimitManager.getLimitConfig()).thenReturn(
-                new RestCallLimiter.RateLimitConfig(1, 1, 100.0));
-        when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
-        doThrow(new RuntimeException("bad")).when(filterChain).doFilter(
-                request, response);
-
-        try {
-            processor.process();
-        } catch (Exception e) {
-            // I know
-        }
-
-        assertThat(rateLimitManager.getIfPresent(API_KEY)
-                .availableConcurrentPermit(), Matchers.equalTo(1));
     }
 }

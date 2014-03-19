@@ -4,6 +4,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.RateLimiter;
 import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.EqualsAndHashCode;
@@ -17,11 +18,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RestCallLimiter {
-    private Semaphore maxConcurrentSemaphore;
-    private Semaphore maxActiveSemaphore;
+    private volatile Semaphore maxConcurrentSemaphore;
+    private volatile Semaphore maxActiveSemaphore;
     private RateLimiter rateLimiter;
     private RateLimitConfig limitConfig;
-    private volatile ActiveLimitChange change;
+    private volatile LimitChange activeChange;
+    private volatile LimitChange concurrentChange;
 
     public RestCallLimiter(RateLimitConfig limitConfig) {
         this.limitConfig = limitConfig;
@@ -31,60 +33,89 @@ public class RestCallLimiter {
         rateLimiter = RateLimiter.create(limitConfig.rateLimitPerSecond);
     }
 
-    public boolean tryAcquire() {
-        log.debug("before try acquire concurrent semaphore:{}",
-                maxConcurrentSemaphore);
-        boolean got = maxConcurrentSemaphore.tryAcquire();
-        log.debug("get permit:{}", got);
-        if (got) {
-            acquireActiveAndRatePermit();
-            log.debug("got all permits and ready to go: {}", this);
+    public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
+        applyConcurrentPermitChangeIfApplicable();
+        boolean gotConcurrentPermit = maxConcurrentSemaphore.tryAcquire();
+        log.debug("try acquire [concurrent] permit:{}", gotConcurrentPermit);
+        if (gotConcurrentPermit) {
+            try {
+                if (acquireActiveAndRatePermit()) {
+                    try {
+                        taskAfterAcquire.run();
+                    } finally {
+                        log.debug("releasing active concurrent semaphore");
+                        maxActiveSemaphore.release();
+                    }
+                } else {
+                    throw new RuntimeException(
+                            "Couldn't get an [active] permit in time");
+                }
+            } finally {
+                log.debug("releasing max [concurrent] semaphore");
+                maxConcurrentSemaphore.release();
+            }
         }
-        return got;
+        return gotConcurrentPermit;
     }
 
-    private void acquireActiveAndRatePermit() {
-        if (change != null) {
+    private boolean acquireActiveAndRatePermit() {
+        applyActivePermitChangeIfApplicable();
+        log.debug("before acquire [active] semaphore:{}", maxActiveSemaphore);
+        try {
+            boolean gotActivePermit =
+                    maxActiveSemaphore.tryAcquire(5, TimeUnit.MINUTES);
+            log.debug(
+                    "got [active] semaphore [{}] and before acquire rate limit permit:{}",
+                    gotActivePermit, rateLimiter);
+            if (gotActivePermit) {
+                rateLimiter.acquire();
+            }
+            return gotActivePermit;
+        } catch (InterruptedException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    private void applyConcurrentPermitChangeIfApplicable() {
+        if (concurrentChange != null) {
             synchronized (this) {
-                if (change != null) {
+                if (concurrentChange != null) {
+                    log.debug(
+                            "change max [concurrent] semaphore with new permit ",
+                            concurrentChange.newLimit);
+                    maxConcurrentSemaphore =
+                            new Semaphore(concurrentChange.newLimit, true);
+                    concurrentChange = null;
+                }
+            }
+        }
+    }
+
+    private void applyActivePermitChangeIfApplicable() {
+        if (activeChange != null) {
+            synchronized (this) {
+                if (activeChange != null) {
                     // since this block is synchronized, there won't be new
                     // permit acquired from maxActiveSemaphore other than this
                     // thread. It ought to be the last and only one entering in
                     // this block. It will have to wait for all other previous
                     // blocked threads to complete before changing the semaphore
                     log.debug(
-                            "detects max active permit change [{}]. Will sleep until all blocking threads [#{}] released.",
-                            change, maxActiveSemaphore.getQueueLength());
-                    while (maxActiveSemaphore.availablePermits() != change.oldLimit) {
+                            "detects max [active] permit change [{}]. Will sleep until all blocking threads [#{}] released.",
+                            activeChange, maxActiveSemaphore.getQueueLength());
+                    while (maxActiveSemaphore.availablePermits() != activeChange.oldLimit) {
                         Uninterruptibles.sleepUninterruptibly(1,
                                 TimeUnit.NANOSECONDS);
                     }
-                    log.debug("change max active semaphore with new permit");
-                    maxActiveSemaphore = new Semaphore(change.newLimit, true);
-                    change = null;
+                    log.debug(
+                            "change max [active] semaphore with new permit {}",
+                            activeChange.newLimit);
+                    maxActiveSemaphore =
+                            new Semaphore(activeChange.newLimit, true);
+                    activeChange = null;
                 }
             }
         }
-        log.debug("before acquire active semaphore:{}", maxActiveSemaphore);
-        maxActiveSemaphore.acquireUninterruptibly();
-// if we want to enable timeout here,
-// we must ensure release is not called when it timed out
-//        try {
-//            boolean gotIt = maxActiveSemaphore.tryAcquire(30, TimeUnit.SECONDS);
-//            if (!gotIt) {
-//                // timed out
-//                throw new WebApplicationException(Response.status(
-//                        Response.Status.SERVICE_UNAVAILABLE)
-//                        .entity("System too busy").build());
-//            }
-//        }
-//        catch (InterruptedException e) {
-//            throw Throwables.propagate(e);
-//        }
-        log.debug(
-                "got active semaphore and before acquire rate limit permit:{}",
-                rateLimiter);
-        rateLimiter.acquire();
     }
 
     public void release() {
@@ -96,27 +127,29 @@ public class RestCallLimiter {
 
     public void changeConfig(RateLimitConfig newLimitConfig) {
         if (newLimitConfig.maxConcurrent != limitConfig.maxConcurrent) {
-            changeConcurrentLimit(newLimitConfig.maxConcurrent);
+            changeConcurrentLimit(limitConfig.maxConcurrent,
+                    newLimitConfig.maxConcurrent);
         }
         if (newLimitConfig.rateLimitPerSecond != limitConfig.rateLimitPerSecond) {
             changeRateLimitPermitsPerSecond(newLimitConfig.rateLimitPerSecond);
         }
+        if (newLimitConfig.maxActive != limitConfig.maxActive) {
+            changeActiveLimit(limitConfig.maxActive, newLimitConfig.maxActive);
+        }
         limitConfig = newLimitConfig;
     }
 
-    protected synchronized void changeConcurrentLimit(int maxConcurrent) {
-        log.info("max concurrent limit changed: {}", maxConcurrent);
-        maxConcurrentSemaphore = new Semaphore(maxConcurrent);
+    protected synchronized void
+            changeConcurrentLimit(int oldLimit, int newLimit) {
+        this.concurrentChange = new LimitChange(oldLimit, newLimit);
     }
 
     protected synchronized void changeRateLimitPermitsPerSecond(double permits) {
-        log.info("rate limit changed: {}", permits);
         rateLimiter.setRate(permits);
     }
 
     protected synchronized void changeActiveLimit(int oldLimit, int newLimit) {
-        this.change = new ActiveLimitChange(oldLimit, newLimit);
-        log.info("max active limit changed: {}", change);
+        this.activeChange = new LimitChange(oldLimit, newLimit);
     }
 
     public int availableConcurrentPermit() {
@@ -136,8 +169,10 @@ public class RestCallLimiter {
         return Objects
                 .toStringHelper(this)
                 .add("id", super.toString())
-                .add("maxConcurrent(available)", maxConcurrentSemaphore.availablePermits())
-                .add("maxActive(available)", maxActiveSemaphore.availablePermits())
+                .add("maxConcurrent(available)",
+                        maxConcurrentSemaphore.availablePermits())
+                .add("maxActive(available)",
+                        maxActiveSemaphore.availablePermits())
                 .add("maxActive(queue)", maxActiveSemaphore.getQueueLength())
                 .add("rateLimiter", rateLimiter).toString();
     }
@@ -153,7 +188,7 @@ public class RestCallLimiter {
 
     @RequiredArgsConstructor
     @ToString
-    private static class ActiveLimitChange {
+    private static class LimitChange {
         private final int oldLimit;
         private final int newLimit;
     }

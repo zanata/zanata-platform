@@ -159,11 +159,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     protected void prepareSeamAutowire() {
         seamAutowire
                 .reset()
-                .ignoreNonResolvable()
-                .use(SeamAutowire.getComponentName(JndiBackedConfig.class),
-                        jndiBackedConfig)
-                .use(SeamAutowire.getComponentName(RateLimitManager.class),
-                        new RateLimitManager());
+                .ignoreNonResolvable();
     }
 
     /**
