@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class RestCallLimiter {
+class RestCallLimiter {
     private volatile Semaphore maxConcurrentSemaphore;
     private volatile Semaphore maxActiveSemaphore;
     private RateLimiter rateLimiter;
@@ -25,12 +25,15 @@ public class RestCallLimiter {
     private volatile LimitChange activeChange;
     private volatile LimitChange concurrentChange;
 
-    public RestCallLimiter(RateLimitConfig limitConfig) {
+    RestCallLimiter(RateLimitConfig limitConfig) {
         this.limitConfig = limitConfig;
-        this.maxConcurrentSemaphore =
-                new Semaphore(limitConfig.maxConcurrent, true);
-        this.maxActiveSemaphore = new Semaphore(limitConfig.maxActive, true);
-        rateLimiter = RateLimiter.create(limitConfig.rateLimitPerSecond);
+        this.maxConcurrentSemaphore = makeSemaphore(limitConfig.maxConcurrent);
+        this.maxActiveSemaphore = makeSemaphore(limitConfig.maxActive);
+        if (limitConfig.rateLimitPerSecond == 0) {
+            rateLimiter = RateLimiter.create(Integer.MAX_VALUE);
+        } else {
+            rateLimiter = RateLimiter.create(limitConfig.rateLimitPerSecond);
+        }
     }
 
     public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
@@ -84,7 +87,7 @@ public class RestCallLimiter {
                             "change max [concurrent] semaphore with new permit ",
                             concurrentChange.newLimit);
                     maxConcurrentSemaphore =
-                            new Semaphore(concurrentChange.newLimit, true);
+                            makeSemaphore(concurrentChange.newLimit);
                     concurrentChange = null;
                 }
             }
@@ -110,8 +113,7 @@ public class RestCallLimiter {
                     log.debug(
                             "change max [active] semaphore with new permit {}",
                             activeChange.newLimit);
-                    maxActiveSemaphore =
-                            new Semaphore(activeChange.newLimit, true);
+                    maxActiveSemaphore = makeSemaphore(activeChange.newLimit);
                     activeChange = null;
                 }
             }
@@ -164,6 +166,14 @@ public class RestCallLimiter {
         return rateLimiter.getRate();
     }
 
+    private static Semaphore makeSemaphore(int permit) {
+        if (permit == 0) {
+            return NoLimitSemaphore.INSTANCE;
+        } else {
+            return new Semaphore(permit, true);
+        }
+    }
+
     @Override
     public String toString() {
         return Objects
@@ -191,5 +201,29 @@ public class RestCallLimiter {
     private static class LimitChange {
         private final int oldLimit;
         private final int newLimit;
+    }
+
+    /**
+     * Overrides tryAcquire method to return true all the time.
+     */
+    private static class NoLimitSemaphore extends Semaphore {
+        private static final long serialVersionUID = 1L;
+        private static final NoLimitSemaphore INSTANCE =
+                new NoLimitSemaphore(0);
+
+        private NoLimitSemaphore(int permits) {
+            super(1);
+        }
+
+        @Override
+        public boolean tryAcquire() {
+            return true;
+        }
+
+        @Override
+        public boolean tryAcquire(long timeout, TimeUnit unit)
+                throws InterruptedException {
+            return true;
+        }
     }
 }

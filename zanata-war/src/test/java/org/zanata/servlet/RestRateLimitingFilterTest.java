@@ -53,16 +53,15 @@ public class RestRateLimitingFilterTest {
 
         filter = spy(new RestRateLimitingFilter());
 
-        // we need to override ContextualHttpServletRequest#run method otherwise
-        // Seam will throw exception
-        doReturn(processor).when(filter).createRateLimitingRequest(API_KEY, request, response, filterChain);
+        doReturn(processor).when(filter).createRateLimitingRequest(API_KEY,
+                request, response, filterChain);
     }
 
     @Test
-    public void willSkipIfNotHttpServletRequest()
-            throws IOException, ServletException {
-        filter.doFilter(mock(ServletRequest.class), mock(ServletResponse.class),
-                filterChain);
+    public void willSkipIfNotHttpServletRequest() throws IOException,
+            ServletException {
+        filter.doFilter(mock(ServletRequest.class),
+                mock(ServletResponse.class), filterChain);
 
         verifyZeroInteractions(processor);
     }
@@ -77,9 +76,10 @@ public class RestRateLimitingFilterTest {
     }
 
     @Test
-    public void willSkipIfAPIkeyNotPresent()
-            throws IOException, ServletException {
-        when(request.getHeader(HeaderHelper.X_AUTH_TOKEN_HEADER)).thenReturn(null);
+    public void willSkipIfAPIkeyNotPresent() throws IOException,
+            ServletException {
+        when(request.getHeader(HeaderHelper.X_AUTH_TOKEN_HEADER)).thenReturn(
+                null);
         StringWriter out = new StringWriter();
         when(response.getWriter()).thenReturn(new PrintWriter(out));
 
@@ -87,7 +87,9 @@ public class RestRateLimitingFilterTest {
 
         verify(response).setStatus(401);
         verifyZeroInteractions(processor);
-        assertThat(out.toString(), Matchers.equalTo("You must have a valid API key"));
+        assertThat(
+                out.toString(),
+                Matchers.equalTo(RestRateLimitingFilter.API_KEY_ABSENCE_WARNING));
     }
 
     @Test

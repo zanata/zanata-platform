@@ -107,8 +107,6 @@ public class ServerConfigurationBean implements Serializable {
     @Pattern(regexp = "\\d{0,5}")
     private String maxActiveRequestsPerApiKey;
 
-    private boolean rateLimitSwitch;
-
     public String getHomeContent() {
         HApplicationConfiguration var =
                 applicationConfigurationDAO
@@ -219,12 +217,6 @@ public class ServerConfigurationBean implements Serializable {
             this.termsOfUseUrl = termsOfUseUrlValue.getValue();
         }
 
-        HApplicationConfiguration rateLimitSwitch = applicationConfigurationDAO
-                .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
-        if (rateLimitSwitch != null) {
-            this.rateLimitSwitch = Boolean.valueOf(rateLimitSwitch.getValue());
-        }
-
         HApplicationConfiguration rateLimitValue = applicationConfigurationDAO
                 .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
         if (rateLimitValue != null) {
@@ -331,14 +323,6 @@ public class ServerConfigurationBean implements Serializable {
         ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
                 termsOfUseUrlValue, termsOfUseUrl, applicationConfigurationDAO);
-
-        HApplicationConfiguration rateLimitSwitchValue =
-                applicationConfigurationDAO
-                        .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
-        ServerConfigurationService.persistApplicationConfig(
-                HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH,
-                rateLimitSwitchValue, "" + rateLimitSwitch,
-                applicationConfigurationDAO);
 
         HApplicationConfiguration rateLimitValue =
                 applicationConfigurationDAO

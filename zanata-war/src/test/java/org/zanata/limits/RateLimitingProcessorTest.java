@@ -71,8 +71,10 @@ public class RateLimitingProcessorTest {
     }
 
     @Test
-    public void willSkipIfRateLimitSwitchIsOff() throws Exception {
-        when(applicationConfiguration.getRateLimitSwitch()).thenReturn(false);
+    public void willSkipIfRateLimitAreAllZero() throws Exception {
+        when(applicationConfiguration.getMaxActiveRequestsPerApiKey()).thenReturn(0);
+        when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(0);
+        when(applicationConfiguration.getRateLimitPerSecond()).thenReturn(0D);
 
         processor.process();
 
@@ -86,7 +88,7 @@ public class RateLimitingProcessorTest {
 
         when(rateLimitManager.getLimitConfig()).thenReturn(
                 new RestCallLimiter.RateLimitConfig(1, 1, 100.0));
-        when(applicationConfiguration.getRateLimitSwitch()).thenReturn(true);
+        when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(1);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {

@@ -56,7 +56,9 @@ public class RateLimitingProcessor extends ContextualHttpServletRequest {
     public void process() throws Exception {
         ApplicationConfiguration appConfig = getApplicationConfiguration();
 
-        if (!appConfig.getRateLimitSwitch()) {
+        if (appConfig.getMaxConcurrentRequestsPerApiKey() == 0
+                && appConfig.getMaxActiveRequestsPerApiKey() == 0
+                && appConfig.getRateLimitPerSecond() == 0) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -68,7 +70,7 @@ public class RateLimitingProcessor extends ContextualHttpServletRequest {
         RestCallLimiter rateLimiter;
         try {
             rateLimiter =
-                    rateLimitManager.get(apiKey, new RestRateLimiterCallable(
+                    rateLimitManager.get(apiKey, new RestRateLimiterLoader(
                             limitConfig, apiKey));
         } catch (ExecutionException e) {
             throw new WebApplicationException(e,
@@ -123,12 +125,12 @@ public class RateLimitingProcessor extends ContextualHttpServletRequest {
                 .add("apiKey", apiKey).toString();
     }
 
-    private static class RestRateLimiterCallable implements
+    private static class RestRateLimiterLoader implements
             Callable<RestCallLimiter> {
         private final RestCallLimiter.RateLimitConfig limitConfig;
         private final String apiKey;
 
-        public RestRateLimiterCallable(
+        public RestRateLimiterLoader(
                 RestCallLimiter.RateLimitConfig limitConfig, String apiKey) {
             this.limitConfig = limitConfig;
             this.apiKey = apiKey;

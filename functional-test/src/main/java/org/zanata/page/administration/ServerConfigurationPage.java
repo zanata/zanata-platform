@@ -67,17 +67,4 @@ public class ServerConfigurationPage extends BasePage {
         saveButton.click();
         return new AdministrationPage(getDriver());
     }
-
-    public ServerConfigurationPage turnRateLimitingOn(boolean onOrOff) {
-        if (onOrOff) {
-            getDriver().findElement(
-                    By.id("serverConfigForm:rateLimitSwitchField:radio:0"))
-                    .click();
-        } else {
-            getDriver().findElement(
-                    By.id("serverConfigForm:rateLimitSwitchField:radio:1"))
-                    .click();
-        }
-        return new ServerConfigurationPage(getDriver());
-    }
 }

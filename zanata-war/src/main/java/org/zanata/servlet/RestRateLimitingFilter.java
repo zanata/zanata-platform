@@ -33,6 +33,9 @@ import com.google.common.base.Strings;
 @Slf4j
 public class RestRateLimitingFilter extends AbstractFilter {
 
+    static final String API_KEY_ABSENCE_WARNING =
+            "You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.";
+
     @Override
     public void doFilter(ServletRequest servletRequest,
             ServletResponse servletResponse, FilterChain filterChain)
@@ -60,7 +63,7 @@ public class RestRateLimitingFilter extends AbstractFilter {
         if (Strings.isNullOrEmpty(apiKey)) {
             response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
             PrintWriter writer = response.getWriter();
-            writer.append("You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.");
+            writer.append(API_KEY_ABSENCE_WARNING);
             writer.close();
             return;
         }

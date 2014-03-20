@@ -60,34 +60,6 @@ public class RestCallLimiterTest {
     @Mock
     private Runnable runntable;
 
-    // just in case it failed, we will rerun the test with debug logging on
-    @Rule
-    public TestRule retryOnceRule = new TestRule() {
-        @Override
-        public Statement apply(final Statement base,
-                final Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    boolean failed = false;
-                    try {
-                        base.evaluate();
-                    } catch (Throwable throwable) {
-                        log.warn(
-                                "{} execution failed. Will retry with debug logger",
-                                description.getDisplayName());
-                        failed = true;
-                    }
-                    if (failed) {
-                        testeeLogger.setLevel(Level.DEBUG);
-                        base.evaluate();
-                    }
-                }
-            };
-
-        }
-    };
-
     @BeforeClass
     public void beforeClass() {
         // set logging to debug
@@ -116,7 +88,7 @@ public class RestCallLimiterTest {
                         maxConcurrent, maxConcurrent, 1000.0));
 
         // to ensure threads are actually running concurrently
-        runnableWillTakeTime(10);
+        runnableWillTakeTime(20);
 
         Callable<Boolean> task = new Callable<Boolean>() {
             @Override
@@ -345,6 +317,16 @@ public class RestCallLimiterTest {
         assertThat(limiter.availableConcurrentPermit(),
                 Matchers.equalTo(maxConcurrent));
         assertThat(limiter.availableActivePermit(), Matchers.equalTo(maxActive));
+    }
+
+    @Test
+    public void zeroPermitMeansNoLimit() {
+        limiter = new RestCallLimiter(
+                new RestCallLimiter.RateLimitConfig(0, 0, 0));
+
+        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
+        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
+        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
     }
 
     /**

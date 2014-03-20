@@ -70,7 +70,6 @@ public class RateLimitRestAndUITest {
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
 
-        serverConfigPage = serverConfigPage.turnRateLimitingOn(true);
         assertThat(serverConfigPage.getRateLimit(), Matchers.isEmptyString());
         assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(), Matchers.isEmptyString());
         assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(), Matchers.isEmptyString());
@@ -186,12 +185,6 @@ public class RateLimitRestAndUITest {
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
 
-
-        ClientRequest request =
-                clientRequestAsAdmin("rest/configurations/c/" +
-                        HApplicationConfiguration.KEY_RATE_LIMIT_SWITCH);
-        request.body(MediaType.TEXT_PLAIN_TYPE, "true");
-        checkStatusAndReleaseConnection(request.put());
 
         ClientRequest clientRequest = clientRequestAsAdmin(
                 "rest/configurations/" + maxConcurrentPathParam);
