@@ -110,14 +110,8 @@ public class PoReader2 {
                 // add the target content (msgstr)
                 TextFlowTarget tfTarget = new TextFlowTarget();
                 tfTarget.setResId(id);
-                String sourceContent;
-                if (message.isPlural()) {
-                    sourceContent =
-                            message.getMsgid() + '|' + message.getMsgidPlural();
-                } else {
-                    sourceContent = message.getMsgid();
-                }
-                tfTarget.setSourceHash(HashUtil.generateHash(sourceContent));
+                List<String> sourceContents = getSourceContents(message);
+                tfTarget.setSourceHash(HashUtil.sourceHash(sourceContents));
                 tfTarget.setDescription(ShortString.shorten(message.getMsgid()));
                 tfTarget.setContents(getContents(message));
                 tfTarget.setState(getContentState(message));
@@ -296,6 +290,16 @@ public class PoReader2 {
             throw new RuntimeException("not a valid inputSource");
 
         return messageParser;
+    }
+
+    private List<String> getSourceContents(Message message) {
+        List<String> sourceContents;
+        if (message.isPlural()) {
+            sourceContents = Arrays.asList(message.getMsgid(), message.getMsgidPlural());
+        } else {
+            sourceContents = Arrays.asList(message.getMsgid());
+        }
+        return sourceContents;
     }
 
     /**
