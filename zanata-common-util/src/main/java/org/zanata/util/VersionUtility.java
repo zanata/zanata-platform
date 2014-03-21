@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
@@ -27,25 +29,42 @@ public class VersionUtility {
         return new VersionInfo(apiVersion);
     }
 
+    /**
+     * Gets version from manifest of jar containing clazz, or else from
+     * package info.
+     * @param clazz
+     * @return
+     */
     public static VersionInfo getVersionInfo(Class<?> clazz) {
         Attributes atts = null;
-        String version = null;
-        String buildTimestamp = null;
-        String scmDescribe = null;
         try {
             atts = getJarAttributesForClass(clazz);
         } catch (IOException e) {
             log.debug(e.getMessage(), e);
         }
+        return getVersionInfo(atts, clazz);
+    }
+
+    /**
+     * Gets version from specified manifest attributes, or else from the
+     * package info of the class.
+     * @param atts
+     * @param fallbackClass
+     * @return
+     */
+    public static VersionInfo getVersionInfo(@Nullable Attributes atts, Class<?> fallbackClass) {
+        String version = null;
+        String buildTimestamp = null;
+        String scmDescribe = null;
+
         if (atts != null) {
             version = atts.getValue("Implementation-Version");
             buildTimestamp = atts.getValue("Implementation-Build");
             scmDescribe = atts.getValue("SCM-Describe");
         }
-
         // if we can't get version from the jar, try for the package version
         if (version == null) {
-            Package pkg = clazz.getPackage();
+            Package pkg = fallbackClass.getPackage();
             if (pkg != null)
                 version = pkg.getImplementationVersion();
         }
