@@ -15,7 +15,7 @@ import org.zanata.common.Namespaces;
  * Holds version info
  */
 @XmlRootElement(name = "versionInfo")
-@XmlType(name = "versionType", propOrder = { "versionNo", "buildTimeStamp" })
+@XmlType(name = "versionType", propOrder = { "versionNo", "buildTimeStamp", "scmDescribe" })
 @JsonTypeName(value = "versionType")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -23,21 +23,24 @@ public final class VersionInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private String versionNo;
     private String buildTimeStamp;
+    private String scmDescribe;
 
-    public VersionInfo(String versionNo, String buildTimestamp) {
+    public VersionInfo(String versionNo, String buildTimestamp, String scmDescribe) {
         this.versionNo = versionNo;
         this.buildTimeStamp = buildTimestamp;
+        this.scmDescribe = scmDescribe;
+    }
+
+    @Deprecated
+    public VersionInfo(String versionNo, String buildTimestamp) {
+        this(versionNo, buildTimestamp, "UNKNOWN");
     }
 
     public VersionInfo() {
-
     }
 
-    /**
-     * @param other
-     */
     public VersionInfo(VersionInfo other) {
-        this(other.versionNo, other.buildTimeStamp);
+        this(other.versionNo, other.buildTimeStamp, other.scmDescribe);
     }
 
     @XmlElement(name = "versionNo", namespace = Namespaces.ZANATA_OLD)
@@ -50,12 +53,21 @@ public final class VersionInfo implements Serializable {
         return buildTimeStamp;
     }
 
+    @XmlElement(name = "scmDescribe", namespace = Namespaces.ZANATA_API)
+    public String getScmDescribe() {
+        return scmDescribe;
+    }
+
     public void setVersionNo(String versionNo) {
         this.versionNo = versionNo;
     }
 
     public void setBuildTimeStamp(String buildTimestamp) {
         this.buildTimeStamp = buildTimestamp;
+    }
+
+    public void setScmDescribe(String scmDescribe) {
+        this.scmDescribe = scmDescribe;
     }
 
     @Override
@@ -71,6 +83,11 @@ public final class VersionInfo implements Serializable {
                 prime
                         * result
                         + ((buildTimeStamp == null) ? 0 : buildTimeStamp
+                                .hashCode());
+        result =
+                prime
+                        * result
+                        + ((scmDescribe == null) ? 0 : scmDescribe
                                 .hashCode());
         result =
                 prime * result
@@ -95,6 +112,13 @@ public final class VersionInfo implements Serializable {
                 return false;
             }
         } else if (!buildTimeStamp.equals(other.buildTimeStamp)) {
+            return false;
+        }
+        if (scmDescribe == null) {
+            if (other.scmDescribe != null) {
+                return false;
+            }
+        } else if (!scmDescribe.equals(other.scmDescribe)) {
             return false;
         }
         if (versionNo == null) {
