@@ -162,7 +162,6 @@
   </contributors>
 
   <properties>
-    <!-- buildNumber is set by buildnumber-maven-plugin from git info -->
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -395,24 +394,24 @@ package.
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.0</version>
+        <groupId>com.lukegb.mojo</groupId>
+        <artifactId>gitdescribe-maven-plugin</artifactId>
+        <version>2.0</version>
         <executions>
           <execution>
-            <id>define-changeset</id>
-            <phase>initialize</phase>
             <goals>
-              <!-- sets Maven property buildNumber -->
-              <goal>create</goal>
+              <goal>gitdescribe</goal>
             </goals>
+            <id>git-describe</id>
+            <phase>initialize</phase>
+            <configuration>
+              <descriptionProperty>gitDescribe</descriptionProperty>
+              <extraArguments>
+                <param>--dirty</param>
+              </extraArguments>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-        </configuration>
       </plugin>
 
       <!-- useful for debugging Maven properties: eg mvn initialize antrun:run -->
@@ -421,7 +420,7 @@ package.
         <artifactId>maven-antrun-plugin</artifactId>
         <configuration>
           <target>
-            <echo>[buildNumber] ${buildNumber}</echo>
+            <echo>[describe] ${gitDescribe}</echo>
           </target>
         </configuration>
       </plugin>
@@ -437,8 +436,8 @@ package.
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
             <manifestEntries>
+              <SCM-Describe>${gitDescribe}</SCM-Describe>
               <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-              <SCM-Changeset>${buildNumber}</SCM-Changeset>
             </manifestEntries>
           </archive>
           <skipIfEmpty>true</skipIfEmpty>
@@ -546,6 +545,58 @@ package.
                   </pluginExecutionFilter>
                   <action>
                     <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.lukegb.mojo</groupId>
+                    <artifactId>gitdescribe-maven-plugin</artifactId>
+                    <versionRange>[2.0,)</versionRange>
+                    <goals>
+                      <goal>gitdescribe</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <versionRange>[2.10,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.8,)</versionRange>
+                    <goals>
+                      <goal>analyze-only</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <versionRange>[2.5.2,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
