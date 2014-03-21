@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
@@ -27,34 +29,55 @@ public class VersionUtility {
         return new VersionInfo(apiVersion);
     }
 
+    /**
+     * Gets version from manifest of jar containing clazz, or else from
+     * package info.
+     * @param clazz
+     * @return
+     */
     public static VersionInfo getVersionInfo(Class<?> clazz) {
         Attributes atts = null;
+        try {
+            atts = getJarAttributesForClass(clazz);
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
+        }
+        return getVersionInfo(atts, clazz);
+    }
+
+    /**
+     * Gets version from specified manifest attributes, or else from the
+     * package info of the class.
+     * @param atts
+     * @param fallbackClass
+     * @return
+     */
+    public static VersionInfo getVersionInfo(@Nullable Attributes atts, Class<?> fallbackClass) {
         String version = null;
         String buildTimestamp = null;
-        {
-            try {
-                atts = getJarAttributesForClass(clazz);
-            } catch (IOException e) {
-                log.debug(e.getMessage(), e);
-            }
-        }
+        String scmDescribe = null;
+
         if (atts != null) {
             version = atts.getValue("Implementation-Version");
             buildTimestamp = atts.getValue("Implementation-Build");
+            scmDescribe = atts.getValue("SCM-Describe");
         }
-
         // if we can't get version from the jar, try for the package version
         if (version == null) {
-            Package pkg = clazz.getPackage();
+            Package pkg = fallbackClass.getPackage();
             if (pkg != null)
                 version = pkg.getImplementationVersion();
         }
-        if (version == null)
+        if (version == null) {
             version = "unknown";
-        if (buildTimestamp == null)
+        }
+        if (buildTimestamp == null) {
             buildTimestamp = "unknown";
-        VersionInfo result = new VersionInfo(version, buildTimestamp);
-        return result;
+        }
+        if (scmDescribe  == null) {
+            scmDescribe = "unknown";
+        }
+        return new VersionInfo(version, buildTimestamp, scmDescribe);
     }
 
     private static Attributes getJarAttributesForClass(Class<?> clazz)
@@ -63,6 +86,7 @@ public class VersionUtility {
         // http://stackoverflow.com/questions/1272648/need-to-read-own-jars-manifest-and-not-root-classloaders-manifest/1273432#1273432
         String className = clazz.getSimpleName() + ".class";
         String classPath = clazz.getResource(className).toString();
+        // PORTABILITY (JBoss AS/EAP)
         if (classPath.startsWith("vfszip:")) {
             String manifestPath =
                     classPath.substring(0, classPath.lastIndexOf(".jar/")
@@ -89,9 +113,11 @@ public class VersionUtility {
         VersionInfo clientVer = getVersionInfo(clientClass);
         out.println("Client version: " + clientVer.getVersionNo());
         out.println("Client timestamp: " + clientVer.getBuildTimeStamp());
+        out.println("Client SCM describe: " + clientVer.getScmDescribe());
         VersionInfo apiVer = getAPIVersionInfo();
         out.println("API version: " + apiVer.getVersionNo());
         out.println("API timestamp: " + apiVer.getBuildTimeStamp());
+        out.println("API SCM describe: " + apiVer.getScmDescribe());
     }
 
 }
