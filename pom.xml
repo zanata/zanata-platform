@@ -394,28 +394,6 @@ package.
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.2</version>
-        <executions>
-          <execution>
-            <id>define-changeset</id>
-            <phase>initialize</phase>
-            <goals>
-              <!-- sets Maven property buildNumber -->
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <buildNumberPropertyName>buildNumber</buildNumberPropertyName>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>com.lukegb.mojo</groupId>
         <artifactId>gitdescribe-maven-plugin</artifactId>
         <version>2.0</version>
@@ -442,7 +420,6 @@ package.
         <artifactId>maven-antrun-plugin</artifactId>
         <configuration>
           <target>
-            <echo>[buildNumber] ${buildNumber}</echo>
             <echo>[describe] ${gitDescribe}</echo>
           </target>
         </configuration>
@@ -461,7 +438,6 @@ package.
             <manifestEntries>
               <SCM-Describe>${gitDescribe}</SCM-Describe>
               <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-              <SCM-Changeset>${buildNumber}</SCM-Changeset>
             </manifestEntries>
           </archive>
           <skipIfEmpty>true</skipIfEmpty>
