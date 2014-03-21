@@ -114,7 +114,7 @@ public class PropertiesStrategy extends AbstractPushStrategy {
         TranslationsResource targetDoc = new TranslationsResource();
         FileInputStream in = new FileInputStream(transFile);
         try {
-            propReader.extractTarget(targetDoc, in);
+            propReader.extractTarget(targetDoc, in, srcDoc);
         } finally {
             in.close();
         }
