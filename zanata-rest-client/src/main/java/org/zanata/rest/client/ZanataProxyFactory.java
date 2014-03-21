@@ -77,7 +77,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
                 clientApiVersion.getVersionNo()));
 
         clientVersion = clientApiVersion.getVersionNo();
-        String clientTimestamp = clientApiVersion.getBuildTimeStamp();
+        String clientScm = clientApiVersion.getScmDescribe();
         IVersionResource iversion = createIVersionResource();
         ClientResponse<VersionInfo> versionResp = iversion.get();
         // unauthorized
@@ -90,7 +90,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         ClientUtility.checkResult(versionResp);
         VersionInfo serverVersionInfo = versionResp.getEntity();
         serverVersion = serverVersionInfo.getVersionNo();
-        String serverTimestamp = serverVersionInfo.getBuildTimeStamp();
+        String serverScm = serverVersionInfo.getScmDescribe();
 
         log.info("client API version: {}, server API version: {}",
                 clientVersion, serverVersion);
@@ -98,10 +98,10 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
             log.warn("client API version is {}, but server API version is {}",
                     clientVersion, serverVersion);
         } else if (serverVersion.contains(RestConstant.SNAPSHOT_VERSION)
-                && !serverTimestamp.equalsIgnoreCase(clientTimestamp)) {
+                && !serverScm.equalsIgnoreCase(clientScm)) {
             log.warn(
-                    "client API timestamp is {}, but server API timestamp is {}",
-                    clientTimestamp, serverTimestamp);
+                    "client API SCM id is {}, but server API SCM id is {}",
+                    clientScm, serverScm);
         }
     }
 
