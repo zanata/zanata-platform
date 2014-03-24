@@ -36,42 +36,56 @@ class RestCallLimiter {
         }
     }
 
+    /**
+     * May throw an exception if it takes too long to obtain one of the semaphores
+     * @param taskAfterAcquire
+     * @return
+     */
     public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
         applyConcurrentPermitChangeIfApplicable();
-        boolean gotConcurrentPermit = maxConcurrentSemaphore.tryAcquire();
-        log.debug("try acquire [concurrent] permit:{}", gotConcurrentPermit);
+        // hang on to the semaphore, so that we can be certain of
+        // releasing the same one we acquired
+        final Semaphore concSem = maxConcurrentSemaphore;
+        boolean gotConcurrentPermit = concSem.tryAcquire();
         if (gotConcurrentPermit) {
+            // if acquired, immediately enter try finally (release)
             try {
-                if (acquireActiveAndRatePermit()) {
-                    try {
-                        taskAfterAcquire.run();
-                    } finally {
-                        log.debug("releasing active concurrent semaphore");
-                        maxActiveSemaphore.release();
-                    }
-                } else {
+                log.debug("acquired [concurrent] permit");
+                if (!acquireActiveAndRatePermit(taskAfterAcquire)) {
                     throw new RuntimeException(
-                            "Couldn't get an [active] permit in time");
+                            "Couldn't get an [active] permit before timeout");
                 }
             } finally {
-                log.debug("releasing max [concurrent] semaphore");
-                maxConcurrentSemaphore.release();
+                concSem.release();
+                log.debug("released max [concurrent] semaphore");
             }
+        } else {
+            log.debug("failed to acquire [concurrent] permit");
         }
         return gotConcurrentPermit;
     }
 
-    private boolean acquireActiveAndRatePermit() {
+    private boolean acquireActiveAndRatePermit(Runnable taskAfterAcquire) {
         applyActivePermitChangeIfApplicable();
         log.debug("before acquire [active] semaphore:{}", maxActiveSemaphore);
         try {
+            // hang on to the semaphore, so that we can be certain of
+            // releasing the same one we acquired
+            final Semaphore activeSem = maxActiveSemaphore;
             boolean gotActivePermit =
-                    maxActiveSemaphore.tryAcquire(5, TimeUnit.MINUTES);
-            log.debug(
-                    "got [active] semaphore [{}] and before acquire rate limit permit:{}",
-                    gotActivePermit, rateLimiter);
+                    activeSem.tryAcquire(5, TimeUnit.MINUTES);
             if (gotActivePermit) {
-                rateLimiter.acquire();
+                // if acquired, immediately enter try finally (release)
+                try {
+                    log.debug(
+                            "got [active] semaphore, about to acquire rate limit permit: {}",
+                            rateLimiter);
+                    rateLimiter.acquire();
+                    taskAfterAcquire.run();
+                } finally {
+                    activeSem.release();
+                    log.debug("released [active] semaphore");
+                }
             }
             return gotActivePermit;
         } catch (InterruptedException e) {
