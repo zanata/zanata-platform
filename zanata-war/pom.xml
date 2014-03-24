@@ -1015,7 +1015,7 @@
         </property>
       </activation>
       <properties>
-        <groovy.eclipse.compiler.version>2.9.0-01-20130710.222406-4</groovy.eclipse.compiler.version>
+        <groovy.eclipse.compiler.version>2.9.0-01-20140221.234306-6</groovy.eclipse.compiler.version>
       </properties>
       <build>
         <plugins>
