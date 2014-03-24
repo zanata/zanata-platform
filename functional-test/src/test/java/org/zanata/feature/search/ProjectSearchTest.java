@@ -35,7 +35,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class ProjectSearchTest {
@@ -45,47 +46,48 @@ public class ProjectSearchTest {
 
     @Test
     public void successfulProjectSearchAndDisplay() {
-        DashboardPage dashboardPage = new LoginWorkFlow()
-                .signIn("translator", "translator");
-        dashboardPage.enterSearch("about")
-                .waitForSearchListContains("about fedora");
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("translator", "translator");
+        dashboardPage.enterSearch("about").waitForSearchListContains(
+                "about fedora");
 
         assertThat("Normal user can see the project",
-                dashboardPage.getSearchAutocompleteItems(),
+                dashboardPage.getProjectSearchAutocompleteItems(),
                 hasItem("about fedora"));
 
-        ProjectPage projectPage = dashboardPage.clickSearchEntry("about fedora");
+        ProjectPage projectPage =
+                dashboardPage.clickSearchEntry("about fedora");
 
-        assertThat("The project page is the correct one",
-                projectPage.getProjectName().trim(), // UI adds a space
+        assertThat("The project page is the correct one", projectPage
+                .getProjectName().trim(), // UI adds a space
                 equalTo("about fedora"));
     }
 
     @Test
     public void unsuccessfulProjectSearch() {
-        DashboardPage dashboardPage = new LoginWorkFlow()
-                .signIn("translator", "translator");
-        dashboardPage.enterSearch("arodef")
-                .waitForSearchListContains("Search Zanata for 'arodef'");
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("translator", "translator");
+        dashboardPage.enterSearch("arodef").waitForSearchListContains(
+                "Search Zanata for 'arodef'");
         ProjectsPage projectsPage = dashboardPage.submitSearch();
 
-        assertThat("No projects are displayed",
-                projectsPage.getProjectNamesOnCurrentPage().isEmpty());
+        assertThat("No projects are displayed", projectsPage
+                .getProjectNamesOnCurrentPage().isEmpty());
     }
 
     @Test
     public void normalUserCannotSearchObsolete() {
         new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                .goToProject("about fedora").clickEditProject()
-                .selectStatus("OBSOLETE").updateProject().logout();
+                .goToProject("about fedora").gotoSettingsTab()
+                .gotoSettingsGeneral().archiveProject(true).logout();
 
-        DashboardPage dashboardPage = new LoginWorkFlow()
-                .signIn("translator", "translator");
-        dashboardPage.enterSearch("about")
-                .waitForSearchListContains("Search Zanata for 'about'");
+        DashboardPage dashboardPage =
+                new LoginWorkFlow().signIn("translator", "translator");
+        dashboardPage.enterSearch("about").waitForSearchListContains(
+                "Search Zanata for 'about'");
 
         assertThat("User cannot see the obsolete project",
-                dashboardPage.getSearchAutocompleteItems(),
+                dashboardPage.getProjectSearchAutocompleteItems(),
                 not(hasItem("About Fedora")));
 
     }

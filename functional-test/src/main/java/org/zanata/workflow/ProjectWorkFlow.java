@@ -35,12 +35,15 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     /**
      * Creates a new project using minimal input, all other items are default.
      * This function is lenient, i.e. will not fail if the project exists.
-     * @param projectId Project identifier
-     * @param projectName Project short name
+     *
+     * @param projectId
+     *            Project identifier
+     * @param projectName
+     *            Project short name
      * @return new Project page for created project
      */
     public ProjectPage createNewSimpleProject(String projectId,
-                                              String projectName) {
+            String projectName) {
         ProjectsPage projectsPage = goToHome().goToProjects();
         List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
         log.info("current projects: {}", projects);
@@ -61,7 +64,9 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     /**
      * Create a project in full, using the details given in settings.<br/>
      * All items must be defined.
-     * @param settings A HashMap of project identifiers and settings
+     *
+     * @param settings
+     *            A HashMap of project identifiers and settings
      * @return a new Project page for the created project
      * @see {@link #projectDefaults()}
      */
@@ -73,12 +78,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
                 .inputProjectId(settings.get("Project ID"))
                 .inputProjectName(settings.get("Name"))
                 .enterDescription(settings.get("Description"))
-                .selectProjectType(settings.get("Project Type"))
-                .enterHomepageContent(settings.get("Homepage Content"))
-                .enterViewSourceURL(settings.get("View source files"))
-                .enterDownloadSourceURL(settings.get("Source Download/Checkout"))
-                .selectStatus(settings.get("Status"))
-                .saveProject();
+                .selectProjectType(settings.get("Project Type")).saveProject();
     }
 
     public static HashMap<String, String> projectDefaults() {
@@ -86,11 +86,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         defaults.put("Project ID", "");
         defaults.put("Name", "");
         defaults.put("Description", "");
-        defaults.put("Project Type", "None");
-        defaults.put("Homepage Content", "");
-        defaults.put("View source files", "");
-        defaults.put("Source Download/Checkout", "");
-        defaults.put("Status", "ACTIVE");
+        defaults.put("Project Type", "File");
         return defaults;
     }
 
@@ -110,7 +106,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
             log.warn(
                     "{} has already been created. Presumably you are running test manually and more than once.",
                     projectVersion);
-            return projectPage.goToVersion(projectVersion);
+            return projectPage.gotoVersion(projectVersion);
         }
         CreateVersionPage createVersionPage =
                 projectPage.clickCreateVersionLink().inputVersionId(

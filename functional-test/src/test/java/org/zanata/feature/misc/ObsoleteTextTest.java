@@ -116,7 +116,7 @@ public class ObsoleteTextTest {
                         PROJECT_VERSION_TEMPLATE, "obsolete-test", "master"),
                         ProjectVersionPage.class);
         assertThat(versionPage.getStatisticsForLocale("fr"),
-                Matchers.equalTo("100.0% ( 0.0 hrs )"));
+                Matchers.equalTo("100.0%"));
     }
 
     private static EditorPage openEditor() {

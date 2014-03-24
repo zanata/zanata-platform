@@ -21,10 +21,12 @@
 package org.zanata.service.impl;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -46,11 +48,16 @@ import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -72,9 +79,6 @@ public class ActivityServiceImpl implements ActivityService {
     private PersonDAO personDAO;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
     private EntityManager entityManager;
 
     @In
@@ -89,6 +93,40 @@ public class ActivityServiceImpl implements ActivityService {
 
     private Date getRoundedTime(Date actionTime) {
         return DateUtils.truncate(actionTime, Calendar.HOUR);
+    }
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+
+    @Override
+    public List<Activity> findLatestProjectActivities(long personId,
+            final long projectId, int offset, int maxResults) {
+        List<Activity> activities = activityDAO.findLatestActivities(personId);
+
+        Collection<Activity> filtered =
+                Collections2.filter(activities, new Predicate<Activity>() {
+                    @Override
+                    public boolean apply(@Nullable Activity input) {
+                        if (input.getActivityType().equals(
+                                ActivityType.REVIEWED_TRANSLATION)
+                                || input.getActivityType().equals(
+                                        ActivityType.UPDATE_TRANSLATION)
+                                || input.getActivityType().equals(
+                                        ActivityType.UPLOAD_SOURCE_DOCUMENT)
+                                || input.getActivityType()
+                                        .equals(ActivityType.UPLOAD_TRANSLATION_DOCUMENT)) {
+                            HProjectIteration iteration =
+                                    projectIterationDAO.findById(input
+                                            .getContextId());
+                            return iteration.getProject().getId().longValue() == projectId;
+                        }
+                        return false;
+                    }
+                });
+        List<Activity> result = Lists.newArrayList(filtered);
+        offset = offset < 0 ? 0 : offset;
+        maxResults = maxResults > result.size() ? result.size() : maxResults;
+        return result.subList(offset, maxResults);
     }
 
     @Override
@@ -110,7 +148,8 @@ public class ActivityServiceImpl implements ActivityService {
         Lock lock = activityLockManager.getLock(actorId);
         lock.lock();
         try {
-            logActivityAlreadyLocked(actorId, context, target, activityType, wordCount);
+            logActivityAlreadyLocked(actorId, context, target, activityType,
+                    wordCount);
         } finally {
             lock.unlock();
         }
@@ -118,14 +157,16 @@ public class ActivityServiceImpl implements ActivityService {
 
     /**
      * Precondition: current thread must hold a lock for the person 'actorId'.
+     *
      * @param actorId
      * @param context
      * @param target
      * @param activityType
      * @param wordCount
      */
-    private void logActivityAlreadyLocked(long actorId, IsEntityWithType context,
-            IsEntityWithType target, ActivityType activityType, int wordCount) {
+    private void logActivityAlreadyLocked(long actorId,
+            IsEntityWithType context, IsEntityWithType target,
+            ActivityType activityType, int wordCount) {
         if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =

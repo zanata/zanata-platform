@@ -19,11 +19,12 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.action;
+package org.zanata.ui;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import org.zanata.action.SortingType;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 
@@ -37,11 +38,11 @@ import com.google.common.collect.Lists;
 public abstract class AbstractSortAction {
 
     // reset all page cached statistics
-    abstract void resetPageData();
+    abstract public void resetPageData();
 
     abstract protected void loadStatistics();
 
-    abstract String getMessage(String key, Object... args);
+    abstract protected String getMessage(String key, Object... args);
 
     @Getter
     private final SortingType languageSortingList = new SortingType(
@@ -65,7 +66,8 @@ public abstract class AbstractSortAction {
         case WORDS:
             displayUnit =
                     new DisplayUnit("", String.valueOf(statistic
-                            .getUntranslated()), getMessage("jsf.Words"));
+                            .getUntranslated()),
+                            getMessage("jsf.WordsRemaining"));
             break;
 
         default:
@@ -92,6 +94,12 @@ public abstract class AbstractSortAction {
 
     public int compareWordStatistic(WordStatistic stats1, WordStatistic stats2,
             SortingType.SortOption sortOption) {
+        if (stats1 == null) {
+            return -1;
+        } else if (stats2 == null) {
+            return 1;
+        }
+
         switch (sortOption) {
         case HOURS:
             return Double.compare(stats1.getRemainingHours(),

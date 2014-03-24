@@ -21,17 +21,27 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Map;
 
+import javax.faces.application.FacesMessage;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.international.StatusMessage;
+import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.scope.FlashScopeBean;
-import org.zanata.util.ZanataMessages;
+import org.zanata.seam.scope.FlashScopeMessage;
+import org.zanata.ui.ProgressBar;
+import org.zanata.util.DateUtil;
+
+import com.google.common.base.Optional;
 
 /**
  * Copy Trans page action bean.
@@ -40,7 +50,7 @@ import org.zanata.util.ZanataMessages;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransAction")
-public class CopyTransAction implements Serializable {
+public class CopyTransAction implements Serializable, ProgressBar {
     private static final long serialVersionUID = 1L;
 
     @In
@@ -50,34 +60,44 @@ public class CopyTransAction implements Serializable {
     private CopyTransManager copyTransManager;
 
     @In
-    private FlashScopeBean flashScope;
+    private FlashScopeMessage flashScopeMessage;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Map<String, String> messages;
 
-    @In
-    private CopyTransOptionsModel copyTransOptionsModel;
-
+    @Getter
+    @Setter
     private String iterationSlug;
 
+    @Getter
+    @Setter
     private String projectSlug;
+
+    private HCopyTransOptions options;
 
     private HProjectIteration projectIteration;
 
-    public String getIterationSlug() {
-        return iterationSlug;
+    @Override
+    public boolean isInProgress() {
+        return copyTransManager.isCopyTransRunning(getProjectIteration());
     }
 
-    public void setIterationSlug(String iterationSlug) {
-        this.iterationSlug = iterationSlug;
-    }
-
-    public String getProjectSlug() {
-        return projectSlug;
-    }
-
-    public void setProjectSlug(String projectSlug) {
-        this.projectSlug = projectSlug;
+    @Override
+    public int getCompletedPercentage() {
+        CopyTransTask.CopyTransTaskHandle handle =
+                copyTransManager
+                        .getCopyTransProcessHandle(getProjectIteration());
+        if (handle != null) {
+            int completedPercent =
+                    handle.getCurrentProgress() * 100 / handle.getMaxProgress();
+            if (completedPercent == 100) {
+                flashScopeMessage.putMessage(FacesMessage.SEVERITY_INFO,
+                        messages.get("jsf.iteration.CopyTrans.Completed"));
+            }
+            return completedPercent;
+        } else {
+            return 0;
+        }
     }
 
     public HProjectIteration getProjectIteration() {
@@ -91,55 +111,64 @@ public class CopyTransAction implements Serializable {
     public void initialize() {
         HProject project = this.getProjectIteration().getProject();
         if (project.getDefaultCopyTransOpts() != null) {
-            copyTransOptionsModel
-                    .setInstance(project.getDefaultCopyTransOpts());
+            options = project.getDefaultCopyTransOpts();
+        } else {
+            options = new HCopyTransOptions();
         }
-    }
-
-    public boolean isCopyTransRunning() {
-        return copyTransManager.isCopyTransRunning(getProjectIteration());
     }
 
     @Restrict("#{s:hasPermission(copyTransAction.projectIteration, 'copy-trans')}")
     public
             void startCopyTrans() {
-        if (isCopyTransRunning()) {
-            addMessage(
-                    StatusMessage.Severity.INFO,
-                    zanataMessages
-                            .getMessage("jsf.iteration.CopyTrans.AlreadyStarted.flash"));
+        if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            addMessage(StatusMessage.Severity.INFO,
-                    zanataMessages
-                            .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
+            getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+                    messages.get("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
-        // Options
-        HCopyTransOptions options = copyTransOptionsModel.getInstance();
-
         copyTransManager.startCopyTrans(getProjectIteration(), options);
-        addMessage(StatusMessage.Severity.INFO,
-                zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
-    }
-
-    /**
-     * Use FlashScopeBean to store message in page. Multiple ajax requests for
-     * re-rendering statistics after updating will clear FacesMessages.
-     *
-     * @param severity
-     * @param message
-     */
-    private void addMessage(StatusMessage.Severity severity, String message) {
-        StatusMessage statusMessage =
-                new StatusMessage(severity, null, null, message, null);
-        statusMessage.interpolate();
-
-        flashScope.setAttribute("message", statusMessage);
+        getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+                messages.get("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
-        // Simply navigate where needed
+        copyTransManager.cancelCopyTrans(getProjectIteration());
+        getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+                messages.get("jsf.iteration.CopyTrans.Cancelled"));
+    }
+
+    public String getDocumentsProcessed() {
+        CopyTransTask.CopyTransTaskHandle handle =
+                copyTransManager
+                        .getCopyTransProcessHandle(getProjectIteration());
+        if (handle != null) {
+            return String.valueOf(handle.getDocumentsProcessed());
+        }
+        return "";
+    }
+
+    public String getCopyTransEstimatedTimeLeft() {
+        CopyTransTask.CopyTransTaskHandle handle =
+                copyTransManager
+                        .getCopyTransProcessHandle(getProjectIteration());
+        if (handle != null) {
+            Optional<Long> estimatedTimeRemaining =
+                    handle.getEstimatedTimeRemaining();
+            if (estimatedTimeRemaining.isPresent()) {
+                return DateUtil
+                        .getTimeRemainingDescription(estimatedTimeRemaining
+                                .get());
+            }
+        }
+        return "";
+    }
+
+    private FlashScopeMessage getFlashScopeMessage() {
+        if (flashScopeMessage == null) {
+            flashScopeMessage = FlashScopeMessage.instance();
+        }
+        return flashScopeMessage;
     }
 }

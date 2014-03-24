@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich">
+<composite:interface>
+  <composite:attribute name="id" type="java.lang.String"
+    shortDescription="id of component (java naming)" required="true"/>
+
+  <composite:attribute name="actionBean" required="true"
+    type="org.zanata.ui.ProgressBar"/>
+
+  <composite:attribute name="title" type="java.lang.String"
+    shortDescription="tooltip"/>
+
+  <composite:attribute name="interval" type="java.lang.Integer"
+    shortDescription="Interval (in ms) for call poll requests. Default value 1000 ms (1 sec)"
+    default="1000"/>
+
+  <composite:attribute name="render"
+    shortDescription="Ids of component to render on pull request"/>
+
+  <composite:attribute name="onCompleteRender"
+    shortDescription="Ids of component to render on complete"/>
+
+  <composite:attribute name="type"
+    shortDescription="Type of statistic bar, 'large' or leave empty for default"/>
+
+</composite:interface>
+<composite:implementation>
+
+  <a4j:jsFunction name="onCompleteFunction"
+    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}"/>
+
+  <a4j:poll id="poll-#{cc.attrs.id}" interval="#{cc.attrs.interval}"
+    enabled="#{cc.attrs.actionBean.inProgress}"
+    limitRender="true" oncomplete="onPollComplete()"
+    render="poll-#{cc.attrs.id}, #{cc.attrs.id}-var, #{cc.attrs.render}"/>
+
+  <script type="text/javascript">
+    //<![CDATA[
+    function onPollComplete() {
+      var contentDiv = jQuery("[id='#{rich:clientId(cc.attrs.id)}:#{cc.attrs.id}-content']");
+      var completedPercentage = jQuery("[id='#{cc.attrs.id}-completePercent']").val();
+
+      var completedBar = jQuery(contentDiv).find('.progress-bar__translated');
+      jQuery(completedBar).width(completedPercentage + "%");
+      jQuery(completedBar).attr('title', completedPercentage + "%");
+
+      var uncompletedBar = jQuery(contentDiv).find('.progress-bar__item');
+      jQuery(uncompletedBar).width((100 - completedPercentage) + "%");
+      jQuery(uncompletedBar).css('margin-left', completedPercentage + "%");
+
+      var inProgress = jQuery("[id='#{cc.attrs.id}-inProgress']").val();
+      if (inProgress == 'false' && completedPercentage == '100') {
+        onCompleteFunction();
+      }
+    }
+    //]]>
+  </script>
+
+  <s:div id="#{cc.attrs.id}" title="#{cc.attrs.title}">
+    <s:div id="#{cc.attrs.id}-content"
+      styleClass="is-active #{cc.attrs.type eq 'large' ? 'progress-bar--large__expander' : 'progress-bar__expander'}">
+
+      <s:div id="#{cc.attrs.id}-var">
+        <input id="#{cc.attrs.id}-inProgress" type="hidden"
+          value="#{cc.attrs.actionBean.inProgress}"/>
+        <input id="#{cc.attrs.id}-completePercent" type="hidden"
+          value="#{cc.attrs.actionBean.completedPercentage}"/>
+      </s:div>
+
+      <s:div
+        styleClass="#{cc.attrs.type eq 'large' ? 'progress-bar--large' : 'progress-bar'}">
+        <span class="progress-bar__translated" style="width: 0%;"/>
+        <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
+      </s:div>
+    </s:div>
+  </s:div>
+</composite:implementation>
+</html>

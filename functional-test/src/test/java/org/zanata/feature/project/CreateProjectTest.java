@@ -21,6 +21,9 @@
 
 package org.zanata.feature.project;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -35,11 +38,9 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import java.util.HashMap;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
+
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -55,26 +56,19 @@ public class CreateProjectTest {
     @Category(BasicAcceptanceTest.class)
     public void createABasicProject() {
 
-        ProjectPage projectPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .clickOnCreateProjectLink()
-                .inputProjectId("newprojecttest")
-                .inputProjectName("New Project Test")
-                .enterDescription("Testing a new project")
-                .selectProjectType("File")
-                .enterViewSourceURL("https://github.com/zanata/zanata")
-                .enterDownloadSourceURL("git@github.com:zanata/zanata.git")
-                .selectStatus("ACTIVE")
-                .saveProject();
+        ProjectPage projectPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .clickOnCreateProjectLink()
+                        .inputProjectId("newprojecttest")
+                        .inputProjectName("New Project Test")
+                        .enterDescription("Testing a new project")
+                        .selectProjectType("File").saveProject();
 
-        assertThat("The project id is correct",
-                projectPage.getProjectId(),
+        assertThat("The project id is correct", projectPage.getProjectId(),
                 Matchers.equalTo("newprojecttest"));
 
-        assertThat("The project name is correct",
-                projectPage.getProjectName().trim(),
-                Matchers.equalTo("New Project Test"));
+        assertThat("The project name is correct", projectPage.getProjectName()
+                .trim(), Matchers.equalTo("New Project Test"));
 
         List<String> paragraphs = projectPage.getContentAreaParagraphs();
 
@@ -82,12 +76,12 @@ public class CreateProjectTest {
                 paragraphs, Matchers.hasItem("Testing a new project"));
 
         assertThat("The project main content area contains the project link",
-                paragraphs, Matchers.hasItem("View source files: " +
-                        "https://github.com/zanata/zanata"));
+                paragraphs, Matchers.hasItem("View source files: "
+                        + "https://github.com/zanata/zanata"));
 
         assertThat("The project main content area contains the source url",
-                paragraphs, Matchers.hasItem("Source Download/Checkout: "+
-                        "git@github.com:zanata/zanata.git"));
+                paragraphs, Matchers.hasItem("Source Download/Checkout: "
+                        + "git@github.com:zanata/zanata.git"));
     }
 
     @Test
@@ -97,24 +91,22 @@ public class CreateProjectTest {
         projectSettings.put("Project ID", "homepageproject");
         projectSettings.put("Name", "Project With Homepage Test");
         projectSettings.put("Description", "Don't show this");
-        projectSettings.put("Homepage Content", "Homepage content test");
 
         assertThat("Admin can log in",
                 new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
                 Matchers.equalTo("admin"));
 
-        ProjectPage projectPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings);
+        ProjectPage projectPage =
+                new ProjectWorkFlow().createNewProject(projectSettings);
 
-        assertThat("The project id is correct",
-                projectPage.getProjectId(),
+        assertThat("The project id is correct", projectPage.getProjectId(),
                 Matchers.equalTo(projectSettings.get("Project ID")));
 
         List<String> paragraphs = projectPage.getContentAreaParagraphs();
 
         assertThat("The project content area does not contain the description",
-                paragraphs, Matchers.not(
-                Matchers.hasItem(projectSettings.get("Description"))));
+                paragraphs, Matchers.not(Matchers.hasItem(projectSettings
+                        .get("Description"))));
 
         assertThat("The project content area contains the homepage content",
                 paragraphs,
@@ -127,42 +119,40 @@ public class CreateProjectTest {
         HashMap<String, String> projectSettings = projectDefaults();
         projectSettings.put("Project ID", "newinactiveproject");
         projectSettings.put("Name", "New Inactive Project Test");
-        projectSettings.put("Status", "READONLY");
+        projectSettings.put("Project Type", "File");
 
         assertThat("Admin can log in",
-            new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-            Matchers.equalTo("admin"));
+                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
+                Matchers.equalTo("admin"));
 
-        ProjectPage projectPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings);
+        ProjectPage projectPage =
+                new ProjectWorkFlow().createNewProject(projectSettings);
 
-        assertThat("The correct project is shown",
-                projectPage.getProjectName().trim(),
-                Matchers.equalTo(projectSettings.get("Name")));
+        assertThat("The correct project is shown", projectPage.getProjectName()
+                .trim(), Matchers.equalTo(projectSettings.get("Name")));
 
-        ProjectsPage projectsPage = new BasicWorkFlow()
-                .goToHome()
-                .goToProjects();
+        ProjectsPage projectsPage =
+                new BasicWorkFlow().goToHome().goToProjects();
 
-        projectsPage = projectsPage
-                .setActiveFilterEnabled(true)
-                .setReadOnlyFilterEnabled(false)
-                .setObsoleteFilterEnabled(false);
+        projectsPage =
+                projectsPage.setActiveFilterEnabled(true)
+                        .setReadOnlyFilterEnabled(false)
+                        .setObsoleteFilterEnabled(false);
 
-        projectsPage.waitForProjectVisibility(
-                projectSettings.get("Name"), false);
+        projectsPage.waitForProjectVisibility(projectSettings.get("Name"),
+                false);
 
         assertThat("The project is not displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
                 Matchers.not(Matchers.hasItem(projectSettings.get("Name"))));
 
-        projectsPage = projectsPage
-                .setActiveFilterEnabled(false)
-                .setReadOnlyFilterEnabled(true)
-                .setObsoleteFilterEnabled(false);
+        projectsPage =
+                projectsPage.setActiveFilterEnabled(false)
+                        .setReadOnlyFilterEnabled(true)
+                        .setObsoleteFilterEnabled(false);
 
-        projectsPage.waitForProjectVisibility(
-                projectSettings.get("Name"), true);
+        projectsPage
+                .waitForProjectVisibility(projectSettings.get("Name"), true);
 
         assertThat("The project is now displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
@@ -176,34 +166,32 @@ public class CreateProjectTest {
         projectSettings.put("Project ID", "newobsoleteproject");
         projectSettings.put("Name", "New Obsolete Project Test");
         projectSettings.put("Description", "Test adding an obsolete project");
-        projectSettings.put("Status", "OBSOLETE");
+        projectSettings.put("Project Type", "File");
 
         assertThat("Admin can log in",
                 new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
                 Matchers.equalTo("admin"));
 
-        ProjectPage projectPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings);
+        ProjectPage projectPage =
+                new ProjectWorkFlow().createNewProject(projectSettings);
 
-        assertThat("The correct project is shown",
-                projectPage.getProjectName().trim(),
-                Matchers.equalTo(projectSettings.get("Name")));
+        assertThat("The correct project is shown", projectPage.getProjectName()
+                .trim(), Matchers.equalTo(projectSettings.get("Name")));
 
-        ProjectsPage projectsPage = new BasicWorkFlow()
-                .goToHome()
-                .goToProjects();
+        ProjectsPage projectsPage =
+                new BasicWorkFlow().goToHome().goToProjects();
 
         assertThat("The project is not displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
                 Matchers.not(Matchers.hasItem(projectSettings.get("Name"))));
 
-        projectsPage = projectsPage
-                .setActiveFilterEnabled(false)
-                .setReadOnlyFilterEnabled(false)
-                .setObsoleteFilterEnabled(true);
+        projectsPage =
+                projectsPage.setActiveFilterEnabled(false)
+                        .setReadOnlyFilterEnabled(false)
+                        .setObsoleteFilterEnabled(true);
 
-        projectsPage.waitForProjectVisibility(
-                projectSettings.get("Name"), true);
+        projectsPage
+                .waitForProjectVisibility(projectSettings.get("Name"), true);
 
         assertThat("The project is now displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),

@@ -7,6 +7,19 @@ jQuery(document).ready(function() {
   registerJsTab();
 });
 
+// automatically clear global message after 10 seconds
+function startGlobalMessageTimer() {
+  setTimeout(function() {
+    jQuery('#messages').find('.message--global').removeClass("is-active");
+  }, 10000);
+}
+
+function refreshTooltip(wrapperId) {
+  jQuery('#' + wrapperId).find('[title]').each(function() {
+    zanata.tooltip.init(this);
+  });
+}
+
 function registerJsTab() {
   jQuery('.js-tab').each(function() {
     jQuery(this).click(function() {
@@ -19,7 +32,7 @@ function onTabClick(tab) {
   jQuery(tab).parent().siblings("li").children("a").removeClass('is-active');
   jQuery(tab).addClass("is-active");
   jQuery(tab).parents('.tabs--lined').children('.tabs__content')
-    .children('div').addClass('is-hidden');
+      .children('div').addClass('is-hidden');
   jQuery('#' + jQuery(tab).attr('id') + '_content').removeClass('is-hidden');
 }
 
@@ -30,8 +43,10 @@ function updateStateFromUrl() {
 function updateUrl(urlPrefix, suffixToUpdate) {
   var newUrl = window.location.pathname;
   newUrl = newUrl.substring(0, newUrl.indexOf(urlPrefix) + urlPrefix.length)
-             + suffixToUpdate;
-  var status = {path: newUrl}
+      + suffixToUpdate;
+  var status = {
+    path : newUrl
+  }
   window.history.pushState(status, document.title, newUrl)
   updateStateFromUrl();
 }
@@ -39,7 +54,7 @@ function updateUrl(urlPrefix, suffixToUpdate) {
 jQuery(function() {
   jQuery(window).on("popstate", function(event) {
     var state = event.originalEvent.state
-    if(state)
+    if (state)
       crossroads.parse(state.path)
   })
 })
@@ -47,17 +62,18 @@ jQuery(function() {
 function checkHashUrl(defaultTabId, defaultSettingsTabId) {
   var originalHashUrl = window.location.hash;
 
+  // if hash equals #settings-{xyz}, update hash to #settings
   if (window.location.hash) {
     if (window.location.hash.substring(0, 9) == '#settings') {
       window.location.hash = "#settings";
     }
 
-    if (elementExists(window.location.hash + "_tab")) {
-      defaultTabId = window.location.hash + "_tab";
+    if (elementExists(window.location.hash)) {
+      defaultTabId = window.location.hash;
     }
   }
   onTabClick(defaultTabId);
-  window.location.hash = defaultTabId.replace("_tab", "");
+  window.location.hash = defaultTabId;
 
   if (window.location.hash.substring(0, 9) == "#settings") {
     handleSettingsTab(defaultSettingsTabId, originalHashUrl);
@@ -67,7 +83,7 @@ function checkHashUrl(defaultTabId, defaultSettingsTabId) {
 function handleSettingsTab(defaultSettingsTabId, hashUrl) {
   var selectedSettingsTabId = defaultSettingsTabId;
   if (elementExists(hashUrl)) {
-    selectedSettingsTabId = hashUrl + "_tab";
+    selectedSettingsTabId = hashUrl;
   }
   jQuery(selectedSettingsTabId)[0].click();
 }
@@ -95,6 +111,15 @@ function removeActiveRows(listId) {
   jQuery('#' + listId).children('li').children("a").removeClass('is-active');
 }
 
+function focusCurrentActiveInput() {
+  jQuery(
+      jQuery('.js-tabs-nav').children('li.is-active').children('a')
+          .attr('href')).find('.js-tabs-nav-focus-input').each(function() {
+    jQuery(this).value = "";
+    jQuery(this).focus();
+  });
+}
+
 /* ----------------------------------------------------------- */
 /*----------------zanata-autocomplete component----------------*/
 /* ----------------------------------------------------------- */
@@ -115,9 +140,9 @@ jQuery(document).ready(function() {
 });
 
 function onResultKeyPressed(autocomplete, event, selectItemAction,
-                            selectItemFunction) {
+    selectItemFunction) {
   var currentSelected = jQuery(autocomplete).find('.autocomplete__results')
-    .children('.is-selected');
+      .children('.is-selected');
 
   if (isEnterKey(event)) {
     event.preventDefault();
@@ -128,9 +153,9 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     // key: down
     deselectRow(currentSelected);
     if (currentSelected.length == 0
-      || jQuery(currentSelected).next().length == 0) {
+        || jQuery(currentSelected).next().length == 0) {
       selectRow(jQuery(autocomplete).find('.autocomplete__results').children(
-        'li').first());
+          'li').first());
     } else {
       selectRow(jQuery(currentSelected).next("li"));
     }
@@ -139,7 +164,7 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     deselectRow(currentSelected);
     if (currentSelected.length == 0) {
       selectRow(jQuery(autocomplete).find('.autocomplete__results').children(
-        'li').last());
+          'li').last());
     } else {
       selectRow(jQuery(currentSelected).prev("li"));
     }
@@ -187,24 +212,24 @@ function onValueChange(inputField, event, renderResultFn) {
 }
 
 function registerMouseEvent(autocompleteId, selectItemAction,
-                            selectItemFunction) {
+    selectItemFunction) {
   jQuery("[id='" + autocompleteId + "']").find('.autocomplete__results')
-    .children('.autocomplete__result').each(function() {
-      jQuery(this).mouseover(function() {
-        selectRow(this);
-      });
+      .children('.autocomplete__result').each(function() {
+        jQuery(this).mouseover(function() {
+          selectRow(this);
+        });
 
-      jQuery(this).mouseout(function() {
-        deselectRow(this);
-      });
+        jQuery(this).mouseout(function() {
+          deselectRow(this);
+        });
 
-      jQuery(this).click(function() {
-        onSelectItem(this, selectItemAction, selectItemFunction);
+        jQuery(this).click(function() {
+          onSelectItem(this, selectItemAction, selectItemFunction);
+        });
       });
-    });
 
   var firstResult = jQuery("[id='" + autocompleteId + "']").find(
-    '.autocomplete__results').children('.autocomplete__result').first();
+      '.autocomplete__results').children('.autocomplete__result').first();
   if (firstResult.length != 0) {
     selectRow(firstResult);
   }
@@ -214,3 +239,13 @@ function filterList(input, filterFn) {
   filterFn(jQuery(input).val());
 }
 
+/* ----------------------------------------------------------- */
+/*----------------- zanata-checkbox component -----------------*/
+/* ----------------------------------------------------------- */
+
+function onCheckboxValueChanged(checkbox, jsFunction) {
+  var isChecked = !jQuery(checkbox).children(".js-form__checkbox__input").is(
+      ':checked');
+  var key = jQuery(checkbox).children("input").first().val();
+  jsFunction(key, isChecked);
+}

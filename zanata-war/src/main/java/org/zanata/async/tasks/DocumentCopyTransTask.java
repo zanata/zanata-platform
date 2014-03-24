@@ -52,9 +52,9 @@ public class DocumentCopyTransTask extends CopyTransTask {
         LocaleService localeService =
                 (LocaleService) Component.getInstance(LocaleServiceImpl.class);
         List<HLocale> localeList =
-                localeService.getSupportedLangugeByProjectIteration(document
-                        .getProjectIteration().getProject().getSlug(), document
-                        .getProjectIteration().getSlug());
+                localeService.getSupportedLanguageByProjectIteration(document
+                    .getProjectIteration().getProject().getSlug(), document
+                    .getProjectIteration().getSlug());
 
         return localeList.size();
     }

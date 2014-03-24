@@ -52,9 +52,9 @@ public class IterationCopyTransTask extends CopyTransTask {
         LocaleService localeService =
                 (LocaleService) Component.getInstance(LocaleServiceImpl.class);
         List<HLocale> localeList =
-                localeService.getSupportedLangugeByProjectIteration(
-                        projectIteration.getProject().getSlug(),
-                        projectIteration.getSlug());
+                localeService.getSupportedLanguageByProjectIteration(
+                    projectIteration.getProject().getSlug(),
+                    projectIteration.getSlug());
 
         return projectIteration.getDocuments().size() * localeList.size();
     }

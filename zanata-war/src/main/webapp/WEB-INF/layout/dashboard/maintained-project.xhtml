@@ -75,18 +75,15 @@
                     <li>
                       <ui:param name="documentCount"
                         value="#{dashboardAction.getDocumentCount(latestVersion.id)}"/>
-                      <s:link view="/iteration/source_files.xhtml"
-                        propagation="none"
+                      <a
+                        href="#{dashboardAction.getDocumentUrl(project.slug, latestVersion.slug)}"
                         title="#{documentCount} #{messages['jsf.SourceDocuments']}">
-                        <f:param name="project" value="#{project.slug}"/>
-                        <f:param name="iteration"
-                          value="#{latestVersion.slug}"/>
                         <i aria-hidden="true"
                           class="i i--document-alt-fill"></i>
-                      <span
-                        class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
+                            <span
+                              class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
                         #{documentCount}
-                      </s:link>
+                      </a>
                     </li>
                     <li class="l--float-right">
                       <s:fragment
@@ -103,7 +100,7 @@
                   </ul>
                 </s:fragment>
                 <s:fragment rendered="#{projectVersions.isEmpty()}">
-                <span class="txt--meta">#{messages['jsf.noVersions']} <a
+                <span class="txt--meta">#{messages['jsf.NoVersions']} <a
                   href="#{dashboardAction.getCreateVersionUrl(project.slug)}">#{messages['jsf.createAVersion']}</a></span>
                 </s:fragment>
               </div>
@@ -131,17 +128,15 @@
                         <li>
                           <ui:param name="documentCount"
                             value="#{dashboardAction.getDocumentCount(version.id)}"/>
-                          <s:link view="/iteration/source_files.xhtml"
-                            propagation="none"
+                          <a
+                            href="#{dashboardAction.getDocumentUrl(project.slug, version.slug)}"
                             title="#{documentCount} #{messages['jsf.SourceDocuments']}">
-                            <f:param name="project" value="#{project.slug}"/>
-                            <f:param name="iteration" value="#{version.slug}"/>
                             <i aria-hidden="true"
                               class="i i--document-alt-fill"></i>
-                          <span
-                            class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
+                            <span
+                              class="is-invisible">#{messages['jsf.SourceDocuments']}</span>
                             #{documentCount}
-                          </s:link>
+                          </a>
                         </li>
                         <li class="l--float-right">
                           <s:fragment

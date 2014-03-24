@@ -18,7 +18,7 @@ public interface ValidationMessages extends Messages {
     String notifyValidationError();
 
     // Newline validator
-    @DefaultMessage("Check for consistent leading and trailing newline (\\n)")
+    @DefaultMessage("Check for consistent leading and trailing newline (\\n).")
     String newLineValidatorDesc();
 
     @DefaultMessage("Leading newline (\\n) is missing")
@@ -34,7 +34,7 @@ public interface ValidationMessages extends Messages {
     String trailingNewlineAdded();
 
     // Tab validator
-    @DefaultMessage("Check whether source and target have the same number of tabs")
+    @DefaultMessage("Check whether source and target have the same number of tabs.")
             String tabValidatorDesc();
 
     @DefaultMessage("Target has fewer tabs (\\t) than source (source: {0}, target: {1})")
@@ -50,7 +50,7 @@ public interface ValidationMessages extends Messages {
             String linesRemoved(int expected, int actual);
 
     // Printf variables validator
-    @DefaultMessage("Check that printf style (%x) variables are consistent")
+    @DefaultMessage("Check that printf style (%x) variables are consistent.")
     String printfVariablesValidatorDesc();
 
     @DefaultMessage("Variable {0} position is out of range")
@@ -63,7 +63,7 @@ public interface ValidationMessages extends Messages {
     String varPositionDuplicated(Collection<String> vars);
 
     // Java variables validator
-    @DefaultMessage("Check that java style ('{x}') variables are consistent")
+    @DefaultMessage("Check that java style ('{x}') variables are consistent.")
     String javaVariablesValidatorDesc();
 
     @Description("Lists variables that appear a different number of times between source and target strings")
@@ -81,7 +81,7 @@ public interface ValidationMessages extends Messages {
             String quotedCharsAdded();
 
     // Shared variables validator messages
-    @DefaultMessage("Check that positional printf style (%n$x) variables are consistent")
+    @DefaultMessage("Check that positional printf style (%n$x) variables are consistent.")
             String printfXSIExtensionValidationDesc();
 
     @Description("Lists the variables that are in the original string but have not been included in the target")
@@ -106,7 +106,7 @@ public interface ValidationMessages extends Messages {
             String varsAddedQuoted(@PluralCount List<String> vars);
 
     // XHM/HTML tag validator
-    @DefaultMessage("Check that XML/HTML tags are consistent")
+    @DefaultMessage("Check that XML/HTML tags are consistent.")
     String xmlHtmlValidatorDesc();
 
     @Description("Lists the xml or html tags that are in the target but are not in the original string")
@@ -124,7 +124,7 @@ public interface ValidationMessages extends Messages {
     String tagsWrongOrder(@PluralCount List<String> tags);
 
     // XML Entity validator
-    @DefaultMessage("Check that XML entity are complete")
+    @DefaultMessage("Check that XML entity are complete.")
     String xmlEntityValidatorDesc();
 
     @DefaultMessage("Invalid XML entity [ {0} ]")

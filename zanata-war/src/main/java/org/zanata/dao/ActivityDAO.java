@@ -71,13 +71,25 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Activity> findLatestActivitiesForContext(long personId,
-            long contextId, int offset, int maxResults) {
+    public List<Activity> findLatestActivities(long personId) {
         Query query =
                 getSession().createQuery(
                         "FROM Activity a WHERE a.actor.id = :personId "
-                                + "AND a.contextId = :contextId "
                                 + "order by a.lastChanged DESC");
+        query.setParameter("personId", personId);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findLatestActivities");
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Activity> findLatestActivitiesForContext(long personId,
+        long contextId, int offset, int maxResults) {
+        Query query =
+            getSession().createQuery(
+                "FROM Activity a WHERE a.actor.id = :personId "
+                    + "AND a.contextId = :contextId "
+                    + "order by a.lastChanged DESC");
         query.setParameter("personId", personId);
         query.setParameter("contextId", contextId);
         query.setMaxResults(maxResults);

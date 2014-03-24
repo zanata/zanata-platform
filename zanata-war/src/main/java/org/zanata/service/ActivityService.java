@@ -48,6 +48,18 @@ public interface ActivityService {
             ActivityType activityType, Date actionTime);
 
     /**
+     * Get user activities in project
+     *
+     * @param personId
+     * @param projectId
+     * @param offset
+     * @param maxResults
+     * @return List<Activity>
+     */
+    List<Activity> findLatestProjectActivities(long personId, long projectId,
+            int offset, int maxResults);
+
+    /**
      * Get user activities with given contextId
      *
      * @param personId
@@ -57,7 +69,7 @@ public interface ActivityService {
      * @return List<Activity>
      */
     List<Activity> findLatestActivitiesForContext(long personId,
-            long contextId, int offset, int count);
+        long contextId, int offset, int count);
 
     /**
      * Get user activities regardless of which context

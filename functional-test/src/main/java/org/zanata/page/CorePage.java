@@ -21,10 +21,11 @@
 
 package org.zanata.page;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,12 +33,15 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 
 /**
- * Contains the physical elements, such as page title and home link, that
- * must exist on all Zanata pages.
+ * Contains the physical elements, such as page title and home link, that must
+ * exist on all Zanata pages.
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
@@ -79,12 +83,24 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> getErrors() {
-        return WebElementUtil.elementsToText(getDriver(),
-                By.xpath("//span[@class='errors']"));
+        List<String> oldError =
+                WebElementUtil.elementsToText(getDriver(),
+                        By.xpath("//span[@class='errors']"));
+
+        List<String> newError =
+                WebElementUtil.elementsToText(getDriver(),
+                        By.xpath("//div[@class='message--danger']"));
+
+        List<String> allErrors = Lists.newArrayList();
+        allErrors.addAll(oldError);
+        allErrors.addAll(newError);
+
+        return allErrors;
     }
 
     /**
      * Wait until expected number of errors presented on page or timeout.
+     *
      * @param expectedNumber
      *            expected number of errors on page
      * @return list of error message
@@ -100,7 +116,10 @@ public class CorePage extends AbstractPage {
     }
 
     public String getNotificationMessage() {
-        List<WebElement> messages = getDriver().findElements(By.id("messages"));
+        List<WebElement> messages =
+                getDriver().findElement(By.id("messages"))
+                        .findElement(By.className("message--global"))
+                        .findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
@@ -129,15 +148,14 @@ public class CorePage extends AbstractPage {
     }
 
     /**
-     * Shift focus to the page, in order to activate some elements that
-     * only exhibit behaviour on losing focus.
-     * Some pages with contained objects cause object behaviour to occur
-     * when interacted with, so in this case interact with the container
-     * instead.
+     * Shift focus to the page, in order to activate some elements that only
+     * exhibit behaviour on losing focus. Some pages with contained objects
+     * cause object behaviour to occur when interacted with, so in this case
+     * interact with the container instead.
      */
     public void defocus() {
-        List<WebElement> webElements = getDriver()
-                .findElements(By.id("container"));
+        List<WebElement> webElements =
+                getDriver().findElements(By.id("container"));
         webElements.addAll(getDriver().findElements(By.tagName("body")));
         if (webElements.size() > 0) {
             webElements.get(0).click();
@@ -150,8 +168,7 @@ public class CorePage extends AbstractPage {
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.className("message--danger"));
+                return getDriver().findElement(By.className("message--danger"));
             }
         });
         return getFieldErrors();
@@ -159,12 +176,11 @@ public class CorePage extends AbstractPage {
 
     public List<String> getFieldErrors() {
         List<String> errorList = new ArrayList<String>();
-        List<WebElement> errorObjects = getDriver()
-                .findElements(By.className("message--danger"));
+        List<WebElement> errorObjects =
+                getDriver().findElements(By.className("message--danger"));
         for (WebElement element : errorObjects) {
             errorList.add(element.getText().trim());
         }
         return errorList;
     }
-
 }

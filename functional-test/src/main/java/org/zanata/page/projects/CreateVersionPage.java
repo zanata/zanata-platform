@@ -24,10 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,6 +34,10 @@ import org.zanata.page.BasePage;
 import org.zanata.util.Constants;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 public class CreateVersionPage extends BasePage {
 
@@ -45,13 +45,13 @@ public class CreateVersionPage extends BasePage {
     private static int DESCRIPTION_COLUMN = 1;
     private static int OPTION_COLUMN = 2;
 
-    @FindBy(id = "iterationForm:projectTypeField:projectType")
+    @FindBy(id = "create-version-form:projectTypeField:projectType")
     private WebElement projectTypeSelection;
 
-    @FindBy(id = "iterationForm:statusField:status")
+    @FindBy(id = "create-version-form:statusField:status")
     private WebElement statusSelection;
 
-    @FindBy(id = "iterationForm:save")
+    @FindBy(id = "create-version-form:button-create")
     private WebElement saveButton;
 
     private static final Map<String, String> projectTypeOptions =
@@ -81,7 +81,7 @@ public class CreateVersionPage extends BasePage {
     }
 
     private WebElement getVersionIdField() {
-        return getDriver().findElement(By.id("iterationForm:slugField:slug"));
+        return getDriver().findElement(By.id("create-version-form:slugField:slug"));
     }
 
     public CreateVersionPage selectProjectType(String projectType) {
@@ -102,18 +102,18 @@ public class CreateVersionPage extends BasePage {
 
     public ProjectVersionPage clickUpdate() {
         clickAndCheckErrors(
-                getDriver().findElement(By.id("iterationForm:update")));
+                getDriver().findElement(By.id("create-version-form:update")));
         return new ProjectVersionPage(getDriver());
     }
 
     public CreateVersionPage showLocalesOverride() {
-        getDriver().findElement(By.id("iterationForm:overrideLocales"))
+        getDriver().findElement(By.id("create-version-form:overrideLocales"))
                 .click();
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                        .findElement(By.id("iterationForm:languagelist1"))
+                        .findElement(By.id("create-version-form:languagelist1"))
                         .isDisplayed();
             }
         });
@@ -122,7 +122,7 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage selectEnabledLanguage(String language) {
         getDriver()
-                .findElement(By.id("iterationForm:languagelist1"))
+                .findElement(By.id("create-version-form:languagelist1"))
                 .findElement(By.xpath(".//option[@value='"+language+"']"))
                 .click();
         return new CreateVersionPage(getDriver());
@@ -130,7 +130,7 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage selectDisabledLanguage(String language) {
         getDriver()
-                .findElement(By.id("iterationForm:languagelist2"))
+                .findElement(By.id("create-version-form:languagelist2"))
                 .findElement(By.xpath(".//option[@value='"+language+"']"))
                 .click();
         return new CreateVersionPage(getDriver());
@@ -149,7 +149,7 @@ public class CreateVersionPage extends BasePage {
     public List<String> getEnabledLanguages() {
         List<String> languages = new ArrayList<String>();
         for (WebElement element : getDriver()
-                .findElement(By.id("iterationForm:languagelist1"))
+                .findElement(By.id("create-version-form:languagelist1"))
                 .findElements(By.tagName("option"))) {
             languages.add(element.getText());
         }
@@ -159,7 +159,7 @@ public class CreateVersionPage extends BasePage {
     public List<String> getDisabledLanguages() {
         List<String> languages = new ArrayList<String>();
         for (WebElement element : getDriver()
-                .findElement(By.id("iterationForm:languagelist2"))
+                .findElement(By.id("create-version-form:languagelist2"))
                 .findElements(By.tagName("option"))) {
             languages.add(element.getText());
         }
@@ -182,11 +182,11 @@ public class CreateVersionPage extends BasePage {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                    .findElement(By.id("iterationForm:languagelist1"))
+                    .findElement(By.id("create-version-form:languagelist1"))
                     .findElements(By.tagName("option"))
                         .size() == enabled &&
                     getDriver()
-                        .findElement(By.id("iterationForm:languagelist2"))
+                        .findElement(By.id("create-version-form:languagelist2"))
                         .findElements(By.tagName("option"))
                             .size() == disabled;
             }
@@ -209,7 +209,7 @@ public class CreateVersionPage extends BasePage {
                     public TableRow apply(WebDriver driver) {
                         List<TableRow> tableRows = WebElementUtil
                                 .getTableRows(getDriver(), driver.findElement(By
-                                        .id("iterationForm:validationOptionsTable")));
+                                        .id("create-version-form:validationOptionsTable")));
                         Optional<TableRow> matchedRow = Iterables
                                 .tryFind(tableRows,
                                         new Predicate<TableRow>() {

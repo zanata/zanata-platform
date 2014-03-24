@@ -230,6 +230,16 @@ public class JavaVariablesValidation extends AbstractValidationAction {
         return descriptor;
     }
 
+    @Override
+    public String getSourceExample() {
+        return "value must be between {0} and {1}";
+    }
+
+    @Override
+    public String getTargetExample() {
+        return "value must be between {0} and <span class='js-example__target txt--warning'>{2}</span>";
+    }
+
     /**
      * Holds information about java variables, quoting etc. for a string.
      */

@@ -1,0 +1,408 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich">
+
+<div class="panels--2">
+<div class="panels__panel panel">
+<div class="panels__panel__header panel__header">
+  <div class="panel__header__actions">
+    <zanata:sortlist id="documents-document_sorting"
+      sortAction="#{versionHomeAction.sortDocumentList()}"
+      oncomplete="refreshTooltip('#{rich:clientId('documents-document_form')}')"
+      render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
+      sortingList="#{versionHomeAction.documentSortingList}"/>
+
+    <s:fragment
+      rendered="#{versionHomeAction.documentUploadAllowed or s:hasPermission(versionHomeAction.version, 'update')}">
+      <div
+        class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+        <a class="dropdown__toggle js-dropdown__toggle" href="#"
+          title="#{messages['jsf.tooltip.MoreActions']}"><i
+          class="i i--ellipsis"></i></a>
+        <ul class="dropdown__content js-dropdown__content" role="content"
+          aria-labelledby="dropdownContent">
+          <s:fragment rendered="#{versionHomeAction.documentUploadAllowed}">
+            <li>
+              <a href="#" class="i__item--right"
+                id="button--upload-new-document"
+                title="#{messages['jsf.SupportedUploadFormats']}"
+                onclick="openUploadSourceDocPanel()">
+                #{messages['jsf.iteration.files.UploadNewSourceDocument']}
+                <i class="i i--import i__item__icon"></i>
+              </a>
+            </li>
+          </s:fragment>
+
+          <s:fragment
+            rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+            <li>
+              <a href="#settings-documents"
+                onclick="updateHashAndGotoUrl(this)">
+                #{messages['jsf.ManageDocuments']} <i
+                class="i i--settings i__item__icon"></i>
+              </a>
+            </li>
+          </s:fragment>
+        </ul>
+      </div>
+    </s:fragment>
+  </div>
+  <h2 class="panel__heading">#{messages['jsf.Documents']}</h2>
+</div>
+
+<div class="panel__sub-header js-reveal">
+  <zanata:list-filter
+    render="documents-document_form, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
+    id="documentsTabDocumentSearch" iconClass="i--document"
+    placeholder="#{messages['jsf.document.search.placeholder']}"
+    actionBean="#{versionHomeAction.documentsTabDocumentFilter}"/>
+</div>
+
+<h:form id="documents-document_form" styleClass="l--push-bottom-0">
+  <s:div styleClass="l--pad-all-half"
+    rendered="#{empty versionHomeAction.documents}">
+    <p
+      class="txt--meta">#{messages['jsf.iteration.NoDocumentInVersion']}</p>
+    <s:fragment
+      rendered="#{versionHomeAction.documentUploadAllowed}">
+      <p>
+        <a href="#" class="button--primary"
+          title="#{messages['jsf.SupportedUploadFormats']}"
+          onclick="openUploadSourceDocPanel()">
+          #{messages['jsf.iteration.files.UploadNewSourceDocument']}
+        </a>
+      </p>
+    </s:fragment>
+  </s:div>
+
+  <s:div styleClass="l--pad-all-half"
+    rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}">
+    <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+  </s:div>
+
+  <s:fragment
+    rendered="#{not empty versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}">
+    <ul class="list--stats" id="documents-document_list">
+      <ui:repeat
+        value="#{versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}"
+        var="document">
+        <li class="progress-bar__expander list__item--actionable">
+          <div class="list__item__action">
+            <div
+              class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
+              <a class="dropdown__toggle js-dropdown__toggle txt--meta"
+                name="link-document-options"
+                title="#{messages['jsf.tooltip.DocumentOptions']}" href="#">
+                  <span class="is-invisible">
+                    #{messages['jsf.tooltip.DocumentOptions']}
+                  </span>
+              </a>
+              <ul class="dropdown__content js-dropdown__content">
+                <s:fragment
+                  rendered="#{versionHomeAction.isPoDocument(document.docId)}">
+                  <li>
+                    <h:outputLink styleClass="i__item--right"
+                      value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/pot">
+                      <f:param name="docId" value="#{document.docId}"/>
+                      <h:outputFormat
+                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        <f:param
+                          value="#{messages['jsf.iteration.files.dotpot']}"/>
+                      </h:outputFormat>
+                      <i class="i i--export i__item__icon"></i>
+                    </h:outputLink>
+                  </li>
+                </s:fragment>
+                <s:fragment
+                  rendered="#{!versionHomeAction.isPoDocument(document.docId)}">
+                  <li>
+                    <h:outputLink styleClass="i__item--right"
+                      value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/offlinepot"
+                      title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}">
+                      <f:param name="docId" value="#{document.docId}"/>
+                      <h:outputFormat
+                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        <f:param
+                          value="#{messages['jsf.iteration.files.dotofflinepot']}"/>
+                      </h:outputFormat>
+                      <i class="i i--export i__item__icon"></i>
+                    </h:outputLink>
+                  </li>
+                </s:fragment>
+
+                <s:fragment
+                  rendered="#{versionHomeAction.hasOriginal(document.path, document.name)}">
+                  <li>
+                    <h:outputLink styleClass="i__item--right"
+                      rendered="#{versionHomeAction.hasOriginal(document.path, document.name)}"
+                      value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/raw">
+                      <f:param name="docId" value="#{document.docId}"/>
+                      <h:outputFormat
+                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        <f:param
+                          value="#{versionHomeAction.extensionOf(document.path, document.name)}"/>
+                      </h:outputFormat>
+                      <i class="i i--export i__item__icon"></i>
+                    </h:outputLink>
+                  </li>
+                </s:fragment>
+
+                <s:fragment
+                  rendered="#{versionHomeAction.documentUploadAllowed}">
+                  <li>
+                    <a href="#" class="i__item--right"
+                      onclick="openUploadSourcePanel('#{document.docId}'); return false;">
+                      #{messages['jsf.iteration.files.UpdateDocument']}
+                      <i class="i i--import i__item__icon"></i>
+                    </a>
+                  </li>
+                </s:fragment>
+                <s:fragment
+                  rendered="#{versionHomeAction.documentRemovalAllowed}">
+                  <li>
+                    <a4j:commandLink styleClass="i__item--right txt--danger"
+                      render="documentsDocumentSearchRange, documentsDocumentSearchTotal"
+                      action="#{versionHomeAction.deleteDocument(document.id)}"
+                      oncomplete="refreshStatistics()"
+                      onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')">
+                      #{messages['jsf.iteration.files.DeleteDocument']}
+                      <i class="i i--remove i__item__icon"></i>
+                    </a4j:commandLink>
+                  </li>
+                </s:fragment>
+              </ul>
+            </div>
+          </div>
+          <a4j:commandLink limitRender="true"
+            action="#{versionHomeAction.setSelectedDocument(document)}"
+            status="documentsTab-languagesLoader"
+            render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
+            onclick="updateActiveRow(this);toggleColumn('documents_content')">
+            <div class="list__item__content">
+              <div class="list__item__info">
+                <h3 class="list__title">#{document.name}</h3>
+                <span class="list__item__meta">#{document.path}</span>
+              </div>
+              <s:div styleClass="list__item__stats"
+                rendered="#{versionHomeAction.pageRendered}">
+                <ui:param name="displayUnit"
+                  value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, document.id)}"/>
+                       <span class="stats--small #{displayUnit.cssClass}">
+                          <span
+                            class="stats__figure">#{displayUnit.figure}</span>
+                          <span class="stats__unit">#{displayUnit.unit}</span>
+                       </span>
+              </s:div>
+            </div>
+            <zanata:statistic
+              value="#{versionHomeAction.getDocumentStatistic(document.id)}"
+              rendered="#{versionHomeAction.pageRendered}"/>
+
+            <a4j:status name="statistic-loader">
+              <f:facet name="start">
+                <zanata:loader/>
+              </f:facet>
+            </a4j:status>
+
+          </a4j:commandLink>
+        </li>
+      </ui:repeat>
+    </ul>
+  </s:fragment>
+</h:form>
+
+<zanata:list-filter
+  placeholder="#{messages['jsf.document.search.placeholder']}"
+  iconClass="i--document"
+  render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info"
+  id="documentsTabDocumentSearchBottom" bottomPanel="true"
+  actionBean="#{versionHomeAction.documentsTabDocumentFilter}"/>
+
+</div>
+
+<div class="panels__panel panel">
+  <div class="panels__panel__header panel__header">
+    <div class="panel__header__actions">
+      <zanata:sortlist id="documents-language_sorting"
+        sortAction="#{versionHomeAction.sortLanguageList(versionHomeAction.selectedDocument.id)}"
+        render="documents-language_list, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
+        oncomplete="refreshTooltip('#{rich:clientId('documents-language_list')}')"
+        sortingList="#{versionHomeAction.languageSortingList}"/>
+
+      <s:fragment
+        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        <div
+          class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+          <a class="dropdown__toggle js-dropdown__toggle" href="#"
+            title="#{messages['jsf.tooltip.MoreActions']}"><i
+            class="i i--ellipsis"></i></a>
+          <ul class="dropdown__content js-dropdown__content" role="content"
+            aria-labelledby="dropdownContent">
+            <li>
+              <a
+                href="#settings-languages" onclick="updateHashAndGotoUrl(this)">
+                #{messages['jsf.ManageLanguage']} <i
+                class="i i--settings i__item__icon"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </s:fragment>
+    </div>
+    <h2 class="panel__heading">
+      <s:span id="document-label">
+        #{versionHomeAction.selectedDocument.name}
+      </s:span>
+      #{messages['jsf.Languages']}
+    </h2>
+  </div>
+
+  <div class="panel__sub-header js-reveal">
+    <zanata:list-filter
+      placeholder="#{messages['jsf.language.search.placeholder']}"
+      render="documents-language_list, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
+      id="documentsTabLanguageSearch" iconClass="i--language"
+      actionBean="#{versionHomeAction.documentsTabLanguageFilter}"/>
+  </div>
+
+  <h:form id="documents-language_list" styleClass="l--push-bottom-0">
+    <a4j:status name="documentsTab-languagesLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <s:fragment rendered="#{versionHomeAction.selectedDocument == null}">
+      <div class="l--pad-all-half">
+        <p class="txt--meta">#{messages['jsf.SelectADocumentFromList']}</p>
+      </div>
+    </s:fragment>
+
+    <s:fragment rendered="#{versionHomeAction.selectedDocument != null}">
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{empty versionHomeAction.supportedLocale}">
+        <p
+          class="txt--meta">#{messages['jsf.iteration.NoLanguagesInVersion']}</p>
+        <s:fragment
+          rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+          <p>
+            <a class="button--primary" href="#settings-languages"
+              onclick="updateHashAndGotoUrl(this)">
+              #{messages['jsf.ManageLanguage']} <i
+              class="i i--settings i__item__icon"></i>
+            </a>
+          </p>
+        </s:fragment>
+      </s:div>
+
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}">
+        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{not empty versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}">
+        <ul class="list--stats">
+          <ui:repeat
+            value="#{versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}"
+            var="hLocale">
+            <li class="progress-bar__expander">
+
+              <s:fragment rendered="#{hLocale.active}">
+                <a
+                  href="#{request.contextPath}/webtrans/Application.seam?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{versionHomeAction.selectedDocument.docId}">
+                  <div class="list__item">
+                    <div class="list__item__info">
+                      <h3 class="list__title">
+                        #{hLocale.retrieveDisplayName()}
+                        <s:fragment
+                          rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
+                          <i class="i--right i--translate txt--neutral"></i>
+                        </s:fragment>
+                        <s:span rendered="#{not hLocale.active}"
+                          styleClass="label"
+                          title="#{messages['jsf.Language.Disabled']}">
+                          #{messages['jsf.Disabled']}
+                        </s:span>
+                      </h3>
+                      <span class="list__item__meta">#{hLocale.localeId}</span>
+                    </div>
+                    <s:div styleClass="list__item__stats"
+                      rendered="#{versionHomeAction.pageRendered}">
+                      <ui:param name="displayUnit"
+                        value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument.id)}"/>
+                   <span class="stats--small #{displayUnit.cssClass}">
+                      <span class="stats__figure">
+                        #{displayUnit.figure}
+                      </span>
+                      <span class="stats__unit">
+                        #{displayUnit.unit}
+                      </span>
+                   </span>
+                    </s:div>
+                  </div>
+                  <zanata:statistic
+                    value="#{versionHomeAction.getStatisticForDocument(versionHomeAction.selectedDocument.id, hLocale.localeId)}"
+                    rendered="#{versionHomeAction.pageRendered}"/>
+                  <zanata:loader rendered="#{!versionHomeAction.pageRendered}"/>
+                </a>
+              </s:fragment>
+              <s:fragment rendered="#{not hLocale.active}">
+                <div class="list__item">
+                  <div class="list__item__info">
+                    <h3 class="list__title">
+                      #{hLocale.retrieveDisplayName()}
+                      <s:fragment
+                        rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
+                        <i class="i--right i--translate txt--neutral"></i>
+                      </s:fragment>
+                      <s:span rendered="#{not hLocale.active}"
+                        styleClass="label--danger"
+                        title="#{messages['jsf.Language.Disabled']}">
+                        #{messages['jsf.Disabled']}
+                      </s:span>
+                    </h3>
+                    <span class="list__item__meta">#{hLocale.localeId}</span>
+                  </div>
+                  <s:div styleClass="list__item__stats"
+                    rendered="#{versionHomeAction.pageRendered}">
+                    <ui:param name="displayUnit"
+                      value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument.id)}"/>
+                   <span class="stats--small #{displayUnit.cssClass}">
+                      <span class="stats__figure">
+                        #{displayUnit.figure}
+                      </span>
+                      <span class="stats__unit">
+                        #{displayUnit.unit}
+                      </span>
+                   </span>
+                  </s:div>
+                </div>
+                <zanata:statistic
+                  value="#{versionHomeAction.getStatisticForDocument(versionHomeAction.selectedDocument.id, hLocale.localeId)}"
+                  rendered="#{versionHomeAction.pageRendered}"/>
+                <zanata:loader rendered="#{!versionHomeAction.pageRendered}"/>
+              </s:fragment>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+
+    </s:fragment>
+  </h:form>
+
+  <zanata:list-filter
+    placeholder="#{messages['jsf.language.search.placeholder']}"
+    bottomPanel="true"
+    render="documents-language_list, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info"
+    id="documentsTabLanguageSearchBottom" iconClass="i--language"
+    actionBean="#{versionHomeAction.documentsTabLanguageFilter}"/>
+
+</div>
+</div>
+</ui:composition>

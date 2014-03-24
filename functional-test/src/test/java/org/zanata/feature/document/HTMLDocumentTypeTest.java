@@ -20,21 +20,21 @@
  */
 package org.zanata.feature.document;
 
+import java.io.File;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectSourceDocumentsPage;
+import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
@@ -67,28 +67,26 @@ public class HTMLDocumentTypeTest {
     @Test
     public void uploadHTMLFile() {
         File htmlfile =
-                testFileGenerator.generateTestFileWithContent(
-                        "testhtmlfile", ".html",
-                        "<html><title>Test content</title><br>This is <b>Bold</b> text</html>");
+                testFileGenerator
+                        .generateTestFileWithContent("testhtmlfile", ".html",
+                                "<html><title>Test content</title><br>This is <b>Bold</b> text</html>");
         String testFileName = htmlfile.getName();
-        String successfullyUploaded =
-                "Document file " + testFileName + " uploaded.";
-        ProjectSourceDocumentsPage projectSourceDocumentsPage =
+        String successfullyUploaded = "Document " + testFileName + " uploaded.";
+        ProjectVersionPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").goToVersion("master")
-                        .goToSourceDocuments().pressUploadFileButton()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoDocumentTab().pressUploadFileButton()
                         .enterFilePath(htmlfile.getAbsolutePath())
                         .submitUpload();
         assertThat("Document uploaded notification shows",
-                projectSourceDocumentsPage.getNotificationMessage(),
+                projectVersionPage.getNotificationMessage(),
                 Matchers.equalTo(successfullyUploaded));
         assertThat("Document shows in table",
-                projectSourceDocumentsPage.sourceDocumentsContains(htmlfile
-                        .getName()));
+                projectVersionPage.sourceDocumentsContains(htmlfile.getName()));
 
-        EditorPage editorPage = projectSourceDocumentsPage.goToProjects()
-                .goToProject("about fedora").goToVersion("master")
-                .translate("pl").clickDocumentLink("", testFileName);
+        EditorPage editorPage =
+                projectVersionPage.goToProjects().goToProject("about fedora")
+                        .gotoVersion("master").translate("pl", testFileName);
 
         assertThat("The first translation source is correct",
                 editorPage.getMessageSourceAtRowIndex(0),
@@ -96,7 +94,6 @@ public class HTMLDocumentTypeTest {
         assertThat("The second translation source is correct",
                 editorPage.getMessageSourceAtRowIndex(1),
                 Matchers.equalTo("This is <g2>Bold</g2> text"));
-
 
     }
 }

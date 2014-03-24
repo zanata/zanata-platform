@@ -20,22 +20,18 @@
  */
 package org.zanata.action;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.faces.model.SelectItem;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.jboss.seam.framework.EntityHome;
-import org.jboss.seam.security.Identity;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
+import org.zanata.util.ComparatorUtil;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.
@@ -64,40 +60,9 @@ public abstract class SlugHome<E> extends EntityHome<E> {
     @Override
     public abstract Object getId();
 
-    public List<SelectItem> getStatusList() {
-        if (statusList.isEmpty()) {
-            for (EntityStatus status : EntityStatus.values()) {
-                if (status == OBSOLETE) {
-                    if (Identity.instance().hasPermission(getInstance(),
-                            "mark-obsolete")) {
-                        SelectItem option =
-                                new SelectItem(status, status.name());
-                        statusList.add(option);
-                    }
-                } else {
-                    // no restriction on other status
-                    SelectItem option = new SelectItem(status, status.name());
-                    statusList.add(option);
-                }
-            }
-        }
-        return statusList;
-    }
-
     public List<ProjectType> getProjectTypeList() {
         List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
-        Collections.sort(projectTypes, new Comparator<ProjectType>() {
-            @Override
-            public int compare(ProjectType o1, ProjectType o2) {
-                if (o1 == null) {
-                    return -1;
-                }
-                if (o2 == null) {
-                    return 1;
-                }
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
+        Collections.sort(projectTypes, ComparatorUtil.PROJECT_TYPE_COMPARATOR);
         return projectTypes;
     }
 

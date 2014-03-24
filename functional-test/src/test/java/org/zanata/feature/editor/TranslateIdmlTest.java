@@ -20,13 +20,15 @@
  */
 package org.zanata.feature.editor;
 
+import java.io.File;
+import java.util.HashMap;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectSourceDocumentsPage;
 import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
@@ -36,15 +38,12 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import java.io.File;
-import java.util.HashMap;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 
 /**
- * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class TranslateIdmlTest {
@@ -61,10 +60,11 @@ public class TranslateIdmlTest {
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        assumeFalse("", new File(CleanDocumentStorageRule
-                .getDocumentStoragePath()
-                .concat(File.separator).concat("documents")
-                .concat(File.separator)).exists());
+        assumeFalse(
+                "",
+                new File(CleanDocumentStorageRule.getDocumentStoragePath()
+                        .concat(File.separator).concat("documents")
+                        .concat(File.separator)).exists());
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
@@ -72,21 +72,23 @@ public class TranslateIdmlTest {
     public void translateBasicIdmlFile() {
         File testfile = testFileGenerator.openTestFile("test-idml.idml");
 
-        HashMap<String, String> projectSettings = ProjectWorkFlow.projectDefaults();
+        HashMap<String, String> projectSettings =
+                ProjectWorkFlow.projectDefaults();
         projectSettings.put("Project ID", "idml-project");
         projectSettings.put("Name", "idml-project");
         projectSettings.put("Project Type", "File");
 
-        ProjectSourceDocumentsPage projectSourceDocumentsPage = new
-                ProjectWorkFlow()
-                .createNewProject(projectSettings).clickCreateVersionLink()
-                .inputVersionId("idml").saveVersion()
-                .goToSourceDocuments().pressUploadFileButton()
-                .enterFilePath(testfile.getAbsolutePath()).submitUpload();
+        ProjectVersionPage projectVersionPage =
+                new ProjectWorkFlow().createNewProject(projectSettings)
+                        .clickCreateVersionLink().inputVersionId("idml")
+                        .saveVersion().gotoDocumentTab()
+                        .pressUploadFileButton()
+                        .enterFilePath(testfile.getAbsolutePath())
+                        .submitUpload();
 
-        EditorPage editorPage = projectSourceDocumentsPage
-                .clickBreadcrumb("idml", ProjectVersionPage.class)
-                .translate("fr").clickDocumentLink("", testfile.getName());
+        EditorPage editorPage =
+                projectVersionPage.translate("fr",
+                        testfile.getName());
 
         editorPage.setSyntaxHighlighting(false);
 
@@ -100,12 +102,15 @@ public class TranslateIdmlTest {
                 editorPage.getMessageSourceAtRowIndex(2),
                 Matchers.equalTo("Line Three"));
 
-        editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                .approveTranslationAtRow(0);
-        editorPage = editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                .approveTranslationAtRow(1);
-        editorPage = editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                .approveTranslationAtRow(2);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(0, "Une Ligne")
+                        .approveTranslationAtRow(0);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
+                        .approveTranslationAtRow(1);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
+                        .approveTranslationAtRow(2);
 
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),

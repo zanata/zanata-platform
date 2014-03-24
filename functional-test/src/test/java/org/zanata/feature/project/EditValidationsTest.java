@@ -24,7 +24,6 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.Keys;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.page.projects.ProjectVersionPage;
@@ -37,7 +36,7 @@ import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Damian Jansen <a
- * href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class EditValidationsTest {
@@ -47,45 +46,43 @@ public class EditValidationsTest {
 
     @Test
     public void setValidationOptions() {
-        CreateVersionPage editVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion();
+        CreateVersionPage editVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsTranslationTab();
 
-        assertThat("The level is currently Warning", editVersionPage
-                .isValidationLevel("Tab characters (\\t)", "Warning"));
+        assertThat("The level is currently Warning",
+                editVersionPage.isValidationLevel("Tab characters (\\t)",
+                        "Warning"));
 
-        ProjectVersionPage projectVersionPage = editVersionPage
-                .setValidationLevel("Tab characters (\\t)", "Error")
-                .clickUpdate();
+        ProjectVersionPage projectVersionPage =
+                editVersionPage.setValidationLevel("Tab characters (\\t)",
+                        "Error").clickUpdate();
 
         assumeTrue("RHBZ1017458", projectVersionPage.hasNoCriticalErrors());
 
-        editVersionPage = projectVersionPage.clickEditVersion();
+        editVersionPage =
+                projectVersionPage.gotoSettingsTab()
+                        .gotoSettingsTranslationTab();
 
-        assertThat("The changes were saved", editVersionPage
-                .isValidationLevel("Tab characters (\\t)", "Error"));
+        assertThat("The changes were saved", editVersionPage.isValidationLevel(
+                "Tab characters (\\t)", "Error"));
     }
 
     @Test
     public void verifyValidationsAreErrors() {
-        ProjectVersionPage projectVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .setValidationLevel("Tab characters (\\t)", "Error")
-                .clickUpdate();
+        ProjectVersionPage projectVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsTranslationTab()
+                        .setValidationLevel("Tab characters (\\t)", "Error")
+                        .clickUpdate();
 
         assumeTrue("RHBZ1017458", projectVersionPage.hasNoCriticalErrors());
 
-        EditorPage editorPage = projectVersionPage
-                .translate("fr")
-                .clickDocumentLink("", "About_Fedora")
-                .setSyntaxHighlighting(false);
+        EditorPage editorPage =
+                projectVersionPage.translate("fr", "About_Fedora")
+                        .setSyntaxHighlighting(false);
 
         assertThat("The text in the translation target is blank",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
@@ -106,84 +103,88 @@ public class EditValidationsTest {
 
         editorPage = editorPage.openValidationBox();
 
-        assertThat("The correct error is shown for the validation",
+        assertThat(
+                "The correct error is shown for the validation",
                 editorPage.getValidationMessageCurrentTarget(),
-                Matchers.containsString("Target has more tabs (\\t) than source "+
-                        "(source: 0, target: 1)"));
+                Matchers.containsString("Target has more tabs (\\t) than source "
+                        + "(source: 0, target: 1)"));
     }
 
     @Test
     public void userCannotTurnOffEnforcedValidations() {
-        ProjectVersionPage projectVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .setValidationLevel("Tab characters (\\t)", "Error")
-                .clickUpdate();
+        ProjectVersionPage projectVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsTranslationTab()
+                        .setValidationLevel("Tab characters (\\t)", "Error")
+                        .clickUpdate();
 
         assumeTrue("RHBZ1017458", projectVersionPage.hasNoCriticalErrors());
 
-        EditorPage editorPage = projectVersionPage
-                .translate("fr")
-                .clickDocumentLink("", "About_Fedora")
-                .openValidationOptions();
+        EditorPage editorPage =
+                projectVersionPage.translate("fr", "About_Fedora")
+                        .openValidationOptions();
 
-        assertThat("The option is selected", editorPage
-                .validationOptionIsSelected(EditorPage.Validations.TABS));
-        assertThat("The option is unavailable", !editorPage
-                .validationOptionIsAvailable(EditorPage.Validations.TABS));
+        assertThat(
+                "The option is selected",
+                editorPage
+                        .validationOptionIsSelected(EditorPage.Validations.TABS));
+        assertThat(
+                "The option is unavailable",
+                !editorPage
+                        .validationOptionIsAvailable(EditorPage.Validations.TABS));
     }
 
     @Test
     public void printfAndPositionalPrintfAreExclusive() {
-        CreateVersionPage editVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .setValidationLevel("Positional printf (XSI extension)", "Error");
+        CreateVersionPage editVersionPage =
+                new LoginWorkFlow()
+                        .signIn("admin", "admin")
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsTranslationTab()
+                        .setValidationLevel(
+                                "Positional printf (XSI extension)", "Error");
 
-        assertThat("The Positional printf level is Error", editVersionPage
-                .isValidationLevel("Positional printf (XSI extension)", "Error"));
-        assertThat("The Printf level is Off", editVersionPage
-                .isValidationLevel("Printf variables", "Off"));
+        assertThat("The Positional printf level is Error",
+                editVersionPage.isValidationLevel(
+                        "Positional printf (XSI extension)", "Error"));
+        assertThat("The Printf level is Off",
+                editVersionPage.isValidationLevel("Printf variables", "Off"));
 
         editVersionPage.setValidationLevel("Printf variables", "Error");
 
-        assertThat("The Printf level is Error", editVersionPage
-                .isValidationLevel("Printf variables", "Error"));
-        assertThat("The Positional printf level is Off", editVersionPage
-                .isValidationLevel("Positional printf (XSI extension)", "Off"));
+        assertThat("The Printf level is Error",
+                editVersionPage.isValidationLevel("Printf variables", "Error"));
+        assertThat("The Positional printf level is Off",
+                editVersionPage.isValidationLevel(
+                        "Positional printf (XSI extension)", "Off"));
     }
 
     @Test
     public void userCanEnableADisabledValidation() {
-        ProjectVersionPage projectVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .setValidationLevel("Tab characters (\\t)", "Off")
-                .clickUpdate();
+        ProjectVersionPage projectVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsTranslationTab()
+                        .setValidationLevel("Tab characters (\\t)", "Off")
+                        .clickUpdate();
 
         assumeTrue("RHBZ1017458", projectVersionPage.hasNoCriticalErrors());
 
-        EditorPage editorPage = projectVersionPage
-                .translate("fr")
-                .clickDocumentLink("", "About_Fedora")
-                .setSyntaxHighlighting(false)
-                .pasteIntoRowAtIndex(0, "\t");
+        EditorPage editorPage =
+                projectVersionPage.translate("fr", "About_Fedora")
+                        .setSyntaxHighlighting(false)
+                        .pasteIntoRowAtIndex(0, "\t");
 
         assertThat("The validation errors are not shown",
                 !editorPage.isValidationMessageCurrentTargetVisible());
 
-        editorPage = editorPage
-                .openValidationOptions()
-                .clickValidationCheckbox(EditorPage.Validations.TABS);
+        editorPage =
+                editorPage.openValidationOptions().clickValidationCheckbox(
+                        EditorPage.Validations.TABS);
 
         editorPage.waitForValidationErrorsVisible();
 

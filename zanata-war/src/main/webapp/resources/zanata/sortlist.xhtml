@@ -18,6 +18,8 @@
     shortDescription="id of this component"/>
   <composite:attribute name="render" required="true" type="java.lang.String"
     shortDescription="element to re-render after sorting"/>
+  <composite:attribute name="oncomplete"
+    shortDescription="The client-side script method to be called after the DOM is updated"/>
 </composite:interface>
 
 <composite:implementation>
@@ -33,7 +35,7 @@
         <ui:repeat value="#{cc.attrs.sortingList.sortOptions}" var="sortOption">
           <li>
             <a4j:commandLink tabindex="-1"
-              action="#{cc.attrs.sortAction}"
+              action="#{cc.attrs.sortAction}" oncomplete="#{cc.attrs.oncomplete}"
               styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''} txt--lowercase"
               render="#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
               #{sortOption.display}

@@ -1,136 +1,162 @@
-<s:div xmlns:s="http://jboss.org/schema/seam/taglib"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html">
 
   <script type="text/javascript">
-    function actionSelected(radio, cellId) {
-      var cell = jQuery('#' + cellId);
-      var radioButton = jQuery(radio);
-
-      if (radioButton.val() == 'REJECT') {
-        jQuery(cell).attr('class', 'reject_action');
-        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.reject']}");
-      }
-      else if (radioButton.val() == 'DOWNGRADE_TO_FUZZY') {
-        jQuery(cell).attr('class', 'downgrade_action');
-        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.downgradeToFuzzy']}");
-      }
-      else if (radioButton.val() == 'IGNORE') {
-        jQuery(cell).attr('class', 'ignore_action');
-        jQuery(cell).html("#{messages['jsf.iteration.CopyTrans.Action.short.ignore']}");
-      }
-      else {
-        jQuery(cell).attr('class', '');
-        jQuery(cell).html('');
-      }
+    function onValueChanged(checkbox) {
+      bindCopyTransValue(jQuery(checkbox).attr("name"),
+        jQuery(checkbox).attr("value"))
     }
-
-    // initialize selected option colours
-    jQuery(function () {
-      actionSelected(jQuery("input[name='#{rich:clientId('projectMismatchAction')}']:checked"),
-        'projectMismatchCell');
-      actionSelected(jQuery("input[name='#{rich:clientId('contextMismatchAction')}']:checked"),
-        'contextMismatchCell');
-      actionSelected(jQuery("input[name='#{rich:clientId('documentIdMismatchAction')}']:checked"),
-        'documentIdMismatchCell');
-    });
   </script>
 
-  <!-- Simply needed to load jQuery -->
-  <rich:jQuery query="jquery"/>
+  <ol class="list--slat">
+    <li>
+      <div class="g--tighter">
+        <div class="g__item w--3-8 l--push-bottom-quarter">
+          <p class="list__title">
+            #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</p>
 
-  <a4j:outputPanel id="copyTransOptionsPanel">
-    <rich:panel>
-
-      <table border="0" class="copy_trans_options_table" width="100%"
-        cellspacing="3px">
-        <tr>
-          <th>#{messages['jsf.iteration.CopyTrans.Condition']}</th>
-          <th colspan="2">#{messages['jsf.iteration.CopyTrans.Action']}</th>
-        </tr>
-        <tr>
-          <td
-            width="25%">1. #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch']}</td>
-          <td class="reject_action" width="15%">
+          <p class="txt--meta">
+            #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch.details']}</p>
+        </div>
+        <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
+          <button class="button button--small button--danger" disabled="">
             #{messages['jsf.iteration.CopyTrans.Action.reject']}
-          </td>
-          <td width="60%">
-          </td>
-        </tr>
-        <tr>
-          <td>2. #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}</td>
-          <td id="contextMismatchCell">
-          </td>
-          <td>
-            <h:selectOneRadio id="contextMismatchAction"
-              value="#{copyTransOptionsModel.contextMismatchAction}"
-              onchange="actionSelected(this, 'contextMismatchCell');">
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
-                itemValue="REJECT"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
-                itemValue="DOWNGRADE_TO_FUZZY"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
-                itemValue="IGNORE"/>
-            </h:selectOneRadio>
-          </td>
-        </tr>
-        <tr>
-          <td>3. #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}</td>
-          <td id="projectMismatchCell">
-          </td>
-          <td>
-            <h:selectOneRadio id="projectMismatchAction"
-              value="#{copyTransOptionsModel.projectMismatchAction}"
-              onchange="actionSelected(this, 'projectMismatchCell');">
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
-                itemValue="REJECT"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
-                itemValue="DOWNGRADE_TO_FUZZY"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
-                itemValue="IGNORE"/>
-            </h:selectOneRadio>
-          </td>
-        </tr>
-        <tr>
-          <td>4. #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}</td>
-          <td id="documentIdMismatchCell">
-          </td>
-          <td>
-            <h:selectOneRadio id="documentIdMismatchAction"
-              value="#{copyTransOptionsModel.docIdMismatchAction}"
-              onchange="actionSelected(this, 'documentIdMismatchCell');">
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.reject']}"
-                itemValue="REJECT"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.downgradeToFuzzy']}"
-                itemValue="DOWNGRADE_TO_FUZZY"/>
-              <f:selectItem
-                itemLabel="#{messages['jsf.iteration.CopyTrans.Action.ignore']}"
-                itemValue="IGNORE"/>
-            </h:selectOneRadio>
-          </td>
-        </tr>
-        <tr>
-          <td>5. #{messages['jsf.iteration.CopyTrans.Condition.final']}</td>
-          <td class="translated_action">
-            #{messages['jsf.Translated']}
-          </td>
-          <td>
-          </td>
-        </tr>
-      </table>
+          </button>
+        </div>
+      </div>
+    </li>
 
-    </rich:panel>
-  </a4j:outputPanel>
+    <li>
+      <div class="g--tighter">
+        <div class="g__item w--3-8 l--push-bottom-quarter">
+          <p class="list__title">
+            #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch']}
+          </p>
 
-</s:div>
+          <p class="txt--meta">
+            #{messages['jsf.iteration.CopyTrans.Condition.onContextMismatch.details']}
+          </p>
+        </div>
+        <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
+          <div class="button--group">
+            <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
+              var="ruleAction">
+              <s:fragment
+                rendered="#{copyTransOptionsModel.contextMismatchAction ne ruleAction.action}">
+                <input id="contextMismatch--#{ruleAction.action}"
+                  name="contextMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"/>
+              </s:fragment>
+              <s:fragment
+                rendered="#{copyTransOptionsModel.contextMismatchAction eq ruleAction.action}">
+                <input id="contextMismatch--#{ruleAction.action}"
+                  name="contextMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"
+                  checked="true"/>
+              </s:fragment>
+              <label for="contextMismatch--#{ruleAction.action}"
+                class="button button--small #{ruleAction.css}">
+                #{ruleAction.displayText}
+              </label>
+            </ui:repeat>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="g--tighter">
+        <div class="g__item w--3-8 l--push-bottom-quarter">
+          <p class="list__title">
+            #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch']}
+          </p>
+
+          <p class="txt--meta">
+            #{messages['jsf.iteration.CopyTrans.Condition.onProjectMismatch.details']}
+          </p>
+        </div>
+        <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
+          <div class="button--group">
+            <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
+              var="ruleAction">
+              <s:fragment
+                rendered="#{copyTransOptionsModel.projectMismatchAction ne ruleAction.action}">
+                <input id="projectMismatch--#{ruleAction.action}"
+                  name="projectMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"/>
+              </s:fragment>
+              <s:fragment
+                rendered="#{copyTransOptionsModel.projectMismatchAction eq ruleAction.action}">
+                <input id="projectMismatch--#{ruleAction.action}"
+                  name="projectMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"
+                  checked="true"/>
+              </s:fragment>
+              <label for="projectMismatch--#{ruleAction.action}"
+                class="button button--small #{ruleAction.css}">
+                #{ruleAction.displayText}
+              </label>
+            </ui:repeat>
+          </div>
+        </div>
+      </div>
+    </li>
+
+
+    <li>
+      <div class="g--tighter">
+        <div class="g__item w--3-8 l--push-bottom-quarter">
+          <p class="list__title">
+            #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch']}
+          </p>
+
+          <p class="txt--meta">
+            #{messages['jsf.iteration.CopyTrans.Condition.onDocIdMismatch.details']}
+          </p>
+        </div>
+        <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
+          <div class="button--group">
+            <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
+              var="ruleAction">
+              <s:fragment
+                rendered="#{copyTransOptionsModel.docIdMismatchAction ne ruleAction.action}">
+                <input id="docIdMismatch--#{ruleAction.action}"
+                  name="docIdMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"/>
+              </s:fragment>
+              <s:fragment
+                rendered="#{copyTransOptionsModel.docIdMismatchAction eq ruleAction.action}">
+                <input id="docIdMismatch--#{ruleAction.action}"
+                  name="docIdMismatch"
+                  onclick="onValueChanged(this)"
+                  value="#{ruleAction.action}" type="radio"
+                  class="form__item__input"
+                  checked="true"/>
+              </s:fragment>
+              <label for="docIdMismatch--#{ruleAction.action}"
+                class="button button--small #{ruleAction.css}">
+                #{ruleAction.displayText}
+              </label>
+            </ui:repeat>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <p class="list__title">
+        <h:outputText escape="false" value="#{messages['jsf.CopyTrans.Action.message']}"/></p>
+      <p class="txt--meta"><h:outputText escape="false" value="#{messages['jsf.CopyTrans.Action.message2']}"/></p>
+    </li>
+  </ol>
+</ui:composition>

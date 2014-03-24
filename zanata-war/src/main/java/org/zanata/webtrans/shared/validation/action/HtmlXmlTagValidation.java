@@ -164,4 +164,14 @@ public class HtmlXmlTagValidation extends AbstractValidationAction {
         }
         return unmatched;
     }
+
+    @Override
+    public String getSourceExample() {
+        return "&lt;p&gt;&lt;strong&gt;Hello world&lt;/strong&gt;&lt;/p&gt;";
+    }
+
+    @Override
+    public String getTargetExample() {
+        return "&lt;p&gt;&lt;strong&gt;Hello world<span class='js-example__target txt--warning'>&lt;/stong&gt;</span>&lt;/p&gt;";
+    }
 }

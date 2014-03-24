@@ -1,0 +1,447 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+<script type="text/javascript">
+  function onValidationOptionChange(validationId) {
+    var value = validationId.split('-');
+    bindValidationValue(value[0], value[1]);
+  }
+
+  function onRestrictedByRoleValueChanged(key, checked) {
+    bindRestrictedByRoleValue(key, checked);
+  }
+
+  function getUserRoleId() {
+    return "[id='#{rich:clientId('user-roles')}']";
+  }
+</script>
+
+<a4j:jsFunction name="bindValidationValue"
+  action="#{projectHome.updateValidationOption(name, state)}"
+  render="validation-list">
+  <a4j:param name="val1" assignTo="#{name}"/>
+  <a4j:param name="val2" assignTo="#{state}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="bindCopyTransValue"
+  action="#{projectHome.updateCopyTrans(action, value)}">
+  <a4j:param name="val1" assignTo="#{action}"/>
+  <a4j:param name="val2" assignTo="#{value}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="bindRestrictedByRoleValue" render="user-roles"
+  oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
+  action="#{projectHome.setRestrictedByRole(key, checked)}">
+  <a4j:param name="val1" assignTo="#{key}"/>
+  <a4j:param name="val2" assignTo="#{checked}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="bindRestrictRoleValue"
+  action="#{projectHome.updateRoles(roleName, isRestricted)}">
+  <a4j:param name="val1" assignTo="#{roleName}"/>
+  <a4j:param name="val2" assignTo="#{isRestricted}"/>
+</a4j:jsFunction>
+
+<h1>#{messages['jsf.project.ProjectSettings']}</h1>
+
+<div class="tabs--vertical js-tabs">
+<ul class="tabs__nav js-tabs-nav">
+  <li class="is-active">
+    <a href="#settings-general" id="settings-general_tab">
+      <i class="i i--settings"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-languages" id="settings-languages_tab">
+      <i class="i i--language"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-translation" id="settings-translation_tab">
+      <i class="i i--translate"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-permissions" id="settings-permissions_tab">
+      <i class="i i--users"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Permissions']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-about" id="settings-about_tab">
+      <i class="i i--info"></i>
+          <span
+            class="is-hidden--m-l-down">#{messages['jsf.project.About']}</span>
+    </a>
+  </li>
+</ul>
+<ul class="tabs__content js-tabs-content">
+<li class="is-active" id="settings-general">
+  <h2 class="l--push-all-0 gamma d--bottom">
+    #{messages['jsf.General']}
+  </h2>
+  <h:form id="settings-general-form" styleClass="l--constrain-large">
+    <ui:include src="edit_form.xhtml"/>
+
+    <h3 class="heading--secondary">#{messages['jsf.project.SourceCode']}</h3>
+
+    <div class="g--tight l--push-top-half">
+      <div class="g__item w--1-2">
+        <div class="form__item">
+          <h:outputLabel for="homePage">#{messages['jsf.project.HomePage']}
+            <span class="txt--meta">#{messages['jsf.field.optional']}</span>
+          </h:outputLabel>
+          <s:decorate id="homePageField" template="../field.xhtml">
+            <h:inputText id="homePage" required="false"
+              value="#{projectHome.instance.sourceViewURL}">
+              <rich:placeholder value="http://" styleClass="txt--neutral"/>
+              <a4j:ajax event="blur" render="homePageField" execute="@this"/>
+            </h:inputText>
+          </s:decorate>
+
+          <p class="txt--meta">
+            <h:outputText escape="false"
+              value="#{messages['jsf.Project.sourceurl.message']}"/>
+          </p>
+        </div>
+      </div>
+      <div class="g__item w--1-2">
+        <div class="form__item">
+          <h:outputLabel for="repo">#{messages['jsf.field.repository']}
+            <span class="txt--meta">#{messages['jsf.field.optional']}</span>
+          </h:outputLabel>
+          <s:decorate id="repoField" template="../field.xhtml">
+            <h:inputText id="repo" required="false"
+              value="#{projectHome.instance.sourceCheckoutURL}">
+              <a4j:ajax event="blur" render="repoField" execute="@this"/>
+            </h:inputText>
+          </s:decorate>
+
+          <p class="txt--meta">
+            <h:outputText
+              escape="false" value="#{messages['jsf.Project.repo.message']}"/>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="l--push-top-1">
+      <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
+        action="#{projectHome.update}"
+        rendered="#{projectHome.managed}"
+        render="project-info"
+        styleClass="l--push-right-half button--primary"/>
+    </div>
+    <hr/>
+    <s:div styleClass="g--tight" id="status">
+      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{projectHome.instance.status eq 'ACTIVE'}">
+        <a4j:commandLink styleClass="button--warning l--push-bottom-half"
+          action="#{projectHome.updateStatus('R')}" render="status">
+          <i
+            class="i--left i--lock"></i> #{messages['jsf.project.readonly']}
+        </a4j:commandLink>
+
+        <p class="txt--meta">#{messages['jsf.project.readonly.Message']}</p>
+      </s:div>
+      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{projectHome.instance.status ne 'ACTIVE'}">
+        <s:fragment rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
+          <button class="button--success l--push-bottom-half"
+            disabled="true">
+            <i class="i--left i--lock"></i>
+            #{messages['jsf.project.writable']}
+          </button>
+        </s:fragment>
+        <a4j:commandLink styleClass="button--success l--push-bottom-half"
+          rendered="#{projectHome.instance.status == 'READONLY'}"
+          action="#{projectHome.updateStatus('A')}" render="status">
+          <i
+            class="i--left i--lock"></i> #{messages['jsf.project.writable']}
+        </a4j:commandLink>
+
+        <p class="txt--meta">#{messages['jsf.project.writable.Message']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{s:hasPermission(projectHome.instance, 'mark-obsolete')}">
+        <s:div styleClass="g__item w--1-2"
+          rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
+          <a4j:commandLink styleClass="button--success l--push-bottom-half"
+            id="button-unarchive-project"
+            action="#{projectHome.updateStatus('A')}" render="status">
+            <i class="i--left i--archive"></i>
+            #{messages['jsf.UnArchiveThisProject']}
+          </a4j:commandLink>
+
+          <p class="txt--meta">#{messages['jsf.UnarchiveProject.Message']}</p>
+        </s:div>
+        <s:div styleClass="g__item w--1-2"
+          rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
+          <a4j:commandLink styleClass="button--danger l--push-bottom-half"
+            id="button-archive-project"
+            action="#{projectHome.updateStatus('O')}" render="status">
+            <i class="i--left i--archive"></i>
+            #{messages['jsf.ArchiveThisProject']}
+          </a4j:commandLink>
+
+          <p class="txt--meta">#{messages['jsf.ArchiveProject.Message']}</p>
+        </s:div>
+      </s:fragment>
+    </s:div>
+  </h:form>
+</li>
+<li id="settings-languages">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.Languages']}
+  </h2>
+  <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
+    <ul class="list--slat list--highlight l--push-top-half">
+      <ui:repeat value="#{projectHome.getInstanceActiveLocales()}"
+        var="locale">
+        <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span
+          class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
+          <a4j:commandLink oncomplete="refreshStatistics()" execute="@this"
+            action="#{projectHome.removeLanguage(locale.localeId)}"
+            styleClass="l--float-right txt--danger reveal__target"
+            render="settings-languages-form">
+            <i class="i--large i--remove"></i>
+          </a4j:commandLink>
+        </li>
+      </ui:repeat>
+      <li class="list--highlight__item--none">
+        <label
+          for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
+          #{messages['jsf.AddALanguage']}
+        </label>
+
+        <zanata:autocomplete
+          actionBean="#{projectHome.localeAutocomplete}"
+          maxlength="80" searchWhenFocus="true"
+          id="languageAutocomplete"
+          fetchValue="#{result.localeId}" render="settings-languages-form"
+          oncomplete="refreshStatistics();focusCurrentActiveInput()"
+          placeholder="#{messages['jsf.language.search.placeholder']}">
+
+          #{result.retrieveDisplayName()}<span
+          class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
+        </zanata:autocomplete>
+
+      </li>
+    </ul>
+  </h:form>
+</li>
+<li id="settings-translation">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.Translation']}
+  </h2>
+
+  <h:form id="settings-translation-form" styleClass="l--push-bottom-0">
+    <h3 class="heading--secondary">#{messages['jsf.Validation']}</h3>
+
+    <p>#{messages['jsf.Validation.messages']}</p>
+
+    <s:div id="validation-list">
+      <ul class="list--slat">
+        <ui:repeat
+          value="#{projectHome.validationList}" var="validationAction">
+          <li class="js-example js-reveal">
+            <div class="g--tight">
+              <div class="g__item w--7-12">
+                <label class="l--push-bottom-0">
+                  #{validationAction.id.displayName}
+                </label>
+
+                <p class="txt--meta l--push-bottom-quarter">
+                  #{validationAction.description}
+                  <a href="#" class="button--link js-reveal__toggle"
+                    data-target="##{validationAction.id.name()}-example"
+                    data-toggle-title="#{messages['jsf.tooltip.HideExample']}"
+                    title="#{messages['jsf.tooltip.ShowExample']}">
+                  <span class="js-reveal__toggle__text"
+                    data-toggle-value="Less">
+                    #{messages['jsf.tooltip.More']}
+                  </span>…
+                  </a>
+                </p>
+              </div>
+              <div class="g__item w--5-12">
+                <div class="button--group txt--align-right">
+                  <ui:repeat value="#{projectHome.validationStates}"
+                    var="state">
+                    <s:fragment rendered="#{validationAction.state == state}">
+                      <input name="#{validationAction.id.name()}"
+                        id="#{validationAction.id.name()}-#{state}"
+                        checked="true"
+                        onchange="onValidationOptionChange(this.id)"
+                        type="radio"
+                        class="form__item__input js-example__setter"
+                        data-example=""/>
+                    </s:fragment>
+                    <s:fragment rendered="#{validationAction.state != state}">
+                      <input name="#{validationAction.id.name()}"
+                        id="#{validationAction.id.name()}-#{state}"
+                        onchange="onValidationOptionChange(this.id)"
+                        type="radio"
+                        class="form__item__input js-example__setter"
+                        data-example=""/>
+                    </s:fragment>
+                    <label for="#{validationAction.id.name()}-#{state}"
+                      class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
+                  </ui:repeat>
+                </div>
+              </div>
+            </div>
+            <div class="g--tight l--push-bottom-half is-hidden"
+              id="#{validationAction.id.name()}-example">
+              <div class="g__item w--1-2 l--push-top-quarter">
+                <h4 class="zeta heading--secondary txt--uppercase">
+                  #{messages['jsf.validation.source']}
+                </h4>
+              <pre class="l--push-all-0"><code class="txt--mini">
+                <h:outputText value="#{validationAction.sourceExample}"
+                  escape="false"/>
+              </code></pre>
+              </div>
+              <div class="g__item w--1-2 l--push-top-quarter">
+                <h4 class="zeta heading--secondary txt--uppercase">
+                  #{messages['jsf.validation.target']}
+                </h4>
+              <pre class="l--push-all-0"><code class="txt--mini">
+                <h:outputText value="#{validationAction.targetExample}"
+                  escape="false"/>
+              </code></pre>
+              </div>
+            </div>
+          </li>
+        </ui:repeat>
+      </ul>
+    </s:div>
+    <hr/>
+    <h3 class="heading--secondary">#{messages['jsf.CopyTrans']}</h3>
+
+    <p>#{messages['jsf.Copytrans.message']}
+      <a href="http://zanata.org/help/reuse/copytrans-explained/"
+        target="_blank"
+        title="#{messages['jsf.project.CopyTransOpts.tooltip']}">
+        <i class="i i--help"></i>
+      </a>
+    </p>
+
+    <p class="message--highlight">#{messages['jsf.Copytrans.message2']}</p>
+    <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
+  </h:form>
+</li>
+
+<li id="settings-permissions">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.Permissions']}
+  </h2>
+
+  <h3 class="heading--secondary">#{messages['jsf.Maintainers']}</h3>
+  <h:form id="settings-permissions-form" styleClass="l--push-bottom-0">
+    <ul class="list--slat list--highlight l--push-top-half">
+      <ui:repeat value="#{projectHome.getInstanceMaintainers()}"
+        var="maintainer">
+        <li class="reveal--list-item">
+            <span class="w--r-1 bx--round l--push-right-quarter">
+              <img alt="#{maintainer.account.username}"
+                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"/>
+            </span> #{maintainer.name}
+          <span class="txt--meta">@#{maintainer.account.username}</span>
+          <a4j:commandLink
+            action="#{projectHome.removeMaintainer(maintainer)}"
+            oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
+            styleClass="l--float-right txt--danger reveal__target"
+            render="settings-permissions-form,maintainers-size,maintainers_content">
+            <i class="i--large i--remove"></i>
+          </a4j:commandLink>
+        </li>
+      </ui:repeat>
+
+      <li class="list--highlight__item--none">
+        <label
+          for="#{rich:clientId('maintainerAutocomplete')}-autocomplete__input">
+          #{messages['jsf.AddAMaintainer']}
+        </label>
+
+        <zanata:autocomplete
+          actionBean="#{projectHome.maintainerAutocomplete}"
+          maxlength="80" minlength="3" id="maintainerAutocomplete"
+          fetchValue="#{result.account.username}"
+          render="settings-permissions-form,maintainers-size, maintainers_content"
+          oncomplete="zanata.form.appendCheckboxes(getUserRoleId());focusCurrentActiveInput()"
+          placeholder="#{messages['jsf.SearchUsers']}">
+
+            <span class="w--r-1 bx--round l--push-right-quarter">
+              <img
+                src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}"
+                alt="#{result.name}"/>
+            </span>#{result.name}
+            <span
+              class="txt--meta">@#{result.account.username}</span>
+        </zanata:autocomplete>
+      </li>
+    </ul>
+    <hr/>
+
+    <s:div styleClass="l--push-bottom-half" id="user-roles">
+      <zanata:checkbox label="#{messages['jsf.RestrictRoleAccessMessage']}"
+        onValueChanged="onRestrictedByRoleValueChanged"
+        labelStyle="js-reveal__toggle l--push-bottom-0"
+        styleClass="js-form__restricted-by-role"
+        checked="#{projectHome.instance.isRestrictedByRoles()}"
+        value="restrict-access"/>
+      <s:div styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
+        rendered="#{projectHome.instance.restrictedByRoles}">
+        <ul class="g--tighter">
+          <ui:repeat value="#{projectHome.availableRoles}" var="availableRole">
+            <li class="g__item w--1-3 w--1-2-s">
+              <zanata:checkbox label="#{availableRole.name}"
+                onValueChanged="bindRestrictRoleValue"
+                checked="#{projectHome.isRoleRestrictionEnabled(availableRole.name)}"
+                value="#{availableRole.name}"/>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:div>
+    </s:div>
+  </h:form>
+</li>
+<li id="settings-about">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.project.About']}
+  </h2>
+
+  <p class="message--highlight">
+    #{messages['jsf.project.about.message']}
+  </p>
+  <h:form id="settings-about-form" styleClass="l--push-bottom-0">
+
+    <h:inputTextarea id="homeContent" required="false" rows="10"
+      value="#{projectHome.instance.homeContent}">
+    </h:inputTextarea>
+
+    <p class="txt--meta">
+      <h:outputText value="#{messages['jsf.project.about.markup']}"
+        escape="false"/>
+    </p>
+
+    <a4j:commandLink value="#{messages['jsf.project.saveNotes']}"
+      action="#{projectHome.update}" rendered="#{projectHome.managed}"
+      render="project-about"
+      styleClass="l--push-top-1 button button--primary"/>
+  </h:form>
+</li>
+</ul>
+</div>
+</ui:composition>

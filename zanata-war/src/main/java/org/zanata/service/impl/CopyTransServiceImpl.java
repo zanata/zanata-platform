@@ -96,8 +96,8 @@ public class CopyTransServiceImpl implements CopyTransService {
         HDocument document = documentDAO.findById(docId, true);
         log.info("copyTrans start: document \"{}\"", document.getDocId());
         List<HLocale> localelist =
-                localeServiceImpl.getSupportedLangugeByProjectIteration(
-                        project, iterationSlug);
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
+                    project, iterationSlug);
 
         // TODO iterate over document's textflows, then call
         // copyTransForTextFlow(textFlow, localeList)
@@ -468,9 +468,9 @@ public class CopyTransServiceImpl implements CopyTransService {
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
         List<HLocale> localeList =
-                localeServiceImpl.getSupportedLangugeByProjectIteration(
-                        document.getProjectIteration().getProject().getSlug(),
-                        document.getProjectIteration().getSlug());
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
+                    document.getProjectIteration().getProject().getSlug(),
+                    document.getProjectIteration().getSlug());
 
         for (HLocale locale : localeList) {
             if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {

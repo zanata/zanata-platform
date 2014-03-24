@@ -21,23 +21,23 @@
 
 package org.zanata.feature.project;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assume.assumeTrue;
+
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectMaintainersPage;
+import org.zanata.page.projects.ProjectPage;
 import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.junit.Assume.assumeTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 /**
  * @author Damian Jansen <a
- *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 @NoScreenshot
@@ -48,114 +48,55 @@ public class EditMaintainersTest {
 
     @Test
     public void maintainerDetailsAreDisplayed() {
-        ProjectMaintainersPage projectMaintainersPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickManageMaintainers();
+        ProjectPage projectPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoSettingsTab()
+                        .gotoSettingsMaintainersTab();
 
         assertThat("The admin user is shown in the list",
-                projectMaintainersPage.maintainersList(),
+                projectPage.getSettingsMaintainersList(),
                 Matchers.hasItem("admin"));
-        assertThat("The admin user's name is correct",
-                projectMaintainersPage.getUserFullName("admin"),
-                Matchers.equalTo("Administrator"));
-        assertThat("The admin user's email is correct",
-                projectMaintainersPage.getUserEmailAddress("admin"),
-                Matchers.equalTo("admin@example.com"));
     }
 
     @Test
-    @Ignore("rhbz1034559")
     public void addMaintainer() {
-        ProjectMaintainersPage projectMaintainersPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickManageMaintainers();
+        ProjectPage projectPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").gotoSettingsTab()
+                        .gotoSettingsMaintainersTab();
 
         assertThat("The translator user is not a maintainer",
-                projectMaintainersPage.maintainersList(),
+                projectPage.getSettingsMaintainersList(),
                 Matchers.not(Matchers.hasItem("translator")));
 
-        projectMaintainersPage = projectMaintainersPage
-                .clickAddMaintainer()
-                .enterName("translator")
-                .clickAddAutoComplete("translator");
+        projectPage = addMaintainer("translator");
 
-        assertThat("The user's username shows",
-                projectMaintainersPage.getAddMaintainerUserName(),
-                Matchers.equalTo("translator"));
-        assertThat("The user's email shows",
-                projectMaintainersPage.getAddMaintainerEmail(),
-                Matchers.equalTo("translator@example.com"));
-
-        projectMaintainersPage = projectMaintainersPage.clickAdd();
-        // RHBZ-1022760
-        assumeTrue(projectMaintainersPage.hasNoCriticalErrors());
-
-        projectMaintainersPage = projectMaintainersPage.clickClose();
-        // RHBZ-1022760
-        assumeTrue(projectMaintainersPage.hasNoCriticalErrors());
-
-        assertThat("The translator user is now a maintainer",
-                projectMaintainersPage.maintainersList(),
+        assertThat("The translator user is a maintainer",
+                projectPage.getSettingsMaintainersList(),
                 Matchers.hasItem("translator"));
     }
 
     @Test
-    @Ignore("rhbz1034559")
     public void removeMaintainer() {
         // Precondition
-        ProjectMaintainersPage projectMaintainersPage =
-                addTranslatorAsMaintainer();
+        ProjectPage projectPage = addMaintainer("translator");
 
         assertThat("The translator user is a maintainer",
-                projectMaintainersPage.maintainersList(),
+                projectPage.getSettingsMaintainersList(),
                 Matchers.hasItem("translator"));
 
-        projectMaintainersPage =
-                projectMaintainersPage.removeMaintainer("translator");
+        projectPage = projectPage.removeMaintainer("translator");
 
         assertThat("The translator user is no longer a maintainer",
-                projectMaintainersPage.maintainersList(),
+                projectPage.getSettingsMaintainersList(),
                 Matchers.not(Matchers.hasItem("translator")));
     }
 
-    @Test
-    @Ignore("rhbz1034559")
-    public void dontRemoveMaintainer() {
-        // Precondition
-        ProjectMaintainersPage projectMaintainersPage =
-                addTranslatorAsMaintainer();
+    private ProjectPage addMaintainer(String username) {
+        return new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                .goToProject("about fedora").gotoSettingsTab()
+                .gotoSettingsMaintainersTab().enterSearchMaintainer(username)
+                .addMaintainer(username);
 
-        assertThat("The translator user is a maintainer",
-                projectMaintainersPage.maintainersList(),
-                Matchers.hasItem("translator"));
-
-        projectMaintainersPage =
-                projectMaintainersPage.cancelRemoveMaintainer("translator");
-
-        assertThat("The translator user is still a maintainer",
-                projectMaintainersPage.maintainersList(),
-                Matchers.hasItem("translator"));
-    }
-
-    private ProjectMaintainersPage addTranslatorAsMaintainer() {
-        ProjectMaintainersPage projectMaintainersPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickManageMaintainers()
-                .clickAddMaintainer()
-                .enterName("translator")
-                .clickAddAutoComplete("translator");
-        projectMaintainersPage = projectMaintainersPage.clickAdd();
-        // RHBZ-1022760
-        assumeTrue(projectMaintainersPage.hasNoCriticalErrors());
-        projectMaintainersPage = projectMaintainersPage.clickClose();
-        // RHBZ-1022760
-        assumeTrue(projectMaintainersPage.hasNoCriticalErrors());
-        return projectMaintainersPage;
     }
 }

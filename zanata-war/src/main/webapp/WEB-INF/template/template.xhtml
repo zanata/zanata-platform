@@ -6,6 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:s="http://jboss.org/schema/seam/taglib">
   <!--[if lt IE 7]>      <html class="no-js new-zanata lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
@@ -34,7 +35,7 @@
     <!--<![endif]-->
 
     <!--[if (lt IE 9) & (!IEMobile)]>
-      <script src="js/vendor/selectivizr-min.js"></script>
+    <script src="js/vendor/selectivizr-min.js"></script>
     <![endif]-->
 
     <title>#{messages['jsf.Zanata']}: <ui:insert name="page_title"/></title>
@@ -47,45 +48,20 @@
 
   <h:body styleClass="new-zanata">
     <ui:include src="banner.xhtml"/>
-    <a4j:outputPanel layout="block" ajaxRendered="true"
-      styleClass="l__wrapper ">
-      <s:div styleClass="l--push-top-1"
-        rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}">
-        <h:messages id="messages" globalOnly="true"
-          styleClass="list--no-bullets"
-          errorClass="message--danger l--push-bottom-half"
-          infoClass="message--highlight l--push-bottom-half"
-          warnClass="message--warning l--push-bottom-half"
-          rendered="#{showGlobalMessages != 'false'}"/>
-      </s:div>
-    </a4j:outputPanel>
-
-    <s:div id="pageMessages" styleClass="l__wrapper">
-      <s:fragment
-        rendered="#{flashScope.hasAttribute('message')}">
-        <ul class="list--no-bullets l--push-top-1">
-          <ui:repeat value="#{flashScope.getAttribute('message')}"
-            var="message">
-            <s:fragment rendered="#{message.severity eq 'INFO'}">
-              <li class="message--highlight l--push-bottom-half">
-                #{message.summary}
-              </li>
-            </s:fragment>
-            <s:fragment rendered="#{message.severity eq 'WARN'}">
-              <li class="message--warning l--push-bottom-half">
-                #{message.summary}
-              </li>
-            </s:fragment>
-            <s:fragment
-              rendered="#{message.severity eq 'ERROR' or message.severity eq 'FATAL'}">
-              <li class="message--danger l--push-bottom-half">
-                #{message.summary}
-              </li>
-            </s:fragment>
-          </ui:repeat>
+    <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
+      <s:fragment rendered="#{showGlobalMessages != 'false'}">
+        <ul
+          class="list--no-bullets message--global #{(flashScopeMessage.hasMessages() or (not facesContext.validationFailed and not empty facesContext.messageList)) ? 'is-active' : ''}">
+          <zanata:global-messages value="#{facesContext.messageList}"
+            rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}"/>
+          <zanata:global-messages value="#{flashScopeMessage.messages}"
+            rendered="#{flashScopeMessage.hasMessages()}"/>
         </ul>
+        <script type="text/javascript">
+          startGlobalMessageTimer();
+        </script>
       </s:fragment>
-    </s:div>
+    </a4j:outputPanel>
 
     <main role="main" class="l--pad-v-1">
       <div class="l__wrapper">
@@ -126,7 +102,9 @@
             </div>
             <div class="g__item w--1-2 txt--align-right">
               <p class="txt--meta">
-                <h:outputText value="#{messages['jsf.RunningVersionInfo']} | #{messages['jsf.CopyrightNotice']}" escape="false"/>
+                <h:outputText
+                  value="#{messages['jsf.RunningVersionInfo']} | #{messages['jsf.CopyrightNotice']}"
+                  escape="false"/>
               </p>
             </div>
           </div>

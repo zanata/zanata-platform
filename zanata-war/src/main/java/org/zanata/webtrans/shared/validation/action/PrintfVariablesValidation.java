@@ -121,4 +121,14 @@ public class PrintfVariablesValidation extends AbstractValidationAction {
         }
         return vars;
     }
+
+    @Override
+    public String getSourceExample() {
+        return "value must be between %x and %y";
+    }
+
+    @Override
+    public String getTargetExample() {
+        return "value must be between %x and <span class='js-example__target txt--warning'>%z</span>";
+    }
 }

@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.jboss.seam.ScopeType;
@@ -28,7 +29,14 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.annotation.CachedMethodResult;
 import org.zanata.model.HCopyTransOptions;
+import org.zanata.util.ZanataMessages;
+import com.google.common.collect.Lists;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Holds a {@link org.zanata.model.HCopyTransOptions} model object. This
@@ -40,7 +48,7 @@ import org.zanata.model.HCopyTransOptions;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransOptionsModel")
-@Scope(ScopeType.PAGE)
+@Scope(ScopeType.CONVERSATION)
 @AutoCreate
 public class CopyTransOptionsModel implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -48,7 +56,11 @@ public class CopyTransOptionsModel implements Serializable {
     @In
     private EntityManager entityManager;
 
+    @Setter
     private HCopyTransOptions instance;
+
+    @In
+    private ZanataMessages zanataMessages;
 
     public HCopyTransOptions getInstance() {
         if (instance == null) {
@@ -57,15 +69,11 @@ public class CopyTransOptionsModel implements Serializable {
         return instance;
     }
 
-    public void setInstance(HCopyTransOptions instance) {
-        this.instance = instance;
-    }
-
     public String getProjectMismatchAction() {
         return getInstance().getProjectMismatchAction().toString();
     }
 
-    public void setProjectMismatchAction(String projectMismatchAction) {
+    private void setProjectMismatchAction(String projectMismatchAction) {
         getInstance().setProjectMismatchAction(
                 HCopyTransOptions.ConditionRuleAction
                         .valueOf(projectMismatchAction));
@@ -75,7 +83,7 @@ public class CopyTransOptionsModel implements Serializable {
         return getInstance().getDocIdMismatchAction().toString();
     }
 
-    public void setDocIdMismatchAction(String docIdMismatchAction) {
+    private void setDocIdMismatchAction(String docIdMismatchAction) {
         getInstance().setDocIdMismatchAction(
                 HCopyTransOptions.ConditionRuleAction
                         .valueOf(docIdMismatchAction));
@@ -85,13 +93,50 @@ public class CopyTransOptionsModel implements Serializable {
         return getInstance().getContextMismatchAction().toString();
     }
 
-    public void setContextMismatchAction(String contextMismatchAction) {
+    private void setContextMismatchAction(String contextMismatchAction) {
         getInstance().setContextMismatchAction(
                 HCopyTransOptions.ConditionRuleAction
                         .valueOf(contextMismatchAction));
     }
 
+    public void update(String action, String value) {
+        if (action.equalsIgnoreCase("ContextMismatch")) {
+            setContextMismatchAction(value);
+        } else if (action.equalsIgnoreCase("ProjectMismatch")) {
+            setProjectMismatchAction(value);
+        } else if (action.equalsIgnoreCase("DocIdMismatch")) {
+            setDocIdMismatchAction(value);
+        }
+    }
+
+    @CachedMethodResult
+    public List<RuleAction> getRuleActions() {
+        List<RuleAction> list = Lists.newArrayList();
+        list.add(new RuleAction(HCopyTransOptions.ConditionRuleAction.IGNORE,
+                "button--success", zanataMessages
+                        .getMessage("jsf.iteration.CopyTrans.Action.continue")));
+
+        list.add(new RuleAction(
+                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
+                "button--unsure",
+                zanataMessages
+                        .getMessage("jsf.iteration.CopyTrans.Action.downgradeToFuzzy")));
+
+        list.add(new RuleAction(HCopyTransOptions.ConditionRuleAction.REJECT,
+                "button--danger", zanataMessages
+                        .getMessage("jsf.iteration.CopyTrans.Action.reject")));
+        return list;
+    }
+
     public void save() {
         this.setInstance(entityManager.merge(this.getInstance()));
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public class RuleAction {
+        private HCopyTransOptions.ConditionRuleAction action;
+        private String css;
+        private String displayText;
     }
 }

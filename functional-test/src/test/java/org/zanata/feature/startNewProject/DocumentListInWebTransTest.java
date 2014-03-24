@@ -63,12 +63,13 @@ public class DocumentListInWebTransTest {
                                 versionSlug), ProjectVersionPage.class);
         // ProjectPage projectPage =
         // homePage.goToProjects().goToProject(projectName);
-        // projectVersionPage = projectPage.goToVersion(versionSlug);
+        // projectVersionPage = projectPage.gotoVersion(versionSlug);
         return projectVersionPage;
     }
 
     public DocumentsViewPage translate(String locale) {
-        return projectVersionPage.translate(locale);
+        return null;
+//        return projectVersionPage.translate(locale);
     }
 
     public List<List<String>> getDocumentListTableContents(

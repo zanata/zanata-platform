@@ -2,8 +2,8 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:rich="http://richfaces.org/rich">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j">
 
 <composite:interface>
   <composite:attribute name="id" type="java.lang.String"
@@ -12,56 +12,109 @@
   <composite:attribute name="placeholder" type="java.lang.String"
     shortDescription="placeholder text for input field" default=""/>
 
+  <composite:attribute name="actionBean"
+    type="org.zanata.ui.AbstractListFilter"
+    shortDescription="action bean (org.zanata.action.AbstractListFilter)"
+    required="true"/>
+
+  <composite:attribute name="render" required="true"
+    shortDescription="Ids of component to render after filter"/>
+
+  <composite:attribute name="bottomPanel" default="false"
+    type="java.lang.Boolean"
+    shortDescription="is for bottom view"/>
+
   <composite:attribute name="iconClass" type="java.lang.String"
     shortDescription="css class for icon display" default=""/>
 
-  <composite:attribute name="getFilteredSize" required="true"
-    shortDescription="method to get result's size"/>
-
-  <composite:attribute name="render" required="true"
-    shortDescription="element to re-render after filter"/>
-
-  <composite:attribute name="queryField" required="true"
-    shortDescription="The current value of this component."/>
 </composite:interface>
-
 <composite:implementation>
-
   <a4j:jsFunction name="#{cc.attrs.id}FilterList"
-    render="#{cc.attrs.render}, #{rich:clientId(cc.attrs.id.concat('-size'))}"
+    action="#{cc.attrs.actionBean.resetPage}"
+    render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
     limitRender="true">
-    <a4j:param name="val" assignTo="#{cc.attrs.queryField}"/>
+    <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
 
-  <div class="panel__sub-header js-reveal">
+  <a4j:jsFunction name="#{cc.attrs.id}NextPage"
+    action="#{cc.attrs.actionBean.nextPage}"
+    render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
+    limitRender="true">
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="#{cc.attrs.id}PreviousPage"
+    action="#{cc.attrs.actionBean.previousPage}"
+    render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
+    limitRender="true">
+  </a4j:jsFunction>
+
+  <s:fragment rendered="#{!cc.attrs.bottomPanel}">
     <div class="form--search panel__search reveal__target--appear"
       id="#{cc.attrs.id}">
-      <label for="#{cc.attrs.id}" class="form--search__label"></label>
-      <input id="#{cc.attrs.id}__input" type="search"
-        placeholder="#{cc.attrs.placeholder}" onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
+      <label for="#{cc.attrs.id}__input" class="form--search__label"></label>
+      <input id="#{cc.attrs.id}__input" type="search" maxlength="255"
+        placeholder="#{cc.attrs.placeholder}…"
+        onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
         class="form--search__input js-reveal__target__input"/>
       <button class="button--link panel__search__cancel js-reveal__cancel"
         onclick="#{cc.attrs.id}FilterList('')"
-        data-target="##{cc.attrs.id}">#{messages['jsf.Cancel']}</button>
+        data-target="##{cc.attrs.id}">#{messages['jsf.Cancel']}
+      </button>
     </div>
-    <div class="panel__results">
-      <div class="panel__results__type">
-        <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
-      </div>
-        <span class="txt--meta">
-          <a4j:outputPanel id="#{cc.attrs.id}-size"><strong>#{cc.attrs.getFilteredSize}</strong></a4j:outputPanel>
-          <button
-            class="button--link panel__search__reset js-reveal__reset is-hidden"
-            data-target="##{cc.attrs.id}" onclick="#{cc.attrs.id}FilterList('')"
-            data-original-title="#{messages['jsf.ClearSearch']}">
-            <i class="i--right i--cancel"></i>
-          </button>
-          <button class="button--link panel__search__button js-reveal__show"
-            data-target="##{cc.attrs.id}">
-            #{messages['jsf.Search']}<i class="i--right i--search"></i>
-          </button>
-        </span>
+  </s:fragment>
+
+  <s:div styleClass="panel__results">
+    <div class="panel__results__type">
+      <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
     </div>
-  </div>
+    <s:div id="#{cc.attrs.id}-pager">
+      <s:fragment
+        rendered="#{cc.attrs.actionBean.filteredListSize ge cc.attrs.actionBean.getCountPerPage()}">
+        <ul class="panel__pager">
+          <li>
+            <button title="#{messages['jsf.pager.PreviousPage']}"
+              class="panel__pager__button"
+              onclick="#{cc.attrs.id}PreviousPage()">
+              <i class="i--huge i--arrow-left"></i>
+            </button>
+          </li>
+          <li>
+            <button title="#{messages['jsf.pager.NextPage']}"
+              class="panel__pager__button"
+              onclick="#{cc.attrs.id}NextPage()">
+              <i class="i--huge i--arrow-right"></i>
+            </button>
+          </li>
+        </ul>
+      </s:fragment>
+    </s:div>
+    <span class="txt--meta">
+      <s:span id="#{cc.attrs.id}-page-info">
+        <s:fragment
+          rendered="#{cc.attrs.actionBean.filteredListSize gt cc.attrs.actionBean.getCountPerPage()}">
+          <strong>#{cc.attrs.actionBean.listRange}</strong> of #{cc.attrs.actionBean.filteredListSize}
+        </s:fragment>
+        <s:fragment
+          rendered="#{cc.attrs.actionBean.filteredListSize le cc.attrs.actionBean.getCountPerPage()}">
+          <strong>#{cc.attrs.actionBean.filteredListSize}</strong>
+        </s:fragment>
+      </s:span>
+
+
+      <s:fragment rendered="#{!cc.attrs.bottomPanel}">
+        <button
+          class="button--link panel__search__reset js-reveal__reset is-hidden"
+          data-target="##{cc.attrs.id}"
+          onclick="#{cc.attrs.id}FilterList('')"
+          title="#{messages['jsf.ClearSearch']}">
+          <i class="i--right i--cancel"></i>
+        </button>
+        <button class="button--link panel__search__button js-reveal__show"
+          data-target="##{cc.attrs.id}">
+          #{messages['jsf.Search']}<i class="i--right i--search"></i>
+        </button>
+      </s:fragment>
+    </span>
+  </s:div>
 </composite:implementation>
 </html>

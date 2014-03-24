@@ -21,9 +21,10 @@
 
 package org.zanata.feature.project;
 
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
@@ -36,7 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
- *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class ProjectVersionTest {
@@ -46,12 +47,10 @@ public class ProjectVersionTest {
 
     @Test
     public void idFieldMustNotBeEmpty() {
-        CreateVersionPage createVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickCreateVersionLink()
-                .inputVersionId("");
+        CreateVersionPage createVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").clickCreateVersionLink()
+                        .inputVersionId("");
 
         assertThat("The empty value is rejected",
                 createVersionPage.getErrors(),
@@ -60,99 +59,78 @@ public class ProjectVersionTest {
 
     @Test
     public void idStartsAndEndsWithAlphanumeric() {
-        CreateVersionPage createVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickCreateVersionLink()
-                .inputVersionId("-A");
+        CreateVersionPage createVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").clickCreateVersionLink()
+                        .inputVersionId("-A");
 
-        String formatError = "must start and end with letter or number, " +
-            "and contain only letters, numbers, underscores and hyphens.";
-        assertThat("The input is rejected",
-                createVersionPage.getErrors(),
+        String formatError =
+                "must start and end with letter or number, "
+                        + "and contain only letters, numbers, underscores and hyphens.";
+        assertThat("The input is rejected", createVersionPage.getErrors(),
                 Matchers.hasItem(formatError));
 
-        createVersionPage = createVersionPage
-                .inputVersionId("B-")
-                .waitForNumErrors(1);
+        createVersionPage =
+                createVersionPage.inputVersionId("B-").waitForNumErrors(1);
 
-
-        assertThat("The input is rejected",
-                createVersionPage.getErrors(),
+        assertThat("The input is rejected", createVersionPage.getErrors(),
                 Matchers.hasItem(formatError));
 
-        createVersionPage = createVersionPage
-                .inputVersionId("_C_")
-                .waitForNumErrors(1);
+        createVersionPage =
+                createVersionPage.inputVersionId("_C_").waitForNumErrors(1);
 
-        assertThat("The input is rejected",
-                createVersionPage.getErrors(),
+        assertThat("The input is rejected", createVersionPage.getErrors(),
                 Matchers.hasItem(formatError));
 
-        createVersionPage = createVersionPage
-                .inputVersionId("A-B_C")
-                .waitForNumErrors(0);
+        createVersionPage =
+                createVersionPage.inputVersionId("A-B_C").waitForNumErrors(0);
 
-        assertThat("The input is acceptable",
-                createVersionPage.getErrors(),
+        assertThat("The input is acceptable", createVersionPage.getErrors(),
                 Matchers.not(Matchers.hasItem(formatError)));
     }
 
     @Test
     public void overrideLanguages() {
-        CreateVersionPage createVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .clickCreateVersionLink()
-                .inputVersionId("overridetest")
-                .showLocalesOverride();
+        ProjectVersionPage versionPage =
+                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
+                        .goToProject("about fedora").clickCreateVersionLink()
+                        .inputVersionId("overridetest").saveVersion()
+                        .gotoSettingsTab().gotoSettingsLanguagesTab();
+
+        List<String> enabledLocaleList =
+                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .getEnabledLocaleList();
 
         assertThat("The enabled list contains three languages",
-                createVersionPage.getEnabledLanguages(),
-                Matchers.contains("French [fr] français",
-                        "Hindi [hi] हिन्दी",
-                        "Polish [pl] polski"));
+                enabledLocaleList,
+                Matchers.contains("French[fr]", "Hindi[hi]", "Polish[pl]"));
 
-        assertThat("The disabled list contains one language",
-                createVersionPage.getDisabledLanguages(),
-                Matchers.contains("English (United States) [en-US] English "+
-                        "(United States)"));
+        assertThat(
+                "The enabled list does not contains 'English (United States)[en-US]'",
+                enabledLocaleList, Matchers.not(Matchers
+                        .contains("English (United States)[en-US]")));
 
-        createVersionPage = createVersionPage
-                .selectEnabledLanguage("Polish [pl] polski")
-                .clickRemoveLanguage()
-                .waitForListCount(2, 2);
+        versionPage =
+                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .removeLocale("pl");
 
-        assertThat("The disabled list contains two languages",
-                createVersionPage.getDisabledLanguages(),
-                Matchers.contains("English (United States) [en-US] English "+
-                        "(United States)", "Polish [pl] polski"));
+        enabledLocaleList =
+                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .getEnabledLocaleList();
 
-        createVersionPage = createVersionPage
-                .selectDisabledLanguage("English (United States) [en-US] "+
-                        "English (United States)")
-                .clickAddLanguage()
-                .waitForListCount(3, 1);
+        assertThat(
+                "The enabled list does not contains 'English (United States)[en-US]' and 'Polish[pl]'",
+                enabledLocaleList, Matchers.not(Matchers.contains(
+                        "English (United States)[en-US]", "Polish[pl]")));
 
-        assertThat("The disabled list contains one language",
-                createVersionPage.getDisabledLanguages(),
-                Matchers.contains("Polish [pl] polski"));
-
-        assertThat("The enabled list contains three languages",
-                createVersionPage.getEnabledLanguages(),
-                Matchers.contains(
-                        "English (United States) [en-US] English "+
-                        "(United States)",
-                        "French [fr] français",
-                        "Hindi [hi] हिन्दी"));
-
-        ProjectVersionPage projectVersionPage = createVersionPage.saveVersion();
+        enabledLocaleList =
+                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .enterSearchLocale("en-US")
+                        .addLocale("English (United States)[en-US]")
+                        .getEnabledLocaleList();
 
         assertThat("Three languages are available to translate",
-                projectVersionPage.getTranslatableLanguages(),
-                Matchers.contains("français",
-                        "हिन्दी", "English (United States)"));
+                enabledLocaleList, Matchers.containsInAnyOrder("French[fr]",
+                        "Hindi[hi]", "English (United States)[en-US]"));
     }
 }
