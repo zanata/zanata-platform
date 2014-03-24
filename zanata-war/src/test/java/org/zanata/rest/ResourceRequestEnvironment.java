@@ -23,6 +23,8 @@ package org.zanata.rest;
 import java.util.Collections;
 import java.util.Map;
 
+import com.beust.jcommander.internal.Maps;
+
 /**
  * The environment that a <code>ResourceRequest</code> should be executed with.
  * Provides default headers, etc to be included in the request.
@@ -33,14 +35,14 @@ import java.util.Map;
  * @see ResourceRequest
  */
 public class ResourceRequestEnvironment {
-    private static final Map<String, Object> EMPTY_MAP = Collections
-            .unmodifiableMap(Collections.<String, Object> emptyMap());
 
     /**
      * Returns the default headers to be used in a request. Override to change
      * the default headers.
      */
     public Map<String, Object> getDefaultHeaders() {
-        return EMPTY_MAP;
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("X-Auth-Token", "abc123");
+        return map;
     }
 }

@@ -16,7 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hamcrest.Matchers;
+import org.jboss.resteasy.spi.HttpResponse;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -24,9 +24,6 @@ import org.mockito.stubbing.Answer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.limits.RateLimitingProcessor;
-import org.zanata.limits.RateLimitManager;
-import org.zanata.limits.RestCallLimiter;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Uninterruptibles;
 
@@ -42,15 +39,14 @@ public class RateLimitingProcessorTest {
     public static final String API_KEY = "apiKey";
     private RateLimitingProcessor processor;
     @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpServletResponse response;
+    private HttpResponse response;
     @Mock
     private FilterChain filterChain;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
     private RateLimitManager rateLimitManager;
-    private StringWriter responseOut;
+    @Mock
+    private Runnable runnable;
 
     @BeforeMethod
     public void beforeMethod() throws IOException {
@@ -59,15 +55,13 @@ public class RateLimitingProcessorTest {
         // so that we can verify its interaction
         rateLimitManager = spy(new RateLimitManager());
         processor =
-                spy(new RateLimitingProcessor(API_KEY, request, response,
-                        filterChain));
+                spy(new RateLimitingProcessor(API_KEY, response,
+                        runnable));
 
         doReturn(applicationConfiguration).when(processor)
                 .getApplicationConfiguration();
         doReturn(rateLimitManager).when(processor).getRateLimiterHolder();
 
-        responseOut = new StringWriter();
-        when(response.getWriter()).thenReturn(new PrintWriter(responseOut));
     }
 
     @Test
@@ -78,7 +72,7 @@ public class RateLimitingProcessorTest {
 
         processor.process();
 
-        verify(filterChain).doFilter(request, response);
+        verify(runnable).run();
         verifyZeroInteractions(rateLimitManager);
     }
 
@@ -97,7 +91,7 @@ public class RateLimitingProcessorTest {
                 Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS);
                 return null;
             }
-        }).when(filterChain).doFilter(request, response);
+        }).when(runnable).run();
 
         // two concurrent requests which will exceed the limit
         Callable<Void> callable = new Callable<Void>() {
@@ -120,9 +114,9 @@ public class RateLimitingProcessorTest {
             }
         }
 
-        // one request will receive 429
-        verify(response, atLeastOnce()).setStatus(429);
+        // one request will receive 429 and an error message
+        verify(response, atLeastOnce()).sendError(eq(429), anyString());
         // one should go through
-        verify(filterChain).doFilter(request, response);
+        verify(runnable).run();
     }
 }

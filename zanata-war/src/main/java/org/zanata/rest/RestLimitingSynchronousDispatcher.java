@@ -8,6 +8,9 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.UnhandledException;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.zanata.limits.RateLimitingProcessor;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,15 +19,41 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
+    static final String API_KEY_ABSENCE_WARNING =
+            "You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.";
+
     public RestLimitingSynchronousDispatcher(
             SeamResteasyProviderFactory providerFactory) {
         super(providerFactory);
     }
 
     @Override
-    public void invoke(HttpRequest request, HttpResponse response) {
+    public void invoke(final HttpRequest request, final HttpResponse response) {
+
+        String apiKey = Strings.nullToEmpty(HeaderHelper.getApiKey(request));
+
         try {
-            super.invoke(request, response);
+            // we are not validating api key but will rate limit any api key
+            if (Strings.isNullOrEmpty(apiKey)
+                    && !request.getUri().getPath().contains("/test/")) {
+                response.sendError(
+                        Response.Status.UNAUTHORIZED.getStatusCode(),
+                        API_KEY_ABSENCE_WARNING);
+                return;
+            }
+
+            Runnable taskToRun = new Runnable() {
+
+                @Override
+                public void run() {
+                    RestLimitingSynchronousDispatcher.super.invoke(request,
+                            response);
+                }
+            };
+            RateLimitingProcessor processor =
+                    createRateLimitingRequest(apiKey, response, taskToRun);
+            processor.process();
+
         } catch (UnhandledException e) {
             Throwable cause = e.getCause();
             log.error("Failed to process REST request", cause);
@@ -41,9 +70,19 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
                 }
 
             } catch (IOException ioe) {
-                log.error(
-                        "Failed to send error on failed REST request", ioe);
+                log.error("Failed to send error on failed REST request", ioe);
             }
+        } catch (Exception e) {
+            log.error("error processing request", e);
+            throw Throwables.propagate(e);
         }
+    }
+
+    /**
+     * Test override-able.
+     */
+    protected RateLimitingProcessor createRateLimitingRequest(String apiKey,
+            HttpResponse response, Runnable runnable) {
+        return new RateLimitingProcessor(apiKey, response, runnable);
     }
 }

@@ -1,24 +1,15 @@
 package org.zanata.limits;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.seam.Component;
-import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.ApplicationConfiguration;
 import com.google.common.base.Objects;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,35 +22,31 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class RateLimitingProcessor extends ContextualHttpServletRequest {
+public class RateLimitingProcessor {
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
 
     private static final RateLimiter logLimiter = RateLimiter.create(1);
     private final String apiKey;
-    private final FilterChain filterChain;
-    private final ServletRequest servletRequest;
-    private final ServletResponse servletResponse;
-    private final HttpServletResponse httpResponse;
+    private final HttpResponse response;
+    private final Runnable taskToRun;
 
-    public RateLimitingProcessor(String apiKey, ServletRequest servletRequest,
-            ServletResponse servletResponse, FilterChain filterChain) {
-        super(HttpServletRequest.class.cast(servletRequest));
+    public RateLimitingProcessor(String apiKey,
+            HttpResponse response, Runnable taskToRun) {
         this.apiKey = apiKey;
-        this.servletRequest = servletRequest;
-        this.servletResponse = servletResponse;
-        this.filterChain = filterChain;
-        httpResponse = HttpServletResponse.class.cast(this.servletResponse);
+
+        this.response = response;
+        this.taskToRun = taskToRun;
     }
 
-    @Override
     public void process() throws Exception {
         ApplicationConfiguration appConfig = getApplicationConfiguration();
 
         if (appConfig.getMaxConcurrentRequestsPerApiKey() == 0
                 && appConfig.getMaxActiveRequestsPerApiKey() == 0
                 && appConfig.getRateLimitPerSecond() == 0) {
-            filterChain.doFilter(servletRequest, servletResponse);
+            // short circuit if we don't want limiting
+            taskToRun.run();
             return;
         }
 
@@ -79,32 +66,16 @@ public class RateLimitingProcessor extends ContextualHttpServletRequest {
 
         log.debug("check semaphore for {}", this);
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    filterChain.doFilter(servletRequest, servletResponse);
-                }
-                catch (IOException e) {
-                    throw Throwables.propagate(e);
-                }
-                catch (ServletException e) {
-                    throw Throwables.propagate(e);
-                }
-            }
-        };
-        if (!rateLimiter.tryAcquireAndRun(runnable)) {
+        if (!rateLimiter.tryAcquireAndRun(taskToRun)) {
             if (logLimiter.tryAcquire(1, TimeUnit.SECONDS)) {
                 log.warn(
                         "{} has too many concurrent requests. Returning status 429",
                         apiKey);
             }
-            httpResponse.setStatus(TOO_MANY_REQUEST);
-            PrintWriter writer = httpResponse.getWriter();
-            writer.append(String.format(
+            String errorMessage = String.format(
                     "Too many concurrent request for this API key (maximum is %d)",
-                    appConfig.getMaxConcurrentRequestsPerApiKey()));
-            writer.close();
+                    appConfig.getMaxConcurrentRequestsPerApiKey());
+            response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
     }
 
