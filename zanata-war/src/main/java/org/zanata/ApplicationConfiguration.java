@@ -415,7 +415,7 @@ public class ApplicationConfiguration implements Serializable {
         String max =
                 databaseBackedConfig.getMaxActiveRequestsPerApiKey();
         if (Strings.isNullOrEmpty(max)) {
-            return 3;
+            return 2;
         }
         return Integer.parseInt(max);
     }
