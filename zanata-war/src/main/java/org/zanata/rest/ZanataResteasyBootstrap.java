@@ -1,24 +1,13 @@
 package org.zanata.rest;
 
-import java.io.IOException;
 import java.util.Collection;
-
-import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.core.SynchronousDispatcher;
-import org.jboss.resteasy.core.interception.InterceptorRegistry;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
-import org.jboss.resteasy.spi.UnhandledException;
-import org.jboss.resteasy.spi.interception.PostProcessInterceptor;
-import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -72,36 +61,7 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
     @Override
     protected Dispatcher createDispatcher(
             SeamResteasyProviderFactory providerFactory) {
-        return new SynchronousDispatcher(providerFactory) {
-            @Override
-            public void invoke(HttpRequest request, HttpResponse response) {
-                try {
-                    super.invoke(request, response);
-                } catch (UnhandledException e) {
-                    Throwable cause = e.getCause();
-                    log.error("Failed to process REST request", cause);
-                    try {
-                        // see https://issues.jboss.org/browse/RESTEASY-411
-                        if (cause instanceof IllegalArgumentException
-                                && cause.getMessage().contains(
-                                        "Failure parsing MediaType")) {
-                            response.sendError(
-                                    Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(),
-                                    cause.getMessage());
-                        } else {
-                            response.sendError(
-                                    Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                                    "Error processing Request");
-                        }
-
-                    } catch (IOException ioe) {
-                        log.error(
-                                "Failed to send error on failed REST request",
-                                ioe);
-                    }
-                }
-            }
-        };
+        return new RestLimitingSynchronousDispatcher(providerFactory);
     }
 
 }
