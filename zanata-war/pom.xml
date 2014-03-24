@@ -335,7 +335,7 @@
             </manifest>
             <manifestEntries>
               <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-              <SCM-Changeset>${changeSet}</SCM-Changeset>
+              <SCM-Describe>${gitDescribe}</SCM-Describe>
             </manifestEntries>
           </archive>
         </configuration>
