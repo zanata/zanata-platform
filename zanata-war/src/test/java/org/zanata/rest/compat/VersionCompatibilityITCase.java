@@ -41,10 +41,7 @@ public class VersionCompatibilityITCase extends RestTest {
         IVersionResource versionClient =
                 super.createProxy(
                         createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        IVersionResource.class,
-                        // TODO remove this parameter after upgrading
-                        // to apicompat 3.2
-                        "/version");
+                        IVersionResource.class);
         VersionInfo versionInfo = versionClient.get().getEntity();
 
         assertThat(versionInfo.getVersionNo(), notNullValue());
