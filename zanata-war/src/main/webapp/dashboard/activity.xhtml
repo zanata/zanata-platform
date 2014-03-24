@@ -6,145 +6,384 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j">
 
-  <div class="l--push-left-half">
-    <h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
+  <div class="panel">
+  <div class="panel__header">
+    <h2 class="panel__heading">#{messages['jsf.YourActivity']}</h2>
   </div>
-  <h:form id="activityList">
     <ui:param name="activities" value="#{activityAction.getActivities()}"/>
-    <s:fragment rendered="#{!activities.isEmpty()}">
-      <ul class="list--no-bullets">
+    <h:form>
+      <s:fragment rendered="#{activities.isEmpty()}">
+        <div class="l--pad-all-half bg--high">
+          <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
+
+          <p class="txt--meta">#{messages['jsf.NoActivityMessage']}</p>
+        </div>
+      </s:fragment>
+      <s:fragment rendered="#{not activities.isEmpty()}">
+      <ul class="list--panel loader__container">
         <ui:repeat value="#{activities}" var="activity">
           <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
             <p class="l--float-right txt--neutral l--push-left-half">
-              <s:fragment
-                rendered="#{activity.activityType == 'UPDATE_TRANSLATION'}">
-                <i aria-hidden="true" class="i--large i--translate"
-                  title="#{messages['jsf.Translation']}"></i>
-                <span class="is-invisible">#{messages['jsf.Translation']}</span>
-              </s:fragment>
-
-              <s:fragment
-                rendered="#{activity.activityType == 'REVIEWED_TRANSLATION'}">
-                <i aria-hidden="true" class="i--large i--review"
-                  title="#{messages['jsf.Reviewed']}"></i>
-                <span class="is-invisible">#{messages['jsf.Reviewed']}</span>
-              </s:fragment>
-
-              <s:fragment
-                rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
-                <i aria-hidden="true" class="i--large i--document"
-                  title="#{messages['jsf.UploadedSource']}"></i>
-                <span
-                  class="is-invisible">#{messages['jsf.UploadSource']}</span>
-              </s:fragment>
-
-              <s:fragment
-                rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-                <i aria-hidden="true" class="i--large i--translate-up"
-                  title="#{messages['jsf.UploadedTranslations']}"></i>
-                <span
-                  class="is-invisible">#{messages['jsf.UploadedTranslation']}</span>
-              </s:fragment>
+              <i aria-hidden="true"
+                class="i--large #{activityAction.getActivityTypeIconClass(activity)}"
+                title="#{activityAction.getActivityTitle(activity)}"></i>
+              <span class="is-invisible">#{activityAction.getActivityTitle(activity)}</span>
             </p>
 
             <p class="l--push-all-0">
-              <s:fragment
-                rendered="#{activity.activityType == 'UPDATE_TRANSLATION'}">
-                You translated
-                <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
-                <a
-                  href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-                finishing on "<a
-                href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
-              </s:fragment>
+              <h:outputText escape="false"
+                value="#{activityAction.getActivityMessage(activity)}"/>
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li><i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                10 mins ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">StringResource</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">zh-Hant</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral"
+                  title="Version"><span class="is-invisible">Version</span></i>
+                <a href="#">master</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--translate" title="Translation"></i>
+              <span class="is-invisible">Translation</span>
+            </p>
 
-              <s:fragment
-                rendered="#{activity.activityType == 'REVIEWED_TRANSLATION'}">
-                You reviewed
-                <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> in
-                <a
-                  href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>,
-                finishing on "<a
-                href="#{activityAction.getEditorUrl(activity)}">#{activityAction.getLastTextFlowContent(activity)}</a>"
-              </s:fragment>
-
-              <s:fragment
-                rendered="#{activity.activityType == 'UPLOAD_SOURCE_DOCUMENT'}">
-                You uploaded source documents of
-                <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
-                <a
-                  href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
-              </s:fragment>
-
-              <s:fragment
-                rendered="#{activity.activityType == 'UPLOAD_TRANSLATION_DOCUMENT'}">
-                You uploaded translations of
-                <strong>#{activityAction.getWordsCountMessage(activity.wordCount)}</strong> to
-                <a
-                  href="#{activityAction.getProjectUrl(activity)}">#{activityAction.getProjectName(activity)}</a>
-              </s:fragment>
+            <p class="l--push-all-0">
+              You translated <strong>537 words</strong>
+              in
+              <a href="#">Zanata</a>
+              , finishing on &#8220;
+              <a href="#">Determines how the project is treated for upload…</a>
+              &#8221;
             </p>
             <ul class="list--horizontal txt--meta">
               <li>
-                <i aria-hidden="true" class="i i--clock txt--neutral"
-                  title="#{messages['jsf.Time']}"></i>
-                <span
-                  class="is-invisible">#{messages['jsf.Time']}</span>#{activityAction.getHowLongAgoDescription(activity)}
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                25 mins ago
               </li>
-              <ui:param name="docName"
-                value="#{activityAction.getDocumentName(activity)}"/>
-              <s:fragment rendered="#{docName != null and !docName.isEmpty()}">
-                <li class="reveal__target">
-                  <i aria-hidden="true" class="i i--document txt--neutral"
-                    title="#{messages['jsf.Document']}"></i>
-                  <span class="is-invisible">#{messages['jsf.Document']}</span>
-                  <a
-                    href="#{activityAction.getDocumentUrl(activity)}">#{docName}</a>
-                </li>
-              </s:fragment>
-              <ui:param name="languageName"
-                value="#{activityAction.getLanguageName(activity)}"/>
-              <s:fragment
-                rendered="#{languageName != null and !languageName.isEmpty()}">
-                <li class="reveal__target">
-                  <i aria-hidden="true" class="i i--language txt--neutral"
-                    title="#{messages['jsf.Language']}"></i>
-                  <span class="is-invisible">#{messages['jsf.Language']}</span>
-                  <a
-                    href="#{activityAction.getDocumentListUrl(activity)}">#{languageName}</a>
-                </li>
-              </s:fragment>
-              <ui:param name="versionName"
-                value="#{activityAction.getVersionName(activity)}"/>
-              <s:fragment
-                rendered="#{versionName != null and !versionName.isEmpty()}">
-                <li class="reveal__target">
-                  <i aria-hidden="true" class="i i--version txt--neutral"
-                    title="#{messages['jsf.Version']}">
-                    <span class="is-invisible">#{messages['jsf.Version']}</span>
-                  </i>
-                  <a
-                    href="#{activityAction.getVersionUrl(activity)}">#{versionName}</a>
-                </li>
-              </s:fragment>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">Japanese</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral"
+                  title="Version"><span class="is-invisible">Version</span></i>
+                <a href="#">3.0</a>
+              </li>
             </ul>
           </li>
-        </ui:repeat>
-        <s:fragment rendered="#{activityAction.hasMoreActivities()}">
-          <a4j:commandLink styleClass="d--top loader"
-            action="#{activityAction.loadNextActivity()}" render="activityList">
-            <span id="moreActivity"
-              class="loader__label">#{messages['jsf.moreActivity']}</span>
-          </a4j:commandLink>
-        </s:fragment>
-      </ul>
-    </s:fragment>
-    <s:fragment rendered="#{activities.isEmpty()}">
-      <div class="l--pad-all-half bg--high">
-        <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--document"
+                title="Uploaded source documents"></i>
+              <span class="is-invisible">Review</span>
+            </p>
 
-        <p class="txt--meta">#{messages['jsf.NoActivityMessage']}</p>
-      </div>
-    </s:fragment>
-  </h:form>
+            <p class="l--push-all-0">
+              You uploaded source documents of
+              <strong>453 words</strong>
+              to
+              <a href="#">Spacewalk</a>
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                20 mins ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--translate-up"
+                title="Uploaded translations"></i>
+              <span class="is-invisible">Uploaded Translation</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You uploaded translations of
+              <strong>2014 words</strong>
+              to
+              <a href="#">Zanata</a>
+              , finishing on &#8220;
+              <a href="#">If no project type is specified, the type from…</a>
+              &#8221;
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                2 hours ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">Japanese</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--maintain" title="Maintenance"></i>
+              <span class="is-invisible">Maintenance</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You created a
+              <strong><a href="#">new version</a></strong>
+              of
+              <a href="#">Zanata</a>
+              .
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                1 day ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half"><i aria-hidden="true"
+              class="i--large i--review" title="Review"></i>
+              <span class="is-invisible">Review</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You reviewed <strong>145 words</strong>
+              in
+              <a href="#">Spacewalk</a>
+              , finishing on &#8220;
+              <a href="#">(GMT+0800) Australia (Western)</a>
+              &#8221;
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li><i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                10 mins ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">StringResource</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">zh-Hant</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral"
+                  title="Version"><span class="is-invisible">Version</span></i>
+                <a href="#">master</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--translate" title="Translation"></i>
+              <span class="is-invisible">Translation</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You translated <strong>537 words</strong>
+              in
+              <a href="#">Zanata</a>
+              , finishing on &#8220;
+              <a href="#">Determines how the project is treated for upload…</a>
+              &#8221;
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                25 mins ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">Japanese</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral"
+                  title="Version"><span class="is-invisible">Version</span></i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--document"
+                title="Uploaded source documents"></i>
+              <span class="is-invisible">Review</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You uploaded source documents of
+              <strong>453 words</strong>
+              to
+              <a href="#">Spacewalk</a>
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                20 mins ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--translate-up"
+                title="Uploaded translations"></i>
+              <span class="is-invisible">Uploaded Translation</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You uploaded translations of
+              <strong>2014 words</strong>
+              to
+              <a href="#">Zanata</a>
+              , finishing on &#8220;
+              <a href="#">If no project type is specified, the type from…</a>
+              &#8221;
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                2 hours ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--document txt--neutral"
+                  title="Document"></i>
+                <span class="is-invisible">Document</span>
+                <a href="#">Messages</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--language txt--neutral"
+                  title="Language"></i>
+                <span class="is-invisible">Language</span>
+                <a href="#">Japanese</a>
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <p class="l--float-right txt--neutral l--push-left-half">
+              <i aria-hidden="true" class="i--large i--maintain" title="Maintenance"></i>
+              <span class="is-invisible">Maintenance</span>
+            </p>
+
+            <p class="l--push-all-0">
+              You created a
+              <strong><a href="#">new version</a></strong>
+              of
+              <a href="#">Zanata</a>
+              .
+            </p>
+            <ul class="list--horizontal txt--meta">
+              <li>
+                <i aria-hidden="true" class="i i--clock txt--neutral" title="Time"></i>
+                <span class="is-invisible">Time</span>
+                1 day ago
+              </li>
+              <li class="reveal__target">
+                <i aria-hidden="true" class="i i--version txt--neutral" title="Version">
+                  <span class="is-invisible">Version</span>
+                </i>
+                <a href="#">3.0</a>
+              </li>
+            </ul>
+          </li>
+          <a href="#" class="d--top loader">
+            <span class="loader__label">more activity</span>
+          </a>
+        </ui:repeat>
+      </ul>
+      </s:fragment>
+    </h:form>
+  </div>
 </ui:composition>

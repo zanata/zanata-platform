@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Function;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -35,15 +36,20 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
+
+import javax.annotation.Nullable;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -53,6 +59,9 @@ public class DashboardAction implements Serializable {
 
     @In
     private GravatarService gravatarServiceImpl;
+    
+    @In
+    private AccountDAO accountDAO;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -90,6 +99,18 @@ public class DashboardAction implements Serializable {
 
     public String getUserFullName() {
         return authenticatedAccount.getPerson().getName();
+    }
+
+    public String getUserLanguageTeams() {
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
+        return StringUtil.concat(account.getPerson().getLanguageMemberships(),
+                ',', new Function<HLocale, String>() {
+                    @Nullable
+                    @Override
+                    public String apply(@Nullable HLocale locale) {
+                        return locale.retrieveDisplayName();
+                    }
+                });
     }
 
     @CachedMethodResult
