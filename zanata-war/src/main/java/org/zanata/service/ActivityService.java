@@ -51,13 +51,14 @@ public interface ActivityService {
      * Get user activities in project
      *
      * @param personId
-     * @param projectId
+     * @param versionIds
      * @param offset
      * @param maxResults
      * @return List<Activity>
      */
-    List<Activity> findLatestProjectActivities(long personId, long projectId,
-            int offset, int maxResults);
+    List<Activity> findLatestVersionActivities(long personId,
+        List<Long> versionIds,
+        int offset, int maxResults);
 
     /**
      * Get user activities with given contextId

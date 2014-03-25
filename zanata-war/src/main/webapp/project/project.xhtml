@@ -105,7 +105,7 @@
         </div>
         <div class="l--pad-all-half">
           <ui:param name="activities"
-            value="#{projectHomeAction.getProjectLatestActivity()}"/>
+            value="#{projectHomeAction.getProjectLastActivity()}"/>
           <s:fragment rendered="#{not empty activities}">
             <ui:repeat value="#{activities}" var="activity">
               <div class="txt--meta">

@@ -23,10 +23,13 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,7 +48,6 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
@@ -60,6 +62,8 @@ import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -131,15 +135,23 @@ public class ProjectHomeAction extends AbstractSortAction implements
             new VersionItemComparator(getVersionSortingList());
 
     @CachedMethodResult
-    public List<Activity> getProjectLatestActivity() {
+    public List<Activity> getProjectLastActivity() {
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
             return Lists.newArrayList();
         }
 
-        HProject project = projectDAO.getBySlug(slug);
-        return activityServiceImpl
-                .findLatestProjectActivities(authenticatedAccount.getPerson()
-                        .getId(), project.getId(), 0, 1);
+        Collection<Long> versionIds =
+                Collections2.transform(getProjectVersions(),
+                        new Function<VersionItem, Long>() {
+                            @Override
+                            public Long apply(@Nullable VersionItem input) {
+                                return input.getVersion().getId();
+                            }
+                        });
+
+        return activityServiceImpl.findLatestVersionActivities(
+                authenticatedAccount.getPerson().getId(),
+                Lists.newArrayList(versionIds), 0, 1);
     }
 
     @CachedMethodResult
