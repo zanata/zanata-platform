@@ -10,6 +10,13 @@
 
 <ui:define name="page_title">#{messages['jsf.PageTitle']}</ui:define>
 <ui:define name="center_content">
+
+<script type="text/javascript">
+  jQuery(function(){
+    onTabClick(jQuery('#activity'));
+  })
+</script>
+
 <s:fragment rendered="#{identity.loggedIn}">
   <div class="g">
     <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
@@ -95,21 +102,40 @@
       <div class="tabs--lined">
       <nav class="tabs__nav">
         <ul>
-          <li><a href="/dashboard" class="is-active"><i class="i i--clock"></i><span
-            class="is-hidden--s i__text--right">Activity</span></a></li>
+          <li>
+            <a id="activity"
+              href="#{request.contextPath}/dashboard/activity"
+              class="js-tab is-active" onclick="return false;">
+            <i class="i i--clock"></i>
+            <span
+              class="is-hidden--s i__text--right">Activity</span>
+            </a>
+          </li>
           <li><a href="/dashboard/projects"><i class="i i--project"></i><span
             class="is-hidden--s i__text--right">Projects <span
             class="txt--neutral"> 3</span></span></a></li>
           <li><a href="/dashboard/groups"><i class="i i--group"></i><span
             class="is-hidden--s i__text--right">Groups<span
             class="txt--neutral"> 5</span></span></a></li>
-          <li class="tab__end"><a href="/dashboard/settings" title="Account Settings"><span
-            class="is-hidden--s i__text--left">Settings</span><i class="i i--settings"
-            aria-hidden="true"></i></a></li>
+          <li class="tab__end">
+            <a href="#{request.contextPath}/dashboard/settings"
+              id="settings" class="js-tab"
+              title="Account Settings"
+              onclick="return false;">
+                <span
+                class="is-hidden--s i__text--left">Settings</span><i class="i i--settings"
+                aria-hidden="true"></i>
+            </a>
+          </li>
         </ul>
       </nav>
       <div class="tabs__content panels__container l--push-top-1">
-        <ui:include src="activity.xhtml"/>
+        <div id="activity_content" class="is-hidden">
+          <ui:include src="activity.xhtml"/>
+        </div>
+        <div id="settings_content" class="is-hidden">
+          <ui:include src="settings.xhtml"/>
+        </div>
       </div>
     </div>
     </div>
