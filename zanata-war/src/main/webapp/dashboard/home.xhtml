@@ -13,7 +13,7 @@
 <s:fragment rendered="#{identity.loggedIn}">
   <div class="g">
     <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
-      <p class="txt--meta l--push-all-0">Dashboard</p>
+      <p class="txt--meta l--push-all-0">#{messages['jsf.Dashboard']}</p>
 
       <div class="g--loose">
       <div class="g__item w--1-2-m">
@@ -28,9 +28,6 @@
             <ul class="list--no-bullets txt--meta">
               <li><i class="i i--user list__icon" title="Username"></i>#{dashboardAction.getUsername()}
               </li>
-              <li><i class="i i--translate list__icon"
-                title="Location"></i>Brisbane, Australia
-              </li>
               <li><i class="i i--language list__icon"
                 title="Spoken languages"></i>#{dashboardAction.getUserLanguageTeams()}
               </li>
@@ -42,50 +39,27 @@
         <div class="tabs--lined">
           <nav class="tabs__nav">
             <ul>
-              <li><a href="#" class="is-active">Today</a></li>
-              <li><a href="#">This Week</a></li>
-              <li><a href="#">This Month</a></li>
+              <li><a href="javascript:void(0);" id="activity-today" class="js-tab is-active">#{messages['jsf.activity.today.label']}</a></li>
+              <li><a href="javascript:void(0);" id="activity-week" class="js-tab">#{messages['jsf.activity.week.label']}</a></li>
+              <li><a href="javascript:void(0);" id="activity-month" class="js-tab">#{messages['jsf.activity.month.label']}</a></li>
             </ul>
           </nav>
           <div class="tabs__content l--pad-h-half l--pad-top-1">
-            <ul class="g">
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">2,045</span>
-                    <span class="stats__unit">Words translated</span>
-                  </span>
-              </li>
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">367</span>
-                    <span class="stats__unit">Messages translated</span>
-                  </span>
-              </li>
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">6</span>
-                    <span class="stats__unit">Documents translated</span>
-                  </span>
-              </li>
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">5</span>
-                    <span class="stats__unit">Hours of translations</span>
-                  </span>
-              </li>
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">3</span>
-                    <span class="stats__unit">Documents reviewed</span>
-                  </span>
-              </li>
-              <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
-                  <span class="stats">
-                    <span class="stats__figure">367</span>
-                    <span class="stats__unit">Words reviewed</span>
-                  </span>
-              </li>
-            </ul>
+            <div id="activity-today_content" class="is-hidden">
+              <ui:include src="../WEB-INF/layout/dashboard/stats.xhtml">
+                <ui:param name="userStats" value="#{dashboardAction.getTodayStats()}"/>
+              </ui:include>
+            </div>
+            <div id="activity-week_content" class="is-hidden">
+              <ui:include src="../WEB-INF/layout/dashboard/stats.xhtml">
+                <ui:param name="userStats" value="#{dashboardAction.getWeekStats()}"/>
+              </ui:include>
+            </div>
+            <div id="activity-month_content" class="is-hidden">
+              <ui:include src="../WEB-INF/layout/dashboard/stats.xhtml">
+                <ui:param name="userStats" value="#{dashboardAction.getMonthStats()}"/>
+              </ui:include>
+            </div>
           </div>
         </div>
       </div>

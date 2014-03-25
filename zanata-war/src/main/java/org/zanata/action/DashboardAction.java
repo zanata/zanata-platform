@@ -44,12 +44,18 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
 
 import javax.annotation.Nullable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -59,7 +65,10 @@ public class DashboardAction implements Serializable {
 
     @In
     private GravatarService gravatarServiceImpl;
-    
+
+    @In
+    private ActivityService activityServiceImpl;
+
     @In
     private AccountDAO accountDAO;
 
@@ -184,5 +193,26 @@ public class DashboardAction implements Serializable {
 
     public String getCreateVersionUrl(String projectSlug) {
         return urlUtil.createNewVersionUrl(projectSlug);
+    }
+
+    public DashboardUserStats getTodayStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfDay(now), DateUtil.getEndOfTheDay(now));
+    }
+
+    public DashboardUserStats getWeekStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfWeek(now), DateUtil.getEndOfTheWeek(now));
+    }
+
+    public DashboardUserStats getMonthStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfMonth(now), DateUtil.getEndOfTheMonth(now));
     }
 }
