@@ -35,6 +35,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -51,6 +52,8 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+import org.zanata.util.DateUtil;
+import org.zanata.util.StatisticsUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -110,7 +113,8 @@ public class ActivityServiceImpl implements ActivityService {
         Lock lock = activityLockManager.getLock(actorId);
         lock.lock();
         try {
-            logActivityAlreadyLocked(actorId, context, target, activityType, wordCount);
+            logActivityAlreadyLocked(actorId, context, target, activityType,
+                    wordCount);
         } finally {
             lock.unlock();
         }
@@ -118,14 +122,16 @@ public class ActivityServiceImpl implements ActivityService {
 
     /**
      * Precondition: current thread must hold a lock for the person 'actorId'.
+     *
      * @param actorId
      * @param context
      * @param target
      * @param activityType
      * @param wordCount
      */
-    private void logActivityAlreadyLocked(long actorId, IsEntityWithType context,
-            IsEntityWithType target, ActivityType activityType, int wordCount) {
+    private void logActivityAlreadyLocked(long actorId,
+            IsEntityWithType context, IsEntityWithType target,
+            ActivityType activityType, int wordCount) {
         if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =
@@ -212,5 +218,24 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public int getActivityCountByActor(long personId) {
         return activityDAO.getActivityCountByActor(personId);
+    }
+
+    @Override
+    public DashboardUserStats getDashboardUserStatistic(Long personId,
+            Date startDate, Date endDate) {
+        DashboardUserStats stats = new DashboardUserStats();
+        int[] result =
+                activityDAO.getTranslatedStats(personId, startDate, endDate);
+
+        stats.setWordsTranslated(result[0]);
+        stats.setMessagesTranslated(result[1]);
+        stats.setDocumentsTranslated(result[2]);
+
+        result = activityDAO.getReviewedStats(personId, startDate, endDate);
+        stats.setWordsReviewed(result[0]);
+        stats.setMessagesReviewed(result[1]);
+        stats.setDocumentsReviewed(result[2]);
+
+        return stats;
     }
 }

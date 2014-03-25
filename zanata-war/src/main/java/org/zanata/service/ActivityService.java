@@ -23,6 +23,8 @@ package org.zanata.service;
 import java.util.Date;
 import java.util.List;
 
+import org.zanata.action.DashboardAction;
+import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
@@ -100,4 +102,15 @@ public interface ActivityService {
      * @return
      */
     int getActivityCountByActor(long personId);
+
+    /**
+     * Return user's statistic for dashboard for given time frame
+     *
+     * @param personId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    DashboardUserStats getDashboardUserStatistic(Long personId, Date startDate,
+            Date endDate);
 }
