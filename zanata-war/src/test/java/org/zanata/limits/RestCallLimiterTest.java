@@ -286,21 +286,20 @@ public class RestCallLimiterTest {
 
         // Then: at the beginning 1 request should be blocked meanwhile change
         // active limit will happen
-        // the update request will wait until the blocked request finish and
-        // change the limit
+        // the update request will change the semaphore so new requests will be
+        // operating on new semaphore object
         List<Long> timeUsedInMillis =
                 getTimeUsedInMillisRoundedUpToTens(futures);
 
         log.info("result: {}", timeUsedInMillis);
-        // initial blocked thread's release will happen BEFORE change takes
-        // effect (thus permit won't be added to changed semaphore)
+        // initial blocked thread's release will operate on old semaphore which
+        // was thrown away
         assertThat(limiter.availableActivePermit(), Matchers.is(3));
         // 2 request with no block, 1 update request (indicated as -10),
-        // 1 initially blocked request, 2 delay requests blocked in which 1 is
-        // responsible for making the change
+        // 1 initially blocked request, 2 delay requests will not block
         Iterable<Long> blocked =
                 Iterables.filter(timeUsedInMillis, new BlockedPredicate());
-        assertThat(blocked, Matchers.<Long> iterableWithSize(3));
+        assertThat(blocked, Matchers.<Long> iterableWithSize(1));
     }
 
     @Test
@@ -321,8 +320,9 @@ public class RestCallLimiterTest {
 
     @Test
     public void zeroPermitMeansNoLimit() {
-        limiter = new RestCallLimiter(
-                new RestCallLimiter.RateLimitConfig(0, 0, 0));
+        limiter =
+                new RestCallLimiter(
+                        new RestCallLimiter.RateLimitConfig(0, 0, 0));
 
         assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
         assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));

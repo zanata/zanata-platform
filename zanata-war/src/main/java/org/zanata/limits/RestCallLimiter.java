@@ -37,9 +37,11 @@ class RestCallLimiter {
     }
 
     /**
-     * May throw an exception if it takes too long to obtain one of the semaphores
+     * May throw an exception if it takes too long to obtain one of the
+     * semaphores
+     *
      * @param taskAfterAcquire
-     * @return
+     *            task to perform after acquire
      */
     public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
         applyConcurrentPermitChangeIfApplicable();
@@ -115,15 +117,8 @@ class RestCallLimiter {
                     // since this block is synchronized, there won't be new
                     // permit acquired from maxActiveSemaphore other than this
                     // thread. It ought to be the last and only one entering in
-                    // this block. It will have to wait for all other previous
-                    // blocked threads to complete before changing the semaphore
-                    log.debug(
-                            "detects max [active] permit change [{}]. Will sleep until all blocking threads [#{}] released.",
-                            activeChange, maxActiveSemaphore.getQueueLength());
-                    while (maxActiveSemaphore.availablePermits() != activeChange.oldLimit) {
-                        Uninterruptibles.sleepUninterruptibly(1,
-                                TimeUnit.NANOSECONDS);
-                    }
+                    // this block. It will replace semaphore and old blocked
+                    // threads will release on old semaphore
                     log.debug(
                             "change max [active] semaphore with new permit {}",
                             activeChange.newLimit);
