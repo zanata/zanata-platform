@@ -41,11 +41,13 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
+import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
@@ -68,6 +70,9 @@ public class DashboardAction implements Serializable {
 
     @In
     private ActivityService activityServiceImpl;
+
+    @In
+    private LanguageTeamService languageTeamServiceImpl;
 
     @In
     private AccountDAO accountDAO;
@@ -214,5 +219,9 @@ public class DashboardAction implements Serializable {
         return activityServiceImpl.getDashboardUserStatistic(
                 authenticatedAccount.getPerson().getId(),
                 DateUtil.getStartOfMonth(now), DateUtil.getEndOfTheMonth(now));
+    }
+
+    public boolean isUserReviewer() {
+        return languageTeamServiceImpl.isUserReviewer(authenticatedAccount.getPerson().getId());
     }
 }

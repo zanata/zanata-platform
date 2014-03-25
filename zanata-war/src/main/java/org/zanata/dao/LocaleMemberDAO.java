@@ -58,6 +58,23 @@ public class LocaleMemberDAO extends
         return query.list();
     }
 
+    /**
+     * Check if person is a reviewer of any language
+     *
+     * @param personId
+     * @return
+     */
+    public List<HLocaleMember> findByPersonWithReviewerRole(Long personId) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "from HLocaleMember where id.person.id= :personId and isReviewer = :isReviewer");
+        query.setParameter("personId", personId);
+        query.setParameter("isReviewer", true);
+        query.setComment("LocaleMemberDAO.findByPersonWithReviewerRole");
+        return query.list();
+    }
+
     public boolean isLocaleCoordinator(Long personId, LocaleId localeId) {
         Query query =
                 getSession()
