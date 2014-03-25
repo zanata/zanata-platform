@@ -1,8 +1,6 @@
 package org.zanata.limits;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,8 +11,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.resteasy.spi.HttpResponse;
 import org.mockito.Mock;
@@ -55,8 +51,7 @@ public class RateLimitingProcessorTest {
         // so that we can verify its interaction
         rateLimitManager = spy(new RateLimitManager());
         processor =
-                spy(new RateLimitingProcessor(API_KEY, response,
-                        runnable));
+                spy(new RateLimitingProcessor());
 
         doReturn(applicationConfiguration).when(processor)
                 .getApplicationConfiguration();
@@ -70,7 +65,7 @@ public class RateLimitingProcessorTest {
         when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(0);
         when(applicationConfiguration.getRateLimitPerSecond()).thenReturn(0D);
 
-        processor.process();
+        processor.process(API_KEY, response, runnable);
 
         verify(runnable).run();
         verifyZeroInteractions(rateLimitManager);
@@ -98,7 +93,7 @@ public class RateLimitingProcessorTest {
 
             @Override
             public Void call() throws Exception {
-                processor.process();
+                processor.process(API_KEY, response, runnable);
                 return null;
             }
         };

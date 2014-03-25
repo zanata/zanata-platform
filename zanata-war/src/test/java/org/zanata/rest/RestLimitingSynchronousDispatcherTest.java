@@ -2,7 +2,6 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.core.ResourceInvoker;
@@ -54,9 +53,9 @@ public class RestLimitingSynchronousDispatcherTest {
                 API_KEY);
 
         dispatcher =
-                spy(new RestLimitingSynchronousDispatcher(providerFactory));
-        doReturn(processor).when(dispatcher).createRateLimitingRequest(
-                eq(API_KEY), same(response), taskCaptor.capture());
+                spy(new RestLimitingSynchronousDispatcher(providerFactory,
+                        processor));
+
         // this way we can verify the task actually called super.invoke()
         doReturn(superInvoker).when(dispatcher).getInvoker(request);
         doNothing().when(dispatcher).invoke(request, response, superInvoker);
@@ -81,7 +80,7 @@ public class RestLimitingSynchronousDispatcherTest {
             throws Exception {
         dispatcher.invoke(request, response);
 
-        verify(processor).process();
+        verify(processor).process(same(API_KEY), same(response), taskCaptor.capture());
 
         // verify task is calling super.invoke
         Runnable task = taskCaptor.getValue();

@@ -9,8 +9,10 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.seam.Component;
 import org.zanata.ApplicationConfiguration;
-import com.google.common.base.Objects;
-import com.google.common.util.concurrent.RateLimiter;
+import com.google.common.base.Function;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,20 +28,18 @@ public class RateLimitingProcessor {
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
 
-    private static final RateLimiter logLimiter = RateLimiter.create(1);
-    private final String apiKey;
-    private final HttpResponse response;
-    private final Runnable taskToRun;
+    private static final Cache<String, LeakyBucket> logLimiters = CacheBuilder
+            .newBuilder().build(
+                    CacheLoader.from(new Function<String, LeakyBucket>() {
+                        @Override
+                        public LeakyBucket apply(String input) {
+                            return new LeakyBucket(1, 5, TimeUnit.MINUTES);
+                        }
+                    }));
 
-    public RateLimitingProcessor(String apiKey,
-            HttpResponse response, Runnable taskToRun) {
-        this.apiKey = apiKey;
-
-        this.response = response;
-        this.taskToRun = taskToRun;
-    }
-
-    public void process() throws Exception {
+    public void
+            process(String apiKey, HttpResponse response, Runnable taskToRun)
+                    throws Exception {
         ApplicationConfiguration appConfig = getApplicationConfiguration();
 
         if (appConfig.getMaxConcurrentRequestsPerApiKey() == 0
@@ -67,14 +67,16 @@ public class RateLimitingProcessor {
         log.debug("check semaphore for {}", this);
 
         if (!rateLimiter.tryAcquireAndRun(taskToRun)) {
-            if (logLimiter.tryAcquire(1, TimeUnit.SECONDS)) {
+            LeakyBucket bucket = logLimiters.getIfPresent(apiKey);
+            if (bucket != null && bucket.tryAcquire()) {
                 log.warn(
                         "{} has too many concurrent requests. Returning status 429",
                         apiKey);
             }
-            String errorMessage = String.format(
-                    "Too many concurrent request for this API key (maximum is %d)",
-                    appConfig.getMaxConcurrentRequestsPerApiKey());
+            String errorMessage =
+                    String.format(
+                            "Too many concurrent request for this API key (maximum is %d)",
+                            appConfig.getMaxConcurrentRequestsPerApiKey());
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
     }
@@ -88,12 +90,6 @@ public class RateLimitingProcessor {
     protected ApplicationConfiguration getApplicationConfiguration() {
         return (ApplicationConfiguration) Component
                 .getInstance("applicationConfiguration");
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).add("id", super.toString())
-                .add("apiKey", apiKey).toString();
     }
 
     private static class RestRateLimiterLoader implements

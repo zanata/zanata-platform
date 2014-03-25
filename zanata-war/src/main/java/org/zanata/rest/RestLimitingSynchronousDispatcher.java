@@ -6,6 +6,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.core.SynchronousDispatcher;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.limits.RateLimitingProcessor;
@@ -21,10 +22,22 @@ import lombok.extern.slf4j.Slf4j;
 class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     static final String API_KEY_ABSENCE_WARNING =
             "You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.";
+    private final RateLimitingProcessor processor;
 
     public RestLimitingSynchronousDispatcher(
             SeamResteasyProviderFactory providerFactory) {
         super(providerFactory);
+        processor = new RateLimitingProcessor();
+    }
+
+    /**
+     * Test to use.
+     */
+    RestLimitingSynchronousDispatcher(
+            ResteasyProviderFactory providerFactory,
+            RateLimitingProcessor processor) {
+        super(providerFactory);
+        this.processor = processor;
     }
 
     @Override
@@ -50,9 +63,8 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
                             response);
                 }
             };
-            RateLimitingProcessor processor =
-                    createRateLimitingRequest(apiKey, response, taskToRun);
-            processor.process();
+
+            processor.process(apiKey, response, taskToRun);
 
         } catch (UnhandledException e) {
             Throwable cause = e.getCause();
@@ -76,13 +88,5 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
             log.error("error processing request", e);
             throw Throwables.propagate(e);
         }
-    }
-
-    /**
-     * Test override-able.
-     */
-    protected RateLimitingProcessor createRateLimitingRequest(String apiKey,
-            HttpResponse response, Runnable runnable) {
-        return new RateLimitingProcessor(apiKey, response, runnable);
     }
 }
