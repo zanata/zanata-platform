@@ -128,12 +128,14 @@ public class ActivityAction implements Serializable {
         case UPLOAD_SOURCE_DOCUMENT:
             return zanataMessages.getMessage(
                     "jsf.dashboard.activity.uploadSource.message",
-                    activity.getWordCount(), getProjectUrl(activity));
+                    activity.getWordCount(), getProjectUrl(activity),
+                    getProjectName(activity));
 
         case UPLOAD_TRANSLATION_DOCUMENT:
             return zanataMessages.getMessage(
                     "jsf.dashboard.activity.uploadTranslation.message",
-                    activity.getWordCount(), getProjectUrl(activity));
+                    activity.getWordCount(), getProjectUrl(activity),
+                    getProjectName(activity));
 
         default:
             return "";
