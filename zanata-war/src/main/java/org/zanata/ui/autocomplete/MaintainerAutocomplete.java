@@ -20,36 +20,11 @@ public abstract class MaintainerAutocomplete extends
     protected PersonDAO personDAO = (PersonDAO) Component
             .getInstance(PersonDAO.class);
 
-    protected ZanataMessages zanataMessages = (ZanataMessages) Component
-            .getInstance(ZanataMessages.class);
-
-    protected ConversationScopeMessages conversationScopeMessages =
-            ConversationScopeMessages.instance();
-
     protected abstract List<HPerson> getMaintainers();
-
-    protected abstract void addMaintainers(HPerson maintainer);
-
-    protected abstract void displaySuccessfulMessage(String maintainerName);
-
-    protected abstract void update();
 
     @Override
     public List<HPerson> suggest() {
         List<HPerson> personList = personDAO.findAllContainingName(getQuery());
         return FilterUtil.filterOutPersonList(getMaintainers(), personList);
-    }
-
-    @Override
-    public void onSelectItemAction() {
-        if (StringUtils.isEmpty(getSelectedItem())) {
-            return;
-        }
-
-        HPerson maintainer = personDAO.findByUsername(getSelectedItem());
-        addMaintainers(maintainer);
-        update();
-        reset();
-        displaySuccessfulMessage(maintainer.getName());
     }
 }

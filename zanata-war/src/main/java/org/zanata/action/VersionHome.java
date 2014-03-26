@@ -301,12 +301,11 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     /**
      * This is for autocomplete components of which ConversationScopeMessages
      * will be null
-     * 
+     *
      * @param conversationScopeMessages
      * @return
      */
-    private String updateFromAutocomplete(
-            ConversationScopeMessages conversationScopeMessages) {
+    private String update(ConversationScopeMessages conversationScopeMessages) {
         if (this.conversationScopeMessages == null) {
             this.conversationScopeMessages = conversationScopeMessages;
         }
@@ -386,7 +385,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     /**
      * If this action is enabled(Warning or Error), then it's exclusive
      * validation will be turn off
-     * 
+     *
      */
     private void ensureMutualExclusivity(
             ValidationAction selectedValidationAction) {
@@ -418,21 +417,24 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             return localeServiceImpl.getSupportedAndEnabledLocales();
         }
 
+        /**
+         * Action when an item is selected
+         */
         @Override
-        protected void updateInstanceList(HLocale hLocale) {
-            getInstance().getCustomizedLocales().add(hLocale);
-        }
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
 
-        @Override
-        protected void update() {
-            updateFromAutocomplete(conversationScopeMessages);
-        }
+            getInstance().getCustomizedLocales().add(locale);
 
-        @Override
-        protected void displaySuccessfulMessage(String localeDisplayName) {
+            update(conversationScopeMessages);
+            reset();
             conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.iteration.LanguageAdded",
-                            localeDisplayName));
+                            locale.retrieveDisplayName()));
+
         }
     }
 

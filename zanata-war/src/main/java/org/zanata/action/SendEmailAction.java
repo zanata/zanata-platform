@@ -51,11 +51,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Sends an email to a specified role.
- * 
+ *
  * Currently just sends an email to admin.
- * 
+ *
  * @author damason@redhat.com
- * 
+ *
  */
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
@@ -160,7 +160,7 @@ public class SendEmailAction implements Serializable {
     /**
      * Sends the email by rendering an appropriate email template with the
      * values in this bean.
-     * 
+     *
      * @return a view to redirect to. This should be replaced with configuration
      *         in pages.xml
      */

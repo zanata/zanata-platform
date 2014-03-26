@@ -24,12 +24,6 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
 
     protected abstract Collection<HLocale> getLocales();
 
-    protected abstract void updateInstanceList(HLocale hLocale);
-
-    protected abstract void update();
-
-    protected abstract void displaySuccessfulMessage(String localeDisplayName);
-
     /**
      * Return results on search
      */
@@ -46,21 +40,5 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
                     }
                 });
         return Lists.newArrayList(filtered);
-    }
-
-    @Override
-    public void onSelectItemAction() {
-        if (StringUtils.isEmpty(getSelectedItem())) {
-            return;
-        }
-
-        HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
-
-        updateInstanceList(locale);
-
-        update();
-        reset();
-        displaySuccessfulMessage(locale.retrieveDisplayName());
-
     }
 }

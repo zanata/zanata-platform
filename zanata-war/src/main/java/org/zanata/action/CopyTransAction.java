@@ -42,7 +42,7 @@ import lombok.Setter;
 
 /**
  * Copy Trans page action bean.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

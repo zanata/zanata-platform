@@ -27,10 +27,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -68,11 +72,9 @@ import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Name("projectHome")
 public class ProjectHome extends SlugHome<HProject> {
@@ -479,7 +481,7 @@ public class ProjectHome extends SlugHome<HProject> {
     /**
      * If this action is enabled(Warning or Error), then it's exclusive
      * validation will be turn off
-     * 
+     *
      * @param selectedValidationAction
      */
     private void ensureMutualExclusivity(
@@ -511,12 +513,11 @@ public class ProjectHome extends SlugHome<HProject> {
     /**
      * This is for autocomplete components of which ConversationScopeMessages
      * will be null
-     * 
+     *
      * @param conversationScopeMessages
      * @return
      */
-    private String updateFromAutocomplete(
-            ConversationScopeMessages conversationScopeMessages) {
+    private String update(ConversationScopeMessages conversationScopeMessages) {
         if (this.conversationScopeMessages == null) {
             this.conversationScopeMessages = conversationScopeMessages;
         }
@@ -535,21 +536,23 @@ public class ProjectHome extends SlugHome<HProject> {
             return getInstanceMaintainers();
         }
 
+        /**
+         * Action when an item is selected
+         */
         @Override
-        protected void addMaintainers(HPerson maintainer) {
-            getInstance().addMaintainer(maintainer);
-        }
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
 
-        @Override
-        protected void displaySuccessfulMessage(String maintainerName) {
+            HPerson maintainer = personDAO.findByUsername(getSelectedItem());
+            getInstance().addMaintainer(maintainer);
+            update(conversationScopeMessages);
+            reset();
+
             conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.project.MaintainerAdded",
-                            maintainerName));
-        }
-
-        @Override
-        protected void update() {
-            updateFromAutocomplete(conversationScopeMessages);
+                            maintainer.getName()));
         }
     }
 
@@ -560,25 +563,28 @@ public class ProjectHome extends SlugHome<HProject> {
             return getInstance().getCustomizedLocales();
         }
 
+        /**
+         * Action when an item is selected
+         */
         @Override
-        protected void updateInstanceList(HLocale hLocale) {
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+
             if (!getInstance().isOverrideLocales()) {
                 getInstance().setOverrideLocales(true);
                 getInstance().getCustomizedLocales().clear();
             }
-            getInstance().getCustomizedLocales().add(hLocale);
-        }
+            getInstance().getCustomizedLocales().add(locale);
 
-        @Override
-        protected void update() {
-            updateFromAutocomplete(conversationScopeMessages);
-        }
-
-        @Override
-        protected void displaySuccessfulMessage(String localeDisplayName) {
+            update(conversationScopeMessages);
+            reset();
             conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.project.LanguageAdded",
-                            localeDisplayName));
+                            locale.retrieveDisplayName()));
         }
     }
 
