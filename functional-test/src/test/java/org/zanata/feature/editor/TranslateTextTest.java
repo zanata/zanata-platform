@@ -82,7 +82,9 @@ public class TranslateTextTest {
         EditorPage editorPage =
                 new ProjectWorkFlow().createNewProject(projectSettings)
                         .clickCreateVersionLink().inputVersionId("text")
-                        .saveVersion().gotoDocumentTab()
+                        .saveVersion()
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
                         .pressUploadFileButton()
                         .enterFilePath(testfile.getAbsolutePath())
                         .submitUpload().translate("fr", testfile.getName());

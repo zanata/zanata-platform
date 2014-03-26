@@ -357,11 +357,12 @@ public class EditorPage extends BasePage {
      * @param validation the option to check
      * @return new EditorPage
      */
-    public boolean validationOptionIsAvailable(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
+    public boolean isValidationOptionAvailable(Validations validation) {
         return getDriver()
-                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).isEnabled();
+                .findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .isEnabled();
     }
 
     /**
@@ -370,11 +371,12 @@ public class EditorPage extends BasePage {
      * @param validation the option to check
      * @return new EditorPage
      */
-    public boolean validationOptionIsSelected(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
+    public boolean isValidationOptionSelected(Validations validation) {
         return getDriver()
-                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).isSelected();
+                .findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .isSelected();
     }
 
     /**
@@ -384,9 +386,10 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
-        getDriver().findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).click();
+        getDriver().findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .click();
         return new EditorPage(getDriver());
     }
 
@@ -405,7 +408,7 @@ public class EditorPage extends BasePage {
                 return "Check that printf style (%x) variables are consistent";
             case TABS:
                 return "Check whether source and target have the same " +
-                        "number of tabs";
+                        "number of tabs.";
             case XML:
                 return "Check that XML entity are complete";
             default:

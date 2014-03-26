@@ -25,7 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
@@ -55,7 +55,7 @@ public class ProjectSearchTest {
                 dashboardPage.getProjectSearchAutocompleteItems(),
                 hasItem("about fedora"));
 
-        ProjectPage projectPage =
+        ProjectBasePage projectPage =
                 dashboardPage.clickSearchEntry("about fedora");
 
         assertThat("The project page is the correct one", projectPage
@@ -79,7 +79,7 @@ public class ProjectSearchTest {
     public void normalUserCannotSearchObsolete() {
         new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                 .goToProject("about fedora").gotoSettingsTab()
-                .gotoSettingsGeneral().archiveProject(true).logout();
+                .gotoSettingsGeneral().archiveProject().logout();
 
         DashboardPage dashboardPage =
                 new LoginWorkFlow().signIn("translator", "translator");

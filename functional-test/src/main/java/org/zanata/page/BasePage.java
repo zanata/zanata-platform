@@ -20,7 +20,6 @@
  */
 package org.zanata.page;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -36,7 +35,7 @@ import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.page.utility.HomePage;
@@ -251,7 +250,7 @@ public class BasePage extends CorePage {
                 "general-search-form", "projectAutocomplete");
     }
 
-    public ProjectPage clickSearchEntry(final String searchEntry) {
+    public ProjectVersionsPage clickSearchEntry(final String searchEntry) {
         WebElement searchItem =
                 waitForTenSec().until(new Function<WebDriver, WebElement>() {
                     @Override
@@ -270,7 +269,7 @@ public class BasePage extends CorePage {
                     }
                 });
         searchItem.click();
-        return new ProjectPage(getDriver());
+        return new ProjectVersionsPage(getDriver());
     }
 
     public String getHtmlSource(WebElement webElement) {

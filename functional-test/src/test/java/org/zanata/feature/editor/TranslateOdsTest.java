@@ -29,7 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -78,10 +78,12 @@ public class TranslateOdsTest {
         projectSettings.put("Name", "ods-project");
         projectSettings.put("Project Type", "File");
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new ProjectWorkFlow().createNewProject(projectSettings)
                         .clickCreateVersionLink().inputVersionId("ods")
-                        .saveVersion().gotoDocumentTab()
+                        .saveVersion()
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
                         .pressUploadFileButton()
                         .enterFilePath(testfile.getAbsolutePath())
                         .submitUpload();

@@ -183,4 +183,15 @@ public class CorePage extends AbstractPage {
         }
         return errorList;
     }
+
+    /* The system sometimes moves too fast for the Ajax pages, so provide a
+     * pause
+     */
+    public void slightPause() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            log.warn("Pause was interrupted");
+        }
+    }
 }

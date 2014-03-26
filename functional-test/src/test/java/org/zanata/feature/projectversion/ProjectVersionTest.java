@@ -19,21 +19,26 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.feature.project;
+package org.zanata.feature.projectversion;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.CreateVersionPage;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projectversion.CreateVersionPage;
+import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 
 /**
  * @author Damian Jansen <a
@@ -54,7 +59,7 @@ public class ProjectVersionTest {
 
         assertThat("The empty value is rejected",
                 createVersionPage.getErrors(),
-                Matchers.hasItem("value is required"));
+                hasItem("value is required"));
     }
 
     @Test
@@ -68,69 +73,68 @@ public class ProjectVersionTest {
                 "must start and end with letter or number, "
                         + "and contain only letters, numbers, underscores and hyphens.";
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                Matchers.hasItem(formatError));
+                hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("B-").waitForNumErrors(1);
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                Matchers.hasItem(formatError));
+                hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("_C_").waitForNumErrors(1);
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                Matchers.hasItem(formatError));
+                hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("A-B_C").waitForNumErrors(0);
 
         assertThat("The input is acceptable", createVersionPage.getErrors(),
-                Matchers.not(Matchers.hasItem(formatError)));
+                not(hasItem(formatError)));
     }
 
     @Test
-    public void overrideLanguages() {
-        ProjectVersionPage versionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").clickCreateVersionLink()
-                        .inputVersionId("overridetest").saveVersion()
-                        .gotoSettingsTab().gotoSettingsLanguagesTab();
+    public void versionCounterIsUpdated() {
 
-        List<String> enabledLocaleList =
-                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .getEnabledLocaleList();
+        String projectName = "version nums";
 
-        assertThat("The enabled list contains three languages",
-                enabledLocaleList,
-                Matchers.contains("French[fr]", "Hindi[hi]", "Polish[pl]"));
+        assertThat("Login as translator",
+                new LoginWorkFlow().signIn("translator", "translator")
+                        .loggedInAs(),
+                equalTo("translator"));
 
-        assertThat(
-                "The enabled list does not contains 'English (United States)[en-US]'",
-                enabledLocaleList, Matchers.not(Matchers
-                        .contains("English (United States)[en-US]")));
+        assertThat("The project is created",
+                new ProjectWorkFlow()
+                        .createNewSimpleProject("version-nums", projectName)
+                        .getProjectName(),
+                equalTo(projectName));
 
-        versionPage =
-                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .removeLocale("pl");
+        ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
+                .createNewProjectVersion(projectName, "alpha")
+                .clickProjectLink(projectName);
+        projectVersionsPage.waitForDisplayedVersions(1);
 
-        enabledLocaleList =
-                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .getEnabledLocaleList();
+        assertThat("The version count is 1",
+                projectVersionsPage.getNumberOfDisplayedVersions(),
+                equalTo(1));
 
-        assertThat(
-                "The enabled list does not contains 'English (United States)[en-US]' and 'Polish[pl]'",
-                enabledLocaleList, Matchers.not(Matchers.contains(
-                        "English (United States)[en-US]", "Polish[pl]")));
+        projectVersionsPage = new ProjectWorkFlow()
+                .createNewProjectVersion("version nums", "bravo")
+                .clickProjectLink(projectName);
+        projectVersionsPage.waitForDisplayedVersions(2);
 
-        enabledLocaleList =
-                versionPage.gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .enterSearchLocale("en-US")
-                        .addLocale("English (United States)[en-US]")
-                        .getEnabledLocaleList();
+        assertThat("The version count is 2",
+                projectVersionsPage.getNumberOfDisplayedVersions(),
+                equalTo(2));
 
-        assertThat("Three languages are available to translate",
-                enabledLocaleList, Matchers.containsInAnyOrder("French[fr]",
-                        "Hindi[hi]", "English (United States)[en-US]"));
+        projectVersionsPage = projectVersionsPage
+                .clickSearchIcon()
+                .enterVersionSearch("alpha");
+        projectVersionsPage.waitForDisplayedVersions(1);
+
+        assertThat("The version count is 1",
+                projectVersionsPage.getNumberOfDisplayedVersions(),
+                equalTo(1));
     }
 }

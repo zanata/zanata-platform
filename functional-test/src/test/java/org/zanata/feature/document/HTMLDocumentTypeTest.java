@@ -28,7 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -72,10 +72,14 @@ public class HTMLDocumentTypeTest {
                                 "<html><title>Test content</title><br>This is <b>Bold</b> text</html>");
         String testFileName = htmlfile.getName();
         String successfullyUploaded = "Document " + testFileName + " uploaded.";
-        ProjectVersionPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+        VersionLanguagesPage projectVersionPage =
+                new LoginWorkFlow().signIn("admin", "admin")
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(htmlfile.getAbsolutePath())
                         .submitUpload();
         assertThat("Document uploaded notification shows",

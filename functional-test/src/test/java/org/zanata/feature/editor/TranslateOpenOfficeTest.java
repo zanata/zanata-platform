@@ -93,7 +93,8 @@ public class TranslateOpenOfficeTest {
         EditorPage editorPage =
                 new ProjectWorkFlow().createNewProject(projectSettings)
                         .clickCreateVersionLink().inputVersionId(extension)
-                        .saveVersion().gotoDocumentTab()
+                        .saveVersion().gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
                         .pressUploadFileButton()
                         .enterFilePath(testfile.getAbsolutePath())
                         .submitUpload().translate("fr", testfile.getName());

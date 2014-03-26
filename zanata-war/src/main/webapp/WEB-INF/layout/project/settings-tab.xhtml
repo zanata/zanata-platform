@@ -136,6 +136,7 @@
 
     <div class="l--push-top-1">
       <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
+        id="button-update-settings"
         action="#{projectHome.update}"
         rendered="#{projectHome.managed}"
         render="project-info"
@@ -146,6 +147,7 @@
       <s:div styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{projectHome.instance.status eq 'ACTIVE'}">
         <a4j:commandLink styleClass="button--warning l--push-bottom-half"
+          id="button-lock-project"
           action="#{projectHome.updateStatus('R')}" render="status">
           <i
             class="i--left i--lock"></i> #{messages['jsf.project.readonly']}
@@ -163,6 +165,7 @@
           </button>
         </s:fragment>
         <a4j:commandLink styleClass="button--success l--push-bottom-half"
+          id="button-unlock-project"
           rendered="#{projectHome.instance.status == 'READONLY'}"
           action="#{projectHome.updateStatus('A')}" render="status">
           <i
