@@ -1,6 +1,6 @@
 language: java
 install: true
-script: mvn --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
 jdk:
   - openjdk6
   - openjdk7
