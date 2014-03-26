@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
@@ -89,10 +89,10 @@ public class ProjectMaintainerTest {
         assertThat(client.isPushSuccessful(output), Matchers.is(true));
 
         new LoginWorkFlow().signIn("admin", "admin");
-        ProjectVersionPage versionPage =
+        VersionLanguagesPage versionPage =
                 new BasicWorkFlow().goToPage(String.format(
                         PROJECT_VERSION_TEMPLATE, "plurals", "master"),
-                        ProjectVersionPage.class);
+                        VersionLanguagesPage.class);
         assertThat(versionPage.getStatisticsForLocale("pl"),
                 Matchers.containsString("0.0%"));
 
@@ -119,10 +119,10 @@ public class ProjectMaintainerTest {
                         + " -Dzanata.projectConfig="
                         + updatedZanataXml.getAbsolutePath());
 
-        ProjectVersionPage betaVersionPage =
+        VersionLanguagesPage betaVersionPage =
                 new BasicWorkFlow().goToPage(String.format(
                         PROJECT_VERSION_TEMPLATE, "plurals", "beta"),
-                        ProjectVersionPage.class);
+                        VersionLanguagesPage.class);
 
         assertThat(betaVersionPage.getStatisticsForLocale("pl"),
                 Matchers.containsString("6.0%"));

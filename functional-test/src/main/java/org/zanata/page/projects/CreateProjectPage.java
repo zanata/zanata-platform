@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -48,13 +48,13 @@ public class CreateProjectPage extends BasePage {
         super(driver);
     }
 
-    public CreateProjectPage inputProjectId(String projectId) {
+    public CreateProjectPage enterProjectId(String projectId) {
         projectIdField.sendKeys(projectId);
         defocus();
         return new CreateProjectPage(getDriver());
     }
 
-    public CreateProjectPage inputProjectName(final String projectName) {
+    public CreateProjectPage enterProjectName(final String projectName) {
         getDriver().findElement(By.id("project-form:nameField:name")).sendKeys(
                 projectName);
         defocus();
@@ -81,22 +81,8 @@ public class CreateProjectPage extends BasePage {
         return this;
     }
 
-    public CreateProjectPage archiveProject(boolean isArchive) {
-        if (isArchive) {
-            getDriver().findElement(
-                    By.id("settings-general-form:button-archive-project"))
-                    .click();
-        } else {
-            getDriver().findElement(
-                    By.id("settings-general-form:button-unarchive-project"))
-                    .click();
-        }
-
-        return new CreateProjectPage(getDriver());
-    }
-
-    public ProjectPage saveProject() {
+    public ProjectVersionsPage pressCreateProject() {
         clickAndCheckErrors(createButton);
-        return new ProjectPage(getDriver());
+        return new ProjectVersionsPage(getDriver());
     }
 }

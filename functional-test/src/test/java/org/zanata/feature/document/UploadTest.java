@@ -30,7 +30,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
+import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
@@ -80,10 +81,11 @@ public class UploadTest {
         String testFileName = originalFile.getName();
         String successfullyUploaded = "Document " + testFileName + " uploaded.";
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(originalFile.getAbsolutePath())
                         .submitUpload();
 
@@ -114,27 +116,32 @@ public class UploadTest {
                 testFileGenerator.generateTestFileWithContent(
                         "cancelFileUpload", ".txt", "Cancel File Upload Test");
 
-        ProjectVersionPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
-                        .enterFilePath(cancelUploadFile.getAbsolutePath())
-                        .cancelUpload();
+        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(cancelUploadFile.getAbsolutePath())
+                .cancelUpload();
 
         assertThat("Document does not show in table",
-                !projectVersionPage
+                !versionDocumentsTab
                         .sourceDocumentsContains("cancelFileUpload.txt"));
     }
 
     @Test
     public void emptyFilenameUpload() {
-        ProjectVersionPage projectVersionPage =
+        VersionDocumentsTab versionDocumentsTab =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton();
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton();
 
         assertThat("The upload button is not available",
-                !projectVersionPage.canSubmitDocument());
+                !versionDocumentsTab.canSubmitDocument());
     }
 
     // RHBZ990836
@@ -149,10 +156,11 @@ public class UploadTest {
         assumeTrue("Data file " + bigFile + " is big",
                 bigFile.length() == fileSizeInMB);
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(bigFile.getAbsolutePath())
                         .submitUpload();
 
@@ -169,19 +177,21 @@ public class UploadTest {
         String successfullyUploaded =
                 "Document " + noFile.getName() + " uploaded.";
 
-        ProjectVersionPage projectVersionPage =
+        VersionDocumentsTab versionDocumentsTab =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(noFile.getAbsolutePath());
 
-        assertThat("Data file " + noFile.getName() + " does not exists",
+        assertThat("Data file " + noFile.getName() + " does not exist",
                 noFile.delete() && !noFile.exists());
 
-        projectVersionPage = projectVersionPage.submitUpload();
-        projectVersionPage.assertNoCriticalErrors();
-        assertThat("Success message is not shown",
-                projectVersionPage.getNotificationMessage(),
+        VersionLanguagesPage versionLanguagesPage = versionDocumentsTab
+                .submitUpload();
+        versionLanguagesPage.assertNoCriticalErrors();
+        assertThat("Success message is shown",
+                versionLanguagesPage.getNotificationMessage(),
                 Matchers.not(Matchers.equalTo(successfullyUploaded)));
     }
 
@@ -194,10 +204,11 @@ public class UploadTest {
         String successfullyUploaded =
                 "Document " + longFile.getName() + " uploaded.";
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(longFile.getAbsolutePath())
                         .submitUpload();
 
@@ -218,10 +229,11 @@ public class UploadTest {
 
         assumeTrue("File is empty", emptyFile.length() == 0);
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(emptyFile.getAbsolutePath())
                         .submitUpload();
 
@@ -241,10 +253,11 @@ public class UploadTest {
         String uploadFailed =
                 "Unrecognized file extension for " + unsupportedFile.getName();
 
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
-                        .gotoDocumentTab().pressUploadFileButton()
+                        .gotoSettingsTab().gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
                         .enterFilePath(unsupportedFile.getAbsolutePath())
                         .submitUpload();
 

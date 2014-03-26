@@ -20,15 +20,19 @@
  */
 package org.zanata.workflow;
 
+import lombok.extern.slf4j.Slf4j;
+import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
+import org.zanata.page.projectversion.VersionLanguagesPage;
+
 import java.util.HashMap;
 import java.util.List;
 
-import org.zanata.page.projects.CreateVersionPage;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.projects.ProjectsPage;
-import lombok.extern.slf4j.Slf4j;
-
+/**
+ * This class represents the work-flows involved when interacting with
+ * projects, such as creating projects and versions and altering settings.
+ */
 @Slf4j
 public class ProjectWorkFlow extends AbstractWebWorkFlow {
 
@@ -42,7 +46,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      *            Project short name
      * @return new Project page for created project
      */
-    public ProjectPage createNewSimpleProject(String projectId,
+    public ProjectVersionsPage createNewSimpleProject(String projectId,
             String projectName) {
         ProjectsPage projectsPage = goToHome().goToProjects();
         List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
@@ -57,8 +61,8 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
             return projectsPage.goToProject(projectName);
         }
         return projectsPage.clickOnCreateProjectLink()
-                .inputProjectId(projectId).inputProjectName(projectName)
-                .saveProject();
+                .enterProjectId(projectId).enterProjectName(projectName)
+                .pressCreateProject();
     }
 
     /**
@@ -70,15 +74,16 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      * @return a new Project page for the created project
      * @see {@link #projectDefaults()}
      */
-    public ProjectPage createNewProject(HashMap<String, String> settings) {
+    public ProjectVersionsPage createNewProject(HashMap<String, String> settings) {
         ProjectsPage projectsPage = goToHome().goToProjects();
         List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
         log.info("current projects: {}", projects);
         return projectsPage.clickOnCreateProjectLink()
-                .inputProjectId(settings.get("Project ID"))
-                .inputProjectName(settings.get("Name"))
+                .enterProjectId(settings.get("Project ID"))
+                .enterProjectName(settings.get("Name"))
                 .enterDescription(settings.get("Description"))
-                .selectProjectType(settings.get("Project Type")).saveProject();
+                .selectProjectType(settings.get("Project Type"))
+                .pressCreateProject();
     }
 
     public static HashMap<String, String> projectDefaults() {
@@ -99,29 +104,67 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      *            project version id
      * @return project version page
      */
-    public ProjectVersionPage createNewProjectVersion(String projectName,
+    public VersionLanguagesPage createNewProjectVersion(String projectName,
             String projectVersion) {
-        ProjectPage projectPage = goToProjectByName(projectName);
-        if (projectPage.getVersions().contains(projectVersion)) {
-            log.warn(
-                    "{} has already been created. Presumably you are running test manually and more than once.",
-                    projectVersion);
-            return projectPage.gotoVersion(projectVersion);
-        }
-        CreateVersionPage createVersionPage =
-                projectPage.clickCreateVersionLink().inputVersionId(
-                        projectVersion);
-        createVersionPage.selectProjectType("Podir");
-        createVersionPage.selectStatus("READONLY");
-        createVersionPage.selectStatus("ACTIVE");
-        return createVersionPage.saveVersion();
+        return createNewProjectVersion(projectName, projectVersion, "Podir");
     }
 
-    public ProjectPage goToProjectByName(String projectName) {
-        ProjectsPage projects =
-                goToHome().goToPage("Projects", ProjectsPage.class);
+    /**
+     * Create a new project version.
+     *
+     * @param projectName name of the project
+     * @param versionID ID of the version
+     * @param versionType type of the version
+     * @return new Version page, on the default Languages tab
+     */
+    public VersionLanguagesPage createNewProjectVersion(String projectName,
+            String versionID, String versionType) {
+        ProjectVersionsPage projectVersionsPage = goToProjectByName(projectName);
+        if (projectVersionsPage.getVersions().contains(versionID)) {
+            log.warn("{} has already been created. " +
+                    "Presumably you are running this test manually and more" +
+                    " than once.", versionID);
+            return projectVersionsPage.gotoVersion(versionID);
+        }
+        return projectVersionsPage
+                .clickCreateVersionLink()
+                .inputVersionId(versionID)
+                .selectProjectType(versionType)
+                .saveVersion();
+    }
+
+    public ProjectVersionsPage goToProjectByName(String projectName) {
+        ProjectsPage projects = goToHome().goToProjects();
         log.info("go to project by name with current projects: {}, name: {}",
                 projects.getProjectNamesOnCurrentPage(), projectName);
         return projects.goToProject(projectName);
+    }
+
+    public ProjectPermissionsTab addMaintainer(String projectName,
+                                               final String username) {
+        ProjectPermissionsTab projectPermissionsTab = goToHome()
+                .goToProjects()
+                .goToProject(projectName)
+                .gotoSettingsTab()
+                .gotoSettingsPermissionsTab()
+                .enterSearchMaintainer(username)
+                .selectSearchMaintainer("username");
+        projectPermissionsTab.waitForMaintainersContains(username);
+        return new ProjectPermissionsTab(driver);
+    }
+
+    public ProjectPermissionsTab removeMaintainer(String projectName,
+            final String username) {
+        ProjectPermissionsTab projectPermissionsTab =
+                new BasicWorkFlow().goToHome()
+                        .goToProjects()
+                        .goToProject(projectName)
+                        .gotoSettingsTab()
+                        .gotoSettingsPermissionsTab();
+
+        projectPermissionsTab.clickRemoveOn(username)
+                .waitForMaintainersNotContains(username);
+
+        return new ProjectPermissionsTab(driver);
     }
 }

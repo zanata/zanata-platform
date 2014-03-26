@@ -89,13 +89,16 @@ public class TranslateHTMLTest {
         projectSettings.put("Name", extension + "-project");
         projectSettings.put("Project Type", "File");
 
-        EditorPage editorPage =
-                new ProjectWorkFlow().createNewProject(projectSettings)
-                        .clickCreateVersionLink().inputVersionId(extension)
-                        .saveVersion().gotoDocumentTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(testfile.getAbsolutePath())
-                        .submitUpload().translate("fr", testfile.getName());
+        EditorPage editorPage = new ProjectWorkFlow()
+                .createNewProject(projectSettings)
+                .clickCreateVersionLink().inputVersionId(extension)
+                .saveVersion()
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(testfile.getAbsolutePath())
+                .submitUpload()
+                .translate("fr", testfile.getName());
 
         editorPage.setSyntaxHighlighting(false);
 
