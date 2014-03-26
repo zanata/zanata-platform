@@ -28,8 +28,8 @@ public class RateLimitingProcessor {
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
 
-    private static final Cache<String, LeakyBucket> logLimiters = CacheBuilder
-            .newBuilder().build(
+    private final Cache<String, LeakyBucket> logLimiters = CacheBuilder
+            .newBuilder().maximumSize(20).build(
                     CacheLoader.from(new Function<String, LeakyBucket>() {
                         @Override
                         public LeakyBucket apply(String input) {
