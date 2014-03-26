@@ -125,6 +125,10 @@ function focusCurrentActiveInput() {
   });
 }
 
+function clearList(listId) {
+  jQuery('#' + listId).empty();
+}
+
 /* ----------------------------------------------------------- */
 /*----------------zanata-autocomplete component----------------*/
 /* ----------------------------------------------------------- */

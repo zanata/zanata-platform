@@ -347,11 +347,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                         public boolean apply(@Nullable HLocale input) {
                             return !getInstance().getActiveLocales().contains(
                                     input)
-                                    && (input.getLocaleId().getId()
-                                            .startsWith(getQuery()) || input
-                                            .retrieveDisplayName()
-                                            .toLowerCase()
-                                            .contains(getQuery().toLowerCase()));
+                                    && (StringUtils.startsWithIgnoreCase(input
+                                            .getLocaleId().getId(), getQuery()) || StringUtils.containsIgnoreCase(
+                                            input.retrieveDisplayName(),
+                                            getQuery()));
                         }
                     });
 

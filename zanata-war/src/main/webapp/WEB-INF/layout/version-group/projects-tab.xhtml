@@ -89,6 +89,7 @@
             <a4j:commandLink limitRender="true"
               action="#{versionGroupHomeAction.setSelectedVersion(version)}"
               status="projectsTab-languagesLoader"
+              onbegin="clearList('#{rich:clientId('projects-language_list')}')"
               render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects/#{version.project.slug}/#{version.slug}')"
               styleClass="bx--block">

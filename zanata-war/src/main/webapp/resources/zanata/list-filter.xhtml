@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j">
 
 <composite:interface>
@@ -38,7 +39,8 @@
   <a4j:jsFunction name="#{cc.attrs.id}FilterList"
     action="#{cc.attrs.actionBean.resetPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
-    limitRender="true" onbegin="">
+    limitRender="true"
+    onbegin="clearList('#{rich:clientId(cc.attrs.listId)}')">
     <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
 

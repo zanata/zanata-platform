@@ -86,8 +86,9 @@
           <li
             class="progress-bar__expander">
             <a4j:commandLink
-              action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
-              render="languages-project_list, language-label, #{rich:clientId('projectFilter-size')}"
+              action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}" onbegin="clearList('#{rich:clientId('languages-project_list')}')"
+              status="languageTab-projectsLoader"
+              render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
               styleClass="bx--block #{hLocale.localeId}">
               <div class="list__item">

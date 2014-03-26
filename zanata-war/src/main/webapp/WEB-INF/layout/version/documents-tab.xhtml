@@ -187,7 +187,7 @@
           </div>
           <a4j:commandLink limitRender="true"
             action="#{versionHomeAction.setSelectedDocument(document)}"
-            status="documentsTab-languagesLoader"
+            status="documentsTab-languagesLoader" onbegin="clearList('#{rich:clientId('documents-language_list')}')"
             render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
             onclick="updateActiveRow(this);toggleColumn('documents_content')">
             <div class="list__item__content">

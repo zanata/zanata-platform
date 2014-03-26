@@ -117,7 +117,7 @@
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink limitRender="true"
               action="#{versionHomeAction.setSelectedLocale(hLocale)}"
-              status="languageTab-documentsLoader"
+              status="languageTab-documentsLoader" onbegin="clearList('#{rich:clientId('languages-document_list')}')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
               onclick="updateActiveRow(this);toggleColumn('languages_content')">
               <div class="list__item">
