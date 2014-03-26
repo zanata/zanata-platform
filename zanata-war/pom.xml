@@ -2016,6 +2016,18 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>se.jiderhamn</groupId>
+      <artifactId>classloader-leak-prevention</artifactId>
+      <version>1.9.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!--  missing dependencies identified by mvn dependency:analyze: -->
 
     <dependency>
