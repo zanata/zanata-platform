@@ -7,11 +7,16 @@ jQuery(document).ready(function() {
   registerJsTab();
 });
 
-// automatically clear global message after 10 seconds
+var globalMessageTimer;
+
+// automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
-  setTimeout(function() {
+  //stop previous timeout counter
+  clearTimeout(globalMessageTimer);
+
+  globalMessageTimer = setTimeout(function() {
     jQuery('#messages').find('.message--global').removeClass("is-active");
-  }, 10000);
+  }, 5000);
 }
 
 function refreshTooltip(wrapperId) {

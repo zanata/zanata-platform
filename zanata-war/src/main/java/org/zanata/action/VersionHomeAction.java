@@ -40,7 +40,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -64,7 +63,7 @@ import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.VirusScanner;
-import org.zanata.seam.scope.FlashScopeMessage;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
@@ -156,7 +155,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     private HDocument selectedDocument;
 
     @In
-    private FlashScopeMessage flashScopeMessage;
+    private ConversationScopeMessages conversationScopeMessages;
 
     @In("filePersistService")
     private FilePersistService filePersistService;
@@ -470,7 +469,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         HDocument doc = documentDAO.getById(docId);
         documentServiceImpl.makeObsolete(doc);
         resetPageData();
-        flashScopeMessage.putMessage(FacesMessage.SEVERITY_INFO, doc.getDocId()
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO, doc.getDocId()
                 + " has been removed.");
     }
 
@@ -557,7 +556,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             if (translationFileServiceImpl.hasAdapterFor(type)) {
                 uploadAdapterFile();
             } else {
-                flashScopeMessage.putMessage(
+                conversationScopeMessages.putMessage(
                         FacesMessage.SEVERITY_INFO,
                         "Unrecognized file extension for "
                                 + sourceFileUpload.getFileName());
@@ -585,7 +584,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     private void showUploadSuccessMessage() {
-        flashScopeMessage.putMessage(FacesMessage.SEVERITY_INFO, "Document "
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO, "Document "
                 + sourceFileUpload.getFileName() + " uploaded.");
     }
 
@@ -628,10 +627,10 @@ public class VersionHomeAction extends AbstractSortAction implements
 
             showUploadSuccessMessage();
         } catch (ZanataServiceException e) {
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     e.getMessage() + "-" + sourceFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid arguments");
         }
     }
@@ -668,13 +667,13 @@ public class VersionHomeAction extends AbstractSortAction implements
                     "Failed writing temp file for document {}", e,
                     sourceFileUpload.getDocId());
 
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     "Error saving uploaded document " + fileName
                             + " to server.");
             return;
         } catch (NoSuchAlgorithmException e) {
             VersionHomeAction.log.error("MD5 hash algorithm not available", e);
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     "Error generating hash for uploaded document " + fileName
                             + ".");
             return;
@@ -703,11 +702,11 @@ public class VersionHomeAction extends AbstractSortAction implements
                             doc, extensions, false);
             showUploadSuccessMessage();
         } catch (SecurityException e) {
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     "Error reading uploaded document " + fileName
                             + " on server.");
         } catch (ZanataServiceException e) {
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid document format for " + fileName);
         }
 
@@ -732,7 +731,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             } catch (VirusDetectedException e) {
                 VersionHomeAction.log.warn("File failed virus scan: {}",
                         e.getMessage());
-                flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+                conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                         "uploaded file did not pass virus scan");
             }
             filePersistService.persistRawDocumentContentFromFile(rawDocument,
@@ -783,7 +782,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             if (!warnings.isEmpty()) {
                 infoMsg.append(" There were some warnings, see below.");
             }
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     infoMsg.toString());
 
             if (!warnings.isEmpty()) {
@@ -792,10 +791,10 @@ public class VersionHomeAction extends AbstractSortAction implements
                     warningMessages.add(new FacesMessage(
                             FacesMessage.SEVERITY_WARN, warning, null));
                 }
-                flashScopeMessage.putMessages(warningMessages);
+                conversationScopeMessages.putMessages(warningMessages);
             }
         } catch (ZanataServiceException e) {
-            flashScopeMessage.putMessage(FacesMessage.SEVERITY_ERROR,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
                     translationFileUpload.getFileName() + "-" + e.getMessage());
         }
         resetPageData();

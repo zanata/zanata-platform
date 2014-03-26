@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
@@ -40,7 +39,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
@@ -54,21 +52,17 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.scope.FlashScopeMessage;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
-import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.ui.AbstractAutocomplete;
-import org.zanata.ui.FilterUtil;
+import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -90,7 +84,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private String projectSlug;
 
     @In
-    private FlashScopeMessage flashScopeMessage;
+    private ConversationScopeMessages conversationScopeMessages;
 
     @In
     private LocaleService localeServiceImpl;
@@ -119,7 +113,8 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private String selectedProjectType;
 
     @Getter
-    private LocaleAutocomplete localeAutocomplete = new LocaleAutocomplete();
+    private VersionLocaleAutocomplete localeAutocomplete =
+            new VersionLocaleAutocomplete();
 
     public void createNew() {
         isNewInstance = true;
@@ -148,16 +143,13 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().setRequireTranslationReview(checked);
         update();
         if (checked) {
-            getFlashScopeMessage().putMessage(
-                    FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages
                             .getMessage("jsf.iteration.requireReview.enabled"));
         } else {
-            getFlashScopeMessage()
-                    .putMessage(
-                            FacesMessage.SEVERITY_INFO,
-                            zanataMessages
-                                    .getMessage("jsf.iteration.requireReview.disabled"));
+            conversationScopeMessages
+                    .putMessage(FacesMessage.SEVERITY_INFO, zanataMessages
+                            .getMessage("jsf.iteration.requireReview.disabled"));
         }
     }
 
@@ -230,7 +222,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     @Override
     public String persist() {
-        getFlashScopeMessage().clearMessages();
+        conversationScopeMessages.clearMessages();
         updateProjectType();
 
         if (!validateSlug(getInstance().getSlug(), "slug"))
@@ -290,7 +282,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         availableValidations.clear();
         update();
 
-        getFlashScopeMessage()
+        conversationScopeMessages
                 .putMessage(
                         FacesMessage.SEVERITY_INFO,
                         zanataMessages
@@ -300,10 +292,25 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Override
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
-        getFlashScopeMessage().clearMessages();
+        conversationScopeMessages.clearMessages();
         String state = super.update();
         Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
         return state;
+    }
+
+    /**
+     * This is for autocomplete components of which ConversationScopeMessages
+     * will be null
+     * 
+     * @param conversationScopeMessages
+     * @return
+     */
+    private String updateFromAutocomplete(
+            ConversationScopeMessages conversationScopeMessages) {
+        if (this.conversationScopeMessages == null) {
+            this.conversationScopeMessages = conversationScopeMessages;
+        }
+        return update();
     }
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
@@ -312,8 +319,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().getCustomizedLocales().remove(locale);
 
         update();
-        getFlashScopeMessage().putMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.iteration.LanguageRemoved",
                         locale.retrieveDisplayName()));
     }
@@ -322,8 +328,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     public void updateStatus(char initial) {
         getInstance().setStatus(EntityStatus.valueOf(initial));
         update();
-        getFlashScopeMessage().putMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.iteration.status.updated",
                         EntityStatus.valueOf(initial)));
     }
@@ -337,8 +342,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
         update();
-        getFlashScopeMessage().putMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages
                         .getMessage("jsf.iteration.CopyProjectType.message"));
     }
@@ -374,8 +378,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             }
         }
         update();
-        getFlashScopeMessage().putMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.validation.updated",
                         validatationId.getDisplayName(), state));
     }
@@ -383,7 +386,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     /**
      * If this action is enabled(Warning or Error), then it's exclusive
      * validation will be turn off
-     *
+     * 
      */
     private void ensureMutualExclusivity(
             ValidationAction selectedValidationAction) {
@@ -399,22 +402,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         }
     }
 
-    private FlashScopeMessage getFlashScopeMessage() {
-        if (flashScopeMessage == null) {
-            flashScopeMessage = FlashScopeMessage.instance();
-        }
-        return flashScopeMessage;
-    }
+    private class VersionLocaleAutocomplete extends LocaleAutocomplete {
 
-    private class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
-
-        private LocaleService localeServiceImpl = (LocaleService) Component
-                .getInstance(LocaleServiceImpl.class);
-
-        private ZanataMessages zanataMessages = (ZanataMessages) Component
-                .getInstance(ZanataMessages.class);
-
-        public List<HLocale> getInstanceActiveLocales() {
+        @Override
+        protected Collection<HLocale> getLocales() {
             if (StringUtils.isNotEmpty(projectSlug)
                     && StringUtils.isNotEmpty(slug)) {
                 List<HLocale> locales =
@@ -427,43 +418,21 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             return localeServiceImpl.getSupportedAndEnabledLocales();
         }
 
-        /**
-         * Return results on search
-         */
         @Override
-        public List<HLocale> suggest() {
-            List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
-
-            Collection<HLocale> filtered =
-                    Collections2.filter(localeList, new Predicate<HLocale>() {
-                        @Override
-                        public boolean apply(@Nullable HLocale input) {
-                            return FilterUtil.isIncludeLocale(
-                                    getInstanceActiveLocales(), input,
-                                    getQuery());
-                        }
-                    });
-            return Lists.newArrayList(filtered);
+        protected void updateInstanceList(HLocale hLocale) {
+            getInstance().getCustomizedLocales().add(hLocale);
         }
 
-        /**
-         * Action when an item is selected
-         */
         @Override
-        public void onSelectItemAction() {
-            if (StringUtils.isEmpty(getSelectedItem())) {
-                return;
-            }
-            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
-            getInstance().getCustomizedLocales().add(locale);
+        protected void update() {
+            updateFromAutocomplete(conversationScopeMessages);
+        }
 
-            update();
-            reset();
-
-            getFlashScopeMessage().putMessage(
-                    FacesMessage.SEVERITY_INFO,
+        @Override
+        protected void displaySuccessfulMessage(String localeDisplayName) {
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.iteration.LanguageAdded",
-                            locale.retrieveDisplayName()));
+                            localeDisplayName));
         }
     }
 

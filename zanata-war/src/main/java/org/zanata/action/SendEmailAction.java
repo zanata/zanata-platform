@@ -24,15 +24,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.faces.application.FacesMessage;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.validator.constraints.Email;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -46,18 +40,22 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
-import org.zanata.seam.scope.FlashScopeMessage;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ZanataMessages;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Sends an email to a specified role.
- *
+ * 
  * Currently just sends an email to admin.
- *
+ * 
  * @author damason@redhat.com
- *
+ * 
  */
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
@@ -119,7 +117,7 @@ public class SendEmailAction implements Serializable {
     private HLocale locale;
 
     @In
-    private FlashScopeMessage flashScopeMessage;
+    private ConversationScopeMessages conversationScopeMessages;
 
     private List<HPerson> groupMaintainers;
 
@@ -162,7 +160,7 @@ public class SendEmailAction implements Serializable {
     /**
      * Sends the email by rendering an appropriate email template with the
      * values in this bean.
-     *
+     * 
      * @return a view to redirect to. This should be replaced with configuration
      *         in pages.xml
      */
@@ -179,8 +177,8 @@ public class SendEmailAction implements Serializable {
                                         fromName, fromLoginName, replyEmail,
                                         subject, htmlMessage);
                 FacesMessages.instance().add(msg);
-                getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                        msg);
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
                 String msg =
@@ -189,8 +187,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                        msg);
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
                 String msg =
@@ -199,8 +197,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                        msg);
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
                 String msg =
@@ -209,8 +207,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                        msg);
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
                 String msg =
@@ -220,8 +218,8 @@ public class SendEmailAction implements Serializable {
                                         groupMaintainers, fromName,
                                         fromLoginName, replyEmail, subject,
                                         htmlMessage);
-                getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                        msg);
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else {
                 throw new Exception("Invalid email type: " + emailType);
@@ -248,19 +246,12 @@ public class SendEmailAction implements Serializable {
                 "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, htmlMessage);
         FacesMessages.instance().add("Sending message canceled");
-        getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 "Sending message canceled");
     }
 
     public String sendToVersionGroupMaintainer(List<HPerson> maintainers) {
         groupMaintainers = maintainers;
         return send();
-    }
-
-    private FlashScopeMessage getFlashScopeMessage() {
-        if (flashScopeMessage == null) {
-            flashScopeMessage = FlashScopeMessage.instance();
-        }
-        return flashScopeMessage;
     }
 }

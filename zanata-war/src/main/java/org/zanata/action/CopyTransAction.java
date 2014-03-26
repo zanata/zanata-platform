@@ -21,11 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.faces.application.FacesMessage;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -35,16 +31,18 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.scope.FlashScopeMessage;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.ui.ProgressBar;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Optional;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Copy Trans page action bean.
- *
+ * 
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -59,7 +57,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     private CopyTransManager copyTransManager;
 
     @In
-    private FlashScopeMessage flashScopeMessage;
+    private ConversationScopeMessages conversationScopeMessages;
 
     @In
     private ZanataMessages zanataMessages;
@@ -90,12 +88,11 @@ public class CopyTransAction implements Serializable, ProgressBar {
             int completedPercent =
                     handle.getCurrentProgress() * 100 / handle.getMaxProgress();
             if (completedPercent == 100) {
-                flashScopeMessage
+                conversationScopeMessages
                         .putMessage(
-                            FacesMessage.SEVERITY_INFO,
-                            zanataMessages
-                                .getMessage(
-                                    "jsf.iteration.CopyTrans.Completed"));
+                                FacesMessage.SEVERITY_INFO,
+                                zanataMessages
+                                        .getMessage("jsf.iteration.CopyTrans.Completed"));
             }
             return completedPercent;
         } else {
@@ -126,21 +123,20 @@ public class CopyTransAction implements Serializable, ProgressBar {
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            getFlashScopeMessage().putMessage(
-                    FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages
                             .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
-        getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
         copyTransManager.cancelCopyTrans(getProjectIteration());
-        getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
     }
 
@@ -168,12 +164,5 @@ public class CopyTransAction implements Serializable, ProgressBar {
             }
         }
         return "";
-    }
-
-    private FlashScopeMessage getFlashScopeMessage() {
-        if (flashScopeMessage == null) {
-            flashScopeMessage = FlashScopeMessage.instance();
-        }
-        return flashScopeMessage;
     }
 }

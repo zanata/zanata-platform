@@ -24,8 +24,6 @@ package org.zanata.seam.scope;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-
 import javax.faces.application.FacesMessage;
 
 import org.jboss.seam.Component;
@@ -34,21 +32,17 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("flashScopeMessage")
+@Name("conversationScopeMessages")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
-public class FlashScopeMessage implements Serializable {
+public class ConversationScopeMessages implements Serializable {
 
-    public final static String MESSAGES_KEY = "messages";
-
-    private Map<String, List<FacesMessage>> attributes = Maps.newHashMap();
+    private List<FacesMessage> messages = Lists.newArrayList();
 
     @Begin(join = true)
     public void putMessage(FacesMessage.Severity severity, String message) {
@@ -58,23 +52,23 @@ public class FlashScopeMessage implements Serializable {
 
     @Begin(join = true)
     public void putMessages(List<FacesMessage> messages) {
-        attributes.put(MESSAGES_KEY, messages);
+        this.messages = messages;
     }
 
     public List<FacesMessage> getMessages() {
-        return attributes.get(MESSAGES_KEY);
+        return messages;
     }
 
     public void clearMessages() {
-        attributes.remove(MESSAGES_KEY);
+        messages.clear();
     }
 
     public boolean hasMessages() {
-        return attributes.containsKey(MESSAGES_KEY);
+        return !messages.isEmpty();
     }
 
-    public static FlashScopeMessage instance() {
-        return (FlashScopeMessage) Component
-                .getInstance(FlashScopeMessage.class);
+    public static ConversationScopeMessages instance() {
+        return (ConversationScopeMessages) Component
+                .getInstance(ConversationScopeMessages.class);
     }
 }

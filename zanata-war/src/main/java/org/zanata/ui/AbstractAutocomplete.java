@@ -22,16 +22,25 @@
 
 package org.zanata.ui;
 
+import java.util.List;
+
+import org.jboss.seam.Component;
+import org.zanata.seam.scope.ConversationScopeMessages;
+import org.zanata.util.ZanataMessages;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.zanata.model.HPerson;
-
-import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractAutocomplete<T> {
+
+    protected ZanataMessages zanataMessages = (ZanataMessages) Component
+            .getInstance(ZanataMessages.class);
+
+    protected ConversationScopeMessages conversationScopeMessages =
+            ConversationScopeMessages.instance();
 
     @Setter
     @Getter
