@@ -71,11 +71,11 @@ public class UpdateTransUnitHandler extends
                             }
                         });
         if (hasReviewUpdate.isPresent()) {
-            securityServiceImpl.checkPermission(action,
-                    SecurityService.TranslationAction.REVIEW);
+            securityServiceImpl.checkWorkspaceAction(action,
+                SecurityService.TranslationAction.REVIEW);
         } else {
-            securityServiceImpl.checkPermission(action,
-                    SecurityService.TranslationAction.MODIFY);
+            securityServiceImpl.checkWorkspaceAction(action,
+                SecurityService.TranslationAction.MODIFY);
         }
 
         return doTranslation(action.getWorkspaceId().getLocaleId(),

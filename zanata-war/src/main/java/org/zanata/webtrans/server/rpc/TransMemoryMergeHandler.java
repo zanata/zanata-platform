@@ -91,7 +91,7 @@ public class TransMemoryMergeHandler extends
     public UpdateTransUnitResult execute(TransMemoryMerge action,
             ExecutionContext context) throws ActionException {
         SecurityService.SecurityCheckResult securityCheckResult =
-                securityServiceImpl.checkPermission(action, MODIFY);
+                securityServiceImpl.checkWorkspaceAction(action, MODIFY);
         HLocale hLocale = securityCheckResult.getLocale();
         TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 

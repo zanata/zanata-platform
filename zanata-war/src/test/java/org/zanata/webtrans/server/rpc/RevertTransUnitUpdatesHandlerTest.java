@@ -9,8 +9,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -30,7 +28,6 @@ import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
@@ -78,8 +75,8 @@ public class RevertTransUnitUpdatesHandlerTest {
         RevertTransUnitUpdates action =
                 new RevertTransUnitUpdates(updatesToRevert);
         when(
-                securityServiceImpl.checkPermission(action,
-                        SecurityService.TranslationAction.MODIFY)).thenReturn(
+                securityServiceImpl.checkWorkspaceAction(action,
+                    SecurityService.TranslationAction.MODIFY)).thenReturn(
                 checkResult);
         when(checkResult.getLocale()).thenReturn(new HLocale(LocaleId.EN_US));
         when(checkResult.getWorkspace()).thenReturn(translationWorkspace);
