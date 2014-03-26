@@ -234,14 +234,16 @@
           <excludes>src/test/resources/**</excludes>
           <sourceDirectory>${project.basedir}</sourceDirectory>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>test-compile</phase>
-          </execution>
-        </executions>
+        <!--
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                    <phase>verify</phase>
+                  </execution>
+                </executions>
+        -->
       </plugin>
 
       <plugin>
@@ -277,7 +279,6 @@
             <goals>
               <goal>analyze-only</goal>
             </goals>
-            <phase>test-compile</phase>
           </execution>
         </executions>
         <configuration>
@@ -381,7 +382,6 @@ package.
             <goals>
               <goal>check</goal>
             </goals>
-            <phase>test-compile</phase>
           </execution>
         </executions>
       </plugin>
