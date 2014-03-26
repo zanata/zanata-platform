@@ -179,6 +179,7 @@
 
     <div class="panel__sub-header js-reveal">
       <zanata:list-filter iconClass="i--document"
+        listId="settings-document_form"
         render="settings-document_form, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
         id="settingsTabDocumentSearch"
         placeholder="#{messages['jsf.document.search.placeholder']}"
@@ -232,7 +233,7 @@
         </ui:repeat>
       </ul>
     </h:form>
-    <zanata:list-filter iconClass="i--document"
+    <zanata:list-filter iconClass="i--document" listId="settings-document_form"
       render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info"
       id="settingsTabDocumentSearchBottom" bottomPanel="true"
       placeholder="#{messages['jsf.document.search.placeholder']}"

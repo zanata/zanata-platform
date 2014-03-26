@@ -19,7 +19,8 @@
         <s:fragment
           rendered="#{s:hasPermission(projectHome.instance, 'update')}">
           <div
-            class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown" id="versions-more-actions">
+            class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
+            id="versions-more-actions">
             <a class="dropdown__toggle js-dropdown__toggle" href="#"
               title="#{messages['jsf.tooltip.MoreActions']}"><i
               class="i i--ellipsis"></i></a>
@@ -43,12 +44,19 @@
     </div>
 
     <div class="panel__sub-header js-reveal">
-      <zanata:list-filter
+      <zanata:list-filter status="versionTab-versionsLoader"
+        listId="versions_form"
         render="versions_form, versionSearchBottom-pager, versionSearchBottom-page-info"
         id="versionSearch" iconClass="i--version"
         placeholder="#{messages['jsf.version.search.placeholder']}"
         actionBean="#{projectHomeAction.versionFilter}"/>
     </div>
+
+    <a4j:status name="versionTab-versionsLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
 
     <h:form id="versions_form" styleClass="l--push-bottom-0">
       <s:div styleClass="l--pad-all-half"
@@ -178,7 +186,7 @@
       </s:fragment>
     </h:form>
 
-    <zanata:list-filter
+    <zanata:list-filter listId="versions_form"
       render="versions_form, versionSearch-pager, versionSearch-page-info"
       id="versionSearchBottom" iconClass="i--version" bottomPanel="true"
       placeholder="#{messages['jsf.version.search.placeholder']}"

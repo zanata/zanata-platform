@@ -20,6 +20,9 @@
   <composite:attribute name="render" required="true"
     shortDescription="Ids of component to render after filter"/>
 
+  <composite:attribute name="listId" required="true" type="java.lang.String"
+    shortDescription="Id of the list to be clear before filter"/>
+
   <composite:attribute name="bottomPanel" default="false"
     type="java.lang.Boolean"
     shortDescription="is for bottom view"/>
@@ -27,12 +30,15 @@
   <composite:attribute name="iconClass" type="java.lang.String"
     shortDescription="css class for icon display" default=""/>
 
+  <composite:attribute name="status" type="java.lang.String"
+    shortDescription="Name of the request status component that will indicate the status of the Ajax request when filtering"/>
+
 </composite:interface>
 <composite:implementation>
   <a4j:jsFunction name="#{cc.attrs.id}FilterList"
-    action="#{cc.attrs.actionBean.resetPage}"
+    action="#{cc.attrs.actionBean.resetPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
-    limitRender="true">
+    limitRender="true" onbegin="">
     <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
 
@@ -64,10 +70,11 @@
   </s:fragment>
 
   <s:div styleClass="panel__results">
-    <div class="panel__results__type">
-      <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
-    </div>
     <s:div id="#{cc.attrs.id}-pager">
+      <s:div styleClass="panel__results__type"
+        rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.filteredListSize eq 0)}">
+        <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
+      </s:div>
       <s:fragment
         rendered="#{cc.attrs.actionBean.filteredListSize ge cc.attrs.actionBean.getCountPerPage()}">
         <ul class="panel__pager">
@@ -91,12 +98,16 @@
     <span class="txt--meta">
       <s:span id="#{cc.attrs.id}-page-info">
         <s:fragment
-          rendered="#{cc.attrs.actionBean.filteredListSize gt cc.attrs.actionBean.getCountPerPage()}">
-          <strong>#{cc.attrs.actionBean.listRange}</strong> of #{cc.attrs.actionBean.filteredListSize}
-        </s:fragment>
-        <s:fragment
-          rendered="#{cc.attrs.actionBean.filteredListSize le cc.attrs.actionBean.getCountPerPage()}">
-          <strong>#{cc.attrs.actionBean.filteredListSize}</strong>
+          rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.filteredListSize eq 0)}">
+          <s:fragment
+            rendered="#{cc.attrs.actionBean.filteredListSize gt cc.attrs.actionBean.getCountPerPage()}">
+            <strong>#{cc.attrs.actionBean.listRange}</strong> of
+            #{cc.attrs.actionBean.filteredListSize}
+          </s:fragment>
+          <s:fragment
+            rendered="#{cc.attrs.actionBean.filteredListSize le cc.attrs.actionBean.getCountPerPage()}">
+            <strong>#{cc.attrs.actionBean.filteredListSize}</strong>
+          </s:fragment>
         </s:fragment>
       </s:span>
 

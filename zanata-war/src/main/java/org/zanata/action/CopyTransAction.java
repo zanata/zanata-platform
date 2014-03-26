@@ -21,14 +21,12 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
@@ -40,6 +38,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.FlashScopeMessage;
 import org.zanata.ui.ProgressBar;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ZanataMessages;
 
 import com.google.common.base.Optional;
 
@@ -63,7 +62,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     private FlashScopeMessage flashScopeMessage;
 
     @In
-    private Map<String, String> messages;
+    private ZanataMessages zanataMessages;
 
     @Getter
     @Setter
@@ -91,8 +90,12 @@ public class CopyTransAction implements Serializable, ProgressBar {
             int completedPercent =
                     handle.getCurrentProgress() * 100 / handle.getMaxProgress();
             if (completedPercent == 100) {
-                flashScopeMessage.putMessage(FacesMessage.SEVERITY_INFO,
-                        messages.get("jsf.iteration.CopyTrans.Completed"));
+                flashScopeMessage
+                        .putMessage(
+                            FacesMessage.SEVERITY_INFO,
+                            zanataMessages
+                                .getMessage(
+                                    "jsf.iteration.CopyTrans.Completed"));
             }
             return completedPercent;
         } else {
@@ -123,20 +126,22 @@ public class CopyTransAction implements Serializable, ProgressBar {
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                    messages.get("jsf.iteration.CopyTrans.NoDocuments"));
+            getFlashScopeMessage().putMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    zanataMessages
+                            .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
         getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                messages.get("jsf.iteration.CopyTrans.Started"));
+                zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
         copyTransManager.cancelCopyTrans(getProjectIteration());
         getFlashScopeMessage().putMessage(FacesMessage.SEVERITY_INFO,
-                messages.get("jsf.iteration.CopyTrans.Cancelled"));
+                zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
     }
 
     public String getDocumentsProcessed() {

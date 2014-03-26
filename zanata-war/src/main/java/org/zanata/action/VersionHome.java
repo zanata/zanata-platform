@@ -118,6 +118,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Setter
     private String selectedProjectType;
 
+    @Getter
+    private LocaleAutocomplete localeAutocomplete = new LocaleAutocomplete();
+
     public void createNew() {
         isNewInstance = true;
     }
@@ -157,80 +160,6 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                                     .getMessage("jsf.iteration.requireReview.disabled"));
         }
     }
-
-    @Getter
-    private AbstractAutocomplete<HLocale> localeAutocomplete =
-            new AbstractAutocomplete<HLocale>() {
-
-                private LocaleService localeServiceImpl =
-                        (LocaleService) Component
-                                .getInstance(LocaleServiceImpl.class);
-
-                private ZanataMessages zanataMessages =
-                        (ZanataMessages) Component
-                                .getInstance(ZanataMessages.class);
-
-                public List<HLocale> getInstanceActiveLocales() {
-                    if (StringUtils.isNotEmpty(projectSlug)
-                            && StringUtils.isNotEmpty(slug)) {
-                        List<HLocale> locales =
-                                localeServiceImpl
-                                        .getSupportedLanguageByProjectIteration(
-                                                projectSlug, slug);
-                        Collections.sort(locales,
-                                ComparatorUtil.LOCALE_COMPARATOR);
-                        return locales;
-                    }
-                    return localeServiceImpl.getSupportedAndEnabledLocales();
-                }
-
-                /**
-                 * when version is overriding project locales. Return Zanata
-                 * supported languages (enabled) which has not included in
-                 * version's list
-                 *
-                 * @return
-                 */
-                @Override
-                public List<HLocale> suggest() {
-                    List<HLocale> localeList =
-                            localeServiceImpl.getSupportedLocales();
-
-                    Collection<HLocale> filtered =
-                            Collections2.filter(localeList,
-                                    new Predicate<HLocale>() {
-                                        @Override
-                                        public boolean apply(
-                                                @Nullable HLocale input) {
-                                            return FilterUtil.isIncludeLocale(
-                                                    getInstanceActiveLocales(),
-                                                    input, getQuery());
-                                        }
-                                    });
-                    return Lists.newArrayList(filtered);
-
-                }
-
-                @Override
-                @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
-                public void onSelectItemAction() {
-                    if (StringUtils.isEmpty(getSelectedItem())) {
-                        return;
-                    }
-                    HLocale locale =
-                            localeServiceImpl.getByLocaleId(getSelectedItem());
-                    getInstance().getCustomizedLocales().add(locale);
-
-                    update();
-                    reset();
-
-                    getFlashScopeMessage().putMessage(
-                            FacesMessage.SEVERITY_INFO,
-                            zanataMessages.getMessage(
-                                    "jsf.iteration.LanguageAdded",
-                                    locale.retrieveDisplayName()));
-                }
-            };
 
     public List<ValidationAction> getValidationList() {
         List<ValidationAction> sortedList =
@@ -475,5 +404,72 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             flashScopeMessage = FlashScopeMessage.instance();
         }
         return flashScopeMessage;
+    }
+
+    private class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
+
+        private LocaleService localeServiceImpl = (LocaleService) Component
+                .getInstance(LocaleServiceImpl.class);
+
+        private ZanataMessages zanataMessages = (ZanataMessages) Component
+                .getInstance(ZanataMessages.class);
+
+        public List<HLocale> getInstanceActiveLocales() {
+            if (StringUtils.isNotEmpty(projectSlug)
+                    && StringUtils.isNotEmpty(slug)) {
+                List<HLocale> locales =
+                        localeServiceImpl
+                                .getSupportedLanguageByProjectIteration(
+                                        projectSlug, slug);
+                Collections.sort(locales, ComparatorUtil.LOCALE_COMPARATOR);
+                return locales;
+            }
+            return localeServiceImpl.getSupportedAndEnabledLocales();
+        }
+
+        /**
+         * Return results on search
+         */
+        @Override
+        public List<HLocale> suggest() {
+            List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
+
+            Collection<HLocale> filtered =
+                    Collections2.filter(localeList, new Predicate<HLocale>() {
+                        @Override
+                        public boolean apply(@Nullable HLocale input) {
+                            return FilterUtil.isIncludeLocale(
+                                    getInstanceActiveLocales(), input,
+                                    getQuery());
+                        }
+                    });
+            return Lists.newArrayList(filtered);
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+            getInstance().getCustomizedLocales().add(locale);
+
+            update();
+            reset();
+
+            getFlashScopeMessage().putMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.iteration.LanguageAdded",
+                            locale.retrieveDisplayName()));
+        }
+    }
+
+    public List<ProjectType> getProjectTypeList() {
+        List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
+        Collections.sort(projectTypes, ComparatorUtil.PROJECT_TYPE_COMPARATOR);
+        return projectTypes;
     }
 }

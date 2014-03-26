@@ -5,6 +5,8 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <composite:interface>
@@ -30,12 +32,19 @@
     </div>
 
     <div class="panel__sub-header js-reveal">
-      <zanata:list-filter
+      <zanata:list-filter status="maintainerTab-maintainersLoader"
+        listId="maintainers-form"
         render="maintainers-form, maintainerSearchBottom-pager, maintainerSearchBottom-page-info"
         id="maintainerSearch" iconClass="i--maintain"
         placeholder="#{messages['jsf.maintainer.search.placeholder']}"
         actionBean="#{cc.attrs.filterActionBean}"/>
     </div>
+
+    <a4j:status name="maintainerTab-maintainersLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
 
     <h:form id="maintainers-form" styleClass="l--push-bottom-0">
       <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
@@ -75,7 +84,8 @@
       </s:fragment>
     </h:form>
 
-    <zanata:list-filter
+    <zanata:list-filter status="maintainerTab-maintainersLoader"
+      listId="maintainers-form"
       render="maintainers-form, maintainerSearch-pager, maintainerSearch-page-info"
       id="maintainerSearchBottom" iconClass="i--maintain" bottomPanel="true"
       placeholder="#{cc.attrs.placeholder}"

@@ -136,7 +136,7 @@ public class CopyTransOptionsModel implements Serializable {
     @Getter
     public class RuleAction {
         private HCopyTransOptions.ConditionRuleAction action;
-        private String css;
+        private String cssClass;
         private String displayText;
     }
 }

@@ -127,84 +127,19 @@ public class ProjectHome extends SlugHome<HProject> {
             .newHashMap();
 
     @Getter
+    private MaintainersAutocomplete maintainerAutocomplete =
+            new MaintainersAutocomplete();
+
+    @Getter
+    private LocaleAutocomplete localeAutocomplete = new LocaleAutocomplete();
+
+    @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
             new AbstractListFilter<HPerson>() {
                 @Override
                 protected List<HPerson> getFilteredList() {
                     return FilterUtil.filterPersonList(getQuery(),
                             getInstanceMaintainers());
-                }
-            };
-
-    @Getter
-    private AbstractAutocomplete<HLocale> localeAutocomplete =
-            new AbstractAutocomplete<HLocale>() {
-
-                private LocaleService localeServiceImpl =
-                        (LocaleService) Component
-                                .getInstance(LocaleServiceImpl.class);
-
-                private ZanataMessages zanataMessages =
-                        (ZanataMessages) Component
-                                .getInstance(ZanataMessages.class);
-
-                /**
-                 * if project is not overriding locales, then autocomplete
-                 * should not return anything as all available locales is
-                 * already on screen
-                 *
-                 * @return
-                 */
-                @Override
-                public List<HLocale> suggest() {
-                    if (!getInstance().isOverrideLocales()) {
-                        return Lists.newArrayList();
-                    } else {
-                        List<HLocale> localeList =
-                                localeServiceImpl.getSupportedLocales();
-
-                        Collection<HLocale> filtered =
-                                Collections2.filter(localeList,
-                                        new Predicate<HLocale>() {
-                                            @Override
-                                            public boolean apply(
-                                                    @Nullable HLocale input) {
-                                                return FilterUtil
-                                                        .isIncludeLocale(
-                                                                getInstance()
-                                                                        .getCustomizedLocales(),
-                                                                input,
-                                                                getQuery());
-                                            }
-                                        });
-                        return Lists.newArrayList(filtered);
-                    }
-                }
-
-                @Override
-                @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
-                public void onSelectItemAction() {
-                    if (StringUtils.isEmpty(getSelectedItem())) {
-                        return;
-                    }
-
-                    HLocale locale =
-                            localeServiceImpl.getByLocaleId(getSelectedItem());
-
-                    if (!getInstance().isOverrideLocales()) {
-                        getInstance().setOverrideLocales(true);
-                        getInstance().getCustomizedLocales().clear();
-                    }
-                    getInstance().getCustomizedLocales().add(locale);
-
-                    update();
-                    reset();
-
-                    getFlashScopeMessage().putMessage(
-                            FacesMessage.SEVERITY_INFO,
-                            zanataMessages.getMessage(
-                                    "jsf.project.LanguageAdded",
-                                    locale.retrieveDisplayName()));
                 }
             };
 
@@ -264,45 +199,6 @@ public class ProjectHome extends SlugHome<HProject> {
         return (HProject) session.byNaturalId(HProject.class)
                 .using("slug", getSlug()).load();
     }
-
-    @Getter
-    private final AbstractAutocomplete<HPerson> maintainerAutocomplete =
-            new AbstractAutocomplete<HPerson>() {
-
-                private PersonDAO personDAO = (PersonDAO) Component
-                        .getInstance(PersonDAO.class);
-
-                private ZanataMessages zanataMessages =
-                        (ZanataMessages) Component
-                                .getInstance(ZanataMessages.class);
-
-                public List<HPerson> suggest() {
-                    List<HPerson> personList =
-                            personDAO.findAllContainingName(getQuery());
-                    return FilterUtil.filterOutPersonList(
-                            getInstanceMaintainers(), personList);
-                }
-
-                @Override
-                @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
-                public void onSelectItemAction() {
-                    if (StringUtils.isEmpty(getSelectedItem())) {
-                        return;
-                    }
-
-                    HPerson maintainer =
-                            personDAO.findByUsername(getSelectedItem());
-                    getInstance().addMaintainer(maintainer);
-                    update();
-                    reset();
-
-                    getFlashScopeMessage().putMessage(
-                            FacesMessage.SEVERITY_INFO,
-                            zanataMessages.getMessage(
-                                    "jsf.project.MaintainerAdded",
-                                    maintainer.getName()));
-                }
-            };
 
     public void validateSuppliedId() {
         HProject ip = getInstance(); // this will raise an EntityNotFound
@@ -393,8 +289,7 @@ public class ProjectHome extends SlugHome<HProject> {
                     .putMessage(
                             FacesMessage.SEVERITY_INFO,
                             zanataMessages
-                                    .getMessage(
-                                        "jsf.project.NeedAtLeastOneMaintainer"));
+                                    .getMessage("jsf.project.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().getMaintainers().remove(person);
 
@@ -461,7 +356,7 @@ public class ProjectHome extends SlugHome<HProject> {
         getFlashScopeMessage().putMessage(
                 FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.project.status.updated",
-                    EntityStatus.valueOf(initial)));
+                        EntityStatus.valueOf(initial)));
     }
 
     public Map<String, Boolean> getRoleRestrictions() {
@@ -581,7 +476,7 @@ public class ProjectHome extends SlugHome<HProject> {
         getFlashScopeMessage().putMessage(
                 FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.validation.updated",
-                    validatationId.getDisplayName(), state));
+                        validatationId.getDisplayName(), state));
     }
 
     public List<ValidationAction> getValidationList() {
@@ -634,5 +529,118 @@ public class ProjectHome extends SlugHome<HProject> {
     private boolean checkViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
+    }
+
+    private class MaintainersAutocomplete extends AbstractAutocomplete<HPerson> {
+
+        private PersonDAO personDAO = (PersonDAO) Component
+                .getInstance(PersonDAO.class);
+
+        private ZanataMessages zanataMessages = (ZanataMessages) Component
+                .getInstance(ZanataMessages.class);
+
+        /**
+         * Return results on search
+         */
+        @Override
+        public List<HPerson> suggest() {
+            List<HPerson> personList =
+                    personDAO.findAllContainingName(getQuery());
+            return FilterUtil.filterOutPersonList(getInstanceMaintainers(),
+                    personList);
+
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HPerson maintainer = personDAO.findByUsername(getSelectedItem());
+            getInstance().addMaintainer(maintainer);
+            update();
+            reset();
+
+            getFlashScopeMessage().putMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.project.MaintainerAdded",
+                            maintainer.getName()));
+
+        }
+    }
+
+    private class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
+        private LocaleService localeServiceImpl = (LocaleService) Component
+                .getInstance(LocaleServiceImpl.class);
+
+        private ZanataMessages zanataMessages = (ZanataMessages) Component
+                .getInstance(ZanataMessages.class);
+
+        /**
+         * if project is not overriding locales, then autocomplete should not
+         * return anything as all available locales is already on screen
+         *
+         * @return
+         */
+        @Override
+        public List<HLocale> suggest() {
+            if (!getInstance().isOverrideLocales()) {
+                return Lists.newArrayList();
+            } else {
+                List<HLocale> localeList =
+                        localeServiceImpl.getSupportedLocales();
+
+                Collection<HLocale> filtered =
+                        Collections2.filter(localeList,
+                                new Predicate<HLocale>() {
+                                    @Override
+                                    public boolean
+                                            apply(@Nullable HLocale input) {
+                                        return FilterUtil
+                                                .isIncludeLocale(
+                                                        getInstance()
+                                                                .getCustomizedLocales(),
+                                                        input, getQuery());
+                                    }
+                                });
+                return Lists.newArrayList(filtered);
+            }
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+
+            if (!getInstance().isOverrideLocales()) {
+                getInstance().setOverrideLocales(true);
+                getInstance().getCustomizedLocales().clear();
+            }
+            getInstance().getCustomizedLocales().add(locale);
+
+            update();
+            reset();
+
+            getFlashScopeMessage().putMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.project.LanguageAdded",
+                            locale.retrieveDisplayName()));
+        }
+    }
+
+    public List<ProjectType> getProjectTypeList() {
+        List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
+        Collections.sort(projectTypes, ComparatorUtil.PROJECT_TYPE_COMPARATOR);
+        return projectTypes;
     }
 }

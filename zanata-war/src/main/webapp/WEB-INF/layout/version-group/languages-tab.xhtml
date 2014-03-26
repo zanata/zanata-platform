@@ -42,13 +42,20 @@
   </div>
 
   <div class="panel__sub-header js-reveal">
-    <zanata:list-filter
+    <zanata:list-filter status="languageTab-languagesLoader"
+      listId="languages-language_form"
       placeholder="#{messages['jsf.language.search.placeholder']}"
       iconClass="i--language"
       render="languages-language_form, languageTabLanguageFilterBottom-pager, languageTabLanguageFilterBottom-page-info"
       id="languageTabLanguageFilter"
       actionBean="#{versionGroupHomeAction.languageTabLanguageFilter}"/>
   </div>
+
+  <a4j:status name="languageTab-languagesLoader">
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
+  </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-0">
     <s:div styleClass="l--pad-all-half"
@@ -127,7 +134,8 @@
     </s:fragment>
   </h:form>
 
-  <zanata:list-filter
+  <zanata:list-filter status="languageTab-languagesLoader"
+    listId="languages-language_form"
     placeholder="#{messages['jsf.language.search.placeholder']}"
     iconClass="i--language" bottomPanel="true"
     render="languages-language_form, languageTabLanguageFilter-pager, languageTabLanguageFilter-page-info"
@@ -159,7 +167,8 @@
   </div>
 
   <div class="panel__sub-header js-reveal">
-    <zanata:list-filter
+    <zanata:list-filter status="languageTab-projectsLoader"
+      listId="languages-project_list"
       placeholder="#{messages['jsf.project.search.placeholder']}"
       iconClass="i--project"
       render="languages-project_list, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
@@ -167,14 +176,13 @@
       actionBean="#{versionGroupHomeAction.languageTabVersionFilter}"/>
   </div>
 
+  <a4j:status name="languageTab-projectsLoader">
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
+  </a4j:status>
+
   <h:form id="languages-project_list" styleClass="l--push-bottom-0">
-
-    <a4j:status name="languageTab-projectsLoader">
-      <f:facet name="start">
-        <zanata:loader/>
-      </f:facet>
-    </a4j:status>
-
     <s:div styleClass="l--pad-all-half"
       rendered="#{versionGroupHomeAction.selectedLocale == null}">
       <p class="txt--meta">
@@ -254,7 +262,8 @@
     </s:fragment>
   </h:form>
 
-  <zanata:list-filter
+  <zanata:list-filter status="languageTab-projectsLoader"
+    listId="languages-project_list"
     placeholder="#{messages['jsf.project.search.placeholder']}"
     bottomPanel="true"
     iconClass="i--project"

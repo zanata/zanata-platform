@@ -59,11 +59,4 @@ public abstract class SlugHome<E> extends EntityHome<E> {
 
     @Override
     public abstract Object getId();
-
-    public List<ProjectType> getProjectTypeList() {
-        List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
-        Collections.sort(projectTypes, ComparatorUtil.PROJECT_TYPE_COMPARATOR);
-        return projectTypes;
-    }
-
 }

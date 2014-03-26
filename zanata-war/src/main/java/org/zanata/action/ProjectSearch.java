@@ -42,48 +42,7 @@ public class ProjectSearch implements Serializable {
     private ZanataIdentity identity;
 
     @Getter
-    private final AbstractAutocomplete<SearchResult> projectAutocomplete =
-            new AbstractAutocomplete<SearchResult>() {
-                private ProjectDAO projectDAO = (ProjectDAO) Component
-                        .getInstance(ProjectDAO.class);
-
-                @Override
-                public List<SearchResult> suggest() {
-                    List<SearchResult> result = Lists.newArrayList();
-                    if (StringUtils.isEmpty(getQuery())) {
-                        return result;
-                    }
-                    try {
-                        List<HProject> searchResult =
-                                projectDAO.searchProjects(
-                                        getQuery(),
-                                        INITIAL_RESULT_COUNT,
-                                        0,
-                                        ZanataIdentity.instance()
-                                                .hasPermission("HProject",
-                                                        "view-obsolete"));
-
-                        for (HProject project : searchResult) {
-                            result.add(new SearchResult(project));
-                        }
-                        result.add(new SearchResult());
-                        return result;
-                    } catch (ParseException pe) {
-                        return result;
-                    }
-                }
-
-                @Override
-                public void onSelectItemAction() {
-                    // nothing here
-                }
-
-                @Override
-                public void setQuery(String query) {
-                    queryProjectPagedListDataModel.setQuery(query);
-                    super.setQuery(query);
-                }
-            };
+    private ProjectAutocomplete projectAutocomplete = new ProjectAutocomplete();
 
     private QueryProjectPagedListDataModel queryProjectPagedListDataModel =
             new QueryProjectPagedListDataModel(DEFAULT_PAGE_SIZE);
@@ -109,6 +68,55 @@ public class ProjectSearch implements Serializable {
 
         public boolean isProjectNull() {
             return project == null;
+        }
+    }
+
+    private class ProjectAutocomplete extends
+            AbstractAutocomplete<SearchResult> {
+
+        private ProjectDAO projectDAO = (ProjectDAO) Component
+                .getInstance(ProjectDAO.class);
+
+        /**
+         * Return results on search
+         */
+        @Override
+        public List<SearchResult> suggest() {
+            List<SearchResult> result = Lists.newArrayList();
+            if (StringUtils.isEmpty(getQuery())) {
+                return result;
+            }
+            try {
+                List<HProject> searchResult =
+                        projectDAO.searchProjects(
+                                getQuery(),
+                                INITIAL_RESULT_COUNT,
+                                0,
+                                ZanataIdentity.instance().hasPermission(
+                                        "HProject", "view-obsolete"));
+
+                for (HProject project : searchResult) {
+                    result.add(new SearchResult(project));
+                }
+                result.add(new SearchResult());
+                return result;
+            } catch (ParseException pe) {
+                return result;
+            }
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            // nothing here
+        }
+
+        @Override
+        public void setQuery(String query) {
+            queryProjectPagedListDataModel.setQuery(query);
+            super.setQuery(query);
         }
     }
 }

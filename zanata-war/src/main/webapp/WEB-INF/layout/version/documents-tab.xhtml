@@ -56,12 +56,19 @@
 </div>
 
 <div class="panel__sub-header js-reveal">
-  <zanata:list-filter
+  <zanata:list-filter status="documentsTab-documentsLoader"
+    listId="documents-document_form"
     render="documents-document_form, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
     id="documentsTabDocumentSearch" iconClass="i--document"
     placeholder="#{messages['jsf.document.search.placeholder']}"
     actionBean="#{versionHomeAction.documentsTabDocumentFilter}"/>
 </div>
+
+<a4j:status name="documentsTab-documentsLoader">
+  <f:facet name="start">
+    <zanata:loader/>
+  </f:facet>
+</a4j:status>
 
 <h:form id="documents-document_form" styleClass="l--push-bottom-0">
   <s:div styleClass="l--pad-all-half"
@@ -216,9 +223,9 @@
   </s:fragment>
 </h:form>
 
-<zanata:list-filter
+<zanata:list-filter listId="documents-document_form"
   placeholder="#{messages['jsf.document.search.placeholder']}"
-  iconClass="i--document"
+  iconClass="i--document" status="documentsTab-documentsLoader"
   render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info"
   id="documentsTabDocumentSearchBottom" bottomPanel="true"
   actionBean="#{versionHomeAction.documentsTabDocumentFilter}"/>
@@ -263,20 +270,21 @@
   </div>
 
   <div class="panel__sub-header js-reveal">
-    <zanata:list-filter
+    <zanata:list-filter status="documentsTab-languagesLoader"
+      listId="documents-language_list"
       placeholder="#{messages['jsf.language.search.placeholder']}"
       render="documents-language_list, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
       id="documentsTabLanguageSearch" iconClass="i--language"
       actionBean="#{versionHomeAction.documentsTabLanguageFilter}"/>
   </div>
 
-  <h:form id="documents-language_list" styleClass="l--push-bottom-0">
-    <a4j:status name="documentsTab-languagesLoader">
-      <f:facet name="start">
-        <zanata:loader/>
-      </f:facet>
-    </a4j:status>
+  <a4j:status name="documentsTab-languagesLoader">
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
+  </a4j:status>
 
+  <h:form id="documents-language_list" styleClass="l--push-bottom-0">
     <s:fragment rendered="#{versionHomeAction.selectedDocument == null}">
       <div class="l--pad-all-half">
         <p class="txt--meta">#{messages['jsf.SelectADocumentFromList']}</p>
@@ -396,7 +404,8 @@
     </s:fragment>
   </h:form>
 
-  <zanata:list-filter
+  <zanata:list-filter status="documentsTab-languagesLoader"
+    listId="documents-language_list"
     placeholder="#{messages['jsf.language.search.placeholder']}"
     bottomPanel="true"
     render="documents-language_list, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info"

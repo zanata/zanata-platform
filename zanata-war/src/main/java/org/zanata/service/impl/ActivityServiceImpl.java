@@ -39,7 +39,6 @@ import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -51,6 +50,8 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -88,12 +89,12 @@ public class ActivityServiceImpl implements ActivityService {
         return DateUtils.truncate(actionTime, Calendar.HOUR);
     }
 
-    @In
-    private ProjectIterationDAO projectIterationDAO;
-
     @Override
     public List<Activity> findLatestVersionActivities(long personId,
             List<Long> versionIds, int offset, int maxResults) {
+        if (versionIds.isEmpty()) {
+            return Lists.newArrayList();
+        }
         return activityDAO.findLatestVersionActivities(personId, versionIds,
                 offset, maxResults);
     }
