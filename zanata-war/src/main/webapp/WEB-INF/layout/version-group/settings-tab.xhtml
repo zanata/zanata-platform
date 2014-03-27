@@ -42,9 +42,7 @@
 </ul>
 <ul class="tabs__content js-tabs-content">
   <li class="is-active" id="settings-general">
-    <h2 class="l--push-all-0 gamma d--bottom">
-      #{messages['jsf.General']}
-    </h2>
+    <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
     <h:form styleClass="l--constrain-large">
       <div>
         <ui:include src="edit_form.xhtml"/>
@@ -67,9 +65,7 @@
               </a4j:commandLink>
             </p>
 
-            <p class="txt--meta">
-              #{messages['jsf.ArchiveGroupMessage']}
-            </p>
+            <p class="txt--meta">#{messages['jsf.ArchiveGroupMessage']}</p>
           </s:fragment>
 
           <s:fragment
@@ -165,7 +161,6 @@
           <zanata:autocomplete
             actionBean="#{versionGroupHome.versionAutocomplete}"
             maxlength="40" minlength="3" id="versionAutocomplete"
-            queryField="#{versionGroupHome.versionQuery}"
             fetchValue="#{result.id}"
             render="settings-projects-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput();"
@@ -210,7 +205,6 @@
           <zanata:autocomplete
             actionBean="#{versionGroupHome.maintainerAutocomplete}"
             maxlength="80" minlength="3" id="maintainerAutocomplete"
-            queryField="#{versionGroupHome.maintainerQuery}"
             fetchValue="#{result.account.username}"
             render="settings-maintainers-form"
             oncomplete="focusCurrentActiveInput()"

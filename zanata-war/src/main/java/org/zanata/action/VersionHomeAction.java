@@ -29,6 +29,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -186,13 +187,21 @@ public class VersionHomeAction extends AbstractSortAction implements
                     SortingType.SortOption.HOURS,
                     SortingType.SortOption.PERCENTAGE,
                     SortingType.SortOption.WORDS,
-                    SortingType.SortOption.LAST_UPDATED,
+                    SortingType.SortOption.LAST_SOURCE_UPDATE,
                     SortingType.SortOption.LAST_TRANSLATED));
+
+    @Getter
+    private SortingType sourceDocumentSortingList = new SortingType(
+            Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.HOURS,
+                    SortingType.SortOption.PERCENTAGE,
+                    SortingType.SortOption.WORDS,
+                    SortingType.SortOption.LAST_SOURCE_UPDATE));
 
     @Getter
     private SortingType settingsDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.LAST_UPDATED));
+                    SortingType.SortOption.LAST_SOURCE_UPDATE));
 
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
@@ -200,12 +209,15 @@ public class VersionHomeAction extends AbstractSortAction implements
     private final DocumentComparator documentComparator =
             new DocumentComparator(getDocumentSortingList());
 
+    private final DocumentComparator sourceDocumentComparator =
+        new DocumentComparator(getSourceDocumentSortingList());
+
     private final DocumentComparator settingsDocumentComparator =
             new DocumentComparator(getSettingsDocumentSortingList());
 
     @Getter
-    private final DocumentFilter documentsTabDocumentFilter =
-            new DocumentFilter();
+    private final SourceDocumentFilter documentsTabDocumentFilter =
+            new SourceDocumentFilter();
 
     @Getter
     private final DocumentFilter settingsTabDocumentFilter =
@@ -290,8 +302,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     public void sortDocumentList() {
-        documentComparator.setSelectedLocaleId(null);
-        Collections.sort(getDocuments(), documentComparator);
+        sourceDocumentComparator.setSelectedLocaleId(null);
+        Collections.sort(getSourceDocuments(), sourceDocumentComparator);
         documentsTabDocumentFilter.resetQueryAndPage();
     }
 
@@ -371,6 +383,16 @@ public class VersionHomeAction extends AbstractSortAction implements
         return documents;
     }
 
+    public List<HDocument> getSourceDocuments() {
+        if (documents == null) {
+            documents =
+                documentDAO.getByProjectIteration(projectSlug, versionSlug,
+                    false);
+            Collections.sort(documents, sourceDocumentComparator);
+        }
+        return documents;
+    }
+
     public List<HIterationGroup> getGroups() {
         if (groups == null) {
             HProjectIteration version = getVersion();
@@ -433,21 +455,36 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public DisplayUnit getStatisticFigureForDocument(
             SortingType.SortOption sortOption, LocaleId localeId,
-            Long documentId) {
-        WordStatistic statistic = getStatisticForDocument(documentId, localeId);
-        return getDisplayUnit(sortOption, statistic);
+            HDocument document) {
+        WordStatistic statistic =
+                getStatisticForDocument(document.getId(), localeId);
+
+        Date date = null;
+        if (sortOption.equals(SortingType.SortOption.LAST_SOURCE_UPDATE)
+                || sortOption.equals(SortingType.SortOption.LAST_TRANSLATED)) {
+            if (sortOption.equals(SortingType.SortOption.LAST_SOURCE_UPDATE)) {
+                date = document.getLastChanged();
+            } else {
+                DocumentStatus docStat =
+                        translationStateCacheImpl.getDocumentStatus(
+                                document.getId(), localeId);
+                date = docStat.getLastTranslatedDate();
+            }
+        }
+
+        return getDisplayUnit(sortOption, statistic, date);
     }
 
     public DisplayUnit getStatisticFigureForDocument(
-            SortingType.SortOption sortOption, Long documentId) {
-        WordStatistic statistic = getDocumentStatistic(documentId);
-        return getDisplayUnit(sortOption, statistic);
+            SortingType.SortOption sortOption, HDocument document) {
+        WordStatistic statistic = getDocumentStatistic(document.getId());
+        return getDisplayUnit(sortOption, statistic, document.getLastChanged());
     }
 
     public DisplayUnit getStatisticFigureForLocale(
             SortingType.SortOption sortOption, LocaleId localeId) {
         WordStatistic statistic = getStatisticsForLocale(localeId);
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     public boolean isUserAllowedToTranslateOrReview(HLocale hLocale) {
@@ -469,8 +506,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         HDocument doc = documentDAO.getById(docId);
         documentServiceImpl.makeObsolete(doc);
         resetPageData();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO, doc.getDocId()
-                + " has been removed.");
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+                doc.getDocId() + " has been removed.");
     }
 
     public List<HLocale> getAvailableSourceLocales() {
@@ -584,8 +621,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     private void showUploadSuccessMessage() {
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO, "Document "
-                + sourceFileUpload.getFileName() + " uploaded.");
+        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+                "Document " + sourceFileUpload.getFileName() + " uploaded.");
     }
 
     /**
@@ -731,7 +768,8 @@ public class VersionHomeAction extends AbstractSortAction implements
             } catch (VirusDetectedException e) {
                 VersionHomeAction.log.warn("File failed virus scan: {}",
                         e.getMessage());
-                conversationScopeMessages.putMessage(FacesMessage.SEVERITY_ERROR,
+                conversationScopeMessages.putMessage(
+                        FacesMessage.SEVERITY_ERROR,
                         "uploaded file did not pass virus scan");
             }
             filePersistService.persistRawDocumentContentFromFile(rawDocument,
@@ -807,6 +845,13 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
     };
 
+    private class SourceDocumentFilter extends AbstractListFilter<HDocument> {
+        @Override
+        protected List<HDocument> getFilteredList() {
+            return FilterUtil.filterDocumentList(getQuery(), getSourceDocuments());
+        }
+    };
+
     private class DocumentComparator implements Comparator<HDocument> {
         private SortingType sortingType;
 
@@ -835,7 +880,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
                 return item1.getName().compareTo(item2.getName());
             } else if (selectedSortOption
-                    .equals(SortingType.SortOption.LAST_UPDATED)) {
+                    .equals(SortingType.SortOption.LAST_SOURCE_UPDATE)) {
                 return DateUtil.compareDate(item1.getLastChanged(),
                         item2.getLastChanged());
             } else if (selectedSortOption

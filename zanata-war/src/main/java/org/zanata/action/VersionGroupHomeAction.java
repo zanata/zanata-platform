@@ -371,21 +371,21 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         WordStatistic statistic =
                 statisticMap.get(new VersionLocaleKey(projectIterationId,
                         localeId));
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForLocale(
             SortingType.SortOption sortOption, LocaleId localeId) {
         WordStatistic statistic = getStatisticsForLocale(localeId);
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForProject(
             SortingType.SortOption sortOption, Long projectIterationId) {
         WordStatistic statistic = getStatisticForProject(projectIterationId);
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult

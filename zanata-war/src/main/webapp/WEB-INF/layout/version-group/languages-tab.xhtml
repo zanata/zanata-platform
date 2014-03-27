@@ -26,8 +26,7 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a
-                href="javascript:void(0)"
+              <a href="javascript:void(0)"
                 onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
@@ -52,9 +51,7 @@
   </div>
 
   <a4j:status name="languageTab-languagesLoader">
-    <f:facet name="start">
-      <zanata:loader/>
-    </f:facet>
+    <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-0">
@@ -83,10 +80,10 @@
         <ui:repeat
           value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
-          <li
-            class="progress-bar__expander">
+          <li class="progress-bar__expander">
             <a4j:commandLink
-              action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}" onbegin="clearList('#{rich:clientId('languages-project_list')}')"
+              action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
+              onbegin="clearList('#{rich:clientId('languages-project_list')}')"
               status="languageTab-projectsLoader"
               render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
@@ -95,9 +92,8 @@
                 <div class="list__item__info">
                   <span class="list__title">
                     #{hLocale.retrieveDisplayName()}
-                    <s:span
+                    <s:span styleClass="badge--danger"
                       rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
-                      styleClass="badge--danger"
                       title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
                       #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
                     </s:span>
@@ -107,13 +103,9 @@
                   rendered="#{versionGroupHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="stats--small #{displayUnit.cssClass}">
-                      <span class="stats__figure">
-                        #{displayUnit.figure}
-                      </span>
-                      <span class="stats__unit">
-                        #{displayUnit.unit}
-                      </span>
+                   <span class="#{displayUnit.cssClass}">
+                      <span class="stats__figure">#{displayUnit.figure}</span>
+                      <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
                 </s:div>
               </div>
@@ -123,9 +115,7 @@
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
 
               <a4j:status name="statistic-loader">
-                <f:facet name="start">
-                  <zanata:loader/>
-                </f:facet>
+                <f:facet name="start"><zanata:loader/></f:facet>
               </a4j:status>
 
             </a4j:commandLink>
@@ -178,17 +168,13 @@
   </div>
 
   <a4j:status name="languageTab-projectsLoader">
-    <f:facet name="start">
-      <zanata:loader/>
-    </f:facet>
+    <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
   <h:form id="languages-project_list" styleClass="l--push-bottom-0">
     <s:div styleClass="l--pad-all-half"
       rendered="#{versionGroupHomeAction.selectedLocale == null}">
-      <p class="txt--meta">
-        #{messages['jsf.SelectALanguageFromList']}
-      </p>
+      <p class="txt--meta">#{messages['jsf.SelectALanguageFromList']}</p>
     </s:div>
 
     <s:fragment rendered="#{versionGroupHomeAction.selectedLocale != null}">
@@ -217,13 +203,10 @@
           <ui:repeat
             value="#{versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}"
             var="version">
-            <li
-              class="progress-bar__expander">
+            <li class="progress-bar__expander">
               <s:link view="/iteration/view.xhtml">
-                <f:param name="projectSlug"
-                  value="#{version.project.slug}"/>
-                <f:param name="iterationSlug"
-                  value="#{version.slug}"/>
+                <f:param name="projectSlug" value="#{version.project.slug}"/>
+                <f:param name="iterationSlug" value="#{version.slug}"/>
 
                 <div class="list__item">
                   <div class="list__item__info">
@@ -242,10 +225,8 @@
                   <div class="list__item__stats">
                     <ui:param name="displayUnit"
                       value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.projectSortingList.selectedSortOption, versionGroupHomeAction.selectedLocale.localeId, version.id)}"/>
-                      <span class="stats--small #{displayUnit.cssClass}">
-                        <span class="stats__figure">
-                          #{displayUnit.figure}
-                        </span>
+                      <span class="#{displayUnit.cssClass}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
                         <span class="stats__unit txt--lowercase">
                           #{displayUnit.unit}
                         </span>

@@ -45,6 +45,7 @@ import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -91,6 +92,9 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private ProjectDAO projectDAO;
 
     @In
+    private ProjectIterationDAO projectIterationDAO;
+
+    @In
     private LocaleMemberDAO localeMemberDAO;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
@@ -112,7 +116,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
                     SortingType.SortOption.HOURS,
                     SortingType.SortOption.PERCENTAGE,
                     SortingType.SortOption.WORDS,
-                    SortingType.SortOption.LAST_UPDATED));
+                    SortingType.SortOption.LAST_ACTIVITY));
 
     @Getter
     private boolean pageRendered = false;
@@ -149,16 +153,17 @@ public class ProjectHomeAction extends AbstractSortAction implements
                             }
                         });
 
-        return activityServiceImpl.findLatestVersionActivities(
+        return activityServiceImpl.findLatestVersionActivitiesByUser(
                 authenticatedAccount.getPerson().getId(),
                 Lists.newArrayList(versionIds), 0, 1);
     }
 
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForVersion(
-            SortingType.SortOption sortOption, String versionSlug) {
-        WordStatistic statistic = getStatisticForVersion(versionSlug);
-        return getDisplayUnit(sortOption, statistic);
+            SortingType.SortOption sortOption, HProjectIteration version) {
+        WordStatistic statistic = getStatisticForVersion(version.getSlug());
+
+        return getDisplayUnit(sortOption, statistic, version.getLastChanged());
     }
 
     @CachedMethodResult
@@ -201,7 +206,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)
                     && !selectedSortOption
-                            .equals(SortingType.SortOption.LAST_UPDATED)) {
+                            .equals(SortingType.SortOption.LAST_ACTIVITY)) {
 
                 WordStatistic wordStatistic1 =
                         getStatisticForVersion(item1.getSlug());
@@ -230,8 +235,23 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 return item1.getSlug().toLowerCase()
                         .compareTo(item2.getSlug().toLowerCase());
             } else if (selectedSortOption
-                    .equals(SortingType.SortOption.LAST_UPDATED)) {
-                return item1.getLastChanged().compareTo(item2.getLastChanged());
+                    .equals(SortingType.SortOption.LAST_ACTIVITY)) {
+
+                List<Activity> activity1 =
+                        activityServiceImpl.findLatestVersionActivities(
+                                item1.getId(), 0, 1);
+                List<Activity> activity2 =
+                        activityServiceImpl.findLatestVersionActivities(
+                                item2.getId(), 0, 1);
+                if (activity1.isEmpty() && activity2.isEmpty()) {
+                    return 0;
+                } else if (activity1.isEmpty()) {
+                    return -1;
+                } else if (activity2.isEmpty()) {
+                    return 1;
+                }
+                return activity1.get(0).getLastChanged()
+                        .compareTo(activity2.get(0).getLastChanged());
             }
             return 0;
         }

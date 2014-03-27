@@ -53,9 +53,7 @@
     </div>
 
     <a4j:status name="versionTab-versionsLoader">
-      <f:facet name="start">
-        <zanata:loader/>
-      </f:facet>
+      <f:facet name="start"><zanata:loader/></f:facet>
     </a4j:status>
 
     <h:form id="versions_form" styleClass="l--push-bottom-0">
@@ -97,9 +95,9 @@
                     <a href="#"
                       class="dropdown__toggle js-dropdown__toggle txt--meta"
                       title="#{messages['jsf.tooltip.TranslateOptions']}">
-                  <span class="is-invisible">
-                    #{messages['jsf.tooltip.TranslateOptions']}
-                  </span>
+                      <span class="is-invisible">
+                        #{messages['jsf.tooltip.TranslateOptions']}
+                      </span>
                     </a>
                     <ul class="dropdown__content js-dropdown__content">
                       <ui:repeat
@@ -115,14 +113,14 @@
                             <f:param name="localeId"
                               value="#{hLocale.localeId}"/>
                             <f:param name="locale" value="#{locale.language}"/>
-                          <span>
-                            <h:outputFormat
-                              value="#{messages['jsf.project.TranslateIn']}">
-                              <f:param
-                                value="#{hLocale.retrieveDisplayName()}"/>
-                            </h:outputFormat>
-                            <i class="i i--translate i__item__icon"></i>
-                          </span>
+                            <span>
+                              <h:outputFormat
+                                value="#{messages['jsf.project.TranslateIn']}">
+                                <f:param
+                                  value="#{hLocale.retrieveDisplayName()}"/>
+                              </h:outputFormat>
+                              <i class="i i--translate i__item__icon"></i>
+                            </span>
                           </h:outputLink>
                         </li>
                       </ui:repeat>
@@ -159,11 +157,9 @@
                   <s:div styleClass="list__item__stats"
                     rendered="#{projectHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
-                      value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, versionItem.version.slug)}"/>
-                   <span class="stats--small #{displayUnit.cssClass}">
-                      <span class="stats__figure">
-                        #{displayUnit.figure}
-                      </span>
+                      value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, versionItem.version)}"/>
+                   <span class="#{displayUnit.cssClass}">
+                      <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit txt--lowercase">
                         #{displayUnit.unit}
                       </span>
@@ -175,9 +171,7 @@
                   rendered="#{projectHomeAction.pageRendered}"/>
 
                 <a4j:status name="statistic-loader">
-                  <f:facet name="start">
-                    <zanata:loader/>
-                  </f:facet>
+                  <f:facet name="start"><zanata:loader/></f:facet>
                 </a4j:status>
               </s:link>
             </li>

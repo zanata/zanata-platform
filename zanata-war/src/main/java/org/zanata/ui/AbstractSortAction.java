@@ -21,11 +21,14 @@
 
 package org.zanata.ui;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.zanata.action.SortingType;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
@@ -52,22 +55,56 @@ public abstract class AbstractSortAction {
                     SortingType.SortOption.WORDS));
 
     protected DisplayUnit getDisplayUnit(SortingType.SortOption sortOption,
-            WordStatistic statistic) {
+            WordStatistic statistic, Date date) {
         DisplayUnit displayUnit;
+        String displayString = null;
 
         switch (sortOption) {
         case HOURS:
             displayUnit =
-                    new DisplayUnit("", StatisticsUtil.formatHours(statistic
-                            .getRemainingHours()),
+                    new DisplayUnit("stats--small",
+                            StatisticsUtil.formatHours(statistic
+                                    .getRemainingHours()),
                             getMessage("jsf.stats.HoursRemaining"));
             break;
 
         case WORDS:
             displayUnit =
-                    new DisplayUnit("", String.valueOf(statistic
+                    new DisplayUnit("stats--small", String.valueOf(statistic
                             .getUntranslated()),
                             getMessage("jsf.WordsRemaining"));
+            break;
+        case LAST_ACTIVITY:
+            displayUnit =
+                    new DisplayUnit("stats--mini",
+                            DateUtil.getHowLongAgoDescription(date),
+                            getMessage("jsf.LastUpdated"));
+            break;
+
+        case LAST_UPDATED_BY_YOU:
+            displayString =
+                    date == null ? "never" : DateUtil
+                            .getHowLongAgoDescription(date);
+            displayUnit =
+                    new DisplayUnit("stats--mini", displayString,
+                            getMessage("jsf.LastUpdatedByYou"));
+            break;
+
+        case LAST_TRANSLATED:
+            displayString =
+                    date == null ? "never" : DateUtil
+                            .getHowLongAgoDescription(date);
+            displayUnit =
+                    new DisplayUnit("stats--mini", displayString,
+                            getMessage("jsf.LastTranslated"));
+            break;
+        case LAST_SOURCE_UPDATE:
+            displayString =
+                    date == null ? "never" : DateUtil
+                            .getHowLongAgoDescription(date);
+            displayUnit =
+                    new DisplayUnit("stats--mini", displayString,
+                            getMessage("jsf.LastUpdated"));
             break;
 
         default:
@@ -75,8 +112,8 @@ public abstract class AbstractSortAction {
                     StatisticsUtil.formatPercentage(statistic
                             .getPercentTranslated()) + "%";
             String style =
-                    statistic.getPercentTranslated() == 0 ? "txt--neutral"
-                            : "txt--success";
+                    statistic.getPercentTranslated() == 0 ? "stats--small txt--neutral"
+                            : "stats--small txt--success";
             displayUnit =
                     new DisplayUnit(style, figure, getMessage("jsf.Translated"));
             break;

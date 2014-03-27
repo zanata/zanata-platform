@@ -83,9 +83,7 @@
   </div>
 
   <a4j:status name="languageTab-languagesLoader">
-    <f:facet name="start">
-      <zanata:loader/>
-    </f:facet>
+    <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-0">
@@ -117,7 +115,8 @@
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink limitRender="true"
               action="#{versionHomeAction.setSelectedLocale(hLocale)}"
-              status="languageTab-documentsLoader" onbegin="clearList('#{rich:clientId('languages-document_list')}')"
+              status="languageTab-documentsLoader"
+              onbegin="clearList('#{rich:clientId('languages-document_list')}')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
               onclick="updateActiveRow(this);toggleColumn('languages_content')">
               <div class="list__item">
@@ -129,8 +128,7 @@
                       <i class="i--right i--translate txt--neutral"></i>
                     </s:fragment>
 
-                    <s:span rendered="#{not hLocale.active}"
-                      styleClass="label"
+                    <s:span rendered="#{not hLocale.active}" styleClass="label"
                       title="#{messages['jsf.Language.Disabled']}">
                       #{messages['jsf.Disabled']}
                     </s:span>
@@ -141,13 +139,9 @@
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForLocale(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="stats--small #{displayUnit.cssClass}">
-                      <span class="stats__figure">
-                        #{displayUnit.figure}
-                      </span>
-                      <span class="stats__unit">
-                        #{displayUnit.unit}
-                      </span>
+                   <span class="#{displayUnit.cssClass}">
+                      <span class="stats__figure">#{displayUnit.figure}</span>
+                      <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
                 </s:div>
               </div>
@@ -157,9 +151,7 @@
                 rendered="#{versionHomeAction.pageRendered}"/>
 
               <a4j:status name="statistic-loader">
-                <f:facet name="start">
-                  <zanata:loader/>
-                </f:facet>
+                <f:facet name="start"><zanata:loader/></f:facet>
               </a4j:status>
 
             </a4j:commandLink>
@@ -266,9 +258,7 @@
 </div>
 
 <a4j:status name="languageTab-documentsLoader">
-  <f:facet name="start">
-    <zanata:loader/>
-  </f:facet>
+  <f:facet name="start"><zanata:loader/></f:facet>
 </a4j:status>
 
 <h:form id="languages-document_list" styleClass="l--push-bottom-0">
@@ -280,9 +270,7 @@
   <s:fragment rendered="#{versionHomeAction.selectedLocale != null}">
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.documents}">
-      <p class="txt--meta">
-        #{messages['jsf.iteration.NoDocumentInVersion']}
-      </p>
+      <p class="txt--meta">#{messages['jsf.iteration.NoDocumentInVersion']}</p>
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
@@ -409,8 +397,8 @@
                   <s:div styleClass="list__item__stats"
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
-                      value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document.id)}"/>
-                 <span class="stats--small #{displayUnit.cssClass}">
+                      value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
+                 <span class="#{displayUnit.cssClass}">
                     <span class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
                  </span>
@@ -434,8 +422,8 @@
                 <s:div styleClass="list__item__stats"
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
-                    value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document.id)}"/>
-                 <span class="stats--small #{displayUnit.cssClass}">
+                    value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
+                 <span class="#{displayUnit.cssClass}">
                     <span class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
                  </span>

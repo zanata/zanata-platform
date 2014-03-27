@@ -27,8 +27,7 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a
-                href="javascript:void(0)"
+              <a href="javascript:void(0)"
                 onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects');">
                 #{messages['jsf.ManageProjects']} <i
                 class="i i--settings i__item__icon"></i>
@@ -53,9 +52,7 @@
   </div>
 
   <a4j:status name="projectsTab-projectsLoader">
-    <f:facet name="start">
-      <zanata:loader/>
-    </f:facet>
+    <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
   <h:form id="projects-project_form" styleClass="l--push-bottom-0">
@@ -84,9 +81,9 @@
         <ui:repeat
           value="#{versionGroupHomeAction.projectTabVersionFilter.pagedFilteredList}"
           var="version">
-          <li
-            class="progress-bar__expander">
-            <a4j:commandLink limitRender="true"
+          <li class="progress-bar__expander"
+            id="#{version.project.slug}[#{version.slug}]">
+            <a4j:commandLink
               action="#{versionGroupHomeAction.setSelectedVersion(version)}"
               status="projectsTab-languagesLoader"
               onbegin="clearList('#{rich:clientId('projects-language_list')}')"
@@ -126,9 +123,7 @@
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
 
               <a4j:status name="statistic-loader">
-                <f:facet name="start">
-                  <zanata:loader/>
-                </f:facet>
+                <f:facet name="start"><zanata:loader/></f:facet>
               </a4j:status>
 
             </a4j:commandLink>
@@ -182,18 +177,14 @@
   </div>
 
   <a4j:status name="projectsTab-languagesLoader">
-    <f:facet name="start">
-      <zanata:loader/>
-    </f:facet>
+    <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
   <h:form id="projects-language_list" styleClass="l--push-bottom-0">
     <s:fragment
       rendered="#{versionGroupHomeAction.selectedVersion == null}">
       <div class="l--pad-all-half">
-        <p class="txt--meta">
-          #{messages['jsf.SelectAProjectFromList']}
-        </p>
+        <p class="txt--meta">#{messages['jsf.SelectAProjectFromList']}</p>
       </div>
     </s:fragment>
 
@@ -223,8 +214,7 @@
           <ui:repeat
             value="#{versionGroupHomeAction.projectTabLanguageFilter.pagedFilteredList}"
             var="hLocale">
-            <li
-              class="progress-bar__expander">
+            <li class="progress-bar__expander">
               <div class="list__item">
                 <div class="list__item__info">
                 <span class="list__title">
@@ -260,14 +250,10 @@
                 <div class="list__item__stats">
                   <ui:param name="displayUnit"
                     value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionGroupHomeAction.selectedVersion.id)}"/>
-                <span class="stats--small #{displayUnit.cssClass}">
-                  <span class="stats__figure">
-                    #{displayUnit.figure}
+                  <span class="stats--small #{displayUnit.cssClass}">
+                    <span class="stats__figure">#{displayUnit.figure}</span>
+                    <span class="stats__unit">#{displayUnit.unit}</span>
                   </span>
-                  <span class="stats__unit">
-                    #{displayUnit.unit}
-                  </span>
-                </span>
                 </div>
               </div>
               <zanata:statistic

@@ -16,7 +16,6 @@
   function getDocumentFormId() {
     return "[id='#{rich:clientId('settings-document_form')}']";
   }
-
 </script>
 
 <a4j:jsFunction name="bindRequireReviewValue"
@@ -40,7 +39,6 @@
   <a4j:param name="val1" assignTo="#{key}"/>
   <a4j:param name="val2" assignTo="#{checked}"/>
 </a4j:jsFunction>
-
 
 <h1>#{messages['jsf.iteration.VersionSettings']}</h1>
 
@@ -74,9 +72,7 @@
 
 <ul class="tabs__content js-tabs-content">
 <li class="is-active" id="settings-general">
-  <h2 class="l--push-all-0 gamma d--bottom">
-    #{messages['jsf.General']}
-  </h2>
+  <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
 
   <h:form styleClass="l--constrain-large">
     <ui:include src="edit_form.xhtml"/>
@@ -107,10 +103,8 @@
         rendered="#{versionHome.instance.status ne 'ACTIVE'}">
         <s:fragment
           rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
-          <button class="button--success l--push-bottom-half"
-            disabled="true">
-            <i
-              class="i--left i--lock"></i>
+          <button class="button--success l--push-bottom-half" disabled="true">
+            <i class="i--left i--lock"></i>
             #{messages['jsf.iteration.writable']}
           </button>
         </s:fragment>
@@ -119,12 +113,10 @@
           rendered="#{versionHome.instance.status eq 'READONLY'}"
           action="#{versionHome.updateStatus('A')}"
           render="status, version-info">
-          <i
-            class="i--left i--lock"></i> #{messages['jsf.iteration.writable']}
+          <i class="i--left i--lock"></i> #{messages['jsf.iteration.writable']}
         </a4j:commandLink>
 
-        <p
-          class="txt--meta">#{messages['jsf.iteration.writable.Message']}</p>
+        <p class="txt--meta">#{messages['jsf.iteration.writable.Message']}</p>
       </s:div>
 
       <s:fragment
@@ -192,8 +184,7 @@
           value="#{versionHomeAction.settingsTabDocumentFilter.pagedFilteredList}"
           var="document">
           <li>
-            <div
-              class="list__item__content">
+            <div class="list__item__content">
               <div class="list__item__info">
                 <label
                   class="form__checkbox__label js-form__checkbox__label">#{document.name}</label>
@@ -303,8 +294,7 @@
         checked="#{versionHome.instance.requireTranslationReview}"
         value="requireTranslationReview"/>
 
-      <p
-        class="txt--meta">#{messages['jsf.iteration.requireReview.message']}
+      <p class="txt--meta">#{messages['jsf.iteration.requireReview.message']}
         <a href="http://zanata.org/help/review/review-activating/"
           target="_blank"
           title="#{messages['jsf.iteration.requireReview.help']}"><i
@@ -330,8 +320,7 @@
       disabled="#{versionHome.isValidationsSameAsProject()}"/>
 
     <ul class="list--slat">
-      <ui:repeat
-        value="#{versionHome.validationList}" var="validationAction">
+      <ui:repeat value="#{versionHome.validationList}" var="validationAction">
         <li class="js-example js-reveal">
           <div class="g--tight">
             <div class="g__item w--7-12">
@@ -354,14 +343,12 @@
             </div>
             <div class="g__item w--5-12">
               <div class="button--group txt--align-right">
-                <ui:repeat value="#{versionHome.validationStates}"
-                  var="state">
+                <ui:repeat value="#{versionHome.validationStates}" var="state">
                   <s:fragment rendered="#{validationAction.state eq state}">
                     <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
-                      checked="true"
+                      checked="true" type="radio"
                       onchange="onValidationOptionChange(this.id)"
-                      type="radio"
                       class="form__item__input js-example__setter"
                       data-example=""/>
                   </s:fragment>
@@ -369,9 +356,8 @@
                     <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
                       onchange="onValidationOptionChange(this.id)"
-                      type="radio"
-                      class="form__item__input js-example__setter"
-                      data-example=""/>
+                      type="radio" data-example=""
+                      class="form__item__input js-example__setter"/>
                   </s:fragment>
                   <label for="#{validationAction.id.name()}-#{state}"
                     class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
@@ -429,8 +415,7 @@
       <s:div styleClass="g--tight" id="copy-trans">
         <s:div styleClass="g__item w--2-3 l--push-bottom-quarter"
           rendered="#{!copyTransAction.inProgress}">
-          <p
-            class="l--push-bottom-0">
+          <p class="l--push-bottom-0">
             #{messages['jsf.iteration.copyTrans.start.question']}</p>
 
           <p

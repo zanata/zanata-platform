@@ -36,7 +36,7 @@
           <li>
             <a4j:commandLink tabindex="-1"
               action="#{cc.attrs.sortAction}" oncomplete="#{cc.attrs.oncomplete}"
-              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''} txt--lowercase"
+              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''}"
               render="#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
               #{sortOption.display}
               <f:setPropertyActionListener

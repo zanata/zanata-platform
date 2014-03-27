@@ -90,13 +90,21 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<Activity> findLatestVersionActivities(long personId,
+    public List<Activity> findLatestVersionActivitiesByUser(long personId,
             List<Long> versionIds, int offset, int maxResults) {
         if (versionIds.isEmpty()) {
             return Lists.newArrayList();
         }
-        return activityDAO.findLatestVersionActivities(personId, versionIds,
-                offset, maxResults);
+        return activityDAO.findLatestVersionActivitiesByUser(personId,
+                versionIds, offset, maxResults);
+    }
+
+    @Override
+    public List<Activity> findLatestVersionActivities(Long versionId,
+            int offset, int maxResults) {
+
+        return activityDAO.findLatestVersionActivities(versionId, offset,
+                maxResults);
     }
 
     @Override

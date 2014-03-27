@@ -86,9 +86,7 @@
 </ul>
 <ul class="tabs__content js-tabs-content">
 <li class="is-active" id="settings-general">
-  <h2 class="l--push-all-0 gamma d--bottom">
-    #{messages['jsf.General']}
-  </h2>
+  <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
   <h:form id="settings-general-form" styleClass="l--constrain-large">
     <ui:include src="edit_form.xhtml"/>
 
@@ -209,8 +207,7 @@
   </h2>
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
     <ul class="list--slat list--highlight l--push-top-half">
-      <ui:repeat value="#{projectHome.getInstanceActiveLocales()}"
-        var="locale">
+      <ui:repeat value="#{projectHome.getInstanceActiveLocales()}" var="locale">
         <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span
           class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
           <a4j:commandLink oncomplete="refreshStatistics()" execute="@this"
@@ -270,10 +267,10 @@
                     data-target="##{validationAction.id.name()}-example"
                     data-toggle-title="#{messages['jsf.tooltip.HideExample']}"
                     title="#{messages['jsf.tooltip.ShowExample']}">
-                  <span class="js-reveal__toggle__text"
-                    data-toggle-value="Less">
-                    #{messages['jsf.tooltip.More']}
-                  </span>…
+                    <span class="js-reveal__toggle__text"
+                      data-toggle-value="Less">
+                      #{messages['jsf.tooltip.More']}
+                    </span>…
                   </a>
                 </p>
               </div>
@@ -356,10 +353,10 @@
       <ui:repeat value="#{projectHome.getInstanceMaintainers()}"
         var="maintainer">
         <li class="reveal--list-item">
-            <span class="w--r-1 bx--round l--push-right-quarter">
-              <img alt="#{maintainer.account.username}"
-                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"/>
-            </span> #{maintainer.name}
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img alt="#{maintainer.account.username}"
+              src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"/>
+          </span> #{maintainer.name}
           <span class="txt--meta">@#{maintainer.account.username}</span>
           <a4j:commandLink
             action="#{projectHome.removeMaintainer(maintainer)}"
@@ -385,13 +382,13 @@
           oncomplete="zanata.form.appendCheckboxes(getUserRoleId());focusCurrentActiveInput()"
           placeholder="#{messages['jsf.SearchUsers']}">
 
-            <span class="w--r-1 bx--round l--push-right-quarter">
-              <img
-                src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}"
-                alt="#{result.name}"/>
-            </span>#{result.name}
-            <span
-              class="txt--meta">@#{result.account.username}</span>
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img
+              src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}"
+              alt="#{result.name}"/>
+          </span>#{result.name}
+          <span
+            class="txt--meta">@#{result.account.username}</span>
         </zanata:autocomplete>
       </li>
     </ul>
