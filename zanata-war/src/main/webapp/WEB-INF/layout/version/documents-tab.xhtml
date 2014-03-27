@@ -96,8 +96,11 @@
       <ui:repeat
         value="#{versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}"
         var="document">
-        <li class="progress-bar__expander list__item--actionable">
-          <div class="list__item__action">
+        <ui:param name="hasActions"
+          value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
+        <li
+          class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
+          <s:div styleClass="list__item__action" rendered="#{hasActions}">
             <div
               class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
               <a class="dropdown__toggle js-dropdown__toggle txt--meta"
@@ -182,11 +185,11 @@
                 </s:fragment>
               </ul>
             </div>
-          </div>
+          </s:div>
           <a4j:commandLink limitRender="true"
             action="#{versionHomeAction.setSelectedDocument(document)}"
             status="documentsTab-languagesLoader"
-            onbegin="clearList('#{rich:clientId('documents-language_list')}')"
+            onbegin="clearHTML('#{rich:clientId('documents-language_list')}')"
             render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
             onclick="updateActiveRow(this);toggleColumn('documents_content')">
             <div class="list__item__content">
@@ -259,9 +262,9 @@
       </s:fragment>
     </div>
     <h2 class="panel__heading">
-      <s:span
-        id="document-label">#{versionHomeAction.selectedDocument.name}</s:span>
-      #{messages['jsf.Languages']}
+      <s:span id="document-label">
+        #{versionHomeAction.selectedDocument.name}  #{messages['jsf.Languages']}
+      </s:span>
     </h2>
   </div>
 

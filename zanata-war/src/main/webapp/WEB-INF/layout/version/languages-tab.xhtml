@@ -116,7 +116,7 @@
             <a4j:commandLink limitRender="true"
               action="#{versionHomeAction.setSelectedLocale(hLocale)}"
               status="languageTab-documentsLoader"
-              onbegin="clearList('#{rich:clientId('languages-document_list')}')"
+              onbegin="clearHTML('#{rich:clientId('languages-document_list')}')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
               onclick="updateActiveRow(this);toggleColumn('languages_content')">
               <div class="list__item">
@@ -293,10 +293,11 @@
         <ui:repeat varStatus="status"
           value="#{versionHomeAction.languageTabDocumentFilter.pagedFilteredList}"
           var="document">
-          <li class="progress-bar__expander list__item--actionable">
-
-            <s:div styleClass="list__item__action"
-              rendered="#{versionHomeAction.selectedLocale.active and (identity.loggedIn or versionHomeAction.isPoDocument(document.docId) or (versionHomeAction.knownProjectType and !versionHomeAction.isPoDocument(document.docId)) or versionHomeAction.hasOriginal(document.path, document.name) or (versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)))}">
+          <ui:param name="hasActions"
+            value="#{versionHomeAction.selectedLocale.active and (identity.loggedIn or versionHomeAction.isPoDocument(document.docId) or (versionHomeAction.knownProjectType and !versionHomeAction.isPoDocument(document.docId)) or versionHomeAction.hasOriginal(document.path, document.name) or (versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)))}"/>
+          <li
+            class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
+            <s:div styleClass="list__item__action" rendered="#{hasActions}">
               <div
                 class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
                 <a class="dropdown__toggle js-dropdown__toggle txt--meta"

@@ -96,7 +96,7 @@
         </li>
       </ui:repeat>
       <s:fragment
-        rendered="#{versionHome.managed and versionHome.instance.projectType eq null}">
+        rendered="#{(versionHome.isNewInstance() and versionHome.project.defaultProjectType eq null) or (versionHome.managed and versionHome.instance.projectType eq null)}">
         <li>
           <div class="form__radio js-form__radio"
             onclick="onProjectTypeChanged(this)">

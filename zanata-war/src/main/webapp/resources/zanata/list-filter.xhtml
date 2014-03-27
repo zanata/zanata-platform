@@ -40,7 +40,7 @@
     action="#{cc.attrs.actionBean.resetPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
     limitRender="true"
-    onbegin="clearList('#{rich:clientId(cc.attrs.listId)}')">
+    onbegin="clearHTML('#{rich:clientId(cc.attrs.listId)}')">
     <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
 

@@ -2,22 +2,38 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j">
 
 <composite:interface>
   <composite:attribute name="type" type="java.lang.String"
     shortDescription="size of the loader, loader--large or loader--huge"
     default="loader"/>
+
+  <composite:attribute name="layout" type="java.lang.String"
+    shortDescription="HTML layout for generated markup. Possible values: 'block' for generating an HTML &amp;lt;div&amp;gt; element and 'inline' for generating an HTML &amp;lt;span&amp;gt; element. Default value is 'block'"
+    default="block"/>
 </composite:interface>
 
 <composite:implementation>
 
-  <s:div styleClass="#{cc.attrs.type} is-active">
+  <s:div styleClass="#{cc.attrs.type} is-active"
+    rendered="#{cc.attrs.layout eq 'block'}">
     <span class="loader__spinner">
       <span></span>
       <span></span>
       <span></span>
     </span>
   </s:div>
+
+  <s:link styleClass="#{cc.attrs.type} is-active"
+    rendered="#{cc.attrs.layout eq 'inline'}">
+    <span class="loader__spinner">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </s:link>
+
 </composite:implementation>
 </html>

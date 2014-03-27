@@ -125,7 +125,7 @@ function focusCurrentActiveInput() {
   });
 }
 
-function clearList(listId) {
+function clearHTML(listId) {
   jQuery('#' + listId).empty();
 }
 

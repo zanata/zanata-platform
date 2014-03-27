@@ -86,33 +86,34 @@
           <ui:repeat
             value="#{projectHomeAction.versionFilter.pagedFilteredList}"
             var="versionItem">
-            <li class="progress-bar__expander list__item--actionable">
-              <s:fragment
-                rendered="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(versionItem.version)}">
-                <div class="list__item__action">
-                  <div
-                    class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
-                    <a href="#"
-                      class="dropdown__toggle js-dropdown__toggle txt--meta"
-                      title="#{messages['jsf.tooltip.TranslateOptions']}">
+            <ui:param name="hasActions"
+              value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(versionItem.version)}"/>
+            <li
+              class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
+              <s:div styleClass="list__item__action" rendered="#{hasActions}">
+                <div
+                  class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                  <a href="#"
+                    class="dropdown__toggle js-dropdown__toggle txt--meta"
+                    title="#{messages['jsf.tooltip.TranslateOptions']}">
                       <span class="is-invisible">
                         #{messages['jsf.tooltip.TranslateOptions']}
                       </span>
-                    </a>
-                    <ul class="dropdown__content js-dropdown__content">
-                      <ui:repeat
-                        value="#{projectHomeAction.getUserJoinedLocales(versionItem.version)}"
-                        var="hLocale">
-                        <li>
-                          <h:outputLink styleClass="i__item--right"
-                            value="#{request.contextPath}/webtrans/Application.seam">
-                            <f:param name="project"
-                              value="#{projectHomeAction.slug}"/>
-                            <f:param name="iteration"
-                              value="#{versionItem.version.slug}"/>
-                            <f:param name="localeId"
-                              value="#{hLocale.localeId}"/>
-                            <f:param name="locale" value="#{locale.language}"/>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content">
+                    <ui:repeat
+                      value="#{projectHomeAction.getUserJoinedLocales(versionItem.version)}"
+                      var="hLocale">
+                      <li>
+                        <h:outputLink styleClass="i__item--right"
+                          value="#{request.contextPath}/webtrans/Application.seam">
+                          <f:param name="project"
+                            value="#{projectHomeAction.slug}"/>
+                          <f:param name="iteration"
+                            value="#{versionItem.version.slug}"/>
+                          <f:param name="localeId"
+                            value="#{hLocale.localeId}"/>
+                          <f:param name="locale" value="#{locale.language}"/>
                             <span>
                               <h:outputFormat
                                 value="#{messages['jsf.project.TranslateIn']}">
@@ -121,22 +122,21 @@
                               </h:outputFormat>
                               <i class="i i--translate i__item__icon"></i>
                             </span>
-                          </h:outputLink>
-                        </li>
-                      </ui:repeat>
-                      <li>
-                        <h:outputLink id="exportTMXIterLink"
-                          onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-                          styleClass="i__item--right"
-                          value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{versionItem.version.slug}">
-                          #{messages['jsf.iteration.ExportTMXIter']}<i
-                          class="i i--export i__item__icon"></i>
                         </h:outputLink>
                       </li>
-                    </ul>
-                  </div>
+                    </ui:repeat>
+                    <li>
+                      <h:outputLink id="exportTMXIterLink"
+                        onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                        styleClass="i__item--right"
+                        value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{versionItem.version.slug}">
+                        #{messages['jsf.iteration.ExportTMXIter']}<i
+                        class="i i--export i__item__icon"></i>
+                      </h:outputLink>
+                    </li>
+                  </ul>
                 </div>
-              </s:fragment>
+              </s:div>
 
               <s:link view="/iteration/view.xhtml">
                 <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
