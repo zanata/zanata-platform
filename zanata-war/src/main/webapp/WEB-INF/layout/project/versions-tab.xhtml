@@ -158,7 +158,7 @@
                     rendered="#{projectHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, versionItem.version)}"/>
-                   <span class="#{displayUnit.cssClass}">
+                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit txt--lowercase">
                         #{displayUnit.unit}

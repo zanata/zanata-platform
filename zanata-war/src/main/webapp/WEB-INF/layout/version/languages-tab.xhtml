@@ -139,7 +139,7 @@
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForLocale(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="#{displayUnit.cssClass}">
+                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
@@ -399,7 +399,7 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}">
+                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                     <span class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
                  </span>
@@ -424,7 +424,7 @@
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}">
+                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                     <span class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
                  </span>

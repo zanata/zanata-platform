@@ -23,19 +23,18 @@ package org.zanata.ui;
 
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import org.zanata.action.SortingType;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
-
 import com.google.common.collect.Lists;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * 
  *         Action Handler for sort component - sortlist.xhtml
  */
 public abstract class AbstractSortAction {
@@ -65,20 +64,21 @@ public abstract class AbstractSortAction {
                     new DisplayUnit("stats--small",
                             StatisticsUtil.formatHours(statistic
                                     .getRemainingHours()),
-                            getMessage("jsf.stats.HoursRemaining"));
+                            getMessage("jsf.stats.HoursRemaining"), "");
             break;
 
         case WORDS:
             displayUnit =
                     new DisplayUnit("stats--small", String.valueOf(statistic
                             .getUntranslated()),
-                            getMessage("jsf.WordsRemaining"));
+                            getMessage("jsf.WordsRemaining"), "");
             break;
         case LAST_ACTIVITY:
             displayUnit =
                     new DisplayUnit("stats--mini",
                             DateUtil.getHowLongAgoDescription(date),
-                            getMessage("jsf.LastUpdated"));
+                            getMessage("jsf.LastUpdated"),
+                            DateUtil.formatShortDate(date));
             break;
 
         case LAST_UPDATED_BY_YOU:
@@ -87,7 +87,8 @@ public abstract class AbstractSortAction {
                             .getHowLongAgoDescription(date);
             displayUnit =
                     new DisplayUnit("stats--mini", displayString,
-                            getMessage("jsf.LastUpdatedByYou"));
+                            getMessage("jsf.LastUpdatedByYou"),
+                            DateUtil.formatShortDate(date));
             break;
 
         case LAST_TRANSLATED:
@@ -96,7 +97,8 @@ public abstract class AbstractSortAction {
                             .getHowLongAgoDescription(date);
             displayUnit =
                     new DisplayUnit("stats--mini", displayString,
-                            getMessage("jsf.LastTranslated"));
+                            getMessage("jsf.LastTranslated"),
+                            DateUtil.formatShortDate(date));
             break;
         case LAST_SOURCE_UPDATE:
             displayString =
@@ -104,7 +106,8 @@ public abstract class AbstractSortAction {
                             .getHowLongAgoDescription(date);
             displayUnit =
                     new DisplayUnit("stats--mini", displayString,
-                            getMessage("jsf.LastUpdated"));
+                            getMessage("jsf.LastUpdated"),
+                            DateUtil.formatShortDate(date));
             break;
 
         default:
@@ -115,7 +118,8 @@ public abstract class AbstractSortAction {
                     statistic.getPercentTranslated() == 0 ? "stats--small txt--neutral"
                             : "stats--small txt--success";
             displayUnit =
-                    new DisplayUnit(style, figure, getMessage("jsf.Translated"));
+                    new DisplayUnit(style, figure,
+                            getMessage("jsf.Translated"), "");
             break;
         }
         return displayUnit;
@@ -127,6 +131,7 @@ public abstract class AbstractSortAction {
         private String cssClass;
         private String figure;
         private String unit;
+        private String title;
     }
 
     public int compareWordStatistic(WordStatistic stats1, WordStatistic stats2,

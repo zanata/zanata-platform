@@ -103,7 +103,8 @@
                   rendered="#{versionGroupHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="#{displayUnit.cssClass}">
+                   <span class="#{displayUnit.cssClass}"
+                     title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
@@ -224,7 +225,8 @@
                   <div class="list__item__stats">
                     <ui:param name="displayUnit"
                       value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.projectSortingList.selectedSortOption, versionGroupHomeAction.selectedLocale.localeId, version.id)}"/>
-                      <span class="#{displayUnit.cssClass}">
+                      <span class="#{displayUnit.cssClass}"
+                        title="#{displayUnit.title}">
                         <span class="stats__figure">#{displayUnit.figure}</span>
                         <span class="stats__unit txt--lowercase">
                           #{displayUnit.unit}

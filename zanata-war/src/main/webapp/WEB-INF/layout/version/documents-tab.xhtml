@@ -201,7 +201,7 @@
                 rendered="#{versionHomeAction.pageRendered}">
                 <ui:param name="displayUnit"
                   value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.sourceDocumentSortingList.selectedSortOption, document)}"/>
-                 <span class="#{displayUnit.cssClass}">
+                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                     <span
                       class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
@@ -341,7 +341,7 @@
                       rendered="#{versionHomeAction.pageRendered}">
                       <ui:param name="displayUnit"
                         value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
-                       <span class="#{displayUnit.cssClass}">
+                       <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                           <span
                             class="stats__figure">#{displayUnit.figure}</span>
                           <span class="stats__unit">#{displayUnit.unit}</span>
@@ -375,7 +375,7 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
-                   <span class="#{displayUnit.cssClass}">
+                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
