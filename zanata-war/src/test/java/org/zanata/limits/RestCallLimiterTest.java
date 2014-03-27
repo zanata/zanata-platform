@@ -16,10 +16,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -34,10 +30,6 @@ import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.extern.slf4j.Slf4j;
 
@@ -117,28 +109,34 @@ public class RestCallLimiterTest {
     static <T> List<T> submitConcurrentTasksAndGetResult(Callable<T> task,
             int numOfThreads) throws InterruptedException, ExecutionException {
         List<Callable<T>> tasks = Collections.nCopies(numOfThreads, task);
-        final ListeningExecutorService executorService =
-                MoreExecutors.listeningDecorator(Executors
-                        .newFixedThreadPool(numOfThreads));
-        List<ListenableFuture<T>> listenableFutures =
-                Lists.transform(tasks, new ToListenableFuture<T>(
-                        executorService));
 
-        ListenableFuture<List<T>> listListenableFuture =
-                Futures.successfulAsList(listenableFutures);
-        return listListenableFuture.get();
+
+        ExecutorService service = Executors.newFixedThreadPool(numOfThreads);
+
+        List<Future<T>> futures = service.invokeAll(tasks);
+        return Lists.transform(futures, new Function<Future<T>, T>() {
+            @Override
+            public T apply(Future<T> input) {
+                try {
+                    return input.get();
+                }
+                catch (Exception e) {
+                    throw Throwables.propagate(e);
+                }
+            }
+        });
     }
 
     @Test
     public void canOnlyHaveMaxActiveConcurrentRequest()
             throws InterruptedException, ExecutionException {
         // Given: each thread will take some time to do its job
-        final int timeSpentDoingWork = 30;
+        final int timeSpentDoingWork = 20;
         runnableWillTakeTime(timeSpentDoingWork);
 
         // When: max concurrent threads are accessing simultaneously
         Callable<Long> callable =
-                taskToAcquireAndMeasureBlockedTime(timeSpentDoingWork);
+                taskToAcquireAndMeasureTime();
 
         // Then: only max active threads will be served immediately while others
         // will block until them finish
@@ -146,7 +144,12 @@ public class RestCallLimiterTest {
                 submitConcurrentTasksAndGetResult(callable, maxConcurrent);
         log.debug("result: {}", timeBlockedInMillis);
         Iterable<Long> blocked =
-                Iterables.filter(timeBlockedInMillis, new BlockedPredicate());
+                Iterables.filter(timeBlockedInMillis, new Predicate<Long>() {
+                    @Override
+                    public boolean apply(Long input) {
+                        return input >= timeSpentDoingWork * 2;
+                    }
+                });
         assertThat(blocked,
                 Matchers.<Long> iterableWithSize(maxConcurrent - maxActive));
     }
@@ -170,7 +173,7 @@ public class RestCallLimiterTest {
         limiter.changeRateLimitPermitsPerSecond(permitsPerSecond);
 
         // When: I start working on heavy duty stuff
-        Callable<Long> callable = taskToAcquireAndMeasureBlockedTime(0);
+        Callable<Long> callable = taskToAcquireAndMeasureTime();
         List<Callable<Long>> tasks = Collections.nCopies(maxActive, callable);
         ExecutorService executorService =
                 Executors.newFixedThreadPool(maxActive);
@@ -180,7 +183,13 @@ public class RestCallLimiterTest {
         List<Long> timeUsedInMillis =
                 getTimeUsedInMillisRoundedUpToTens(futures);
         Iterable<Long> blocked =
-                Iterables.filter(timeUsedInMillis, new BlockedPredicate());
+                Iterables.filter(timeUsedInMillis, new Predicate<Long>() {
+
+                    @Override
+                    public boolean apply(Long input) {
+                        return input > 0;
+                    }
+                });
         assertThat(blocked, Matchers.<Long> iterableWithSize(1));
     }
 
@@ -249,7 +258,7 @@ public class RestCallLimiterTest {
         final int timeSpentDoingWork = 20;
         runnableWillTakeTime(timeSpentDoingWork);
         Callable<Long> callable =
-                taskToAcquireAndMeasureBlockedTime(timeSpentDoingWork);
+                taskToAcquireAndMeasureTime();
         List<Callable<Long>> requests = Collections.nCopies(3, callable);
         // 1 task to update the active permit with 5ms delay
         // (so that it will happen while there is a blocked request)
@@ -272,7 +281,7 @@ public class RestCallLimiterTest {
                 // ensure this happen after change limit took place
                 Uninterruptibles
                         .sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
-                return tryAcquireAndMeasureBlockedTime(timeSpentDoingWork);
+                return tryAcquireAndMeasureTime();
             }
         };
         List<Callable<Long>> delayedRequests =
@@ -295,11 +304,6 @@ public class RestCallLimiterTest {
         // initial blocked thread's release will operate on old semaphore which
         // was thrown away
         assertThat(limiter.availableActivePermit(), Matchers.is(3));
-        // 2 request with no block, 1 update request (indicated as -10),
-        // 1 initially blocked request, 2 delay requests will not block
-        Iterable<Long> blocked =
-                Iterables.filter(timeUsedInMillis, new BlockedPredicate());
-        assertThat(blocked, Matchers.<Long> iterableWithSize(1));
     }
 
     @Test
@@ -332,28 +336,24 @@ public class RestCallLimiterTest {
     /**
      * it will measure acquire blocking time and return it.
      */
-    private Callable<Long> taskToAcquireAndMeasureBlockedTime(
-            final long timeSpentDoingWork) {
+    private Callable<Long> taskToAcquireAndMeasureTime() {
         return new Callable<Long>() {
 
             @Override
             public Long call() throws Exception {
-                return tryAcquireAndMeasureBlockedTime(timeSpentDoingWork);
+                return tryAcquireAndMeasureTime();
             }
         };
     }
 
-    private long tryAcquireAndMeasureBlockedTime(long timeSpentDoingWork) {
+    private long tryAcquireAndMeasureTime() {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
         limiter.tryAcquireAndRun(runntable);
         stopwatch.stop();
         long timeSpent = stopwatch.elapsedMillis();
         log.debug("real time try acquire and run task takes: {}", timeSpent);
-        long blockedTime =
-                roundToTens(timeSpent) - roundToTens(timeSpentDoingWork);
-        log.debug("blocked: {}", blockedTime);
-        return blockedTime;
+        return roundToTens(timeSpent);
     }
 
     private static List<Long> getTimeUsedInMillisRoundedUpToTens(
@@ -374,25 +374,4 @@ public class RestCallLimiterTest {
         return arg / 10 * 10;
     }
 
-    private static class BlockedPredicate implements Predicate<Long> {
-
-        @Override
-        public boolean apply(Long input) {
-            return input > 0;
-        }
-    }
-
-    private static class ToListenableFuture<T> implements
-            Function<Callable<T>, ListenableFuture<T>> {
-        private final ListeningExecutorService executorService;
-
-        public ToListenableFuture(ListeningExecutorService executorService) {
-            this.executorService = executorService;
-        }
-
-        @Override
-        public ListenableFuture<T> apply(Callable<T> input) {
-            return executorService.submit(input);
-        }
-    }
 }

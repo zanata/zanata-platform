@@ -35,7 +35,7 @@ public class LeakyBucketTest {
     }
 
     @Test
-    public void willWaitUntilRefill() {
+    public void willWaitUntilRefill() throws InterruptedException {
         int refillDuration = 20;
         TimeUnit refillTimeUnit = TimeUnit.MILLISECONDS;
         LeakyBucket bucket = new LeakyBucket(1, refillDuration, refillTimeUnit);
@@ -43,7 +43,7 @@ public class LeakyBucketTest {
         assertThat(bucket.tryAcquire(), Matchers.is(true));
         assertThat(bucket.tryAcquire(), Matchers.is(false));
 
-        Uninterruptibles.sleepUninterruptibly(refillDuration, refillTimeUnit);
+        Thread.sleep(TimeUnit.MILLISECONDS.convert(refillDuration, refillTimeUnit));
 
         assertThat(bucket.tryAcquire(), Matchers.is(true));
     }
