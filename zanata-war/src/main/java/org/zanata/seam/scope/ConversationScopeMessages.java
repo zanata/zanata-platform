@@ -45,13 +45,13 @@ public class ConversationScopeMessages implements Serializable {
     private List<FacesMessage> messages = Lists.newArrayList();
 
     @Begin(join = true)
-    public void putMessage(FacesMessage.Severity severity, String message) {
+    public void setMessage(FacesMessage.Severity severity, String message) {
         FacesMessage facesMessage = new FacesMessage(severity, message, null);
-        putMessages(Lists.newArrayList(facesMessage));
+        setMessages(Lists.newArrayList(facesMessage));
     }
 
     @Begin(join = true)
-    public void putMessages(List<FacesMessage> messages) {
+    public void setMessages(List<FacesMessage> messages) {
         this.messages = messages;
     }
 

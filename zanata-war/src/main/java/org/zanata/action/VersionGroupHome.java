@@ -170,34 +170,34 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     public void removeLanguage(HLocale locale) {
         getInstance().getActiveLocales().remove(locale);
         update();
-        conversationScopeMessages.putMessage(
-                FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.LanguageRemoveFromGroup",
-                        locale.retrieveDisplayName()));
+        conversationScopeMessages.setMessage(
+            FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.LanguageRemoveFromGroup",
+                locale.retrieveDisplayName()));
     }
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeVersion(HProjectIteration version) {
         getInstance().getProjectIterations().remove(version);
         update();
-        conversationScopeMessages.putMessage(
-                FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.VersionRemoveFromGroup",
-                        version.getSlug(), version.getProject().getSlug()));
+        conversationScopeMessages.setMessage(
+            FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.VersionRemoveFromGroup",
+                version.getSlug(), version.getProject().getSlug()));
     }
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeMaintainer(HPerson maintainer) {
         if (getInstance().getMaintainers().size() <= 1) {
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages
-                            .getMessage("jsf.group.NeedAtLeastOneMaintainer"));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages
+                    .getMessage("jsf.group.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().removeMaintainer(maintainer);
             update();
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.MaintainerRemoveFromGroup",
-                            maintainer.getName()));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.MaintainerRemoveFromGroup",
+                    maintainer.getName()));
         }
     }
 
@@ -275,9 +275,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
             getInstance().getMaintainers().add(maintainer);
             update(conversationScopeMessages);
             reset();
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.MaintainerAddedToGroup",
-                            maintainer.getName()));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.MaintainerAddedToGroup",
+                    maintainer.getName()));
         }
     }
 
@@ -323,9 +323,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
             update(conversationScopeMessages);
             reset();
 
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.VersionAddedToGroup",
-                            version.getSlug(), version.getProject().getSlug()));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.VersionAddedToGroup",
+                    version.getSlug(), version.getProject().getSlug()));
         }
     }
 
@@ -371,9 +371,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
             update(conversationScopeMessages);
             reset();
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.LanguageAddedToGroup",
-                            locale.retrieveDisplayName()));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.LanguageAddedToGroup",
+                    locale.retrieveDisplayName()));
         }
     }
 

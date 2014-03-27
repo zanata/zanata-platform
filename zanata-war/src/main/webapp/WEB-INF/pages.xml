@@ -564,6 +564,7 @@
 
   <page view-id="/project/create_project.xhtml">
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
+    <action execute="#{projectHome.createNew}" />
     <navigation from-action="#{projectHome.persist}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.instance.slug}" />

@@ -46,6 +46,7 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
@@ -139,6 +140,10 @@ public class ProjectHome extends SlugHome<HProject> {
                 }
             };
 
+    public void createNew() {
+        getInstance().setDefaultProjectType(ProjectType.File);
+    }
+
     public void setSelectedProjectType(String selectedProjectType) {
         if (!StringUtils.isEmpty(selectedProjectType)
                 && !selectedProjectType.equals("null")) {
@@ -177,7 +182,7 @@ public class ProjectHome extends SlugHome<HProject> {
             getInstance().setOverrideLocales(true);
         }
         update();
-        conversationScopeMessages.putMessage(
+        conversationScopeMessages.setMessage(
                 FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.project.LanguageRemoved",
                         locale.retrieveDisplayName()));
@@ -219,7 +224,7 @@ public class ProjectHome extends SlugHome<HProject> {
 
         update();
 
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.project.CopyTransOpts.updated"));
     }
 
@@ -254,8 +259,15 @@ public class ProjectHome extends SlugHome<HProject> {
     public String persist() {
         conversationScopeMessages.clearMessages();
         String retValue = "";
-        if (!validateSlug(getInstance().getSlug(), "slug"))
+        if (!validateSlug(getInstance().getSlug(), "slug")) {
             return null;
+        }
+
+        if (getInstance().getDefaultProjectType().equals(null)) {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "Project type not selected");
+            return null;
+        }
 
         if (authenticatedAccount != null) {
             getInstance().addMaintainer(authenticatedAccount.getPerson());
@@ -282,14 +294,14 @@ public class ProjectHome extends SlugHome<HProject> {
     public String removeMaintainer(HPerson person) {
         if (getInstanceMaintainers().size() <= 1) {
             conversationScopeMessages
-                    .putMessage(FacesMessage.SEVERITY_INFO, zanataMessages
+                    .setMessage(FacesMessage.SEVERITY_INFO, zanataMessages
                             .getMessage("jsf.project.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().getMaintainers().remove(person);
 
             update();
 
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.project.MaintainerRemoved",
                             person.getName()));
 
@@ -316,7 +328,7 @@ public class ProjectHome extends SlugHome<HProject> {
             }
         }
         update();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.RolesUpdated"));
     }
 
@@ -346,7 +358,7 @@ public class ProjectHome extends SlugHome<HProject> {
         }
         update();
 
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.project.status.updated",
                         EntityStatus.valueOf(initial)));
     }
@@ -465,7 +477,7 @@ public class ProjectHome extends SlugHome<HProject> {
         }
         update();
 
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.validation.updated",
                         validatationId.getDisplayName(), state));
     }
@@ -550,7 +562,7 @@ public class ProjectHome extends SlugHome<HProject> {
             update(conversationScopeMessages);
             reset();
 
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.project.MaintainerAdded",
                             maintainer.getName()));
         }
@@ -582,7 +594,7 @@ public class ProjectHome extends SlugHome<HProject> {
 
             update(conversationScopeMessages);
             reset();
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.project.LanguageAdded",
                             locale.retrieveDisplayName()));
         }

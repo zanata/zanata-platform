@@ -89,10 +89,11 @@ public class CopyTransAction implements Serializable, ProgressBar {
                     handle.getCurrentProgress() * 100 / handle.getMaxProgress();
             if (completedPercent == 100) {
                 conversationScopeMessages
-                        .putMessage(
-                                FacesMessage.SEVERITY_INFO,
-                                zanataMessages
-                                        .getMessage("jsf.iteration.CopyTrans.Completed"));
+                        .setMessage(
+                            FacesMessage.SEVERITY_INFO,
+                            zanataMessages
+                                .getMessage(
+                                    "jsf.iteration.CopyTrans.Completed"));
             }
             return completedPercent;
         } else {
@@ -123,21 +124,21 @@ public class CopyTransAction implements Serializable, ProgressBar {
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages
-                            .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages
+                    .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
         copyTransManager.cancelCopyTrans(getProjectIteration());
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
     }
 
     public String getDocumentsProcessed() {

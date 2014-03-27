@@ -143,13 +143,13 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().setRequireTranslationReview(checked);
         update();
         if (checked) {
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages
-                            .getMessage("jsf.iteration.requireReview.enabled"));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages
+                    .getMessage("jsf.iteration.requireReview.enabled"));
         } else {
             conversationScopeMessages
-                    .putMessage(FacesMessage.SEVERITY_INFO, zanataMessages
-                            .getMessage("jsf.iteration.requireReview.disabled"));
+                    .setMessage(FacesMessage.SEVERITY_INFO, zanataMessages
+                        .getMessage("jsf.iteration.requireReview.disabled"));
         }
     }
 
@@ -283,10 +283,11 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         update();
 
         conversationScopeMessages
-                .putMessage(
-                        FacesMessage.SEVERITY_INFO,
-                        zanataMessages
-                                .getMessage("jsf.iteration.CopyProjectValidations.message"));
+                .setMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    zanataMessages
+                        .getMessage(
+                            "jsf.iteration.CopyProjectValidations.message"));
     }
 
     @Override
@@ -318,18 +319,18 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().getCustomizedLocales().remove(locale);
 
         update();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.LanguageRemoved",
-                        locale.retrieveDisplayName()));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.iteration.LanguageRemoved",
+                locale.retrieveDisplayName()));
     }
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public void updateStatus(char initial) {
         getInstance().setStatus(EntityStatus.valueOf(initial));
         update();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.status.updated",
-                        EntityStatus.valueOf(initial)));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.iteration.status.updated",
+                EntityStatus.valueOf(initial)));
     }
 
     public void updateSelectedProjectType(ValueChangeEvent e) {
@@ -341,9 +342,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
         update();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages
-                        .getMessage("jsf.iteration.CopyProjectType.message"));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages
+                .getMessage("jsf.iteration.CopyProjectType.message"));
     }
 
     private void updateProjectType() {
@@ -377,9 +378,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             }
         }
         update();
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.validation.updated",
-                        validatationId.getDisplayName(), state));
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            zanataMessages.getMessage("jsf.validation.updated",
+                validatationId.getDisplayName(), state));
     }
 
     /**
@@ -431,9 +432,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
             update(conversationScopeMessages);
             reset();
-            conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.iteration.LanguageAdded",
-                            locale.retrieveDisplayName()));
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.iteration.LanguageAdded",
+                    locale.retrieveDisplayName()));
 
         }
     }

@@ -177,8 +177,8 @@ public class SendEmailAction implements Serializable {
                                         fromName, fromLoginName, replyEmail,
                                         subject, htmlMessage);
                 FacesMessages.instance().add(msg);
-                conversationScopeMessages.putMessage(
-                        FacesMessage.SEVERITY_INFO, msg);
+                conversationScopeMessages.setMessage(
+                    FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
                 String msg =
@@ -187,8 +187,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                conversationScopeMessages.putMessage(
-                        FacesMessage.SEVERITY_INFO, msg);
+                conversationScopeMessages.setMessage(
+                    FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
                 String msg =
@@ -197,8 +197,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                conversationScopeMessages.putMessage(
-                        FacesMessage.SEVERITY_INFO, msg);
+                conversationScopeMessages.setMessage(
+                    FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
                 String msg =
@@ -207,8 +207,8 @@ public class SendEmailAction implements Serializable {
                                 getCoordinators(), fromName, fromLoginName,
                                 replyEmail, subject, htmlMessage, language);
                 FacesMessages.instance().add(msg);
-                conversationScopeMessages.putMessage(
-                        FacesMessage.SEVERITY_INFO, msg);
+                conversationScopeMessages.setMessage(
+                    FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
                 String msg =
@@ -218,8 +218,8 @@ public class SendEmailAction implements Serializable {
                                         groupMaintainers, fromName,
                                         fromLoginName, replyEmail, subject,
                                         htmlMessage);
-                conversationScopeMessages.putMessage(
-                        FacesMessage.SEVERITY_INFO, msg);
+                conversationScopeMessages.setMessage(
+                    FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else {
                 throw new Exception("Invalid email type: " + emailType);
@@ -246,8 +246,8 @@ public class SendEmailAction implements Serializable {
                 "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, htmlMessage);
         FacesMessages.instance().add("Sending message canceled");
-        conversationScopeMessages.putMessage(FacesMessage.SEVERITY_INFO,
-                "Sending message canceled");
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            "Sending message canceled");
     }
 
     public String sendToVersionGroupMaintainer(List<HPerson> maintainers) {
