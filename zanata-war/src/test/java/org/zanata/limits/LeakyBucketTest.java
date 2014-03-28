@@ -14,6 +14,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
@@ -90,5 +91,35 @@ public class LeakyBucketTest {
                         }
                     }
                 });
+    }
+
+    @Test
+    public void willMakeUpTheRefillWhenTimePassed()
+            throws InterruptedException {
+        LeakyBucket bucket = new LeakyBucket(2, 20, TimeUnit.MILLISECONDS);
+
+        assertThat(bucket.tryAcquire(), Matchers.is(true));
+        assertThat(bucket.tryAcquire(), Matchers.is(true));
+        assertThat(bucket.tryAcquire(), Matchers.is(false));
+
+        // refill rate is 1 per 100 ms so after 40 ms it should've filled up.
+        Thread.sleep(40);
+
+        assertThat(bucket.tryAcquire(), Matchers.is(true));
+        assertThat(bucket.tryAcquire(), Matchers.is(true));
+    }
+
+    @Test
+    public void acquireNotEnoughPermitsWillBlock() {
+        LeakyBucket bucket = new LeakyBucket(1, 30, TimeUnit.MILLISECONDS);
+
+        Stopwatch stopwatch = new Stopwatch();
+        bucket.acquire(); // should return immediately
+
+        stopwatch.start();
+        bucket.acquire(); // will block
+        stopwatch.stop();
+
+        assertThat(stopwatch.elapsedMillis(), Matchers.greaterThanOrEqualTo(30L));
     }
 }

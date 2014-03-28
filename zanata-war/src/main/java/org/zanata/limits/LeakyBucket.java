@@ -3,6 +3,7 @@ package org.zanata.limits;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Throwables;
 import com.google.common.base.Ticker;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +18,7 @@ public class LeakyBucket {
     private final Ticker ticker;
     private volatile long permit;
     private volatile long lastRead;
+    private final long waitSleepTime;
 
     /**
      * Simple form leaky bucket. Initialized with a capacity and full. Each
@@ -37,17 +39,62 @@ public class LeakyBucket {
         ticker = Ticker.systemTicker();
         refillPeriod =
                 TimeUnit.NANOSECONDS.convert(refillDuration, refillTimeUnit);
+        long refillInMillis = TimeUnit.MILLISECONDS
+                .convert(refillDuration, refillTimeUnit);
+        // when blocking, the time we should sleep (minimum 1 ms)
+        waitSleepTime = Math.max(refillInMillis, 1);
     }
 
-    public synchronized boolean tryAcquire() {
+    /**
+     * Try acquire 1 permit. Will not block.
+     *
+     * @return true if there is enough permit
+     */
+    public boolean tryAcquire() {
+        return tryAcquire(1);
+    }
+
+    /**
+     * Try acquire a number of permits. Will not block.
+     *
+     * @return true if there is enough permits
+     */
+    public synchronized boolean tryAcquire(final long permit) {
         onDemandRefill();
-        if (permit > 0) {
-            log.debug("deduct 1 permit and try acquire return true");
+        if (this.permit >= permit) {
             lastRead = ticker.read();
-            permit--;
+            this.permit -= permit;
+            log.debug(
+                    "deduct {} permit(s), current left permit {}, return true",
+                    permit, this.permit);
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Acquire 1 permit. If there is not enough permit, will block the caller.
+     */
+    public void acquire() {
+        acquire(1);
+    }
+
+    /**
+     * Acquire asking permits. If there is not enough permits, will block the
+     * caller.
+     *
+     * @param permits
+     *            number of permits
+     */
+    public void acquire(long permits) {
+        while (!tryAcquire(permits)) {
+            try {
+                Thread.sleep(waitSleepTime);
+            }
+            catch (InterruptedException e) {
+                throw Throwables.propagate(e);
+            }
         }
     }
 
