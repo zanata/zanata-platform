@@ -45,13 +45,13 @@
   </a4j:jsFunction>
 
   <a4j:jsFunction name="#{cc.attrs.id}NextPage"
-    action="#{cc.attrs.actionBean.nextPage}"
+    action="#{cc.attrs.actionBean.nextPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
     limitRender="true">
   </a4j:jsFunction>
 
   <a4j:jsFunction name="#{cc.attrs.id}PreviousPage"
-    action="#{cc.attrs.actionBean.previousPage}"
+    action="#{cc.attrs.actionBean.previousPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
     limitRender="true">
   </a4j:jsFunction>

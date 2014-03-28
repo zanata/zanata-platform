@@ -83,10 +83,10 @@
           var="version">
           <li class="progress-bar__expander"
             id="#{version.project.slug}[#{version.slug}]">
-            <a4j:commandLink
+            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
               action="#{versionGroupHomeAction.setSelectedVersion(version)}"
               status="projectsTab-languagesLoader"
-              onbegin="clearHTML('#{rich:clientId('projects-language_list')}')"
+              onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('.loader--small')"
               render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects/#{version.project.slug}/#{version.slug}')"
               styleClass="bx--block">
@@ -159,9 +159,12 @@
     </a>
 
     <h2 class="panel__heading">
+      <span class="loader--small loader--inline js-loader"></span>
+
       <s:span id="project-label" styleClass="i__text--right">
-        #{versionGroupHomeAction.selectedVersion.project.slug} #{messages['Languages']}
+        #{versionGroupHomeAction.selectedVersion.project.slug}
       </s:span>
+      #{messages['Languages']}
     </h2>
   </div>
 

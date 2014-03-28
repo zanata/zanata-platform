@@ -113,10 +113,10 @@
           value="#{versionHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
-            <a4j:commandLink limitRender="true"
+            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
               action="#{versionHomeAction.setSelectedLocale(hLocale)}"
               status="languageTab-documentsLoader"
-              onbegin="clearHTML('#{rich:clientId('languages-document_list')}')"
+              onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('.loader--small')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
               onclick="updateActiveRow(this);toggleColumn('languages_content')">
               <div class="list__item">
@@ -235,16 +235,19 @@
   </a>
 
   <h2 class="panel__heading">
+    <span class="loader--small loader--inline js-loader"></span>
+
     <s:span id="language-label">
-      #{versionHomeAction.selectedLocale.retrieveDisplayName()}
-      #{messages['jsf.Documents']}
       <s:span
         rendered="#{versionHomeAction.selectedLocale ne null and not versionHomeAction.selectedLocale.active}"
         styleClass="label"
         title="#{messages['jsf.Language.Disabled']}">
         #{messages['jsf.Disabled']}
       </s:span>
+
+      #{versionHomeAction.selectedLocale.retrieveDisplayName()}
     </s:span>
+    #{messages['jsf.Documents']}
   </h2>
 </div>
 

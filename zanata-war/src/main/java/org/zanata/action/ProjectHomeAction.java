@@ -26,14 +26,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nullable;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -62,11 +58,14 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -137,6 +136,9 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     private final VersionItemComparator versionItemComparator =
             new VersionItemComparator(getVersionSortingList());
+
+    // for storing last activity date for the version
+    private Map<Long, Date> versionLatestActivityDate = Maps.newHashMap();
 
     @CachedMethodResult
     public List<Activity> getProjectLastActivity() {
@@ -237,24 +239,35 @@ public class ProjectHomeAction extends AbstractSortAction implements
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_ACTIVITY)) {
 
-                List<Activity> activity1 =
-                        activityServiceImpl.findLatestVersionActivities(
-                                item1.getId(), 0, 1);
-                List<Activity> activity2 =
-                        activityServiceImpl.findLatestVersionActivities(
-                                item2.getId(), 0, 1);
-                if (activity1.isEmpty() && activity2.isEmpty()) {
+                Date date1 = getVersionLastActivityDate(item1.getId());
+                Date date2 = getVersionLastActivityDate(item2.getId());
+
+                if (date1 == date2) {
                     return 0;
-                } else if (activity1.isEmpty()) {
+                } else if (date1 == null) {
                     return -1;
-                } else if (activity2.isEmpty()) {
+                } else if (date2 == null) {
                     return 1;
                 }
-                return activity1.get(0).getLastChanged()
-                        .compareTo(activity2.get(0).getLastChanged());
+                return date1.compareTo(date2);
             }
             return 0;
         }
+    }
+
+    private Date getVersionLastActivityDate(Long versionId) {
+        if (!versionLatestActivityDate.containsKey(versionId)) {
+            List<Activity> activities =
+                    activityServiceImpl.findLatestVersionActivities(versionId,
+                            0, 1);
+            if (!activities.isEmpty()) {
+                versionLatestActivityDate.put(versionId, activities.get(0)
+                        .getLastChanged());
+            } else {
+                versionLatestActivityDate.put(versionId, null);
+            }
+        }
+        return versionLatestActivityDate.get(versionId);
     }
 
     @Override

@@ -186,10 +186,10 @@
               </ul>
             </div>
           </s:div>
-          <a4j:commandLink limitRender="true"
+          <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
             action="#{versionHomeAction.setSelectedDocument(document)}"
             status="documentsTab-languagesLoader"
-            onbegin="clearHTML('#{rich:clientId('documents-language_list')}')"
+            onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('.loader--small')"
             render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
             onclick="updateActiveRow(this);toggleColumn('documents_content')">
             <div class="list__item__content">
@@ -262,9 +262,12 @@
       </s:fragment>
     </div>
     <h2 class="panel__heading">
+      <span class="loader--small loader--inline js-loader"></span>
+
       <s:span id="document-label">
-        #{versionHomeAction.selectedDocument.name}  #{messages['jsf.Languages']}
+        #{versionHomeAction.selectedDocument.name}
       </s:span>
+      #{messages['jsf.Languages']}
     </h2>
   </div>
 

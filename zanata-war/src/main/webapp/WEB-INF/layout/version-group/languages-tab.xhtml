@@ -81,9 +81,9 @@
           value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
           <li class="progress-bar__expander">
-            <a4j:commandLink
+            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
               action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
-              onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}')"
+              onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('.loader--small')"
               status="languageTab-projectsLoader"
               render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
@@ -151,9 +151,11 @@
     </a>
 
     <h2 class="panel__heading">
+      <span class="loader--small loader--inline js-loader"></span>
       <s:span id="language-label">
-        #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()} #{messages['jsf.Projects']}
+        #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
       </s:span>
+      #{messages['jsf.Projects']}
     </h2>
   </div>
 

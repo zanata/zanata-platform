@@ -9,31 +9,15 @@
   <composite:attribute name="type" type="java.lang.String"
     shortDescription="size of the loader, loader--large or loader--huge"
     default="loader"/>
-
-  <composite:attribute name="layout" type="java.lang.String"
-    shortDescription="HTML layout for generated markup. Possible values: 'block' for generating an HTML &amp;lt;div&amp;gt; element and 'inline' for generating an HTML &amp;lt;span&amp;gt; element. Default value is 'block'"
-    default="block"/>
 </composite:interface>
 
 <composite:implementation>
 
-  <s:div styleClass="#{cc.attrs.type} is-active"
-    rendered="#{cc.attrs.layout eq 'block'}">
+  <s:div styleClass="#{cc.attrs.type} is-active">
     <span class="loader__spinner">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </span>
   </s:div>
-
-  <s:link styleClass="#{cc.attrs.type} is-active"
-    rendered="#{cc.attrs.layout eq 'inline'}">
-    <span class="loader__spinner">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </s:link>
 
 </composite:implementation>
 </html>
