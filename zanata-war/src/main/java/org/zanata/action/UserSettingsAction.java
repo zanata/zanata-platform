@@ -33,11 +33,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
+import org.jboss.seam.security.RunAsOperation;
+import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.service.impl.EmailChangeService;
+
+import javax.validation.constraints.Size;
 
 /**
  * This is an action class that should eventually replace the
@@ -62,6 +66,9 @@ public class UserSettingsAction {
     @In
     private PersonDAO personDAO;
 
+    @In
+    private IdentityManager identityManager;
+
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
     
@@ -70,6 +77,15 @@ public class UserSettingsAction {
     @Email
     @NotEmpty
     private String emailAddress;
+
+    @Getter
+    @Setter
+    @Size(min = 6, max = 20)
+    private String newPassword;
+
+    @Getter
+    @Setter
+    private String oldPassword;
     
     @Create
     public void onCreate() {
@@ -102,5 +118,29 @@ public class UserSettingsAction {
         HPerson person = personDAO.findByEmail(email);
         return person == null
                 || person.getAccount().equals(authenticatedAccount);
+    }
+
+    public void changePassword() {
+        if (isPasswordSet()
+                && !identityManager.authenticate(
+                authenticatedAccount.getUsername(), oldPassword)) {
+            FacesMessages.instance().addToControl("oldPassword",
+                    "Old password is incorrect, please check and try again.");
+            return;
+        }
+
+        new RunAsOperation() {
+            public void execute() {
+                identityManager.changePassword(
+                        authenticatedAccount.getUsername(), newPassword);
+            }
+        }.addRole("admin").run();
+
+        FacesMessages.instance().add(
+                "Your password has been successfully changed.");
+    }
+
+    public boolean isPasswordSet() {
+        return authenticatedAccount.getPasswordHash() != null;
     }
 }

@@ -32,18 +32,34 @@
             onclick="updateEmail(); return false;"/>
         </h:form>
         <hr/>
-        <h3 class="heading--secondary">Change Password</h3>
-        <form action="" class="l--constrain-large">
-          <div class="form__item">
-            <label for="oldpassword">Old Password</label>
-            <input type="password" id="oldpassword"/>
-          </div>
-          <div class="form__item l--push-bottom-1">
-            <label for="oldpassword">New Password</label>
-            <input type="password" id="oldpassword"/>
-          </div>
-          <input type="submit" value="Update password" class="button"/>
-        </form>
+        <s:fragment rendered="#{applicationConfiguration.internalAuth}">
+          <h3 class="heading--secondary">
+            <h:outputText rendered="#{not userSettingsAction.passwordSet}" value="Set Password"/>
+            <h:outputText rendered="#{userSettingsAction.passwordSet}" value="Change Password"/>
+          </h3>
+          <h:form id="passwordChangeForm" styleClass="l--constrain-large">
+            <s:fragment rendered="#{userSettingsAction.passwordSet}">
+              <div class="form__item">
+                <h:outputLabel for="oldPassword">Old Password</h:outputLabel>
+                <s:decorate id="oldPasswordField" template=" ../WEB-INF/layout/field.xhtml" enclose="false">
+                  <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
+                    maxlength="255"/>
+                </s:decorate>
+              </div>
+            </s:fragment>
+            <div class="form__item l--push-bottom-1">
+              <h:outputLabel for="newPassword">New Password</h:outputLabel>
+              <s:decorate id="newPasswordField" template=" ../WEB-INF/layout/field.xhtml" enclose="false">
+                <h:inputSecret id="newPassword" value="#{userSettingsAction.newPassword}"
+                  maxlength="255"/>
+              </s:decorate>
+            </div>
+            <a4j:jsFunction name="changePassword" action="#{userSettingsAction.changePassword()}"
+              render="passwordChangeForm" execute="@form"/>
+            <input type="submit" value="Update password" class="button"
+              onclick="changePassword(); return false"/>
+          </h:form>
+        </s:fragment>
         <hr/>
         <h3 class="heading--secondary">Connected Accounts</h3>
         <form action="" class="l--constrain-large">
