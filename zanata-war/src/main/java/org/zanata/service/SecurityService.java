@@ -47,8 +47,8 @@ public interface SecurityService {
      *             , org.jboss.seam.security.NotLoggedInException
      *             org.zanata.webtrans.shared.NoSuchWorkspaceException
      */
-    SecurityCheckResult checkPermission(AbstractWorkspaceAction action,
-            TranslationAction translationAction)
+    SecurityCheckResult checkWorkspaceAction(AbstractWorkspaceAction action,
+        TranslationAction translationAction)
             throws NoSuchWorkspaceException;
 
     HProject checkWorkspaceStatus(WorkspaceId workspaceId);

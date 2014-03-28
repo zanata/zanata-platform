@@ -64,8 +64,9 @@ public class SecurityServiceImpl implements SecurityService {
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @Override
-    public SecurityCheckResult checkPermission(AbstractWorkspaceAction action,
-            TranslationAction translationAction)
+    public SecurityCheckResult checkWorkspaceAction(
+        AbstractWorkspaceAction action,
+        TranslationAction translationAction)
             throws NoSuchWorkspaceException {
         WorkspaceId workspaceId = action.getWorkspaceId();
         HProject project = checkWorkspaceStatus(workspaceId);

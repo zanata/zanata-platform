@@ -190,7 +190,7 @@ public class ProjectIterationService implements ProjectIterationResource {
 
             hProject.addIteration(hProjectIteration);
             // pre-emptive entity permission check
-            // identity.checkPermission(hProject, "add-iteration");
+            // identity.checkWorkspaceAction(hProject, "add-iteration");
             identity.checkPermission(hProjectIteration, "insert");
 
             response = Response.created(uri.getAbsolutePath());
