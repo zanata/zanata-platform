@@ -14,14 +14,16 @@
           class="stats__unit">#{messages['jsf.activity.wordsTranslated']}</span>
       </span>
     </li>
-    <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
+    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+      <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
           class="stats__figure">#{userStats.getWordsReviewed()}</span>
         <span
           class="stats__unit">#{messages['jsf.activity.wordsReviewed']}</span>
       </span>
-    </li>
+      </li>
+    </s:fragment>
     <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -30,14 +32,16 @@
           class="stats__unit">#{messages['jsf.activity.messagesTranslated']}</span>
       </span>
     </li>
-    <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
+    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+      <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
           class="stats__figure">#{userStats.getMessagesReviewed()}</span>
         <span
           class="stats__unit">#{messages['jsf.activity.messagesReviewed']}</span>
       </span>
-    </li>
+      </li>
+    </s:fragment>
     <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -46,13 +50,15 @@
           class="stats__unit">#{messages['jsf.activity.documentsTranslated']}</span>
       </span>
     </li>
-    <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
+    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+      <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
           class="stats__figure">#{userStats.getDocumentsReviewed()}</span>
         <span
           class="stats__unit">#{messages['jsf.activity.documentsReviewed']}</span>
       </span>
-    </li>
+      </li>
+    </s:fragment>
   </ul>
 </s:fragment>
