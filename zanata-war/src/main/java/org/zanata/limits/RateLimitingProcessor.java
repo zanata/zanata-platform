@@ -28,14 +28,8 @@ public class RateLimitingProcessor {
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
 
-    private final Cache<String, LeakyBucket> logLimiters = CacheBuilder
-            .newBuilder().maximumSize(20).build(
-                    CacheLoader.from(new Function<String, LeakyBucket>() {
-                        @Override
-                        public LeakyBucket apply(String input) {
-                            return new LeakyBucket(1, 5, TimeUnit.MINUTES);
-                        }
-                    }));
+    private final LeakyBucket logLimiter = new LeakyBucket(1, 5,
+            TimeUnit.MINUTES);
 
     public void
             process(String apiKey, HttpResponse response, Runnable taskToRun)
@@ -66,8 +60,7 @@ public class RateLimitingProcessor {
         log.debug("check semaphore for {}", this);
 
         if (!rateLimiter.tryAcquireAndRun(taskToRun)) {
-            LeakyBucket bucket = logLimiters.getIfPresent(apiKey);
-            if (bucket != null && bucket.tryAcquire()) {
+            if (logLimiter.tryAcquire()) {
                 log.warn(
                         "{} has too many concurrent requests. Returning status 429",
                         apiKey);
