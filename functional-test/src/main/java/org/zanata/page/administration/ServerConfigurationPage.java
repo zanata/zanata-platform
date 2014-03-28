@@ -15,9 +15,6 @@ public class ServerConfigurationPage extends BasePage {
     @FindBy(id = "serverConfigForm:urlField")
     private WebElement urlField;
 
-    @FindBy(id = "serverConfigForm:rateLimitField:rateLimitEml")
-    private WebElement rateLimitField;
-
     @FindBy(
             id = "serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml")
     private WebElement maxConcurrentField;
@@ -31,16 +28,6 @@ public class ServerConfigurationPage extends BasePage {
 
     public ServerConfigurationPage(WebDriver driver) {
         super(driver);
-    }
-
-    public ServerConfigurationPage inputRateLimit(int limit) {
-        rateLimitField.clear();
-        rateLimitField.sendKeys(limit + "");
-        return this;
-    }
-
-    public String getRateLimit() {
-        return rateLimitField.getAttribute("value");
     }
 
     public ServerConfigurationPage inputMaxConcurrent(int max) {

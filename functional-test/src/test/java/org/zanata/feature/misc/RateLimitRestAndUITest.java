@@ -17,7 +17,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.model.HApplicationConfiguration;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.util.AddUsersRule;
@@ -37,7 +36,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.model.HApplicationConfiguration.KEY_ADMIN_EMAIL;
 import static org.zanata.model.HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 import static org.zanata.model.HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
-import static org.zanata.model.HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND;
 import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
 import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
 
@@ -52,14 +50,14 @@ public class RateLimitRestAndUITest {
     public AddUsersRule addUsersRule = new AddUsersRule();
 
     // because of the time based nature, tests may fail occasionally
-//    @Rule
+    // @Rule
     public RetryRule retryRule = new RetryRule(2);
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             "d83882201764f7d339e97c4b087f0806";
-    private String rateLimitingPathParam = "c/" + KEY_RATE_LIMIT_PER_SECOND;
-    private String maxConcurrentPathParam = "c/" + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
+    private String maxConcurrentPathParam = "c/"
+            + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
     private String maxActivePathParam = "c/" + KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 
     @Test
@@ -70,13 +68,13 @@ public class RateLimitRestAndUITest {
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
 
-        assertThat(serverConfigPage.getRateLimit(), Matchers.isEmptyString());
-        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(), Matchers.isEmptyString());
-        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(), Matchers.isEmptyString());
+        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(),
+                Matchers.isEmptyString());
+        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(),
+                Matchers.isEmptyString());
 
         AdministrationPage administrationPage =
-                serverConfigPage.inputRateLimit(1).inputMaxConcurrent(5)
-                        .inputMaxActive(3).save();
+                serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
 
         assertThat(administrationPage.getNotificationMessage(),
                 Matchers.equalTo("Configuration was successfully updated."));
@@ -84,13 +82,17 @@ public class RateLimitRestAndUITest {
         serverConfigPage =
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
-        assertThat(serverConfigPage.getRateLimit(), Matchers.equalTo("1"));
+        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(),
+                Matchers.equalTo("3"));
+        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(),
+                Matchers.equalTo("5"));
     }
 
     @Test
     public void canCallServerConfigurationRestService() throws Exception {
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/configurations/" + rateLimitingPathParam);
+        ClientRequest clientRequest =
+                clientRequestAsAdmin("rest/configurations/"
+                        + maxConcurrentPathParam);
         clientRequest.body("text/plain", "1");
         // can put
         Response putResponse = clientRequest.put();
@@ -98,20 +100,21 @@ public class RateLimitRestAndUITest {
         assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(201));
 
         // can get single configuration
-        Response getResponse = clientRequestAsAdmin(
-                "rest/configurations/" + rateLimitingPathParam).get();
+        Response getResponse =
+                clientRequestAsAdmin(
+                        "rest/configurations/" + maxConcurrentPathParam).get();
 
         assertThat(getResponse.getStatus(), Matchers.is(200));
         String rateLimitConfig =
                 ((BaseClientResponse<String>) getResponse)
                         .getEntity(String.class);
         assertThat(rateLimitConfig,
-                Matchers.containsString(KEY_RATE_LIMIT_PER_SECOND));
+                Matchers.containsString(KEY_MAX_CONCURRENT_REQ_PER_API_KEY));
         assertThat(rateLimitConfig, Matchers.containsString("<value>1</value>"));
 
         // can get all configurations
-        Response getAllResponse = clientRequestAsAdmin(
-                "rest/configurations/").get();
+        Response getAllResponse =
+                clientRequestAsAdmin("rest/configurations/").get();
         BaseClientResponse<String> baseClientResponse =
                 (BaseClientResponse) getAllResponse;
 
@@ -124,11 +127,13 @@ public class RateLimitRestAndUITest {
     }
 
     private static ClientRequest clientRequestAsAdmin(String path) {
-        ClientRequest clientRequest = new ClientRequest(
-                PropertiesHolder.getProperty(Constants.zanataInstance.value()) +
-                        path);
+        ClientRequest clientRequest =
+                new ClientRequest(
+                        PropertiesHolder.getProperty(Constants.zanataInstance
+                                .value()) + path);
         clientRequest.header("X-Auth-User", "admin");
-        clientRequest.header("X-Auth-Token", PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
+        clientRequest.header("X-Auth-Token",
+                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
         clientRequest.header("Content-Type", "application/xml");
         return clientRequest;
     }
@@ -155,9 +160,10 @@ public class RateLimitRestAndUITest {
     }
 
     private static ClientRequest clientRequestAsTranslator(String path) {
-        ClientRequest clientRequest = new ClientRequest(
-                PropertiesHolder.getProperty(Constants.zanataInstance.value()) +
-                        path);
+        ClientRequest clientRequest =
+                new ClientRequest(
+                        PropertiesHolder.getProperty(Constants.zanataInstance
+                                .value()) + path);
         clientRequest.header("X-Auth-User", TRANSLATOR);
         clientRequest.header("X-Auth-Token", TRANSLATOR_API);
         clientRequest.header("Content-Type", "application/xml");
@@ -166,28 +172,28 @@ public class RateLimitRestAndUITest {
 
     @Test
     public void canOnlyDealWithKnownConfiguration() throws Exception {
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/configurations/c/abc");
+        ClientRequest clientRequest =
+                clientRequestAsAdmin("rest/configurations/c/abc");
 
         Response putResponse = clientRequest.put();
         assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(400));
 
-        Response getResponse = clientRequestAsAdmin(
-                "rest/configurations/c/abc").get();
+        Response getResponse =
+                clientRequestAsAdmin("rest/configurations/c/abc").get();
         assertThat(getStatusAndReleaseConnection(getResponse), Matchers.is(404));
     }
 
     @Test
     public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
-        //        translator creates the project/version
+        // translator creates the project/version
         final String projectSlug = "project";
         final String iterationSlug = "version";
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
 
-
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxConcurrentPathParam);
+        ClientRequest clientRequest =
+                clientRequestAsAdmin("rest/configurations/"
+                        + maxConcurrentPathParam);
         clientRequest.body(MediaType.TEXT_PLAIN_TYPE, "2");
 
         checkStatusAndReleaseConnection(clientRequest.put());
@@ -235,47 +241,50 @@ public class RateLimitRestAndUITest {
 
         // 1 request from translator should get 403 and fail
         log.info("result: {}", result);
-        assertThat(result,
-                Matchers.containsInAnyOrder(201, 201, 201, 201, 429));
+        assertThat(result, Matchers.containsInAnyOrder(201, 201, 201, 201, 429));
     }
 
     @Test(timeout = 5000)
     public void exceptionWillReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        ClientRequest configRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxActivePathParam);
+        ClientRequest configRequest =
+                clientRequestAsAdmin("rest/configurations/"
+                        + maxActivePathParam);
         configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
         checkStatusAndReleaseConnection(configRequest.put());
 
         // When: multiple requests that will result in a mapped exception
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
+        ClientRequest clientRequest =
+                clientRequestAsAdmin("rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
 
-        // Then: request that result in exception should still release semaphore. i.e. no permit leak
+        // Then: request that result in exception should still release
+        // semaphore. i.e. no permit leak
         assertThat(1, Matchers.is(1));
     }
 
     @Test(timeout = 5000)
     public void unmappedExceptionWillAlsoReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        ClientRequest configRequest = clientRequestAsAdmin(
-                "rest/configurations/" + maxActivePathParam);
+        ClientRequest configRequest =
+                clientRequestAsAdmin("rest/configurations/"
+                        + maxActivePathParam);
         configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
         checkStatusAndReleaseConnection(configRequest.put());
 
         // When: multiple requests that will result in an unmapped exception
-        ClientRequest clientRequest = clientRequestAsAdmin(
-                "rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
+        ClientRequest clientRequest =
+                clientRequestAsAdmin("rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
         getStatusAndReleaseConnection(clientRequest.get());
 
-        // Then: request that result in exception should still release semaphore. i.e. no permit leak
+        // Then: request that result in exception should still release
+        // semaphore. i.e. no permit leak
         assertThat(1, Matchers.is(1));
     }
 
@@ -303,9 +312,11 @@ public class RateLimitRestAndUITest {
                         try {
                             return input.get();
                         } catch (Exception e) {
-                            // by using filter we lose RESTeasy's exception translation
+                            // by using filter we lose RESTeasy's exception
+                            // translation
                             String message = e.getMessage().toLowerCase();
-                            if (message.matches(".+429.+too many concurrent request.+")) {
+                            if (message
+                                    .matches(".+429.+too many concurrent request.+")) {
                                 return 429;
                             }
                             throw Throwables.propagate(e);

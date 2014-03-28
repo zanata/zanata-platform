@@ -5,8 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
-import com.google.common.util.concurrent.RateLimiter;
-import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -20,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 class RestCallLimiter {
     private volatile Semaphore maxConcurrentSemaphore;
     private volatile Semaphore maxActiveSemaphore;
-    private RateLimiter rateLimiter;
     private RateLimitConfig limitConfig;
     private volatile LimitChange activeChange;
     private volatile LimitChange concurrentChange;
@@ -29,11 +26,6 @@ class RestCallLimiter {
         this.limitConfig = limitConfig;
         this.maxConcurrentSemaphore = makeSemaphore(limitConfig.maxConcurrent);
         this.maxActiveSemaphore = makeSemaphore(limitConfig.maxActive);
-        if (limitConfig.rateLimitPerSecond == 0) {
-            rateLimiter = RateLimiter.create(Integer.MAX_VALUE);
-        } else {
-            rateLimiter = RateLimiter.create(limitConfig.rateLimitPerSecond);
-        }
     }
 
     /**
@@ -79,10 +71,7 @@ class RestCallLimiter {
             if (gotActivePermit) {
                 // if acquired, immediately enter try finally (release)
                 try {
-                    log.debug(
-                            "got [active] semaphore, about to acquire rate limit permit: {}",
-                            rateLimiter);
-                    rateLimiter.acquire();
+                    log.debug("got [active] semaphore");
                     taskAfterAcquire.run();
                 } finally {
                     activeSem.release();
@@ -141,9 +130,6 @@ class RestCallLimiter {
             changeConcurrentLimit(limitConfig.maxConcurrent,
                     newLimitConfig.maxConcurrent);
         }
-        if (newLimitConfig.rateLimitPerSecond != limitConfig.rateLimitPerSecond) {
-            changeRateLimitPermitsPerSecond(newLimitConfig.rateLimitPerSecond);
-        }
         if (newLimitConfig.maxActive != limitConfig.maxActive) {
             changeActiveLimit(limitConfig.maxActive, newLimitConfig.maxActive);
         }
@@ -153,10 +139,6 @@ class RestCallLimiter {
     protected synchronized void
             changeConcurrentLimit(int oldLimit, int newLimit) {
         this.concurrentChange = new LimitChange(oldLimit, newLimit);
-    }
-
-    protected synchronized void changeRateLimitPermitsPerSecond(double permits) {
-        rateLimiter.setRate(permits);
     }
 
     protected synchronized void changeActiveLimit(int oldLimit, int newLimit) {
@@ -169,10 +151,6 @@ class RestCallLimiter {
 
     public int availableActivePermit() {
         return maxActiveSemaphore.availablePermits();
-    }
-
-    protected double rateLimitRate() {
-        return rateLimiter.getRate();
     }
 
     private static Semaphore makeSemaphore(int permit) {
@@ -193,7 +171,7 @@ class RestCallLimiter {
                 .add("maxActive(available)",
                         maxActiveSemaphore.availablePermits())
                 .add("maxActive(queue)", maxActiveSemaphore.getQueueLength())
-                .add("rateLimiter", rateLimiter).toString();
+                .toString();
     }
 
     @RequiredArgsConstructor
@@ -202,7 +180,6 @@ class RestCallLimiter {
     public static class RateLimitConfig {
         private final int maxConcurrent;
         private final int maxActive;
-        private final double rateLimitPerSecond;
     }
 
     @RequiredArgsConstructor

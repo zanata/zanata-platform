@@ -23,7 +23,6 @@ import org.zanata.ApplicationConfiguration;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Uninterruptibles;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,7 +62,6 @@ public class RateLimitingProcessorTest {
     public void willSkipIfRateLimitAreAllZero() throws Exception {
         when(applicationConfiguration.getMaxActiveRequestsPerApiKey()).thenReturn(0);
         when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(0);
-        when(applicationConfiguration.getRateLimitPerSecond()).thenReturn(0D);
 
         processor.process(API_KEY, response, runnable);
 
@@ -76,7 +74,7 @@ public class RateLimitingProcessorTest {
             ServletException {
 
         when(rateLimitManager.getLimitConfig()).thenReturn(
-                new RestCallLimiter.RateLimitConfig(1, 1, 100.0));
+                new RestCallLimiter.RateLimitConfig(1, 1));
         when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(1);
         doAnswer(new Answer() {
             @Override

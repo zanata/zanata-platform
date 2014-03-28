@@ -43,8 +43,7 @@ public class RateLimitingProcessor {
         ApplicationConfiguration appConfig = getApplicationConfiguration();
 
         if (appConfig.getMaxConcurrentRequestsPerApiKey() == 0
-                && appConfig.getMaxActiveRequestsPerApiKey() == 0
-                && appConfig.getRateLimitPerSecond() == 0) {
+                && appConfig.getMaxActiveRequestsPerApiKey() == 0) {
             // short circuit if we don't want limiting
             taskToRun.run();
             return;

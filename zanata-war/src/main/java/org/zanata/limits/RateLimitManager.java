@@ -58,10 +58,8 @@ public class RateLimitManager implements Introspectable {
                         .getInstance("applicationConfiguration");
         int maxConcurrent = appConfig.getMaxConcurrentRequestsPerApiKey();
         int maxActive = appConfig.getMaxActiveRequestsPerApiKey();
-        double rateLimitPerSecond = appConfig.getRateLimitPerSecond();
         limitConfig =
-                new RestCallLimiter.RateLimitConfig(maxConcurrent, maxActive,
-                        rateLimitPerSecond);
+                new RestCallLimiter.RateLimitConfig(maxConcurrent, maxActive);
     }
 
     @Observer({ ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED })

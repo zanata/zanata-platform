@@ -99,9 +99,6 @@ public class ServerConfigurationBean implements Serializable {
     private String termsOfUseUrl;
 
     @Pattern(regexp = "\\d{0,5}")
-    private String rateLimitPerSecond;
-
-    @Pattern(regexp = "\\d{0,5}")
     private String maxConcurrentRequestsPerApiKey;
 
     @Pattern(regexp = "\\d{0,5}")
@@ -217,12 +214,6 @@ public class ServerConfigurationBean implements Serializable {
             this.termsOfUseUrl = termsOfUseUrlValue.getValue();
         }
 
-        HApplicationConfiguration rateLimitValue = applicationConfigurationDAO
-                .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
-        if (rateLimitValue != null) {
-            this.rateLimitPerSecond = rateLimitValue.getValue();
-        }
-
         HApplicationConfiguration maxConcurrent = applicationConfigurationDAO.findByKey(
                 HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
         if (maxConcurrent != null) {
@@ -323,13 +314,6 @@ public class ServerConfigurationBean implements Serializable {
         ServerConfigurationService.persistApplicationConfig(
                 HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL,
                 termsOfUseUrlValue, termsOfUseUrl, applicationConfigurationDAO);
-
-        HApplicationConfiguration rateLimitValue =
-                applicationConfigurationDAO
-                        .findByKey(HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND);
-        ServerConfigurationService.persistApplicationConfig(
-                HApplicationConfiguration.KEY_RATE_LIMIT_PER_SECOND,
-                rateLimitValue, rateLimitPerSecond, applicationConfigurationDAO);
 
         HApplicationConfiguration maxConcurrent =
                 applicationConfigurationDAO

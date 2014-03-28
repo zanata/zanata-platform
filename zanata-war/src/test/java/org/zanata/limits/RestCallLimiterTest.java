@@ -64,7 +64,7 @@ public class RestCallLimiterTest {
         MockitoAnnotations.initMocks(this);
         limiter =
                 new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
-                        maxConcurrent, maxActive, 1000.0));
+                        maxConcurrent, maxActive));
         // the first time this method is executed it seems to cause 10-30ms
         // overhead by itself (moving things to heap and register classes maybe)
         // This will reduce that overhead for actual tests
@@ -77,7 +77,7 @@ public class RestCallLimiterTest {
         // we don't limit active requests
         limiter =
                 new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
-                        maxConcurrent, maxConcurrent, 1000.0));
+                        maxConcurrent, maxConcurrent));
 
         // to ensure threads are actually running concurrently
         runnableWillTakeTime(20);
@@ -166,42 +166,13 @@ public class RestCallLimiterTest {
     }
 
     @Test
-    public void activeRequestWillBeRateLimited() throws InterruptedException {
-        // Given: I am within max active threads count and can do my job RIGHT
-        // NOW and permits per second is 1
-        double permitsPerSecond = 1;
-        limiter.changeRateLimitPermitsPerSecond(permitsPerSecond);
-
-        // When: I start working on heavy duty stuff
-        Callable<Long> callable = taskToAcquireAndMeasureTime();
-        List<Callable<Long>> tasks = Collections.nCopies(maxActive, callable);
-        ExecutorService executorService =
-                Executors.newFixedThreadPool(maxActive);
-        List<Future<Long>> futures = executorService.invokeAll(tasks);
-
-        // Then: I get rate limited (＃｀д´)ﾉ
-        List<Long> timeUsedInMillis =
-                getTimeUsedInMillisRoundedUpToTens(futures);
-        Iterable<Long> blocked =
-                Iterables.filter(timeUsedInMillis, new Predicate<Long>() {
-
-                    @Override
-                    public boolean apply(Long input) {
-                        return input > 0;
-                    }
-                });
-        assertThat(blocked, Matchers.<Long> iterableWithSize(1));
-    }
-
-    @Test
     private void changeMaxConcurrentLimitWillTakeEffectImmediately()
             throws ExecutionException, InterruptedException {
         runnableWillTakeTime(10);
 
         // we start off with only 1 concurrent permit
         limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(1, 10,
-                        1));
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(1, 10));
         Callable<Boolean> task = new Callable<Boolean>() {
 
             @Override
@@ -230,8 +201,7 @@ public class RestCallLimiterTest {
     @Test
     public void changeMaxActiveLimitWhenNoBlockedThreads() {
         limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(3, 3,
-                        1000));
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(3, 3));
         limiter.tryAcquireAndRun(runntable);
 
         limiter.changeActiveLimit(3, 2);
@@ -250,8 +220,7 @@ public class RestCallLimiterTest {
             throws InterruptedException {
         // Given: only 2 active requests allowed
         limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(10, 2,
-                        1000));
+                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(10, 2));
 
         // When: below requests are fired simultaneously
         // 3 requests (each takes 20ms) and 1 request should block
@@ -326,7 +295,7 @@ public class RestCallLimiterTest {
     public void zeroPermitMeansNoLimit() {
         limiter =
                 new RestCallLimiter(
-                        new RestCallLimiter.RateLimitConfig(0, 0, 0));
+                        new RestCallLimiter.RateLimitConfig(0, 0));
 
         assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
         assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
