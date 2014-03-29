@@ -41,7 +41,6 @@ import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -89,9 +88,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @In
     private ProjectDAO projectDAO;
-
-    @In
-    private ProjectIterationDAO projectIterationDAO;
 
     @In
     private LocaleMemberDAO localeMemberDAO;
@@ -324,11 +320,13 @@ public class ProjectHomeAction extends AbstractSortAction implements
             } else {
                 result = projectDAO.getActiveIterations(slug);
                 result.addAll(projectDAO.getReadOnlyIterations(slug));
-                Collections.sort(result,
-                        ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
             }
 
+            Collections.sort(result,
+                    ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
+
             projectVersions = Lists.newArrayList();
+
             for (int i = 0; i < result.size(); i++) {
                 HProjectIteration version = result.get(i);
                 projectVersions.add(new VersionItem(version, i == 0));

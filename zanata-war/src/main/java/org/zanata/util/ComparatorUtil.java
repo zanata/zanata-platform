@@ -30,9 +30,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-
-import lombok.Getter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -71,11 +68,12 @@ public class ComparatorUtil {
                 }
             };
 
+    // Sort by creation date descending.
     public static final Comparator<HProjectIteration> VERSION_CREATION_DATE_COMPARATOR =
             new Comparator<HProjectIteration>() {
                 @Override
                 public int compare(HProjectIteration o1, HProjectIteration o2) {
-                    return o1.getCreationDate().compareTo(o2.getCreationDate());
+                    return o2.getCreationDate().compareTo(o1.getCreationDate());
                 }
             };
 

@@ -2,15 +2,17 @@ package org.zanata.ui.autocomplete;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.zanata.model.HLocale;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.FilterUtil;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -22,7 +24,7 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
     protected LocaleService localeServiceImpl = (LocaleService) Component
             .getInstance(LocaleServiceImpl.class);
 
-    protected abstract Collection<HLocale> getLocales();
+    protected abstract Set<HLocale> getLocales();
 
     /**
      * Return results on search

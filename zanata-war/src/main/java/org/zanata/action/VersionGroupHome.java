@@ -23,13 +23,10 @@ package org.zanata.action;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -59,10 +56,12 @@ import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -332,8 +331,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     private class GroupLocaleAutocomplete extends LocaleAutocomplete {
 
         @Override
-        protected Collection<HLocale> getLocales() {
-            // not used
+        protected Set<HLocale> getLocales() {
+            // not used because overriding List<HLocale> suggest()
             return null;
         }
 
