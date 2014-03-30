@@ -24,12 +24,10 @@ package org.zanata.ui;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
-import org.zanata.action.ProjectHomeAction;
 import org.zanata.model.HDocument;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
@@ -162,22 +160,20 @@ public class FilterUtil {
         return Lists.newArrayList(filtered);
     }
 
-    public static List<ProjectHomeAction.VersionItem> filterVersionItemList(
-            final String query,
-            final List<ProjectHomeAction.VersionItem> unfiltered) {
+    public static List<HProjectIteration> filterVersionList(final String query,
+            final List<HProjectIteration> unfiltered) {
         if (StringUtils.isEmpty(query)) {
             return unfiltered;
         }
-        Collection<ProjectHomeAction.VersionItem> filtered =
+        Collection<HProjectIteration> filtered =
                 Collections2.filter(unfiltered,
-                        new Predicate<ProjectHomeAction.VersionItem>() {
+                        new Predicate<HProjectIteration>() {
                             @Override
-                            public
-                                    boolean
-                                    apply(@Nullable ProjectHomeAction.VersionItem input) {
-                                input.getVersion().getSlug();
-                                return StringUtils.containsIgnoreCase(input
-                                        .getVersion().getSlug(), query);
+                            public boolean apply(
+                                    @Nullable HProjectIteration input) {
+                                input.getSlug();
+                                return StringUtils.containsIgnoreCase(
+                                        input.getSlug(), query);
                             }
                         });
 

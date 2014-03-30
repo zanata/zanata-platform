@@ -85,9 +85,9 @@
         <ul class="list--stats">
           <ui:repeat
             value="#{projectHomeAction.versionFilter.pagedFilteredList}"
-            var="versionItem">
+            var="version">
             <ui:param name="hasActions"
-              value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(versionItem.version)}"/>
+              value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(version)}"/>
             <li
               class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
               <s:div styleClass="list__item__action" rendered="#{hasActions}">
@@ -102,15 +102,14 @@
                   </a>
                   <ul class="dropdown__content js-dropdown__content">
                     <ui:repeat
-                      value="#{projectHomeAction.getUserJoinedLocales(versionItem.version)}"
+                      value="#{projectHomeAction.getUserJoinedLocales(version)}"
                       var="hLocale">
                       <li>
                         <h:outputLink styleClass="i__item--right"
                           value="#{request.contextPath}/webtrans/Application.seam">
                           <f:param name="project"
                             value="#{projectHomeAction.slug}"/>
-                          <f:param name="iteration"
-                            value="#{versionItem.version.slug}"/>
+                          <f:param name="iteration" value="#{version.slug}"/>
                           <f:param name="localeId"
                             value="#{hLocale.localeId}"/>
                           <f:param name="locale" value="#{locale.language}"/>
@@ -129,7 +128,7 @@
                       <h:outputLink id="exportTMXIterLink"
                         onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
                         styleClass="i__item--right"
-                        value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{versionItem.version.slug}">
+                        value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{version.slug}">
                         #{messages['jsf.iteration.ExportTMXIter']}<i
                         class="i i--export i__item__icon"></i>
                       </h:outputLink>
@@ -140,25 +139,19 @@
 
               <s:link view="/iteration/view.xhtml">
                 <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
-                <f:param name="iterationSlug"
-                  value="#{versionItem.version.slug}"/>
+                <f:param name="iterationSlug" value="#{version.slug}"/>
 
                 <div class="list__item__content">
                   <div class="list__item__info">
-                    <h3 class="list__title">#{versionItem.version.slug}
-                      <s:fragment rendered="#{versionItem.latestVersion}">
-                      <span class="label--highlight">
-                        #{messages['jsf.project.version.latest']}
-                      </span>
-                      </s:fragment>
-                    </h3>
+                    <h3 class="list__title">#{version.slug}</h3>
                   </div>
 
                   <s:div styleClass="list__item__stats"
                     rendered="#{projectHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
-                      value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, versionItem.version)}"/>
-                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
+                      value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, version)}"/>
+                   <span class="#{displayUnit.cssClass}"
+                     title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit txt--lowercase">
                         #{displayUnit.unit}
@@ -167,7 +160,7 @@
                   </s:div>
                 </div>
                 <zanata:statistic
-                  value="#{projectHomeAction.getStatisticForVersion(versionItem.version.slug)}"
+                  value="#{projectHomeAction.getStatisticForVersion(version.slug)}"
                   rendered="#{projectHomeAction.pageRendered}"/>
 
                 <a4j:status name="statistic-loader">
