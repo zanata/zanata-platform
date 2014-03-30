@@ -83,7 +83,9 @@
   </div>
 
   <a4j:status name="languageTab-languagesLoader">
-    <f:facet name="start"><zanata:loader/></f:facet>
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-0">
@@ -113,10 +115,11 @@
           value="#{versionHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
-            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
+            <a4j:commandLink
+              oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
               action="#{versionHomeAction.setSelectedLocale(hLocale)}"
               status="languageTab-documentsLoader"
-              onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('.loader--small')"
+              onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
               onclick="updateActiveRow(this);toggleColumn('languages_content')">
               <div class="list__item">
@@ -135,24 +138,28 @@
                   </h3>
                   <span class="list__item__meta">#{hLocale.localeId}</span>
                 </div>
-                <s:div styleClass="list__item__stats"
-                  rendered="#{versionHomeAction.pageRendered}">
-                  <ui:param name="displayUnit"
-                    value="#{versionHomeAction.getStatisticFigureForLocale(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
-                      <span class="stats__figure">#{displayUnit.figure}</span>
-                      <span class="stats__unit">#{displayUnit.unit}</span>
-                   </span>
-                </s:div>
+                <div class="list__item__stats">
+                  <a4j:status name="statistic-loader">
+                    <f:facet name="start">
+                      <zanata:loader type="loader--small" layout="inline"/>
+                    </f:facet>
+                  </a4j:status>
+
+                  <s:fragment rendered="#{versionHomeAction.pageRendered}">
+                    <ui:param name="displayUnit"
+                      value="#{versionHomeAction.getStatisticFigureForLocale(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
+                     <span class="#{displayUnit.cssClass}"
+                       title="#{displayUnit.title}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
+                        <span class="stats__unit">#{displayUnit.unit}</span>
+                     </span>
+                  </s:fragment>
+                </div>
               </div>
 
               <zanata:statistic
                 value="#{versionHomeAction.getStatisticsForLocale(hLocale.localeId)}"
                 rendered="#{versionHomeAction.pageRendered}"/>
-
-              <a4j:status name="statistic-loader">
-                <f:facet name="start"><zanata:loader/></f:facet>
-              </a4j:status>
 
             </a4j:commandLink>
           </li>
@@ -235,8 +242,7 @@
   </a>
 
   <h2 class="panel__heading">
-    <span class="loader--small loader--inline js-loader"></span>
-
+    <zanata:loader jsHandle="true" layout="inline" type="loader--small" id="languagesTab-language-label-loader"/>
     <s:span id="language-label">
       <s:span
         rendered="#{versionHomeAction.selectedLocale ne null and not versionHomeAction.selectedLocale.active}"
@@ -261,7 +267,9 @@
 </div>
 
 <a4j:status name="languageTab-documentsLoader">
-  <f:facet name="start"><zanata:loader/></f:facet>
+  <f:facet name="start">
+    <zanata:loader/>
+  </f:facet>
 </a4j:status>
 
 <h:form id="languages-document_list" styleClass="l--push-bottom-0">
@@ -402,7 +410,8 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
+                 <span class="#{displayUnit.cssClass}"
+                   title="#{displayUnit.title}">
                     <span class="stats__figure">#{displayUnit.figure}</span>
                     <span class="stats__unit">#{displayUnit.unit}</span>
                  </span>
@@ -427,10 +436,11 @@
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
-                    <span class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                 </span>
+                   <span class="#{displayUnit.cssClass}"
+                     title="#{displayUnit.title}">
+                      <span class="stats__figure">#{displayUnit.figure}</span>
+                      <span class="stats__unit">#{displayUnit.unit}</span>
+                   </span>
                 </s:div>
               </div>
               <zanata:statistic

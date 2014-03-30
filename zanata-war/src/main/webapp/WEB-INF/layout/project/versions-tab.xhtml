@@ -146,26 +146,31 @@
                     <h3 class="list__title">#{version.slug}</h3>
                   </div>
 
-                  <s:div styleClass="list__item__stats"
-                    rendered="#{projectHomeAction.pageRendered}">
-                    <ui:param name="displayUnit"
-                      value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, version)}"/>
-                   <span class="#{displayUnit.cssClass}"
-                     title="#{displayUnit.title}">
-                      <span class="stats__figure">#{displayUnit.figure}</span>
-                      <span class="stats__unit txt--lowercase">
-                        #{displayUnit.unit}
-                      </span>
-                    </span>
-                  </s:div>
+                  <div class="list__item__stats">
+                    <a4j:status name="statistic-loader">
+                      <f:facet name="start">
+                        <zanata:loader type="loader--small" layout="inline"/>
+                      </f:facet>
+                    </a4j:status>
+
+                    <s:fragment rendered="#{projectHomeAction.pageRendered}">
+                      <ui:param name="displayUnit"
+                        value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, version)}"/>
+                       <span class="#{displayUnit.cssClass}"
+                         title="#{displayUnit.title}">
+                          <span
+                            class="stats__figure">#{displayUnit.figure}</span>
+                          <span class="stats__unit txt--lowercase">
+                            #{displayUnit.unit}
+                          </span>
+                        </span>
+                    </s:fragment>
+                  </div>
                 </div>
                 <zanata:statistic
                   value="#{projectHomeAction.getStatisticForVersion(version.slug)}"
                   rendered="#{projectHomeAction.pageRendered}"/>
 
-                <a4j:status name="statistic-loader">
-                  <f:facet name="start"><zanata:loader/></f:facet>
-                </a4j:status>
               </s:link>
             </li>
           </ui:repeat>

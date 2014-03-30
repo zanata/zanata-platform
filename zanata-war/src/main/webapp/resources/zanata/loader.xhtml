@@ -6,18 +6,30 @@
   xmlns:a4j="http://richfaces.org/a4j">
 
 <composite:interface>
+  <composite:attribute name="id" type="java.lang.String"
+    shortDescription="id of the loader"/>
+
   <composite:attribute name="type" type="java.lang.String"
-    shortDescription="size of the loader, loader--large or loader--huge"
+    shortDescription="size of the loader--small, loader, loader--large or loader--huge"
     default="loader"/>
+
+  <composite:attribute name="layout" type="java.lang.String"
+    shortDescription="'inline' or 'block'"
+    default="block"/>
+
+  <composite:attribute name="jsHandle" type="java.lang.Boolean"
+    shortDescription="display handle by javascript, zanata.loader.activate or zanata.loader.deactivate, 'js-loader'"
+    default="false"/>
 </composite:interface>
 
 <composite:implementation>
 
-  <s:div styleClass="#{cc.attrs.type} is-active">
+  <div id="#{cc.attrs.id}"
+    class="#{cc.attrs.type} #{cc.attrs.jsHandle ? 'js-loader' : 'is-active '} #{cc.attrs.layout eq 'inline' ? 'loader--inline ' : ''}">
     <span class="loader__spinner">
       <span></span><span></span><span></span>
     </span>
-  </s:div>
+  </div>
 
 </composite:implementation>
 </html>

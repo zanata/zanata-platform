@@ -81,9 +81,10 @@
           value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
           <li class="progress-bar__expander">
-            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
+            <a4j:commandLink
+              oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
               action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
-              onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('.loader--small')"
+              onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
               status="languageTab-projectsLoader"
               render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
@@ -99,26 +100,28 @@
                     </s:span>
                   </span>
                 </div>
-                <s:div styleClass="list__item__stats"
-                  rendered="#{versionGroupHomeAction.pageRendered}">
-                  <ui:param name="displayUnit"
-                    value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
-                   <span class="#{displayUnit.cssClass}"
-                     title="#{displayUnit.title}">
-                      <span class="stats__figure">#{displayUnit.figure}</span>
-                      <span class="stats__unit">#{displayUnit.unit}</span>
-                   </span>
-                </s:div>
+                <div class="list__item__stats">
+                  <a4j:status name="statistic-loader">
+                    <f:facet name="start">
+                      <zanata:loader type="loader--small" layout="inline"/>
+                    </f:facet>
+                  </a4j:status>
+
+                  <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+                    <ui:param name="displayUnit"
+                      value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
+                     <span class="#{displayUnit.cssClass}"
+                       title="#{displayUnit.title}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
+                        <span class="stats__unit">#{displayUnit.unit}</span>
+                     </span>
+                  </s:fragment>
+                </div>
               </div>
 
               <zanata:statistic
                 value="#{versionGroupHomeAction.getStatisticsForLocale(hLocale.localeId)}"
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
-
-              <a4j:status name="statistic-loader">
-                <f:facet name="start"><zanata:loader/></f:facet>
-              </a4j:status>
-
             </a4j:commandLink>
           </li>
         </ui:repeat>
@@ -151,7 +154,7 @@
     </a>
 
     <h2 class="panel__heading">
-      <span class="loader--small loader--inline js-loader"></span>
+      <zanata:loader jsHandle="true" layout="inline" type="loader--small" id="languagesTab-language-label-loader"/>
       <s:span id="language-label">
         #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
       </s:span>

@@ -186,10 +186,11 @@
               </ul>
             </div>
           </s:div>
-          <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
+          <a4j:commandLink
+            oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
             action="#{versionHomeAction.setSelectedDocument(document)}"
             status="documentsTab-languagesLoader"
-            onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('.loader--small')"
+            onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
             render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
             onclick="updateActiveRow(this);toggleColumn('documents_content')">
             <div class="list__item__content">
@@ -197,24 +198,28 @@
                 <h3 class="list__title">#{document.name}</h3>
                 <span class="list__item__meta">#{document.path}</span>
               </div>
-              <s:div styleClass="list__item__stats"
-                rendered="#{versionHomeAction.pageRendered}">
-                <ui:param name="displayUnit"
-                  value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.sourceDocumentSortingList.selectedSortOption, document)}"/>
-                 <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
-                    <span
-                      class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                 </span>
-              </s:div>
+              <div class="list__item__stats">
+                <a4j:status name="statistic-loader">
+                  <f:facet name="start">
+                    <zanata:loader type="loader--small" layout="inline"/>
+                  </f:facet>
+                </a4j:status>
+
+                <s:fragment rendered="#{versionHomeAction.pageRendered}">
+                  <ui:param name="displayUnit"
+                    value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.sourceDocumentSortingList.selectedSortOption, document)}"/>
+                   <span class="#{displayUnit.cssClass}"
+                     title="#{displayUnit.title}">
+                      <span
+                        class="stats__figure">#{displayUnit.figure}</span>
+                      <span class="stats__unit">#{displayUnit.unit}</span>
+                   </span>
+                </s:fragment>
+              </div>
             </div>
             <zanata:statistic
               value="#{versionHomeAction.getDocumentStatistic(document.id)}"
               rendered="#{versionHomeAction.pageRendered}"/>
-
-            <a4j:status name="statistic-loader">
-              <f:facet name="start"><zanata:loader/></f:facet>
-            </a4j:status>
 
           </a4j:commandLink>
         </li>
@@ -262,8 +267,8 @@
       </s:fragment>
     </div>
     <h2 class="panel__heading">
-      <span class="loader--small loader--inline js-loader"></span>
-
+      <zanata:loader jsHandle="true" layout="inline" type="loader--small"
+        id="documentsTab-document-label-loader"/>
       <s:span id="document-label">
         #{versionHomeAction.selectedDocument.name}
       </s:span>
@@ -344,7 +349,8 @@
                       rendered="#{versionHomeAction.pageRendered}">
                       <ui:param name="displayUnit"
                         value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
-                       <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
+                       <span class="#{displayUnit.cssClass}"
+                         title="#{displayUnit.title}">
                           <span
                             class="stats__figure">#{displayUnit.figure}</span>
                           <span class="stats__unit">#{displayUnit.unit}</span>
@@ -378,7 +384,8 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
-                   <span class="#{displayUnit.cssClass}" title="#{displayUnit.title}">
+                   <span class="#{displayUnit.cssClass}"
+                     title="#{displayUnit.title}">
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>

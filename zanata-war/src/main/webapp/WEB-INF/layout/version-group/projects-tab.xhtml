@@ -83,10 +83,11 @@
           var="version">
           <li class="progress-bar__expander"
             id="#{version.project.slug}[#{version.slug}]">
-            <a4j:commandLink oncomplete="zanata.loader.deactivate('.loader--small')"
+            <a4j:commandLink
+              oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader')"
               action="#{versionGroupHomeAction.setSelectedVersion(version)}"
               status="projectsTab-languagesLoader"
-              onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('.loader--small')"
+              onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
               render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
               onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects/#{version.project.slug}/#{version.slug}')"
               styleClass="bx--block">
@@ -104,28 +105,30 @@
                       </s:fragment>
                     </span>
                 </div>
-                <s:div styleClass="list__item__stats"
-                  rendered="#{versionGroupHomeAction.pageRendered}">
-                  <ui:param name="displayUnit"
-                    value="#{versionGroupHomeAction.getStatisticFigureForProject(versionGroupHomeAction.projectSortingList.selectedSortOption, version.id)}"/>
-                   <span class="stats--small #{displayUnit.cssClass}">
-                      <span class="stats__figure">
-                        #{displayUnit.figure}
+                <div class="list__item__stats">
+                  <a4j:status name="statistic-loader">
+                    <f:facet name="start">
+                      <zanata:loader type="loader--small" layout="inline"/>
+                    </f:facet>
+                  </a4j:status>
+
+                  <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+                    <ui:param name="displayUnit"
+                      value="#{versionGroupHomeAction.getStatisticFigureForProject(versionGroupHomeAction.projectSortingList.selectedSortOption, version.id)}"/>
+                     <span class="stats--small #{displayUnit.cssClass}">
+                        <span class="stats__figure">
+                          #{displayUnit.figure}
+                        </span>
+                        <span class="stats__unit txt--lowercase">
+                          #{displayUnit.unit}
+                        </span>
                       </span>
-                      <span class="stats__unit txt--lowercase">
-                        #{displayUnit.unit}
-                      </span>
-                    </span>
-                </s:div>
+                  </s:fragment>
+                </div>
               </div>
               <zanata:statistic
                 value="#{versionGroupHomeAction.getStatisticForProject(version.id)}"
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
-
-              <a4j:status name="statistic-loader">
-                <f:facet name="start"><zanata:loader/></f:facet>
-              </a4j:status>
-
             </a4j:commandLink>
           </li>
         </ui:repeat>
@@ -159,7 +162,8 @@
     </a>
 
     <h2 class="panel__heading">
-      <span class="loader--small loader--inline js-loader"></span>
+      <zanata:loader jsHandle="true" layout="inline" type="loader--small"
+        id="projectsTab-project-label-loader"/>
 
       <s:span id="project-label" styleClass="i__text--right">
         #{versionGroupHomeAction.selectedVersion.project.slug}
