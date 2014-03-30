@@ -148,7 +148,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
                 .gotoSettingsTab()
                 .gotoSettingsPermissionsTab()
                 .enterSearchMaintainer(username)
-                .selectSearchMaintainer("username");
+                .selectSearchMaintainer(username);
         projectPermissionsTab.waitForMaintainersContains(username);
         return new ProjectPermissionsTab(driver);
     }

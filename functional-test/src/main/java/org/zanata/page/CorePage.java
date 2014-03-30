@@ -118,7 +118,6 @@ public class CorePage extends AbstractPage {
     public String getNotificationMessage() {
         List<WebElement> messages =
                 getDriver().findElement(By.id("messages"))
-                        .findElement(By.className("message--global"))
                         .findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }

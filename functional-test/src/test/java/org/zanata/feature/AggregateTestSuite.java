@@ -35,6 +35,7 @@ import org.zanata.feature.infrastructure.InfrastructureTestSuite;
 import org.zanata.feature.language.LanguageTestSuite;
 import org.zanata.feature.misc.MiscTestSuite;
 import org.zanata.feature.project.ProjectTestSuite;
+import org.zanata.feature.projectversion.ProjectVersionTestSuite;
 import org.zanata.feature.search.SearchTestSuite;
 import org.zanata.feature.security.SecurityTestSuite;
 import org.zanata.feature.startNewProject.CreateSampleProjectTestSuite;
@@ -62,6 +63,7 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
         LanguageTestSuite.class,
         MiscTestSuite.class,
         ProjectTestSuite.class,
+        ProjectVersionTestSuite.class,
         SearchTestSuite.class,
         SecurityTestSuite.class,
         VersionGroupTestSuite.class,

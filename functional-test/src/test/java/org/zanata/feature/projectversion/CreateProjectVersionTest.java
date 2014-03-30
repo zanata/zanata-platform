@@ -21,21 +21,19 @@
 
 package org.zanata.feature.projectversion;
 
-import java.util.List;
-
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.CreateVersionPage;
-import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -45,10 +43,26 @@ import static org.hamcrest.Matchers.not;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ProjectVersionTest {
+public class CreateProjectVersionTest {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @Test
+    @Category(BasicAcceptanceTest.class)
+    public void createASimpleProjectVersion() {
+        VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .clickCreateVersionLink()
+                .inputVersionId("my-aboutfedora-version")
+                .saveVersion();
+
+        assertThat("The version is created with correct ID",
+                versionLanguagesPage.getProjectVersionName(),
+                equalTo("my-aboutfedora-version"));
+    }
 
     @Test
     public void idFieldMustNotBeEmpty() {
@@ -127,14 +141,5 @@ public class ProjectVersionTest {
         assertThat("The version count is 2",
                 projectVersionsPage.getNumberOfDisplayedVersions(),
                 equalTo(2));
-
-        projectVersionsPage = projectVersionsPage
-                .clickSearchIcon()
-                .enterVersionSearch("alpha");
-        projectVersionsPage.waitForDisplayedVersions(1);
-
-        assertThat("The version count is 1",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(1));
     }
 }

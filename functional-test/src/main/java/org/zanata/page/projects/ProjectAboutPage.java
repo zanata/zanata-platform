@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -19,23 +19,21 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.feature.project;
+package org.zanata.page.projects;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
- * List of test classes for the Project test suite.
- * @author Damian Jansen <a
- *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- * @see org.zanata.feature.AggregateTestSuite
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        CreateProjectTest.class,
-        EditPermissionsTest.class,
-        EditProjectGeneralTest.class,
-        EditProjectLanguagesTest.class,
-        EditProjectValidationsTest.class })
-public class ProjectTestSuite {
+public class ProjectAboutPage extends ProjectBasePage {
+
+    public ProjectAboutPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public String getAboutText() {
+        return getDriver().findElement(By.id("project-about")).getText();
+    }
 }

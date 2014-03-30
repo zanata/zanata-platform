@@ -49,6 +49,31 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     /**
+     * Click the inherit project settings languages checkbox
+     *
+     * @return new language settings tab
+     */
+    public VersionLanguagesTab clickInheritCheckbox() {
+        getDriver().findElement(By.id("settings-languages-form"))
+                .findElement(By.className("form__checkbox"))
+                .click();
+        return new VersionLanguagesTab(getDriver());
+    }
+
+    public VersionLanguagesTab waitForLocaleListVisible() {
+        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return getDriver()
+                        .findElement(By.id("settings-languages-form"))
+                        .findElement(By.className("list--slat"))
+                        .isDisplayed();
+            }
+        });
+        return new VersionLanguagesTab(getDriver());
+    }
+
+    /**
      * Get a list of locales enabled in this version
      *
      * @return String list of language/locale names

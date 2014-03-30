@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -19,23 +19,23 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.feature.project;
+package org.zanata.feature.projectversion;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * List of test classes for the Project test suite.
- * @author Damian Jansen <a
- *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * List of test classes for the Project Versions test suite.
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *
  * @see org.zanata.feature.AggregateTestSuite
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        CreateProjectTest.class,
-        EditPermissionsTest.class,
-        EditProjectGeneralTest.class,
-        EditProjectLanguagesTest.class,
-        EditProjectValidationsTest.class })
-public class ProjectTestSuite {
+        CreateProjectVersionTest.class,
+        EditVersionLanguagesTest.class,
+        EditVersionValidationsTest.class,
+        VersionFilteringTest.class })
+public class ProjectVersionTestSuite {
 }

@@ -61,7 +61,9 @@ public class EditVersionLanguagesTest {
                 .inputVersionId("overridelangtest")
                 .saveVersion()
                 .gotoSettingsTab()
-                .gotoSettingsLanguagesTab();
+                .gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible();
 
         List<String> enabledLocaleList = versionLanguagesTab
                 .getEnabledLocaleList();

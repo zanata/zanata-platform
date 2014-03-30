@@ -21,8 +21,10 @@
 package org.zanata.page.projectversion;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import com.google.common.base.Predicate;
@@ -52,10 +54,10 @@ public class VersionBasePage extends BasePage {
     @FindBy(id = "settings-translation_tab")
     private WebElement settingsTranslationTab;
 
-    @FindBy(id = "documents_tab")
+    @FindBy(id = "documents")
     private WebElement documentsTab;
 
-    @FindBy(id = "languages_tab")
+    @FindBy(id = "languages")
     private WebElement languageTab;
 
     public VersionBasePage(final WebDriver driver) {
@@ -89,7 +91,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionLanguagesPage gotoDocumentTab() {
-        documentsTab.click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("documents")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -100,7 +102,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionLanguagesPage gotoLanguageTab() {
-        languageTab.click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("languages")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -112,7 +114,7 @@ public class VersionBasePage extends BasePage {
 
     public VersionBasePage gotoSettingsTab() {
         slightPause();
-        clickWhenTabEnabled(getDriver().findElement(By.id("settings_tab")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("settings")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -129,7 +131,9 @@ public class VersionBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsGeneralTab.isDisplayed();
+                return getDriver()
+                        .findElement(By.id("settings-general_form"))
+                        .isDisplayed();
             }
         });
         return new VersionGeneralTab(getDriver());
@@ -140,7 +144,9 @@ public class VersionBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsLanguagesTab.isDisplayed();
+                return getDriver()
+                        .findElement(By.id("settings-languages-form"))
+                        .isDisplayed();
             }
         });
         return new VersionLanguagesTab(getDriver());
@@ -151,7 +157,9 @@ public class VersionBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsDocumentsTab.isDisplayed();
+                return getDriver()
+                        .findElement(By.id("settings-document_form"))
+                        .isDisplayed();
             }
         });
         return new VersionDocumentsTab(getDriver());
@@ -181,4 +189,5 @@ public class VersionBasePage extends BasePage {
             }
         });
     }
+
 }

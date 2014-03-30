@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
@@ -158,15 +159,34 @@ public class EditorPage extends BasePage {
 
     public EditorPage setSyntaxHighlighting(boolean option) {
         openConfigurationPanel();
-        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected()
-                != option) {
-            getDriver().findElement(By.id("gwt-uid-144")).click();
+        WebElement highlight = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                WebElement element = getDriver()
+                        .findElement(By.id("gwt-uid-144"));
+                if (element.isDisplayed()) {
+                    return element;
+                }
+                return null;
+            }
+        });
+        if (highlight.isSelected() != option) {
+            highlight.click();
         }
         return new EditorPage(getDriver());
     }
 
     private Boolean openConfigurationPanel() {
-        getDriver().findElement(By.className("icon-cog")).click();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                        .findElement(By.className("icon-cog"))
+                        .isEnabled();
+            }
+        });
+        new Actions(getDriver()).click(
+                getDriver().findElement(By.className("icon-cog"))).perform();
         return waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {

@@ -31,18 +31,21 @@ import org.zanata.page.BasePage;
 import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
-import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
-import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
-import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
+import org.zanata.page.projects.projectsettings.*;
 
 @Slf4j
 public class ProjectBasePage extends BasePage {
 
-    @FindBy(id = "versions_tab")
+    @FindBy(id = "versions")
     private WebElement versionsTab;
 
-    @FindBy(id = "settings_tab")
+    @FindBy(id = "maintainers")
+    private WebElement maintainersTab;
+
+    @FindBy(id = "about")
+    private WebElement aboutTab;
+
+    @FindBy(id = "settings")
     private WebElement settingsTab;
 
     @FindBy(id = "settings-general_tab")
@@ -57,6 +60,9 @@ public class ProjectBasePage extends BasePage {
     @FindBy(id = "settings-languages_tab")
     private WebElement settingsLanguagesTab;
 
+    @FindBy(id = "settings-about_tab")
+    private WebElement settingsAboutTab;
+
     public ProjectBasePage(final WebDriver driver) {
         super(driver);
     }
@@ -68,16 +74,40 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectVersionsPage gotoVersionsTab() {
-        versionsTab.click();
+        clickWhenTabEnabled(versionsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return versionsTab.isDisplayed();
+                return getDriver().findElement(By.id("versions_content"))
+                        .isDisplayed();
             }
         });
         return new ProjectVersionsPage(getDriver());
     }
 
+    public ProjectMaintainersPage gotoMaintainersTab() {
+        clickWhenTabEnabled(maintainersTab);
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver().findElement(By.id("maintainers_content"))
+                        .isDisplayed();
+            }
+        });
+        return new ProjectMaintainersPage(getDriver());
+    }
+
+    public ProjectAboutPage gotoAboutTab() {
+        clickWhenTabEnabled(aboutTab);
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver().findElement(By.id("about_content"))
+                        .isDisplayed();
+            }
+        });
+        return new ProjectAboutPage(getDriver());
+    }
     public boolean settingsTabIsDisplayed() {
         return settingsTab.isDisplayed();
     }
@@ -92,61 +122,75 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectBasePage gotoSettingsTab() {
-        settingsTab.click();
+        clickWhenTabEnabled(settingsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsTab.isDisplayed();
+                return getDriver().findElement(By.id("settings_content"))
+                        .isDisplayed();
             }
         });
         return new ProjectBasePage(getDriver());
     }
 
     public ProjectGeneralTab gotoSettingsGeneral() {
-        settingsGeneralTab.click();
+        clickWhenTabEnabled(settingsGeneralTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsGeneralTab.isDisplayed();
+                return getDriver().findElement(By.id("settings-general"))
+                        .isDisplayed();
             }
         });
         return new ProjectGeneralTab(getDriver());
     }
 
     public ProjectPermissionsTab gotoSettingsPermissionsTab() {
-        gotoSettingsTab();
-        settingsPermissionTab.click();
+        clickWhenTabEnabled(settingsPermissionTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsPermissionTab.isDisplayed();
+                return getDriver().findElement(By.id("settings-permissions"))
+                        .isDisplayed();
             }
         });
         return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectTranslationTab gotoSettingsTranslationTab() {
-        gotoSettingsTab();
-        settingsTranslationTab.click();
+        clickWhenTabEnabled(settingsTranslationTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsTranslationTab.isDisplayed();
+                return getDriver().findElement(By.id("settings-translation"))
+                        .isDisplayed();
             }
         });
         return new ProjectTranslationTab(getDriver());
     }
 
     public ProjectLanguagesTab gotoSettingsLanguagesTab() {
-        gotoSettingsTab();
-        settingsLanguagesTab.click();
+        clickWhenTabEnabled(settingsLanguagesTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return settingsLanguagesTab.isDisplayed();
+                return getDriver().findElement(By.id("settings-languages"))
+                        .isDisplayed();
             }
         });
         return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectAboutTab gotoSettingsAboutTab() {
+        clickWhenTabEnabled(settingsAboutTab);
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver().findElement(By.id("settings-about"))
+                        .isDisplayed();
+            }
+        });
+        return new ProjectAboutTab(getDriver());
     }
 
     public List<String> getContentAreaParagraphs() {
@@ -164,7 +208,8 @@ public class ProjectBasePage extends BasePage {
         for (WebElement element : getDriver()
                 .findElement(By.id("project-info"))
                 .findElements(By.tagName("li"))) {
-            if (element.findElement(By.className("list__title")).getText().trim()
+            if (element.findElement(By.className("list__title"))
+                    .getText().trim()
                     .equals("Home Page:")) {
                 return element.findElement(By.tagName("a")).getText();
             }
@@ -183,6 +228,20 @@ public class ProjectBasePage extends BasePage {
             }
         }
         return "";
+    }
+
+    private void clickWhenTabEnabled(final WebElement tab) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                boolean clicked = false;
+                if (tab.isDisplayed() && tab.isEnabled()) {
+                    tab.click();
+                    clicked = true;
+                }
+                return clicked;
+            }
+        });
     }
 
 }

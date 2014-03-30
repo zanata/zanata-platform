@@ -29,6 +29,7 @@ import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -88,8 +89,9 @@ public class EditVersionValidationsTest {
 
         assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
-        EditorPage editorPage = versionTranslationTab
-                .gotoLanguageTab()
+        EditorPage editorPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
                 .translate("fr", "About_Fedora")
                 .setSyntaxHighlighting(false);
 
@@ -131,8 +133,9 @@ public class EditVersionValidationsTest {
 
         assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
-        EditorPage editorPage = versionTranslationTab
-                .gotoLanguageTab()
+        EditorPage editorPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
                 .translate("fr", "About_Fedora")
                 .openValidationOptions();
 
@@ -175,15 +178,19 @@ public class EditVersionValidationsTest {
     @Test
     public void userCanEnableADisabledValidation() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
-                .signIn("admin", "admin").goToProjects()
-                .goToProject("about fedora").gotoVersion("master")
-                .gotoSettingsTab().gotoSettingsTranslationTab()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsTranslationTab()
                 .setValidationLevel("Tab characters (\\t)", "Off");
 
         assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
-        EditorPage editorPage = versionTranslationTab
-                .gotoLanguageTab()
+        EditorPage editorPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
                 .translate("fr", "About_Fedora")
                 .setSyntaxHighlighting(false)
                 .pasteIntoRowAtIndex(0, "\t");

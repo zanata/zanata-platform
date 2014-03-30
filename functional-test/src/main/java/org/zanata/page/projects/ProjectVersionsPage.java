@@ -110,13 +110,14 @@ public class ProjectVersionsPage extends ProjectBasePage {
                 .getText());
     }
 
-    public void waitForDisplayedVersions(final int expected) {
+    public ProjectVersionsPage waitForDisplayedVersions(final int expected) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getNumberOfDisplayedVersions() == expected;
             }
         });
+        return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectVersionsPage clickSearchIcon() {
@@ -124,6 +125,11 @@ public class ProjectVersionsPage extends ProjectBasePage {
                 .findElement(By.id("versions_content"))
                 .findElement(By.className("panel__search__button"))
                 .click();
+        return new ProjectVersionsPage(getDriver());
+    }
+
+    public ProjectVersionsPage clearVersionSearch() {
+        getDriver().findElement(By.id("versionSearch__input")).clear();
         return new ProjectVersionsPage(getDriver());
     }
 
