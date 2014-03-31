@@ -34,21 +34,21 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
     @Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
-            "org/zanata/test/model/ProjectsData.dbunit.xml",
-            DatabaseOperation.CLEAN_INSERT));
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
         beforeTestOperations.add(new DataSetOperation(
-            "org/zanata/test/model/LocalesData.dbunit.xml",
-            DatabaseOperation.CLEAN_INSERT));
+                "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
     }
 
     @Test
     public void ensureHistoryIsRecorded() {
         Session session = getSession();
         HDocument d =
-            new HDocument("/path/to/document.txt", ContentType.TextPlain,
-                en_US);
+                new HDocument("/path/to/document.txt", ContentType.TextPlain,
+                        en_US);
         d.setProjectIteration((HProjectIteration) session.load(
-            HProjectIteration.class, 1L));
+                HProjectIteration.class, 1L));
         session.save(d);
         session.flush();
 
@@ -63,7 +63,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
 
         List<HTextFlowTargetHistory> historyElems = getHistory(target);
         assertThat("Incorrect History size on persist", historyElems.size(),
-            is(0));
+                is(0));
 
         target.setContents("blah!");
         session.flush();
@@ -71,7 +71,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         historyElems = getHistory(target);
 
         assertThat("Incorrect History size on first update",
-            historyElems.size(), is(1));
+                historyElems.size(), is(1));
 
         target.setContents("hola mundo!");
         session.flush();
@@ -79,7 +79,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         historyElems = getHistory(target);
 
         assertThat("Incorrect History size on second update",
-            historyElems.size(), is(2));
+                historyElems.size(), is(2));
         assertThat(historyElems.size(), is(2));
         HTextFlowTargetHistory hist = historyElems.get(0);
         assertThat(hist.getContents(), is(Arrays.asList("helleu world")));
@@ -89,10 +89,10 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
     public void ensureHistoryIsRecordedPlural() {
         Session session = getSession();
         HDocument d =
-            new HDocument("/path/to/document.txt", ContentType.TextPlain,
-                en_US);
+                new HDocument("/path/to/document.txt", ContentType.TextPlain,
+                        en_US);
         d.setProjectIteration((HProjectIteration) session.load(
-            HProjectIteration.class, 1L));
+                HProjectIteration.class, 1L));
         session.save(d);
         session.flush();
 
@@ -116,21 +116,21 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         assertThat(historyElems.size(), is(1));
         HTextFlowTargetHistory hist = historyElems.get(0);
         assertThat(hist.getContents(),
-            is(Arrays.asList("helleu world", "helleu worlds")));
+                is(Arrays.asList("helleu world", "helleu worlds")));
 
         assert historyDAO.findContentInHistory(target,
-            Arrays.asList("helleu world", "helleu worlds"));
+                Arrays.asList("helleu world", "helleu worlds"));
         assert !historyDAO.findContentInHistory(target,
-            Arrays.asList("helleu world"));
+                Arrays.asList("helleu world"));
         assert !historyDAO.findContentInHistory(target,
-            Arrays.asList("helleu worlds"));
+                Arrays.asList("helleu worlds"));
         assert !historyDAO.findContentInHistory(target,
-            Arrays.asList("blah", "blah!"));
+                Arrays.asList("blah", "blah!"));
     }
 
     @SuppressWarnings("unchecked")
     private List<HTextFlowTargetHistory> getHistory(HTextFlowTarget tft) {
         return getSession().createCriteria(HTextFlowTargetHistory.class)
-            .add(Restrictions.eq("textFlowTarget", tft)).list();
+                .add(Restrictions.eq("textFlowTarget", tft)).list();
     }
 }
