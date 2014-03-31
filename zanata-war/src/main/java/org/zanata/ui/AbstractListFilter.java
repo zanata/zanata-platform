@@ -73,12 +73,11 @@ public abstract class AbstractListFilter<T> {
     public void nextPage() {
         int totalPage =
                 (int) Math.ceil((double) getFilteredListSize() / countPerPage) - 1;
-        currentPage =
-                (currentPage + 1) > totalPage ? totalPage : currentPage + 1;
+        currentPage = Math.min(totalPage, currentPage + 1);
     }
 
     public void previousPage() {
-        currentPage = (currentPage - 1) < 0 ? 0 : currentPage - 1;
+        currentPage = Math.max(0, currentPage - 1);
     }
 
     public void resetQueryAndPage() {

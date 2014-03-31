@@ -212,8 +212,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     private boolean isLocaleActivatedInVersion(HProjectIteration version,
             HLocale locale) {
         List<HLocale> versionLocales =
-                localeServiceImpl.getSupportedLanguageByProjectIteration(version
-                    .getProject().getSlug(), version.getSlug());
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
+                        version.getProject().getSlug(), version.getSlug());
         return versionLocales.contains(locale);
 
     }

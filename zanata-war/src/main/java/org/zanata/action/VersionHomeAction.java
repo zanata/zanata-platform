@@ -210,7 +210,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             new DocumentComparator(getDocumentSortingList());
 
     private final DocumentComparator sourceDocumentComparator =
-        new DocumentComparator(getSourceDocumentSortingList());
+            new DocumentComparator(getSourceDocumentSortingList());
 
     private final DocumentComparator settingsDocumentComparator =
             new DocumentComparator(getSettingsDocumentSortingList());
@@ -301,7 +301,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         languageTabDocumentFilter.resetQueryAndPage();
     }
 
-    public void sortDocumentList() {
+    public void sortSourceDocumentList() {
         sourceDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getSourceDocuments(), sourceDocumentComparator);
         documentsTabDocumentFilter.resetQueryAndPage();
@@ -386,8 +386,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     public List<HDocument> getSourceDocuments() {
         if (documents == null) {
             documents =
-                documentDAO.getByProjectIteration(projectSlug, versionSlug,
-                    false);
+                    documentDAO.getByProjectIteration(projectSlug, versionSlug,
+                            false);
             Collections.sort(documents, sourceDocumentComparator);
         }
         return documents;
@@ -507,7 +507,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         documentServiceImpl.makeObsolete(doc);
         resetPageData();
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-            doc.getDocId() + " has been removed.");
+                doc.getDocId() + " has been removed.");
     }
 
     public List<HLocale> getAvailableSourceLocales() {
@@ -533,7 +533,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     public boolean isZipFileDownloadAllowed() {
-        return getVersion().getProjectType() != null;
+        return getVersion().getProjectType() != null
+                && identity.hasPermission("download-all", getVersion());
     }
 
     public boolean isPoProject() {
@@ -594,9 +595,9 @@ public class VersionHomeAction extends AbstractSortAction implements
                 uploadAdapterFile();
             } else {
                 conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO,
-                    "Unrecognized file extension for "
-                        + sourceFileUpload.getFileName());
+                        FacesMessage.SEVERITY_INFO,
+                        "Unrecognized file extension for "
+                                + sourceFileUpload.getFileName());
             }
         }
         resetPageData();
@@ -622,7 +623,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     private void showUploadSuccessMessage() {
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-            "Document " + sourceFileUpload.getFileName() + " uploaded.");
+                "Document " + sourceFileUpload.getFileName() + " uploaded.");
     }
 
     /**
@@ -665,10 +666,10 @@ public class VersionHomeAction extends AbstractSortAction implements
             showUploadSuccessMessage();
         } catch (ZanataServiceException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                e.getMessage() + "-" + sourceFileUpload.getFileName());
+                    e.getMessage() + "-" + sourceFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                "Invalid arguments");
+                    "Invalid arguments");
         }
     }
 
@@ -705,14 +706,14 @@ public class VersionHomeAction extends AbstractSortAction implements
                     sourceFileUpload.getDocId());
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                "Error saving uploaded document " + fileName
-                    + " to server.");
+                    "Error saving uploaded document " + fileName
+                            + " to server.");
             return;
         } catch (NoSuchAlgorithmException e) {
             VersionHomeAction.log.error("MD5 hash algorithm not available", e);
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                "Error generating hash for uploaded document " + fileName
-                    + ".");
+                    "Error generating hash for uploaded document " + fileName
+                            + ".");
             return;
         }
 
@@ -740,11 +741,11 @@ public class VersionHomeAction extends AbstractSortAction implements
             showUploadSuccessMessage();
         } catch (SecurityException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                "Error reading uploaded document " + fileName
-                    + " on server.");
+                    "Error reading uploaded document " + fileName
+                            + " on server.");
         } catch (ZanataServiceException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                "Invalid document format for " + fileName);
+                    "Invalid document format for " + fileName);
         }
 
         if (document == null) {
@@ -769,8 +770,8 @@ public class VersionHomeAction extends AbstractSortAction implements
                 VersionHomeAction.log.warn("File failed virus scan: {}",
                         e.getMessage());
                 conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_ERROR,
-                    "uploaded file did not pass virus scan");
+                        FacesMessage.SEVERITY_ERROR,
+                        "uploaded file did not pass virus scan");
             }
             filePersistService.persistRawDocumentContentFromFile(rawDocument,
                     tempFile);
@@ -821,7 +822,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                 infoMsg.append(" There were some warnings, see below.");
             }
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                infoMsg.toString());
+                    infoMsg.toString());
 
             if (!warnings.isEmpty()) {
                 List<FacesMessage> warningMessages = Lists.newArrayList();
@@ -833,7 +834,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             }
         } catch (ZanataServiceException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
-                translationFileUpload.getFileName() + "-" + e.getMessage());
+                    translationFileUpload.getFileName() + "-" + e.getMessage());
         }
         resetPageData();
     }
@@ -848,7 +849,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     private class SourceDocumentFilter extends AbstractListFilter<HDocument> {
         @Override
         protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(), getSourceDocuments());
+            return FilterUtil.filterDocumentList(getQuery(),
+                    getSourceDocuments());
         }
     };
 

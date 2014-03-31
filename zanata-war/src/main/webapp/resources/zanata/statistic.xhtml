@@ -13,19 +13,20 @@
     shortDescription="Type of statistic bar, 'large' or leave empty for default"/>
 </composite:interface>
 <composite:implementation>
-  <s:fragment rendered="#{cc.attrs.value != null}">
-    <ui:param name="translated" value="#{cc.attrs.value.translated}"/>
-    <ui:param name="fuzzy" value="#{cc.attrs.value.needReview}"/>
-    <ui:param name="rejected" value="#{cc.attrs.value.rejected}"/>
-    <ui:param name="approved" value="#{cc.attrs.value.approved}"/>
-    <ui:param name="untranslated" value="#{cc.attrs.value.untranslated}"/>
-    <ui:param name="remainingHours"
-      value="#{cc.attrs.value.remainingHours}"/>
 
-    <ui:param name="total" value="#{cc.attrs.value.total}"/>
+  <div
+    class="#{cc.attrs.type eq 'large' ? 'progress-bar--large' : 'progress-bar'}">
 
-    <div
-      class="#{cc.attrs.type eq 'large' ? 'progress-bar--large' : 'progress-bar'}">
+    <s:fragment rendered="#{cc.attrs.value != null}">
+      <ui:param name="translated" value="#{cc.attrs.value.translated}"/>
+      <ui:param name="fuzzy" value="#{cc.attrs.value.needReview}"/>
+      <ui:param name="rejected" value="#{cc.attrs.value.rejected}"/>
+      <ui:param name="approved" value="#{cc.attrs.value.approved}"/>
+      <ui:param name="untranslated" value="#{cc.attrs.value.untranslated}"/>
+      <ui:param name="remainingHours"
+        value="#{cc.attrs.value.remainingHours}"/>
+      <ui:param name="total" value="#{cc.attrs.value.total}"/>
+
       <s:fragment rendered="#{total gt 0}">
         <ui:param name="approved_percentage"
           value="#{statisticBar.formatPercentage(cc.attrs.value.percentApproved)}"/>
@@ -65,18 +66,23 @@
             class="is-invisible">#{messages['jsf.stats.Untranslated']}</span>
         </span>
       </s:fragment>
+
       <s:fragment rendered="#{total le 0}">
         <span class="progress-bar__item"
           title="#{messages['jsf.NoContent']}" style="width: 100%;">
           <span class="is-invisible">#{messages['jsf.NoContent']}</span>
         </span>
       </s:fragment>
-    </div>
-  </s:fragment>
+    </s:fragment>
 
-  <s:fragment rendered="#{cc.attrs.value == null}">
-    <h:outputText value="#{messages['jsf.NoContent']}"/>
-  </s:fragment>
+    <s:fragment rendered="#{cc.attrs.value == null}">
+      <span class="progress-bar__item"
+        title="#{messages['jsf.NoContent']}" style="width: 100%;">
+          <span class="is-invisible">#{messages['jsf.NoContent']}</span>
+        </span>
+    </s:fragment>
+  </div>
+
 
 </composite:implementation>
 </html>

@@ -51,7 +51,7 @@ public class FilterUtil {
         Collection<HLocale> filtered =
                 Collections2.filter(unfiltered, new Predicate<HLocale>() {
                     @Override
-                    public boolean apply(@Nullable HLocale input) {
+                    public boolean apply(HLocale input) {
                         return StringUtils.startsWithIgnoreCase(input
                                 .getLocaleId().getId(), query)
                                 || StringUtils.containsIgnoreCase(
@@ -75,7 +75,7 @@ public class FilterUtil {
         Collection<HPerson> filtered =
                 Collections2.filter(personList, new Predicate<HPerson>() {
                     @Override
-                    public boolean apply(@Nullable HPerson input) {
+                    public boolean apply(HPerson input) {
                         return !allPersonList.contains(input);
                     }
                 });
@@ -91,7 +91,7 @@ public class FilterUtil {
         Collection<HPerson> filtered =
                 Collections2.filter(unfiltered, new Predicate<HPerson>() {
                     @Override
-                    public boolean apply(@Nullable HPerson input) {
+                    public boolean apply(HPerson input) {
                         return StringUtils.containsIgnoreCase(input.getName(),
                                 query);
                     }
@@ -109,8 +109,7 @@ public class FilterUtil {
                 Collections2.filter(unfiltered,
                         new Predicate<HIterationGroup>() {
                             @Override
-                            public boolean
-                                    apply(@Nullable HIterationGroup input) {
+                            public boolean apply(HIterationGroup input) {
                                 return StringUtils.containsIgnoreCase(
                                         input.getName(), query)
                                         || StringUtils.containsIgnoreCase(
@@ -129,7 +128,7 @@ public class FilterUtil {
         Collection<HDocument> filtered =
                 Collections2.filter(unfiltered, new Predicate<HDocument>() {
                     @Override
-                    public boolean apply(@Nullable HDocument input) {
+                    public boolean apply(HDocument input) {
                         return StringUtils.containsIgnoreCase(input.getName(),
                                 query)
                                 || StringUtils.containsIgnoreCase(
@@ -149,8 +148,7 @@ public class FilterUtil {
                 Collections2.filter(unfiltered,
                         new Predicate<HProjectIteration>() {
                             @Override
-                            public boolean apply(
-                                    @Nullable HProjectIteration input) {
+                            public boolean apply(HProjectIteration input) {
                                 HProject project = input.getProject();
                                 return StringUtils.containsIgnoreCase(
                                         project.getName(), query);
@@ -169,8 +167,7 @@ public class FilterUtil {
                 Collections2.filter(unfiltered,
                         new Predicate<HProjectIteration>() {
                             @Override
-                            public boolean apply(
-                                    @Nullable HProjectIteration input) {
+                            public boolean apply(HProjectIteration input) {
                                 input.getSlug();
                                 return StringUtils.containsIgnoreCase(
                                         input.getSlug(), query);

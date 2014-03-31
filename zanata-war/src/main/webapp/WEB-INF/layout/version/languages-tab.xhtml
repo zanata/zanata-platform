@@ -343,7 +343,7 @@
                         value="#{request.contextPath}/rest/file/translation/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/#{versionHomeAction.selectedLocale.localeId}/po">
                         <f:param name="docId" value="#{document.docId}"/>
                         <h:outputFormat
-                          value="#{messages['jsf.iteration.files.DownloadForTranslation']}">
+                          value="#{messages['jsf.iteration.files.DownloadTranslated']}">
                           <f:param
                             value="#{messages['jsf.iteration.files.dotpo']}"/>
                         </h:outputFormat>
@@ -359,7 +359,7 @@
                         title="#{messages['jsf.iteration.files.dotofflinepo.description']} #{messages['jsf.iteration.files.dotofflinepo.purpose']}">
                         <f:param name="docId" value="#{document.docId}"/>
                         <h:outputFormat
-                          value="#{messages['jsf.iteration.files.DownloadForTranslation']}">
+                          value="#{messages['jsf.iteration.files.DownloadTranslated']}">
                           <f:param
                             value="#{messages['jsf.iteration.files.dotofflinepo']}"/>
                         </h:outputFormat>
@@ -374,7 +374,7 @@
                         value="#{request.contextPath}/rest/file/translation/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/#{versionHomeAction.selectedLocale.localeId}/baked">
                         <f:param name="docId" value="#{document.docId}"/>
                         <h:outputFormat
-                          value="#{messages['jsf.iteration.files.DownloadForTranslation']}">
+                          value="#{messages['jsf.iteration.files.DownloadTranslated']}">
                           <f:param
                             value="#{versionHomeAction.extensionOf(document.path, document.name)}"/>
                         </h:outputFormat>

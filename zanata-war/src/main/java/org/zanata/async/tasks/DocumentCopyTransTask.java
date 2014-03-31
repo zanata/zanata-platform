@@ -43,7 +43,7 @@ public class DocumentCopyTransTask extends CopyTransTask {
 
     public DocumentCopyTransTask(HDocument document,
             HCopyTransOptions copyTransOptions) {
-        super(copyTransOptions, "DocumentCopyTransTask: "+document.getDocId());
+        super(copyTransOptions, "DocumentCopyTransTask: " + document.getDocId());
         this.document = document;
     }
 
@@ -53,8 +53,8 @@ public class DocumentCopyTransTask extends CopyTransTask {
                 (LocaleService) Component.getInstance(LocaleServiceImpl.class);
         List<HLocale> localeList =
                 localeService.getSupportedLanguageByProjectIteration(document
-                    .getProjectIteration().getProject().getSlug(), document
-                    .getProjectIteration().getSlug());
+                        .getProjectIteration().getProject().getSlug(), document
+                        .getProjectIteration().getSlug());
 
         return localeList.size();
     }

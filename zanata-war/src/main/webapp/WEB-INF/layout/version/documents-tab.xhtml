@@ -12,7 +12,7 @@
 <div class="panels__panel__header panel__header">
   <div class="panel__header__actions">
     <zanata:sortlist id="documents-document_sorting"
-      sortAction="#{versionHomeAction.sortDocumentList()}"
+      sortAction="#{versionHomeAction.sortSourceDocumentList()}"
       oncomplete="refreshTooltip('#{rich:clientId('documents-document_form')}')"
       render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
       sortingList="#{versionHomeAction.sourceDocumentSortingList}"/>

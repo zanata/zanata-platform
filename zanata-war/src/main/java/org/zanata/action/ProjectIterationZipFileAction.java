@@ -15,6 +15,7 @@ import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.AsyncTaskManagerService;
 
 @Name("projectIterationZipFileAction")
@@ -29,11 +30,19 @@ public class ProjectIterationZipFileAction implements Serializable {
     @Getter
     private AsyncTaskHandle<String> zipFilePrepHandle;
 
+    @In
+    private ZanataIdentity identity;
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+
     @Begin(join = true)
-    @Restrict("#{s:hasPermission(projectIterationFilesAction.projectIteration, 'download-all')}")
-    public
-            void prepareIterationZipFile(boolean isPoProject,
-                    String projectSlug, String versionSlug, String localeId) {
+    public void prepareIterationZipFile(boolean isPoProject,
+            String projectSlug, String versionSlug, String localeId) {
+
+        identity.checkPermission("download-all",
+                projectIterationDAO.getBySlug(projectSlug, versionSlug));
+
         if (zipFilePrepHandle != null && !zipFilePrepHandle.isDone()) {
             // Cancel any other processes for this conversation
             zipFilePrepHandle.forceCancel();

@@ -262,7 +262,7 @@ public class ProjectHome extends SlugHome<HProject> {
             return null;
         }
 
-        if (getInstance().getDefaultProjectType().equals(null)) {
+        if (getInstance().getDefaultProjectType() == null) {
             FacesMessages.instance().add(StatusMessage.Severity.ERROR,
                     "Project type not selected");
             return null;

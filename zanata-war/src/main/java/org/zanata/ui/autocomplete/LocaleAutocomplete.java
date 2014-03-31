@@ -36,7 +36,7 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
         Collection<HLocale> filtered =
                 Collections2.filter(localeList, new Predicate<HLocale>() {
                     @Override
-                    public boolean apply(@Nullable HLocale input) {
+                    public boolean apply(HLocale input) {
                         return FilterUtil.isIncludeLocale(getLocales(), input,
                                 getQuery());
                     }
