@@ -139,8 +139,17 @@ public class ProjectHome extends SlugHome<HProject> {
                 }
             };
 
+    @Getter
+    @Setter
+    private String selectedProjectType;
+
     public void createNew() {
         getInstance().setDefaultProjectType(ProjectType.File);
+    }
+
+    public void updateSelectedProjectType(ValueChangeEvent e) {
+        selectedProjectType = (String) e.getNewValue();
+        updateProjectType();
     }
 
     public void setSelectedProjectType(String selectedProjectType) {
@@ -253,6 +262,16 @@ public class ProjectHome extends SlugHome<HProject> {
         return slugEntityServiceImpl.isSlugAvailable(slug, HProject.class);
     }
 
+    private void updateProjectType() {
+        if (!StringUtils.isEmpty(selectedProjectType)
+                && !selectedProjectType.equals("null")) {
+            ProjectType projectType = ProjectType.valueOf(selectedProjectType);
+            getInstance().setDefaultProjectType(projectType);
+        } else {
+            getInstance().setDefaultProjectType(null);
+        }
+    }
+
     @Override
     @Transactional
     public String persist() {
@@ -262,11 +281,13 @@ public class ProjectHome extends SlugHome<HProject> {
             return null;
         }
 
-        if (getInstance().getDefaultProjectType() == null) {
+        if (StringUtils.isEmpty(selectedProjectType)
+                || selectedProjectType.equals("null")) {
             FacesMessages.instance().add(StatusMessage.Severity.ERROR,
                     "Project type not selected");
             return null;
         }
+        updateProjectType();
 
         if (authenticatedAccount != null) {
             getInstance().addMaintainer(authenticatedAccount.getPerson());

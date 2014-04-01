@@ -4,18 +4,21 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:ui="http://java.sun.com/jsf/facelets">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:rich="http://richfaces.org/rich">
 
   <script>
     function onProjectTypeChanged(radioForm) {
       var id = jQuery(radioForm).children(".form__radio__input").attr("id");
       var selectedProjectType = id.substring('project-type-'.length, id.length);
-      bindProjectTypeValue(selectedProjectType);
+      jQuery(getSelectedProjectTypeId()).val(selectedProjectType);
     }
+
+    function getSelectedProjectTypeId() {
+      return "[id='#{rich:clientId('selectedProjectType')}']";
+    }
+
   </script>
-  <a4j:jsFunction name="bindProjectTypeValue" limitRender="true">
-    <a4j:param name="val" assignTo="#{projectHome.selectedProjectType}"/>
-  </a4j:jsFunction>
 
   <div class="g--tight l--push-top-1">
     <div class="g__item w--1-2">
@@ -75,6 +78,11 @@
     <i class="i i--help"></i>
   </a>
   </p>
+
+  <h:inputHidden id="selectedProjectType"
+    value="#{projectHome.selectedProjectType}"
+    valueChangeListener="#{projectHome.updateSelectedProjectType}"/>
+
   <ul class="list--slat l--push-bottom-1" id="project-types">
     <ui:repeat value="#{projectHome.projectTypeList}" var="projectType">
       <li>
