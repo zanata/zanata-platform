@@ -108,18 +108,4 @@ public class LeakyBucketTest {
         assertThat(bucket.tryAcquire(), Matchers.is(true));
         assertThat(bucket.tryAcquire(), Matchers.is(true));
     }
-
-    @Test
-    public void acquireNotEnoughPermitsWillBlock() {
-        LeakyBucket bucket = new LeakyBucket(1, 30, TimeUnit.MILLISECONDS);
-
-        Stopwatch stopwatch = new Stopwatch();
-        bucket.acquire(); // should return immediately
-
-        stopwatch.start();
-        bucket.acquire(); // will block
-        stopwatch.stop();
-
-        assertThat(stopwatch.elapsedMillis(), Matchers.greaterThanOrEqualTo(30L));
-    }
 }

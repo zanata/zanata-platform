@@ -73,31 +73,6 @@ public class LeakyBucket {
         }
     }
 
-    /**
-     * Acquire 1 permit. If there is not enough permit, will block the caller.
-     */
-    public void acquire() {
-        acquire(1);
-    }
-
-    /**
-     * Acquire asking permits. If there is not enough permits, will block the
-     * caller.
-     *
-     * @param permits
-     *            number of permits
-     */
-    public void acquire(long permits) {
-        while (!tryAcquire(permits)) {
-            try {
-                Thread.sleep(waitSleepTime);
-            }
-            catch (InterruptedException e) {
-                throw Throwables.propagate(e);
-            }
-        }
-    }
-
     private synchronized void onDemandRefill() {
         if (permit == capacity) {
             return;
