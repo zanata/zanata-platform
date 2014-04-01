@@ -122,6 +122,10 @@ public class ProjectHome extends SlugHome<HProject> {
             .newHashMap();
 
     @Getter
+    @Setter
+    private String selectedProjectType;
+
+    @Getter
     private ProjectMaintainersAutocomplete maintainerAutocomplete =
             new ProjectMaintainersAutocomplete();
 
@@ -139,12 +143,9 @@ public class ProjectHome extends SlugHome<HProject> {
                 }
             };
 
-    @Getter
-    @Setter
-    private String selectedProjectType;
-
     public void createNew() {
         getInstance().setDefaultProjectType(ProjectType.File);
+        selectedProjectType = getInstance().getDefaultProjectType().name();
     }
 
     public void updateSelectedProjectType(ValueChangeEvent e) {
