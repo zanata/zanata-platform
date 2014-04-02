@@ -14,6 +14,12 @@
 <script type="text/javascript">
   jQuery(function(){
     onTabClick(jQuery('#activity'));
+
+    crossroads.addRoute(':pre*:/dashboard/{section}/:subSection:', function(pre, section, subSection) {
+      onTabClick(jQuery('#' + section));
+    });
+
+    updateStateFromUrl();
   })
 </script>
 
