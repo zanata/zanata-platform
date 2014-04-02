@@ -61,10 +61,11 @@
         </configuration>
       </plugin>
 
+      <!-- Mandatory plugins for using Spock -->
       <plugin>
-        <groupId>org.codehaus.groovy.maven</groupId>
+        <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.5</version>
         <executions>
           <execution>
             <id>setup</id>
@@ -73,7 +74,7 @@
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>project.properties["version-as-java-package"] = "v" + project.version.replaceAll("[.\\-]", "_")</source>
+              <source>project.properties["version-as-java-package"] = "v" + project.version.replaceAll("[.-]", "_")</source>
             </configuration>
           </execution>
         </executions>
@@ -85,6 +86,7 @@
           <usedDependencies combine.children="append">
             <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
             <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <usedDependency>org.spockframework:spock-core</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -225,6 +227,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.enunciate</groupId>
       <artifactId>enunciate-core-annotations</artifactId>
     </dependency>
@@ -295,7 +301,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
@@ -327,12 +337,6 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>

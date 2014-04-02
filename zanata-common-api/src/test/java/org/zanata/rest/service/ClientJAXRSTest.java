@@ -20,8 +20,9 @@
  */
 package org.zanata.rest.service;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.zanata.rest.client.IAccountResource;
 import org.zanata.rest.client.IAsynchronousProcessResource;
 import org.zanata.rest.client.ICopyTransResource;
@@ -37,11 +38,23 @@ import org.zanata.rest.client.ITranslationMemoryResource;
 import org.zanata.rest.client.IVersionResource;
 import org.zanata.rest.enunciate.AbstractJAXRSTest;
 
-@Test(groups = { "unit-tests" })
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+@RunWith(Parameterized.class)
 public class ClientJAXRSTest extends AbstractJAXRSTest {
-    @DataProvider(name = "clientInterfaces", parallel = true)
-    private Object[][] clientInterfaces() {
-        return new Object[][] { { IAccountResource.class },
+
+    private Class clientInterface;
+
+    public ClientJAXRSTest(Class clientInterface) {
+
+        this.clientInterface = clientInterface;
+    }
+
+    @Parameterized.Parameters
+    public static Collection clientInterfaces() {
+        return Arrays.asList(new Object[][] { { IAccountResource.class },
                 { IAsynchronousProcessResource.class },
                 { ICopyTransResource.class }, { IFileResource.class },
                 { IGlossaryResource.class },
@@ -50,11 +63,11 @@ public class ClientJAXRSTest extends AbstractJAXRSTest {
                 { ISourceDocResource.class }, { IStatisticsResource.class },
                 { ITranslatedDocResource.class },
                 { ITranslationMemoryResource.class },
-                { IVersionResource.class } };
+                { IVersionResource.class } });
     }
 
-    @Test(dataProvider = "clientInterfaces")
-    public void testAnnotations(Class clientInterface) throws Exception {
+    @Test
+    public void testAnnotations() throws Exception {
         checkAnnotations(clientInterface, false);
     }
 
