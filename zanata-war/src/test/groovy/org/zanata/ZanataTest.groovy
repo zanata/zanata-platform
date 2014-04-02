@@ -42,7 +42,8 @@ class ZanataTest {
             </html>
         """
 
-        def concordionOutputDir = System.getProperty("concordion.output.dir", "/tmp/concordion")
+        def concordionOutputDir = System.getProperty("concordion.output.dir",
+                System.getProperty("java.io.tmpdir")+"/concordion")
 
         def indexFile = new File(concordionOutputDir, "index.html")
 
