@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.client.commands.DummyResponse;
@@ -34,7 +35,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class PublicanPushCommandTest {
-    @Mock
+    @Mock(answer = Answers.RETURNS_MOCKS)
     ISourceDocResource mockSourceDocResource;
 
     @Mock
