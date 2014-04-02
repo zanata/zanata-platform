@@ -20,7 +20,7 @@
  */
 package org.zanata.rest.dto.stats;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -31,7 +31,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 
-@Test(groups = { "unit-tests" })
 public class TranslationStatisticsTest {
 
     TranslationStatistics stats;

@@ -183,7 +183,11 @@ public class ProjectIteration implements Serializable,
         if (status != other.status) {
             return false;
         }
-        if (!projectType.equals(other.projectType)) {
+        if (projectType == null) {
+            if (other.projectType != null) {
+                return false;
+            }
+        } else if (!projectType.equals(other.projectType)) {
             return false;
         }
         return true;

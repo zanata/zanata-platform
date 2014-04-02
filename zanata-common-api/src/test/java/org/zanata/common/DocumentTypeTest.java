@@ -1,38 +1,43 @@
 package org.zanata.common;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.zanata.common.DocumentType.*;
 
 import java.util.List;
 
-import org.testng.annotations.Test;
-
-@Test(groups = { "unit-tests" })
 public class DocumentTypeTest {
 
+    @Test
     public void typeForExtantType() {
         assertThat(typeFor("txt"), is(PLAIN_TEXT));
     }
 
-    @Test(enabled = true)
+    @Test
     public void typeForNonExistentTypeCurrentBehaviour() {
         assertThat(typeFor("unknown"), is(nullValue()));
     }
 
-    @Test(enabled = false, expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
+    @Ignore
     public void typeForNonExistentTypeBetterBehaviour() {
         typeFor("unknown");
     }
 
+    @Test
     public void typeForKnownTypeAfterDot() {
         assertThat(typeFor(".txt"), is(nullValue()));
     }
 
+    @Test
     public void typeForKnownTypeWithPrefix() {
         assertThat(typeFor("foo.txt"), is(nullValue()));
     }
 
+    @Test
     public void getAllExtensionsNotEmpty() {
         List<String> allExtensions = getAllExtensions();
         assertThat(allExtensions, not(empty()));
@@ -44,24 +49,25 @@ public class DocumentTypeTest {
                         "vtt"));
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void getAllExtensionsReadOnlyCannotAdd() {
         List<String> allExtensions = getAllExtensions();
         allExtensions.add("newExtension");
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void getAllExtensionsReadOnlyCannotClear() {
         List<String> allExtensions = getAllExtensions();
         allExtensions.clear();
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void getAllExtensionsReadOnlyCannotRemove() {
         List<String> allExtensions = getAllExtensions();
         allExtensions.remove(0);
     }
 
+    @Test
     public void getExtensionsHasCorrectValues() {
         // given: HTML has extensions "html" and "htm"
         assertThat(HTML.getExtensions().contains("html"), is(true));

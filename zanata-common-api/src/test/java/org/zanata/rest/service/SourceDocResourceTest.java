@@ -20,21 +20,20 @@
  */
 package org.zanata.rest.service;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.zanata.rest.service.SourceDocResource.*;
 
-@Test(groups = { "unit-tests" })
 public class SourceDocResourceTest {
 
     @Test
     public void testRegexes() {
-        assertThat("", "file".matches(RESOURCE_NAME_REGEX));
-        assertThat("", "test/file".matches(RESOURCE_NAME_REGEX));
-        assertThat("", !"/test/".matches(RESOURCE_NAME_REGEX));
-        assertThat("", !"/test/file".matches(RESOURCE_NAME_REGEX));
-        assertThat("", !":".matches(RESOURCE_NAME_REGEX));
+        assertTrue("file".matches(RESOURCE_NAME_REGEX));
+        assertTrue("test/file".matches(RESOURCE_NAME_REGEX));
+        assertTrue(!"/test/".matches(RESOURCE_NAME_REGEX));
+        assertTrue(!"/test/file".matches(RESOURCE_NAME_REGEX));
+        assertTrue(!":".matches(RESOURCE_NAME_REGEX));
     }
 
 }

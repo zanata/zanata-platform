@@ -1,7 +1,5 @@
 package org.zanata.rest.dto.resource;
 
-import static org.testng.Assert.assertEquals;
-
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
@@ -10,8 +8,10 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.rest.dto.DTOUtil;
+
+import static org.junit.Assert.assertEquals;
 
 public class TextFlowTargetTest {
     ObjectMapper om = new ObjectMapper();
