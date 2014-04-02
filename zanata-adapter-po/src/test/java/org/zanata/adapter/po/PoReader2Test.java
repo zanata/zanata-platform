@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +18,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.tennera.jgettext.Message;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -27,7 +30,6 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Test(groups = { "unit-tests" })
 public class PoReader2Test {
     private static final Logger log = LoggerFactory
             .getLogger(PoReader2Test.class);
@@ -100,19 +102,22 @@ public class PoReader2Test {
         getTemplate();
     }
 
-    @Test(expectedExceptions = { RuntimeException.class },
-            expectedExceptionsMessageRegExp = ".*unsupported charset.*")
+    @Test
     public void extractInvalidTemplate() throws IOException, JAXBException {
         InputSource inputSource =
                 new InputSource(new File(testDir, "pot/invalid.pot").toURI()
                         .toString());
         inputSource.setEncoding("utf8");
 
-        poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
+        try {
+            poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches(".*unsupported charset.*"));
+        }
     }
 
-    @Test(expectedExceptions = { RuntimeException.class },
-            expectedExceptionsMessageRegExp = ".*unsupported charset.*")
+    @Test
     public void extractInvalidTarget() throws IOException, JAXBException {
         String locale = "ja-JP";
         InputSource inputSource =
@@ -121,9 +126,15 @@ public class PoReader2Test {
         inputSource.setEncoding("utf8");
         log.debug("extracting target: " + locale);
 
-        poReader.extractTarget(inputSource);
+        try {
+            poReader.extractTarget(inputSource);
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches(".*unsupported charset.*"));
+        }
     }
 
+    @Test
     public void testContentStateApprovedSingle() {
         Message m = new Message();
         m.setMsgstr("s");
@@ -131,6 +142,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.Translated));
     }
 
+    @Test
     public void testContentStateApprovedPlural1() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -139,6 +151,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.Translated));
     }
 
+    @Test
     public void testContentStateApprovedPlural2() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -148,6 +161,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.Translated));
     }
 
+    @Test
     public void testContentStateNewSingle1() {
         Message m = new Message();
         m.setMsgstr("");
@@ -155,12 +169,14 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.New));
     }
 
+    @Test
     public void testContentStateNewSingle2() {
         Message m = new Message();
         ContentState actual1 = PoReader2.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
+    @Test
     public void testContentStateNewPlural1() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -169,6 +185,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.New));
     }
 
+    @Test
     public void testContentStateNewPlural2() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -178,6 +195,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.New));
     }
 
+    @Test
     public void testContentStateNewPlural3() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -185,6 +203,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.New));
     }
 
+    @Test
     public void testContentStateNewPlural4() {
         Message m = new Message();
         m.setMsgidPlural("plural");
@@ -195,6 +214,7 @@ public class PoReader2Test {
     }
 
     // FIXME test where plurals < nplurals
+    // @Test
     // public void testContentStateNewPluralTooFew()
     // {
     // // TODO set nplurals=2
@@ -205,6 +225,7 @@ public class PoReader2Test {
     // assertThat(actual1, is(ContentState.New));
     // }
 
+    @Test
     public void testContentStateNeedReviewSingle() {
         Message m = new Message();
         m.setFuzzy(true);
@@ -213,6 +234,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
+    @Test
     public void testContentStateNeedReviewPlural1() {
         Message m = new Message();
         m.setFuzzy(true);
@@ -222,6 +244,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
+    @Test
     public void testContentStateNeedReviewPlural2() {
         Message m = new Message();
         m.setFuzzy(true);
@@ -232,6 +255,7 @@ public class PoReader2Test {
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
+    @Test
     public void testContentStateNeedReviewPlural3() {
         Message m = new Message();
         m.setFuzzy(true);

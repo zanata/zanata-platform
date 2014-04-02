@@ -5,14 +5,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
@@ -20,7 +22,6 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-@Test(groups = { "unit-tests" })
 public class XliffReaderTest {
     private static final Logger log = LoggerFactory
             .getLogger(XliffReaderTest.class);
@@ -29,7 +30,7 @@ public class XliffReaderTest {
     private static final String DOC_NAME = "StringResource_en_US.xml";
     private XliffReader reader;
 
-    @BeforeTest
+    @Before
     public void resetReader() {
         reader = new XliffReader();
     }
@@ -118,57 +119,66 @@ public class XliffReaderTest {
                 not(equalTo(asList("Translation Unit 5 (4 < 5 & 4 > 3) "))));
     }
 
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = ".*br is not legal.*")
+    @Test
     public void invalidSourceContentElementTest() throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+        try {
+            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                 ValidationType.CONTENT.toString());
-        assert false;
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches(".*br is not legal.*"));
+        }
     }
 
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF file format")
+    @Test
     public void invalidSourceContentElementTest2() throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+        try {
+            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                 ValidationType.XSD.toString());
-        assert false;
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches("Invalid XLIFF file format"));
+        }
     }
 
-    @Test(
-            expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = ".*does not support elements.*: g.*")
+    @Test
     public
             void unsupportedSourceContentElementTest()
                     throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+        try {
+            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                 ValidationType.CONTENT.toString());
-        assert false;
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches(".*does not support elements.*: g.*"));
+        }
     }
 
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF file format")
+    @Test
     public void unsupportedSourceContentElementTest2()
             throws FileNotFoundException {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+        try {
+            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                 ValidationType.XSD.toString());
-        assert false;
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches("Invalid XLIFF file format"));
+        }
     }
 
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Invalid XLIFF: "
-                    + "anIllegalTag is not legal inside target")
+    @Test
     public void invalidTargetContentElementTest() throws FileNotFoundException {
         // expect RuntimeException with tu:transunit1 - target
         File fileTarget =
@@ -177,8 +187,13 @@ public class XliffReaderTest {
                 reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                         ValidationType.CONTENT.toString());
         assert resource != null;
-        reader.extractTarget(fileTarget);
-        assert false;
+        try {
+            reader.extractTarget(fileTarget);
+            fail();
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().matches("Invalid XLIFF: "
+                + "anIllegalTag is not legal inside target"));
+        }
     }
 
     private Resource getTemplateDoc() throws FileNotFoundException {

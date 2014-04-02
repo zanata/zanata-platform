@@ -15,10 +15,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
@@ -39,7 +39,7 @@ public class PropReaderTest {
     static final String ISO_8859_1 = "ISO-8859-1";
     String locale = "fr";
 
-    @BeforeMethod
+    @Before
     public void resetReader() {
         propReader =
                 new PropReader(ISO_8859_1, new LocaleId(locale),
@@ -161,7 +161,7 @@ public class PropReaderTest {
         // TODO also check comments?
     }
 
-    @Test(expectedExceptions = InvalidPropertiesFormatException.class)
+    @Test(expected = InvalidPropertiesFormatException.class)
     public void extractTemplateNonTranslatableMismatchException()
             throws IOException, InvalidPropertiesFormatException {
         Resource srcDoc = new Resource("test");

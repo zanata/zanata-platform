@@ -28,7 +28,7 @@ import java.io.Writer;
 import java.security.MessageDigest;
 
 import org.apache.commons.codec.binary.Hex;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.io.DigestWriter;
 
 import com.google.common.base.Charsets;
