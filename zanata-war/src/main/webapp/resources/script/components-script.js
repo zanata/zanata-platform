@@ -27,6 +27,7 @@ function updateStateFromUrl() {
   crossroads.parse(window.location.pathname);
 }
 
+// TODO Deprecated. See method below
 function updateUrl(urlPrefix, suffixToUpdate) {
   var newUrl = window.location.pathname;
   newUrl = newUrl.substring(0, newUrl.indexOf(urlPrefix) + urlPrefix.length)
@@ -34,6 +35,15 @@ function updateUrl(urlPrefix, suffixToUpdate) {
   var status = {path: newUrl}
   window.history.pushState(status, document.title, newUrl)
   updateStateFromUrl();
+}
+
+function changeBrowserUrl(url, refresh) {
+  refresh = refresh || false
+
+  var status = {path: url}
+  window.history.pushState(status, document.title, url)
+  if(refresh)
+    updateStateFromUrl();
 }
 
 jQuery(function() {

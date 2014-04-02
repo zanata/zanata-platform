@@ -13,9 +13,9 @@
 
 <script type="text/javascript">
   jQuery(function(){
-    onTabClick(jQuery('#activity'));
 
-    crossroads.addRoute(':pre*:/dashboard/{section}/:subSection:', function(pre, section, subSection) {
+    crossroads.addRoute(':pre*:/dashboard/:section:/:subSection:', function(pre, section, subSection) {
+      section = section || 'activity'
       onTabClick(jQuery('#' + section));
     });
 
@@ -85,10 +85,10 @@
           <li>
             <a id="activity"
               href="#{request.contextPath}/dashboard/activity"
-              class="js-tab is-active" onclick="return false;">
-            <i class="i i--clock"></i>
-            <span
-              class="is-hidden--s i__text--right">Activity</span>
+              class="js-tab"
+              onclick="changeBrowserUrl(this.href); return false;">
+                <i class="i i--clock"></i>
+                <span class="is-hidden--s i__text--right">Activity</span>
             </a>
           </li>
           <li><a href="/dashboard/projects"><i class="i i--project"></i><span
@@ -101,7 +101,7 @@
             <a href="#{request.contextPath}/dashboard/settings"
               id="settings" class="js-tab"
               title="Account Settings"
-              onclick="return false;">
+              onclick="changeBrowserUrl(this.href); return false;">
                 <span
                 class="is-hidden--s i__text--left">Settings</span><i class="i i--settings"
                 aria-hidden="true"></i>
