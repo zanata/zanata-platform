@@ -283,7 +283,7 @@
           </execution>
         </executions>
         <configuration>
-          <failOnWarning>true</failOnWarning>
+          <failOnWarning>false</failOnWarning>
           <outputXML>true</outputXML>
           <usedDependencies combine.children="append">
             <!-- runtime-only dependencies which maven-dependency-analyzer misses  -->
