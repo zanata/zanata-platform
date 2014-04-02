@@ -1,13 +1,12 @@
 package org.zanata.util;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.zanata.util.OkapiUtil.countWords;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-@Test(groups = { "unit-tests" })
 public class OkapiUtilTest {
     // @formatter:off
     String[] strings = {
@@ -49,7 +48,7 @@ public class OkapiUtilTest {
         for (String s : strings) {
             long expected = count[i++];
             long n = countWords(s, "en-US");
-            Assert.assertEquals(n, expected);
+            Assert.assertEquals(expected, n);
             // if (n == 0)
             // Assert.fail(s + ":" + n);
             // else

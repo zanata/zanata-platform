@@ -21,8 +21,7 @@
 package org.zanata.model;
 
 import lombok.NoArgsConstructor;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;

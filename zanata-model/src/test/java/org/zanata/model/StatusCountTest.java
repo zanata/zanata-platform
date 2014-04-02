@@ -20,7 +20,7 @@
  */
 package org.zanata.model;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 
 import static org.hamcrest.MatcherAssert.assertThat;
