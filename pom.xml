@@ -608,6 +608,42 @@ package.
           <artifactId>maven-enunciate-plugin</artifactId>
           <version>${enunciate.version}</version>
         </plugin>
+        <!-- Mandatory plugins for using Spock -->
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <providerSelection>1.8</providerSelection>
+          </configuration>
+          <executions>
+            <execution>
+              <id>spock</id>
+              <goals>
+                <goal>compile</goal>
+                <goal>testCompile</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.gmaven.runtime</groupId>
+              <artifactId>gmaven-runtime-1.8</artifactId>
+              <version>1.5</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.codehaus.groovy</groupId>
+                  <artifactId>groovy-all</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-all</artifactId>
+              <version>1.8.9</version>
+            </dependency>
+          </dependencies>
+        </plugin>
       </plugins>
     </pluginManagement>
     <extensions>
@@ -625,6 +661,7 @@ package.
 
   <profiles>
     <profile>
+      <id>jdk18</id>
       <activation>
         <jdk>[1.8,)</jdk>
       </activation>
@@ -816,9 +853,22 @@ package.
         <version>${slf4j.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-core</artifactId>
+        <version>0.7-groovy-1.8</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
         <version>6.8</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
@@ -1119,6 +1169,19 @@ package.
             <artifactId>jersey-server</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <!-- Optional dependencies for using Spock -->
+      <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>2.2.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency> <!-- enables mocking of classes without default constructor (together with CGLIB) -->
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>1.2</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
