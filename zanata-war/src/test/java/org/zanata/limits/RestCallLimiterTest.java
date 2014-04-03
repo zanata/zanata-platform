@@ -50,7 +50,7 @@ public class RestCallLimiterTest {
     private Logger testeeLogger = LogManager.getLogger(RestCallLimiter.class);
 
     @Mock
-    private Runnable runntable;
+    private Runnable runnable;
 
     @BeforeClass
     public void beforeClass() {
@@ -62,22 +62,18 @@ public class RestCallLimiterTest {
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
-        limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
-                        maxConcurrent, maxActive));
+        limiter = new RestCallLimiter(maxConcurrent, maxActive);
         // the first time this method is executed it seems to cause 10-30ms
         // overhead by itself (moving things to heap and register classes maybe)
         // This will reduce that overhead for actual tests
-        limiter.tryAcquireAndRun(runntable);
+        limiter.tryAcquireAndRun(runnable);
     }
 
     @Test
     public void canOnlyHaveMaximumNumberOfConcurrentRequest()
             throws InterruptedException, ExecutionException {
         // we don't limit active requests
-        limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(
-                        maxConcurrent, maxConcurrent));
+        limiter = new RestCallLimiter(maxConcurrent, maxConcurrent);
 
         // to ensure threads are actually running concurrently
         runnableWillTakeTime(20);
@@ -85,7 +81,7 @@ public class RestCallLimiterTest {
         Callable<Boolean> task = new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return limiter.tryAcquireAndRun(runntable);
+                return limiter.tryAcquireAndRun(runnable);
             }
         };
         int numOfThreads = maxConcurrent + 1;
@@ -162,22 +158,21 @@ public class RestCallLimiterTest {
                         TimeUnit.MILLISECONDS);
                 return null;
             }
-        }).when(runntable).run();
+        }).when(runnable).run();
     }
 
     @Test
-    private void changeMaxConcurrentLimitWillTakeEffectImmediately()
+    public void changeMaxConcurrentLimitWillTakeEffectImmediately()
             throws ExecutionException, InterruptedException {
         runnableWillTakeTime(10);
 
         // we start off with only 1 concurrent permit
-        limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(1, 10));
+        limiter = new RestCallLimiter(1, 10);
         Callable<Boolean> task = new Callable<Boolean>() {
 
             @Override
             public Boolean call() throws Exception {
-                return limiter.tryAcquireAndRun(runntable);
+                return limiter.tryAcquireAndRun(runnable);
             }
         };
 
@@ -188,7 +183,7 @@ public class RestCallLimiterTest {
         assertThat(limiter.availableConcurrentPermit(), Matchers.is(1));
 
         // change permit to match number of threads
-        limiter.changeConcurrentLimit(1, numOfThreads);
+        limiter.setMaxConcurrent(numOfThreads);
 
         List<Boolean> resultAfterChange =
                 submitConcurrentTasksAndGetResult(task, numOfThreads);
@@ -200,18 +195,17 @@ public class RestCallLimiterTest {
 
     @Test
     public void changeMaxActiveLimitWhenNoBlockedThreads() {
-        limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(3, 3));
-        limiter.tryAcquireAndRun(runntable);
+        limiter = new RestCallLimiter(3, 3);
+        limiter.tryAcquireAndRun(runnable);
 
-        limiter.changeActiveLimit(3, 2);
+        limiter.setMaxActive(2);
         // change won't happen until next request comes in
-        limiter.tryAcquireAndRun(runntable);
+        limiter.tryAcquireAndRun(runnable);
         assertThat(limiter.availableActivePermit(), Matchers.is(2));
 
-        limiter.changeActiveLimit(2, 1);
+        limiter.setMaxActive(1);
 
-        limiter.tryAcquireAndRun(runntable);
+        limiter.tryAcquireAndRun(runnable);
         assertThat(limiter.availableActivePermit(), Matchers.is(1));
     }
 
@@ -219,8 +213,7 @@ public class RestCallLimiterTest {
     public void changeMaxActiveLimitWhenHasBlockedThreads()
             throws InterruptedException {
         // Given: only 2 active requests allowed
-        limiter =
-                new RestCallLimiter(new RestCallLimiter.RateLimitConfig(10, 2));
+        limiter = new RestCallLimiter(10, 2);
 
         // When: below requests are fired simultaneously
         // 3 requests (each takes 20ms) and 1 request should block
@@ -237,7 +230,7 @@ public class RestCallLimiterTest {
             public Long call() throws Exception {
                 // to ensure it happens when there is a blocked request
                 Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS);
-                limiter.changeActiveLimit(2, 3);
+                limiter.setMaxActive(3);
                 return -10L;
             }
         };
@@ -278,10 +271,10 @@ public class RestCallLimiterTest {
     @Test
     public void willReleaseSemaphoreWhenThereIsException() throws IOException,
             ServletException {
-        doThrow(new RuntimeException("bad")).when(runntable).run();
+        doThrow(new RuntimeException("bad")).when(runnable).run();
 
         try {
-            limiter.tryAcquireAndRun(runntable);
+            limiter.tryAcquireAndRun(runnable);
         } catch (Exception e) {
             // I know
         }
@@ -294,12 +287,11 @@ public class RestCallLimiterTest {
     @Test
     public void zeroPermitMeansNoLimit() {
         limiter =
-                new RestCallLimiter(
-                        new RestCallLimiter.RateLimitConfig(0, 0));
+                new RestCallLimiter(0, 0);
 
-        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
-        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
-        assertThat(limiter.tryAcquireAndRun(runntable), Matchers.is(true));
+        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
+        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
+        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
     }
 
     /**
@@ -318,7 +310,7 @@ public class RestCallLimiterTest {
     private long tryAcquireAndMeasureTime() {
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.start();
-        limiter.tryAcquireAndRun(runntable);
+        limiter.tryAcquireAndRun(runnable);
         stopwatch.stop();
         long timeSpent = stopwatch.elapsedMillis();
         log.debug("real time try acquire and run task takes: {}", timeSpent);

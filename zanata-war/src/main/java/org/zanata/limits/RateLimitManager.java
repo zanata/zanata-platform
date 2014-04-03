@@ -42,9 +42,12 @@ public class RateLimitManager implements Introspectable {
     private final Cache<String, RestCallLimiter> activeCallers = CacheBuilder
             .newBuilder().maximumSize(100).build();
 
-    @Getter(AccessLevel.PACKAGE)
+    @Getter(AccessLevel.PROTECTED)
     @VisibleForTesting
-    private RestCallLimiter.RateLimitConfig limitConfig;
+    private int maxConcurrent;
+    @Getter(AccessLevel.PROTECTED)
+    @VisibleForTesting
+    private int maxActive;
 
     public static RateLimitManager getInstance() {
         return (RateLimitManager) Component
@@ -60,21 +63,29 @@ public class RateLimitManager implements Introspectable {
         ApplicationConfiguration appConfig =
                 (ApplicationConfiguration) Component
                         .getInstance("applicationConfiguration");
-        int maxConcurrent = appConfig.getMaxConcurrentRequestsPerApiKey();
-        int maxActive = appConfig.getMaxActiveRequestsPerApiKey();
-        limitConfig =
-                new RestCallLimiter.RateLimitConfig(maxConcurrent, maxActive);
+        maxConcurrent = appConfig.getMaxConcurrentRequestsPerApiKey();
+        maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }
 
     @Observer({ ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED })
     public void configurationChanged() {
-        RestCallLimiter.RateLimitConfig old = limitConfig;
+        int oldConcurrent = maxConcurrent;
+        int oldActive = maxActive;
+        boolean changed = false;
         readRateLimitState();
-        if (!Objects.equal(old, limitConfig)) {
-            log.info("application configuration changed. Old: {}, New: {}",
-                    old, limitConfig);
+        if (oldConcurrent != maxConcurrent) {
+            log.info("application configuration changed. Old concurrent: {}, New concurrent: {}",
+                oldConcurrent, maxConcurrent);
+            changed = true;
+        }
+        if (oldActive != maxActive) {
+            log.info("application configuration changed. Old active: {}, New active: {}",
+                oldActive, maxActive);
+            changed = true;
+        }
+        if (changed) {
             for (RestCallLimiter restCallLimiter : activeCallers.asMap().values()) {
-                restCallLimiter.changeConfig(limitConfig);
+                restCallLimiter.changeConfig(maxConcurrent, maxActive);
             }
         }
     }
@@ -116,29 +127,25 @@ public class RateLimitManager implements Introspectable {
 
     public RestCallLimiter getLimiter(String apiKey) {
         try {
-            return activeCallers.get(apiKey, new RestRateLimiterLoader(
-                getLimitConfig(), apiKey));
+            return activeCallers.get(apiKey, new RestRateLimiterLoader(apiKey));
         }
         catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static class RestRateLimiterLoader implements
+    private class RestRateLimiterLoader implements
         Callable<RestCallLimiter> {
-        private final RestCallLimiter.RateLimitConfig limitConfig;
         private final String apiKey;
 
-        public RestRateLimiterLoader(
-            RestCallLimiter.RateLimitConfig limitConfig, String apiKey) {
-            this.limitConfig = limitConfig;
+        public RestRateLimiterLoader(String apiKey) {
             this.apiKey = apiKey;
         }
 
         @Override
         public RestCallLimiter call() throws Exception {
             log.debug("creating rate limiter for api key: {}", apiKey);
-            return new RestCallLimiter(limitConfig);
+            return new RestCallLimiter(getMaxConcurrent(), getMaxActive());
         }
     }
 }

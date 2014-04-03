@@ -5,9 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -18,14 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 class RestCallLimiter {
     private volatile Semaphore maxConcurrentSemaphore;
     private volatile Semaphore maxActiveSemaphore;
-    private RateLimitConfig limitConfig;
-    private volatile LimitChange activeChange;
-    private volatile LimitChange concurrentChange;
+    private int maxConcurrent;
+    private int maxActive;
 
-    RestCallLimiter(RateLimitConfig limitConfig) {
-        this.limitConfig = limitConfig;
-        this.maxConcurrentSemaphore = makeSemaphore(limitConfig.maxConcurrent);
-        this.maxActiveSemaphore = makeSemaphore(limitConfig.maxActive);
+    RestCallLimiter(int maxConcurrent, int maxActive) {
+        this.maxConcurrent = maxConcurrent;
+        this.maxActive = maxActive;
+        this.maxConcurrentSemaphore = makeSemaphore(maxConcurrent);
+        this.maxActiveSemaphore = makeSemaphore(maxActive);
     }
 
     /**
@@ -36,7 +33,6 @@ class RestCallLimiter {
      *            task to perform after acquire
      */
     public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
-        applyConcurrentPermitChangeIfApplicable();
         // hang on to the semaphore, so that we can be certain of
         // releasing the same one we acquired
         final Semaphore concSem = maxConcurrentSemaphore;
@@ -60,7 +56,6 @@ class RestCallLimiter {
     }
 
     private boolean acquireActiveAndRatePermit(Runnable taskAfterAcquire) {
-        applyActivePermitChangeIfApplicable();
         log.debug("before acquire [active] semaphore:{}", maxActiveSemaphore);
         try {
             // hang on to the semaphore, so that we can be certain of
@@ -84,58 +79,30 @@ class RestCallLimiter {
         }
     }
 
-    private void applyConcurrentPermitChangeIfApplicable() {
-        if (concurrentChange != null) {
-            synchronized (this) {
-                if (concurrentChange != null) {
-                    log.debug(
-                            "change max [concurrent] semaphore with new permit ",
-                            concurrentChange.newLimit);
-                    maxConcurrentSemaphore =
-                            makeSemaphore(concurrentChange.newLimit);
-                    concurrentChange = null;
-                }
-            }
+    public synchronized void setMaxConcurrent(int maxConcurrent) {
+        if (maxConcurrent != this.maxConcurrent) {
+            log.debug(
+                "change max [concurrent] semaphore with new permit {}",
+                maxConcurrent);
+            maxConcurrentSemaphore =
+                makeSemaphore(maxConcurrent);
+            this.maxConcurrent = maxConcurrent;
         }
     }
 
-    private void applyActivePermitChangeIfApplicable() {
-        if (activeChange != null) {
-            synchronized (this) {
-                if (activeChange != null) {
-                    // since this block is synchronized, there won't be new
-                    // permit acquired from maxActiveSemaphore other than this
-                    // thread. It ought to be the last and only one entering in
-                    // this block. It will replace semaphore and old blocked
-                    // threads will release on old semaphore
-                    log.debug(
-                            "change max [active] semaphore with new permit {}",
-                            activeChange.newLimit);
-                    maxActiveSemaphore = makeSemaphore(activeChange.newLimit);
-                    activeChange = null;
-                }
-            }
+    public synchronized void setMaxActive(int maxActive) {
+        if (maxActive != this.maxActive) {
+            log.debug(
+                "change max [active] semaphore with new permit {}",
+                maxActive);
+            maxActiveSemaphore = makeSemaphore(maxActive);
+            this.maxActive = maxActive;
         }
     }
 
-    public void changeConfig(RateLimitConfig newLimitConfig) {
-        if (newLimitConfig.maxConcurrent != limitConfig.maxConcurrent) {
-            changeConcurrentLimit(limitConfig.maxConcurrent,
-                    newLimitConfig.maxConcurrent);
-        }
-        if (newLimitConfig.maxActive != limitConfig.maxActive) {
-            changeActiveLimit(limitConfig.maxActive, newLimitConfig.maxActive);
-        }
-        limitConfig = newLimitConfig;
-    }
-
-    protected synchronized void
-            changeConcurrentLimit(int oldLimit, int newLimit) {
-        this.concurrentChange = new LimitChange(oldLimit, newLimit);
-    }
-
-    protected synchronized void changeActiveLimit(int oldLimit, int newLimit) {
-        this.activeChange = new LimitChange(oldLimit, newLimit);
+    public synchronized void changeConfig(int maxConcurrent, int maxActive) {
+        setMaxConcurrent(maxConcurrent);
+        setMaxActive(maxActive);
     }
 
     public int availableConcurrentPermit() {
@@ -167,31 +134,21 @@ class RestCallLimiter {
                 .toString();
     }
 
-    @RequiredArgsConstructor
-    @EqualsAndHashCode
-    @ToString
-    public static class RateLimitConfig {
-        private final int maxConcurrent;
-        private final int maxActive;
-    }
-
-    @RequiredArgsConstructor
-    @ToString
-    private static class LimitChange {
-        private final int oldLimit;
-        private final int newLimit;
-    }
-
     /**
      * Overrides tryAcquire method to return true all the time.
      */
     private static class NoLimitSemaphore extends Semaphore {
         private static final long serialVersionUID = 1L;
         private static final NoLimitSemaphore INSTANCE =
-                new NoLimitSemaphore(0);
+                new NoLimitSemaphore();
 
-        private NoLimitSemaphore(int permits) {
+        private NoLimitSemaphore() {
             super(1);
+        }
+
+        @Override
+        public void release() {
+            // do nothing
         }
 
         @Override

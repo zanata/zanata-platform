@@ -73,8 +73,8 @@ public class RateLimitingProcessorTest {
     public void willFirstTryAcquire() throws InterruptedException, IOException,
             ServletException {
 
-        when(rateLimitManager.getLimitConfig()).thenReturn(
-                new RestCallLimiter.RateLimitConfig(1, 1));
+        when(rateLimitManager.getMaxConcurrent()).thenReturn(1);
+        when(rateLimitManager.getMaxActive()).thenReturn(1);
         when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(1);
         doAnswer(new Answer() {
             @Override
