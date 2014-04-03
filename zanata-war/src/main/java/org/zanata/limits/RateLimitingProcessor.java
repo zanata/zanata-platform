@@ -1,18 +1,11 @@
 package org.zanata.limits;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.seam.Component;
 import org.zanata.ApplicationConfiguration;
-import com.google.common.base.Function;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -43,19 +36,8 @@ public class RateLimitingProcessor {
             return;
         }
 
-        RateLimitManager rateLimitManager = getRateLimiterHolder();
-        final RestCallLimiter.RateLimitConfig limitConfig =
-                rateLimitManager.getLimitConfig();
-
-        RestCallLimiter rateLimiter;
-        try {
-            rateLimiter =
-                    rateLimitManager.get(apiKey, new RestRateLimiterLoader(
-                            limitConfig, apiKey));
-        } catch (ExecutionException e) {
-            throw new WebApplicationException(e,
-                    Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        RateLimitManager rateLimitManager = getRateLimitManager();
+        RestCallLimiter rateLimiter = rateLimitManager.getLimiter(apiKey);
 
         log.debug("check semaphore for {}", this);
 
@@ -73,32 +55,15 @@ public class RateLimitingProcessor {
         }
     }
 
-    // test override-able
-    protected RateLimitManager getRateLimiterHolder() {
+    @VisibleForTesting
+    RateLimitManager getRateLimitManager() {
         return RateLimitManager.getInstance();
     }
 
-    // test override-able
-    protected ApplicationConfiguration getApplicationConfiguration() {
+    @VisibleForTesting
+    ApplicationConfiguration getApplicationConfiguration() {
         return (ApplicationConfiguration) Component
                 .getInstance("applicationConfiguration");
     }
 
-    private static class RestRateLimiterLoader implements
-            Callable<RestCallLimiter> {
-        private final RestCallLimiter.RateLimitConfig limitConfig;
-        private final String apiKey;
-
-        public RestRateLimiterLoader(
-                RestCallLimiter.RateLimitConfig limitConfig, String apiKey) {
-            this.limitConfig = limitConfig;
-            this.apiKey = apiKey;
-        }
-
-        @Override
-        public RestCallLimiter call() throws Exception {
-            log.debug("creating rate limiter for api key: {}", apiKey);
-            return new RestCallLimiter(limitConfig);
-        }
-    }
 }

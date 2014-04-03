@@ -2,8 +2,12 @@ package org.zanata.limits;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
+import com.google.common.annotations.VisibleForTesting;
+import lombok.AccessLevel;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -35,11 +39,11 @@ public class RateLimitManager implements Introspectable {
 
     public static final String INTROSPECTABLE_FIELD_RATE_LIMITERS =
             "RateLimiters";
-    @Delegate
     private final Cache<String, RestCallLimiter> activeCallers = CacheBuilder
             .newBuilder().maximumSize(100).build();
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
+    @VisibleForTesting
     private RestCallLimiter.RateLimitConfig limitConfig;
 
     public static RateLimitManager getInstance() {
@@ -110,4 +114,31 @@ public class RateLimitManager implements Introspectable {
                 });
     }
 
+    public RestCallLimiter getLimiter(String apiKey) {
+        try {
+            return activeCallers.get(apiKey, new RestRateLimiterLoader(
+                getLimitConfig(), apiKey));
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static class RestRateLimiterLoader implements
+        Callable<RestCallLimiter> {
+        private final RestCallLimiter.RateLimitConfig limitConfig;
+        private final String apiKey;
+
+        public RestRateLimiterLoader(
+            RestCallLimiter.RateLimitConfig limitConfig, String apiKey) {
+            this.limitConfig = limitConfig;
+            this.apiKey = apiKey;
+        }
+
+        @Override
+        public RestCallLimiter call() throws Exception {
+            log.debug("creating rate limiter for api key: {}", apiKey);
+            return new RestCallLimiter(limitConfig);
+        }
+    }
 }

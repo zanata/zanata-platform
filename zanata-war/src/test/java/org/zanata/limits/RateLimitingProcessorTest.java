@@ -54,7 +54,7 @@ public class RateLimitingProcessorTest {
 
         doReturn(applicationConfiguration).when(processor)
                 .getApplicationConfiguration();
-        doReturn(rateLimitManager).when(processor).getRateLimiterHolder();
+        doReturn(rateLimitManager).when(processor).getRateLimitManager();
 
     }
 
