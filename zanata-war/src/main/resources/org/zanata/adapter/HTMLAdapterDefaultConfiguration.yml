@@ -8,12 +8,12 @@
 # SCRIPT Embedded scripting language - pass to another extractor
 # SERVER Embedded server language tags such as JSP, PHP, Mason etc.
 # ATTRIBUTE_TRANS, ATTRIBUTE_WRITABLE, ATTRIBUTE_READONLY, ATTRIBUTE_ID these rules list an attribute, not an element
-# ATTRIBUTES_ONLY only attribute is translatable or localizable 
+# ATTRIBUTES_ONLY only attribute is translatable or localizable
 
-#********************************************************************************************* 
+#*********************************************************************************************
 # Operators for attribute value compare
 #
-# Rules are of the form: 
+# Rules are of the form:
 # TO_EXTRACT_ATTRIBUTE:[IF_HAS_ATTRIBUTE, OPERATOR, VALUE]
 # 'content':['http-equiv', EQUALS, 'keywords']
 #
@@ -23,12 +23,12 @@
 # Multiple attribute values may be included in a list:
 # 'content':['http-equiv', EQUALS, ['content-language', 'content-type']]
 #
-# This rule would be read: 
-# extract the value of 'content' if the value of 'http-equiv' equals 'content-language' or 'content-type' 
+# This rule would be read:
+# extract the value of 'content' if the value of 'http-equiv' equals 'content-language' or 'content-type'
 #*******************************************************************************************/
 
 # EQUALS
-# NOT_EQUALS 
+# NOT_EQUALS
 # MATCH regex match. Must match the entire attribute value
 
 # ELEMENT AND ATTRIBUTE NAMES MUST BE LOWER CASED!!!!!!
@@ -61,7 +61,7 @@ attributes:
 elements:
   # only attributes are localizable or translatable - no PCDATA
   # ATTRIBUTES_ONLY with translatableAttributes implies the tag will be a TEXTUNIT
-  # with embedded skeleton 
+  # with embedded skeleton
   meta:
     ruleTypes: [ATTRIBUTES_ONLY]
     translatableAttributes: {content: [[http-equiv, EQUALS, keywords], [name, EQUALS, [keywords, description]]]}
@@ -124,7 +124,7 @@ elements:
 
   li:
     ruleTypes: [TEXTUNIT]
-    translatableAttributes: [value] 
+    translatableAttributes: [value]
     idAttributes: [id]
 
   marquee:
@@ -233,10 +233,10 @@ elements:
 
   input:
     ruleTypes: [INLINE]
-    translatableAttributes: 
-      alt: [type, NOT_EQUALS, [file, hidden, image, Password]] 
-      value: [type, NOT_EQUALS, [file, hidden, image, Password]] 
-      accesskey: [type, NOT_EQUALS, [file, hidden, image, Password]] 
+    translatableAttributes:
+      alt: [type, NOT_EQUALS, [file, hidden, image, Password]]
+      value: [type, NOT_EQUALS, [file, hidden, image, Password]]
+      accesskey: [type, NOT_EQUALS, [file, hidden, image, Password]]
       title: [type, NOT_EQUALS, [file, hidden, image, Password]]
       placeholder: null
 
