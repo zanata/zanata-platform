@@ -14,7 +14,12 @@
 <script type="text/javascript">
   jQuery(function(){
 
-    crossroads.addRoute(':pre*:/dashboard/:section:/:subSection:', function(pre, section, subSection) {
+    crossroads.addRoute(':pre*:/dashboard/settings/{subSection}', function(pre, subSection) {
+      onTabClick(jQuery('#settings'))
+      zanata.tabs.activate(jQuery('#' + subSection + '-tab'))
+    });
+
+    crossroads.addRoute(':pre*:/dashboard/:section:', function(pre, section) {
       section = section || 'activity'
       onTabClick(jQuery('#' + section));
     });

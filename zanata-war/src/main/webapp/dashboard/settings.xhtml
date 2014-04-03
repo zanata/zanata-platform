@@ -4,18 +4,51 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <a4j:jsFunction name="regenerateApiKey"
+    action="#{userSettingsAction.regenerateApiKey}"
+    render="apiKeyForm" status="client-loader"/>
 
   <h1>User Settings</h1>
   <div class="tabs--vertical js-tabs">
     <ul class="tabs__nav js-tabs-nav">
-      <li class="is-active"><a href="#tab-vertical-1"><i class="i i--left i--settings"></i><span class="is-hidden--m-l-down">Account</span></a></li>
-      <li><a href="#tab-vertical-2"><i class="i i--left i--user"></i><span class="is-hidden--m-l-down">Profile</span></a></li>
-      <li><a href="#tab-vertical-3"><i class="i i--left i--language"></i><span class="is-hidden--m-l-down">Languages</span></a></li>
-      <li><a href="#tab-vertical-4"><i class="i i--left i--code"></i><span class="is-hidden--m-l-down">Client</span></a></li>
+      <li class="is-active">
+        <a id="account-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/account"
+          data-content="#account">
+          <i class="i i--left i--settings"></i>
+          <span class="is-hidden--m-l-down">Account</span>
+        </a>
+      </li>
+      <li>
+        <a id="profile-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/profile"
+          data-content="#profile-content">
+          <i class="i i--left i--user"></i>
+          <span class="is-hidden--m-l-down">Profile</span>
+        </a>
+      </li>
+      <li>
+        <a id="languages-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/languages"
+          data-content="#languages">
+          <i class="i i--left i--language"></i>
+          <span class="is-hidden--m-l-down">Languages</span>
+        </a>
+      </li>
+      <li>
+        <a id="client-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/client"
+          data-content="#client">
+          <i class="i i--left i--code"></i>
+          <span class="is-hidden--m-l-down">Client</span>
+        </a>
+      </li>
     </ul>
     <ul class="tabs__content js-tabs-content">
-      <li class="is-active" id="tab-vertical-1">
+      <li class="is-active" id="account">
         <h2 class="l--push-top-0 gamma d--bottom">Account Settings</h2>
         <h:form id="emailUpdateForm" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item l--push-bottom-1">
@@ -132,73 +165,96 @@
           </h:form>
         </s:fragment>
       </li>
-      <li id="tab-vertical-2">
+      <li id="profile-content">
         <h2 class="l--push-top-0 gamma d--bottom">Profile Settings</h2>
-        <form action="" class="l--constrain-large l--push-top-1">
+        <h:form id="profileForm" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item">
-            <label for="username">Username</label>
-            <p class="l--push-bottom-0">lukebrooker</p>
+            <h:outputText value="Username"/>
+            <p class="l--push-bottom-0">#{userSettingsAction.accountUsername}</p>
             <small class="txt--meta">Your username cannot be changed</small>
           </div>
           <div class="form__item">
-            <label for="name">Name</label>
-            <input type="text" id="name" value="Luke Brooker"/>
+            <h:outputLabel for="nameField">Name</h:outputLabel>
+            <s:decorate id="nameField" template=" ../WEB-INF/layout/field.xhtml" enclose="true">
+              <h:inputText id="accountName" value="#{userSettingsAction.accountName}"
+                maxlength="80">
+              </h:inputText>
+            </s:decorate>
           </div>
-          <div class="form__item">
-            <label for="bio">Bio</label>
-            <textarea id="bio"></textarea>
-          </div>
-          <div class="form__item">
-            <label for="url">Home Page/URL</label>
-            <input type="url" id="url" placeholder="http://"/>
-          </div>
-          <div class="form__item">
-            <label for="location">Location</label>
-            <input type="text" id="location" placeholder="Brisbane, Australia"/>
-          </div>
-          <input type="submit" value="Update profile" class="button button--primary l--push-top-1"/>
-        </form>
+          <a4j:jsFunction name="updateProfile"
+            action="#{userSettingsAction.updateProfile}"
+            render="profileForm" status="profile-loader" execute="@form"/>
+          <input type="submit" value="Update profile"
+            class="button button--primary l--push-top-1"
+            onclick="updateProfile(); return false;"/>
+          <a4j:status name="profile-loader">
+            <f:facet name="start">
+              <zanata:loader type="loader--large"/>
+            </f:facet>
+          </a4j:status>
+        </h:form>
       </li>
-      <li id="tab-vertical-3">
-        <h2 class="l--push-all-0 gamma d--bottom">Language Settings</h2>
-        <form action="" class="l--constrain-large">
-          <div class="form__item l--push-top-1">
-            <label for="language">Default Interface Language</label>
-            <select name="language" id="language">
-              <option value="en" selected="selected">English</option>
-              <option value="ja">日本語</option>
-              <option value="zh_TW_Hant">中文 (台灣,Hant)</option>
-              <option value="uk">українська</option>
-            </select>
-          </div>
-          <button class="button">Save default interface language</button>
-        </form>
-        <hr/>
-        <h3 class="heading--secondary">Language Teams</h3>
-        <ul class="list--slat list--highlight l--push-v-half" id="version-languages">
-          <li class="reveal--list-item">Assamese<span class="txt--understated l--push-left-quarter">[as]</span> <a href="#" class="l--float-right txt--danger reveal__target"><i class="i--large i--remove"></i></a></li>
-          <li class="reveal--list-item">Chinese (Traditional Han)<span class="txt--understated l--push-left-quarter">[zh-Hant]</span> <a href="#" class="txt--danger reveal__target"><i class="i--large i--remove"></i></a></li>
-          <li class="reveal--list-item">English (United States)<span class="txt--understated l--push-left-quarter">[en-US]</span> <a href="#" class="txt--danger reveal__target"><i class="i--large i--remove"></i></a></li>
-        </ul>
-        <button class="button">Join a language team</button>
+      <li id="languages">
+        <h2 class="l--push-all-0 gamma d--bottom">Language Teams</h2>
+        <h:form id="languageListForm">
+          <ul class="list--slat list--highlight l--push-v-half" id="version-languages">
+            <ui:repeat value="#{userSettingsAction.userLanguageTeams}" var="locale">
+              <li class="reveal--list-item">
+                #{locale.retrieveDisplayName()}
+                <span class="txt--understated l--push-left-quarter">
+                  [#{locale.localeId.id}]
+                </span>
+                <a4j:commandLink
+                  styleClass="l--float-right txt--danger reveal__target"
+                  action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
+                  render="languageListForm"
+                  onclick="return confirm('Are you sure you want to leave the #{locale.retrieveDisplayName()} team?')">
+                  <i class="i--large i--remove"></i>
+                </a4j:commandLink>
+              </li>
+            </ui:repeat>
+          </ul>
+          <s:link styleClass="button" value="Join a language team"
+            view="/language/home.xhtml"/>
+        </h:form>
       </li>
-      <li id="tab-vertical-4">
+      <li id="client">
         <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">Client Settings</h2>
-        <form action="" class="l--constrain-large">
+        <h:form id="apiKeyForm">
           <p class="txt--meta">An API and configuration is needed for the CLI client <a href="http://zanata.org/help/cli/cli-configuration/" title="" data-original-title="Help: Configuring the Client"><i class="i i--help"></i></a> and Maven plugin <a href="http://zanata.org/help/cli/cli-configuration/" title="" data-original-title="Help: Configuring the Maven Plugin"><i class="i i--help"></i></a>.</p>
           <div class="form__item">
             <label for="apikey">API Key</label>
-            <input type="text" id="apikey" value="790b1f0f65191b55bb278248ec940c56" readonly="" class="js-form__input--copyable"/>
+            <s:fragment id="no_api_key"
+              rendered="#{not userSettingsAction.apiKeyGenerated}">#{messages['jsf.NotGenerated']}
+            </s:fragment>
+            <s:fragment id="api_key"
+              rendered="#{userSettingsAction.apiKeyGenerated}">
+              <p>#{messages['jsf.YourCurrentApiKeyIs']}
+                <input id="apiKey" type="text" class="js-form__input--copyable"
+                  value="#{personHome.instance.account.apiKey}" readonly=""
+                  size="30"/>
+              </p>
+            </s:fragment>
           </div>
-          <button class="button">Generate new API key</button>
+          <button class="button"
+            onclick="if (confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
+            Generate new API key
+          </button>
           <div class="form__item l--push-top-1">
             <label for="config">Configuration (zanata.ini)</label>
             <textarea id="config" rows="4" readonly="" class="js-form__input--copyable">[servers]
-              translate_zanata_org.url=https://translate.zanata.org/zanata/
-              translate_zanata_org.username=lukebrooker
-              translate_zanata_org.key=790b1f0f65191b55bb278248ec940c56</textarea>
+#{userSettingsAction.urlKeyLabel}#{applicationConfiguration.serverPath}/
+#{userSettingsAction.usernameKeyLabel}#{userSettingsAction.accountUsername}
+#{userSettingsAction.apiKeyLabel}#{personHome.instance.account.apiKey}
+</textarea>
           </div>
-        </form>
+
+          <a4j:status name="client-loader">
+            <f:facet name="start">
+              <zanata:loader type="loader--large"/>
+            </f:facet>
+          </a4j:status>
+        </h:form>
       </li>
       <li id="tab-vertical-5">
         <h2 class="l--push-top-0 gamma d--bottom">Editor Settings</h2>

@@ -5,6 +5,7 @@ function jqSelector(str) {
 
 jQuery(document).ready(function() {
   registerJsTab();
+  registerUrlModifiers();
 });
 
 function registerJsTab() {
@@ -12,6 +13,14 @@ function registerJsTab() {
     jQuery(this).click(function() {
       onTabClick(this);
     });
+  });
+}
+
+// Registers all elements that modify the browser's url
+function registerUrlModifiers() {
+  jQuery('a.js-url-mod').click(function(e) {
+    changeBrowserUrl( jQuery(this).attr('href') );
+    e.preventDefault();
   });
 }
 

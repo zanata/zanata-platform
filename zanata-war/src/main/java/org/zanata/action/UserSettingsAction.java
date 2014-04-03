@@ -20,7 +20,19 @@
  */
 package org.zanata.action;
 
-import com.google.common.collect.Lists;
+import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static org.jboss.seam.international.StatusMessage.Severity.INFO;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.faces.context.ExternalContext;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +45,9 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
+import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.security.RunAsOperation;
@@ -43,27 +57,21 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
-import org.zanata.security.openid.MyOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
+import org.zanata.service.LanguageTeamService;
 import org.zanata.service.impl.EmailChangeService;
 
-import javax.persistence.EntityManager;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
-import static org.jboss.seam.international.StatusMessage.Severity.INFO;
+import com.google.common.collect.Lists;
 
 /**
  * This is an action class that should eventually replace the
@@ -97,6 +105,9 @@ public class UserSettingsAction {
     @In
     private AuthenticationManager authenticationManager;
 
+    @In
+    private LanguageTeamService languageTeamServiceImpl;
+
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
     
@@ -118,10 +129,17 @@ public class UserSettingsAction {
     @Getter
     @Setter
     private String openId;
-    
+
+    @Getter
+    @Setter
+    private String accountName;
+
     @Create
     public void onCreate() {
-        emailAddress = authenticatedAccount.getPerson().getEmail();
+        HPerson person =
+                personDAO.findById(authenticatedAccount.getPerson().getId());
+        emailAddress = person.getEmail();
+        accountName = person.getName();
     }
     
     public void updateEmail() {
@@ -181,6 +199,10 @@ public class UserSettingsAction {
         return Lists.newArrayList(account.getCredentials());
     }
 
+    public String getAccountUsername() {
+        return authenticatedAccount.getUsername();
+    }
+
     /**
      * Valid Types:
      * google, yahoo, fedora, openid for everything else
@@ -237,6 +259,85 @@ public class UserSettingsAction {
             authenticationManager.openIdAuthenticate(providerType,
                     new CredentialsCreationCallback(newCreds));
         }
+    }
+
+    public boolean isApiKeyGenerated() {
+        HAccount account =
+                accountDAO.findById(authenticatedAccount.getId());
+
+        return account.getApiKey() != null;
+    }
+
+    public String getUrlKeyLabel() {
+        return getKeyPrefix() + ".url=";
+    }
+
+    public String getApiKeyLabel() {
+        return getKeyPrefix() + ".key=";
+    }
+
+    public String getUsernameKeyLabel() {
+        return getKeyPrefix() + ".username=";
+    }
+
+    /*
+     * Replace server name that contains '.' to '_'
+     */
+    private String getKeyPrefix() {
+        ExternalContext context = javax.faces.context.FacesContext
+                .getCurrentInstance().getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) context
+                .getRequest();
+        String serverName = request.getServerName();
+        if (serverName == null) {
+            return "";
+        }
+        return serverName.replace(".", "_");
+    }
+
+    public void regenerateApiKey() {
+        HAccount account =
+                accountDAO.findById(authenticatedAccount.getId());
+
+        accountDAO.createApiKey(account);
+        accountDAO.makePersistent(account);
+        log.info("Reset API key for {}", account.getUsername());
+    }
+
+    public void updateProfile() {
+        HPerson person =
+                personDAO.findById(authenticatedAccount.getPerson().getId());
+        person.setName( accountName );
+        // Update the injected object as well.
+        // TODO When more fields are added, we'll need a better solution
+        authenticatedAccount.getPerson().setName( accountName );
+        personDAO.makePersistent(person);
+    }
+
+    // TODO Cache this
+    public List<HLocale> getUserLanguageTeams() {
+        List<HLocale> localeList =
+                languageTeamServiceImpl.getLanguageMemberships(
+                    authenticatedAccount.getUsername());
+        // TODO Sort this using ComparatorUtil's HLocale comparator
+        Collections.sort(localeList,
+                new Comparator<HLocale>() {
+                    @Override
+                    public int compare(HLocale hLocale, HLocale hLocale2) {
+                        return hLocale.retrieveDisplayName().compareTo(
+                                hLocale2.retrieveDisplayName());
+                    }
+                });
+        return localeList;
+    }
+
+    @Transactional
+    public void leaveLanguageTeam(String localeId) {
+        languageTeamServiceImpl.leaveLanguageTeam(localeId,
+                authenticatedAccount.getPerson().getId());
+        // FIXME use localizable string
+        FacesMessages.instance().add("You have left the {0} language team",
+                localeId);
     }
 
     /**
