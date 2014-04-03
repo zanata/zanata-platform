@@ -161,7 +161,7 @@ public class GlossaryRestTest extends ZanataRestTest {
 
         // TODO SeamAutowire needs to handle @Restrict. See
         // org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
-        // verify(mockIdentity).checkPermission(anyString(),
+        // verify(mockIdentity).checkWorkspaceAction(anyString(),
         // eq("glossary-insert"));
     }
 
@@ -178,7 +178,7 @@ public class GlossaryRestTest extends ZanataRestTest {
 
         // TODO SeamAutowire needs to handle @Restrict. See
         // org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
-        // verify(mockIdentity).checkPermission(anyString(),
+        // verify(mockIdentity).checkWorkspaceAction(anyString(),
         // eq("glossary-delete"));
     }
 
@@ -196,7 +196,7 @@ public class GlossaryRestTest extends ZanataRestTest {
 
         // TODO SeamAutowire needs to handle @Restrict. See
         // org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
-        // verify(mockIdentity).checkPermission(anyString(),
+        // verify(mockIdentity).checkWorkspaceAction(anyString(),
         // eq("glossary-delete"));
     }
 
@@ -224,7 +224,7 @@ public class GlossaryRestTest extends ZanataRestTest {
 
         // TODO SeamAutowire needs to handle @Restrict. See
         // org.jboss.seam.security.SecurityInterceptor.Restriction.check(Object[])
-        // verify(mockIdentity).checkPermission(anyString(),
+        // verify(mockIdentity).checkWorkspaceAction(anyString(),
         // eq("glossary-insert"));
     }
 }

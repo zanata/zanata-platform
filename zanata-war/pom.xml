@@ -335,7 +335,7 @@
             </manifest>
             <manifestEntries>
               <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-              <SCM-Changeset>${changeSet}</SCM-Changeset>
+              <SCM-Describe>${gitDescribe}</SCM-Describe>
             </manifestEntries>
           </archive>
         </configuration>
@@ -2014,6 +2014,18 @@
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>se.jiderhamn</groupId>
+      <artifactId>classloader-leak-prevention</artifactId>
+      <version>1.9.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--  missing dependencies identified by mvn dependency:analyze: -->
