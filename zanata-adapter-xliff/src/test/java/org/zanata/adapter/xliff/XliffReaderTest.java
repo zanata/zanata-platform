@@ -12,7 +12,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
@@ -29,6 +31,9 @@ public class XliffReaderTest {
     private static final String TEST_DIR = "src/test/resources/";
     private static final String DOC_NAME = "StringResource_en_US.xml";
     private XliffReader reader;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void resetReader() {
@@ -124,13 +129,10 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        try {
-            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                ValidationType.CONTENT.toString());
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches(".*br is not legal.*"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("br is not legal");
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+            ValidationType.CONTENT.toString());
     }
 
     @Test
@@ -138,13 +140,10 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_invalid.xml");
-        try {
-            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                ValidationType.XSD.toString());
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches("Invalid XLIFF file format"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("Invalid XLIFF file format");
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+            ValidationType.XSD.toString());
     }
 
     @Test
@@ -154,13 +153,10 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        try {
-            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                ValidationType.CONTENT.toString());
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches(".*does not support elements.*: g.*"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("does not support elements inside source: g");
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+            ValidationType.CONTENT.toString());
     }
 
     @Test
@@ -169,13 +165,10 @@ public class XliffReaderTest {
         // expect RuntimeException with tu:transunit2 - source
         File fileTarget =
                 new File(TEST_DIR, "/StringResource_source_unsupported.xml");
-        try {
-            reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
-                ValidationType.XSD.toString());
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches("Invalid XLIFF file format"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("Invalid XLIFF file format");
+        reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
+            ValidationType.XSD.toString());
     }
 
     @Test
@@ -187,13 +180,10 @@ public class XliffReaderTest {
                 reader.extractTemplate(fileTarget, LocaleId.EN_US, null,
                         ValidationType.CONTENT.toString());
         assert resource != null;
-        try {
-            reader.extractTarget(fileTarget);
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches("Invalid XLIFF: "
-                + "anIllegalTag is not legal inside target"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("Invalid XLIFF: "
+            + "anIllegalTag is not legal inside target");
+        reader.extractTarget(fileTarget);
     }
 
     private Resource getTemplateDoc() throws FileNotFoundException {

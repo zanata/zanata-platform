@@ -19,7 +19,9 @@ import javax.xml.bind.Marshaller;
 
 import org.fedorahosted.tennera.jgettext.Message;
 import org.hamcrest.MatcherAssert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -37,6 +39,9 @@ public class PoReader2Test {
     LocaleId ja = new LocaleId("ja-JP");
     String testDir = "src/test/resources/";
     PoReader2 poReader = new PoReader2();
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     private Resource getTemplate() {
         InputSource inputSource =
@@ -109,12 +114,9 @@ public class PoReader2Test {
                         .toString());
         inputSource.setEncoding("utf8");
 
-        try {
-            poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches(".*unsupported charset.*"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("unsupported charset");
+        poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
     }
 
     @Test
@@ -126,12 +128,9 @@ public class PoReader2Test {
         inputSource.setEncoding("utf8");
         log.debug("extracting target: " + locale);
 
-        try {
-            poReader.extractTarget(inputSource);
-            fail();
-        } catch (RuntimeException e) {
-            assertTrue(e.getMessage().matches(".*unsupported charset.*"));
-        }
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("unsupported charset");
+        poReader.extractTarget(inputSource);
     }
 
     @Test
