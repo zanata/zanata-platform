@@ -51,7 +51,7 @@ class RestCallLimiter {
                 }
             } finally {
                 concSem.release();
-                log.debug("released max [concurrent] semaphore");
+                log.debug("released [concurrent] semaphore");
             }
         } else {
             log.debug("failed to acquire [concurrent] permit");
@@ -116,13 +116,6 @@ class RestCallLimiter {
                 }
             }
         }
-    }
-
-    public void release() {
-        log.debug("releasing active semaphore");
-        maxActiveSemaphore.release();
-        log.debug("releasing concurrent semaphore");
-        maxConcurrentSemaphore.release();
     }
 
     public void changeConfig(RateLimitConfig newLimitConfig) {
