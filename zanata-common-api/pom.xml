@@ -86,7 +86,6 @@
           <usedDependencies combine.children="append">
             <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
             <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
-            <usedDependency>org.spockframework:spock-core</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -238,6 +237,11 @@
       <groupId>org.codehaus.enunciate</groupId>
       <artifactId>enunciate-jersey-rt</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
