@@ -129,7 +129,6 @@
             <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
-            <usedDependency>com.google.code.findbugs:annotations</usedDependency>
             <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
@@ -442,22 +441,17 @@
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.16</version>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <junitArtifactName>none:none</junitArtifactName>
           <testNGArtifactName>org.testng:testng</testNGArtifactName>
-          <forkMode>once</forkMode>
-          <argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-            -XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-            -XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+          <forkCount>1.5C</forkCount>
+          <reuseForks>false</reuseForks>
           <suiteXmlFiles>
             <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
           </suiteXmlFiles>
           <runOrder>alphabetical</runOrder>
-          <!-- TODO try parallel execution
-                         <parallel>methods</parallel>
-                         <threadCount>4</threadCount>
-           -->
         </configuration>
         <!-- below trick is to let surefire run both junit and testng.
         see http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi-->
@@ -1114,6 +1108,13 @@
   </profiles>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
     <!-- Zanata-specific dependencies -->
 
@@ -1926,7 +1927,7 @@
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
       <artifactId>prettytime</artifactId>
-      <version>3.2.4.Final</version>
+      <version>3.0.2.Final</version>
     </dependency>
 
     <!-- openid4java -->

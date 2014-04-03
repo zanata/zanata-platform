@@ -19,4 +19,3 @@ git commit pom.xml */pom.xml -m "prepare for next development iteration"
 
 # push all the changes back to the server
 git push origin legacy release integration/master
-
