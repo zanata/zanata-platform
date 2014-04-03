@@ -2,7 +2,8 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,8 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.common.ProjectType;
-import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -28,8 +27,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
@@ -107,14 +104,8 @@ public class GetLocaleListHandlerTest {
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getLocales(), Matchers.hasSize(3));
-
-        assertThat(result.getLocales().get(0).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.FR));
-        assertThat(result.getLocales().get(1).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.EN));
-        assertThat(result.getLocales().get(2).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.DE));
+        assertThat(result.getLocales()).extracting("id.localeId").containsOnly(
+                LocaleId.FR, LocaleId.EN, LocaleId.DE);
     }
 
     @Test
@@ -123,9 +114,8 @@ public class GetLocaleListHandlerTest {
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getLocales(), Matchers.hasSize(1));
-        assertThat(result.getLocales().get(0).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.ES));
+        assertThat(result.getLocales()).extracting("id.localeId").containsOnly(
+                LocaleId.ES);
     }
 
     @Test
@@ -135,11 +125,8 @@ public class GetLocaleListHandlerTest {
 
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getLocales(), Matchers.hasSize(2));
-        assertThat(result.getLocales().get(0).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.DE));
-        assertThat(result.getLocales().get(1).getId().getLocaleId(),
-                Matchers.equalTo(LocaleId.EN_US));
+        assertThat(result.getLocales()).extracting("id.localeId").containsOnly(
+            LocaleId.EN_US, LocaleId.DE);
     }
 
     @Test
