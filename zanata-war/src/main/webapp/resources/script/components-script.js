@@ -11,11 +11,21 @@ var globalMessageTimer;
 
 // automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
+  if (jQuery().zanata) {
+    zanata.messages.activate('#messages .message--global');
+  } else {
+    jQuery('#messages .message--global').addClass('is-active');
+  }
+
   //stop previous timeout counter
   clearTimeout(globalMessageTimer);
 
   globalMessageTimer = setTimeout(function() {
-    jQuery('#messages').find('.message--global').removeClass("is-active");
+    if (jQuery().zanata) {
+      zanata.messages.deactivate('#messages .message--global');
+    } else {
+      jQuery('#messages .message--global').removeClass('is-active');
+    }
   }, 5000);
 }
 

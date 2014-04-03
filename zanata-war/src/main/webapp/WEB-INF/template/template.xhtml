@@ -40,8 +40,6 @@
 
     <title>#{messages['jsf.Zanata']}: <ui:insert name="page_title"/></title>
     <link type="text/css" rel="stylesheet"
-      href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
-    <link type="text/css" rel="stylesheet"
       href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
     <ui:insert name="head"/>
   </h:head>
@@ -50,16 +48,16 @@
     <ui:include src="banner.xhtml"/>
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
       <s:fragment rendered="#{showGlobalMessages != 'false'}">
-        <ul
-          class="list--no-bullets message--global #{(conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty facesContext.messageList)) ? 'is-active' : ''}">
+        <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{facesContext.messageList}"
             rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}"/>
           <zanata:global-messages value="#{conversationScopeMessages.messages}"
             rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
-        <script type="text/javascript">
+        <h:outputScript
+          rendered="#{(conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty facesContext.messageList))}">
           startGlobalMessageTimer();
-        </script>
+        </h:outputScript>
       </s:fragment>
     </a4j:outputPanel>
 
