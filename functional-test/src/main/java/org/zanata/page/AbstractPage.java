@@ -70,8 +70,6 @@ public class AbstractPage {
                 this);
         this.driver = driver;
         ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
-        // Use this for now to enable the menus of the Editor page
-        driver.manage().window().maximize();
     }
 
     public WebDriver getDriver() {
