@@ -318,8 +318,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
 
         @SuppressWarnings("unchecked")
         List<HTextFlow> result = textFlowQuery.list();
-        log.debug("{} textFlow for locale {} filter by {}", new Object[] {
-                result.size(), hLocale.getLocaleId(), constraints });
+        log.debug("{} textFlow for locale {} filter by {}", result.size(),
+                hLocale.getLocaleId(), constraints);
         return result;
     }
 
@@ -339,8 +339,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
 
         @SuppressWarnings("unchecked")
         List<HTextFlow> result = textFlowQuery.list();
-        log.debug("{} textFlow for locale {} filter by {}", new Object[] {
-                result.size(), hLocale.getLocaleId(), constraints });
+        log.debug("{} textFlow for locale {} filter by {}", result.size(),
+                hLocale.getLocaleId(), constraints);
         return result;
     }
 }

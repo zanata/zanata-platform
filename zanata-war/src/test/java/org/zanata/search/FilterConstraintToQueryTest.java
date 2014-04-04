@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
 
 import java.util.List;
 
@@ -27,21 +28,25 @@ import com.google.common.collect.Lists;
 @Test(groups = "unit-tests")
 @Slf4j
 public class FilterConstraintToQueryTest {
+    public static final ContentCriterion contentCriterion = new ContentCriterion(1);
     public static final String SOURCE_CONTENT_CASE_INSENSITIVE =
-            "(lower(tf.content0) like :searchString or lower(tf.content1) like :searchString or lower(tf.content2) like :searchString or lower(tf.content3) like :searchString or lower(tf.content4) like :searchString or lower(tf.content5) like :searchString)";
+            contentCriterion.contentsCriterionAsString("tf", false,
+                    searchString
+                            .placeHolder()
+            );
     public static final String TARGET_CONTENT_CASE_INSENSITIVE =
-            "(lower(content0) like :searchString or lower(content1) like :searchString or lower(content2) like :searchString or lower(content3) like :searchString or lower(content4) like :searchString or lower(content5) like :searchString)";
-    public static final String SOURCE_CONTENT_CASE_SENSITIVE =
-            "((tf.content0) like :searchString or (tf.content1) like :searchString or (tf.content2) like :searchString or (tf.content3) like :searchString or (tf.content4) like :searchString or (tf.content5) like :searchString)";
-    public static final String TARGET_CONTENT_CASE_SENSITIVE =
-            "((content0) like :searchString or (content1) like :searchString or (content2) like :searchString or (content3) like :searchString or (content4) like :searchString or (content5) like :searchString)";
+            contentCriterion.contentsCriterionAsString(null, false,
+                    searchString
+                            .placeHolder()
+            );
+
     public static final String QUERY_BEFORE_WHERE =
             "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale ";
     @Mock
     private Query query;
     @Mock
     private HLocale hLocale;
-    private DocumentId documentId = new DocumentId(new Long(1), "");
+    private DocumentId documentId = new DocumentId(1L, "");
 
     @BeforeMethod
     public void beforeMethod() {
@@ -68,13 +73,14 @@ public class FilterConstraintToQueryTest {
                         FilterConstraints.builder().filterBy("FiLe")
                                 .checkInTarget(false).checkInSource(true)
                                 .build(), documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.buildSearchCondition();
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase("("
-                        + SOURCE_CONTENT_CASE_INSENSITIVE + ")"));
+                Matchers.equalToIgnoringCase("(("
+                        + SOURCE_CONTENT_CASE_INSENSITIVE + "))"));
     }
 
     @Test
@@ -84,13 +90,14 @@ public class FilterConstraintToQueryTest {
                         FilterConstraints.builder().filterBy("FiLe")
                                 .checkInSource(false).checkInTarget(true)
                                 .build(), documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.buildSearchCondition();
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase("( EXISTS ( FROM HTextFlowTarget WHERE (textFlow=tf and locale=:locale and "
-                        + TARGET_CONTENT_CASE_INSENSITIVE + ")))"));
+                Matchers.equalToIgnoringCase("( EXISTS ( FROM HTextFlowTarget WHERE ("
+                        + TARGET_CONTENT_CASE_INSENSITIVE + " and textFlow=tf and locale=:locale)))"));
 
     }
 
@@ -100,32 +107,16 @@ public class FilterConstraintToQueryTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().filterBy("FiLe").build(),
                         documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.buildSearchCondition();
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase("("
+                Matchers.equalToIgnoringCase("(("
                         + SOURCE_CONTENT_CASE_INSENSITIVE
-                        + " OR  EXISTS ( FROM HTextFlowTarget WHERE (textFlow=tf and locale=:locale and "
-                        + TARGET_CONTENT_CASE_INSENSITIVE + ")))"));
-    }
-
-    @Test
-    public void testCaseSensitiveSearch() {
-        FilterConstraintToQuery constraintToQuery =
-                FilterConstraintToQuery.filterInSingleDocument(
-                        FilterConstraints.builder().filterBy("FiLe")
-                                .caseSensitive(true).build(), documentId);
-
-        String result = constraintToQuery.buildSearchCondition();
-
-        assertThat(
-                result,
-                Matchers.equalToIgnoringCase("("
-                        + SOURCE_CONTENT_CASE_SENSITIVE
-                        + " OR  EXISTS ( FROM HTextFlowTarget WHERE (textFlow=tf and locale=:locale and "
-                        + TARGET_CONTENT_CASE_SENSITIVE + ")))"));
+                        + ") OR  EXISTS ( FROM HTextFlowTarget WHERE ("
+                        + TARGET_CONTENT_CASE_INSENSITIVE + " AND textFlow=tf and locale=:locale)))"));
     }
 
     @Test
@@ -134,6 +125,7 @@ public class FilterConstraintToQueryTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepAll().build(),
                         documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.buildSearchCondition();
 
@@ -151,7 +143,7 @@ public class FilterConstraintToQueryTest {
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase(" EXISTS ( FROM HTextFlowTarget WHERE (textFlow=tf and locale=:locale AND state in (:contentStateList)))"));
+                Matchers.equalToIgnoringCase(" EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList)))"));
     }
 
     @Test
@@ -167,7 +159,7 @@ public class FilterConstraintToQueryTest {
                 result,
                 Matchers.equalToIgnoringCase("( EXISTS "
                         + "( FROM HTextFlowTarget WHERE "
-                        + "(textFlow=tf and locale=:locale AND state in (:contentStateList))"
+                        + "((textFlow=tf AND locale=:locale) AND state in (:contentStateList))"
                         + ") OR :locale not in indices(tf.targets)" + ")"));
     }
 
@@ -177,6 +169,7 @@ public class FilterConstraintToQueryTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().filterBy("blah")
                                 .excludeTranslated().build(), documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.buildStateCondition();
 
@@ -184,7 +177,7 @@ public class FilterConstraintToQueryTest {
                 result,
                 Matchers.equalToIgnoringCase("( EXISTS "
                         + "( FROM HTextFlowTarget WHERE "
-                        + "(textFlow=tf and locale=:locale AND state in (:contentStateList))"
+                        + "((textFlow=tf and locale=:locale) AND state in (:contentStateList))"
                         + ") OR " + "(:locale not in indices(tf.targets) AND "
                         + SOURCE_CONTENT_CASE_INSENSITIVE + ")" + ")"));
     }
@@ -201,7 +194,7 @@ public class FilterConstraintToQueryTest {
         assertThat(
                 result,
                 Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE
-                        + "WHERE (tf.obsolete=0 AND tf.document.id=:docId) ORDER BY tf.pos"));
+                        + "WHERE (tf.obsolete=0 AND tf.document.id=:documentId) ORDER BY tf.pos"));
     }
 
     @Test
@@ -216,7 +209,7 @@ public class FilterConstraintToQueryTest {
         assertThat(
                 result,
                 Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE
-                        + "WHERE (tf.obsolete=0 AND tf.document.id in (:documentIds)) ORDER BY tf.pos"));
+                        + "WHERE (tf.obsolete=0 AND tf.document.id in (:documentIdList)) ORDER BY tf.pos"));
     }
 
     @Test
@@ -225,35 +218,58 @@ public class FilterConstraintToQueryTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().filterBy("FiLe")
                                 .excludeTranslated().build(), documentId);
+        constraintToQuery.setContentCriterion(contentCriterion);
 
         String result = constraintToQuery.toHQL();
         log.info("hql: {}", result);
 
-        // @formatter:off
-        assertThat(result, Matchers.equalToIgnoringCase(
-            "SELECT distinct tf FROM HTextFlow tf " +
-                "LEFT JOIN tf.targets tfts WITH tfts.index=:locale " +
-                "WHERE " +
-                  "(tf.obsolete=0 AND tf.document.id=:docId AND " +
-                     "(" +
-                        SOURCE_CONTENT_CASE_INSENSITIVE + " OR  EXISTS " +
-                        "( FROM HTextFlowTarget " +
-                        "WHERE (textFlow=tf " +
-                        "AND locale=:locale " +
-                        "AND " + TARGET_CONTENT_CASE_INSENSITIVE + ")" +
-                     ")" +
-                  ") AND " +
-                  "( EXISTS " +
-                     "( FROM HTextFlowTarget WHERE " +
-                        "(textFlow=tf " +
-                        "AND locale=:locale " +
-                        "AND state in (:contentStateList))" +
-                     ") OR " +
-                     "(:locale not in indices(tf.targets) " +
-                     "AND " + SOURCE_CONTENT_CASE_INSENSITIVE + ")" +
-                  ")" +
-                  ") ORDER BY tf.pos"));
-        // @formatter:on
+/* formatted by SQLinform
+SELECT DISTINCT tf
+FROM HTextFlow tf
+    LEFT JOIN tf.targets tfts WITH tfts.index=:locale
+WHERE (
+        tf.obsolete   =0
+    AND tf.document.id=:documentId
+    AND
+        (
+            (
+                (
+                    lower(tf.content0) LIKE :searchString
+                )
+            )
+        OR  EXISTS ( FROM HTextFlowTarget WHERE (
+                (
+                    lower(content0) LIKE :searchString
+                )
+            AND textFlow=tf
+            AND locale  =:locale
+            )
+            )
+        )
+    AND
+        (
+            EXISTS ( FROM HTextFlowTarget WHERE (
+                (
+                    textFlow=tf
+                AND locale  =:locale
+                )
+            AND state IN (:contentStateList)
+            )
+            )
+        OR
+            (
+                :locale NOT IN indices(tf.targets)
+            AND
+                (
+                    lower(tf.content0) LIKE :searchString
+                )
+            )
+        )
+    )
+ORDER BY tf.pos
+ */
+        assertThat(result, Matchers.equalTo(
+                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND (((lower(tf.content0) like :searchString)) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
     }
 
     @Test
@@ -267,14 +283,15 @@ public class FilterConstraintToQueryTest {
 
         constraintToQuery.setQueryParameters(query, hLocale);
 
-        verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM,
+        verify(query).setParameter(
+                FilterConstraintToQuery.Parameters.documentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM,
+        verify(query).setParameter(searchString.namedParam(),
                 "%file%");
         verify(query).setParameterList(
-                FilterConstraintToQuery.STATE_LIST_NAMED_PARAM,
+                contentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -292,13 +309,13 @@ public class FilterConstraintToQueryTest {
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameterList(
-                FilterConstraintToQuery.DOC_IDS_LIST_NAMED_PARAM, docIdList);
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+                documentIdList.namedParam(), docIdList);
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM,
+        verify(query).setParameter(searchString.namedParam(),
                 "%file%");
         verify(query).setParameterList(
-                FilterConstraintToQuery.STATE_LIST_NAMED_PARAM,
+                contentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -314,12 +331,13 @@ public class FilterConstraintToQueryTest {
 
         constraintToQuery.setQueryParameters(query, hLocale);
 
-        verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM,
+        verify(query).setParameter(
+                FilterConstraintToQuery.Parameters.documentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
         verify(query).setParameterList(
-                FilterConstraintToQuery.STATE_LIST_NAMED_PARAM,
+                contentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -334,11 +352,12 @@ public class FilterConstraintToQueryTest {
 
         constraintToQuery.setQueryParameters(query, hLocale);
 
-        verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM,
+        verify(query).setParameter(
+                FilterConstraintToQuery.Parameters.documentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM,
+        verify(query).setParameter(searchString.namedParam(),
                 "%file%");
         verifyNoMoreInteractions(query);
     }
@@ -354,11 +373,12 @@ public class FilterConstraintToQueryTest {
 
         constraintToQuery.setQueryParameters(query, hLocale);
 
-        verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM,
+        verify(query).setParameter(
+                FilterConstraintToQuery.Parameters.documentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM,
+        verify(query).setParameter(searchString.namedParam(),
                 "%FiLe%");
         verifyNoMoreInteractions(query);
     }
@@ -374,11 +394,12 @@ public class FilterConstraintToQueryTest {
 
         constraintToQuery.setQueryParameters(query, hLocale);
 
-        verify(query).setParameter(FilterConstraintToQuery.DOC_ID_NAMED_PARAM,
+        verify(query).setParameter(
+                FilterConstraintToQuery.Parameters.documentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(FilterConstraintToQuery.LOCALE_NAMED_PARAM,
+        verify(query).setParameter(locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(FilterConstraintToQuery.SEARCH_NAMED_PARAM,
+        verify(query).setParameter(searchString.namedParam(),
                 "%\\% blah blah \\%%");
         verifyNoMoreInteractions(query);
     }

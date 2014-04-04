@@ -27,9 +27,9 @@ import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 
 /**
  * This class is immutable and all the mutator methods will return a new
@@ -41,7 +41,6 @@ import com.google.common.base.Strings;
  */
 public class GetTransUnitActionContext {
     private DocumentInfo document;
-    private String findMessage;
     private int offset = 0;
     private int count = 5; // this should be set to
                            // UserConfigHolder.getPageSize()
@@ -53,6 +52,7 @@ public class GetTransUnitActionContext {
     private boolean filterHasError;
     private TransUnitId targetTransUnitId;
     private List<ValidationId> validationIds;
+    private EditorFilter search;
 
     public GetTransUnitActionContext(DocumentInfo document) {
         this.document = document;
@@ -60,7 +60,6 @@ public class GetTransUnitActionContext {
 
     private GetTransUnitActionContext(GetTransUnitActionContext other) {
         document = other.getDocument();
-        findMessage = other.getFindMessage();
         offset = other.getOffset();
         count = other.getCount();
         filterTranslated = other.isFilterTranslated();
@@ -71,6 +70,7 @@ public class GetTransUnitActionContext {
         filterHasError = other.isFilterHasError();
         targetTransUnitId = other.getTargetTransUnitId();
         validationIds = other.getValidationIds();
+        search = other.getSearch();
     }
 
     public DocumentInfo getDocument() {
@@ -84,12 +84,12 @@ public class GetTransUnitActionContext {
     }
 
     public String getFindMessage() {
-        return findMessage;
+        return search.getTextInContent();
     }
 
     public GetTransUnitActionContext changeFindMessage(String findMessage) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-        result.findMessage = findMessage;
+        search = search.changeTextInContent(findMessage);
         return result;
     }
 
@@ -200,6 +200,17 @@ public class GetTransUnitActionContext {
         return result;
     }
 
+    public EditorFilter getSearch() {
+        return search;
+    }
+
+    public GetTransUnitActionContext changeSearch(EditorFilter search) {
+        GetTransUnitActionContext result =
+                new GetTransUnitActionContext(this);
+        result.search = search;
+        return result;
+    }
+
     public GetTransUnitActionContext setAcceptAll() {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterTranslated = false;
@@ -208,7 +219,7 @@ public class GetTransUnitActionContext {
         result.filterUntranslated = false;
         result.filterApproved = false;
         result.filterRejected = false;
-        result.findMessage = null;
+        result.search = EditorFilter.ALL;
         return result;
     }
 
@@ -217,7 +228,6 @@ public class GetTransUnitActionContext {
         // @formatter:off
         return Objects.toStringHelper(this).
             add("document", document).
-            add("findMessage", findMessage).
             add("offset", offset).
             add("count", count).
             add("filterTranslated", filterTranslated).
@@ -227,6 +237,7 @@ public class GetTransUnitActionContext {
             add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
+            add("search", search).
             toString();
         // @formatter:on
     }
@@ -267,20 +278,8 @@ public class GetTransUnitActionContext {
             || filterHasError != newContext.filterHasError
             || offset != newContext.offset
             || !document.equals(newContext.document)
-            || !Objects.equal(findMessage, newContext.findMessage);
+            || !Objects.equal(search, newContext.search);
         // @formatter:on
-    }
-
-    public boolean acceptAll() {
-        boolean messageFilterAcceptAll =
-                filterHasError == filterFuzzy
-                        && filterFuzzy == filterTranslated
-                        && filterTranslated == filterUntranslated
-                        && filterUntranslated == filterHasError
-                        && filterHasError == filterApproved
-                        && filterApproved == filterRejected;
-
-        return messageFilterAcceptAll && Strings.isNullOrEmpty(findMessage);
     }
 
     public ContentStateGroup getCurrentFilterStates() {

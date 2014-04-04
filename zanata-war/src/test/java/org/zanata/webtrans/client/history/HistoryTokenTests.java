@@ -34,8 +34,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getSearchText(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -66,8 +66,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getSearchText(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -98,8 +98,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getSearchText(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -230,8 +230,8 @@ public class HistoryTokenTests {
         assertEquals("unknown keys should be ignored", "",
                 token.getDocFilterText());
         assertFalse("unknown keys should be ignored", token.getDocFilterExact());
-        assertEquals("unknown keys should be ignored", "",
-                token.getSearchText());
+        assertThat("unknown keys should be ignored",
+                token.getSearchText(), Matchers.nullValue());
         assertEquals("unknown keys should be ignored", "",
                 token.getProjectSearchText());
         assertEquals("unknown keys should be ignored", "",
@@ -306,9 +306,9 @@ public class HistoryTokenTests {
         token.setSearchText("some search text");
         assertEquals("some search text", token.getSearchText());
         token.setSearchText(null);
-        assertEquals(
-                "search text should be returned as empty string after setting to null",
-                "", token.getSearchText());
+        assertThat(
+                "search text should be returned null after setting to null",
+                token.getSearchText(), Matchers.nullValue());
 
         token.setSearchText("text to be discarded");
         token.setSearchText("");

@@ -28,7 +28,6 @@ public class HistoryToken {
     protected static final String DEFAULT_DOC_FILTER_TEXT = "";
     protected static final boolean DEFAULT_DOC_FILTER_EXACT = false;
     protected static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
-    protected static final String DEFAULT_SEARCH_TEXT = "";
     protected static final String DEFAULT_PROJECT_SEARCH_TEXT = "";
     protected static final String DEFAULT_PROJECT_SEARCH_REPLACE = "";
     protected static final boolean DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE =
@@ -42,7 +41,15 @@ public class HistoryToken {
     private boolean docFilterExact;
     private boolean docFilterCaseSensitive;
     private String docFilterText;
+    // TODO pahuang rename to editorTextSearch
     private String searchText;
+    private String resId;
+    private String lastModifiedBy;
+    private String changedBefore;
+    private String changedAfter;
+    private String sourceComment;
+    private String msgContext;
+    private String targetComment;
     private String projectSearchText;
     private String projectSearchReplace;
     private boolean projectSearchCaseSensitive;
@@ -62,7 +69,6 @@ public class HistoryToken {
         docFilterText = DEFAULT_DOC_FILTER_TEXT;
         docFilterExact = DEFAULT_DOC_FILTER_EXACT;
         docFilterCaseSensitive = DEFAULT_DOC_FILTER_CASE_SENSITIVE;
-        searchText = DEFAULT_SEARCH_TEXT;
         projectSearchText = DEFAULT_PROJECT_SEARCH_TEXT;
         projectSearchReplace = DEFAULT_PROJECT_SEARCH_REPLACE;
         projectSearchCaseSensitive = DEFAULT_PROJECT_SEARCH_CASE_SENSITIVE;
@@ -121,8 +127,7 @@ public class HistoryToken {
     }
 
     public void setSearchText(String value) {
-        this.searchText =
-                Strings.isNullOrEmpty(value) ? DEFAULT_SEARCH_TEXT : value;
+        this.searchText = value;
     }
 
     public String getProjectSearchText() {
@@ -281,6 +286,62 @@ public class HistoryToken {
         return filterHasError;
     }
 
+    public void setResId(String resId) {
+        this.resId = resId;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public void setChangedBefore(String changedBefore) {
+        this.changedBefore = changedBefore;
+    }
+
+    public void setChangedAfter(String changedAfter) {
+        this.changedAfter = changedAfter;
+    }
+
+    public void setSourceComment(String sourceComment) {
+        this.sourceComment = sourceComment;
+    }
+
+    public void setMsgContext(String msgContext) {
+        this.msgContext = msgContext;
+    }
+
+    public void setTargetComment(String targetComment) {
+        this.targetComment = targetComment;
+    }
+
+    public String getResId() {
+        return resId;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public String getChangedBefore() {
+        return changedBefore;
+    }
+
+    public String getChangedAfter() {
+        return changedAfter;
+    }
+
+    public String getSourceComment() {
+        return sourceComment;
+    }
+
+    public String getMsgContext() {
+        return msgContext;
+    }
+
+    public String getTargetComment() {
+        return targetComment;
+    }
+
     public void clearEditorFilterAndSearch() {
         filterFuzzy = false;
         filterHasError = false;
@@ -288,7 +349,13 @@ public class HistoryToken {
         filterUntranslated = false;
         filterApproved = false;
         filterRejected = false;
-        searchText = DEFAULT_SEARCH_TEXT;
+        searchText = null;
+        resId = null;
+        changedBefore = null;
+        changedAfter = null;
+        msgContext = null;
+        sourceComment = null;
+        targetComment = null;
     }
 
     private static enum TokenParserFunction implements Function<String, Token> {

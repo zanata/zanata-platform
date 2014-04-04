@@ -23,11 +23,13 @@ package org.zanata.search;
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
 
+import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 
 import lombok.Getter;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 /**
  * Specifies a set of constraints to be applied by a filter.
@@ -41,15 +43,34 @@ public class FilterConstraints {
     private boolean searchInSource;
     private boolean searchInTarget;
     private ContentStateGroup includedStates;
+    private String resId;
+    private DateTime changedBefore;
+    private DateTime changedAfter;
+    private String lastModifiedByUser;
+    private String sourceComment;
+    private String transComment;
+    private String msgContext;
 
-    private FilterConstraints(String searchString, boolean caseSensitive,
-            boolean searchInSource, boolean searchInTarget,
-            ContentStateGroup includedStates) {
-        this.searchString = searchString;
-        this.isCaseSensitive = caseSensitive;
-        this.searchInSource = searchInSource;
-        this.searchInTarget = searchInTarget;
-        this.includedStates = includedStates;
+    private FilterConstraints(Builder builder) {
+        searchInSource = builder.searchInSource;
+        searchInTarget = builder.searchInTarget;
+        searchString = builder.searchString;
+        isCaseSensitive = builder.caseSensitive;
+        includedStates = builder.states.build();
+        resId = builder.resId;
+        changedBefore = builder.changedBefore;
+        changedAfter = builder.changedAfter;
+        if (changedAfter != null && changedBefore != null) {
+            Preconditions
+                    .checkArgument(
+                            changedBefore.isAfter(changedAfter),
+                            "change before date [%s] must be after change after date [%s]",
+                            changedBefore, changedAfter);
+        }
+        lastModifiedByUser = builder.lastModifiedByUser;
+        sourceComment = builder.sourceComment;
+        transComment = builder.transComment;
+        msgContext = builder.msgContext;
     }
 
     public static Builder builder() {
@@ -58,11 +79,22 @@ public class FilterConstraints {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("searchString", searchString)
+        // @formatter:off
+        return Objects.toStringHelper(this)
+                .add("searchString", searchString)
                 .add("isCaseSensitive", isCaseSensitive)
                 .add("searchInSource", searchInSource)
                 .add("searchInTarget", searchInTarget)
-                .add("includedStates", includedStates).toString();
+                .add("includedStates", includedStates)
+                .add("resId", resId)
+                .add("changedBefore", changedBefore)
+                .add("changedAfter", changedAfter)
+                .add("lastModifiedByUser", lastModifiedByUser)
+                .add("sourceComment", sourceComment)
+                .add("transComment", transComment)
+                .add("msgContext", msgContext)
+                .toString();
+        // @formatter:on
     }
 
     public static class Builder {
@@ -71,6 +103,13 @@ public class FilterConstraints {
         private boolean searchInSource;
         private boolean searchInTarget;
         private ContentStateGroup.Builder states;
+        private String resId;
+        private DateTime changedBefore;
+        private DateTime changedAfter;
+        private String lastModifiedByUser;
+        private String sourceComment;
+        private String transComment;
+        private String msgContext;
 
         public Builder() {
             states = ContentStateGroup.builder();
@@ -78,8 +117,7 @@ public class FilterConstraints {
         }
 
         public FilterConstraints build() {
-            return new FilterConstraints(searchString, caseSensitive,
-                    searchInSource, searchInTarget, states.build());
+            return new FilterConstraints(this);
         }
 
         public Builder keepAll() {
@@ -93,6 +131,13 @@ public class FilterConstraints {
             searchInSource = true;
             searchInTarget = true;
             states.addAll();
+            resId = "";
+            changedAfter = null;
+            changedBefore = null;
+            lastModifiedByUser = "";
+            sourceComment = "";
+            transComment = "";
+            msgContext = "";
         }
 
         public Builder keepNone() {
@@ -101,6 +146,13 @@ public class FilterConstraints {
             searchInSource = false;
             searchInTarget = false;
             states.removeAll();
+            resId = "";
+            changedAfter = null;
+            changedBefore = null;
+            lastModifiedByUser = "";
+            sourceComment = "";
+            transComment = "";
+            msgContext = "";
             return this;
         }
 
@@ -176,6 +228,47 @@ public class FilterConstraints {
 
         public Builder excludeRejected() {
             states.includeRejected(false);
+            return this;
+        }
+
+        public Builder resourceIdContains(String resId) {
+            this.resId = resId;
+            return this;
+        }
+
+        public Builder lastModifiedBy(String username) {
+            this.lastModifiedByUser = username;
+            return this;
+        }
+
+        public Builder targetChangedBefore(DateTime date) {
+            this.changedBefore = date;
+            return this;
+        }
+
+        public Builder targetChangedAfter(DateTime date) {
+            this.changedAfter = date;
+            return this;
+        }
+
+        public Builder clearChangedDate() {
+            this.changedAfter = null;
+            this.changedBefore = null;
+            return this;
+        }
+
+        public Builder msgContext(String msgContext) {
+            this.msgContext = msgContext;
+            return this;
+        }
+
+        public Builder sourceCommentContains(String content) {
+            this.sourceComment = content;
+            return this;
+        }
+
+        public Builder targetCommentContains(String content) {
+            this.transComment = content;
             return this;
         }
 

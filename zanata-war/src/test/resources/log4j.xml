@@ -22,11 +22,16 @@
       </logger>
   -->
   <!-- below will log hibernate generated SQL-->
-  <!--
-  <logger name="org.hibernate.SQL">
-      <level value="TRACE" />
+  <!--<logger name="org.hibernate.SQL">-->
+      <!--<level value="TRACE" />-->
+  <!--</logger>-->
+  <!-- this require log4jdbc -->
+  <!--<logger name="jdbc.sqlonly">-->
+    <!--<level value="DEBUG" />-->
+  <!--</logger>-->
+  <logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
+    <level value="OFF" />
   </logger>
-  -->
   <logger name="gwt-log">
     <level value="OFF" />
   </logger>

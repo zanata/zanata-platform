@@ -143,6 +143,8 @@
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!-- used for gwt super devmode -->
             <usedDependency>org.json:json</usedDependency>
+             <!--used to log sql and parameters when debugging Hibernate -->
+            <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
@@ -1390,6 +1392,19 @@
           <groupId>com.sun</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.huangp</groupId>
+      <artifactId>entityunit</artifactId>
+      <version>0.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.log4jdbc</groupId>
+      <artifactId>log4jdbc</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

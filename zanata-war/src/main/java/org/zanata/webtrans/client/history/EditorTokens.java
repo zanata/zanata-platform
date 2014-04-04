@@ -54,11 +54,7 @@ enum EditorTokens implements TokensConverter {
             tokens.add(new Token(KEY_DOCUMENT, historyToken.getDocumentPath()));
         }
 
-        if (!historyToken.getSearchText().equals(
-                HistoryToken.DEFAULT_SEARCH_TEXT)) {
-            tokens.add(new Token(KEY_SEARCH_DOC_TEXT, historyToken
-                    .getSearchText()));
-        }
+        setIfExists(tokens, KEY_SEARCH_DOC_TEXT, historyToken.getSearchText());
 
         if (historyToken.getTextFlowId() != null) {
             tokens.add(new Token(KEY_TEXT_FLOW_ID, historyToken.getTextFlowId()

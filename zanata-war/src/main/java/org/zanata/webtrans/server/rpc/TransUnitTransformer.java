@@ -32,10 +32,14 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Name("transUnitTransformer")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransUnitTransformer {
     private static final int NULL_TARGET_VERSION_NUM = 0;
 
