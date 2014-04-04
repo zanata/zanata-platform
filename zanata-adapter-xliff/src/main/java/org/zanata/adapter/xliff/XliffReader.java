@@ -25,6 +25,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
@@ -47,6 +49,8 @@ import com.google.common.base.Charsets;
  *
  */
 public class XliffReader extends XliffCommon {
+    private static final Logger
+        log = LoggerFactory.getLogger(XliffReader.class);
     private final SchemaFactory factory = SchemaFactory
             .newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
     private final XMLInputFactory xmlif = XMLInputFactory.newInstance();
@@ -110,7 +114,7 @@ public class XliffReader extends XliffCommon {
     private void extractXliff(@Nonnull File file, @Nullable Resource document,
             @Nullable TranslationsResource transDoc)
             throws FileNotFoundException {
-
+        assert document != null || transDoc != null;
         if (validationType == ValidationType.XSD) {
             InputSource inputSource =
                     new InputSource(new FileInputStream(file));
@@ -129,39 +133,45 @@ public class XliffReader extends XliffCommon {
             inputSource.setEncoding("utf8");
             final XMLStreamReader xmlr =
                     xmlif.createXMLStreamReader(inputSource.getByteStream());
+            int fileCount = 0;
+            boolean inFile = false;
             while (xmlr.hasNext()) {
                 xmlr.next();
 
-                if (xmlr.getEventType() == XMLEvent.COMMENT) {
-                    // at the moment, ignore comments
-                    // extractComment(xmlr);
-                } else if (xmlr.isStartElement()
-                        && getLocalName(xmlr).equals(ELE_FILE)) {
+                // comments are ignored
+                if (isStartElement(xmlr, ELE_FILE)) {
+                    inFile = true;
                     // srcLang is passed as en-us by default
                     // srcLang = new LocaleId(getAttributeValue(xmlr,
                     // ATTRI_SOURCE_LANGUAGE));
-                } else if (xmlr.isStartElement()
-                        && getLocalName(xmlr).equals(ELE_TRANS_UNIT)) {
+                    ++fileCount;
+                    if (fileCount > 1) {
+                        // TODO consider aborting
+                        log.warn("multiple 'file' elements not supported: ignoring the rest of the file '{}'", file);
+                        break;
+                    } else {
+                        log.debug("start file element");
+                    }
+                } else if (isStartElement(xmlr, ELE_TRANS_UNIT)) {
+                    if (!inFile) {
+                        throw new RuntimeException(
+                                "'trans-unit' must appear inside "
+                                        + "'file' element: ignoring the "
+                                        + "rest of the file " + file);
+                    }
                     if (document != null) {
                         TextFlow textFlow = extractTransUnit(xmlr);
                         document.getTextFlows().add(textFlow);
-                    } else {
+                    } else if (transDoc != null) {
                         TextFlowTarget tfTarget = extractTransUnitTarget(xmlr);
-                        List<String> contents = tfTarget.getContents();
-                        boolean targetEmpty =
-                                contents.isEmpty()
-                                        || StringUtils.isEmpty(contents.get(0));
-                        if (!targetEmpty) {
+                        // TODO should we include empty TFTs?
+                        if (tfTarget.getState() != ContentState.New) {
                             transDoc.getTextFlowTargets().add(tfTarget);
                         }
                     }
-                } else if (xmlr.isEndElement()
-                        && getLocalName(xmlr).equals(ELE_FILE)) {
-                    // this is to ensure only 1 <file> element in each xliff
-                    // document
-                    // FIXME it only ensures that we silently ignore extra file
-                    // elements!
-                    break;
+                } else if (isEndElement(xmlr, ELE_FILE)) {
+                    inFile = false;
+                    log.debug("end file element");
                 }
             }
             xmlr.close();
@@ -180,18 +190,15 @@ public class XliffReader extends XliffCommon {
 
         while (xmlr.hasNext() && !endTransUnit) {
             xmlr.next();
-            String localName = getLocalName(xmlr);
-            boolean endElement = xmlr.isEndElement();
-            if (endElement && localName.equals(ELE_TRANS_UNIT)) {
+            if (isEndElement(xmlr, ELE_TRANS_UNIT)) {
                 endTransUnit = true;
             } else {
-                boolean startElement = xmlr.isStartElement();
-                if (startElement && localName.equals(ELE_SOURCE)) {
+                if (isStartElement(xmlr, ELE_SOURCE)) {
                     String content =
                             getElementValue(xmlr, ELE_SOURCE,
                                     getContentElementList());
                     textFlow.setContents(content);
-                } else if (startElement && localName.equals(ELE_CONTEXT_GROUP)) {
+                } else if (isStartElement(xmlr, ELE_CONTEXT_GROUP)) {
                     textFlow.getExtensions(true).addAll(
                             extractContextList(xmlr));
                 }
@@ -205,37 +212,39 @@ public class XliffReader extends XliffCommon {
     private TextFlowTarget extractTransUnitTarget(XMLStreamReader xmlr)
             throws XMLStreamException {
         TextFlowTarget textFlowTarget = new TextFlowTarget();
-
-        Boolean endTransUnit = false;
         textFlowTarget.setResId(getAttributeValue(xmlr, ATTRI_ID));
 
+        String sourceContent = "";
+        String targetContent = "";
+
+        boolean endTransUnit = false;
         while (xmlr.hasNext() && !endTransUnit) {
             xmlr.next();
-            boolean endElement = xmlr.isEndElement();
-            String localName = getLocalName(xmlr);
-            if (endElement && localName.equals(ELE_TRANS_UNIT)) {
+            if (isEndElement(xmlr, ELE_TRANS_UNIT)) {
                 endTransUnit = true;
             } else {
-                boolean startElement = xmlr.isStartElement();
-                if (startElement && localName.equals(ELE_SOURCE)) {
-                    String content =
+                if (isStartElement(xmlr, ELE_SOURCE)) {
+                    sourceContent =
                             getElementValue(xmlr, ELE_SOURCE,
                                     getContentElementList());
-                    String sourceHash = HashUtil.sourceHash(content);
+                    String sourceHash = HashUtil.sourceHash(sourceContent);
                     textFlowTarget.setSourceHash(sourceHash);
-                } else if (startElement && localName.equals(ELE_TARGET)) {
-                    String content =
+                } else if (isStartElement(xmlr, ELE_TARGET)) {
+                    targetContent =
                             getElementValue(xmlr, ELE_TARGET,
                                     getContentElementList());
-                    textFlowTarget.setContents(asList(content));
-                } else if (startElement
-                        && localName.equals(ELE_CONTEXT_GROUP)) {
+                    textFlowTarget.setContents(asList(targetContent));
+                } else if (isStartElement(xmlr, ELE_CONTEXT_GROUP)) {
                     textFlowTarget.getExtensions(true).addAll(
                             extractContextList(xmlr));
                 }
             }
         }
-        textFlowTarget.setState(ContentState.Translated);
+        if (targetContent.isEmpty()) {
+            textFlowTarget.setState(ContentState.New);
+        } else {
+            textFlowTarget.setState(ContentState.Translated);
+        }
         return textFlowTarget;
     }
 
@@ -255,13 +264,10 @@ public class XliffReader extends XliffCommon {
 
         while (xmlr.hasNext() && !endContextGroup) {
             xmlr.next();// move to context tag
-            String localName = getLocalName(xmlr);
-            boolean endElement = xmlr.isEndElement();
-            if (endElement && localName.equals(ELE_CONTEXT_GROUP))
+            if (isEndElement(xmlr, ELE_CONTEXT_GROUP))
                 endContextGroup = true;
             else {
-                boolean startElement = xmlr.isStartElement();
-                if (startElement && localName.equals(ELE_CONTEXT)) {
+                if (isStartElement(xmlr, ELE_CONTEXT)) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(contextGroup);// context-group
                     sb.append(DELIMITER);
@@ -289,9 +295,7 @@ public class XliffReader extends XliffCommon {
 
         reader.next();
 
-        String localName = getLocalName(reader);
-        if ((reader.isEndElement() || reader.isStartElement())
-                && localName.equals(elementName)) {
+        if (isElement(reader, elementName)) {
             keepReading = false;
         }
 
@@ -301,6 +305,7 @@ public class XliffReader extends XliffCommon {
             } else {
                 // if value in element is a xml element; invalid text
                 if (reader.isStartElement() || reader.isEndElement()) {
+                    String localName = getLocalName(reader);
                     if (legalElements == null
                             || legalElements.contains(localName)) {
                         throw new RuntimeException(
@@ -314,10 +319,8 @@ public class XliffReader extends XliffCommon {
                 }
             }
             reader.next();
-            localName = getLocalName(reader);
 
-            if ((reader.isEndElement() || reader.isStartElement())
-                    && localName.equals(elementName)) {
+            if (isElement(reader, elementName)) {
                 keepReading = false;
             }
         }
@@ -325,9 +328,28 @@ public class XliffReader extends XliffCommon {
     }
 
     private static String getLocalName(XMLStreamReader xmlr) {
-        if (xmlr.isCharacters())
+        if (xmlr.isCharacters()) {
             return "";
+        }
         return xmlr.getLocalName();
+    }
+
+    private static boolean isElement(
+            XMLStreamReader xmlr, String elementLocalName) {
+        return (xmlr.isStartElement() || xmlr.isEndElement())
+            && getLocalName(xmlr).equals(elementLocalName);
+    }
+
+    private static boolean isEndElement(
+            XMLStreamReader xmlr, String elementLocalName) {
+        return xmlr.isEndElement()
+            && getLocalName(xmlr).equals(elementLocalName);
+    }
+
+    private static boolean isStartElement(
+            XMLStreamReader xmlr, String elementLocalName) {
+        return xmlr.isStartElement()
+            && getLocalName(xmlr).equals(elementLocalName);
     }
 
     /**
