@@ -2,9 +2,9 @@ package org.zanata.limits;
 
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Throwables;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ticker;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@ToString
 public class LeakyBucket {
     private final long refillPeriod;
     private final long capacity;
-    private final Ticker ticker;
+    private final TimeTracker timeTracker;
     private volatile long permit;
-    private volatile long lastRead;
     private final long waitSleepTime;
 
     /**
@@ -34,13 +34,19 @@ public class LeakyBucket {
      */
     public LeakyBucket(long capacity, int refillDuration,
             TimeUnit refillTimeUnit) {
+        this(capacity, refillDuration, refillTimeUnit, new TimeTracker());
+    }
+
+    @VisibleForTesting
+    protected LeakyBucket(long capacity, int refillDuration,
+            TimeUnit refillTimeUnit, TimeTracker timeTracker) {
         this.capacity = capacity;
         permit = capacity;
-        ticker = Ticker.systemTicker();
+        this.timeTracker = timeTracker;
         refillPeriod =
                 TimeUnit.NANOSECONDS.convert(refillDuration, refillTimeUnit);
-        long refillInMillis = TimeUnit.MILLISECONDS
-                .convert(refillDuration, refillTimeUnit);
+        long refillInMillis =
+                TimeUnit.MILLISECONDS.convert(refillDuration, refillTimeUnit);
         // when blocking, the time we should sleep (minimum 1 ms)
         waitSleepTime = Math.max(refillInMillis, 1);
     }
@@ -62,7 +68,7 @@ public class LeakyBucket {
     public synchronized boolean tryAcquire(final long permit) {
         onDemandRefill();
         if (this.permit >= permit) {
-            lastRead = ticker.read();
+            timeTracker.recordCurrentTime();
             this.permit -= permit;
             log.debug(
                     "deduct {} permit(s), current left permit {}, return true",
@@ -77,7 +83,7 @@ public class LeakyBucket {
         if (permit == capacity) {
             return;
         }
-        long timePassed = ticker.read() - lastRead;
+        long timePassed = timeTracker.timePassed();
         log.debug("time passed: {}", timePassed);
         long permitsShouldAdd = timePassed / refillPeriod;
         log.debug("permits should add: {}", permitsShouldAdd);
@@ -87,15 +93,17 @@ public class LeakyBucket {
         }
     }
 
-    @Override
-    public String toString() {
-        // @formatter:off
-        return Objects.toStringHelper(this)
-                .add("refillPeriod", refillPeriod)
-                .add("capacity", capacity)
-                .add("permit", permit)
-                .add("lastRead", lastRead)
-                .toString();
-        // @formatter:on
+    @ToString
+    static class TimeTracker {
+        private final Ticker ticker = Ticker.systemTicker();
+        private long lastRead;
+
+        void recordCurrentTime() {
+            lastRead = ticker.read();
+        }
+
+        long timePassed() {
+            return ticker.read() - lastRead;
+        }
     }
 }

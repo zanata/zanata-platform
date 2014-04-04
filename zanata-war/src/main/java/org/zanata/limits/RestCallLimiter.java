@@ -3,6 +3,7 @@ package org.zanata.limits;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,12 @@ class RestCallLimiter {
         this.maxActiveSemaphore = makeSemaphore(maxActive);
     }
 
+    @VisibleForTesting
+    protected RestCallLimiter changeActiveSemaphore(Semaphore activeSemaphore) {
+        this.maxActiveSemaphore = activeSemaphore;
+        return this;
+    }
+
     /**
      * May throw an exception if it takes too long to obtain one of the
      * semaphores
@@ -41,7 +48,7 @@ class RestCallLimiter {
             // if acquired, immediately enter try finally (release)
             try {
                 log.debug("acquired [concurrent] permit");
-                if (!acquireActiveAndRatePermit(taskAfterAcquire)) {
+                if (!acquireActivePermit(taskAfterAcquire)) {
                     throw new RuntimeException(
                             "Couldn't get an [active] permit before timeout");
                 }
@@ -55,7 +62,7 @@ class RestCallLimiter {
         return gotConcurrentPermit;
     }
 
-    private boolean acquireActiveAndRatePermit(Runnable taskAfterAcquire) {
+    private boolean acquireActivePermit(Runnable taskAfterAcquire) {
         log.debug("before acquire [active] semaphore:{}", maxActiveSemaphore);
         try {
             // hang on to the semaphore, so that we can be certain of

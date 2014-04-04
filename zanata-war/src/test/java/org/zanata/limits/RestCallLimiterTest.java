@@ -8,7 +8,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
 
@@ -51,22 +53,19 @@ public class RestCallLimiterTest {
 
     @Mock
     private Runnable runnable;
+    private CountBlockingSemaphore countBlockingSemaphore;
 
     @BeforeClass
     public void beforeClass() {
         // set logging to debug
-        // testeeLogger.setLevel(Level.DEBUG);
-        testLogger.setLevel(Level.DEBUG);
+//        testeeLogger.setLevel(Level.DEBUG);
+//        testLogger.setLevel(Level.DEBUG);
     }
 
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         limiter = new RestCallLimiter(maxConcurrent, maxActive);
-        // the first time this method is executed it seems to cause 10-30ms
-        // overhead by itself (moving things to heap and register classes maybe)
-        // This will reduce that overhead for actual tests
-        limiter.tryAcquireAndRun(runnable);
     }
 
     @Test
@@ -97,7 +96,7 @@ public class RestCallLimiterTest {
                     }
                 });
         assertThat(successRequest,
-                Matchers.<Boolean> iterableWithSize(maxConcurrent));
+                Matchers.<Boolean>iterableWithSize(maxConcurrent));
         // last request which exceeds the limit will fail to get permit
         assertThat(result, Matchers.hasItem(false));
     }
@@ -105,7 +104,6 @@ public class RestCallLimiterTest {
     static <T> List<T> submitConcurrentTasksAndGetResult(Callable<T> task,
             int numOfThreads) throws InterruptedException, ExecutionException {
         List<Callable<T>> tasks = Collections.nCopies(numOfThreads, task);
-
 
         ExecutorService service = Executors.newFixedThreadPool(numOfThreads);
 
@@ -115,8 +113,7 @@ public class RestCallLimiterTest {
             public T apply(Future<T> input) {
                 try {
                     return input.get();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw Throwables.propagate(e);
                 }
             }
@@ -126,28 +123,32 @@ public class RestCallLimiterTest {
     @Test
     public void canOnlyHaveMaxActiveConcurrentRequest()
             throws InterruptedException, ExecutionException {
+        countBlockingSemaphore = new CountBlockingSemaphore(maxActive);
+        limiter =
+                new RestCallLimiter(maxConcurrent, maxActive)
+                        .changeActiveSemaphore(countBlockingSemaphore);
+
         // Given: each thread will take some time to do its job
         final int timeSpentDoingWork = 20;
         runnableWillTakeTime(timeSpentDoingWork);
 
         // When: max concurrent threads are accessing simultaneously
-        Callable<Long> callable =
-                taskToAcquireAndMeasureTime();
+        Callable<Boolean> callable = new Callable<Boolean>() {
+
+            @Override
+            public Boolean call() throws Exception {
+                return limiter.tryAcquireAndRun(runnable);
+            }
+        };
 
         // Then: only max active threads will be served immediately while others
         // will block until them finish
-        List<Long> timeBlockedInMillis =
+        List<Boolean> requests =
                 submitConcurrentTasksAndGetResult(callable, maxConcurrent);
-        log.debug("result: {}", timeBlockedInMillis);
-        Iterable<Long> blocked =
-                Iterables.filter(timeBlockedInMillis, new Predicate<Long>() {
-                    @Override
-                    public boolean apply(Long input) {
-                        return input >= timeSpentDoingWork * 2;
-                    }
-                });
-        assertThat(blocked,
-                Matchers.<Long> iterableWithSize(maxConcurrent - maxActive));
+        log.debug("result: {}", requests);
+
+        assertThat(countBlockingSemaphore.numOfBlockedThreads(),
+                Matchers.equalTo(maxConcurrent - maxActive));
     }
 
     void runnableWillTakeTime(final int timeSpentDoingWork) {
@@ -219,8 +220,7 @@ public class RestCallLimiterTest {
         // 3 requests (each takes 20ms) and 1 request should block
         final int timeSpentDoingWork = 20;
         runnableWillTakeTime(timeSpentDoingWork);
-        Callable<Long> callable =
-                taskToAcquireAndMeasureTime();
+        Callable<Long> callable = taskToAcquireAndMeasureTime();
         List<Callable<Long>> requests = Collections.nCopies(3, callable);
         // 1 task to update the active permit with 5ms delay
         // (so that it will happen while there is a blocked request)
@@ -286,8 +286,7 @@ public class RestCallLimiterTest {
 
     @Test
     public void zeroPermitMeansNoLimit() {
-        limiter =
-                new RestCallLimiter(0, 0);
+        limiter = new RestCallLimiter(0, 0);
 
         assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
         assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
@@ -335,4 +334,27 @@ public class RestCallLimiterTest {
         return arg / 10 * 10;
     }
 
+    private static class CountBlockingSemaphore extends Semaphore {
+        private static final long serialVersionUID = 1L;
+        private AtomicInteger blockCounter = new AtomicInteger(0);
+
+        public CountBlockingSemaphore(Integer permits) {
+            super(permits);
+        }
+
+        @Override
+        public boolean tryAcquire(long timeout, TimeUnit unit)
+                throws InterruptedException {
+            boolean got = tryAcquire();
+            if (!got) {
+                blockCounter.incrementAndGet();
+            }
+            // we don't care the result
+            return true;
+        }
+
+        public int numOfBlockedThreads() {
+            return blockCounter.get();
+        }
+    }
 }
