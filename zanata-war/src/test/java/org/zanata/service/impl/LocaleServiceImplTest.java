@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
@@ -39,7 +38,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @Test(groups = { "business-tests" })
@@ -135,10 +134,8 @@ public class LocaleServiceImplTest {
                 testLocaleServiceImpl.getSupportedLanguageByProjectIteration(
                         projectSlug, versionSlug);
 
-        assertThat(result, Matchers.hasSize(2));
-        assertThat(result.get(0).getLocaleId(),
-                Matchers.equalTo(LocaleId.EN_US));
-        assertThat(result.get(1).getLocaleId(), Matchers.equalTo(LocaleId.DE));
+        assertThat(result).extracting("localeId").containsOnly(
+                LocaleId.EN_US, LocaleId.DE);
     }
 
     @Test
@@ -149,8 +146,8 @@ public class LocaleServiceImplTest {
                 testLocaleServiceImpl.getSupportedLanguageByProjectIteration(
                         projectSlug, versionSlug);
 
-        assertThat(result, Matchers.hasSize(1));
-        assertThat(result.get(0).getLocaleId(), Matchers.equalTo(LocaleId.ES));
+        assertThat(result).extracting("localeId").containsOnly(
+                LocaleId.ES);
     }
 
     @Test
@@ -162,11 +159,8 @@ public class LocaleServiceImplTest {
                 testLocaleServiceImpl.getSupportedLanguageByProjectIteration(
                         projectSlug, versionSlug);
 
-        assertThat(result, Matchers.hasSize(3));
-
-        assertThat(result.get(0).getLocaleId(), Matchers.equalTo(LocaleId.FR));
-        assertThat(result.get(1).getLocaleId(), Matchers.equalTo(LocaleId.EN));
-        assertThat(result.get(2).getLocaleId(), Matchers.equalTo(LocaleId.DE));
+        assertThat(result).extracting("localeId").containsOnly(
+                LocaleId.FR, LocaleId.EN, LocaleId.DE);
     }
 
 }

@@ -2,7 +2,6 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +18,8 @@ import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +60,8 @@ public class GetLocaleListHandlerTest {
     public void testExecute() throws Exception {
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
-        assertThat(result.getLocales(), Matchers.hasSize(5));
+        assertThat(result.getLocales()).extracting("id.localeId").containsOnly(
+            LocaleId.EN_US, LocaleId.DE, LocaleId.FR, LocaleId.EN);
     }
 
     @Test
@@ -74,7 +75,6 @@ public class GetLocaleListHandlerTest {
         iterationLocales.add(new HLocale(LocaleId.DE));
         iterationLocales.add(new HLocale(LocaleId.FR));
         iterationLocales.add(new HLocale(LocaleId.EN));
-        iterationLocales.add(new HLocale(LocaleId.DE));
         return iterationLocales;
     }
 }
