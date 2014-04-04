@@ -96,12 +96,17 @@
                 <span class="is-hidden--s i__text--right">Activity</span>
             </a>
           </li>
-          <li><a href="/dashboard/projects"><i class="i i--project"></i><span
-            class="is-hidden--s i__text--right">Projects <span
-            class="txt--neutral"> 3</span></span></a></li>
-          <li><a href="/dashboard/groups"><i class="i i--group"></i><span
-            class="is-hidden--s i__text--right">Groups<span
-            class="txt--neutral"> 5</span></span></a></li>
+          <s:fragment rendered="#{dashboardAction.getUserMaintainedProjectsCount() > 0}">
+            <li>
+              <a id="projects"
+                href="#{request.contextPath}/dashboard/projects"
+                class="js-tab"
+                onclick="changeBrowserUrl(this.href); return false;">
+                <i class="i i--project"></i>
+                <span class="is-hidden--s i__text--right">Projects </span>
+              </a>
+            </li>
+          </s:fragment>
           <li class="tab__end">
             <a href="#{request.contextPath}/dashboard/settings"
               id="settings" class="js-tab"
@@ -116,10 +121,13 @@
       </nav>
       <div class="tabs__content panels__container l--push-top-1">
         <div id="activity_content" class="is-hidden">
-          <ui:include src="activity.xhtml"/>
+          <ui:include src="../WEB-INF/layout/dashboard/activity.xhtml"/>
+        </div>
+        <div id="projects_content" class="is-hidden">
+          <ui:include src="../WEB-INF/layout/dashboard/projects.xhtml"/>
         </div>
         <div id="settings_content" class="is-hidden">
-          <ui:include src="settings.xhtml"/>
+          <ui:include src="../WEB-INF/layout/dashboard/settings.xhtml"/>
         </div>
       </div>
     </div>

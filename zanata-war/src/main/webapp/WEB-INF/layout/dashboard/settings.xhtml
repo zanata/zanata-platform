@@ -53,7 +53,7 @@
         <h:form id="emailUpdateForm" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item l--push-bottom-1">
               <h:outputLabel for="email">Email</h:outputLabel>
-              <s:decorate id="emailField" template=" ../WEB-INF/layout/field.xhtml" enclose="true">
+              <s:decorate id="emailField" template=" ../field.xhtml" enclose="true">
                 <h:inputText id="email" value="#{userSettingsAction.emailAddress}"
                   maxlength="255">
                 </h:inputText>
@@ -74,7 +74,7 @@
             <s:fragment rendered="#{userSettingsAction.passwordSet}">
               <div class="form__item">
                 <h:outputLabel for="oldPassword">Old Password</h:outputLabel>
-                <s:decorate id="oldPasswordField" template=" ../WEB-INF/layout/field.xhtml" enclose="false">
+                <s:decorate id="oldPasswordField" template=" ../field.xhtml" enclose="false">
                   <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
                     maxlength="255"/>
                 </s:decorate>
@@ -82,7 +82,7 @@
             </s:fragment>
             <div class="form__item l--push-bottom-1">
               <h:outputLabel for="newPassword">New Password</h:outputLabel>
-              <s:decorate id="newPasswordField" template=" ../WEB-INF/layout/field.xhtml" enclose="false">
+              <s:decorate id="newPasswordField" template=" ../field.xhtml" enclose="false">
                 <h:inputSecret id="newPassword" value="#{userSettingsAction.newPassword}"
                   maxlength="255"/>
               </s:decorate>
@@ -175,7 +175,7 @@
           </div>
           <div class="form__item">
             <h:outputLabel for="nameField">Name</h:outputLabel>
-            <s:decorate id="nameField" template=" ../WEB-INF/layout/field.xhtml" enclose="true">
+            <s:decorate id="nameField" template=" ../field.xhtml" enclose="true">
               <h:inputText id="accountName" value="#{userSettingsAction.accountName}"
                 maxlength="80">
               </h:inputText>

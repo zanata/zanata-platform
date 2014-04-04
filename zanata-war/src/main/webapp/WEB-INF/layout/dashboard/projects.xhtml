@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <a4j:jsFunction name="nextProjectPage"
+    render="projectListForm" action="#{dashboardAction.projectList.nextPage}"
+    status="projectlist-loader"/>
+
+  <a4j:jsFunction name="prevProjectPage"
+    render="projectListForm" action="#{dashboardAction.projectList.prevPage}"
+    status="projectlist-loader"/>
+
+  <div class="panel">
+    <div class="tabs--accent">
+      <!-- Nav content goes here <nav></nav>-->
+      <div class="tabs__content">
+        <header class="panel__sub-header">
+          <!-- Header panel options go here -->
+          <h2 class="panel__heading">
+            Maintained Projects
+          </h2>
+        </header>
+        <h:form id="projectListForm">
+          <div class="panel__sub-header js-reveal">
+            <!-- Search panel goes here  -->
+            <div class="panel__results">
+              <div class="panel__results__type">
+                <i class="i i--document txt--neutral"></i>
+              </div>
+              <ul class="panel__pager">
+                <li>
+                  <button class="panel__pager__button"
+                    onclick="prevProjectPage(); return false;">
+                    <i class="i--huge i--arrow-left"></i>
+                  </button>
+                </li>
+                <li>
+                  <button title="Next" class="panel__pager__button"
+                    onclick="nextProjectPage(); return false;">
+                    <i class="i--huge i--arrow-right"></i>
+                  </button>
+                </li>
+              </ul>
+              <span class="txt--meta"><strong>#{dashboardAction.projectListPageStart}-#{dashboardAction.projectListPageEnd}</strong> of #{dashboardAction.projectList.totalRecords}
+                <!-- Search buttons go here -->
+              </span>
+            </div>
+          </div>
+          <ul class="list--stats">
+            <ui:repeat value="#{dashboardAction.projectList.currentPageData}" var="project">
+              <li class="list__item--actionable">
+                <div class="list__item__action">
+                  <div class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                    <a class="dropdown__toggle js-dropdown__toggle txt--meta" title="Project Versions" href="#"><span class="is-invisible">Translate Options</span></a>
+                    <ul class="dropdown__content js-dropdown__content">
+                      <li class="dropdown__header"><span class="txt--meta"><i class="i i--version i__item__icon"></i> Versions</span></li>
+                      <ui:repeat value="#{project.projectIterations}" var="version">
+                        <li><a href="#">#{version.slug}</a></li>
+                      </ui:repeat>
+                      <li><a href="#">All versions</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <a href="#">
+                  <div class="list__item__content">
+                    <div class="list__item__info">
+                      <h3 class="list__title bx--inline-block">#{project.name}</h3>
+                      <p class="list__item__meta">#{project.description}</p>
+                    </div>
+                    <div class="list__item__stats">
+                      <span class="stats--mini" title="#{dashboardAction.getLastUpdatedTime(project)}">
+                        <span class="stats__figure">#{dashboardAction.getLastUpdatedTimeLapseMessage(project)}</span>
+                        <span class="stats__unit"><!-- Last updated by goes here --></span>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ui:repeat>
+          </ul>
+          <div class="panel__results">
+          <div class="panel__results__type">
+            <i class="i i--document txt--neutral"></i>
+          </div>
+          <ul class="panel__pager">
+            <li>
+              <button class="panel__pager__button"
+                onclick="prevProjectPage(); return false;">
+                <i class="i--huge i--arrow-left"></i>
+              </button>
+            </li>
+            <li>
+              <button title="Next" class="panel__pager__button"
+                onclick="nextProjectPage(); return false;">
+                <i class="i--huge i--arrow-right"></i>
+              </button>
+            </li>
+          </ul>
+          <span class="txt--meta"><strong>#{dashboardAction.projectListPageStart}-#{dashboardAction.projectListPageEnd}</strong> of #{dashboardAction.projectList.totalRecords}</span>
+        </div>
+        </h:form>
+      </div>
+    </div>
+  </div>
+
+</ui:composition>

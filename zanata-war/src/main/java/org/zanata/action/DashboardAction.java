@@ -28,12 +28,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.base.Function;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.action.helper.PagedDataHandler;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
@@ -91,6 +93,9 @@ public class DashboardAction implements Serializable {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
+
+    @Getter
+    private ProjectPageList projectList = new ProjectPageList();
 
     private final int USER_IMAGE_SIZE = 115;
 
@@ -150,6 +155,24 @@ public class DashboardAction implements Serializable {
         Collections.sort(sortedList, projectCreationDateComparator);
 
         return sortedList;
+    }
+
+    public String getLastUpdatedTimeLapseMessage(HProject project) {
+        return DateUtil.getHowLongAgoDescription(project.getLastChanged());
+    }
+
+    public String getLastUpdatedTime(HProject project) {
+        return DateUtil.formatShortDate(project.getLastChanged());
+    }
+
+    public long getProjectListPageStart() {
+        return projectList.getCurrentPageFirstRecord() + 1;
+    }
+
+    public long getProjectListPageEnd() {
+        return Math.min(projectList.getTotalRecords(),
+                projectList.getCurrentPageFirstRecord()
+                        + projectList.getCurrentPageData().size());
     }
 
     @CachedMethodResult
@@ -223,5 +246,33 @@ public class DashboardAction implements Serializable {
 
     public boolean isUserReviewer() {
         return languageTeamServiceImpl.isUserReviewer(authenticatedAccount.getPerson().getId());
+    }
+
+    private class ProjectPageList
+            extends PagedDataHandler<HProject> {
+
+        @Override
+        protected List<HProject> fetchCurrentPage() {
+            ProjectDAO projectDAO = 
+                    (ProjectDAO)Component.getInstance(ProjectDAO.class);
+            HAccount authenticatedAccount =
+                    (HAccount) Component
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+            return projectDAO.getProjectsForMaintainer(
+                            authenticatedAccount.getPerson(),
+                            ((Long)getCurrentPageFirstRecord()).intValue(),
+                            getPageSize());
+        }
+
+        @Override
+        protected long fetchTotalRecords() {
+            ProjectDAO projectDAO =
+                    (ProjectDAO)Component.getInstance(ProjectDAO.class);
+            HAccount authenticatedAccount =
+                    (HAccount) Component
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+            return projectDAO.getMaintainedProjectCount(
+                    authenticatedAccount.getPerson());
+        }
     }
 }
