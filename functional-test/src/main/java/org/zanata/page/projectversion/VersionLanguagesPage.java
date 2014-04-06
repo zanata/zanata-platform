@@ -23,11 +23,9 @@ package org.zanata.page.projectversion;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.webtrans.EditorPage;
-
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -105,8 +103,9 @@ public class VersionLanguagesPage extends VersionBasePage {
     public boolean sourceDocumentsContains(String document) {
         gotoDocumentTab();
         List<WebElement> documentList = getLanguageTabDocumentList();
-        for (WebElement tableRow : documentList) {
-            if (tableRow.getText().contains(document)) {
+        for (final WebElement tableRow : documentList) {
+            if (tableRow.findElement(By.className("list__title")).getText()
+                    .contains(document)) {
                 return true;
             }
         }
@@ -114,6 +113,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     private List<WebElement> getLanguageTabDocumentList() {
+
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -123,8 +123,10 @@ public class VersionLanguagesPage extends VersionBasePage {
             }
         });
 
-        return getDriver().findElement(By.id("documents-document_list"))
-                .findElements(By.tagName("li"));
+        List<WebElement> rows =
+                getDriver().findElement(By.id("documents-document_list"))
+                        .findElements(By.xpath("./li"));
+        return rows;
     }
 
     private List<WebElement> getVersionTabDocumentList() {
@@ -141,7 +143,6 @@ public class VersionLanguagesPage extends VersionBasePage {
                 .findElements(
                         By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']/li"));
     }
-
 
     public String getStatisticsForLocale(final String localeId) {
         gotoLanguageTab();

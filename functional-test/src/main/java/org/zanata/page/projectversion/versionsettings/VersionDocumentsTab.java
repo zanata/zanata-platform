@@ -1,15 +1,16 @@
 package org.zanata.page.projectversion.versionsettings;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 
-import java.util.List;
-
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class VersionDocumentsTab extends VersionBasePage {
 
@@ -52,14 +53,15 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public boolean sourceDocumentsContains(String document) {
-        gotoDocumentTab();
-        List<WebElement> documentList = getDriver()
-                .findElement(By.id("settings-document_form"))
-                .findElement(By.tagName("ul"))
-                .findElements(By.tagName("li"));
-        for (WebElement tableRow : documentList) {
-            if (tableRow.findElement(By.tagName("label"))
-                    .getText().contains(document)) {
+
+        List<WebElement> documentLabelList =
+                getDriver()
+                        .findElement(By.id("settings-document_form"))
+                        .findElement(By.tagName("ul"))
+                        .findElements(
+                                By.xpath(".//li/label[@class='form__checkbox__label']"));
+        for (WebElement label : documentLabelList) {
+            if (label.getText().contains(document)) {
                 return true;
             }
         }
