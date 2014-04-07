@@ -43,7 +43,6 @@ import static org.mockito.Mockito.*;
 public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     private HLocale hLocale;
-    private TransUnitTransformer transformer;
     @Mock
     private ResourceUtils resourceUtils;
     private HPerson admin;
@@ -135,7 +134,6 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         when(
                 resourceUtils.getNumPlurals(any(HDocument.class),
                         any(HLocale.class))).thenReturn(1);
-        transformer = new TransUnitTransformer(resourceUtils);
     }
 
     private HPerson makePerson(String username) {

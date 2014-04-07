@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
@@ -37,6 +38,7 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.search.FilterConstraintToModalNavigationQuery;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
@@ -89,123 +91,17 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     public List<HTextFlow> getNavigationByDocumentId(Long documentId,
             HLocale hLocale, ResultTransformer resultTransformer,
             FilterConstraints filterConstraints) {
-        StringBuilder queryBuilder = new StringBuilder();
-        // I can't write a HQL or criteria to achieve the same result. I gave
-        // up...
-        queryBuilder
-                .append("SELECT tf.id, tft.state FROM HTextFlow tf ")
-                .append(" LEFT JOIN HTextFlowTarget tft on tf.id = tft.tf_id AND locale = :locale")
-                .append(" WHERE tf.document_id = :docId AND tf.obsolete = 0");
-        queryBuilder.append(" AND ").append(
-                buildContentStateCondition(
-                        filterConstraints.getIncludedStates(), "tft"));
-        boolean hasSearchString =
-                !Strings.isNullOrEmpty(filterConstraints.getSearchString());
-        if (hasSearchString) {
-            queryBuilder
-                    .append(" AND (")
-                    // search in source
-                    .append(buildSearchCondition(
-                            filterConstraints.getSearchString(), "tf"))
-                    .append(" OR ")
-                    // search in target
-                    .append(buildSearchCondition(
-                            filterConstraints.getSearchString(), "tft"))
-                    .append(")");
-        }
-        queryBuilder.append(" ORDER BY tf.pos");
+        FilterConstraintToModalNavigationQuery
+                toModalNavigationQuery =
+                new FilterConstraintToModalNavigationQuery(documentId, hLocale,
+                        resultTransformer, filterConstraints);
 
-        log.debug("get navigation SQL query: {}", queryBuilder);
-        Query query =
-                getSession().createSQLQuery(queryBuilder.toString())
-                        .addScalar("id", StandardBasicTypes.LONG)
-                        .addScalar("state").setParameter("docId", documentId)
-                        .setParameter("locale", hLocale.getId());
-        if (hasSearchString) {
-            query.setParameter("searchstringlowercase", "%"
-                    + filterConstraints.getSearchString().toLowerCase() + "%");
-        }
-        query.setResultTransformer(resultTransformer);
-        query.setComment("TextFlowDAO.getNavigationByDocumentId");
-
-        return query.list();
+        String sql = toModalNavigationQuery.toSql();
+        SQLQuery sqlQuery = getSession().createSQLQuery(sql);
+        return toModalNavigationQuery.setParameters(sqlQuery).list();
     }
 
-    /**
-     * Build a SQL query condition that is true only for text flows with one of
-     * the given states.
-     *
-     * @param includedStates
-     *            states of targets that should return true
-     * @param hTextFlowTargetTableAlias
-     *            alias being used for the target table in the current query
-     * @return a valid SQL query condition that is wrapped in parentheses if
-     *         necessary
-     */
-    protected static String buildContentStateCondition(
-            ContentStateGroup includedStates, String hTextFlowTargetTableAlias) {
-        if (includedStates.hasAllStates()) {
-            return "1";
-        }
-        if (includedStates.hasNoStates()) {
-            return "0";
-        }
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("(");
-        List<String> conditions = Lists.newArrayList();
-        final String stateColumn = hTextFlowTargetTableAlias + ".state";
-        if (includedStates.hasNew()) {
-            conditions.add(stateColumn + "=0 or " + stateColumn + " is null");
-        }
-        if (includedStates.hasFuzzy()) {
-            conditions.add(stateColumn + "=1");
-        }
-        if (includedStates.hasTranslated()) {
-            conditions.add(stateColumn + "=2");
-        }
-        if (includedStates.hasApproved()) {
-            conditions.add(stateColumn + "=3");
-        }
-        if (includedStates.hasRejected()) {
-            conditions.add(stateColumn + "=4");
-        }
-        Joiner joiner = Joiner.on(" or ");
-        joiner.appendTo(builder, conditions);
-        builder.append(")");
-        return builder.toString();
-    }
-
-    /**
-     * This will build a SQL query condition in where clause. It can be used to
-     * search string in content0, content1 ... content5 in HTextFlow or
-     * HTextFlowTarget. If search term is empty it will return '1'
-     *
-     * @param searchString
-     *            search term
-     * @param alias
-     *            table name alias
-     * @return '1' if searchString is empty or a SQL condition clause with
-     *         lower(contentX) like '%searchString%' in parentheses '()' joined
-     *         by 'or'
-     */
-    protected static String buildSearchCondition(String searchString,
-            String alias) {
-        if (Strings.isNullOrEmpty(searchString)) {
-            return "1";
-        }
-        StringBuilder builder = new StringBuilder();
-        builder.append("(");
-        List<String> conditions = Lists.newArrayList();
-        for (int i = 0; i < 6; i++) {
-            conditions.add("lower(" + alias + ".content" + i
-                    + ") LIKE :searchstringlowercase");
-        }
-        Joiner joiner = Joiner.on(" or ");
-        joiner.appendTo(builder, conditions);
-        builder.append(")");
-        return builder.toString();
-    }
 
     public int getTotalWords() {
         Query q =
