@@ -79,7 +79,6 @@ public class UploadTest {
                         "uploadedDocumentIsInFilesystem", ".txt",
                         "This is a test file");
         String testFileName = originalFile.getName();
-        String successfullyUploaded = "Document " + testFileName + " uploaded.";
 
         VersionLanguagesPage projectVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
@@ -102,10 +101,6 @@ public class UploadTest {
         assertThat("The contents of the file were also uploaded",
                 testFileGenerator.getTestFileContent(newlyCreatedFile),
                 Matchers.equalTo("This is a test file"));
-
-        assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
         assertThat("Document shows in table",
                 projectVersionPage.sourceDocumentsContains(testFileName));
     }
