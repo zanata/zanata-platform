@@ -9,9 +9,8 @@ import org.zanata.ApplicationConfiguration;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * This class is used by RateLimitingFilter and have access to seam environment.
- *
- * @see org.jboss.seam.servlet.ContextualHttpServletRequest
+ * This class is used by RestLimitingSynchronousDispatcher to dispatch API calls
+ * via the appropriate RestCallLimiter and have access to seam environment.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

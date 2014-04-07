@@ -17,13 +17,13 @@ public class LeakyBucket {
     private final long refillPeriod;
     private final long capacity;
     private final TimeTracker timeTracker;
-    private volatile long permit;
+    private volatile long availablePermits;
     private final long waitSleepTime;
 
     /**
-     * Simple form leaky bucket. Initialized with a capacity and full. Each
-     * #tryAcquire() will deduct 1 permit. Permits is refilled on demand after
-     * set time period.
+     * Simple form leaky bucket. Start off with full permits.
+     * Each #tryAcquire() will deduct 1 permit. Permits is refilled on demand
+     * after set time period.
      *
      * @param capacity
      *            capacity
@@ -41,7 +41,7 @@ public class LeakyBucket {
     protected LeakyBucket(long capacity, int refillDuration,
             TimeUnit refillTimeUnit, TimeTracker timeTracker) {
         this.capacity = capacity;
-        permit = capacity;
+        availablePermits = capacity;
         this.timeTracker = timeTracker;
         refillPeriod =
                 TimeUnit.NANOSECONDS.convert(refillDuration, refillTimeUnit);
@@ -65,14 +65,14 @@ public class LeakyBucket {
      *
      * @return true if there is enough permits
      */
-    public synchronized boolean tryAcquire(final long permit) {
+    public synchronized boolean tryAcquire(final long requestPermits) {
         onDemandRefill();
-        if (this.permit >= permit) {
+        if (this.availablePermits >= requestPermits) {
             timeTracker.recordCurrentTime();
-            this.permit -= permit;
+            this.availablePermits -= requestPermits;
             log.debug(
-                    "deduct {} permit(s), current left permit {}, return true",
-                    permit, this.permit);
+                    "deduct {} permits(s), current left permits {}, return true",
+                    requestPermits, this.availablePermits);
             return true;
         } else {
             return false;
@@ -80,7 +80,7 @@ public class LeakyBucket {
     }
 
     private synchronized void onDemandRefill() {
-        if (permit == capacity) {
+        if (availablePermits == capacity) {
             return;
         }
         long timePassed = timeTracker.timePassed();
@@ -88,8 +88,8 @@ public class LeakyBucket {
         long permitsShouldAdd = timePassed / refillPeriod;
         log.debug("permits should add: {}", permitsShouldAdd);
         if (timePassed >= refillPeriod) {
-            permit = Math.min(capacity, permit + permitsShouldAdd);
-            log.debug("refilled and now with {} permits", permit);
+            availablePermits = Math.min(capacity, availablePermits + permitsShouldAdd);
+            log.debug("refilled and now with {} permits", availablePermits);
         }
     }
 

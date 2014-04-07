@@ -19,6 +19,19 @@ class RestCallLimiter {
     private int maxConcurrent;
     private int maxActive;
 
+    /**
+     * Creates a limiter which limits maximum concurrent requests and maximum
+     * active requests.
+     *
+     * i.e. when setting maxConcurrent to 4 and maxActive to 2, only 4
+     * concurrent requests is allowed to be served, only 2 of them are actively
+     * running, the other 2 will block until the first 2 finishes.
+     *
+     * @param maxConcurrent
+     *            maximum allowed requests/threads for a single user.
+     * @param maxActive
+     *            maximum allowed active requests/threads for a single user.
+     */
     RestCallLimiter(int maxConcurrent, int maxActive) {
         this.maxConcurrent = maxConcurrent;
         this.maxActive = maxActive;
@@ -33,8 +46,10 @@ class RestCallLimiter {
     }
 
     /**
-     * May throw an exception if it takes too long to obtain one of the
-     * semaphores
+     * This method is potentially blocking on available active permits. It may
+     * throw an exception if it takes too long to obtain one of the semaphores.
+     * It may immediately return false if there is not enough concurrent
+     * permits.
      *
      * @param taskAfterAcquire
      *            task to perform after acquire
@@ -68,8 +83,7 @@ class RestCallLimiter {
             // hang on to the semaphore, so that we can be certain of
             // releasing the same one we acquired
             final Semaphore activeSem = maxActiveSemaphore;
-            boolean gotActivePermit =
-                    activeSem.tryAcquire(5, TimeUnit.MINUTES);
+            boolean gotActivePermit = activeSem.tryAcquire(5, TimeUnit.MINUTES);
             if (gotActivePermit) {
                 // if acquired, immediately enter try finally (release)
                 try {
@@ -86,22 +100,39 @@ class RestCallLimiter {
         }
     }
 
+    /**
+     * Due to the fact that semaphore won't allow live update its allowed
+     * permits. For efficiency reason, when changing permits limit, any previous
+     * requests are accounted separately from future requests, and may in fact
+     * lead to oldMaxConcurrent + newMaxConcurrent requests being allowed
+     * temporarily.
+     *
+     * @param maxConcurrent
+     *            new maximum allowed concurrent permits
+     */
     public synchronized void setMaxConcurrent(int maxConcurrent) {
         if (maxConcurrent != this.maxConcurrent) {
-            log.debug(
-                "change max [concurrent] semaphore with new permit {}",
-                maxConcurrent);
-            maxConcurrentSemaphore =
-                makeSemaphore(maxConcurrent);
+            log.debug("change max [concurrent] semaphore with new permit {}",
+                    maxConcurrent);
+            maxConcurrentSemaphore = makeSemaphore(maxConcurrent);
             this.maxConcurrent = maxConcurrent;
         }
     }
 
+    /**
+     * Due to the fact that semaphore won't allow live update its allowed
+     * permits. For efficiency reason, when changing permits limit, any previous
+     * requests are accounted separately from future requests, and may in fact
+     * lead to oldMaxConcurrent + newMaxConcurrent requests being allowed
+     * temporarily.
+     *
+     * @param maxActive
+     *            new maximum allowed active permits
+     */
     public synchronized void setMaxActive(int maxActive) {
         if (maxActive != this.maxActive) {
-            log.debug(
-                "change max [active] semaphore with new permit {}",
-                maxActive);
+            log.debug("change max [active] semaphore with new permit {}",
+                    maxActive);
             maxActiveSemaphore = makeSemaphore(maxActive);
             this.maxActive = maxActive;
         }
@@ -146,8 +177,7 @@ class RestCallLimiter {
      */
     private static class NoLimitSemaphore extends Semaphore {
         private static final long serialVersionUID = 1L;
-        private static final NoLimitSemaphore INSTANCE =
-                new NoLimitSemaphore();
+        private static final NoLimitSemaphore INSTANCE = new NoLimitSemaphore();
 
         private NoLimitSemaphore() {
             super(1);

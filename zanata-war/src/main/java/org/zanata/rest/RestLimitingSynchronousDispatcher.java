@@ -10,11 +10,16 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.limits.RateLimitingProcessor;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * This class extends RESTEasy's SynchronousDispatcher to limit API calls per
+ * API key (via RateLimitingProcessor and RateLimitManager) before dispatching
+ * requests.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -30,11 +35,8 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
         processor = new RateLimitingProcessor();
     }
 
-    /**
-     * Test to use.
-     */
-    RestLimitingSynchronousDispatcher(
-            ResteasyProviderFactory providerFactory,
+    @VisibleForTesting
+    RestLimitingSynchronousDispatcher(ResteasyProviderFactory providerFactory,
             RateLimitingProcessor processor) {
         super(providerFactory);
         this.processor = processor;

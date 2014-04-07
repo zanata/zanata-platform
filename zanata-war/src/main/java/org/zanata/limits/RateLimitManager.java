@@ -18,12 +18,10 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.util.Introspectable;
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import lombok.Delegate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,8 +48,7 @@ public class RateLimitManager implements Introspectable {
     private int maxActive;
 
     public static RateLimitManager getInstance() {
-        return (RateLimitManager) Component
-                .getInstance("rateLimiterHolder");
+        return (RateLimitManager) Component.getInstance("rateLimiterHolder");
     }
 
     @Create
@@ -74,17 +71,20 @@ public class RateLimitManager implements Introspectable {
         boolean changed = false;
         readRateLimitState();
         if (oldConcurrent != maxConcurrent) {
-            log.info("application configuration changed. Old concurrent: {}, New concurrent: {}",
-                oldConcurrent, maxConcurrent);
+            log.info(
+                    "application configuration changed. Old concurrent: {}, New concurrent: {}",
+                    oldConcurrent, maxConcurrent);
             changed = true;
         }
         if (oldActive != maxActive) {
-            log.info("application configuration changed. Old active: {}, New active: {}",
-                oldActive, maxActive);
+            log.info(
+                    "application configuration changed. Old active: {}, New active: {}",
+                    oldActive, maxActive);
             changed = true;
         }
         if (changed) {
-            for (RestCallLimiter restCallLimiter : activeCallers.asMap().values()) {
+            for (RestCallLimiter restCallLimiter : activeCallers.asMap()
+                    .values()) {
                 restCallLimiter.changeConfig(maxConcurrent, maxActive);
             }
         }
@@ -125,27 +125,33 @@ public class RateLimitManager implements Introspectable {
                 });
     }
 
-    public RestCallLimiter getLimiter(String apiKey) {
-        try {
-            return activeCallers.get(apiKey, new RestRateLimiterLoader(apiKey));
+    public RestCallLimiter getLimiter(final String apiKey) {
+
+        if (maxConcurrent == 0 && maxActive == 0) {
+            // short circuit if we don't want limiting
+            return NoLimitLimiter.INSTANCE;
         }
-        catch (ExecutionException e) {
+        try {
+            return activeCallers.get(apiKey, new Callable<RestCallLimiter>() {
+                @Override
+                public RestCallLimiter call() throws Exception {
+                    log.debug("creating rate limiter for api key: {}", apiKey);
+                    return new RestCallLimiter(getMaxConcurrent(),
+                            getMaxActive());
+                }
+            });
+        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private class RestRateLimiterLoader implements
-        Callable<RestCallLimiter> {
-        private final String apiKey;
+    private static class NoLimitLimiter extends RestCallLimiter {
+        private static final NoLimitLimiter INSTANCE = new NoLimitLimiter();
 
-        public RestRateLimiterLoader(String apiKey) {
-            this.apiKey = apiKey;
+        private NoLimitLimiter() {
+            super(0, 0);
         }
 
-        @Override
-        public RestCallLimiter call() throws Exception {
-            log.debug("creating rate limiter for api key: {}", apiKey);
-            return new RestCallLimiter(getMaxConcurrent(), getMaxActive());
-        }
     }
+
 }

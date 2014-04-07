@@ -8,8 +8,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.hamcrest.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,7 +19,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a
@@ -41,8 +39,8 @@ public class LeakyBucketTest {
 
     @BeforeMethod
     public void beforeMethod() {
-        LogManager.getLogger(LeakyBucket.class.getPackage().getName())
-                .setLevel(Level.DEBUG);
+//        LogManager.getLogger(LeakyBucket.class.getPackage().getName())
+//                .setLevel(Level.DEBUG);
         MockitoAnnotations.initMocks(this);
         bucket =
                 new LeakyBucket(1, refillDuration, refillTimeUnit, timeTracker);
