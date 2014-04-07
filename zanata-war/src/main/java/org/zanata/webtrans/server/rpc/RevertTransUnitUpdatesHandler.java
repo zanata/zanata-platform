@@ -60,8 +60,8 @@ public class RevertTransUnitUpdatesHandler extends
     public UpdateTransUnitResult execute(RevertTransUnitUpdates action,
             ExecutionContext context) throws ActionException {
         SecurityService.SecurityCheckResult securityCheckResult =
-                securityServiceImpl.checkPermission(action,
-                        SecurityService.TranslationAction.MODIFY);
+                securityServiceImpl.checkWorkspaceAction(action,
+                    SecurityService.TranslationAction.MODIFY);
         HLocale hLocale = securityCheckResult.getLocale();
         TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 
