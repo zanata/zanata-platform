@@ -64,7 +64,7 @@ public abstract class PagedDataHandler<T> {
     }
 
     public boolean allowsNextPage() {
-        return getTotalRecords() < pageNumber * pageSize;
+        return getTotalRecords() > pageNumber * pageSize;
     }
 
     public boolean allowsPrevPage() {

@@ -33,14 +33,20 @@
                 <i class="i i--document txt--neutral"></i>
               </div>
               <ul class="panel__pager">
+                <ui:param name="prevPageEnabled"
+                  value="#{dashboardAction.projectList.allowsPrevPage()}"/>
+                <ui:param name="nextPageEnabled"
+                  value="#{dashboardAction.projectList.allowsNextPage()}"/>
                 <li>
                   <button class="panel__pager__button"
+                    disabled="#{prevPageEnabled ? '' : 'disabled'}"
                     onclick="prevProjectPage(); return false;">
                     <i class="i--huge i--arrow-left"></i>
                   </button>
                 </li>
                 <li>
                   <button title="Next" class="panel__pager__button"
+                    disabled="#{nextPageEnabled ? '' : 'disabled'}"
                     onclick="nextProjectPage(); return false;">
                     <i class="i--huge i--arrow-right"></i>
                   </button>
@@ -60,13 +66,25 @@
                     <ul class="dropdown__content js-dropdown__content">
                       <li class="dropdown__header"><span class="txt--meta"><i class="i i--version i__item__icon"></i> Versions</span></li>
                       <ui:repeat value="#{project.projectIterations}" var="version">
-                        <li><a href="#">#{version.slug}</a></li>
+                        <li>
+                          <s:link view="/iteration/view.xhtml" propagation="none">
+                            <f:param name="projectSlug" value="#{project.slug}"/>
+                            <f:param name="iterationSlug" value="#{version.slug}"/>
+                            <h:outputText value="#{version.slug}"/>
+                          </s:link>
+                        </li>
                       </ui:repeat>
-                      <li><a href="#">All versions</a></li>
+                      <li>
+                        <s:link view="/project/project.xhtml" propagation="none">
+                          <f:param name="slug" value="#{project.slug}"/>
+                          <h:outputText value="All versions"/>
+                        </s:link>
+                      </li>
                     </ul>
                   </div>
                 </div>
-                <a href="#">
+                <s:link view="/project/project.xhtml" propagation="none">
+                  <f:param name="slug" value="#{project.slug}"/>
                   <div class="list__item__content">
                     <div class="list__item__info">
                       <h3 class="list__title bx--inline-block">#{project.name}</h3>
@@ -79,7 +97,7 @@
                       </span>
                     </div>
                   </div>
-                </a>
+                </s:link>
               </li>
             </ui:repeat>
           </ul>
@@ -90,12 +108,14 @@
           <ul class="panel__pager">
             <li>
               <button class="panel__pager__button"
+                disabled="#{prevPageEnabled ? '' : 'disabled'}"
                 onclick="prevProjectPage(); return false;">
                 <i class="i--huge i--arrow-left"></i>
               </button>
             </li>
             <li>
               <button title="Next" class="panel__pager__button"
+                disabled="#{nextPageEnabled ? '' : 'disabled'}"
                 onclick="nextProjectPage(); return false;">
                 <i class="i--huge i--arrow-right"></i>
               </button>
