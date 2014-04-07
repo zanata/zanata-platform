@@ -99,7 +99,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
         query.setFirstResult(offset);
         query.setCacheable(true);
         query.setComment("activityDAO.findLatestActivities");
-        return query.list();
+        return (List<Activity>) query.list();
     }
 
     public int getActivityCountByActor(Long personId) {

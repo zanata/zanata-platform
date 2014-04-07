@@ -20,12 +20,15 @@
  */
 package org.zanata.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.NoArgsConstructor;
@@ -46,7 +49,8 @@ import org.hibernate.annotations.Type;
 @Setter
 @NoArgsConstructor
 @ToString(of = "comment")
-public class HTermComment {
+public class HTermComment implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
 
     private String comment;

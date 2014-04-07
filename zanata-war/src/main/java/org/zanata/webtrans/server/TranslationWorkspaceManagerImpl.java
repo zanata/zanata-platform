@@ -56,6 +56,8 @@ import com.ibm.icu.util.ULocale;
 
 import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
@@ -103,13 +105,6 @@ public class TranslationWorkspaceManagerImpl implements
     @Observer(ZanataInit.EVENT_Zanata_Startup)
     public void start() {
         log.info("starting...");
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                stopListeners();
-            }
-        });
     }
 
     @Observer(ZanataIdentity.USER_LOGOUT_EVENT)
@@ -216,9 +211,7 @@ public class TranslationWorkspaceManagerImpl implements
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());
-    }
 
-    private void stopListeners() {
         // Stopping the listeners frees up the EventServiceImpl servlet, which
         // would otherwise prevent Apache Coyote from shutting down quickly.
         // Note that the servlet may still hang around up to the max timeout
@@ -233,6 +226,9 @@ public class TranslationWorkspaceManagerImpl implements
         log.info(
                 "Removed {} client(s).  Waiting for outstanding polls to time out...",
                 clientCount);
+        UserManager userManager =
+                UserManagerFactory.getInstance().getUserManager();
+        userManager.getUserActivityScheduler().stop();
     }
 
     @Override

@@ -232,4 +232,3 @@ function registerMouseEvent(autocompleteId, selectItemAction,
 function filterList(input, filterFn) {
   filterFn(jQuery(input).val());
 }
-

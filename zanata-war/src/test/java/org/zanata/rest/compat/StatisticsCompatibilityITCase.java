@@ -22,9 +22,11 @@ package org.zanata.rest.compat;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.junit.Before;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
+import org.zanata.apicompat.rest.client.IStatisticsResource;
 import org.zanata.apicompat.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.apicompat.rest.dto.stats.TranslationStatistics;
 import org.zanata.apicompat.rest.service.StatisticsResource;
@@ -40,6 +42,16 @@ import static org.hamcrest.Matchers.not;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class StatisticsCompatibilityITCase extends RestTest {
+
+    private StatisticsResource statsResource;
+
+    @Before
+    public void before() {
+        statsResource =
+            super.createProxy(
+                    createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
+                    IStatisticsResource.class);
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -70,11 +82,6 @@ public class StatisticsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getStatisticsForIteration() throws Exception {
-        StatisticsResource statsResource =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        StatisticsResource.class, "/");
-
         ContainerTranslationStatistics stats =
                 statsResource.getStatistics("sample-project", "1.0", true,
                         true, null);
@@ -120,11 +127,6 @@ public class StatisticsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getStatisticsForDocument() throws Exception {
-        StatisticsResource statsResource =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        StatisticsResource.class, "/");
-
         ContainerTranslationStatistics stats =
                 statsResource.getStatistics("sample-project", "1.0",
                         "my/path/document.txt", true, null);
@@ -167,11 +169,6 @@ public class StatisticsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getStatisticsForIterationAndLocale() throws Exception {
-        StatisticsResource statsResource =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        StatisticsResource.class, "/");
-
         ContainerTranslationStatistics stats =
                 statsResource.getStatistics("sample-project", "1.0", true,
                         false, new String[] { "as" });
@@ -209,11 +206,6 @@ public class StatisticsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getStatisticsForDocumentAndLocale() throws Exception {
-        StatisticsResource statsResource =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        StatisticsResource.class, "/");
-
         ContainerTranslationStatistics stats =
                 statsResource.getStatistics("sample-project", "1.0",
                         "my/path/document.txt", true, new String[] { "as" });
