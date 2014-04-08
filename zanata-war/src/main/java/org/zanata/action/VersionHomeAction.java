@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
 
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,6 +48,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -165,7 +167,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     private List<HDocument> documents;
 
-    private Map<LocaleId, WordStatistic> statisticMap;
+    private Map<LocaleId, WordStatistic> localeStatisticMap;
 
     private Map<DocumentLocaleKey, WordStatistic> documentStatisticMap;
 
@@ -184,18 +186,12 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Getter
     private SortingType documentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.HOURS,
-                    SortingType.SortOption.PERCENTAGE,
-                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE,
                     SortingType.SortOption.LAST_TRANSLATED));
 
     @Getter
     private SortingType sourceDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.HOURS,
-                    SortingType.SortOption.PERCENTAGE,
-                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
 
     @Getter
@@ -327,35 +323,24 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Override
     protected void loadStatistics() {
-        statisticMap = Maps.newHashMap();
+        localeStatisticMap = Maps.newHashMap();
         for (HLocale locale : getSupportedLocale()) {
             WordStatistic wordStatistic =
                     versionStateCacheImpl.getVersionStatistics(getVersion()
                             .getId(), locale.getLocaleId());
             wordStatistic.setRemainingHours(StatisticsUtil
                     .getRemainingHours(wordStatistic));
-            statisticMap.put(locale.getLocaleId(), wordStatistic);
+            localeStatisticMap.put(locale.getLocaleId(), wordStatistic);
         }
 
         overallStatistic = new WordStatistic();
-        for (Map.Entry<LocaleId, WordStatistic> entry : statisticMap.entrySet()) {
+        for (Map.Entry<LocaleId, WordStatistic> entry : localeStatisticMap.entrySet()) {
             overallStatistic.add(entry.getValue());
         }
         overallStatistic.setRemainingHours(StatisticsUtil
                 .getRemainingHours(overallStatistic));
 
         documentStatisticMap = Maps.newHashMap();
-        for (HDocument document : getDocuments()) {
-            for (HLocale locale : getSupportedLocale()) {
-                WordStatistic wordStatistic =
-                        documentDAO.getWordStatistics(document.getId(),
-                                locale.getLocaleId());
-                wordStatistic.setRemainingHours(StatisticsUtil
-                        .getRemainingHours(wordStatistic));
-                documentStatisticMap.put(new DocumentLocaleKey(
-                        document.getId(), locale.getLocaleId()), wordStatistic);
-            }
-        }
     }
 
     @Override
@@ -383,6 +368,13 @@ public class VersionHomeAction extends AbstractSortAction implements
         return documents;
     }
 
+    public List<HDocument> getDocuments(DocumentDAO documentDAO) {
+        if (this.documentDAO == null) {
+            this.documentDAO = documentDAO;
+        }
+        return getDocuments();
+    }
+
     public List<HDocument> getSourceDocuments() {
         if (documents == null) {
             documents =
@@ -391,6 +383,13 @@ public class VersionHomeAction extends AbstractSortAction implements
             Collections.sort(documents, sourceDocumentComparator);
         }
         return documents;
+    }
+
+    public List<HDocument> getSourceDocuments(DocumentDAO documentDAO) {
+        if (this.documentDAO == null) {
+            this.documentDAO = documentDAO;
+        }
+        return getSourceDocuments();
     }
 
     public List<HIterationGroup> getGroups() {
@@ -431,23 +430,31 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     public WordStatistic getStatisticsForLocale(LocaleId localeId) {
-        return statisticMap.get(localeId);
+        return localeStatisticMap.get(localeId);
     }
 
     public WordStatistic getStatisticForDocument(Long documentId,
             LocaleId localeId) {
-        return documentStatisticMap.get(new DocumentLocaleKey(documentId,
-                localeId));
+        DocumentLocaleKey key = new DocumentLocaleKey(documentId, localeId);
+        if (!documentStatisticMap.containsKey(key)) {
+            WordStatistic wordStatistic =
+                    documentDAO.getWordStatistics(documentId, localeId);
+            wordStatistic.setRemainingHours(StatisticsUtil
+                    .getRemainingHours(wordStatistic));
+            documentStatisticMap.put(key, wordStatistic);
+        }
+        return documentStatisticMap.get(key);
     }
 
     public WordStatistic getDocumentStatistic(Long documentId) {
         WordStatistic wordStatistic = new WordStatistic();
-        for (Map.Entry<DocumentLocaleKey, WordStatistic> entry : documentStatisticMap
-                .entrySet()) {
-            if (entry.getKey().getDocumentId().equals(documentId)) {
-                wordStatistic.add(entry.getValue());
-            }
+
+        for (HLocale locale : getSupportedLocale()) {
+            WordStatistic statistic =
+                    getStatisticForDocument(documentId, locale.getLocaleId());
+            wordStatistic.add(statistic);
         }
+
         wordStatistic.setRemainingHours(StatisticsUtil
                 .getRemainingHours(wordStatistic));
         return wordStatistic;
@@ -840,17 +847,24 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     private class DocumentFilter extends AbstractListFilter<HDocument> {
+        private DocumentDAO documentDAO = (DocumentDAO) Component
+                .getInstance(DocumentDAO.class);
+
         @Override
         protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(), getDocuments());
+            return FilterUtil.filterDocumentList(getQuery(),
+                    getDocuments(documentDAO));
         }
     };
 
     private class SourceDocumentFilter extends AbstractListFilter<HDocument> {
+        private DocumentDAO documentDAO = (DocumentDAO) Component
+                .getInstance(DocumentDAO.class);
+
         @Override
         protected List<HDocument> getFilteredList() {
             return FilterUtil.filterDocumentList(getQuery(),
-                    getSourceDocuments());
+                    getSourceDocuments(documentDAO));
         }
     };
 
@@ -904,11 +918,12 @@ public class VersionHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
                 if (selectedLocaleId != null) {
                     wordStatistic1 =
-                            documentStatisticMap.get(new DocumentLocaleKey(
-                                    item1.getId(), selectedLocaleId));
+                            getStatisticForDocument(item1.getId(),
+                                    selectedLocaleId);
+
                     wordStatistic2 =
-                            documentStatisticMap.get(new DocumentLocaleKey(
-                                    item2.getId(), selectedLocaleId));
+                            getStatisticForDocument(item2.getId(),
+                                    selectedLocaleId);
 
                 } else {
                     wordStatistic1 = getDocumentStatistic(item1.getId());
