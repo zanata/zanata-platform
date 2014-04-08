@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
+import java.util.Map;
 
 import org.fedorahosted.openprops.Properties;
 import org.zanata.common.ContentState;
@@ -15,6 +17,9 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.HashUtil;
+
+import com.google.common.collect.Maps;
 
 /**
  * A Properties reader with support for skipping NON-TRANSLATABLE keys. NOT
@@ -54,20 +59,38 @@ public class PropReader {
     }
 
     // pre: template already extracted
+    @Deprecated
     public void extractTarget(TranslationsResource doc, InputStream in)
             throws IOException, RuntimeException {
+        extractTarget(doc, in, Collections.<String, List<String>>emptyMap());
+    }
+
+    public void extractTarget(TranslationsResource doc, InputStream in,
+            Resource srcDoc) throws IOException, RuntimeException {
+        Map<String, List<String>> keyToSourceContentsMap = Maps.newHashMap();
+        for (TextFlow tf: srcDoc.getTextFlows()) {
+            keyToSourceContentsMap.put(tf.getId(), tf.getContents());
+        }
+        extractTarget(doc, in, keyToSourceContentsMap);
+    }
+
+    private void extractTarget(TranslationsResource doc, InputStream in,
+            Map<String, List<String>> keyToSourceContentsMap) throws IOException, RuntimeException {
         Properties props = loadProps(in);
         for (String key : props.keySet()) {
-            addPropEntryToDoc(doc, props, key, contentState);
+            List<String> sourceContents = keyToSourceContentsMap.get(key);
+            String sourceHash = sourceContents == null ? null : HashUtil.sourceHash(sourceContents);
+            addPropEntryToDoc(doc, props, key, contentState, sourceHash);
         }
     }
 
     private void addPropEntryToDoc(TranslationsResource doc, Properties props,
-            String key, ContentState contentState) {
+            String key, ContentState contentState, String sourceHash) {
         String content = props.getProperty(key);
         if (content == null)
             return;
         TextFlowTarget textFlowTarget = new TextFlowTarget(key);
+        textFlowTarget.setSourceHash(sourceHash);
         textFlowTarget.setContents(content);
         if (!content.isEmpty()) {
             textFlowTarget.setState(contentState);
