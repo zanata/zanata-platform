@@ -34,25 +34,38 @@ import org.zanata.util.WebElementUtil;
 
 public class DashboardPage extends BasePage {
 
-    @FindBy(id = "main_body_content")
-    private WebElement mainBodyContent;
-
     public DashboardPage(final WebDriver driver) {
         super(driver);
     }
 
-    public boolean containActivityListSection() {
-        return getDriver().findElement(By.id("activityList")) != null;
+    public boolean containsActivitySection() {
+        return getActivityTab() != null;
     }
 
-    public boolean containMyMaintainedProjectsSection() {
-        return getDriver().findElement(By.id("maintainedProject")) != null;
+    public WebElement getActivityTab() {
+        return getDriver().findElement(By.id("activity"));
+    }
+
+    public boolean containsProjectsSection() {
+        return getProjectsTab() != null;
+    }
+
+    public WebElement getProjectsTab() {
+        return getDriver().findElement(By.id("projects"));
+    }
+
+    public boolean containsSettingsSection() {
+        return getDriver().findElement(By.id("settings")) != null;
+    }
+
+    public boolean isActivityTabSelected() {
+        return getDriver()
+                .findElement(By.cssSelector("#activity.is-active")) != null;
     }
 
     public List<WebElement> getMyActivityList() {
         WebElement listWrapper =
-                getDriver().findElement(By.id("activityList")).findElement(
-                        By.tagName("ul"));
+                getDriver().findElement(By.id("activityList"));
 
         if (listWrapper != null) {
             return listWrapper.findElements(By.xpath("./li"));
@@ -60,9 +73,14 @@ public class DashboardPage extends BasePage {
         return new ArrayList<WebElement>();
     }
 
-    public List<WebElement> getMyMaintainedProject() {
+    public DashboardPage clickOnProjectsTab() {
+        getProjectsTab().click();
+        return this;
+    }
+
+    public List<WebElement> getMaintainedProjectList() {
         WebElement listWrapper =
-                getDriver().findElement(By.id("maintainedProject"))
+                getDriver().findElement(By.id("maintainedProjects"))
                         .findElement(By.tagName("ul"));
 
         if (listWrapper != null) {
@@ -88,5 +106,10 @@ public class DashboardPage extends BasePage {
     public CreateProjectPage clickCreateYourOwn() {
         getDriver().findElement(By.linkText("create your own")).click();
         return new CreateProjectPage(getDriver());
+    }
+
+    public DashboardPage clickOnActivityTab() {
+        getActivityTab().click();
+        return this;
     }
 }

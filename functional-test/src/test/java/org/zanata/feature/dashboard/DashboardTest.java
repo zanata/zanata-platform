@@ -20,17 +20,17 @@
  */
 package org.zanata.feature.dashboard;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
+
 import lombok.extern.slf4j.Slf4j;
-import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
-import org.concordion.integration.junit4.ConcordionRunner;
+
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.feature.ConcordionTest;
+import org.zanata.feature.DetailedTest;
 import org.zanata.page.utility.DashboardPage;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.SampleProjectRule;
@@ -38,20 +38,14 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-
-@RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
-        CustomResourceExtension.class })
-@Category(ConcordionTest.class)
+@Category(DetailedTest.class)
 @Slf4j
 public class DashboardTest {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardPage dashboard;
 
     @Before
     public void setUp() {
@@ -67,43 +61,60 @@ public class DashboardTest {
             restCaller.postSourceDocResource(projectSlug, iterationSlug,
                     resource, false);
         }
+        dashboard = new LoginWorkFlow().signIn("admin", "admin");
+    }
+
+    @Test
+    public void dashboardBasicTests() throws Exception {
+        dashboardPresentAfterLogin();
+        activityListExpands();
+        projectListIsPresent();
+    }
+
+    public void dashboardPresentAfterLogin() throws Exception {
+        assertThat(dashboard.containsActivitySection()).isTrue();
+        assertThat(dashboard.containsProjectsSection()).isTrue();
+        assertThat(dashboard.containsSettingsSection()).isTrue();
+        assertThat(dashboard.isActivityTabSelected()).isTrue();
+    }
+
+    public void activityListExpands() throws Exception {
+        dashboard.clickOnActivityTab();
+        assertThat(dashboard.getMyActivityList()).isNotEmpty();
+        int initialActivitySize = dashboard.getMyActivityList().size();
+        dashboard.clickMoreActivity();
+        assertThat(dashboard.getMyActivityList().size())
+                .isGreaterThan(initialActivitySize);
+    }
+
+    public void projectListIsPresent() throws Exception {
+        dashboard.clickOnProjectsTab();
+        assertThat(dashboard.getMaintainedProjectList()).isNotEmpty();
     }
 
     public boolean signInAs(String username, String password) {
-        dashboardPage = new LoginWorkFlow().signIn(username, password);
+        dashboard = new LoginWorkFlow().signIn(username, password);
 
-        return dashboardPage.hasLoggedIn();
-    }
-
-    public boolean hasMyActivitiesSection() {
-        return dashboardPage.containActivityListSection();
-    }
-
-    public boolean hasMaintainedProjectsSection() {
-        return dashboardPage.containMyMaintainedProjectsSection();
+        return dashboard.hasLoggedIn();
     }
 
     public void gotoDashboard() {
-        dashboardPage = new BasicWorkFlow().goToDashboard();
+        dashboard = new BasicWorkFlow().goToDashboard();
     }
 
     public boolean myActivitiesListNotEmpty() {
-        return !dashboardPage.getMyActivityList().isEmpty();
+        return !dashboard.getMyActivityList().isEmpty();
     }
 
     public int myActivitiesCount() {
-        return dashboardPage.getMyActivityList().size();
+        return dashboard.getMyActivityList().size();
     }
 
     public boolean myActivitiesCountIsMoreThan(int compareTo) {
-        return dashboardPage.getMyActivityList().size() > compareTo;
-    }
-
-    public boolean maintainedProjectNotEmpty() {
-        return !dashboardPage.getMyMaintainedProject().isEmpty();
+        return dashboard.getMyActivityList().size() > compareTo;
     }
 
     public void clickMoreActivity() {
-        dashboardPage.clickMoreActivity();
+        dashboard.clickMoreActivity();
     }
 }

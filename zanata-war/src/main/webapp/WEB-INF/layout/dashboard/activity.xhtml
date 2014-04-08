@@ -24,7 +24,7 @@
         </div>
       </s:fragment>
       <s:fragment rendered="#{not activities.isEmpty()}">
-        <ul class="list--panel loader__container">
+        <ul id="activityList" class="list--panel loader__container">
           <ui:repeat value="#{activities}" var="activity">
             <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
               <p class="l--float-right txt--neutral l--push-left-half">
@@ -89,7 +89,7 @@
             </li>
           </ui:repeat>
           <s:fragment rendered="#{activityAction.hasMoreActivities()}">
-            <a href="javascript:void(0)"
+            <a id="moreActivity" href="javascript:void(0)"
               class="d--top loader" onclick="loadNextActivity()">
               <span class="loader__label">#{messages['jsf.moreActivity']}</span>
             </a>
