@@ -17,7 +17,25 @@
 
   <div class="panel">
     <div class="tabs--accent">
-      <!-- Nav content goes here <nav></nav>-->
+      <nav class="tabs__nav panel__header">
+        <ul>
+          <li>
+            <a href="#" class="is-active" title=""
+              data-original-title="Maintained projects">
+              <i aria-hidden="true" class="i i--maintain"></i>
+              <span class="is-invisible">Maintainer</span>
+            </a>
+          </li>
+          <li class="tab__end">
+            <a href="#" jsfc="s:link" title=""
+              view="/project/create_project.xhtml"
+              data-original-title="Create a new project">
+              <i aria-hidden="true" class="i i--plus i i--large"></i>
+              <span class="is-invisible">New Project</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
       <div class="tabs__content">
         <header class="panel__sub-header">
           <!-- Header panel options go here -->
@@ -91,9 +109,9 @@
                       <p class="list__item__meta">#{project.description}</p>
                     </div>
                     <div class="list__item__stats">
-                      <span class="stats--mini" title="#{dashboardAction.getLastUpdatedTime(project)}">
-                        <span class="stats__figure">#{dashboardAction.getLastUpdatedTimeLapseMessage(project)}</span>
-                        <span class="stats__unit"><!-- Last updated by goes here --></span>
+                      <span class="stats--mini" title="#{dashboardAction.getLastTranslatedTime(project)}">
+                        <span class="stats__figure">#{dashboardAction.getLastTranslatedTimeLapseMessage(project)}</span>
+                        <span class="stats__unit">#{dashboardAction.getLastTranslatorMessage(project)}</span>
                       </span>
                     </div>
                   </div>

@@ -44,6 +44,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
@@ -157,11 +158,14 @@ public class DashboardAction implements Serializable {
         return sortedList;
     }
 
-    public String getLastUpdatedTimeLapseMessage(HProject project) {
-        return DateUtil.getHowLongAgoDescription(project.getLastChanged());
+    public String getLastTranslatedTimeLapseMessage(HProject project) {
+        Date lastTranslatedDate = projectDAO.getLastTranslatedDate(project);
+        // TODO i18n needed
+        return lastTranslatedDate == null ? "never" :
+                DateUtil.getHowLongAgoDescription(lastTranslatedDate);
     }
 
-    public String getLastUpdatedTime(HProject project) {
+    public String getLastTranslatedTime(HProject project) {
         return DateUtil.formatShortDate(project.getLastChanged());
     }
 
@@ -246,6 +250,24 @@ public class DashboardAction implements Serializable {
 
     public boolean isUserReviewer() {
         return languageTeamServiceImpl.isUserReviewer(authenticatedAccount.getPerson().getId());
+    }
+
+    public String getLastTranslatorMessage(HProject project) {
+        String lastTranslatorMessage = "Last translated by ";
+        HPerson lastTrans = projectDAO.getLastTranslator(project);
+        if( lastTrans != null ) {
+            String username = lastTrans.getName();
+            if(username == null || username.trim().isEmpty()) {
+                if( lastTrans.getAccount() != null ) {
+                    return lastTranslatorMessage + lastTrans.getAccount()
+                            .getUsername();
+                }
+            }
+            else {
+                return lastTranslatorMessage + lastTrans.getName();
+            }
+        }
+        return "";
     }
 
     private class ProjectPageList

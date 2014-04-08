@@ -300,8 +300,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     /**
      * @param project A project
      * @param account The user for which the last translated date.
-     * @return A date indicating the last time in which account's user
-     * translated it.
+     * @return A date indicating the last time on which account's user
+     * translated project.
      */
     public Date getLastTranslatedDate(HProject project, HAccount account) {
         Query q =
@@ -313,8 +313,51 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                                         "and tft.textFlow.document.projectIteration.project = :project"
                         )
                         .setParameter("translator", account)
-                        .setParameter("project", project);
+                        .setParameter("project", project)
+                        .setCacheable(true);
         return (Date)q.uniqueResult();
+    }
+
+    /**
+     * @param project A project
+     * @return A date indicating the last time when any user translated project
+     */
+    public Date getLastTranslatedDate(HProject project) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select max (tft.lastChanged) " +
+                                        "from HTextFlowTarget tft " +
+                                        "where tft.textFlow.document.projectIteration.project = :project"
+                        )
+                        .setParameter("project", project)
+                        .setCacheable(true);
+        return (Date)q.uniqueResult();
+    }
+
+    /**
+     * @param project A project
+     * @return A date indicating the last time when any user translated project
+     */
+    public HPerson getLastTranslator(HProject project) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select tft.translator " +
+                                "from HTextFlowTarget tft " +
+                                "where tft.textFlow.document.projectIteration.project = :project " +
+                                "order by tft.lastChanged desc"
+                        )
+                        .setParameter("project", project)
+                        .setMaxResults(1)
+                        .setCacheable(true);
+        List results = q.list();
+        if( results.isEmpty() ) {
+            return null;
+        }
+        else {
+            return (HPerson) results.get(0);
+        }
     }
 
     public List<HProject> getProjectsForMaintainer(HPerson maintainer,
