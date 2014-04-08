@@ -129,7 +129,6 @@
             <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
-            <usedDependency>com.google.code.findbugs:annotations</usedDependency>
             <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
@@ -334,7 +333,7 @@
             </manifest>
             <manifestEntries>
               <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
-              <SCM-Changeset>${changeSet}</SCM-Changeset>
+              <SCM-Describe>${gitDescribe}</SCM-Describe>
             </manifestEntries>
           </archive>
         </configuration>
@@ -441,22 +440,17 @@
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.16</version>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <junitArtifactName>none:none</junitArtifactName>
           <testNGArtifactName>org.testng:testng</testNGArtifactName>
-          <forkMode>once</forkMode>
-          <argLine xml:space="preserve">-Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC
-            -XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError
-            -XX:HeapDumpPath=${project.build.directory} -Dsun.lang.ClassLoader.allowArraySyntax=true</argLine>
+          <forkCount>1.5C</forkCount>
+          <reuseForks>false</reuseForks>
           <suiteXmlFiles>
             <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
           </suiteXmlFiles>
           <runOrder>alphabetical</runOrder>
-          <!-- TODO try parallel execution
-                         <parallel>methods</parallel>
-                         <threadCount>4</threadCount>
-           -->
         </configuration>
         <!-- below trick is to let surefire run both junit and testng.
         see http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi-->
@@ -1014,7 +1008,7 @@
         </property>
       </activation>
       <properties>
-        <groovy.eclipse.compiler.version>2.9.0-01-20130710.222406-4</groovy.eclipse.compiler.version>
+        <groovy.eclipse.compiler.version>2.9.0-01-20140221.234306-6</groovy.eclipse.compiler.version>
       </properties>
       <build>
         <plugins>
@@ -1113,6 +1107,13 @@
   </profiles>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
 
     <!-- Zanata-specific dependencies -->
 
@@ -2012,6 +2013,18 @@
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>se.jiderhamn</groupId>
+      <artifactId>classloader-leak-prevention</artifactId>
+      <version>1.9.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--  missing dependencies identified by mvn dependency:analyze: -->

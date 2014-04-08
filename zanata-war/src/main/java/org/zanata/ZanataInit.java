@@ -49,6 +49,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.core.Events;
 import org.zanata.exception.ZanataInitializationException;
+import org.zanata.rest.dto.VersionInfo;
+import org.zanata.util.VersionUtility;
 
 import com.beust.jcommander.internal.Lists;
 
@@ -72,7 +74,6 @@ public class ZanataInit {
     }
 
     public static final String EVENT_Zanata_Startup = "Zanata.startup";
-    public static final String UNKNOWN_VERSION = "UNKNOWN";
 
     @In
     private ApplicationConfiguration applicationConfiguration;
@@ -84,9 +85,9 @@ public class ZanataInit {
         String appServerHome = servletContext.getRealPath("/");
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
-        String version = "UNKOWN";
-        String buildTimestamp = "UNKOWN";
 
+        VersionInfo ver = new VersionInfo();
+        Attributes atts = null;
         if (manifestFile.canRead()) {
             Manifest mf = new Manifest();
             final FileInputStream fis = new FileInputStream(manifestFile);
@@ -95,24 +96,15 @@ public class ZanataInit {
             } finally {
                 fis.close();
             }
-
-            Attributes atts = mf.getMainAttributes();
-
-            version = atts.getValue("Implementation-Version");
-            buildTimestamp = atts.getValue("Implementation-Build");
-
-            if (version == null) {
-                version = UNKNOWN_VERSION;
-            }
-            if (buildTimestamp == null) {
-                buildTimestamp = UNKNOWN_VERSION;
-            }
-            this.applicationConfiguration.setVersion(version);
-            this.applicationConfiguration.setBuildTimestamp(buildTimestamp);
-
+            atts = mf.getMainAttributes();
         }
+        ver = VersionUtility.getVersionInfo(atts, ZanataInit.class);
 
-        this.logBanner(version, buildTimestamp);
+        this.applicationConfiguration.setVersion(ver.getVersionNo());
+        this.applicationConfiguration.setBuildTimestamp(ver.getBuildTimeStamp());
+        this.applicationConfiguration.setScmDescribe(ver.getScmDescribe());
+
+        logBanner(ver);
 
         if (this.applicationConfiguration.isDebug()) {
             log.info("debug: enabled");
@@ -310,7 +302,7 @@ public class ZanataInit {
         }
     }
 
-    private void logBanner(final String version, final String build) {
+    private void logBanner(VersionInfo ver) {
         log.info("============================================");
         log.info("   _____                 _         ");
         log.info("  |__  /__ _ _ __   __ _| |_ __ _  ");
@@ -318,8 +310,9 @@ public class ZanataInit {
         log.info("   / /| (_| | | | | (_| | || (_| | ");
         log.info("  /____\\__,_|_| |_|\\__,_|\\__\\__,_| ");
         log.info("                                   ");
-        log.info("  version " + version + ", build " + build);
-        log.info("  Red Hat Inc 2012");
+        log.info("  Version: " + ver.getVersionNo());
+        log.info("  SCM: " + ver.getScmDescribe());
+        log.info("  Red Hat Inc 2008-2014");
         log.info("============================================");
     }
 }

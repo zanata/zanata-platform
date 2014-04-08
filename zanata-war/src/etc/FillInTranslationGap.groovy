@@ -70,4 +70,3 @@ genPropNames.each {
     }
     log.info("processed {}", skeleton.name)
 }
-

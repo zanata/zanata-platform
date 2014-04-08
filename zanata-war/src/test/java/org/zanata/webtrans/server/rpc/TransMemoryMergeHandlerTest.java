@@ -149,8 +149,8 @@ public class TransMemoryMergeHandlerTest {
     private void mockSecurityService(TransMemoryMerge action)
             throws NoSuchWorkspaceException {
         when(
-                securityService.checkPermission(action,
-                        SecurityService.TranslationAction.MODIFY)).thenReturn(
+                securityService.checkWorkspaceAction(action,
+                    SecurityService.TranslationAction.MODIFY)).thenReturn(
                 securityResult);
         when(securityResult.getLocale()).thenReturn(hLocale);
         when(securityResult.getWorkspace()).thenReturn(workspace);

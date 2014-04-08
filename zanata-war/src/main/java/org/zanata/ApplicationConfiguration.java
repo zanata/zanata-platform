@@ -95,6 +95,10 @@ public class ApplicationConfiguration implements Serializable {
     private String buildTimestamp;
 
     @Getter
+    @Setter
+    private String scmDescribe;
+
+    @Getter
     private boolean copyTransEnabled = true;
 
     private Map<AuthenticationType, String> loginModuleNames = Maps

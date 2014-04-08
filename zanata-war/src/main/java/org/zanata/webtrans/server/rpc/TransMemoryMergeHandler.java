@@ -30,7 +30,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.testng.collections.Lists;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -52,6 +51,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -91,7 +91,7 @@ public class TransMemoryMergeHandler extends
     public UpdateTransUnitResult execute(TransMemoryMerge action,
             ExecutionContext context) throws ActionException {
         SecurityService.SecurityCheckResult securityCheckResult =
-                securityServiceImpl.checkPermission(action, MODIFY);
+                securityServiceImpl.checkWorkspaceAction(action, MODIFY);
         HLocale hLocale = securityCheckResult.getLocale();
         TranslationWorkspace workspace = securityCheckResult.getWorkspace();
 

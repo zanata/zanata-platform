@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -60,6 +62,7 @@ import org.zanata.webtrans.client.ui.FileUploadDialog;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
+@Slf4j
 public class FileUploadServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -70,9 +73,6 @@ public class FileUploadServlet extends HttpServlet {
     private TranslationFileService translationFileServiceImpl;
 
     private TranslationService translationServiceImpl;
-
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FileUploadServlet.class);
 
     @Override
     protected void doPost(final HttpServletRequest request,
@@ -120,8 +120,10 @@ public class FileUploadServlet extends HttpServlet {
                 HashMap<String, FileItem> params =
                         new HashMap<String, FileItem>();
                 for (FileItem item : items) {
-                    LOGGER.info("param- " + item.getFieldName() + " value-"
-                            + item.getString());
+                    if (log.isDebugEnabled()) {
+                        log.debug("param- " + item.getFieldName() + " value-"
+                                + item.getString());
+                    }
                     params.put(item.getFieldName(), item);
                 }
 

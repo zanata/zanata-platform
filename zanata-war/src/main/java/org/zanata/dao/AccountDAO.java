@@ -157,6 +157,6 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
                         "from HAccount as a where a.mergedInto = :mergedInto");
         query.setParameter("mergedInto", mergedInto);
         query.setComment("AccountDAO.getAllMergedAccounts");
-        return query.list();
+        return (List<HAccount>) query.list();
     }
 }

@@ -1,360 +1,444 @@
 package org.zanata.limits;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.lang.reflect.Method;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.ServletException;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.hamcrest.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.assertj.core.api.SoftAssertions;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Stopwatch;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.doThrow;
+import static java.util.concurrent.TimeUnit.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Test(groups = "unit-tests")
 @Slf4j
 public class RestCallLimiterTest {
+    // set true for shorter timeouts while debugging
+    private static final boolean DEBUG = false;
     private RestCallLimiter limiter;
-    private int maxConcurrent = 4;
-    private int maxActive = 2;
-    private Logger testLogger = LogManager.getLogger(getClass());
-    private Logger testeeLogger = LogManager.getLogger(RestCallLimiter.class);
+    private static final int INVOCATIONS = 20;
+    private static final int N_THREADS = 20;
+    private static final int maxConcurrent = 4;
+    private static final int maxActive = 2;
+    private ExecutorService threadPool;
 
-    @Mock
-    private Runnable runnable;
-    private CountBlockingSemaphore countBlockingSemaphore;
+    // most invocations run in far less than 200ms,
+    // but not the first (due to init costs)
+    private static final long DEBUG_TIMEOUT= 200;
+    private static final long SAFE_TIMEOUT = 10000;
+    private static final long TIMEOUT = DEBUG ? DEBUG_TIMEOUT : SAFE_TIMEOUT;
+    private static final TimeUnit UNIT = MILLISECONDS;
+    private static final Runnable nullRunnable = new Runnable() {
+        @Override
+        public void run() {
+        }
+    };
+    private volatile CountDownLatch awakenLatch;
 
     @BeforeClass
     public void beforeClass() {
         // set logging to debug
-//        testeeLogger.setLevel(Level.DEBUG);
-//        testLogger.setLevel(Level.DEBUG);
+//        LogManager.getLogger(getClass()).setLevel(Level.DEBUG);
+//        LogManager.getLogger(RestCallLimiter.class).setLevel(Level.DEBUG);
     }
 
     @BeforeMethod
-    public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
+    public void beforeMethod(final Method method) {
         limiter = new RestCallLimiter(maxConcurrent, maxActive);
+        awakenLatch = new CountDownLatch(1);
+        threadPool = Executors.newFixedThreadPool(N_THREADS);
     }
 
-    @Test
-    public void canOnlyHaveMaximumNumberOfConcurrentRequest()
-            throws InterruptedException, ExecutionException {
+    @AfterMethod
+    public void afterMethod() throws InterruptedException {
+        awakenBlockedRunnables();
+        threadPool.shutdown();
+        threadPool.awaitTermination(TIMEOUT, UNIT);
+    }
+
+    private void submitTasks(
+            int numTasks,
+            final CountDownLatch execsStarted,
+            final CountDownLatch expectedRejects,
+            final CountDownLatch execsFinished,
+            final String testName) {
+        final Runnable blockingTask = new Runnable() {
+            @Override
+            public void run() {
+                log.debug("execution started");
+                execsStarted.countDown();
+                blockUntilAwoken(testName);
+                log.debug("execution finished");
+            }
+        };
+        for (int i = 0; i < numTasks; i++) {
+            final int jobNum = i;
+            threadPool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    if (limiter.tryAcquireAndRun(blockingTask)) {
+                        log.debug(
+                            "request #" + jobNum + ": acquired and executed");
+                        execsFinished.countDown();
+                    } else {
+                        log.debug("request #" + jobNum + ": rejected");
+                        expectedRejects.countDown();
+                    }
+                }
+            });
+        }
+    }
+
+    private void blockUntilAwoken(String testName) {
+        try {
+            awakenLatch.await(TIMEOUT, UNIT);
+        } catch (Exception e) {
+            // don't throw an exception, or it becomes difficult
+            // to diagnose failing tests (at least in TestNG)
+            log.warn("Exception in Runnable for test " + testName);
+        }
+    }
+
+    private void awakenBlockedRunnables() {
+        // tell blocking Runnables to wake up
+        awakenLatch.countDown();
+    }
+
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldRejectRequestsAboveMaxConcurrent()
+            throws Exception {
+        String testName = "shouldRejectRequestsAboveMaxConcurrent";
         // we don't limit active requests
         limiter = new RestCallLimiter(maxConcurrent, maxConcurrent);
 
-        // to ensure threads are actually running concurrently
-        runnableWillTakeTime(20);
+        int excessRequests = 3;
+        int numOfThreads = maxConcurrent + excessRequests;
 
-        Callable<Boolean> task = new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return limiter.tryAcquireAndRun(runnable);
-            }
-        };
-        int numOfThreads = maxConcurrent + 1;
-        List<Boolean> result =
-                submitConcurrentTasksAndGetResult(task, numOfThreads);
-        log.debug("result: {}", result);
+        final CountingLatch execsStarted =
+                new CountingLatch(maxConcurrent, "execs started");
+        final CountingLatch expectedRejects =
+                new CountingLatch(excessRequests, "rejected requests");
+        final CountingLatch execsFinished =
+                new CountingLatch(maxConcurrent, "execs finished");
+
+        submitTasks(numOfThreads,
+                execsStarted, expectedRejects, execsFinished,
+                testName);
+        SoftAssertions softly = new SoftAssertions();
+        // last requests which exceed the limit will fail to get permit
+        expectedRejects.awaitAndVerify(softly);
         // requests that are within the max concurrent limit should get permit
-        Iterable<Boolean> successRequest =
-                Iterables.filter(result, new Predicate<Boolean>() {
-                    @Override
-                    public boolean apply(Boolean input) {
-                        return input;
-                    }
-                });
-        assertThat(successRequest,
-                Matchers.<Boolean>iterableWithSize(maxConcurrent));
-        // last request which exceeds the limit will fail to get permit
-        assertThat(result, Matchers.hasItem(false));
+        execsStarted.awaitAndVerify(softly);
+        // accepted jobs should eventually finish
+        awakenBlockedRunnables();
+        execsFinished.awaitAndVerify(softly);
+        softly.assertAll();
     }
 
-    static <T> List<T> submitConcurrentTasksAndGetResult(Callable<T> task,
-            int numOfThreads) throws InterruptedException, ExecutionException {
-        List<Callable<T>> tasks = Collections.nCopies(numOfThreads, task);
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldBlockRequestsAboveMaxActive()
+            throws Exception {
+        String testName = "shouldBlockRequestsAboveMaxActive";
+        limiter = new RestCallLimiter(maxConcurrent, maxActive);
 
-        ExecutorService service = Executors.newFixedThreadPool(numOfThreads);
-
-        List<Future<T>> futures = service.invokeAll(tasks);
-        return Lists.transform(futures, new Function<Future<T>, T>() {
-            @Override
-            public T apply(Future<T> input) {
-                try {
-                    return input.get();
-                } catch (Exception e) {
-                    throw Throwables.propagate(e);
-                }
-            }
-        });
-    }
-
-    @Test
-    public void canOnlyHaveMaxActiveConcurrentRequest()
-            throws InterruptedException, ExecutionException {
-        countBlockingSemaphore = new CountBlockingSemaphore(maxActive);
-        limiter =
-                new RestCallLimiter(maxConcurrent, maxActive)
-                        .changeActiveSemaphore(countBlockingSemaphore);
-
+        int expectedBlocksNum = maxConcurrent - maxActive;
+        CountingLatch expectedBlocks = new CountingLatch(expectedBlocksNum, "blocks");
+        BlockCountingSemaphore blockCountingSemaphore =
+                new BlockCountingSemaphore(maxActive, expectedBlocks);
+        limiter.changeActiveSemaphore(blockCountingSemaphore);
         // Given: each thread will take some time to do its job
-        final int timeSpentDoingWork = 20;
-        runnableWillTakeTime(timeSpentDoingWork);
 
         // When: max concurrent threads are accessing simultaneously
-        Callable<Boolean> callable = new Callable<Boolean>() {
-
-            @Override
-            public Boolean call() throws Exception {
-                return limiter.tryAcquireAndRun(runnable);
-            }
-        };
-
         // Then: only max active threads will be served immediately while others
-        // will block until them finish
-        List<Boolean> requests =
-                submitConcurrentTasksAndGetResult(callable, maxConcurrent);
-        log.debug("result: {}", requests);
+        // will block until they finish
+        int numTasks = maxConcurrent;
+        final CountingLatch execsStarted =
+                new CountingLatch(maxActive, "execs started");
+        final CountingLatch expectedRejects = new CountingLatch(0, "rejected requests");
+        final CountingLatch execsFinished =
+                new CountingLatch(numTasks, "execs finished");
+        submitTasks(numTasks,
+            execsStarted, expectedRejects, execsFinished,
+            testName);
 
-        assertThat(countBlockingSemaphore.numOfBlockedThreads(),
-                Matchers.equalTo(maxConcurrent - maxActive));
+        SoftAssertions softly = new SoftAssertions();
+        execsStarted.awaitAndVerify(softly);
+        expectedBlocks.awaitAndVerify(softly);
+        expectedRejects.awaitAndVerify(softly);
+        execsFinished.assertEquals(softly, 0);
+        softly.assertThat(blockCountingSemaphore.numOfBlockedThreads()).as("blocked threads").isEqualTo(
+            expectedBlocksNum);
+        softly.assertAll();
+        awakenBlockedRunnables();
+        execsFinished.awaitAndVerify();
     }
 
-    void runnableWillTakeTime(final int timeSpentDoingWork) {
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Uninterruptibles.sleepUninterruptibly(timeSpentDoingWork,
-                        TimeUnit.MILLISECONDS);
-                return null;
-            }
-        }).when(runnable).run();
-    }
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldChangeMaxConcurrent()
+            throws Exception {
+        String testName = "shouldChangeMaxConcurrent";
 
-    @Test
-    public void changeMaxConcurrentLimitWillTakeEffectImmediately()
-            throws ExecutionException, InterruptedException {
-        runnableWillTakeTime(10);
-
+        int maxConcurrent = 1;
+        int maxActive = 10;
         // we start off with only 1 concurrent permit
-        limiter = new RestCallLimiter(1, 10);
-        Callable<Boolean> task = new Callable<Boolean>() {
-
-            @Override
-            public Boolean call() throws Exception {
-                return limiter.tryAcquireAndRun(runnable);
-            }
-        };
+        limiter = new RestCallLimiter(maxConcurrent, maxActive);
 
         int numOfThreads = 2;
-        List<Boolean> result =
-                submitConcurrentTasksAndGetResult(task, numOfThreads);
-        assertThat(result, Matchers.containsInAnyOrder(true, false));
-        assertThat(limiter.availableConcurrentPermit(), Matchers.is(1));
+        final CountingLatch execsStarted =
+                new CountingLatch(maxConcurrent, "1st execs started");
+        int numRejects = numOfThreads - maxConcurrent;
+        final CountingLatch expectedRejects = new CountingLatch(numRejects, "1st rejected requests");
+        final CountingLatch execsFinished =
+                new CountingLatch(maxConcurrent, "1st execs finished");
+        submitTasks(numOfThreads, execsStarted, expectedRejects, execsFinished, testName);
+
+        execsStarted.awaitAndVerify();
+        // the one and only concurrent permit should be in use
+        assertThat(limiter.availableConcurrentPermit()).isEqualTo(0);
+
+        expectedRejects.awaitAndVerify();
+
+        awakenBlockedRunnables();
+        execsFinished.awaitAndVerify();
+        // all concurrent permits returned
+        assertThat(limiter.availableConcurrentPermit()).isEqualTo(maxConcurrent);
+
+        // ensure that second round of jobs will hold permits simultaneously
+        awakenLatch = new CountDownLatch(1);
 
         // change permit to match number of threads
-        limiter.setMaxConcurrent(numOfThreads);
+        int newMaxConcurrent = 2;
+        limiter.setMaxConcurrent(newMaxConcurrent);
 
-        List<Boolean> resultAfterChange =
-                submitConcurrentTasksAndGetResult(task, numOfThreads);
-        assertThat(resultAfterChange, Matchers.contains(true, true));
+        final CountingLatch secondExecsStarted =
+                new CountingLatch(newMaxConcurrent, "2nd execs started");
+        final CountingLatch secondExecsFinished =
+                new CountingLatch(newMaxConcurrent, "2nd execs finished");
+        final CountingLatch secondExpectedRejects = new CountingLatch(0, "2nd rejected requests");
+        submitTasks(numOfThreads, secondExecsStarted,
+            secondExpectedRejects,
+            secondExecsFinished, testName);
 
-        assertThat(limiter.availableConcurrentPermit(),
-                Matchers.is(numOfThreads));
+        secondExecsStarted.awaitAndVerify();
+        secondExpectedRejects.awaitAndVerify();
+        // all concurrent permits in use
+        assertThat(limiter.availableConcurrentPermit()).isEqualTo(0);
+        awakenBlockedRunnables();
+        secondExecsFinished.awaitAndVerify();
+        assertThat(limiter.availableConcurrentPermit()).isEqualTo(newMaxConcurrent);
     }
 
-    @Test
-    public void changeMaxActiveLimitWhenNoBlockedThreads() {
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldChangeMaxActiveWhenNoThreadsAreBlocked() {
         limiter = new RestCallLimiter(3, 3);
-        limiter.tryAcquireAndRun(runnable);
+        limiter.tryAcquireAndRun(nullRunnable);
+        assertThat(limiter.availableActivePermit()).isEqualTo(3);
 
         limiter.setMaxActive(2);
-        // change won't happen until next request comes in
-        limiter.tryAcquireAndRun(runnable);
-        assertThat(limiter.availableActivePermit(), Matchers.is(2));
+        // change may not happen until next request comes in
+        limiter.tryAcquireAndRun(nullRunnable);
+        assertThat(limiter.availableActivePermit()).isEqualTo(2);
 
         limiter.setMaxActive(1);
-
-        limiter.tryAcquireAndRun(runnable);
-        assertThat(limiter.availableActivePermit(), Matchers.is(1));
+        limiter.tryAcquireAndRun(nullRunnable);
+        assertThat(limiter.availableActivePermit()).isEqualTo(1);
     }
 
-    @Test
-    public void changeMaxActiveLimitWhenHasBlockedThreads()
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldChangeMaxActiveWhenThreadsAreBlocked()
             throws InterruptedException {
+        String testName = "shouldChangeMaxActiveWhenThreadsAreBlocked";
         // Given: only 2 active requests allowed
-        limiter = new RestCallLimiter(10, 2);
+        int maxConcurrent = 10;
+        int maxActive = 2;
+        limiter = new RestCallLimiter(maxConcurrent, maxActive);
+
+        int expectedBlocksNum = 1;
+        CountingLatch expectedBlocks =
+            new CountingLatch(expectedBlocksNum, "blocks");
+        BlockCountingSemaphore blockCountingSemaphore =
+            new BlockCountingSemaphore(maxActive, expectedBlocks);
+        limiter.changeActiveSemaphore(blockCountingSemaphore);
+
+        int numTasks = maxActive + expectedBlocksNum;
+        final CountingLatch execsStarted =
+            new CountingLatch(maxActive, "1st execs started");
+        final CountingLatch execsFinished =
+            new CountingLatch(numTasks, "1st execs finished");
+        final CountingLatch expectedRejects =
+            new CountingLatch(0, "1st rejected requests");
+        submitTasks(numTasks,
+            execsStarted, expectedRejects, execsFinished,
+            testName);
 
         // When: below requests are fired simultaneously
-        // 3 requests (each takes 20ms) and 1 request should block
-        final int timeSpentDoingWork = 20;
-        runnableWillTakeTime(timeSpentDoingWork);
-        Callable<Long> callable = taskToAcquireAndMeasureTime();
-        List<Callable<Long>> requests = Collections.nCopies(3, callable);
-        // 1 task to update the active permit with 5ms delay
-        // (so that it will happen while there is a blocked request)
-        Callable<Long> changeTask = new Callable<Long>() {
+        // 3 requests, 1 request should block
+        execsStarted.awaitAndVerify();
+        expectedRejects.awaitAndVerify();
+        expectedBlocks.awaitAndVerify();
 
-            @Override
-            public Long call() throws Exception {
-                // to ensure it happens when there is a blocked request
-                Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS);
-                limiter.setMaxActive(3);
-                return -10L;
-            }
-        };
+        int newMaxActive = 3;
+        limiter.setMaxActive(newMaxActive);
+
         // 2 delayed request that will try to acquire after the change
         // (while there is still a request blocking)
-        Callable<Long> delayRequest = new Callable<Long>() {
 
-            @Override
-            public Long call() throws Exception {
-                // ensure this happen after change limit took place
-                Uninterruptibles
-                        .sleepUninterruptibly(10, TimeUnit.MILLISECONDS);
-                return tryAcquireAndMeasureTime();
-            }
-        };
-        List<Callable<Long>> delayedRequests =
-                Collections.nCopies(2, delayRequest);
-        List<Callable<Long>> allTasks = Lists.newArrayList(requests);
-        allTasks.add(changeTask);
-        allTasks.addAll(delayedRequests);
-        ExecutorService executorService =
-                Executors.newFixedThreadPool(allTasks.size());
-        List<Future<Long>> futures = executorService.invokeAll(allTasks);
+        int secondNumTasks = 2;
+        final CountingLatch secondExecsStarted =
+            new CountingLatch(secondNumTasks, "2nd execs started");
+        final CountingLatch secondExecsFinished =
+            new CountingLatch(secondNumTasks, "2nd execs finished");
+        final CountingLatch secondExpectedRejects =
+            new CountingLatch(0, "2nd rejected requests");
+
+        submitTasks(secondNumTasks, secondExecsStarted,
+            expectedRejects,
+            secondExecsFinished, testName);
 
         // Then: at the beginning 1 request should be blocked meanwhile change
         // active limit will happen
         // the update request will change the semaphore so new requests will be
         // operating on new semaphore object
-        List<Long> timeUsedInMillis =
-                getTimeUsedInMillisRoundedUpToTens(futures);
 
-        log.info("result: {}", timeUsedInMillis);
+        // ensure that all requests (old and new) have finished
+        awakenBlockedRunnables();
+
+        execsFinished.awaitAndVerify();
+        secondExecsStarted.awaitAndVerify();
+        secondExecsFinished.awaitAndVerify();
+        secondExpectedRejects.awaitAndVerify();
+
         // initial blocked thread's release will operate on old semaphore which
         // was thrown away
-        assertThat(limiter.availableActivePermit(), Matchers.is(3));
+        assertThat(limiter.availableActivePermit()).isEqualTo(newMaxActive);
     }
 
-    @Test
-    public void willReleaseSemaphoreWhenThereIsException() throws IOException,
-            ServletException {
-        doThrow(new RuntimeException("bad")).when(runnable).run();
-
-        try {
-            limiter.tryAcquireAndRun(runnable);
-        } catch (Exception e) {
-            // I know
-        }
-
-        assertThat(limiter.availableConcurrentPermit(),
-                Matchers.equalTo(maxConcurrent));
-        assertThat(limiter.availableActivePermit(), Matchers.equalTo(maxActive));
-    }
-
-    @Test
-    public void zeroPermitMeansNoLimit() {
-        limiter = new RestCallLimiter(0, 0);
-
-        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
-        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
-        assertThat(limiter.tryAcquireAndRun(runnable), Matchers.is(true));
-    }
-
-    /**
-     * it will measure acquire blocking time and return it.
-     */
-    private Callable<Long> taskToAcquireAndMeasureTime() {
-        return new Callable<Long>() {
-
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldReleaseSemaphoreWhenRunnableThrowsException() throws Exception {
+        Runnable runnable = new Runnable() {
             @Override
-            public Long call() throws Exception {
-                return tryAcquireAndMeasureTime();
+            public void run() {
+                throw new RuntimeException("bad");
             }
         };
+        try {
+            limiter.tryAcquireAndRun(runnable);
+            fail("RuntimeException should have been propagated");
+        } catch (Exception e) {
+            assertThat(limiter.availableConcurrentPermit()).isEqualTo(maxConcurrent);
+            assertThat(limiter.availableActivePermit()).isEqualTo(maxActive);
+        }
     }
 
-    private long tryAcquireAndMeasureTime() {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
-        limiter.tryAcquireAndRun(runnable);
-        stopwatch.stop();
-        long timeSpent = stopwatch.elapsedMillis();
-        log.debug("real time try acquire and run task takes: {}", timeSpent);
-        return roundToTens(timeSpent);
+    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    public void shouldNotRejectWhenLimitsAreDisabled() throws InterruptedException {
+        String testName = "shouldNotRejectWhenLimitsAreDisabled";
+        limiter = new RestCallLimiter(0, 0);
+
+        int numTasks = 12;
+        final CountingLatch execsStarted =
+                new CountingLatch(numTasks, "execs started");
+        final CountingLatch expectedRejects = new CountingLatch(0, "rejected requests");
+        final CountingLatch execsFinished =
+                new CountingLatch(numTasks, "execs finished");
+        submitTasks(numTasks,
+            execsStarted, expectedRejects, execsFinished,
+            testName);
+        execsStarted.awaitAndVerify();
+        expectedRejects.awaitAndVerify();
+        awakenBlockedRunnables();
+        execsFinished.awaitAndVerify();
     }
 
-    private static List<Long> getTimeUsedInMillisRoundedUpToTens(
-            List<Future<Long>> futures) {
-        return Lists.transform(futures, new Function<Future<Long>, Long>() {
-            @Override
-            public Long apply(Future<Long> input) {
-                try {
-                    return roundToTens(input.get());
-                } catch (Exception e) {
-                    throw Throwables.propagate(e);
-                }
-            }
-        });
-    }
-
-    private static long roundToTens(long arg) {
-        return arg / 10 * 10;
-    }
-
-    private static class CountBlockingSemaphore extends Semaphore {
+    private static class BlockCountingSemaphore extends Semaphore {
         private static final long serialVersionUID = 1L;
-        private AtomicInteger blockCounter = new AtomicInteger(0);
+        private final AtomicInteger blockCounter = new AtomicInteger(0);
+        private final CountDownLatch blockLatch;
 
-        public CountBlockingSemaphore(Integer permits) {
+        public BlockCountingSemaphore(int permits, CountDownLatch expectedBlocksLatch) {
             super(permits);
+            blockLatch = expectedBlocksLatch;
+        }
+
+        @Override
+        public boolean tryAcquire() {
+            boolean got = super.tryAcquire();
+            if (!got) {
+                blockCounter.incrementAndGet();
+                blockLatch.countDown();
+            }
+            return got;
         }
 
         @Override
         public boolean tryAcquire(long timeout, TimeUnit unit)
                 throws InterruptedException {
-            boolean got = tryAcquire();
-            if (!got) {
-                blockCounter.incrementAndGet();
+            // check for instant permit, and count as a block if unavailable:
+            boolean got = this.tryAcquire();
+            if (got) {
+                return true;
+            } else {
+                return super.tryAcquire(timeout, unit);
             }
-            // we don't care the result
-            return true;
         }
 
         public int numOfBlockedThreads() {
             return blockCounter.get();
+        }
+    }
+
+    private static class CountingLatch extends CountDownLatch {
+        private final int expectedCount;
+        private final AtomicInteger actualCount;
+        private String name;
+
+        public CountingLatch(int expectedCount, String name) {
+            super(expectedCount);
+            this.expectedCount = expectedCount;
+            this.actualCount = new AtomicInteger(0);
+            this.name = name;
+        }
+
+        @Override
+        public void countDown() {
+            actualCount.incrementAndGet();
+            super.countDown();
+        }
+
+        private void awaitOrTimeout()
+            throws InterruptedException {
+            if (!super.await(TIMEOUT, UNIT)) {
+                throw new RuntimeException("Timed out waiting for '" + name + "' latch " + this);
+            }
+        }
+
+        public void awaitAndVerify() throws InterruptedException {
+            awaitOrTimeout();
+            assertThat(actualCount.get()).as(name).isEqualTo(expectedCount);
+        }
+
+        public void awaitAndVerify(SoftAssertions softly) throws InterruptedException {
+            awaitOrTimeout();
+            softly.assertThat(actualCount.get()).as(name).isEqualTo(
+                expectedCount);
+        }
+
+        public void assertEquals(SoftAssertions softly, int expected) throws InterruptedException {
+            softly.assertThat(actualCount.get()).as(name).isEqualTo(expected);
         }
     }
 }
