@@ -26,15 +26,6 @@ public class RateLimitingProcessor {
     public void
             process(String apiKey, HttpResponse response, Runnable taskToRun)
                     throws Exception {
-        ApplicationConfiguration appConfig = getApplicationConfiguration();
-
-        if (appConfig.getMaxConcurrentRequestsPerApiKey() == 0
-                && appConfig.getMaxActiveRequestsPerApiKey() == 0) {
-            // short circuit if we don't want limiting
-            taskToRun.run();
-            return;
-        }
-
         RateLimitManager rateLimitManager = getRateLimitManager();
         RestCallLimiter rateLimiter = rateLimitManager.getLimiter(apiKey);
 
@@ -49,7 +40,7 @@ public class RateLimitingProcessor {
             String errorMessage =
                     String.format(
                             "Too many concurrent request for this API key (maximum is %d)",
-                            appConfig.getMaxConcurrentRequestsPerApiKey());
+                            rateLimiter.getMaxConcurrentPermits());
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
     }
@@ -57,12 +48,6 @@ public class RateLimitingProcessor {
     @VisibleForTesting
     RateLimitManager getRateLimitManager() {
         return RateLimitManager.getInstance();
-    }
-
-    @VisibleForTesting
-    ApplicationConfiguration getApplicationConfiguration() {
-        return (ApplicationConfiguration) Component
-                .getInstance("applicationConfiguration");
     }
 
 }

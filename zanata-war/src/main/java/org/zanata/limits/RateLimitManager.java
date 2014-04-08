@@ -127,7 +127,7 @@ public class RateLimitManager implements Introspectable {
 
     public RestCallLimiter getLimiter(final String apiKey) {
 
-        if (maxConcurrent == 0 && maxActive == 0) {
+        if (getMaxConcurrent() == 0 && getMaxActive() == 0) {
             // short circuit if we don't want limiting
             return NoLimitLimiter.INSTANCE;
         }

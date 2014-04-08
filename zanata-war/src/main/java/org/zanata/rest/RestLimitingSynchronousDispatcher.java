@@ -49,8 +49,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
 
         try {
             // we are not validating api key but will rate limit any api key
-            if (Strings.isNullOrEmpty(apiKey)
-                    && !request.getUri().getPath().contains("/test/")) {
+            if (Strings.isNullOrEmpty(apiKey)) {
                 response.sendError(
                         Response.Status.UNAUTHORIZED.getStatusCode(),
                         API_KEY_ABSENCE_WARNING);

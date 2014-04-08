@@ -172,6 +172,10 @@ class RestCallLimiter {
                 .toString();
     }
 
+    public int getMaxConcurrentPermits() {
+        return maxConcurrent;
+    }
+
     /**
      * Overrides tryAcquire method to return true all the time.
      */

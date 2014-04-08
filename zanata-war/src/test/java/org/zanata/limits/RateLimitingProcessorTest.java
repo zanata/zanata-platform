@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,8 +38,6 @@ public class RateLimitingProcessorTest {
     private HttpResponse response;
     @Mock
     private FilterChain filterChain;
-    @Mock
-    private ApplicationConfiguration applicationConfiguration;
     private RateLimitManager rateLimitManager;
     @Mock
     private Runnable runnable;
@@ -52,39 +51,25 @@ public class RateLimitingProcessorTest {
         processor =
                 spy(new RateLimitingProcessor());
 
-        doReturn(applicationConfiguration).when(processor)
-                .getApplicationConfiguration();
         doReturn(rateLimitManager).when(processor).getRateLimitManager();
 
     }
 
     @Test
-    public void willSkipIfRateLimitAreAllZero() throws Exception {
-        when(applicationConfiguration.getMaxActiveRequestsPerApiKey()).thenReturn(0);
-        when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(0);
-
-        processor.process(API_KEY, response, runnable);
-
-        verify(runnable).run();
-        verifyZeroInteractions(rateLimitManager);
-    }
-
-    @Test
     public void willFirstTryAcquire() throws InterruptedException, IOException,
             ServletException {
-
-        when(rateLimitManager.getMaxConcurrent()).thenReturn(1);
-        when(rateLimitManager.getMaxActive()).thenReturn(1);
-        when(applicationConfiguration.getMaxConcurrentRequestsPerApiKey()).thenReturn(1);
+        int threads = 2;
+        int maxConcurrent = 1;
+        when(rateLimitManager.getMaxConcurrent()).thenReturn(maxConcurrent);
+        when(rateLimitManager.getMaxActive()).thenReturn(maxConcurrent);
+        final CountDownLatch countDownLatch = new CountDownLatch(threads);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                // to ensure release won't happen immediately before another
-                // concurrent request try acquire
-                Uninterruptibles.sleepUninterruptibly(5, TimeUnit.MILLISECONDS);
-                return null;
+                countDownLatch.countDown();
+                return invocation.callRealMethod();
             }
-        }).when(runnable).run();
+        }).when(rateLimitManager).getLimiter(API_KEY);
 
         // two concurrent requests which will exceed the limit
         Callable<Void> callable = new Callable<Void>() {
@@ -95,7 +80,6 @@ public class RateLimitingProcessorTest {
                 return null;
             }
         };
-        int threads = 2;
         List<Callable<Void>> callables = Collections.nCopies(threads, callable);
         ExecutorService executorService = Executors.newFixedThreadPool(threads);
         List<Future<Void>> futures = executorService.invokeAll(callables);
@@ -106,6 +90,7 @@ public class RateLimitingProcessorTest {
                 throw Throwables.propagate(e.getCause());
             }
         }
+        countDownLatch.await(1, TimeUnit.SECONDS);
 
         // one request will receive 429 and an error message
         verify(response, atLeastOnce()).sendError(eq(429), anyString());
