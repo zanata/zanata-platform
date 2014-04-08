@@ -15,10 +15,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
+import com.google.common.base.Ticker;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -39,8 +41,8 @@ public class LeakyBucketTest {
 
     @BeforeMethod
     public void beforeMethod() {
-//        LogManager.getLogger(LeakyBucket.class.getPackage().getName())
-//                .setLevel(Level.DEBUG);
+        // LogManager.getLogger(LeakyBucket.class.getPackage().getName())
+        // .setLevel(Level.DEBUG);
         MockitoAnnotations.initMocks(this);
         bucket =
                 new LeakyBucket(1, refillDuration, refillTimeUnit, timeTracker);
@@ -100,14 +102,17 @@ public class LeakyBucketTest {
 
     @Test
     public void willMakeUpTheRefillWhenTimePassed() throws InterruptedException {
-        LeakyBucket bucket = new LeakyBucket(2, 20, TimeUnit.MILLISECONDS);
+        Ticker ticker = mock(Ticker.class);
+        LeakyBucket bucket =
+                new LeakyBucket(2, refillDuration, refillTimeUnit,
+                        new LeakyBucket.TimeTracker(ticker));
 
         assertThat(bucket.tryAcquire(), Matchers.is(true));
         assertThat(bucket.tryAcquire(), Matchers.is(true));
         assertThat(bucket.tryAcquire(), Matchers.is(false));
 
-        // refill rate is 1 per 100 ms so after 40 ms it should've filled up.
-        Thread.sleep(40);
+        // after twice of refill duration it should've filled up.
+        when(ticker.read()).thenReturn(timeOverRefillDuration * 2);
 
         assertThat(bucket.tryAcquire(), Matchers.is(true));
         assertThat(bucket.tryAcquire(), Matchers.is(true));

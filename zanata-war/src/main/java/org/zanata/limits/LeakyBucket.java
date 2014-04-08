@@ -95,8 +95,17 @@ public class LeakyBucket {
 
     @ToString
     static class TimeTracker {
-        private final Ticker ticker = Ticker.systemTicker();
+        private final Ticker ticker;
         private long lastRead;
+
+        TimeTracker() {
+            ticker = Ticker.systemTicker();
+        }
+
+        @VisibleForTesting
+        TimeTracker(Ticker ticker) {
+            this.ticker = ticker;
+        }
 
         void recordCurrentTime() {
             lastRead = ticker.read();
