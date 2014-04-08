@@ -30,8 +30,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -49,7 +49,7 @@ public class DocumentListInWebTransTest {
     private ProjectVersionPage projectVersionPage;
 
     public boolean signInAs(String username, String password) {
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn(username, password);
 
         return dashboardPage.hasLoggedIn();

@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.ManageSearchPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -39,7 +39,7 @@ public class ManageSearchTest {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     @Before
     public void before() {

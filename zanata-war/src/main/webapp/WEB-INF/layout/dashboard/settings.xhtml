@@ -61,8 +61,8 @@
           </div>
           <a4j:jsFunction name="updateEmail" action="#{userSettingsAction.updateEmail}"
             render="emailUpdateForm" execute="@form"/>
-          <input type="submit" value="Update email" class="button"
-            onclick="updateEmail(); return false;"/>
+          <input id="updateEmailButton" type="submit" value="Update email"
+            class="button" onclick="updateEmail(); return false;"/>
         </h:form>
         <hr/>
         <s:fragment rendered="#{applicationConfiguration.internalAuth}">
@@ -89,7 +89,8 @@
             </div>
             <a4j:jsFunction name="changePassword" action="#{userSettingsAction.changePassword()}"
               render="passwordChangeForm" execute="@form"/>
-            <input type="submit" value="Update password" class="button"
+            <input id="changePasswordButton" type="submit"
+              value="Update password" class="button"
               onclick="changePassword(); return false"/>
           </h:form>
         </s:fragment>

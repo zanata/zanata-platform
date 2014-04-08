@@ -29,7 +29,7 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.ChangePasswordPage;
 import org.zanata.page.account.MyAccountPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.NoScreenshot;
@@ -72,7 +72,7 @@ public class ChangePasswordTest {
 
         HomePage homePage = myAccountPage.logout();
         assertThat("User is logged out", !homePage.hasLoggedIn());
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn("translator", "newpassword");
         assertThat("User has logged in with the new password",
                 dashboardPage.hasLoggedIn());
@@ -123,7 +123,7 @@ public class ChangePasswordTest {
 
         HomePage homePage = myAccountPage.logout();
         assertThat("User is logged out", !homePage.hasLoggedIn());
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn("translator", "translator");
         assertThat("User has logged in with the original password",
                 dashboardPage.hasLoggedIn());

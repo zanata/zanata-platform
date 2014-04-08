@@ -30,7 +30,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.SignInPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 
 import java.util.List;
 
@@ -54,9 +54,9 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
         return PageFactory.initElements(driver, pageClass);
     }
 
-    public DashboardPage signIn(String username, String password) {
+    public DashboardBasePage signIn(String username, String password) {
         log.info("accessing zanata at: {}", hostUrl);
-        return signInAndGoToPage(username, password, DashboardPage.class);
+        return signInAndGoToPage(username, password, DashboardBasePage.class);
     }
 
     public SignInPage signInFailure(String username, String password) {

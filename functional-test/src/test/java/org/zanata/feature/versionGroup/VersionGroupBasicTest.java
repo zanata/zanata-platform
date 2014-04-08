@@ -35,12 +35,12 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebElement;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectVersionPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -62,7 +62,7 @@ public class VersionGroupBasicTest {
     public AddUsersRule addUsersRule = new AddUsersRule();
 
     private final ProjectWorkFlow projectWorkFlow = new ProjectWorkFlow();
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
     private VersionGroupPage versionGroupPage;
 
     @Before

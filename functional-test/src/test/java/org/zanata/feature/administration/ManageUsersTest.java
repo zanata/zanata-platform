@@ -33,7 +33,7 @@ import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.page.administration.ManageUserPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -49,7 +49,7 @@ public class ManageUsersTest {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     @Before
     public void before() {

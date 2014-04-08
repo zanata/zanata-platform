@@ -33,7 +33,7 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
@@ -58,7 +58,7 @@ public class SecurityFullTest {
     @Test
     @Category(BasicAcceptanceTest.class)
     public void signInSuccessful() {
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn("admin", "admin");
         assertThat("User is logged in", dashboardPage.loggedInAs(),
                 equalTo("admin"));

@@ -31,7 +31,7 @@ import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -43,7 +43,7 @@ import org.zanata.workflow.LoginWorkFlow;
         CustomResourceExtension.class })
 @Category(ConcordionTest.class)
 public class TranslatorJoinsLanguageTeamTest {
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
     private ManageLanguagePage manageLanguagePage;
     private ManageLanguageTeamMemberPage manageLanguageTeamMemberPage;
 

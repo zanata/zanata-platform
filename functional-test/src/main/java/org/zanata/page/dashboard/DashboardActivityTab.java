@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,70 +18,29 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.utility;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.zanata.page.dashboard;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.zanata.page.BasePage;
-import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.util.WebElementUtil;
 
-public class DashboardPage extends BasePage {
+import java.util.ArrayList;
+import java.util.List;
 
-    public DashboardPage(final WebDriver driver) {
+/**
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ */
+public class DashboardActivityTab extends DashboardBasePage {
+
+    public DashboardActivityTab(WebDriver driver) {
         super(driver);
-    }
-
-    public boolean containsActivitySection() {
-        return getActivityTab() != null;
-    }
-
-    public WebElement getActivityTab() {
-        return getDriver().findElement(By.id("activity"));
-    }
-
-    public boolean containsProjectsSection() {
-        return getProjectsTab() != null;
-    }
-
-    public WebElement getProjectsTab() {
-        return getDriver().findElement(By.id("projects"));
-    }
-
-    public boolean containsSettingsSection() {
-        return getDriver().findElement(By.id("settings")) != null;
-    }
-
-    public boolean isActivityTabSelected() {
-        return getDriver()
-                .findElement(By.cssSelector("#activity.is-active")) != null;
     }
 
     public List<WebElement> getMyActivityList() {
         WebElement listWrapper =
                 getDriver().findElement(By.id("activityList"));
-
-        if (listWrapper != null) {
-            return listWrapper.findElements(By.xpath("./li"));
-        }
-        return new ArrayList<WebElement>();
-    }
-
-    public DashboardPage clickOnProjectsTab() {
-        getProjectsTab().click();
-        return this;
-    }
-
-    public List<WebElement> getMaintainedProjectList() {
-        WebElement listWrapper =
-                getDriver().findElement(By.id("maintainedProjects"))
-                        .findElement(By.tagName("ul"));
 
         if (listWrapper != null) {
             return listWrapper.findElements(By.xpath("./li"));
@@ -101,15 +60,5 @@ public class DashboardPage extends BasePage {
 
     public WebElement getMoreActivityElement() {
         return getDriver().findElement(By.id("moreActivity"));
-    }
-
-    public CreateProjectPage clickCreateYourOwn() {
-        getDriver().findElement(By.linkText("create your own")).click();
-        return new CreateProjectPage(getDriver());
-    }
-
-    public DashboardPage clickOnActivityTab() {
-        getActivityTab().click();
-        return this;
     }
 }

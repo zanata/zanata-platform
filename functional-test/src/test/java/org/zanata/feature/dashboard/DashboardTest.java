@@ -27,15 +27,18 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardActivityTab;
+import org.zanata.page.dashboard.DashboardBasePage;
+import org.zanata.page.dashboard.DashboardProjectsTab;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.util.HasEmailRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
-import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 @Category(DetailedTest.class)
@@ -44,8 +47,10 @@ public class DashboardTest {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @ClassRule
+    public static HasEmailRule emailRule = new HasEmailRule();
 
-    private DashboardPage dashboard;
+    private DashboardBasePage dashboard;
 
     @Before
     public void setUp() {
@@ -72,49 +77,45 @@ public class DashboardTest {
     }
 
     public void dashboardPresentAfterLogin() throws Exception {
-        assertThat(dashboard.containsActivitySection()).isTrue();
-        assertThat(dashboard.containsProjectsSection()).isTrue();
-        assertThat(dashboard.containsSettingsSection()).isTrue();
-        assertThat(dashboard.isActivityTabSelected()).isTrue();
+        assertThat(dashboard.activityTabIsSelected()).isTrue();
     }
 
     public void activityListExpands() throws Exception {
-        dashboard.clickOnActivityTab();
-        assertThat(dashboard.getMyActivityList()).isNotEmpty();
-        int initialActivitySize = dashboard.getMyActivityList().size();
-        dashboard.clickMoreActivity();
-        assertThat(dashboard.getMyActivityList().size())
+        DashboardActivityTab activityTab = dashboard.gotoActivityTab();
+        assertThat(activityTab.getMyActivityList()).isNotEmpty();
+        int initialActivitySize = activityTab.getMyActivityList().size();
+        activityTab.clickMoreActivity();
+        assertThat(activityTab.getMyActivityList().size())
                 .isGreaterThan(initialActivitySize);
     }
 
     public void projectListIsPresent() throws Exception {
-        dashboard.clickOnProjectsTab();
-        assertThat(dashboard.getMaintainedProjectList()).isNotEmpty();
+        DashboardProjectsTab projectsTab = dashboard.gotoProjectsTab();
+        assertThat(projectsTab.getMaintainedProjectList()).isNotEmpty();
+    }
+
+    @Test
+    public void accountEmailModification() throws Exception {
+        dashboard.gotoSettingsTab()
+                 .typeNewAccountEmailAddress("new@fakeemail.com")
+                 .clickUpdateEmailButton();
+        assertThat(dashboard.getNotificationMessage()).startsWith(
+                "You will soon receive an email");
+    }
+
+    @Test
+    public void passwordChange() throws Exception {
+        dashboard.gotoSettingsTab()
+                 .typeOldPassword("admin")
+                 .typeNewPassword("admin2")
+                 .clickUpdatePasswordButton();
+        assertThat(dashboard.getNotificationMessage()).isEqualTo(
+                "Your password has been successfully changed.");
     }
 
     public boolean signInAs(String username, String password) {
         dashboard = new LoginWorkFlow().signIn(username, password);
 
         return dashboard.hasLoggedIn();
-    }
-
-    public void gotoDashboard() {
-        dashboard = new BasicWorkFlow().goToDashboard();
-    }
-
-    public boolean myActivitiesListNotEmpty() {
-        return !dashboard.getMyActivityList().isEmpty();
-    }
-
-    public int myActivitiesCount() {
-        return dashboard.getMyActivityList().size();
-    }
-
-    public boolean myActivitiesCountIsMoreThan(int compareTo) {
-        return dashboard.getMyActivityList().size() > compareTo;
-    }
-
-    public void clickMoreActivity() {
-        dashboard.clickMoreActivity();
     }
 }

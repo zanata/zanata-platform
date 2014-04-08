@@ -25,8 +25,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
@@ -54,7 +54,7 @@ public class VersionGroupUrlTest {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     private ZanataRestCaller restCaller;
 

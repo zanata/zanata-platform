@@ -25,9 +25,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.projects.ProjectPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -45,7 +45,7 @@ public class ProjectSearchTest {
 
     @Test
     public void successfulProjectSearchAndDisplay() {
-        DashboardPage dashboardPage = new LoginWorkFlow()
+        DashboardBasePage dashboardPage = new LoginWorkFlow()
                 .signIn("translator", "translator");
         dashboardPage.enterSearch("about")
                 .waitForSearchListContains("about fedora");
@@ -63,7 +63,7 @@ public class ProjectSearchTest {
 
     @Test
     public void unsuccessfulProjectSearch() {
-        DashboardPage dashboardPage = new LoginWorkFlow()
+        DashboardBasePage dashboardPage = new LoginWorkFlow()
                 .signIn("translator", "translator");
         dashboardPage.enterSearch("arodef")
                 .waitForSearchListContains("Search Zanata for 'arodef'");
@@ -79,7 +79,7 @@ public class ProjectSearchTest {
                 .goToProject("about fedora").clickEditProject()
                 .selectStatus("OBSOLETE").updateProject().logout();
 
-        DashboardPage dashboardPage = new LoginWorkFlow()
+        DashboardBasePage dashboardPage = new LoginWorkFlow()
                 .signIn("translator", "translator");
         dashboardPage.enterSearch("about")
                 .waitForSearchListContains("Search Zanata for 'about'");
