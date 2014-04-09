@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="l--push-left-half">
+    <h2 class="heading--secondary">#{messages['jsf.YourActivity']}</h2>
+  </div>
+  <h:form id="activityList">
+    <ui:param name="activities" value="#{activityAction.getActivities()}"/>
+    <s:fragment rendered="#{!activities.isEmpty()}">
+      <ul class="list--no-bullets">
+        <ui:repeat value="#{activities}" var="activity">
+          <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
+            <zanata:activity-entry value="#{activity}" hideInfo="true"/>
+          </li>
+        </ui:repeat>
+        <s:fragment rendered="#{activityAction.hasMoreActivities()}">
+          <a4j:commandLink styleClass="d--top loader"
+            action="#{activityAction.loadNextActivity()}" render="activityList">
+            <span id="moreActivity"
+              class="loader__label">#{messages['jsf.moreActivity']}</span>
+          </a4j:commandLink>
+        </s:fragment>
+      </ul>
+    </s:fragment>
+    <s:fragment rendered="#{activities.isEmpty()}">
+      <div class="l--pad-all-half bg--high">
+        <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
+
+        <p class="txt--meta">#{messages['jsf.NoActivityMessage']}</p>
+      </div>
+    </s:fragment>
+  </h:form>
+</ui:composition>

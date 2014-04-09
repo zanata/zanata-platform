@@ -136,7 +136,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "from HProjectIteration t where t.project.slug = :projectSlug");
+                                "from HProjectIteration t where t.project.slug = :projectSlug order by t.creationDate");
         q.setParameter("projectSlug", slug);
         q.setCacheable(true).setComment("ProjectDAO.getAllIterations");
         return q.list();

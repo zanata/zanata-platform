@@ -21,12 +21,14 @@
 package org.zanata.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -38,20 +40,39 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
-import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
+import org.zanata.dao.AccountRoleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
+import org.zanata.service.ValidationService;
+import org.zanata.ui.AbstractListFilter;
+import org.zanata.ui.FilterUtil;
+import org.zanata.ui.autocomplete.LocaleAutocomplete;
+import org.zanata.ui.autocomplete.MaintainerAutocomplete;
+import org.zanata.util.ComparatorUtil;
+import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.validation.ValidationFactory;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,30 +87,10 @@ public class ProjectHome extends SlugHome<HProject> {
     private String slug;
 
     @In
-    ZanataIdentity identity;
+    private ZanataIdentity identity;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
-    HAccount authenticatedAccount;
-
-    /* Outjected from LocaleListAction */
-    @In(required = false)
-    Map<String, String> customizedItems;
-
-    /* Outjected from LocaleListAction */
-    @In(required = false)
-    private Boolean overrideLocales;
-
-    /* Outjected from ProjectRoleRestrictionAction */
-    @In(required = false)
-    private Set<HAccountRole> customizedProjectRoleRestrictions;
-
-    /* Outjected from ProjectRoleRestrictionAction */
-    @In(required = false)
-    private Boolean restrictByRoles;
-
-    /* Outjected from ValidationOptionsAction */
-    @In(required = false)
-    private Collection<ValidationAction> customizedValidations;
+    private HAccount authenticatedAccount;
 
     @In
     private LocaleService localeServiceImpl;
@@ -98,10 +99,109 @@ public class ProjectHome extends SlugHome<HProject> {
     private SlugEntityService slugEntityServiceImpl;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
+    private ConversationScopeMessages conversationScopeMessages;
 
     @In
     private EntityManager entityManager;
+
+    @In
+    private ZanataMessages zanataMessages;
+
+    @In
+    private AccountRoleDAO accountRoleDAO;
+
+    @In
+    private ValidationService validationServiceImpl;
+
+    @In
+    private CopyTransOptionsModel copyTransOptionsModel;
+
+    private Map<String, Boolean> roleRestrictions;
+
+    private Map<ValidationId, ValidationAction> availableValidations = Maps
+            .newHashMap();
+
+    @Getter
+    @Setter
+    private String selectedProjectType;
+
+    @Getter
+    private ProjectMaintainersAutocomplete maintainerAutocomplete =
+            new ProjectMaintainersAutocomplete();
+
+    @Getter
+    private ProjectLocaleAutocomplete localeAutocomplete =
+            new ProjectLocaleAutocomplete();
+
+    @Getter
+    private AbstractListFilter<HPerson> maintainerFilter =
+            new AbstractListFilter<HPerson>() {
+                @Override
+                protected List<HPerson> getFilteredList() {
+                    return FilterUtil.filterPersonList(getQuery(),
+                            getInstanceMaintainers());
+                }
+            };
+
+    public void createNew() {
+        getInstance().setDefaultProjectType(ProjectType.File);
+        selectedProjectType = getInstance().getDefaultProjectType().name();
+    }
+
+    public void updateSelectedProjectType(ValueChangeEvent e) {
+        selectedProjectType = (String) e.getNewValue();
+        updateProjectType();
+    }
+
+    public void setSelectedProjectType(String selectedProjectType) {
+        if (!StringUtils.isEmpty(selectedProjectType)
+                && !selectedProjectType.equals("null")) {
+            ProjectType projectType = ProjectType.valueOf(selectedProjectType);
+            getInstance().setDefaultProjectType(projectType);
+        } else {
+            getInstance().setDefaultProjectType(null);
+        }
+    }
+
+    public List<HLocale> getInstanceActiveLocales() {
+        List<HLocale> locales;
+        if (StringUtils.isNotEmpty(getSlug())) {
+            locales =
+                    localeServiceImpl.getSupportedLanguageByProject(getSlug());
+        } else {
+            locales = localeServiceImpl.getSupportedAndEnabledLocales();
+        }
+        Collections.sort(locales, ComparatorUtil.LOCALE_COMPARATOR);
+        return locales;
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void removeLanguage(LocaleId localeId) {
+        HLocale locale = localeServiceImpl.getByLocaleId(localeId);
+
+        if (getInstance().isOverrideLocales()) {
+            getInstance().getCustomizedLocales().remove(locale);
+        } else {
+            getInstance().getCustomizedLocales().clear();
+            for (HLocale activeLocale : getInstanceActiveLocales()) {
+                if (!activeLocale.equals(locale)) {
+                    getInstance().getCustomizedLocales().add(activeLocale);
+                }
+            }
+            getInstance().setOverrideLocales(true);
+        }
+        update();
+        conversationScopeMessages.setMessage(
+                FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.project.LanguageRemoved",
+                        locale.retrieveDisplayName()));
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void setRestrictedByRole(String key, boolean checked) {
+        getInstance().setRestrictedByRoles(checked);
+        update();
+    }
 
     @Override
     protected HProject loadInstance() {
@@ -119,6 +219,29 @@ public class ProjectHome extends SlugHome<HProject> {
         if (ip.getStatus().equals(EntityStatus.OBSOLETE)
                 && !checkViewObsolete()) {
             throw new EntityNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updateCopyTrans(String action, String value) {
+        copyTransOptionsModel.setInstance(getInstance()
+                .getDefaultCopyTransOpts());
+        copyTransOptionsModel.update(action, value);
+        copyTransOptionsModel.save();
+        getInstance().setDefaultCopyTransOpts(
+                copyTransOptionsModel.getInstance());
+
+        update();
+
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.project.CopyTransOpts.updated"));
+    }
+
+    public void initialize() {
+        validateSuppliedId();
+        if (getInstance().getDefaultCopyTransOpts() != null) {
+            copyTransOptionsModel.setInstance(getInstance()
+                    .getDefaultCopyTransOpts());
         }
     }
 
@@ -140,24 +263,152 @@ public class ProjectHome extends SlugHome<HProject> {
         return slugEntityServiceImpl.isSlugAvailable(slug, HProject.class);
     }
 
+    private void updateProjectType() {
+        if (!StringUtils.isEmpty(selectedProjectType)
+                && !selectedProjectType.equals("null")) {
+            ProjectType projectType = ProjectType.valueOf(selectedProjectType);
+            getInstance().setDefaultProjectType(projectType);
+        } else {
+            getInstance().setDefaultProjectType(null);
+        }
+    }
+
     @Override
     @Transactional
     public String persist() {
+        conversationScopeMessages.clearMessages();
         String retValue = "";
-        if (!validateSlug(getInstance().getSlug(), "slug"))
+        if (!validateSlug(getInstance().getSlug(), "slug")) {
             return null;
+        }
+
+        if (StringUtils.isEmpty(selectedProjectType)
+                || selectedProjectType.equals("null")) {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "Project type not selected");
+            return null;
+        }
+        updateProjectType();
 
         if (authenticatedAccount != null) {
-            updateOverrideLocales();
-            updateRoleRestrictions();
-            updateOverrideValidations();
             getInstance().addMaintainer(authenticatedAccount.getPerson());
+            getInstance().getCustomizedValidations().clear();
+            for (ValidationAction validationAction : validationServiceImpl
+                    .getValidationActions("")) {
+                getInstance().getCustomizedValidations().put(
+                        validationAction.getId().name(),
+                        validationAction.getState().name());
+            }
             retValue = super.persist();
             Events.instance().raiseEvent("projectAdded");
         }
         return retValue;
     }
 
+    public List<HPerson> getInstanceMaintainers() {
+        List<HPerson> list = Lists.newArrayList(getInstance().getMaintainers());
+        Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
+        return list;
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public String removeMaintainer(HPerson person) {
+        if (getInstanceMaintainers().size() <= 1) {
+            conversationScopeMessages
+                    .setMessage(FacesMessage.SEVERITY_INFO, zanataMessages
+                            .getMessage("jsf.project.NeedAtLeastOneMaintainer"));
+        } else {
+            getInstance().getMaintainers().remove(person);
+
+            update();
+
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.project.MaintainerRemoved",
+                            person.getName()));
+
+            // force page to do url redirect to project page. See pages.xml
+            if (person.equals(authenticatedAccount.getPerson())) {
+                return "redirect";
+            }
+        }
+        return "";
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void updateRoles(String roleName, boolean isRestricted) {
+        getInstance().getAllowedRoles().clear();
+        if (getInstance().isRestrictedByRoles()) {
+            getRoleRestrictions().put(roleName, isRestricted);
+
+            for (Map.Entry<String, Boolean> entry : getRoleRestrictions()
+                    .entrySet()) {
+                if (entry.getValue()) {
+                    getInstance().getAllowedRoles().add(
+                            accountRoleDAO.findByName(entry.getKey()));
+                }
+            }
+        }
+        update();
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.RolesUpdated"));
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void updateStatus(char initial) {
+        getInstance().setStatus(EntityStatus.valueOf(initial));
+        if (getInstance().getStatus() == EntityStatus.READONLY) {
+            for (HProjectIteration version : getInstance()
+                    .getProjectIterations()) {
+                if (version.getStatus() == EntityStatus.ACTIVE) {
+                    version.setStatus(EntityStatus.READONLY);
+                    entityManager.merge(version);
+                    Events.instance().raiseEvent(
+                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                }
+            }
+        } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
+            for (HProjectIteration version : getInstance()
+                    .getProjectIterations()) {
+                if (version.getStatus() != EntityStatus.OBSOLETE) {
+                    version.setStatus(EntityStatus.OBSOLETE);
+                    entityManager.merge(version);
+                    Events.instance().raiseEvent(
+                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                }
+            }
+        }
+        update();
+
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.project.status.updated",
+                        EntityStatus.valueOf(initial)));
+    }
+
+    public Map<String, Boolean> getRoleRestrictions() {
+        if (roleRestrictions == null) {
+            roleRestrictions = Maps.newHashMap();
+
+            for (HAccountRole role : getInstance().getAllowedRoles()) {
+                roleRestrictions.put(role.getName(), true);
+            }
+        }
+        return roleRestrictions;
+    }
+
+    public boolean isRoleRestrictionEnabled(String roleName) {
+        if (getRoleRestrictions().containsKey(roleName)) {
+            return getRoleRestrictions().get(roleName);
+        }
+        return false;
+    }
+
+    public List<HAccountRole> getAvailableRoles() {
+        List<HAccountRole> allRoles = accountRoleDAO.findAll();
+        Collections.sort(allRoles, ComparatorUtil.ACCOUNT_ROLE_COMPARATOR);
+        return allRoles;
+    }
+
+    @CachedMethodResult
     public List<HProjectIteration> getVersions() {
         List<HProjectIteration> results = new ArrayList<HProjectIteration>();
 
@@ -200,31 +451,6 @@ public class ProjectHome extends SlugHome<HProject> {
         return results;
     }
 
-    public EntityStatus getEffectiveVersionStatus(HProjectIteration version) {
-        /**
-         * Null pointer exception checking caused by unknown issues where
-         * getEffectiveIterationStatus gets invoke before getIterations
-         */
-        if (version == null) {
-            return null;
-        }
-        if (getInstance().getStatus() == EntityStatus.READONLY) {
-            if (version.getStatus() == EntityStatus.ACTIVE) {
-                return EntityStatus.READONLY;
-            }
-        } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
-            if (version.getStatus() == EntityStatus.ACTIVE
-                    || version.getStatus() == EntityStatus.READONLY) {
-                return EntityStatus.OBSOLETE;
-            }
-        }
-        return version.getStatus();
-    }
-
-    public String cancel() {
-        return "cancel";
-    }
-
     @Override
     public boolean isIdDefined() {
         return slug != null;
@@ -240,103 +466,163 @@ public class ProjectHome extends SlugHome<HProject> {
         return slug;
     }
 
-    @Override
-    public String update() {
-        updateOverrideLocales();
-        updateRoleRestrictions();
-        updateOverrideValidations();
-        String state = super.update();
-        Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
+    private Map<ValidationId, ValidationAction> getValidations() {
+        if (availableValidations.isEmpty()) {
+            Collection<ValidationAction> validationList =
+                    validationServiceImpl.getValidationActions(slug);
 
-        if (getInstance().getStatus() == EntityStatus.READONLY) {
-            for (HProjectIteration version : getInstance()
-                    .getProjectIterations()) {
-                if (version.getStatus() == EntityStatus.ACTIVE) {
-                    version.setStatus(EntityStatus.READONLY);
-                    entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            ProjectIterationHome.PROJECT_ITERATION_UPDATE,
-                            version);
-                }
-            }
-        } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
-            for (HProjectIteration version : getInstance()
-                    .getProjectIterations()) {
-                if (version.getStatus() != EntityStatus.OBSOLETE) {
-                    version.setStatus(EntityStatus.OBSOLETE);
-                    entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            ProjectIterationHome.PROJECT_ITERATION_UPDATE,
-                            version);
-                }
+            for (ValidationAction validationAction : validationList) {
+                availableValidations.put(validationAction.getId(),
+                        validationAction);
             }
         }
 
+        return availableValidations;
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void updateValidationOption(String name, String state) {
+        ValidationId validatationId = ValidationId.valueOf(name);
+
+        for (Map.Entry<ValidationId, ValidationAction> entry : getValidations()
+                .entrySet()) {
+            if (entry.getKey().name().equals(name)) {
+                getValidations().get(validatationId).setState(
+                        ValidationAction.State.valueOf(state));
+                getInstance().getCustomizedValidations().put(
+                        entry.getKey().name(),
+                        entry.getValue().getState().name());
+                ensureMutualExclusivity(getValidations().get(validatationId));
+                break;
+            }
+        }
+        update();
+
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages.getMessage("jsf.validation.updated",
+                        validatationId.getDisplayName(), state));
+    }
+
+    public List<ValidationAction> getValidationList() {
+        List<ValidationAction> sortedList =
+                Lists.newArrayList(getValidations().values());
+        Collections.sort(sortedList,
+                ValidationFactory.ValidationActionComparator);
+        return sortedList;
+    }
+
+    /**
+     * If this action is enabled(Warning or Error), then it's exclusive
+     * validation will be turn off
+     *
+     * @param selectedValidationAction
+     */
+    private void ensureMutualExclusivity(
+            ValidationAction selectedValidationAction) {
+        if (selectedValidationAction.getState() != ValidationAction.State.Off) {
+            for (ValidationAction exclusiveValAction : selectedValidationAction
+                    .getExclusiveValidations()) {
+                getInstance().getCustomizedValidations().put(
+                        exclusiveValAction.getId().name(),
+                        ValidationAction.State.Off.name());
+                getValidations().get(exclusiveValAction.getId()).setState(
+                        ValidationAction.State.Off);
+            }
+        }
+    }
+
+    public List<ValidationAction.State> getValidationStates() {
+        return Arrays.asList(ValidationAction.State.values());
+    }
+
+    @Override
+    public String update() {
+        conversationScopeMessages.clearMessages();
+        String state = super.update();
+        Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
         return state;
     }
 
-    private void updateOverrideLocales() {
-        if (overrideLocales != null) {
-            getInstance().setOverrideLocales(overrideLocales);
-            if (!overrideLocales) {
-                getInstance().getCustomizedLocales().clear();
-            } else if (customizedItems != null) {
-                Set<HLocale> locale =
-                        localeServiceImpl
-                                .convertCustomizedLocale(customizedItems);
-                getInstance().getCustomizedLocales().clear();
-                getInstance().getCustomizedLocales().addAll(locale);
-            }
+    /**
+     * This is for autocomplete components of which ConversationScopeMessages
+     * will be null
+     *
+     * @param conversationScopeMessages
+     */
+    private String update(ConversationScopeMessages conversationScopeMessages) {
+        if (this.conversationScopeMessages == null) {
+            this.conversationScopeMessages = conversationScopeMessages;
         }
+        return update();
     }
 
-    private void updateOverrideValidations() {
-        // edit project page code won't have customized validations outjected
-        if (customizedValidations != null) {
-            getInstance().getCustomizedValidations().clear();
-            for (ValidationAction action : customizedValidations) {
-                getInstance().getCustomizedValidations().put(
-                    action.getId().name(), action.getState().name());
-            }
-        }
-    }
-
-    private void updateRoleRestrictions() {
-        if (restrictByRoles != null) {
-            getInstance().setRestrictedByRoles(restrictByRoles);
-            getInstance().getAllowedRoles().clear();
-
-            if (restrictByRoles) {
-                getInstance().getAllowedRoles().addAll(
-                        customizedProjectRoleRestrictions);
-            }
-        }
-    }
-
-    public boolean isProjectActive() {
-        return getInstance().getStatus() == EntityStatus.ACTIVE;
-    }
-
-    public boolean checkViewObsolete() {
+    private boolean checkViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
     }
 
-    public boolean isUserAllowedToTranslateOrReview(String versionSlug,
-            HLocale localeId) {
-        return !StringUtils.isEmpty(versionSlug)
-                && localeId != null
-                && isIterationActive(versionSlug)
-                && identity != null
-                && (identity.hasPermission("add-translation", getInstance(),
-                        localeId) || identity.hasPermission(
-                        "translation-review", getInstance(), localeId));
+    private class ProjectMaintainersAutocomplete extends MaintainerAutocomplete {
+
+        @Override
+        protected List<HPerson> getMaintainers() {
+            return getInstanceMaintainers();
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HPerson maintainer = personDAO.findByUsername(getSelectedItem());
+            getInstance().addMaintainer(maintainer);
+            update(conversationScopeMessages);
+            reset();
+
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.project.MaintainerAdded",
+                            maintainer.getName()));
+        }
     }
 
-    private boolean isIterationActive(String versionSlug) {
-        HProjectIteration version =
-                projectIterationDAO.getBySlug(getSlug(), versionSlug);
-        return getInstance().getStatus() == EntityStatus.ACTIVE
-                || version.getStatus() == EntityStatus.ACTIVE;
+    private class ProjectLocaleAutocomplete extends LocaleAutocomplete {
+
+        @Override
+        protected Set<HLocale> getLocales() {
+            return getInstance().getCustomizedLocales();
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+
+            if (!getInstance().isOverrideLocales()) {
+                getInstance().setOverrideLocales(true);
+                getInstance().getCustomizedLocales().clear();
+            }
+            getInstance().getCustomizedLocales().add(locale);
+
+            update(conversationScopeMessages);
+            reset();
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.project.LanguageAdded",
+                            locale.retrieveDisplayName()));
+        }
+    }
+
+    public List<ProjectType> getProjectTypeList() {
+        List<ProjectType> projectTypes = Arrays.asList(ProjectType.values());
+        Collections.sort(projectTypes, ComparatorUtil.PROJECT_TYPE_COMPARATOR);
+        return projectTypes;
     }
 }

@@ -39,7 +39,6 @@ import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -51,6 +50,8 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -72,9 +73,6 @@ public class ActivityServiceImpl implements ActivityService {
     private PersonDAO personDAO;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
     private EntityManager entityManager;
 
     @In
@@ -89,6 +87,24 @@ public class ActivityServiceImpl implements ActivityService {
 
     private Date getRoundedTime(Date actionTime) {
         return DateUtils.truncate(actionTime, Calendar.HOUR);
+    }
+
+    @Override
+    public List<Activity> findLatestVersionActivitiesByUser(long personId,
+            List<Long> versionIds, int offset, int maxResults) {
+        if (versionIds.isEmpty()) {
+            return Lists.newArrayList();
+        }
+        return activityDAO.findLatestVersionActivitiesByUser(personId,
+                versionIds, offset, maxResults);
+    }
+
+    @Override
+    public List<Activity> findLatestVersionActivities(Long versionId,
+            int offset, int maxResults) {
+
+        return activityDAO.findLatestVersionActivities(versionId, offset,
+                maxResults);
     }
 
     @Override
@@ -110,7 +126,8 @@ public class ActivityServiceImpl implements ActivityService {
         Lock lock = activityLockManager.getLock(actorId);
         lock.lock();
         try {
-            logActivityAlreadyLocked(actorId, context, target, activityType, wordCount);
+            logActivityAlreadyLocked(actorId, context, target, activityType,
+                    wordCount);
         } finally {
             lock.unlock();
         }
@@ -118,14 +135,16 @@ public class ActivityServiceImpl implements ActivityService {
 
     /**
      * Precondition: current thread must hold a lock for the person 'actorId'.
+     *
      * @param actorId
      * @param context
      * @param target
      * @param activityType
      * @param wordCount
      */
-    private void logActivityAlreadyLocked(long actorId, IsEntityWithType context,
-            IsEntityWithType target, ActivityType activityType, int wordCount) {
+    private void logActivityAlreadyLocked(long actorId,
+            IsEntityWithType context, IsEntityWithType target,
+            ActivityType activityType, int wordCount) {
         if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =

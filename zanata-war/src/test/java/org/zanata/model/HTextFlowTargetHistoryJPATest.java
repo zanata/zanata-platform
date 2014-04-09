@@ -1,8 +1,5 @@
 package org.zanata.model;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +13,9 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
     private LocaleDAO localeDAO;

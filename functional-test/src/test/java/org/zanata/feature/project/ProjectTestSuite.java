@@ -31,6 +31,11 @@ import org.junit.runners.Suite;
  * @see org.zanata.feature.AggregateTestSuite
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EditMaintainersTest.class, ProjectVersionTest.class})
+@Suite.SuiteClasses({
+        CreateProjectTest.class,
+        EditPermissionsTest.class,
+        EditProjectGeneralTest.class,
+        EditProjectLanguagesTest.class,
+        EditProjectValidationsTest.class })
 public class ProjectTestSuite {
 }

@@ -3,9 +3,19 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:rich="http://richfaces.org/rich">
+  xmlns:a4j="http://richfaces.org/a4j">
 
+  <div class="l--push-top-half form__item">
+    <h:outputLabel for="name">#{messages['jsf.GroupName']}
+      <s:span styleClass="txt--required">*</s:span>
+    </h:outputLabel>
+    <s:decorate id="nameField" template="../field.xhtml" enclose="true">
+      <h:inputText id="name" required="true" maxlength="80"
+        value="#{versionGroupHome.instance.name}">
+        <a4j:ajax event="blur" render="nameField" execute="@this"/>
+      </h:inputText>
+    </s:decorate>
+  </div>
   <div class="l--push-top-half form__item">
     <h:outputLabel for="slug">#{messages['jsf.GroupId']}
       <s:span styleClass="txt--required">*</s:span>
@@ -24,18 +34,6 @@
       </h:inputText>
     </s:decorate>
   </div>
-  <div class="l--push-top-half form__item">
-    <h:outputLabel for="name">#{messages['jsf.GroupName']}
-      <s:span styleClass="txt--required">*</s:span>
-    </h:outputLabel>
-    <s:decorate id="nameField" template="../field.xhtml" enclose="true">
-      <h:inputText id="name" required="true" maxlength="80"
-        value="#{versionGroupHome.instance.name}">
-        <a4j:ajax event="blur" render="nameField" execute="@this"/>
-      </h:inputText>
-    </s:decorate>
-  </div>
-
   <div class="l--push-top-half form__item">
     <h:outputLabel for="description">
       #{messages['jsf.GroupDescription']}

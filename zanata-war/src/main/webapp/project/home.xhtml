@@ -17,7 +17,7 @@
       <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
       <s:link id="createProjectLink" styleClass="action_link"
         rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
-        value="#{messages['jsf.CreateProject']}"
+        value="#{messages['jsf.NewProject.Label']}"
         view="/project/create_project.xhtml"
         propagation="none"/>
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"

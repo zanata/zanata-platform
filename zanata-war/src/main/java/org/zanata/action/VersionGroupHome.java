@@ -20,44 +20,48 @@
  */
 package org.zanata.action;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.Nullable;
+import javax.faces.application.FacesMessage;
+import javax.faces.event.ValueChangeEvent;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
-import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.scope.FlashScopeBean;
-import org.zanata.service.LocaleService;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.VersionGroupService;
+import org.zanata.service.impl.VersionGroupServiceImpl;
+import org.zanata.ui.AbstractAutocomplete;
+import org.zanata.ui.AbstractListFilter;
+import org.zanata.ui.FilterUtil;
+import org.zanata.ui.autocomplete.LocaleAutocomplete;
+import org.zanata.ui.autocomplete.MaintainerAutocomplete;
+import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ZanataMessages;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
-import javax.annotation.Nullable;
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -78,45 +82,31 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     private SlugEntityService slugEntityServiceImpl;
 
     @In
-    private LocaleService localeServiceImpl;
-
-    @In
-    private PersonDAO personDAO;
-
-    @In
-    private VersionGroupService versionGroupServiceImpl;
-
-    @In
     private ZanataMessages zanataMessages;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
+    private ConversationScopeMessages conversationScopeMessages;
 
-    @In
-    private FlashScopeBean flashScope;
+    @Getter
+    private GroupMaintainerAutocomplete maintainerAutocomplete =
+            new GroupMaintainerAutocomplete();
 
-    private List<SelectItem> statusList;
+    @Getter
+    private VersionAutocomplete versionAutocomplete = new VersionAutocomplete();
 
-    @Setter
-    private String languageQuery;
+    @Getter
+    private GroupLocaleAutocomplete localeAutocomplete =
+            new GroupLocaleAutocomplete();
 
-    @Setter
-    // localeId
-    private String selectedLocale;
-
-    @Setter
-    private String versionQuery;
-
-    @Setter
-    // version id
-    private String selectedVersion;
-
-    @Setter
-    private String maintainerQuery;
-
-    @Setter
-    // username
-    private String selectedMaintainer;
+    @Getter
+    private AbstractListFilter<HPerson> maintainerFilter =
+            new AbstractListFilter<HPerson>() {
+                @Override
+                protected List<HPerson> getFilteredList() {
+                    return FilterUtil.filterPersonList(getQuery(),
+                            getInstanceMaintainers());
+                }
+            };
 
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
@@ -140,173 +130,47 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String persist() {
+        conversationScopeMessages.clearMessages();
         if (!validateSlug(getInstance().getSlug(), "slug"))
             return null;
 
         if (authenticatedAccount != null) {
             getInstance().addMaintainer(authenticatedAccount.getPerson());
         }
-        clearMessage();
         return super.persist();
     }
 
     @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String update() {
-        clearMessage();
+        conversationScopeMessages.clearMessages();
         return super.update();
     }
 
-    @Override
-    public List<SelectItem> getStatusList() {
-        return getAvailableStatus();
+    /**
+     * This is for autocomplete components of which ConversationScopeMessages
+     * will be null
+     *
+     * @param conversationScopeMessages
+     * @return
+     */
+    private String update(ConversationScopeMessages conversationScopeMessages) {
+        if (this.conversationScopeMessages == null) {
+            this.conversationScopeMessages = conversationScopeMessages;
+        }
+        return update();
     }
 
     public void setStatus(char initial) {
         getInstance().setStatus(EntityStatus.valueOf(initial));
     }
 
-    public List<HLocale> suggestLocales() {
-        if (languageQuery == null) {
-            return Lists.newArrayList();
-        }
-
-        List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
-
-        Collection<HLocale> filtered =
-                Collections2.filter(localeList, new Predicate<HLocale>() {
-                    @Override
-                    public boolean apply(@Nullable HLocale input) {
-                        if (StringUtils.isEmpty(languageQuery)) {
-                            return !getInstance().getActiveLocales().contains(
-                                    input);
-                        }
-
-                        return !getInstance().getActiveLocales()
-                                .contains(input)
-                                && (input.getLocaleId().getId()
-                                        .startsWith(languageQuery) || input
-                                        .retrieveDisplayName().toLowerCase()
-                                        .contains(languageQuery.toLowerCase()));
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public List<HProjectIteration> suggestVersions() {
-        List<HProjectIteration> versionList =
-                versionGroupServiceImpl
-                        .searchLikeSlugOrProjectSlug(versionQuery);
-
-        Collection<HProjectIteration> filtered =
-                Collections2.filter(versionList,
-                        new Predicate<HProjectIteration>() {
-                            @Override
-                            public boolean apply(
-                                    @Nullable HProjectIteration input) {
-                                return !input.getGroups().contains(
-                                        getInstance());
-                            }
-                        });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public List<HPerson> suggestMaintainers() {
-        List<HPerson> personList =
-                personDAO.findAllContainingName(maintainerQuery);
-
-        Collection<HPerson> filtered =
-                Collections2.filter(personList, new Predicate<HPerson>() {
-                    @Override
-                    public boolean apply(@Nullable HPerson input) {
-                        return !getInstance().getMaintainers().contains(input);
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    /**
-     * Use FlashScopeBean to store message in page. Multiple ajax requests for
-     * re-rendering statistics after updating will clear FacesMessages.
-     *
-     * @param severity
-     * @param message
-     */
-    private void addMessage(StatusMessage.Severity severity, String message) {
-        StatusMessage statusMessage =
-                new StatusMessage(severity, null, null, message, null);
-        statusMessage.interpolate();
-
-        flashScope.setAttribute("message", statusMessage);
-    }
-
-    private void clearMessage() {
-        flashScope.getAndClearAttribute("message");
-    }
-
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-    public void addLanguage() {
-        if (StringUtils.isEmpty(selectedLocale)) {
-            return;
-        }
-
-        HLocale locale = localeServiceImpl.getByLocaleId(selectedLocale);
-
-        getInstance().getActiveLocales().add(locale);
-        super.update();
-        selectedLocale = "";
-        languageQuery = "";
-
-        addMessage(
-                StatusMessage.Severity.INFO,
-                zanataMessages.getMessage("jsf.LanguageAddedToGroup",
-                        locale.retrieveDisplayName()));
-    }
-
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-    public void addVersion() {
-        if (StringUtils.isEmpty(selectedVersion)) {
-            return;
-        }
-
-        HProjectIteration version =
-                projectIterationDAO.findById(new Long(selectedVersion));
-        getInstance().getProjectIterations().add(version);
-        super.update();
-        selectedVersion = "";
-        versionQuery = "";
-
-        addMessage(
-                StatusMessage.Severity.INFO,
-                zanataMessages.getMessage("jsf.VersionAddedToGroup",
-                        version.getSlug(), version.getProject().getSlug()));
-    }
-
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
-    public void addMaintainer() {
-        if (StringUtils.isEmpty(selectedMaintainer)) {
-            return;
-        }
-
-        HPerson maintainer = personDAO.findByUsername(selectedMaintainer);
-        getInstance().getMaintainers().add(maintainer);
-        super.update();
-        selectedMaintainer = "";
-        maintainerQuery = "";
-
-        addMessage(StatusMessage.Severity.INFO, zanataMessages.getMessage(
-                "jsf.MaintainerAddedToGroup", maintainer.getName()));
-    }
-
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeLanguage(HLocale locale) {
         getInstance().getActiveLocales().remove(locale);
-        super.update();
-        addMessage(
-                StatusMessage.Severity.INFO,
+        update();
+        conversationScopeMessages.setMessage(
+                FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.LanguageRemoveFromGroup",
                         locale.retrieveDisplayName()));
     }
@@ -314,50 +178,34 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeVersion(HProjectIteration version) {
         getInstance().getProjectIterations().remove(version);
-        super.update();
-
-        addMessage(
-                StatusMessage.Severity.INFO,
+        update();
+        conversationScopeMessages.setMessage(
+                FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.VersionRemoveFromGroup",
                         version.getSlug(), version.getProject().getSlug()));
     }
 
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeMaintainer(HPerson maintainer) {
-        getInstance().getMaintainers().remove(maintainer);
-        super.update();
-
-        addMessage(StatusMessage.Severity.INFO, zanataMessages.getMessage(
-                "jsf.MaintainerRemoveFromGroup", maintainer.getName()));
+        if (getInstance().getMaintainers().size() <= 1) {
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages
+                            .getMessage("jsf.group.NeedAtLeastOneMaintainer"));
+        } else {
+            getInstance().removeMaintainer(maintainer);
+            update();
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.MaintainerRemoveFromGroup",
+                            maintainer.getName()));
+        }
     }
 
     public List<HLocale> getInstanceActiveLocales() {
         List<HLocale> activeLocales =
                 Lists.newArrayList(getInstance().getActiveLocales());
 
-        Collections.sort(activeLocales, new Comparator<HLocale>() {
-            @Override
-            public int compare(HLocale hLocale, HLocale hLocale2) {
-                return hLocale.retrieveDisplayName().compareTo(
-                        hLocale2.retrieveDisplayName());
-            }
-        });
+        Collections.sort(activeLocales, ComparatorUtil.LOCALE_COMPARATOR);
         return activeLocales;
-    }
-
-    private List<SelectItem> getAvailableStatus() {
-        if (statusList == null) {
-            statusList =
-                    ImmutableList.copyOf(Iterables.filter(
-                            super.getStatusList(), new Predicate<SelectItem>() {
-                                @Override
-                                public boolean apply(SelectItem input) {
-                                    return !input.getValue().equals(
-                                            EntityStatus.READONLY);
-                                }
-                            }));
-        }
-        return statusList;
     }
 
     @Override
@@ -372,19 +220,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         List<HProjectIteration> list =
                 Lists.newArrayList(getInstance().getProjectIterations());
 
-        Collections.sort(list, new Comparator<HProjectIteration>() {
-            @Override
-            public int compare(HProjectIteration documentWithIds,
-                    HProjectIteration documentWithIds2) {
-                return documentWithIds
-                        .getProject()
-                        .getName()
-                        .toLowerCase()
-                        .compareTo(
-                                documentWithIds2.getProject().getName()
-                                        .toLowerCase());
-            }
-        });
+        Collections.sort(list, ComparatorUtil.PROJECT_NAME_COMPARATOR);
 
         return list;
     }
@@ -392,18 +228,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     public List<HPerson> getInstanceMaintainers() {
         List<HPerson> list = Lists.newArrayList(getInstance().getMaintainers());
 
-        Collections.sort(list, PERSON_COMPARATOR);
+        Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
 
         return list;
     }
-
-    public final static Comparator<HPerson> PERSON_COMPARATOR =
-            new Comparator<HPerson>() {
-                @Override
-                public int compare(HPerson hPerson, HPerson hPerson2) {
-                    return hPerson.getName().compareTo(hPerson2.getName());
-                }
-            };
 
     @Override
     public NaturalIdentifier getNaturalId() {
@@ -426,7 +254,126 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         // start
     }
 
-    public String cancel() {
-        return "cancel";
+    private class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
+
+        @Override
+        protected List<HPerson> getMaintainers() {
+            return getInstanceMaintainers();
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HPerson maintainer = personDAO.findByUsername(getSelectedItem());
+            getInstance().getMaintainers().add(maintainer);
+            update(conversationScopeMessages);
+            reset();
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.MaintainerAddedToGroup",
+                            maintainer.getName()));
+        }
     }
+
+    private class VersionAutocomplete extends
+            AbstractAutocomplete<HProjectIteration> {
+        private ProjectIterationDAO projectIterationDAO =
+                (ProjectIterationDAO) Component
+                        .getInstance(ProjectIterationDAO.class);
+
+        private VersionGroupService versionGroupServiceImpl =
+                (VersionGroupService) Component
+                        .getInstance(VersionGroupServiceImpl.class);
+
+        @Override
+        public List<HProjectIteration> suggest() {
+            List<HProjectIteration> versionList =
+                    versionGroupServiceImpl
+                            .searchLikeSlugOrProjectSlug(getQuery());
+
+            Collection<HProjectIteration> filtered =
+                    Collections2.filter(versionList,
+                            new Predicate<HProjectIteration>() {
+                                @Override
+                                public boolean apply(
+                                        @Nullable HProjectIteration input) {
+                                    return !input.getGroups().contains(
+                                            getInstance());
+                                }
+                            });
+
+            return Lists.newArrayList(filtered);
+        }
+
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+
+            HProjectIteration version =
+                    projectIterationDAO.findById(new Long(getSelectedItem()));
+            getInstance().getProjectIterations().add(version);
+            update(conversationScopeMessages);
+            reset();
+
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.VersionAddedToGroup",
+                            version.getSlug(), version.getProject().getSlug()));
+        }
+    }
+
+    private class GroupLocaleAutocomplete extends LocaleAutocomplete {
+
+        @Override
+        protected Set<HLocale> getLocales() {
+            // not used because overriding List<HLocale> suggest()
+            return null;
+        }
+
+        @Override
+        public List<HLocale> suggest() {
+            List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
+
+            Collection<HLocale> filtered =
+                    Collections2.filter(localeList, new Predicate<HLocale>() {
+                        @Override
+                        public boolean apply(HLocale input) {
+                            return !getInstance().getActiveLocales().contains(
+                                    input)
+                                    && (StringUtils.startsWithIgnoreCase(input
+                                            .getLocaleId().getId(), getQuery()) || StringUtils.containsIgnoreCase(
+                                            input.retrieveDisplayName(),
+                                            getQuery()));
+                        }
+                    });
+
+            return Lists.newArrayList(filtered);
+        }
+
+        /**
+         * Action when an item is selected
+         */
+        @Override
+        public void onSelectItemAction() {
+            if (StringUtils.isEmpty(getSelectedItem())) {
+                return;
+            }
+            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+
+            getInstance().getActiveLocales().add(locale);
+
+            update(conversationScopeMessages);
+            reset();
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    zanataMessages.getMessage("jsf.LanguageAddedToGroup",
+                            locale.retrieveDisplayName()));
+        }
+    }
+
 }

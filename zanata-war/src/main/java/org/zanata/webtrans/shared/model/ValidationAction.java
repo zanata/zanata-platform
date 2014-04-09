@@ -50,4 +50,8 @@ public interface ValidationAction {
     public static enum State {
         Off, Warning, Error;
     }
+
+    String getSourceExample();
+
+    String getTargetExample();
 }

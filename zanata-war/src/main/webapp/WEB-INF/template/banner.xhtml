@@ -30,17 +30,14 @@
     </a>
 
     <div class="header__main-nav__group js-dropdown__content">
-      <h:form styleClass="form--search header__search js-form--search">
+      <h:form styleClass="form--search header__search js-form--search" id="general-search-form">
         <label class="form--search__label"
           for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
           #{messages['jsf.SearchProjects']}
         </label>
 
-        <zanata:autocomplete
-          selectedField="#{projectSearch.selectedItem}"
-          getResultAction="#{projectSearch.suggestProjects()}"
+        <zanata:autocomplete actionBean="#{projectSearch.projectAutocomplete}"
           maxlength="100" minlength="1" id="projectAutocomplete"
-          queryField="#{projectSearch.suggestQuery}"
           fetchValue="#{result.project.slug}"
           placeholder="#{messages['jsf.SearchProjects']}"
           onSelectItem="selectItem"
@@ -54,8 +51,8 @@
 
           <s:link view="/search.xhtml" rendered="#{result.isProjectNull()}">
             <i class="i i--search"></i> Search Zanata for
-            '#{projectSearch.suggestQuery}'
-            <f:param name="query" value="#{projectSearch.suggestQuery}"/>
+            '#{projectSearch.projectAutocomplete.query}'
+            <f:param name="query" value="#{projectSearch.projectAutocomplete.query}"/>
           </s:link>
 
         </zanata:autocomplete>

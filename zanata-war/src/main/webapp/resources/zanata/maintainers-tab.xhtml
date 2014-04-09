@@ -1,63 +1,95 @@
-<!--
-  ~ /*
-  ~  * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
-  ~  * @author tags. See the copyright.txt file in the distribution for a full
-  ~  * listing of individual contributors.
-  ~  *
-  ~  * This is free software; you can redistribute it and/or modify it under the
-  ~  * terms of the GNU Lesser General Public License as published by the Free
-  ~  * Software Foundation; either version 2.1 of the License, or (at your option)
-  ~  * any later version.
-  ~  *
-  ~  * This software is distributed in the hope that it will be useful, but WITHOUT
-  ~  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-  ~  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-  ~  * details.
-  ~  *
-  ~  * You should have received a copy of the GNU Lesser General Public License
-  ~  * along with this software; if not, write to the Free Software Foundation,
-  ~  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
-  ~  * site: http://www.fsf.org.
-  -->
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <composite:interface>
-  <composite:attribute name="value"
-    shortDescription="maintainer list" required="true"/>
+  <composite:attribute name="filterActionBean"
+    type="org.zanata.ui.AbstractListFilter"
+    shortDescription="action bean for maintainer filtering" required="true"/>
+
+  <composite:attribute name="listSize" type="java.lang.Integer"
+    shortDescription="size of maintainer list (without filtering)" default="0"/>
+
+  <composite:attribute name="settingsUrl" type="java.lang.String"
+    shortDescription="Hash URL for maintainers settings page" required="true"/>
+
+  <composite:attribute name="PermissionToUpdate" type="java.lang.Boolean"
+    shortDescription="user has permission to update" required="true"/>
+
 </composite:interface>
 
 <composite:implementation>
   <div class="panel">
     <div class="panel__header">
-      <h2 class="panel__heading">
-        <i class="i--left i--maintain"></i>#{messages['jsf.Maintainers']}
-      </h2>
+      <h2 class="panel__heading">#{messages['jsf.Maintainers']}</h2>
     </div>
 
-    <s:fragment rendered="#{not empty cc.attrs.value}">
-      <ul class="list--slat">
-        <ui:repeat value="#{cc.attrs.value}" var="maintainer">
-          <li class="l--pad-all-half">
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="maintainerTab-maintainersLoader"
+        listId="maintainers-form"
+        render="maintainers-form, maintainerSearchBottom-pager, maintainerSearchBottom-page-info"
+        id="maintainerSearch" iconClass="i--maintain"
+        placeholder="#{messages['jsf.maintainer.search.placeholder']}"
+        actionBean="#{cc.attrs.filterActionBean}"/>
+    </div>
+
+    <a4j:status name="maintainerTab-maintainersLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <h:form id="maintainers-form" styleClass="l--push-bottom-0">
+      <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
+        <p class="txt--meta">#{messages['jsf.NoMaintainers']}</p>
+        <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
+          <p>
+            <a href="#{cc.attrs.settingsUrl}" class="button-primary"
+              onclick="updateHashAndGotoUrl(this)">
+              #{messages['jsf.AddAMaintainer']}
+              <i class="i i--plus i__item__icon"></i>
+            </a>
+          </p>
+        </s:fragment>
+      </s:div>
+
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.pagedFilteredList}">
+        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{not empty cc.attrs.filterActionBean.pagedFilteredList}">
+        <ul class="list--slat">
+          <ui:repeat value="#{cc.attrs.filterActionBean.pagedFilteredList}"
+            var="maintainer">
+            <li class="l--pad-all-half">
             <span class="w--r-1 bx--round l--push-right-quarter">
               <img
                 src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
                 alt="#{maintainer.name}"/>
             </span>
-            #{maintainer.name}
-            <span class="txt--meta">@#{maintainer.account.username}</span>
-          </li>
-        </ui:repeat>
-      </ul>
-    </s:fragment>
-    <s:fragment rendered="#{empty cc.attrs.value}">
-      #{messages['jsf.NoMaintainersDefined']}
-    </s:fragment>
+              #{maintainer.name}
+              <span class="txt--meta">@#{maintainer.account.username}</span>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </h:form>
+
+    <zanata:list-filter status="maintainerTab-maintainersLoader"
+      listId="maintainers-form"
+      render="maintainers-form, maintainerSearch-pager, maintainerSearch-page-info"
+      id="maintainerSearchBottom" iconClass="i--maintain" bottomPanel="true"
+      placeholder="#{cc.attrs.placeholder}"
+      actionBean="#{cc.attrs.filterActionBean}"/>
   </div>
 </composite:implementation>
 </html>

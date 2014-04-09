@@ -57,18 +57,18 @@ public class ProjectsPage extends BasePage {
         return new CreateProjectPage(getDriver());
     }
 
-    public ProjectPage goToProject(final String projectName) {
+    public ProjectVersionsPage goToProject(final String projectName) {
         // TODO this can't handle project on different page
-        return refreshPageUntil(this, new Function<WebDriver, ProjectPage>() {
+        return refreshPageUntil(this, new Function<WebDriver, ProjectVersionsPage>() {
             @Override
-            public ProjectPage apply(WebDriver input) {
+            public ProjectVersionsPage apply(WebDriver input) {
                 WebElement table = input.findElement(projectTableBy);
                 log.info("current projects: {}", WebElementUtil
                         .getColumnContents(input, projectTableBy,
                                 PROJECT_NAME_COLUMN));
                 WebElement link = table.findElement(By.linkText(projectName));
                 link.click();
-                return new ProjectPage(input);
+                return new ProjectVersionsPage(input);
             }
         });
     }
@@ -88,7 +88,7 @@ public class ProjectsPage extends BasePage {
      * @param projectName name of the desired project
      * @param visible is or is not visible
      */
-    public void waitForProjectVisibility(final String projectName,
+    public ProjectsPage waitForProjectVisibility(final String projectName,
                                             final boolean visible) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -97,11 +97,12 @@ public class ProjectsPage extends BasePage {
                         .contains(projectName) == visible;
             }
         });
+        return new ProjectsPage(getDriver());
     }
 
     public ProjectsPage setActiveFilterEnabled(boolean enabled) {
         WebElement activeCheckbox = getDriver()
-                .findElement(By.xpath("//*[@title='Filter active projects']"));
+                .findElement(By.xpath("//*[@data-original-title='Filter active projects']"));
         if (activeCheckbox.isSelected() != enabled) {
             activeCheckbox.click();
         }
@@ -110,7 +111,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setReadOnlyFilterEnabled(final boolean enabled) {
         WebElement readOnlyCheckbox = getDriver().findElement(
-                By.xpath("//*[@title='Filter read-only projects']"));
+                By.xpath("//*[@data-original-title='Filter read-only projects']"));
         if (readOnlyCheckbox.isSelected() != enabled) {
             readOnlyCheckbox.click();
         }
@@ -119,7 +120,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setObsoleteFilterEnabled(boolean enabled) {
         WebElement readOnlyCheckbox = getDriver().findElement(
-                By.xpath("//*[@title='Filter obsolete projects']"));
+                By.xpath("//*[@data-original-title='Filter obsolete projects']"));
         if (readOnlyCheckbox.isSelected() != enabled) {
             readOnlyCheckbox.click();
         }

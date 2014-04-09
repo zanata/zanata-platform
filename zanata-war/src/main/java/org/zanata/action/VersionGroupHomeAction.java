@@ -21,19 +21,15 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,16 +43,17 @@ import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
+import org.zanata.ui.AbstractListFilter;
+import org.zanata.ui.AbstractSortAction;
+import org.zanata.ui.FilterUtil;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.ComparatorUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.ZanataMessages;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -106,14 +103,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     @Getter
     private WordStatistic overallStatistic;
 
-    @Setter
-    @Getter
-    private String projectQuery;
-
-    @Setter
-    @Getter
-    private String languageQuery;
-
     private List<HLocale> activeLocales;
 
     private List<HProjectIteration> projectIterations;
@@ -134,6 +123,61 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     private final VersionComparator versionComparator = new VersionComparator(
             getProjectSortingList());
+
+    @Getter
+    private final AbstractListFilter<HLocale> projectTabLanguageFilter =
+            new AbstractListFilter<HLocale>() {
+                @Override
+                public int getFilteredListSize() {
+                    if (getSelectedVersion() == null) {
+                        return 0;
+                    }
+                    return getFilteredList().size();
+                }
+
+                @Override
+                protected List<HLocale> getFilteredList() {
+                    return FilterUtil.filterLanguageList(getQuery(),
+                            getActiveLocales());
+                }
+            };
+
+    @Getter
+    private final AbstractListFilter<HLocale> languageTabLanguageFilter =
+            new AbstractListFilter<HLocale>() {
+                @Override
+                protected List<HLocale> getFilteredList() {
+                    return FilterUtil.filterLanguageList(getQuery(),
+                            getActiveLocales());
+                }
+            };
+    @Getter
+    private final AbstractListFilter<HProjectIteration> languageTabVersionFilter =
+            new AbstractListFilter<HProjectIteration>() {
+                @Override
+                public int getFilteredListSize() {
+                    if (getSelectedLocale() == null) {
+                        return 0;
+                    }
+                    return getFilteredList().size();
+                }
+
+                @Override
+                protected List<HProjectIteration> getFilteredList() {
+                    return FilterUtil.filterVersionListWithProjectName(
+                            getQuery(), getProjectIterations());
+                }
+            };
+
+    @Getter
+    private final AbstractListFilter<HProjectIteration> projectTabVersionFilter =
+            new AbstractListFilter<HProjectIteration>() {
+                @Override
+                protected List<HProjectIteration> getFilteredList() {
+                    return FilterUtil.filterVersionListWithProjectName(
+                            getQuery(), getProjectIterations());
+                }
+            };
 
     public void setPageRendered(boolean pageRendered) {
         if (pageRendered) {
@@ -272,28 +316,13 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                 && authenticatedAccount.getPerson().isMaintainerOfProjects();
     }
 
-    public int getFilteredProjectSize() {
-        if (getSelectedLocale() == null) {
-            return 0;
-        } else {
-            return getFilteredProjectIterations().size();
-        }
-    }
-
-    public int getFilteredLocalesSize() {
-        if (getSelectedVersion() == null) {
-            return 0;
-        } else {
-            return getFilteredLocales().size();
-        }
-    }
-
     /**
      * Sort language list based on overall locale statistic for the group
      */
     public void sortLanguageList() {
         languageComparator.setSelectedVersionId(null);
         Collections.sort(activeLocales, languageComparator);
+        languageTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
@@ -302,16 +331,18 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long versionId) {
         languageComparator.setSelectedVersionId(versionId);
         Collections.sort(activeLocales, languageComparator);
+        projectTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
      * Sort project list based on selected locale - language tab
      *
-     * @param localeId
+     * @pa localeId
      */
     public void sortProjectList(LocaleId localeId) {
         versionComparator.setSelectedLocaleId(localeId);
         Collections.sort(projectIterations, versionComparator);
+        languageTabVersionFilter.resetQueryAndPage();
     }
 
     /**
@@ -320,6 +351,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortProjectList() {
         versionComparator.setSelectedLocaleId(null);
         Collections.sort(projectIterations, versionComparator);
+        projectTabVersionFilter.resetQueryAndPage();
     }
 
     public List<HLocale> getActiveLocales() {
@@ -332,24 +364,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         return activeLocales;
     }
 
-    public List<HLocale> getFilteredLocales() {
-        List<HLocale> unfiltered = getActiveLocales();
-        if (StringUtils.isEmpty(languageQuery)) {
-            return unfiltered;
-        }
-
-        Collection<HLocale> filtered =
-                Collections2.filter(unfiltered, new Predicate<HLocale>() {
-                    @Override
-                    public boolean apply(@Nullable HLocale input) {
-                        return input.retrieveDisplayName().toLowerCase()
-                                .contains(languageQuery.toLowerCase());
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
-
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForProjectWithLocale(
             SortingType.SortOption sortOption, LocaleId localeId,
@@ -357,21 +371,21 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         WordStatistic statistic =
                 statisticMap.get(new VersionLocaleKey(projectIterationId,
                         localeId));
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForLocale(
             SortingType.SortOption sortOption, LocaleId localeId) {
         WordStatistic statistic = getStatisticsForLocale(localeId);
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult
     public DisplayUnit getStatisticFigureForProject(
             SortingType.SortOption sortOption, Long projectIterationId) {
         WordStatistic statistic = getStatisticForProject(projectIterationId);
-        return getDisplayUnit(sortOption, statistic);
+        return getDisplayUnit(sortOption, statistic, null);
     }
 
     @CachedMethodResult
@@ -418,7 +432,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public List<HPerson> getMaintainers() {
         List<HPerson> list = versionGroupDAO.getMaintainersBySlug(getSlug());
 
-        Collections.sort(list, VersionGroupHome.PERSON_COMPARATOR);
+        Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
         return list;
     }
 
@@ -516,27 +530,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         return projectIterations;
     }
 
-    public List<HProjectIteration> getFilteredProjectIterations() {
-        List<HProjectIteration> unfiltered = getProjectIterations();
-        if (StringUtils.isEmpty(projectQuery)) {
-            return unfiltered;
-        }
-
-        Collection<HProjectIteration> filtered =
-                Collections2.filter(unfiltered,
-                        new Predicate<HProjectIteration>() {
-                            @Override
-                            public boolean apply(
-                                    @Nullable HProjectIteration input) {
-                                HProject project = input.getProject();
-                                return project.getName().toLowerCase()
-                                        .contains(projectQuery.toLowerCase());
-                            }
-                        });
-
-        return Lists.newArrayList(filtered);
-    }
-
     @Override
     public void resetPageData() {
         projectIterations = null;
@@ -544,11 +537,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         selectedLocale = null;
         selectedVersion = null;
         missingLocaleVersionMap = null;
+        projectTabLanguageFilter.resetQueryAndPage();
+        projectTabVersionFilter.resetQueryAndPage();
+        languageTabLanguageFilter.resetQueryAndPage();
+        languageTabVersionFilter.resetQueryAndPage();
         loadStatistics();
     }
 
     @Override
-    String getMessage(String key, Object... args) {
+    protected String getMessage(String key, Object... args) {
         return zanataMessages.getMessage(key, args);
     }
 

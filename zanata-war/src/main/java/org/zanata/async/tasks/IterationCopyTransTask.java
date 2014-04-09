@@ -43,7 +43,7 @@ public class IterationCopyTransTask extends CopyTransTask {
 
     public IterationCopyTransTask(HProjectIteration projectIteration,
             HCopyTransOptions options) {
-        super(options, "IterationCopyTransTask: "+projectIteration.getSlug());
+        super(options, "IterationCopyTransTask: " + projectIteration.getSlug());
         this.projectIteration = projectIteration;
     }
 
@@ -52,7 +52,7 @@ public class IterationCopyTransTask extends CopyTransTask {
         LocaleService localeService =
                 (LocaleService) Component.getInstance(LocaleServiceImpl.class);
         List<HLocale> localeList =
-                localeService.getSupportedLangugeByProjectIteration(
+                localeService.getSupportedLanguageByProjectIteration(
                         projectIteration.getProject().getSlug(),
                         projectIteration.getSlug());
 

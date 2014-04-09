@@ -52,8 +52,8 @@ import org.zanata.rest.dto.Person;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@EqualsAndHashCode(callSuper = true, of = { "account", "email",
-        "maintainerProjects", "name" }, doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" },
+        doNotUseGetters = true)
 @ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -21,6 +21,9 @@
 
 package org.zanata.feature.language;
 
+import java.util.List;
+import java.util.Map;
+
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -28,17 +31,14 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
-import org.zanata.page.projects.CreateVersionPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
-
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Damian Jansen <a
- *      href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class AddLanguageTest {
@@ -49,21 +49,18 @@ public class AddLanguageTest {
     @Test
     public void addLanguageAsEnabled() {
         String language = "Goa'uld";
-        String languageDisplayName = "goa'uld [Goa'uld] goa'uld";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
-                .goToAdministration()
-                .goToManageLanguagePage();
+        String languageDisplayName = "goa'uld[Goa'uld]";
+        ManageLanguagePage manageLanguagePage =
+                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
+                        .goToAdministration().goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        manageLanguagePage = manageLanguagePage
-                .addNewLanguage()
-                .inputLanguage(language)
-                .saveLanguage();
+        manageLanguagePage =
+                manageLanguagePage.addNewLanguage().inputLanguage(language)
+                        .saveLanguage();
 
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -71,38 +68,31 @@ public class AddLanguageTest {
         assertThat("The language is enabled by default",
                 manageLanguagePage.languageIsEnabled(language));
 
-        CreateVersionPage createVersionPage = manageLanguagePage
-                .goToHomePage()
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .showLocalesOverride();
+        List<String> enabledLocaleList =
+                manageLanguagePage.goToHomePage().goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .getEnabledLocaleList();
 
-        assertThat("The language is enabled by default",
-                createVersionPage.getEnabledLanguages(),
+        assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
     }
 
     @Test
     public void addLanguageAsDisabled() {
         String language = "Klingon";
-        String languageDisplayName = "klingon [Klingon] klingon";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
-                .goToAdministration()
-                .goToManageLanguagePage();
+        String languageDisplayName = "klingon[Klingon]";
+        ManageLanguagePage manageLanguagePage =
+                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
+                        .goToAdministration().goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        manageLanguagePage = manageLanguagePage
-                .addNewLanguage()
-                .inputLanguage(language)
-                .disableLanguageByDefault()
-                .saveLanguage();
+        manageLanguagePage =
+                manageLanguagePage.addNewLanguage().inputLanguage(language)
+                        .disableLanguageByDefault().saveLanguage();
 
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -110,49 +100,40 @@ public class AddLanguageTest {
         assertThat("The language is disabled by default",
                 !manageLanguagePage.languageIsEnabled(language));
 
-        CreateVersionPage createVersionPage = manageLanguagePage
-                .goToHomePage()
-                .goToProjects()
-                .goToProject("about fedora")
-                .goToVersion("master")
-                .clickEditVersion()
-                .showLocalesOverride();
+        List<String> enabledLocaleList =
+                manageLanguagePage.goToHomePage().goToProjects()
+                        .goToProject("about fedora").gotoVersion("master")
+                        .gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .getEnabledLocaleList();
 
-        assertThat("The language is disabled by default",
-                createVersionPage.getDisabledLanguages(),
-                Matchers.hasItem(languageDisplayName));
+        assertThat("The language is disabled by default", enabledLocaleList,
+                Matchers.not(Matchers.hasItem(languageDisplayName)));
     }
 
     @Test
     public void addKnownLanguage() {
         String language = "ru-RU";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
-                .goToAdministration()
-                .goToManageLanguagePage();
+        ManageLanguagePage manageLanguagePage =
+                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
+                        .goToAdministration().goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        AddLanguagePage addLanguagePage = manageLanguagePage
-                .addNewLanguage()
-                .inputLanguage("ru-RU");
+        AddLanguagePage addLanguagePage =
+                manageLanguagePage.addNewLanguage().inputLanguage("ru-RU");
 
         Map<String, String> languageInfo = addLanguagePage.getLanguageDetails();
-        assertThat("The name is correct",
-                languageInfo.get("Name"),
+        assertThat("The name is correct", languageInfo.get("Name"),
                 Matchers.equalTo("Russian (Russia)"));
         assertThat("The native name is correct",
                 languageInfo.get("Native Name"),
                 Matchers.equalTo("русский (Россия)"));
         assertThat("The language is correct",
-                languageInfo.get("Language Code"),
-                Matchers.equalTo("ru"));
+                languageInfo.get("Language Code"), Matchers.equalTo("ru"));
         assertThat("The country code is correct",
-                languageInfo.get("Country Code"),
-                Matchers.equalTo("RU"));
+                languageInfo.get("Country Code"), Matchers.equalTo("RU"));
     }
 
 }

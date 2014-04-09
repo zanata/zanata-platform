@@ -14,7 +14,7 @@
 
   <!-- Project Search -->
   <page view-id="/search.xhtml">
-    <param name="query" value="#{projectSearch.searchQuery}" />
+    <param name="query" value="#{projectSearch.projectAutocomplete.query}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
@@ -396,9 +396,6 @@
         <redirect view-id="/version-group/home.xhtml" />
       </rule>
     </navigation>
-    <navigation from-action="#{versionGroupHome.cancel}">
-      <redirect view-id="/version-group/home.xhtml" />
-    </navigation>
   </page>
 
   <page view-id="/version-group/version_group.xhtml">
@@ -424,7 +421,8 @@
     <navigation from-action="#{versionGroupJoinAction.send}">
       <rule if-outcome="success">
         <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
+          <param name="versionGroupSlug"
+            value="#{versionGroupJoinAction.slug}" />
         </redirect>
       </rule>
       <rule if-outcome="failure">
@@ -552,297 +550,64 @@
 
   <page view-id="/project/project.xhtml">
     <param name="slug" value="#{projectHome.slug}" />
-    <param name="slug" value="#{versionDetailsAction.projectSlug}" />
-    <action execute="#{projectHome.validateSuppliedId}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', projectHome.instance.slug)}" />
-
-    <navigation from-action="#{versionDetailsAction.sourceDocs(_version.slug)}">
-      <redirect view-id="/iteration/source_files.xhtml">
-        <param name="project" value="#{projectHome.instance.slug}" />
-        <param name="iteration" value="#{_version.slug}" />
-      </redirect>
-    </navigation>
-    <navigation
-      from-action="#{versionDetailsAction.editVersion(_version.slug)}">
-      <redirect view-id="/iteration/edit.xhtml">
-        <param name="projectSlug" value="#{projectHome.instance.slug}" />
-        <param name="slug" value="#{_version.slug}" />
-      </redirect>
+    <param name="slug" value="#{projectHomeAction.slug}" />
+    <action execute="#{projectHome.initialize}" />
+    <navigation from-action="#{projectHome.removeMaintainer}">
+      <rule if-outcome="redirect">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug"
+            value="#{projectHome.slug}" />
+        </redirect>
+      </rule>
     </navigation>
   </page>
 
   <page view-id="/project/create_project.xhtml">
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.CreateANewProject'])}" />
+    <action execute="#{projectHome.createNew}" />
     <navigation from-action="#{projectHome.persist}">
-      <rule if="#{projectHome.managed}">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{projectHome.cancel}">
-      <redirect view-id="/project/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/project/edit.xhtml" login-required="true">
-    <param name="slug" value="#{projectHome.slug}" />
-    <param name="slug" value="#{localeListAction.slug}" />
-    <param name="slug" value="#{validationOptionsAction.projectSlug}" />
-
-    <!-- we can't use <restrict> on projectHome.instance because it creates
-         a brand-new HProject instead of loading the existing one
-         (at some stages of the JSF lifecycle)
-      -->
-    <action
-      execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.EditProject'])}" />
-
-    <navigation from-action="#{projectHome.update}">
       <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
+        <param name="slug" value="#{projectHome.instance.slug}" />
       </redirect>
-    </navigation>
-    <navigation from-action="#{projectHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <!-- Admin only home page code editor. -->
-  <page view-id="/project/homepage_edit.xhtml">
-    <param name="slug" value="#{projectHome.slug}" />
-    <param name="slug" value="#{localeListAction.slug}" />
-
-    <!-- we can't use <restrict> on projectHome.instance because it creates
-         a brand-new HProject instead of loading the existing one
-         (at some stages of the JSF lifecycle)
-      -->
-    <action
-      execute="#{identity.checkPermission(projectHome.instance, 'update')}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.project.EditHomePage.label'])}" />
-
-    <navigation from-action="#{projectHome.update}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{projectHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.slug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/project/assign_maintainer.xhtml">
-    <param name="projectSlug" value="#{projectMaintainerManageAction.slug}" />
-    <param name="projectSlug" value="#{projectHome.slug}" />
-    <action execute="#{projectMaintainerManageAction.loadAllMaintainers()}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectHome.instance.slug).param('slug', projectHome.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageMaintainers'])}" />
-
-    <navigation
-      from-action="#{projectMaintainerManageAction.deleteMaintainer(projectMaintainerManageAction.selectedPerson)}">
-      <rule
-        if="#{not s:hasPermission(projectMaintainerManageAction.project, 'update')}">
-        <redirect view-id="/project/home.xhtml">
-          <message
-            severity="info">#{messages['jsf.YouAreNoLongerMaintainerForThisProject']}
-          </message>
-          <param name="slug" value="#{projectMaintainerManageAction.slug}" />
-        </redirect>
-      </rule>
     </navigation>
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
-    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="projectSlug" value="#{validationOptionsAction.projectSlug}" />
+    <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
+    <param name="projectSlug" value="#{versionHome.projectSlug}" />
+    <action execute="#{versionHome.validateProjectSlug}" />
+    <action execute="#{versionHome.createNew}" />
 
-    <action execute="#{projectIterationHome.validateProjectSlug}" />
-    <!-- can't use <restrict> here either -->
-    <action
-      execute="#{identity.checkPermission(projectIterationHome.instance, 'insert')}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml/', projectIterationHome.instance.project.slug).param('slug', projectIterationHome.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.CreateVersion'])}" />
-
-    <navigation from-action="#{projectIterationHome.persist}">
-      <rule if="#{projectIterationHome.managed}">
-        <redirect view-id="/iteration/view.xhtml">
-          <param name="projectSlug"
-            value="#{projectIterationHome.projectSlug}" />
-          <param name="iterationSlug"
-            value="#{projectIterationHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-    <navigation from-action="#{projectIterationHome.cancel}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectIterationHome.projectSlug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/project/copy_trans_options.xhtml">
-    <param name="projectSlug"
-      value="#{projectCopyTransOptionsAction.projectSlug}" />
-
-    <!-- we can't use <restrict> on projectHome.instance because it creates
-           a brand-new HProject instead of loading the existing one
-           (at some stages of the JSF lifecycle)
-        -->
-    <action
-      execute="#{identity.checkPermission(projectCopyTransOptionsAction.project, 'update')}" />
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectCopyTransOptionsAction.projectSlug).param('slug', projectCopyTransOptionsAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.project.CopyTransOpts.title'])}" />
-    <action execute="#{projectCopyTransOptionsAction.initialize}" />
-
-    <navigation from-action="#{projectCopyTransOptionsAction.saveOptions}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug"
-          value="#{projectCopyTransOptionsAction.projectSlug}" />
+    <navigation from-action="#{versionHome.persist}">
+      <redirect view-id="/iteration/view.xhtml">
+        <param name="projectSlug"
+          value="#{versionHome.projectSlug}" />
+        <param name="iterationSlug"
+          value="#{versionHome.instance.slug}" />
       </redirect>
     </navigation>
   </page>
 
   <!-- Project Iteration -->
-
   <page view-id="/iteration/view.xhtml">
-    <param name="projectSlug" value="#{viewAllStatusAction.projectSlug}" />
-    <param name="iterationSlug" value="#{viewAllStatusAction.iterationSlug}" />
-    <action execute="#{viewAllStatusAction.validateIteration}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', viewAllStatusAction.project.slug).param('slug', viewAllStatusAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', viewAllStatusAction.iterationSlug)}" />
-  </page>
+    <param name="projectSlug" value="#{versionHomeAction.projectSlug}" />
+    <param name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
 
-  <page view-id="/iteration/source_files.xhtml">
-    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-    <param name="iteration"
-      value="#{projectIterationFilesAction.iterationSlug}" />
+    <param name="projectSlug" value="#{versionHome.projectSlug}" />
+    <param name="iterationSlug" value="#{versionHome.slug}" />
 
-    <action execute="#{projectIterationFilesAction.initialize()}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationFilesAction.projectSlug).param('slug', projectIterationFilesAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationFilesAction.iterationSlug).param('projectSlug', projectIterationFilesAction.projectSlug).param('iterationSlug', projectIterationFilesAction.iterationSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.SourceDocuments'])}" />
+    <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
+    <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
 
-    <navigation
-      from-action="#{projectIterationFilesAction.deleteDocument(doc)}">
-      <redirect view-id="/iteration/source_files.xhtml">
-        <message
-          severity="INFO">#{messages['jsf.iteration.files.DocumentDeleted']}
-        </message>
-        <param name="project"
-          value="#{projectIterationFilesAction.projectSlug}" />
-        <param name="iteration"
-          value="#{projectIterationFilesAction.iterationSlug}" />
-      </redirect>
-    </navigation>
-  </page>
+    <action execute="#{versionHome.validateSuppliedId}" />
+    <action execute="#{copyTransAction.initialize}" />
 
-  <page view-id="/iteration/files.xhtml">
-    <param name="project" value="#{projectIterationFilesAction.projectSlug}" />
-    <param name="iteration"
-      value="#{projectIterationFilesAction.iterationSlug}" />
-    <param name="localeId" value="#{projectIterationFilesAction.localeId}" />
-
-    <param name="project"
-      value="#{projectIterationZipFileAction.projectSlug}" />
-    <param name="iteration"
-      value="#{projectIterationZipFileAction.iterationSlug}" />
-    <param name="localeId" value="#{projectIterationZipFileAction.localeId}" />
-
-    <action execute="#{projectIterationFilesAction.initialize()}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationFilesAction.projectSlug).param('slug', projectIterationFilesAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationFilesAction.iterationSlug).param('projectSlug', projectIterationFilesAction.projectSlug).param('iterationSlug', projectIterationFilesAction.iterationSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Documents'].concat(' (').concat(projectIterationFilesAction.localeId).concat(')'))}" />
-  </page>
-
-  <page view-id="/iteration/edit.xhtml">
-    <param name="slug" value="#{projectIterationHome.slug}" />
-    <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-    <param name="slug" value="#{validationOptionsAction.versionSlug}" />
-    <param name="projectSlug" value="#{validationOptionsAction.projectSlug}" />
-
-    <action execute="#{projectIterationHome.validateSuppliedId}" />
-    <!-- can't use <restrict> here either -->
-    <action
-      execute="#{identity.checkPermission(projectIterationHome.instance, 'update')}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', projectIterationHome.instance.project.slug).param('slug', projectIterationHome.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', projectIterationHome.slug).param('projectSlug', projectIterationHome.projectSlug).param('iterationSlug', projectIterationHome.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.EditVersion'])}" />
-
-    <navigation from-action="#{projectIterationHome.update}">
+    <navigation from-action="#{versionHomeAction.uploadSourceFile}">
       <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-        <param name="iterationSlug" value="#{projectIterationHome.slug}" />
-      </redirect>
-    </navigation>
-
-    <navigation from-action="#{projectIterationHome.cancel}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug" value="#{projectIterationHome.projectSlug}" />
-        <param name="iterationSlug" value="#{projectIterationHome.slug}" />
+        <param name="projectSlug"
+          value="#{versionHome.projectSlug}" />
+        <param name="iterationSlug"
+          value="#{versionHome.instance.slug}" />
       </redirect>
     </navigation>
   </page>
@@ -887,37 +652,6 @@
           value="#{versionGroupJoinAction.projectSlug}" />
         <param name="iterationSlug"
           value="#{versionGroupJoinAction.iterationSlug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/iteration/copy_trans.xhtml">
-    <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
-    <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
-    <!-- can't use <restrict> here either -->
-    <action
-      execute="#{identity.checkPermission(copyTransAction.projectIteration, 'copy-trans')}" />
-    <action execute="#{copyTransAction.initialize}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', copyTransAction.projectSlug).param('slug', copyTransAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', copyTransAction.iterationSlug).param('projectSlug', copyTransAction.projectSlug).param('iterationSlug', copyTransAction.iterationSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.iteration.CopyTrans'])}" />
-
-    <navigation from-action="#{copyTransAction.startCopyTrans}">
-      <redirect view-id="/iteration/view.xhtml" include-page-params="true">
-        <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
-        <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{copyTransAction.cancel}">
-      <redirect view-id="/iteration/view.xhtml" include-page-params="true">
-        <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
-        <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
       </redirect>
     </navigation>
   </page>
@@ -1025,11 +759,6 @@
   </page>
 
   <!-- Exceptions -->
-  <page view-id="/error.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Error'])}" />
-  </page>
-
   <exception class="org.zanata.exception.KeyNotFoundException"
     log-level="warn">
     <redirect view-id="/error.xhtml">

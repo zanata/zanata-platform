@@ -87,6 +87,11 @@ public class HIterationGroup extends SlugEntityBase implements HasEntityStatus {
         maintainer.getMaintainerVersionGroups().add(this);
     }
 
+    public void removeMaintainer(HPerson maintainer) {
+        this.getMaintainers().remove(maintainer);
+        maintainer.getMaintainerVersionGroups().remove(this);
+    }
+
     public void addProjectIteration(HProjectIteration iteration) {
         this.getProjectIterations().add(iteration);
     }

@@ -7,66 +7,55 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
-<script type="text/javascript">
-  function focusCurrentActiveInput() {
-    jQuery(jQuery('.js-tabs-nav').children('li.is-active').children('a').attr('href')).find('.js-tabs-nav-focus-input').each(function () {
-      jQuery(this).value = "";
-      jQuery(this).focus();
-    });
-  }
-</script>
-
-<h1>#{messages['Settings']}</h1>
+<h1>#{messages['jsf.Settings']}</h1>
 
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li class="is-active">
     <a href="#settings-general" id="settings-general_tab"
       onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/general')">
-      <i class="i--left i--settings"></i>
-      <span class="is-hidden--m-down">#{messages['jsf.General']}</span>
+      <i class="i i--settings"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-languages" id="settings-languages_tab"
       onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages')">
-      <i class="i--left i--language"></i>
-      <span class="is-hidden--m-down">#{messages['jsf.Languages']}</span>
+      <i class="i i--language"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-projects" id="settings-projects_tab"
       onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects')">
-      <i class="i--left i--project"></i>
-      <span class="is-hidden--m-down">#{messages['jsf.Projects']}</span>
+      <i class="i i--project"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Projects']}</span>
     </a>
   </li>
   <li>
     <a href="#settings-maintainers" id="settings-maintainers_tab"
       onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/maintainers')">
-      <i class="i--left i--users"></i>
-      <span class="is-hidden--m-down">#{messages['jsf.Maintainers']}</span>
+      <i class="i i--users"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Maintainers']}</span>
     </a>
   </li>
 </ul>
 <ul class="tabs__content js-tabs-content">
   <li class="is-active" id="settings-general">
-    <h2 class="l--push-all-0 gamma d--bottom">
-      #{messages['jsf.General']}
-    </h2>
-    <h:form styleClass="l--push-bottom-0">
-      <div class="l--constrain-medium">
+    <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
+    <h:form styleClass="l--constrain-large">
+      <div>
         <ui:include src="edit_form.xhtml"/>
 
         <div class="l--push-top-1">
           <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
             action="#{versionGroupHome.update}"
             rendered="#{versionGroupHome.managed}"
-            render="group-info,pageMessages"
+            render="group-info"
             styleClass="l--push-right-half button--primary"/>
         </div>
         <hr/>
-        <a4j:outputPanel id="status">
+        <s:span id="status">
           <s:fragment
             rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
             <p>
@@ -76,9 +65,7 @@
               </a4j:commandLink>
             </p>
 
-            <p class="txt--meta">
-              #{messages['jsf.ArchiveGroupMessage']}
-            </p>
+            <p class="txt--meta">#{messages['jsf.ArchiveGroupMessage']}</p>
           </s:fragment>
 
           <s:fragment
@@ -86,16 +73,17 @@
             <p>
               <a4j:commandLink styleClass="button--success"
                 action="#{versionGroupHome.setStatus('A')}" render="status">
-                #{messages['jsf.ActivateThisGroup']}
+                <i
+                  class="i--left i--archive"></i> #{messages['jsf.UnArchiveThisGroup']}
               </a4j:commandLink>
             </p>
 
             <p class="txt--meta">
-              #{messages['jsf.ActivateGroupMessage']}
+              <i
+                class="i--left i--archive"></i> #{messages['jsf.ActivateGroupMessage']}
             </p>
           </s:fragment>
-
-        </a4j:outputPanel>
+        </s:span>
       </div>
     </h:form>
   </li>
@@ -124,14 +112,12 @@
           </label>
 
           <zanata:autocomplete
-            selectedField="#{versionGroupHome.selectedLocale}"
-            getResultAction="#{versionGroupHome.suggestLocales()}"
-            onSelectItemAction="#{versionGroupHome.addLanguage()}"
-            maxlength="80" searchWhenFocus="true" id="languageAutocomplete"
-            queryField="#{versionGroupHome.languageQuery}"
+            actionBean="#{versionGroupHome.localeAutocomplete}"
+            maxlength="80" searchWhenFocus="true"
+            id="languageAutocomplete"
             fetchValue="#{result.localeId}" render="settings-languages-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput()"
-            placeholder="#{messages['jsf.SearchLanguages']}">
+            placeholder="#{messages['jsf.language.search.placeholder']}">
 
             #{result.retrieveDisplayName()}<span
             class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
@@ -173,11 +159,8 @@
           </label>
 
           <zanata:autocomplete
-            selectedField="#{versionGroupHome.selectedVersion}"
-            getResultAction="#{versionGroupHome.suggestVersions()}"
-            onSelectItemAction="#{versionGroupHome.addVersion()}"
+            actionBean="#{versionGroupHome.versionAutocomplete}"
             maxlength="40" minlength="3" id="versionAutocomplete"
-            queryField="#{versionGroupHome.versionQuery}"
             fetchValue="#{result.id}"
             render="settings-projects-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput();"
@@ -220,13 +203,10 @@
           </label>
 
           <zanata:autocomplete
-            selectedField="#{versionGroupHome.selectedMaintainer}"
-            getResultAction="#{versionGroupHome.suggestMaintainers()}"
-            onSelectItemAction="#{versionGroupHome.addMaintainer()}"
+            actionBean="#{versionGroupHome.maintainerAutocomplete}"
             maxlength="80" minlength="3" id="maintainerAutocomplete"
-            queryField="#{versionGroupHome.maintainerQuery}"
             fetchValue="#{result.account.username}"
-            render="settings-maintainers-form,pageMessages"
+            render="settings-maintainers-form"
             oncomplete="focusCurrentActiveInput()"
             placeholder="#{messages['jsf.SearchUsers']}">
 

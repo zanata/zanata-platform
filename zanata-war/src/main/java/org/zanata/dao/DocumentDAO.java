@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import org.hibernate.LobHelper;
@@ -31,13 +30,16 @@ import org.zanata.model.StatusCount;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-
 import com.google.common.base.Optional;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Name("documentDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     public DocumentDAO() {
         super(HDocument.class);
@@ -47,8 +49,8 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         super(HDocument.class, session);
     }
 
-    public @Nullable HDocument getByDocIdAndIteration(HProjectIteration iteration,
-            String id) {
+    public @Nullable
+    HDocument getByDocIdAndIteration(HProjectIteration iteration, String id) {
         return (HDocument) getSession().byNaturalId(HDocument.class)
                 .using("docId", id).using("projectIteration", iteration).load();
     }
@@ -110,15 +112,15 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     /**
      * Returns the total message count for a document
      */
-    public Long getTotalCountForDocument(HDocument document) {
+    public Long getTotalCountForDocument(Long documentId) {
         Session session = getSession();
         Long totalCount =
                 (Long) session
                         .createQuery(
                                 "select count(tf) from HTextFlow tf "
-                                        + "where tf.document = :doc "
+                                        + "where tf.document.id = :docId "
                                         + "and tf.obsolete = false")
-                        .setParameter("doc", document)
+                        .setParameter("docId", documentId)
                         .setComment("DocumentDAO.getTotalCountForDocument")
                         .setCacheable(true).uniqueResult();
 
@@ -130,16 +132,17 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
 
     }
 
-    public Long getTotalWordCountForDocument(HDocument document) {
+    public Long getTotalWordCountForDocument(Long documentId) {
         Session session = getSession();
 
         Long totalWordCount =
                 (Long) session
                         .createQuery(
                                 "select sum(tf.wordCount) from HTextFlow tf "
-                                        + "where tf.document = :doc "
+                                        + "where tf.document.id = :documentId "
                                         + "and tf.obsolete = false")
-                        .setParameter("doc", document).setCacheable(true)
+                        .setParameter("documentId", documentId)
+                        .setCacheable(true)
                         .setComment("DocumentDAO.getTotalWordCountForDocument")
                         .uniqueResult();
 
@@ -185,6 +188,48 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                 .uniqueResult();
     }
 
+    public WordStatistic getWordStatistics(Long documentId, LocaleId localeId) {
+        WordStatistic wordStatistic = new WordStatistic();
+
+        List<StatusCount> stats = getWordStatusCount(documentId, localeId);
+
+        for (StatusCount count : stats) {
+            wordStatistic.set(count.status, count.count.intValue());
+        }
+
+        Long totalCount = getTotalWordCountForDocument(documentId);
+        wordStatistic.set(
+                ContentState.New,
+                totalCount.intValue()
+                        - (wordStatistic.getApproved()
+                                + wordStatistic.getTranslated()
+                                + wordStatistic.getNeedReview() + wordStatistic
+                                    .getRejected()));
+
+        return wordStatistic;
+    }
+
+    public List<StatusCount> getWordStatusCount(Long documentId,
+            LocaleId localeId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select new org.zanata.model.StatusCount(tft.state, "
+                                        + "sum(tft.textFlow.wordCount)) "
+                                        + "from HTextFlowTarget tft "
+                                        + "where tft.textFlow.document.id = :documentId "
+                                        + "and tft.locale.localeId = :localeId "
+                                        + "and tft.textFlow.obsolete = false "
+                                        + "and tft.textFlow.document.obsolete = false "
+                                        + "group by tft.state ");
+        q.setParameter("documentId", documentId).setParameter("localeId",
+                localeId);
+        q.setCacheable(true).setComment("DocumentDAO.getWordStatistics");
+        @SuppressWarnings("unchecked")
+        List<StatusCount> stats = q.list();
+        return stats;
+    }
+
     /**
      * @see ProjectIterationDAO#getStatisticsForContainer(Long, LocaleId)
      * @param docId
@@ -210,7 +255,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                         .setParameter("locale", localeId)
                         .setComment("DocumentDAO.getStatistics-units")
                         .setCacheable(true).list();
-        Long totalCount = getTotalCountForDocument(getById(docId));
+        Long totalCount = getTotalCountForDocument(docId);
 
         TransUnitCount unitCount = new TransUnitCount();
         for (StatusCount count : stats) {
@@ -233,7 +278,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                         .setParameter("id", docId)
                         .setParameter("locale", localeId).setCacheable(true)
                         .setComment("DocumentDAO.getStatistics-words").list();
-        Long totalWordCount = getTotalWordCountForDocument(getById(docId));
+        Long totalWordCount = getTotalWordCountForDocument(docId);
         TransUnitWords wordCount = new TransUnitWords();
         for (StatusCount count : wordStats) {
             wordCount.set(count.status, count.count.intValue());
@@ -402,19 +447,24 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
 
     public List<HDocument> getAllByProjectIteration(final String projectSlug,
             final String iterationSlug) {
+        return getByProjectIteration(projectSlug, iterationSlug, false);
+    }
+
+    public List<HDocument> getByProjectIteration(final String projectSlug,
+            final String iterationSlug, boolean obsolete) {
         Session session = getSession();
         Query q =
                 session.createQuery("from HDocument d "
                         + "where d.projectIteration.slug = :iterationSlug "
                         + "and d.projectIteration.project.slug = :projectSlug "
-                        + "and d.obsolete = false " + "order by d.path, d.name");
-        q.setParameter("iterationSlug", iterationSlug).setParameter(
-                "projectSlug", projectSlug);
-        q.setComment("DocumentDAO.getAllByProjectIteration");
+                        + "and d.obsolete = :obsolete "
+                        + "order by d.path, d.name");
+        q.setParameter("iterationSlug", iterationSlug)
+                .setParameter("projectSlug", projectSlug)
+                .setParameter("obsolete", obsolete);
+        q.setComment("DocumentDAO.getByProjectIteration");
         // TODO q.setCacheable(true); ??
-        @SuppressWarnings("unchecked")
-        final List<HDocument> documents = q.list();
-        return documents;
+        return q.list();
     }
 
     /**
@@ -435,32 +485,28 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                     final String iterationSlug, final String docId,
                     final HLocale locale) {
         HDocument doc =
-                getByProjectIterationAndDocId(projectSlug,
-                        iterationSlug, docId);
+                getByProjectIterationAndDocId(projectSlug, iterationSlug, docId);
         if (doc == null) {
             return "";
         }
         // NB: This method uses a native SQL query tested on mysql and h2
         // databases.
         String sql =
-                "select greatest(\n" +
-                "  d.lastChanged,\n" +
-                "  max(ifnull(tft.lastChanged, {d '1753-01-01'})),\n" +
-                "  max(ifnull(c.lastChanged, {d '1753-01-01'})),\n" +
-                "  max(ifnull(poth.lastChanged, {d '1753-01-01'}))\n" +
-                ") as latest\n" +
-                "from HDocument d\n" +
-                "  left outer join HTextFlow tf\n" +
-                "    on d.id = tf.document_id\n" +
-                "  left outer join HTextFlowTarget tft\n" +
-                "    on tft.tf_id = tf.id and tft.locale = :locale\n" +
-                "  left outer join HSimpleComment c\n" +
-                "    on c.id = tft.comment_id\n" +
-                "  left outer join HPoTargetHeader poth\n" +
-                "    on poth.document_id = d.id\n" +
-                "    and poth.targetLanguage = :locale\n" +
-                "where d.id = :doc\n" +
-                "group by d.lastChanged";
+                "select greatest(\n" + "  d.lastChanged,\n"
+                        + "  max(ifnull(tft.lastChanged, {d '1753-01-01'})),\n"
+                        + "  max(ifnull(c.lastChanged, {d '1753-01-01'})),\n"
+                        + "  max(ifnull(poth.lastChanged, {d '1753-01-01'}))\n"
+                        + ") as latest\n" + "from HDocument d\n"
+                        + "  left outer join HTextFlow tf\n"
+                        + "    on d.id = tf.document_id\n"
+                        + "  left outer join HTextFlowTarget tft\n"
+                        + "    on tft.tf_id = tf.id and tft.locale = :locale\n"
+                        + "  left outer join HSimpleComment c\n"
+                        + "    on c.id = tft.comment_id\n"
+                        + "  left outer join HPoTargetHeader poth\n"
+                        + "    on poth.document_id = d.id\n"
+                        + "    and poth.targetLanguage = :locale\n"
+                        + "where d.id = :doc\n" + "group by d.lastChanged";
 
         Query query =
                 getSession().createSQLQuery(sql)
