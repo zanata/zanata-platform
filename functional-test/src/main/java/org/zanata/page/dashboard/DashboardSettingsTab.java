@@ -30,22 +30,22 @@ import com.google.common.base.Predicate;
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class DashboardSettingsTab extends DashboardBasePage {
-    
+
     @FindBy(id = "emailUpdateForm:emailField:email")
     private WebElement emailField;
 
     @FindBy(id = "updateEmailButton")
     private WebElement updateEmailButton;
-    
+
     @FindBy(id = "passwordChangeForm:oldPasswordField:oldPassword")
     private WebElement oldPasswordField;
-    
+
     @FindBy(id = "passwordChangeForm:newPasswordField:newPassword")
     private WebElement newPasswordField;
-    
+
     @FindBy(id = "changePasswordButton")
     private WebElement changePasswordButton;
-    
+
     public DashboardSettingsTab(WebDriver driver) {
         super(driver);
     }

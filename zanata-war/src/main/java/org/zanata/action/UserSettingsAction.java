@@ -89,10 +89,10 @@ public class UserSettingsAction {
 
     @In(create = true)
     protected Renderer renderer;
-    
+
     @In
     private EmailChangeService emailChangeService;
-    
+
     @In
     private PersonDAO personDAO;
 
@@ -110,7 +110,7 @@ public class UserSettingsAction {
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
-    
+
     @Getter
     @Setter
     @Email
@@ -141,7 +141,7 @@ public class UserSettingsAction {
         emailAddress = person.getEmail();
         accountName = person.getName();
     }
-    
+
     public void updateEmail() {
         if(!isEmailAddressValid(emailAddress)) {
             FacesMessages.instance().addToControl("email",

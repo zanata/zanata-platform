@@ -21,17 +21,17 @@
         <ul>
           <li>
             <a href="#" class="is-active" title=""
-              data-original-title="Maintained projects">
+              data-original-title="#{messages['jsf.dashboard.projects.maintainedProjects.label']}">
               <i aria-hidden="true" class="i i--maintain"></i>
-              <span class="is-invisible">Maintainer</span>
+              <span class="is-invisible">#{messages['jsf.dashboard.projects.maintainedProjects.label']}</span>
             </a>
           </li>
           <li class="tab__end">
             <a href="#" jsfc="s:link" title=""
               view="/project/create_project.xhtml"
-              data-original-title="Create a new project">
+              data-original-title="#{messages['jsf.dashboard.projects.createNewProject.label']}">
               <i aria-hidden="true" class="i i--plus i i--large"></i>
-              <span class="is-invisible">New Project</span>
+              <span class="is-invisible">#{messages['jsf.dashboard.projects.newProject.label']}</span>
             </a>
           </li>
         </ul>
@@ -40,7 +40,7 @@
         <header class="panel__sub-header">
           <!-- Header panel options go here -->
           <h2 class="panel__heading">
-            Maintained Projects
+            #{messages['jsf.dashboard.projects.maintainedProjects.label']}
           </h2>
         </header>
         <h:form id="projectListForm">
@@ -80,9 +80,16 @@
               <li class="list__item--actionable">
                 <div class="list__item__action">
                   <div class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
-                    <a class="dropdown__toggle js-dropdown__toggle txt--meta" title="Project Versions" href="#"><span class="is-invisible">Translate Options</span></a>
+                    <a class="dropdown__toggle js-dropdown__toggle txt--meta" title="#{messages['jsf.dashboard.projects.projectVersions.label']}" href="#">
+                      <span class="is-invisible">#{messages['jsf.dashboard.projects.translateOptions.label']}</span>
+                    </a>
                     <ul class="dropdown__content js-dropdown__content">
-                      <li class="dropdown__header"><span class="txt--meta"><i class="i i--version i__item__icon"></i> Versions</span></li>
+                      <li class="dropdown__header">
+                        <span class="txt--meta">
+                          <i class="i i--version i__item__icon"></i>
+                          #{messages['jsf.dashboard.projects.versions.label']}
+                        </span>
+                      </li>
                       <ui:repeat value="#{project.projectIterations}" var="version">
                         <li>
                           <s:link view="/iteration/view.xhtml" propagation="none">
@@ -95,7 +102,7 @@
                       <li>
                         <s:link view="/project/project.xhtml" propagation="none">
                           <f:param name="slug" value="#{project.slug}"/>
-                          <h:outputText value="All versions"/>
+                          <h:outputText value="#{messages['jsf.dashboard.projects.allVersions.label']}"/>
                         </s:link>
                       </li>
                     </ul>

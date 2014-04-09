@@ -275,7 +275,7 @@ public class DashboardAction implements Serializable {
 
         @Override
         protected List<HProject> fetchCurrentPage() {
-            ProjectDAO projectDAO = 
+            ProjectDAO projectDAO =
                     (ProjectDAO)Component.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
                     (HAccount) Component

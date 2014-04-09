@@ -270,7 +270,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
         return entityManager.createFullTextQuery(booleanQuery, HProject.class);
     }
-    
+
     public List<HProject> findAllTranslatedProjects(HAccount account, int maxResults) {
         Query q =
                 getSession()
