@@ -52,7 +52,7 @@ public class GetTransUnitActionContext {
     private boolean filterHasError;
     private TransUnitId targetTransUnitId;
     private List<ValidationId> validationIds;
-    private EditorFilter search;
+    private EditorFilter search = new EditorFilter();
 
     public GetTransUnitActionContext(DocumentInfo document) {
         this.document = document;

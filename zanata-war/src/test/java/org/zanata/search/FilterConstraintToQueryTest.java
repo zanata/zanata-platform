@@ -189,7 +189,7 @@ public class FilterConstraintToQueryTest {
                         FilterConstraints.builder().keepAll().build(),
                         documentId);
 
-        String result = constraintToQuery.toHQL();
+        String result = constraintToQuery.toEntityQuery();
 
         assertThat(
                 result,
@@ -204,7 +204,7 @@ public class FilterConstraintToQueryTest {
                         FilterConstraints.builder().keepAll().build(),
                         Lists.newArrayList(1L));
 
-        String result = constraintToQuery.toHQL();
+        String result = constraintToQuery.toEntityQuery();
 
         assertThat(
                 result,
@@ -220,7 +220,7 @@ public class FilterConstraintToQueryTest {
                                 .excludeTranslated().build(), documentId);
         constraintToQuery.setContentCriterion(contentCriterion);
 
-        String result = constraintToQuery.toHQL();
+        String result = constraintToQuery.toEntityQuery();
         log.info("hql: {}", result);
 
 /* formatted by SQLinform

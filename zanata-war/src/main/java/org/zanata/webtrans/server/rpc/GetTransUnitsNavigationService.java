@@ -84,6 +84,8 @@ public class GetTransUnitsNavigationService {
      * proxies.
      */
     private static class SimpleHTextFlow extends HTextFlow {
+        private static final long serialVersionUID = 1L;
+
         public SimpleHTextFlow(Long id, ContentState contentState,
                 HLocale hLocale) {
             super();
@@ -97,6 +99,7 @@ public class GetTransUnitsNavigationService {
     public static class TextFlowResultTransformer implements ResultTransformer {
         public static final String ID = "id";
         public static final String CONTENT_STATE = "state";
+        private static final long serialVersionUID = 1L;
         private final HLocale hLocale;
 
         public TextFlowResultTransformer(HLocale hLocale) {

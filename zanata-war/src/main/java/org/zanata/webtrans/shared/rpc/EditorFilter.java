@@ -22,7 +22,7 @@ public class EditorFilter implements IsSerializable {
     public EditorFilter() {
     }
 
-    public EditorFilter(String textInContent, String resId,
+    private EditorFilter(String textInContent, String resId,
             String lastModifiedBefore, String lastModifiedAfter,
             String lastModifiedByUser, String sourceComment,
             String transComment, String msgContext) {

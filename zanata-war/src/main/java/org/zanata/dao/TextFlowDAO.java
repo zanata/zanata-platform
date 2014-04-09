@@ -23,13 +23,9 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-import org.hibernate.type.StandardBasicTypes;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -38,15 +34,10 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.search.FilterConstraintToModalNavigationQuery;
 import org.zanata.search.FilterConstraintToQuery;
 import org.zanata.search.FilterConstraints;
-import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 
 @Name("textFlowDAO")
 @AutoCreate
@@ -91,14 +82,15 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     public List<HTextFlow> getNavigationByDocumentId(Long documentId,
             HLocale hLocale, ResultTransformer resultTransformer,
             FilterConstraints filterConstraints) {
-        FilterConstraintToModalNavigationQuery
-                toModalNavigationQuery =
-                new FilterConstraintToModalNavigationQuery(documentId, hLocale,
-                        resultTransformer, filterConstraints);
+        FilterConstraintToQuery toModalNavigationQuery =
+                FilterConstraintToQuery.filterInSingleDocument(
+                        // TODO pahuang this docId needs refactor
+                        filterConstraints, new DocumentId(documentId, ""));
 
-        String sql = toModalNavigationQuery.toSql();
-        SQLQuery sqlQuery = getSession().createSQLQuery(sql);
-        return toModalNavigationQuery.setParameters(sqlQuery).list();
+        String hql = toModalNavigationQuery.toModalNavigationQuery();
+        Query query = getSession().createQuery(hql);
+        return toModalNavigationQuery.setQueryParameters(query, hLocale)
+                .setResultTransformer(resultTransformer).list();
     }
 
 
@@ -203,7 +195,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(constraints,
                         documentId);
-        String queryString = constraintToQuery.toHQL();
+        String queryString = constraintToQuery.toEntityQuery();
         log.debug("\n query {}\n", queryString);
 
         Query textFlowQuery = getSession().createQuery(queryString);
@@ -225,7 +217,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(constraints,
                         documentId);
-        String queryString = constraintToQuery.toHQL();
+        String queryString = constraintToQuery.toEntityQuery();
         log.debug("\n query {}\n", queryString);
 
         Query textFlowQuery = getSession().createQuery(queryString);

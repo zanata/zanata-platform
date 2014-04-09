@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Setter;
 
 import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.documentId;
 import static org.zanata.util.HqlCriterion.eq;
 import static org.zanata.util.HqlCriterion.escapeWildcard;
 import static org.zanata.util.HqlCriterion.ilike;
@@ -77,7 +78,7 @@ public class FilterConstraintToQuery {
         return new FilterConstraintToQuery(constraints, documentIds);
     }
 
-    public String toHQL() {
+    public String toEntityQuery() {
         String docIdCondition;
         if (documentId != null) {
             docIdCondition =
@@ -100,6 +101,24 @@ public class FilterConstraintToQuery {
                                 searchCondition, stateCondition))
                         .orderBy("tf.pos");
         return query.toQueryString();
+    }
+
+    public String toModalNavigationQuery() {
+        String docIdCondition =
+                eq("tf.document.id", Parameters.documentId.placeHolder());
+        String obsoleteCondition = eq("tf.obsolete", "0");
+        String searchCondition = buildSearchCondition();
+        String stateCondition = buildStateCondition();
+        QueryBuilder queryBuilder =
+                QueryBuilder
+                        .select("distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos")
+                        .from("HTextFlow tf")
+                        .leftJoin("tf.targets tfts")
+                        .with(eq("tfts.index", locale.placeHolder()))
+                        .where(and(obsoleteCondition, docIdCondition,
+                                searchCondition, stateCondition))
+                        .orderBy("tf.pos");
+        return queryBuilder.toQueryString();
     }
 
     protected String buildSearchCondition() {
