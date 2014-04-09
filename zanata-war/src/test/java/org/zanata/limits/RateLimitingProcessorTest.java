@@ -38,6 +38,7 @@ public class RateLimitingProcessorTest {
     private HttpResponse response;
     @Mock
     private FilterChain filterChain;
+    @Mock
     private RateLimitManager rateLimitManager;
     @Mock
     private Runnable runnable;
@@ -46,55 +47,30 @@ public class RateLimitingProcessorTest {
     public void beforeMethod() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        // so that we can verify its interaction
-        rateLimitManager = spy(new RateLimitManager());
-        processor =
-                spy(new RateLimitingProcessor());
-
-        doReturn(rateLimitManager).when(processor).getRateLimitManager();
-
+        processor = new RateLimitingProcessor(rateLimitManager);
     }
 
     @Test
-    public void willFirstTryAcquire() throws InterruptedException, IOException,
-            ServletException {
-        int threads = 2;
-        int maxConcurrent = 1;
-        when(rateLimitManager.getMaxConcurrent()).thenReturn(maxConcurrent);
-        when(rateLimitManager.getMaxActive()).thenReturn(maxConcurrent);
-        final CountDownLatch countDownLatch = new CountDownLatch(threads);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                countDownLatch.countDown();
-                return invocation.callRealMethod();
-            }
-        }).when(rateLimitManager).getLimiter(API_KEY);
+    public void restCallLimiterReturnsFalseWillCauseErrorResponse()
+            throws Exception {
+        RestCallLimiter restCallLimiter = mock(RestCallLimiter.class);
+        when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(false);
+        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
 
-        // two concurrent requests which will exceed the limit
-        Callable<Void> callable = new Callable<Void>() {
+        processor.process(API_KEY, response, runnable);
 
-            @Override
-            public Void call() throws Exception {
-                processor.process(API_KEY, response, runnable);
-                return null;
-            }
-        };
-        List<Callable<Void>> callables = Collections.nCopies(threads, callable);
-        ExecutorService executorService = Executors.newFixedThreadPool(threads);
-        List<Future<Void>> futures = executorService.invokeAll(callables);
-        for (Future<Void> future : futures) {
-            try {
-                future.get();
-            } catch (ExecutionException e) {
-                throw Throwables.propagate(e.getCause());
-            }
-        }
-        countDownLatch.await(1, TimeUnit.SECONDS);
+        verify(response).sendError(eq(429), anyString());
+    }
 
-        // one request will receive 429 and an error message
-        verify(response, atLeastOnce()).sendError(eq(429), anyString());
-        // one should go through
-        verify(runnable).run();
+    @Test
+    public void restCallLimiterReturnsTrueWillNotReturnErrorResponse()
+            throws Exception {
+        RestCallLimiter restCallLimiter = mock(RestCallLimiter.class);
+        when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(true);
+        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
+
+        processor.process(API_KEY, response, runnable);
+
+        verifyZeroInteractions(response);
     }
 }

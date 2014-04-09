@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("rateLimiterHolder")
+@Name("rateLimitManager")
 @Scope(ScopeType.APPLICATION)
 @AutoCreate
 @Slf4j
@@ -48,7 +48,7 @@ public class RateLimitManager implements Introspectable {
     private int maxActive;
 
     public static RateLimitManager getInstance() {
-        return (RateLimitManager) Component.getInstance("rateLimiterHolder");
+        return (RateLimitManager) Component.getInstance("rateLimitManager");
     }
 
     @Create
