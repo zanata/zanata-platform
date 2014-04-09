@@ -43,6 +43,7 @@
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
     <hibernate.version>4.2.0.Final</hibernate.version>
+    <hibernate.search.scope>compile</hibernate.search.scope>
     <hibernate.search.version>4.3.0.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
@@ -367,24 +368,28 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search</artifactId>
         <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-orm</artifactId>
         <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-engine</artifactId>
         <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-analyzers</artifactId>
         <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
       </dependency>
 
       <dependency>
