@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 
 import org.jboss.resteasy.spi.HttpResponse;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -42,6 +43,8 @@ public class RateLimitingProcessorTest {
     private RateLimitManager rateLimitManager;
     @Mock
     private Runnable runnable;
+    @Mock
+    private RestCallLimiter restCallLimiter;
 
     @BeforeMethod
     public void beforeMethod() throws IOException {
@@ -53,24 +56,24 @@ public class RateLimitingProcessorTest {
     @Test
     public void restCallLimiterReturnsFalseWillCauseErrorResponse()
             throws Exception {
-        RestCallLimiter restCallLimiter = mock(RestCallLimiter.class);
         when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(false);
         doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
 
         processor.process(API_KEY, response, runnable);
 
+        verify(restCallLimiter).tryAcquireAndRun(runnable);
         verify(response).sendError(eq(429), anyString());
     }
 
     @Test
     public void restCallLimiterReturnsTrueWillNotReturnErrorResponse()
             throws Exception {
-        RestCallLimiter restCallLimiter = mock(RestCallLimiter.class);
         when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(true);
         doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
 
         processor.process(API_KEY, response, runnable);
 
+        verify(restCallLimiter).tryAcquireAndRun(runnable);
         verifyZeroInteractions(response);
     }
 }
