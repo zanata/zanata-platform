@@ -49,6 +49,8 @@ import org.zanata.service.impl.FileSystemServiceImpl;
 
 import com.google.common.base.Optional;
 
+import javax.annotation.Nonnull;
+
 /**
  * This is an asynchronous task to build a zip file containing all files for a
  * Project Iteration. its expected return value is an input stream with the
@@ -77,6 +79,7 @@ public class ZipFileBuildTask implements
         this.isPoProject = isPoProject;
     }
 
+    @Nonnull
     @Override
     public AsyncTaskHandle<String> getHandle() {
         if (handle == null) {

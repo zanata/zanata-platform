@@ -17,23 +17,21 @@ public abstract class AbstractIndexingStrategy<T> {
     private int sessionClearBatchSize = 1000;
     private ScrollableResults scrollableResults;
     private final Class<T> entityType;
-    private final FullTextSession session;
 
     /**
      * @param entityType
      *            The type of entity to be returned by the Scrollable results
      */
-    public AbstractIndexingStrategy(Class<T> entityType, FullTextSession session) {
+    public AbstractIndexingStrategy(Class<T> entityType) {
         this.entityType = entityType;
-        this.session = session;
     }
 
     /**
      * Performs the indexing.
      */
-    public void invoke(AsyncTaskHandle handle) {
+    public void invoke(AsyncTaskHandle handle, FullTextSession session) {
         int rowNum = 0;
-        scrollableResults = queryResults(rowNum);
+        scrollableResults = queryResults(rowNum, session);
         try {
             while (scrollableResults.next() && !handle.isCancelled()) {
                 rowNum++;
@@ -46,7 +44,7 @@ public abstract class AbstractIndexingStrategy<T> {
                     session.flushToIndexes(); // apply changes to indexes
                     session.clear(); // clear since the queue is processed
                 }
-                onEntityIndexed(rowNum);
+                onEntityIndexed(rowNum, session);
             }
         } finally {
             if (scrollableResults != null) {
@@ -61,7 +59,7 @@ public abstract class AbstractIndexingStrategy<T> {
      * @param n
      *            The entity number that was indexed.
      */
-    protected abstract void onEntityIndexed(int n);
+    protected abstract void onEntityIndexed(int n, FullTextSession session);
 
     /**
      * Returns the Scrollable results for instances of clazz
@@ -69,7 +67,7 @@ public abstract class AbstractIndexingStrategy<T> {
      * @param offset
      * @return
      */
-    protected abstract ScrollableResults queryResults(int offset);
+    protected abstract ScrollableResults queryResults(int offset, FullTextSession session);
 
     Class<T> getEntityType() {
         return entityType;
@@ -81,10 +79,6 @@ public abstract class AbstractIndexingStrategy<T> {
 
     void setScrollableResults(ScrollableResults scrollableResults) {
         this.scrollableResults = scrollableResults;
-    }
-
-    FullTextSession getSession() {
-        return session;
     }
 
 }

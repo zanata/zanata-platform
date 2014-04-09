@@ -27,6 +27,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
 
+import javax.annotation.Nonnull;
+
 /**
  * This component executes {@link org.zanata.async.AsyncTask} instances. It is
  * generally more advisable to use the
@@ -53,13 +55,8 @@ public class TaskExecutor {
      *             If the provided task value is null.
      */
     public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(
-            AsyncTask<V, H> task) {
+            @Nonnull AsyncTask<V, H> task) {
         H handle = task.getHandle();
-        if (handle == null) {
-            throw new RuntimeException(
-                    "An Asynchronous task should always return a non-null handle");
-        }
-
         Identity identity = Identity.instance();
         asynchronousTaskExecutor.runAsynchronously(task, identity
                 .getPrincipal(), identity.getSubject(),
