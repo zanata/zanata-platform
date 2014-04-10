@@ -155,7 +155,7 @@ public class LanguageManagerAction implements Serializable {
         Collection<LocaleId> filtered =
                 Collections2.filter(allLocales, new Predicate<LocaleId>() {
                     @Override
-                    public boolean apply(@Nullable LocaleId input) {
+                    public boolean apply(LocaleId input) {
                         return input.getId().startsWith(query);
                     }
                 });

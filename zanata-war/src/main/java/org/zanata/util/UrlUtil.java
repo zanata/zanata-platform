@@ -92,7 +92,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String sourceFilesViewUrl(String projectSlug, String versionSlug) {
-        return "/iteration/source_files/" + projectSlug + "/" + versionSlug;
+        return versionUrl(projectSlug, versionSlug) + "#documents";
     }
 
     public String projectUrl(String projectSlug) {

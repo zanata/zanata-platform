@@ -100,4 +100,14 @@ public class XmlEntityValidation extends AbstractValidationAction {
         }
         return text;
     }
+
+    @Override
+    public String getSourceExample() {
+        return "Pepper &amp;amp; salt";
+    }
+
+    @Override
+    public String getTargetExample() {
+        return "Pepper amp<span class='js-example__target txt--warning'> incomplete entity, missing '& and ;'</span> salt";
+    }
 }

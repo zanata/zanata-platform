@@ -20,11 +20,13 @@
  */
 package org.zanata.page;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Function;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.account.MyAccountPage;
@@ -33,20 +35,23 @@ import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
  * and sidebar links common to most pages outside of the editor.
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
@@ -92,8 +97,7 @@ public class BasePage extends CorePage {
         if (!menuItem.isDisplayed()) {
             // screen is too small the menu become dropdown
             getDriver().findElement(By.id("nav-main"))
-                    .findElement(By.tagName("a"))
-                    .click();
+                    .findElement(By.tagName("a")).click();
         }
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -209,20 +213,26 @@ public class BasePage extends CorePage {
                 .findElement(locator));
     }
 
+    public void clickLinkAfterAnimation(WebElement element) {
+        JavascriptExecutor executor = (JavascriptExecutor) getDriver();
+        executor.executeScript("arguments[0].click();", element);
+    }
+
     public HelpPage goToHelp() {
         getDriver().findElement(By.id("help_link")).click();
         return new HelpPage(getDriver());
     }
 
     public BasePage enterSearch(String searchText) {
-        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
-                .sendKeys(searchText);
+        WebElementUtil.searchAutocomplete(getDriver(), "projectAutocomplete",
+                searchText);
         return new BasePage(getDriver());
     }
 
     public ProjectsPage submitSearch() {
-        getDriver().findElement(By.id("projectAutocomplete-autocomplete__input"))
-                .sendKeys(Keys.ENTER);
+        getDriver().findElement(
+                By.id("projectAutocomplete-autocomplete__input")).sendKeys(
+                Keys.ENTER);
         return new ProjectsPage(getDriver());
     }
 
@@ -230,37 +240,26 @@ public class BasePage extends CorePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getSearchAutocompleteItems().contains(expected);
+                return getProjectSearchAutocompleteItems().contains(expected);
             }
         });
     }
 
-    public List<String> getSearchAutocompleteItems() {
-        List<String> resultsText = new ArrayList<String>();
-        List<WebElement> results = waitForTenSec()
-                .until(new Function<WebDriver, List<WebElement>>() {
-                    @Override
-                    public List<WebElement> apply(WebDriver driver) {
-                        return getDriver().findElement(
-                                By.className("autocomplete__results"))
-                                .findElements(By.className("autocomplete__result"));
-                    }
-                });
-
-        for (WebElement result : results) {
-            resultsText.add(result.getText());
-        }
-        return resultsText;
+    public List<String> getProjectSearchAutocompleteItems() {
+        return WebElementUtil.getSearchAutocompleteItems(getDriver(),
+                "general-search-form", "projectAutocomplete");
     }
 
-    public ProjectPage clickSearchEntry(final String searchEntry) {
-        WebElement searchItem = waitForTenSec()
-                .until(new Function<WebDriver, WebElement>() {
+    public ProjectVersionsPage clickSearchEntry(final String searchEntry) {
+        WebElement searchItem =
+                waitForTenSec().until(new Function<WebDriver, WebElement>() {
                     @Override
                     public WebElement apply(WebDriver driver) {
-                        List <WebElement> items = getDriver().findElement(
-                                By.className("autocomplete__results"))
-                                .findElements(By.className("autocomplete__result"));
+                        List<WebElement> items =
+                                WebElementUtil.getSearchAutocompleteResults(
+                                        driver, "general-search-form",
+                                        "projectAutocomplete");
+
                         for (WebElement item : items) {
                             if (item.getText().equals(searchEntry)) {
                                 return item;
@@ -270,6 +269,12 @@ public class BasePage extends CorePage {
                     }
                 });
         searchItem.click();
-        return new ProjectPage(getDriver());
+        return new ProjectVersionsPage(getDriver());
     }
+
+    public String getHtmlSource(WebElement webElement) {
+        return (String) ((JavascriptExecutor) getDriver()).executeScript(
+                "return arguments[0].innerHTML;", webElement);
+    }
+
 }

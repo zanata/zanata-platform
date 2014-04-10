@@ -49,7 +49,7 @@ public class WebElementUtil {
      * This method potentially will suffer from StaleElementException if the
      * WebElements given are dynamic elements on the page. If so consider using
      * #elementsToText(org.openqa.selenium.WebDriver, org.openqa.selenium.By)
-     *  instead.
+     * instead.
      *
      * @param webElements
      *            collection of WebElement
@@ -60,7 +60,6 @@ public class WebElementUtil {
         return ImmutableList.copyOf(Collections2.transform(webElements,
                 WebElementToTextFunction.FUNCTION));
     }
-
 
     public static List<String> elementsToText(WebDriver driver, final By by) {
         return waitForTenSeconds(driver).until(
@@ -227,19 +226,22 @@ public class WebElementUtil {
 
     /**
      * This method is used to set JSF rich text editor (KCEditor) content.
-     * @param driver web driver
-     * @param richEditorWrapperField the wrapper div of the editor
-     * @param content content wants to set
+     *
+     * @param driver
+     *            web driver
+     * @param richEditorWrapperField
+     *            the wrapper div of the editor
+     * @param content
+     *            content wants to set
      */
     public static void setRichTextEditorContent(WebDriver driver,
-            WebElement richEditorWrapperField,
-            String content) {
+            WebElement richEditorWrapperField, String content) {
         // This is how we can change JSF rich text editor content.
         WebElement richTextEditorFrame =
                 richEditorWrapperField.findElement(By.tagName("iframe"));
         driver.switchTo().frame(richTextEditorFrame);
-        ((JavascriptExecutor) driver)
-                .executeScript("document.body.innerHTML='" + content + "'");
+        ((JavascriptExecutor) driver).executeScript("document.body.innerHTML='"
+                + content + "'");
         driver.switchTo().defaultContent();
     }
 
@@ -280,4 +282,33 @@ public class WebElementUtil {
             return from.getText();
         }
     }
+
+    public static void searchAutocomplete(WebDriver driver, String id,
+            String query) {
+        driver.findElement(By.id(id + "-autocomplete__input")).sendKeys(query);
+    }
+
+    public static List<WebElement> getSearchAutocompleteResults(
+            WebDriver driver, String formId, String id) {
+        return driver.findElement(
+                By.id(formId + ":" + id + ":" + id + "-result")).findElements(
+                By.xpath(".//ul[@class='autocomplete__results']/li"));
+    }
+
+    public static List<String> getSearchAutocompleteItems(WebDriver driver,
+            final String formId, final String id) {
+        List<WebElement> results =
+                getSearchAutocompleteResults(driver, formId, id);
+
+        List<String> resultsText =
+                Lists.transform(results, new Function<WebElement, String>() {
+                    @Override
+                    public String apply(WebElement li) {
+                        return li.getText();
+                    }
+                });
+
+        return resultsText;
+    }
+
 }

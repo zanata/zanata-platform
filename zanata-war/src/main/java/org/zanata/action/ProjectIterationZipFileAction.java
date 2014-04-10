@@ -2,6 +2,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
@@ -13,6 +15,7 @@ import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.tasks.ZipFileBuildTask;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.AsyncTaskManagerService;
 
 @Name("projectIterationZipFileAction")
@@ -22,31 +25,32 @@ public class ProjectIterationZipFileAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
+    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
 
-    @In
-    AsyncTaskManagerService asyncTaskManagerServiceImpl;
-
-    private String projectSlug;
-
-    private String iterationSlug;
-
-    private String localeId;
-
+    @Getter
     private AsyncTaskHandle<String> zipFilePrepHandle;
 
+    @In
+    private ZanataIdentity identity;
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+
     @Begin(join = true)
-    @Restrict("#{s:hasPermission(projectIterationZipFileAction.projectIteration, 'download-all')}")
-    public
-            void prepareIterationZipFile(boolean isPoProject) {
-        if (this.zipFilePrepHandle != null && !this.zipFilePrepHandle.isDone()) {
+    public void prepareIterationZipFile(boolean isPoProject,
+            String projectSlug, String versionSlug, String localeId) {
+
+        identity.checkPermission("download-all",
+                projectIterationDAO.getBySlug(projectSlug, versionSlug));
+
+        if (zipFilePrepHandle != null && !zipFilePrepHandle.isDone()) {
             // Cancel any other processes for this conversation
-            this.zipFilePrepHandle.forceCancel();
+            zipFilePrepHandle.forceCancel();
         }
 
         // Start a zip file task
         ZipFileBuildTask task =
-                new ZipFileBuildTask(projectSlug, iterationSlug, localeId,
+                new ZipFileBuildTask(projectSlug, versionSlug, localeId,
                         Identity.instance().getCredentials().getUsername(),
                         isPoProject);
 
@@ -56,43 +60,6 @@ public class ProjectIterationZipFileAction implements Serializable {
 
     @End
     public void cancelFileDownload() {
-        this.zipFilePrepHandle.cancel();
-    }
-
-    public Object getProjectIteration() {
-        return this.projectIterationDAO.getBySlug(this.projectSlug,
-                this.iterationSlug);
-    }
-
-    public String getProjectSlug() {
-        return projectSlug;
-    }
-
-    public void setProjectSlug(String projectSlug) {
-        this.projectSlug = projectSlug;
-    }
-
-    public String getIterationSlug() {
-        return iterationSlug;
-    }
-
-    public void setIterationSlug(String iterationSlug) {
-        this.iterationSlug = iterationSlug;
-    }
-
-    public String getLocaleId() {
-        return localeId;
-    }
-
-    public void setLocaleId(String localeId) {
-        this.localeId = localeId;
-    }
-
-    public AsyncTaskHandle<String> getZipFilePrepHandle() {
-        return zipFilePrepHandle;
-    }
-
-    public void setZipFilePrepHandle(AsyncTaskHandle<String> zipFilePrepHandle) {
-        this.zipFilePrepHandle = zipFilePrepHandle;
+        zipFilePrepHandle.cancel();
     }
 }

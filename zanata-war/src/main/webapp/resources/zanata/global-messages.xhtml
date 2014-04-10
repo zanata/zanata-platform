@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<composite:interface>
+  <composite:attribute name="value" type="java.util.List"
+    shortDescription="list of messages (javax.faces.application.FacesMessage)"
+    required="true"/>
+</composite:interface>
+
+<composite:implementation>
+  <ui:repeat value="#{cc.attrs.value}" var="message">
+    <s:fragment
+      rendered="#{message.severity.toString().startsWith('INFO')}">
+      <li
+        class="message--highlight message--removable js-message-removable">
+        #{message.summary}
+        <a href="#" class="message__remove js-message-remove">
+          <i class="i i--remove"></i>
+        </a>
+      </li>
+    </s:fragment>
+    <s:fragment
+      rendered="#{message.severity.toString().startsWith('WARN')}">
+      <li
+        class="message--warning message--removable js-message-removable">
+        #{message.summary}
+        <a href="#" class="message__remove js-message-remove">
+          <i class="i i--remove"></i>
+        </a>
+      </li>
+    </s:fragment>
+    <s:fragment
+      rendered="#{message.severity.toString().startsWith('ERROR') or message.severity.toString().startsWith('FATAL')}">
+      <li class="message--danger message--removable js-message-removable">
+        #{message.summary}
+        <a href="#" class="message__remove js-message-remove">
+          <i class="i i--remove"></i>
+        </a>
+      </li>
+    </s:fragment>
+  </ui:repeat>
+</composite:implementation>
+</html>

@@ -12,8 +12,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
@@ -105,7 +105,7 @@ public class VersionGroupPage extends BasePage {
         return result;
     }
 
-    public ProjectPage clickOnProjectLinkOnRow(int row) {
+    public ProjectVersionsPage clickOnProjectLinkOnRow(int row) {
         List<TableRow> tableRows =
                 WebElementUtil
                         .getTableRows(getDriver(), versionsInGroupTableBy);
@@ -113,10 +113,10 @@ public class VersionGroupPage extends BasePage {
                 tableRows.get(row).getCells().get(0)
                         .findElement(By.tagName("a"));
         projectLink.click();
-        return new ProjectPage(getDriver());
+        return new ProjectVersionsPage(getDriver());
     }
 
-    public ProjectVersionPage clickOnProjectVersionLinkOnRow(int row) {
+    public VersionLanguagesPage clickOnProjectVersionLinkOnRow(int row) {
         List<TableRow> tableRows =
                 WebElementUtil
                         .getTableRows(getDriver(), versionsInGroupTableBy);
@@ -124,7 +124,7 @@ public class VersionGroupPage extends BasePage {
                 tableRows.get(row).getCells().get(1)
                         .findElement(By.tagName("a"));
         versionLink.click();
-        return new ProjectVersionPage(getDriver());
+        return new VersionLanguagesPage(getDriver());
     }
 
     public void clickOnTab(String tabId) {

@@ -2,8 +2,8 @@ package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import org.zanata.common.LocaleId;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
 public class IdForLocale implements Identifier<Long>, IsSerializable, Serializable {

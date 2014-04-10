@@ -19,7 +19,7 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.ZanataInit;
 import org.zanata.action.ProjectHome;
-import org.zanata.action.ProjectIterationHome;
+import org.zanata.action.VersionHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
@@ -91,7 +91,8 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     ProjectIterationDAO getProjectIterationDAO() {
-        return (ProjectIterationDAO) Component.getInstance("projectIterationDAO");
+        return (ProjectIterationDAO) Component
+                .getInstance("projectIterationDAO");
     }
 
     LocaleService getLocaleService() {
@@ -99,7 +100,8 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     ValidationService getValidationService() {
-        return (ValidationService) Component.getInstance("validationServiceImpl");
+        return (ValidationService) Component
+                .getInstance("validationServiceImpl");
     }
 
     @Observer(ZanataInit.EVENT_Zanata_Startup)
@@ -166,7 +168,7 @@ public class TranslationWorkspaceManagerImpl implements
         }
     }
 
-    @Observer(ProjectIterationHome.PROJECT_ITERATION_UPDATE)
+    @Observer(VersionHome.PROJECT_ITERATION_UPDATE)
     public void projectIterationUpdate(HProjectIteration projectIteration) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 

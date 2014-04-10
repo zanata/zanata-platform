@@ -1,0 +1,188 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich">
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <zanata:sortlist id="projects-project_sorting"
+          sortAction="#{projectHomeAction.sortVersionList()}"
+          render="versions_form, versionSearch-pager, versionSearch-page-info, versionSearchBottom-pager, versionSearchBottom-page-info"
+          oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
+          sortingList="#{projectHomeAction.versionSortingList}"/>
+
+        <s:fragment
+          rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+          <div
+            class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
+            id="versions-more-actions">
+            <a class="dropdown__toggle js-dropdown__toggle" href="#"
+              title="#{messages['jsf.tooltip.MoreActions']}"><i
+              class="i i--ellipsis"></i></a>
+            <ul class="dropdown__content js-dropdown__content" role="content"
+              aria-labelledby="dropdownContent">
+              <li>
+                <s:link id="new-version-link"
+                  value="#{messages['jsf.project.NewVersion']}"
+                  view="/project/add_iteration.xhtml"
+                  propagation="none">
+                  <f:param name="projectSlug"
+                    value="#{projectHomeAction.slug}"/>
+                  <i class="i i--plus i__item__icon"></i>
+                </s:link>
+              </li>
+            </ul>
+          </div>
+        </s:fragment>
+      </div>
+      <h2 class="panel__heading">#{messages['jsf.Versions']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="versionTab-versionsLoader"
+        listId="versions_form"
+        render="versions_form, versionSearchBottom-pager, versionSearchBottom-page-info"
+        id="versionSearch" iconClass="i--version"
+        placeholder="#{messages['jsf.version.search.placeholder']}"
+        actionBean="#{projectHomeAction.versionFilter}"/>
+    </div>
+
+    <a4j:status name="versionTab-versionsLoader">
+      <f:facet name="start"><zanata:loader/></f:facet>
+    </a4j:status>
+
+    <h:form id="versions_form" styleClass="l--push-bottom-0">
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{empty projectHomeAction.projectVersions}">
+        <p class="txt--meta">#{messages['jsf.NoVersions']}</p>
+        <s:fragment
+          rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+          <p>
+            <s:link styleClass="button-primary"
+              value="#{messages['jsf.project.NewVersion']}"
+              view="/project/add_iteration.xhtml"
+              propagation="none">
+              <f:param name="projectSlug"
+                value="#{projectHomeAction.slug}"/>
+              <i class="i i--plus i__item__icon"></i>
+            </s:link>
+          </p>
+        </s:fragment>
+      </s:div>
+
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.pagedFilteredList}">
+        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{!projectHomeAction.versionFilter.pagedFilteredList.isEmpty()}">
+        <ul class="list--stats">
+          <ui:repeat
+            value="#{projectHomeAction.versionFilter.pagedFilteredList}"
+            var="version">
+            <ui:param name="hasActions"
+              value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(version)}"/>
+            <li
+              class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
+              <s:div styleClass="list__item__action" rendered="#{hasActions}">
+                <div
+                  class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                  <a href="#"
+                    class="dropdown__toggle js-dropdown__toggle txt--meta"
+                    title="#{messages['jsf.tooltip.TranslateOptions']}">
+                      <span class="is-invisible">
+                        #{messages['jsf.tooltip.TranslateOptions']}
+                      </span>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content">
+                    <ui:repeat
+                      value="#{projectHomeAction.getUserJoinedLocales(version)}"
+                      var="hLocale">
+                      <li>
+                        <h:outputLink styleClass="i__item--right"
+                          value="#{request.contextPath}/webtrans/Application.seam">
+                          <f:param name="project"
+                            value="#{projectHomeAction.slug}"/>
+                          <f:param name="iteration" value="#{version.slug}"/>
+                          <f:param name="localeId"
+                            value="#{hLocale.localeId}"/>
+                          <f:param name="locale" value="#{locale.language}"/>
+                            <span>
+                              <h:outputFormat
+                                value="#{messages['jsf.project.TranslateIn']}">
+                                <f:param
+                                  value="#{hLocale.retrieveDisplayName()}"/>
+                              </h:outputFormat>
+                              <i class="i i--translate i__item__icon"></i>
+                            </span>
+                        </h:outputLink>
+                      </li>
+                    </ui:repeat>
+                    <li>
+                      <h:outputLink id="exportTMXIterLink"
+                        onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                        styleClass="i__item--right"
+                        value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{version.slug}">
+                        #{messages['jsf.iteration.ExportTMXIter']}<i
+                        class="i i--export i__item__icon"></i>
+                      </h:outputLink>
+                    </li>
+                  </ul>
+                </div>
+              </s:div>
+
+              <s:link view="/iteration/view.xhtml">
+                <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
+                <f:param name="iterationSlug" value="#{version.slug}"/>
+
+                <div class="list__item__content">
+                  <div class="list__item__info">
+                    <h3 class="list__title">#{version.slug}</h3>
+                  </div>
+
+                  <div class="list__item__stats">
+                    <a4j:status name="statistic-loader">
+                      <f:facet name="start">
+                        <zanata:loader type="loader--small" layout="inline"/>
+                      </f:facet>
+                    </a4j:status>
+
+                    <s:fragment rendered="#{projectHomeAction.pageRendered}">
+                      <ui:param name="displayUnit"
+                        value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, version)}"/>
+                       <span class="#{displayUnit.cssClass}"
+                         title="#{displayUnit.title}">
+                          <span
+                            class="stats__figure">#{displayUnit.figure}</span>
+                          <span class="stats__unit txt--lowercase">
+                            #{displayUnit.unit}
+                          </span>
+                        </span>
+                    </s:fragment>
+                  </div>
+                </div>
+                <zanata:statistic
+                  value="#{projectHomeAction.getStatisticForVersion(version.slug)}"
+                  rendered="#{projectHomeAction.pageRendered}"/>
+
+              </s:link>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </h:form>
+
+    <zanata:list-filter listId="versions_form"
+      render="versions_form, versionSearch-pager, versionSearch-page-info"
+      id="versionSearchBottom" iconClass="i--version" bottomPanel="true"
+      placeholder="#{messages['jsf.version.search.placeholder']}"
+      actionBean="#{projectHomeAction.versionFilter}"/>
+
+  </div>
+</ui:composition>

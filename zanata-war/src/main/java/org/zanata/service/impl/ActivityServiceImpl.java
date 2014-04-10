@@ -40,7 +40,6 @@ import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -54,6 +53,8 @@ import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -75,9 +76,6 @@ public class ActivityServiceImpl implements ActivityService {
     private PersonDAO personDAO;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
     private EntityManager entityManager;
 
     @In
@@ -92,6 +90,24 @@ public class ActivityServiceImpl implements ActivityService {
 
     private Date getRoundedTime(Date actionTime) {
         return DateUtils.truncate(actionTime, Calendar.HOUR);
+    }
+
+    @Override
+    public List<Activity> findLatestVersionActivitiesByUser(long personId,
+            List<Long> versionIds, int offset, int maxResults) {
+        if (versionIds.isEmpty()) {
+            return Lists.newArrayList();
+        }
+        return activityDAO.findLatestVersionActivitiesByUser(personId,
+                versionIds, offset, maxResults);
+    }
+
+    @Override
+    public List<Activity> findLatestVersionActivities(Long versionId,
+            int offset, int maxResults) {
+
+        return activityDAO.findLatestVersionActivities(versionId, offset,
+                maxResults);
     }
 
     @Override

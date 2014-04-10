@@ -20,6 +20,9 @@
  */
 package org.zanata.feature.editor;
 
+import java.io.File;
+import java.util.HashMap;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +32,6 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -38,15 +40,12 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import java.io.File;
-import java.util.HashMap;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 
 /**
- * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
@@ -69,32 +68,37 @@ public class TranslateHTMLTest {
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        assumeFalse("", new File(CleanDocumentStorageRule
-                .getDocumentStoragePath()
-                .concat(File.separator).concat("documents")
-                .concat(File.separator)).exists());
+        assumeFalse(
+                "",
+                new File(CleanDocumentStorageRule.getDocumentStoragePath()
+                        .concat(File.separator).concat("documents")
+                        .concat(File.separator)).exists());
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
     @Theory
     public void translateBasicHTMLFile(String extension) {
-        File testfile = testFileGenerator
-                .generateTestFileWithContent("basichtml", "." + extension,
-                        "<html><body>Line One<p>Line Two<p>"+
-                        "Line Three</body></html>");
+        File testfile =
+                testFileGenerator.generateTestFileWithContent("basichtml", "."
+                        + extension, "<html><body>Line One<p>Line Two<p>"
+                        + "Line Three</body></html>");
 
-        HashMap<String, String> projectSettings = ProjectWorkFlow.projectDefaults();
+        HashMap<String, String> projectSettings =
+                ProjectWorkFlow.projectDefaults();
         projectSettings.put("Project ID", extension + "-project");
         projectSettings.put("Name", extension + "-project");
         projectSettings.put("Project Type", "File");
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings).clickCreateVersionLink()
-                .inputVersionId(extension).saveVersion()
-                .goToSourceDocuments().pressUploadFileButton()
-                .enterFilePath(testfile.getAbsolutePath()).submitUpload()
-                .clickBreadcrumb(extension, ProjectVersionPage.class)
-                .translate("fr").clickDocumentLink("", testfile.getName());
+                .createNewProject(projectSettings)
+                .clickCreateVersionLink().inputVersionId(extension)
+                .saveVersion()
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(testfile.getAbsolutePath())
+                .submitUpload()
+                .translate("fr", testfile.getName());
 
         editorPage.setSyntaxHighlighting(false);
 
@@ -108,12 +112,15 @@ public class TranslateHTMLTest {
                 editorPage.getMessageSourceAtRowIndex(2),
                 Matchers.equalTo("Line Three"));
 
-        editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                .approveTranslationAtRow(0);
-        editorPage = editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                .approveTranslationAtRow(1);
-        editorPage = editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                .approveTranslationAtRow(2);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(0, "Une Ligne")
+                        .approveTranslationAtRow(0);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
+                        .approveTranslationAtRow(1);
+        editorPage =
+                editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
+                        .approveTranslationAtRow(2);
 
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),

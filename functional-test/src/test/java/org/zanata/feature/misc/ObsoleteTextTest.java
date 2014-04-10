@@ -8,7 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.SampleProjectRule;
@@ -111,12 +111,12 @@ public class ObsoleteTextTest {
             }
         }, Matchers.containsString("100%"));
 
-        ProjectVersionPage versionPage =
+        VersionLanguagesPage versionPage =
                 new BasicWorkFlow().goToPage(String.format(
                         PROJECT_VERSION_TEMPLATE, "obsolete-test", "master"),
-                        ProjectVersionPage.class);
+                        VersionLanguagesPage.class);
         assertThat(versionPage.getStatisticsForLocale("fr"),
-                Matchers.equalTo("100.0% ( 0.0 hrs )"));
+                Matchers.equalTo("100.0%"));
     }
 
     private static EditorPage openEditor() {

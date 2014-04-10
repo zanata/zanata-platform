@@ -29,7 +29,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.projects.ProjectPage;
+import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -47,7 +47,7 @@ public class CreateNewProjectTest {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    public ProjectPage createNewProject(String projectSlug, String projectName) {
+    public ProjectBasePage createNewProject(String projectSlug, String projectName) {
         return new ProjectWorkFlow().createNewSimpleProject(projectSlug, projectName);
     }
 }

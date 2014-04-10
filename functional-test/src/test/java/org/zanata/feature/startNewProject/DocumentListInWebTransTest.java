@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.DocumentsViewPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -46,7 +46,7 @@ import org.zanata.workflow.LoginWorkFlow;
 @Category(ConcordionTest.class)
 public class DocumentListInWebTransTest {
 
-    private ProjectVersionPage projectVersionPage;
+    private VersionLanguagesPage projectVersionPage;
 
     public boolean signInAs(String username, String password) {
         DashboardBasePage dashboardPage =
@@ -55,20 +55,21 @@ public class DocumentListInWebTransTest {
         return dashboardPage.hasLoggedIn();
     }
 
-    public ProjectVersionPage goToProjectVersion(String projectName,
+    public VersionLanguagesPage goToProjectVersion(String projectName,
             String versionSlug) {
         projectVersionPage =
                 new BasicWorkFlow()
                         .goToPage(String.format("iteration/view/plurals/%s",
-                                versionSlug), ProjectVersionPage.class);
-        // ProjectPage projectPage =
+                                versionSlug), VersionLanguagesPage.class);
+        // ProjectBasePage projectPage =
         // homePage.goToProjects().goToProject(projectName);
-        // projectVersionPage = projectPage.goToVersion(versionSlug);
+        // projectVersionPage = projectPage.gotoVersion(versionSlug);
         return projectVersionPage;
     }
 
     public DocumentsViewPage translate(String locale) {
-        return projectVersionPage.translate(locale);
+        return null;
+//        return projectVersionPage.translate(locale);
     }
 
     public List<List<String>> getDocumentListTableContents(

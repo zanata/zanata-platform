@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<composite:interface>
+  <composite:attribute name="onValueChanged" required="true"
+    shortDescription="a4j:jsFunction to be called when checkbox value changed (args1[key], args2[value])"/>
+
+  <composite:attribute name="checked" type="java.lang.Boolean"
+    shortDescription="checked flag for checkbox" required="true"/>
+
+  <composite:attribute name="value" type="java.lang.String"
+    shortDescription="String value of the checkbox" required="true"/>
+
+  <composite:attribute name="label" type="java.lang.String"
+    shortDescription="display text of checkbox" required="true"/>
+
+  <composite:attribute name="labelStyle" type="java.lang.String"
+    shortDescription="css style for label"/>
+
+  <composite:attribute name="styleClass" type="java.lang.String"
+    shortDescription="css style for wrapper of checkbox"/>
+
+</composite:interface>
+
+<composite:implementation>
+  <div class="form__checkbox js-form__checkbox #{cc.attrs.styleClass}"
+    onclick="onCheckboxValueChanged(this, #{cc.attrs.onValueChanged})">
+    <s:fragment rendered="#{cc.attrs.checked}">
+      <input type="checkbox" value="#{cc.attrs.value}"
+        class="form__checkbox__input js-form__checkbox__input"
+        checked="checked"/>
+    </s:fragment>
+    <s:fragment rendered="#{!cc.attrs.checked}">
+      <input type="checkbox" value="#{cc.attrs.value}"
+        class="form__checkbox__input js-form__checkbox__input"/>
+    </s:fragment>
+    <label class="form__checkbox__label js-form__checkbox__label #{cc.attrs.labelStyle}">
+      #{cc.attrs.label}
+    </label>
+  </div>
+</composite:implementation>
+</html>

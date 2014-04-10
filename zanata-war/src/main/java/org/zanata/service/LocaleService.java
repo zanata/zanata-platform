@@ -48,6 +48,8 @@ public interface LocaleService {
 
     List<HLocale> getSupportedLocales();
 
+    List<HLocale> getSupportedAndEnabledLocales();
+
     HLocale getByLocaleId(@Nonnull LocaleId locale);
 
     HLocale getByLocaleId(@Nonnull String localeId);
@@ -67,8 +69,8 @@ public interface LocaleService {
     List<HLocale> getTranslation(@Nonnull String project,
             @Nonnull String iterationSlug, String username);
 
-    List<HLocale> getSupportedLangugeByProjectIteration(
-            @Nonnull String project, @Nonnull String iterationSlug);
+    List<HLocale> getSupportedLanguageByProjectIteration(
+            @Nonnull String projectSlug, @Nonnull String iterationSlug);
 
     List<HLocale> getSupportedLanguageByProject(@Nonnull String project);
 

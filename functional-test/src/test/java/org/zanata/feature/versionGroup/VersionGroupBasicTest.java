@@ -39,8 +39,9 @@ import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectBasePage;
+import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -137,10 +138,10 @@ public class VersionGroupBasicTest {
 
     public void createProjectAndVersion(String projectId, String projectName,
             String version) {
-        ProjectPage projectPage =
+        ProjectVersionsPage projectVersionsPage =
                 projectWorkFlow.createNewSimpleProject(projectId, projectName);
-        projectPage.clickCreateVersionLink().inputVersionId(version)
-                .selectStatus("READONLY").selectStatus("ACTIVE").saveVersion();
+        projectVersionsPage.clickCreateVersionLink().inputVersionId(version)
+                .saveVersion();
     }
 
     public List<String> searchProjectToAddToVersionGroup(String searchTerm) {
@@ -163,24 +164,24 @@ public class VersionGroupBasicTest {
         versionGroupPage = groupsPage.goToGroup(groupName);
     }
 
-    public ProjectPage clickProjectLinkOnRow(int row) {
+    public ProjectBasePage clickProjectLinkOnRow(int row) {
         return versionGroupPage.clickOnProjectLinkOnRow(row);
     }
 
-    public ProjectVersionPage clickVersionLinkOnRow(int row) {
+    public VersionLanguagesPage clickVersionLinkOnRow(int row) {
         return versionGroupPage.clickOnProjectVersionLinkOnRow(row);
     }
 
-    public String getProjectNameFromPage(ProjectPage projectPage) {
+    public String getProjectNameFromPage(ProjectBasePage projectPage) {
         return projectPage.getProjectName();
     }
 
-    public boolean checkIfEquals(ProjectPage projectPage, String projectName) {
+    public boolean checkIfEquals(ProjectBasePage projectPage, String projectName) {
         return projectPage.getProjectName().trim().equals(projectName.trim());
     }
 
-    public boolean checkIfEquals(ProjectVersionPage versionPage,
+    public boolean checkIfEquals(VersionLanguagesPage versionPage,
             String versionId) {
-        return versionPage.getVersionId().trim().equals(versionId.trim());
+        return versionPage.getProjectVersionName().trim().equals(versionId.trim());
     }
 }

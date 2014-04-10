@@ -31,8 +31,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.zanata.concordion.CustomResourceExtension;
 import org.zanata.feature.ConcordionTest;
-import org.zanata.page.projects.ProjectPage;
-import org.zanata.page.projects.ProjectVersionPage;
+import org.zanata.page.projects.ProjectBasePage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +53,9 @@ public class CreateVersionAndAddToProjectTest {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    public ProjectPage createNewProjectVersion(String projectName,
+    public ProjectBasePage createNewProjectVersion(String projectName,
             String versionSlug) {
-        ProjectVersionPage projectVersionPage =
+        VersionLanguagesPage projectVersionPage =
                 new ProjectWorkFlow().createNewProjectVersion(projectName,
                         versionSlug);
         List<String> breadcrumbLinks = projectVersionPage.getBreadcrumbLinks();
@@ -63,6 +63,6 @@ public class CreateVersionAndAddToProjectTest {
 
         return projectVersionPage.clickBreadcrumb(
                 breadcrumbLinks.get(breadcrumbLinks.size() - 1),
-                ProjectPage.class);
+                ProjectBasePage.class);
     }
 }

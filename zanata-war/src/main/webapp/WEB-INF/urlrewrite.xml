@@ -60,7 +60,7 @@
 
   <rule>
     <from casesensitive="true">^/project/add_iteration/(.+)$</from>
-    <to last="true">/project/add_iteration.seam\?slug=$1</to>
+    <to last="true">/project/add_iteration.seam\?projectSlug=$1</to>
   </rule>
 
   <rule>
@@ -73,13 +73,6 @@
     <to last="true">/project/project.seam\?slug=$1</to>
   </rule>
 
-  <rule>
-    <from
-      casesensitive="true">^/project/view/([^/]+)/copy_trans_opts/?(\?.*)?$
-    </from>
-    <to last="true">/project/copy_trans_options.seam\?projectSlug=$1</to>
-  </rule>
-
   <!-- Project Iteration Rules -->
   <rule>
     <from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
@@ -90,21 +83,17 @@
   <rule>
     <from casesensitive="true">^/iteration/source_files/([^/]+)/([^/]+)/?$
     </from>
-    <to last="true">/iteration/source_files.seam\?project=$1&amp;iteration=$2
+    <to type="permanent-redirect"
+      last="true">%{context-path}/iteration/view/$1/$2&amp;#documents
     </to>
   </rule>
 
   <rule>
     <from casesensitive="true">^/iteration/files/([^/]+)/([^/]+)/([^/]+)/?$
     </from>
-    <to
-      last="true">/iteration/files.seam\?project=$1&amp;iteration=$2&amp;localeId=$3
+    <to type="permanent-redirect"
+      last="true">%{context-path}/iteration/view/$1/$2&amp;#documents
     </to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/iteration/edit/([^/]+)/(.+)$</from>
-    <to last="true">/iteration/edit.seam\?projectSlug=$1&amp;slug=$2</to>
   </rule>
 
   <rule>
@@ -113,13 +102,6 @@
     </from>
     <to
       last="true">/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=$1&amp;projectSlug=$2&amp;iterationSlug=$3
-    </to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/iteration/copytrans/([^/]+)/(.+)$</from>
-    <to
-      last="true">/iteration/copy_trans.seam\?projectSlug=$1&amp;iterationSlug=$2
     </to>
   </rule>
 
@@ -133,26 +115,8 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/iter/([^/]+)/stats/?$
-    </from>
-    <to
-      last="true">/project/iteration_status.seam\?projectSlug=$1&amp;iterationSlug=$2
-    </to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/project/edit(.+)$</from>
-    <to last="true">/project/edit.seam?$1</to>
-  </rule>
-
-  <rule>
     <from casesensitive="true">^/project/list(.+)?$</from>
     <to last="true">/project/home.seam$1</to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/project/maintainer/(.+)?$</from>
-    <to last="true">/project/assign_maintainer.seam$1</to>
   </rule>
 
   <!-- account / -->
@@ -373,7 +337,7 @@
     <to>$1/language/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/add_iteration.seam\?slug=(.+)$</from>
+    <from>^(/.+)?/project/add_iteration.seam\?projectSlug=(.+)$</from>
     <to>$1/project/add_iteration/$2</to>
   </outbound-rule>
   <outbound-rule>
@@ -381,28 +345,12 @@
     <to>$1/project/create/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/edit.seam(.+)$</from>
-    <to>$1/project/edit/$2</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/project/assign_maintainer.seam(.+)?$</from>
-    <to>$1/project/maintainer/$2</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
     <to>$1/project/view/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/copy_trans_options.seam\?projectSlug=([^&amp;]+)(&amp;.+)?$</from>
-    <to>$1/project/view/$2/copy_trans_opts</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/project/project.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(?:&amp;slug=[^&amp;]+)?&amp;actionMethod=project%2Fproject\.xhtml%3AconfigurationAction\.getData.*$</from>
     <to>$1/project/view/$2/iter/$3/config</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/project/iteration_status.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)$</from>
-    <to>$1/project/view/$2/iter/$3/stats</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/home.seam(.+)?$</from>
@@ -420,29 +368,8 @@
   </outbound-rule>
 
   <outbound-rule>
-    <from>^(/.+)?/iteration/source_files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/source_files/$2/$3?$5</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/iteration/files.seam\?project=([^&amp;]+)&amp;iteration=([^&amp;]+)&amp;localeId=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/files/$2/$3/$4?$6</to>
-  </outbound-rule>
-  <!-- Duplicate rule to handle different parameter order. -->
-  <outbound-rule>
-    <from>^(/.+)?/iteration/files.seam\?localeId=([^&amp;]+)&amp;project=([^&amp;]+)&amp;iteration=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/files/$3/$4/$2?$6</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/iteration/edit.seam\?projectSlug=([^&amp;]+)&amp;slug=([^&amp;]+)$</from>
-    <to>$1/iteration/edit/$2/$3</to>
-  </outbound-rule>
-  <outbound-rule>
     <from>^(/.+)?/iteration/request_to_join_group.seam\?emailType=request_to_join_group&amp;versionGroupSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)&amp;iterationSlug=(.+)$</from>
     <to>$1/iteration/request_join_group/$2/$3/$4</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/iteration/copy_trans.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/copytrans/$2/$3?$5</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/login.seam(.+)?$</from>

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
@@ -158,15 +159,34 @@ public class EditorPage extends BasePage {
 
     public EditorPage setSyntaxHighlighting(boolean option) {
         openConfigurationPanel();
-        if (getDriver().findElement(By.id("gwt-uid-144")).isSelected()
-                != option) {
-            getDriver().findElement(By.id("gwt-uid-144")).click();
+        WebElement highlight = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                WebElement element = getDriver()
+                        .findElement(By.id("gwt-uid-144"));
+                if (element.isDisplayed()) {
+                    return element;
+                }
+                return null;
+            }
+        });
+        if (highlight.isSelected() != option) {
+            highlight.click();
         }
         return new EditorPage(getDriver());
     }
 
     private Boolean openConfigurationPanel() {
-        getDriver().findElement(By.className("icon-cog")).click();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                        .findElement(By.className("icon-cog"))
+                        .isEnabled();
+            }
+        });
+        new Actions(getDriver()).click(
+                getDriver().findElement(By.className("icon-cog"))).perform();
         return waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
@@ -357,11 +377,12 @@ public class EditorPage extends BasePage {
      * @param validation the option to check
      * @return new EditorPage
      */
-    public boolean validationOptionIsAvailable(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
+    public boolean isValidationOptionAvailable(Validations validation) {
         return getDriver()
-                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).isEnabled();
+                .findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .isEnabled();
     }
 
     /**
@@ -370,11 +391,12 @@ public class EditorPage extends BasePage {
      * @param validation the option to check
      * @return new EditorPage
      */
-    public boolean validationOptionIsSelected(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
+    public boolean isValidationOptionSelected(Validations validation) {
         return getDriver()
-                .findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).isSelected();
+                .findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .isSelected();
     }
 
     /**
@@ -384,9 +406,10 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
-        String checkTitle = getValidationTitle(validation);
-        getDriver().findElement(By.xpath("//*[@title='" + checkTitle + "']"))
-                .findElement(By.tagName("input")).click();
+        getDriver().findElement(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']"))
+                .findElement(By.tagName("input"))
+                .click();
         return new EditorPage(getDriver());
     }
 
@@ -405,7 +428,7 @@ public class EditorPage extends BasePage {
                 return "Check that printf style (%x) variables are consistent";
             case TABS:
                 return "Check whether source and target have the same " +
-                        "number of tabs";
+                        "number of tabs.";
             case XML:
                 return "Check that XML entity are complete";
             default:

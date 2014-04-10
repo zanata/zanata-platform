@@ -50,6 +50,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
+import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StringUtil;
@@ -100,15 +101,6 @@ public class DashboardAction implements Serializable {
 
     private final int USER_IMAGE_SIZE = 115;
 
-    private final Comparator<HProject> projectCreationDateComparator =
-            new Comparator<HProject>() {
-                @Override
-                public int compare(HProject o1, HProject o2) {
-                    return o2.getCreationDate().after(o1.getCreationDate()) ? 1
-                            : -1;
-                }
-            };
-
     public String getUserImageUrl() {
         return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
     }
@@ -153,7 +145,8 @@ public class DashboardAction implements Serializable {
                 }
             }
         }
-        Collections.sort(sortedList, projectCreationDateComparator);
+        Collections.sort(sortedList,
+                ComparatorUtil.PROJECT_CREATION_DATE_COMPARATOR);
 
         return sortedList;
     }

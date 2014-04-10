@@ -20,24 +20,25 @@
  */
 package org.zanata.model;
 
-import static org.testng.AssertJUnit.*;
-
 import java.util.Date;
 
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Test(groups = { "unit-tests" })
 public class HGlossaryEntryTest {
     HGlossaryEntry entry;
 
-    @BeforeTest
+    @Before
     public void setup() {
         entry = new HGlossaryEntry();
         entry.setId(1L);

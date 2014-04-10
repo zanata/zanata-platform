@@ -92,8 +92,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
         // if no locales are specified, search in all locales
         if (locales.length == 0) {
             List<HLocale> iterationLocales =
-                    localeServiceImpl.getSupportedLangugeByProjectIteration(
-                            projectSlug, iterationSlug);
+                    localeServiceImpl.getSupportedLanguageByProjectIteration(
+                        projectSlug, iterationSlug);
             localeIds = new LocaleId[iterationLocales.size()];
             for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
                 HLocale loc = iterationLocales.get(i);
@@ -127,8 +127,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 .generatePathForProjectIteration(iteration)), "statSource",
                 "PROJ_ITER"));
         long iterationTotalMssgs =
-                projectIterationDAO.getTotalMessageCountForIteration(iteration
-                        .getId());
+                projectIterationDAO
+                        .getTotalMessageCountForIteration(iteration.getId());
         long iterationTotalWords =
                 projectIterationDAO.getTotalWordCountForIteration(iteration
                         .getId());
@@ -200,8 +200,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
         // if no locales are specified, search in all locales
         if (locales.length == 0) {
             List<HLocale> iterationLocales =
-                    localeServiceImpl.getSupportedLangugeByProjectIteration(
-                            projectSlug, iterationSlug);
+                    localeServiceImpl.getSupportedLanguageByProjectIteration(
+                        projectSlug, iterationSlug);
             localeIds = new LocaleId[iterationLocales.size()];
             for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
                 HLocale loc = iterationLocales.get(i);
@@ -251,6 +251,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
                     docStatus.getLastTranslatedBy()));
             docStatistics.addStats(docMsgStatistic);
 
+            // word level stats
             if (includeWordStats) {
                 docWordStatistic.setLastTranslatedBy(docStatus
                         .getLastTranslatedBy());

@@ -72,6 +72,42 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
     }
 
     @SuppressWarnings("unchecked")
+    public List<Activity> findLatestVersionActivitiesByUser(long personId,
+        List<Long> versionIds, int offset, int maxResults) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("FROM Activity a WHERE a.actor.id = :personId ");
+        queryBuilder.append("AND a.contextType = 'HProjectIteration' ");
+        queryBuilder.append("AND a.contextId in (:versionIds) ");
+        queryBuilder.append("order by a.lastChanged DESC");
+
+        Query query = getSession().createQuery(queryBuilder.toString());
+        query.setParameter("personId", personId);
+        query.setParameterList("versionIds", versionIds);
+        query.setMaxResults(maxResults);
+        query.setFirstResult(offset);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findLatestVersionActivitiesByUser");
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Activity> findLatestVersionActivities(Long versionId,
+            int offset, int maxResults) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("FROM Activity a WHERE a.contextType = 'HProjectIteration' ");
+        queryBuilder.append("AND a.contextId = :versionId ");
+        queryBuilder.append("order by a.lastChanged DESC");
+
+        Query query = getSession().createQuery(queryBuilder.toString());
+        query.setParameter("versionId", versionId);
+        query.setMaxResults(maxResults);
+        query.setFirstResult(offset);
+        query.setCacheable(true);
+        query.setComment("activityDAO.findLatestVersionActivities");
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Activity> findLatestActivitiesForContext(long personId,
             long contextId, int offset, int maxResults) {
         Query query =

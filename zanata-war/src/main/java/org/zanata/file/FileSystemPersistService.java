@@ -135,9 +135,12 @@ public class FileSystemPersistService implements FilePersistService {
     @Override
     public boolean hasPersistedDocument(GlobalDocumentId id) {
         HDocument doc = documentDAO.getByGlobalId(id);
-        HRawDocument rawDocument = doc.getRawDocument();
-        return rawDocument != null
-                && getFileForRawDocument(rawDocument).exists();
+        if (doc != null) {
+            HRawDocument rawDocument = doc.getRawDocument();
+            return rawDocument != null
+                    && getFileForRawDocument(rawDocument).exists();
+        }
+        return false;
     }
 
     private File getFileForRawDocument(HRawDocument rawDocument) {

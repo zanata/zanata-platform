@@ -96,7 +96,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         HDocument document = documentDAO.findById(docId, true);
         log.info("copyTrans start: document \"{}\"", document.getDocId());
         List<HLocale> localelist =
-                localeServiceImpl.getSupportedLangugeByProjectIteration(
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
                         project, iterationSlug);
 
         // TODO iterate over document's textflows, then call
@@ -127,7 +127,8 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     @Override
     public void copyTransForLocale(HDocument document, HLocale locale) {
-        this.copyTransForLocale(document.getId(), locale, new HCopyTransOptions());
+        this.copyTransForLocale(document.getId(), locale,
+                new HCopyTransOptions());
     }
 
     public void copyTransForLocale(final Long documentId, final HLocale locale,
@@ -139,8 +140,8 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         while (start < document.getTextFlows().size()) {
             numCopied +=
-                    copyTransForBatch(documentId, start,
-                            COPY_TRANS_BATCH_SIZE, locale, options);
+                    copyTransForBatch(documentId, start, COPY_TRANS_BATCH_SIZE,
+                            locale, options);
             start += COPY_TRANS_BATCH_SIZE;
         }
 
@@ -158,14 +159,17 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     /**
      * Perform copy trans on a batch of text flows for a document.
-     * @param batchStart The text flow position to start copying.
-     * @param batchLength The number of text flows on which to perform copy
-     *                      trans, starting from batchStart.
+     *
+     * @param batchStart
+     *            The text flow position to start copying.
+     * @param batchLength
+     *            The number of text flows on which to perform copy trans,
+     *            starting from batchStart.
      * @return The number of actual copied translations for the segment.
      */
-    private int copyTransForBatch(final Long documentId,
-            final int batchStart, final int batchLength,
-            final HLocale locale, final HCopyTransOptions options) {
+    private int copyTransForBatch(final Long documentId, final int batchStart,
+            final int batchLength, final HLocale locale,
+            final HCopyTransOptions options) {
 
         try {
             return new Work<Integer>() {
@@ -173,9 +177,8 @@ public class CopyTransServiceImpl implements CopyTransService {
                 protected Integer work() throws Exception {
 
                     int numCopied = 0;
-                    boolean checkContext = false,
-                            checkProject = false,
-                            checkDocument = false;
+                    boolean checkContext = false, checkProject = false, checkDocument =
+                            false;
                     HDocument document = documentDAO.findById(documentId);
                     boolean requireTranslationReview =
                             document.getProjectIteration()
@@ -194,11 +197,11 @@ public class CopyTransServiceImpl implements CopyTransService {
 
                     List<HTextFlow> docTextFlowTargets =
                             document.getTextFlows();
-                    int batchEnd = Math.min(batchStart + batchLength,
-                            docTextFlowTargets.size());
+                    int batchEnd =
+                            Math.min(batchStart + batchLength,
+                                    docTextFlowTargets.size());
                     List<HTextFlow> copyTargets =
-                            docTextFlowTargets
-                                    .subList(batchStart, batchEnd);
+                            docTextFlowTargets.subList(batchStart, batchEnd);
 
                     for (HTextFlow textFlow : copyTargets) {
                         if (shouldFindMatch(textFlow, locale,
@@ -234,15 +237,17 @@ public class CopyTransServiceImpl implements CopyTransService {
      * locale, or if it is already good enough.
      */
     private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
-        boolean requireTranslationReview) {
-        HTextFlowTarget targetForLocale = textFlow.getTargets().get(locale.getId());
+            boolean requireTranslationReview) {
+        HTextFlowTarget targetForLocale =
+                textFlow.getTargets().get(locale.getId());
 
-        if (targetForLocale == null ||
-            targetForLocale.getState() == NeedReview) {
+        if (targetForLocale == null || targetForLocale.getState() == NeedReview) {
             return true;
-        } else if (requireTranslationReview && targetForLocale.getState() != Approved) {
+        } else if (requireTranslationReview
+                && targetForLocale.getState() != Approved) {
             return true;
-        } else if (!requireTranslationReview && targetForLocale.getState() != Translated) {
+        } else if (!requireTranslationReview
+                && targetForLocale.getState() != Translated) {
             return true;
         } else {
             return false;
@@ -250,50 +255,48 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     private void saveCopyTransMatch(HTextFlowTarget matchingTarget,
-        HTextFlow originalTf, HCopyTransOptions options,
-        boolean requireTranslationReview) {
+            HTextFlow originalTf, HCopyTransOptions options,
+            boolean requireTranslationReview) {
         HProjectIteration matchingTargetProjectIteration =
-            matchingTarget.getTextFlow().getDocument()
-                .getProjectIteration();
+                matchingTarget.getTextFlow().getDocument()
+                        .getProjectIteration();
         ContentState copyState =
-            determineContentState(
-                originalTf.getResId()
-                    .equals(matchingTarget.getTextFlow()
-                        .getResId()),
-                originalTf
-                    .getDocument()
-                    .getProjectIteration()
-                    .getProject()
-                    .getId()
-                    .equals(matchingTargetProjectIteration
-                        .getProject().getId()),
-                originalTf
-                    .getDocument()
-                    .getDocId()
-                    .equals(matchingTarget.getTextFlow()
-                        .getDocument().getDocId()),
-                options, requireTranslationReview,
-                matchingTarget.getState());
+                determineContentState(
+                        originalTf.getResId().equals(
+                                matchingTarget.getTextFlow().getResId()),
+                        originalTf
+                                .getDocument()
+                                .getProjectIteration()
+                                .getProject()
+                                .getId()
+                                .equals(matchingTargetProjectIteration
+                                        .getProject().getId()),
+                        originalTf
+                                .getDocument()
+                                .getDocId()
+                                .equals(matchingTarget.getTextFlow()
+                                        .getDocument().getDocId()), options,
+                        requireTranslationReview, matchingTarget.getState());
 
         boolean hasValidationError =
-            validationTranslations(copyState,
-                matchingTargetProjectIteration,
-                originalTf.getContents(),
-                matchingTarget.getContents());
+                validationTranslations(copyState,
+                        matchingTargetProjectIteration,
+                        originalTf.getContents(), matchingTarget.getContents());
 
         if (hasValidationError) {
             return;
         }
 
         HTextFlowTarget hTarget =
-            textFlowTargetDAO.getOrCreateTarget(originalTf, matchingTarget.getLocale());
-        ContentState prevState = hTarget.getId() == null ? New : hTarget.getState();
+                textFlowTargetDAO.getOrCreateTarget(originalTf,
+                        matchingTarget.getLocale());
+        ContentState prevState =
+                hTarget.getId() == null ? New : hTarget.getState();
         if (shouldOverwrite(hTarget, copyState)) {
             // NB we don't touch creationDate
             hTarget.setTextFlowRevision(originalTf.getRevision());
             hTarget.setLastChanged(matchingTarget.getLastChanged());
-            hTarget.setLastModifiedBy(matchingTarget
-                .getLastModifiedBy());
+            hTarget.setLastModifiedBy(matchingTarget.getLastModifiedBy());
             hTarget.setTranslator(matchingTarget.getTranslator());
             // TODO rhbz953734 - will need a new copyTran option for
             // review state
@@ -468,7 +471,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
         List<HLocale> localeList =
-                localeServiceImpl.getSupportedLangugeByProjectIteration(
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
                         document.getProjectIteration().getProject().getSlug(),
                         document.getProjectIteration().getSlug());
 
@@ -552,17 +555,17 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     private void signalCopiedTranslation(HTextFlowTarget target,
             ContentState previousState) {
-        /* Using a direct method call instead of an event because it's easier to
+        /*
+         * Using a direct method call instead of an event because it's easier to
          * read. Since these events are being called synchronously (as opposed
          * to an 'after Transaction' events), there is no big performance gain
          * and makes the code easier to read and navigate.
          */
-        HDocument document = target.getTextFlow()
-                .getDocument();
+        HDocument document = target.getTextFlow().getDocument();
         TextFlowTargetStateEvent updateEvent =
                 new TextFlowTargetStateEvent(null, document
-                        .getProjectIteration().getId(), document.getId(), target
-                        .getTextFlow().getId(), target.getLocaleId(),
+                        .getProjectIteration().getId(), document.getId(),
+                        target.getTextFlow().getId(), target.getLocaleId(),
                         target.getId(), target.getState(), previousState);
         versionStateCacheImpl.textFlowStateUpdated(updateEvent);
     }

@@ -156,7 +156,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
 
         protected List<HLocale> getAllLocales() {
-            return localeServiceImpl.getSupportedLangugeByProjectIteration(
+            return localeServiceImpl.getSupportedLanguageByProjectIteration(
                     projectSlug, versionSlug);
         }
 

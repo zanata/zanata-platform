@@ -1,0 +1,460 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+<script type="text/javascript">
+  function onValidationOptionChange(validationId) {
+    var value = validationId.split('-');
+    bindValidationValue(value[0], value[1]);
+  }
+
+  function getDocumentFormId() {
+    return "[id='#{rich:clientId('settings-document_form')}']";
+  }
+</script>
+
+<a4j:jsFunction name="bindRequireReviewValue"
+  render="overall_statistic"
+  action="#{versionHome.updateRequireTranslationReview(key, checked)}">
+  <a4j:param name="val1" assignTo="#{key}"/>
+  <a4j:param name="val2" assignTo="#{checked}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="bindValidationValue"
+  action="#{versionHome.updateValidationOption(name, state)}"
+  render="settings-translation-validation-form">
+  <a4j:param name="val1" assignTo="#{name}"/>
+  <a4j:param name="val2" assignTo="#{state}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="bindCustomizedLocales"
+  render="settings-languages-form"
+  oncomplete="refreshStatistics();zanata.form.appendCheckboxes('#settings-languages-form')"
+  action="#{versionHome.updateCustomisedLocales(key, checked)}">
+  <a4j:param name="val1" assignTo="#{key}"/>
+  <a4j:param name="val2" assignTo="#{checked}"/>
+</a4j:jsFunction>
+
+<h1>#{messages['jsf.iteration.VersionSettings']}</h1>
+
+<div class="tabs--vertical js-tabs">
+<ul class="tabs__nav js-tabs-nav">
+  <li class="is-active">
+    <a href="#settings-general" id="settings-general_tab">
+      <i class="i i--settings"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-documents" id="settings-documents_tab">
+      <i class="i i--document"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Documents']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-languages" id="settings-languages_tab">
+      <i class="i i--language"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
+    </a>
+  </li>
+  <li>
+    <a href="#settings-translation" id="settings-translation_tab">
+      <i class="i i--translate"></i>
+      <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
+    </a>
+  </li>
+</ul>
+
+<ul class="tabs__content js-tabs-content">
+<li class="is-active" id="settings-general">
+  <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
+
+  <h:form id="settings-general_form" styleClass="l--constrain-large">
+    <ui:include src="edit_form.xhtml"/>
+
+    <div class="l--push-top-1">
+      <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
+        action="#{versionHome.update}"
+        rendered="#{versionHome.managed}"
+        render="version-info, copy-project-type"
+        styleClass="l--push-right-half button--primary"/>
+    </div>
+    <hr/>
+    <s:div styleClass="g--tight" id="status">
+      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{versionHome.instance.status == 'ACTIVE'}">
+        <a4j:commandLink
+          styleClass="button--warning l--push-bottom-half"
+          action="#{versionHome.updateStatus('R')}"
+          render="status, version-info">
+          <i
+            class="i--left i--lock"></i> #{messages['jsf.iteration.readonly']}
+        </a4j:commandLink>
+
+        <p
+          class="txt--meta">#{messages['jsf.iteration.readonly.Message']}</p>
+      </s:div>
+      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{versionHome.instance.status ne 'ACTIVE'}">
+        <s:fragment
+          rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
+          <button class="button--success l--push-bottom-half" disabled="true">
+            <i class="i--left i--lock"></i>
+            #{messages['jsf.iteration.writable']}
+          </button>
+        </s:fragment>
+        <a4j:commandLink
+          styleClass="button--success l--push-bottom-half"
+          rendered="#{versionHome.instance.status eq 'READONLY'}"
+          action="#{versionHome.updateStatus('A')}"
+          render="status, version-info">
+          <i class="i--left i--lock"></i> #{messages['jsf.iteration.writable']}
+        </a4j:commandLink>
+
+        <p class="txt--meta">#{messages['jsf.iteration.writable.Message']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{s:hasPermission(versionHome.instance, 'mark-obsolete')}">
+        <s:div styleClass="g__item w--1-2"
+          rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
+          <a4j:commandLink
+            styleClass="button--success l--push-bottom-half"
+            action="#{versionHome.updateStatus('A')}"
+            render="status, version-info">
+            <i class="i--left i--archive"></i>
+            #{messages['jsf.iteration.UnArchiveThisVersion']}
+          </a4j:commandLink>
+
+          <p
+            class="txt--meta">#{messages['jsf.iteration.unarchive.Message']}</p>
+        </s:div>
+        <s:div styleClass="g__item w--1-2"
+          rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
+          <a4j:commandLink styleClass="button--danger l--push-bottom-half"
+            action="#{versionHome.updateStatus('O')}"
+            render="status, version-info">
+            <i class="i--left i--archive"></i>
+            #{messages['jsf.iteration.ArchiveThisVersion']}
+          </a4j:commandLink>
+
+          <p
+            class="txt--meta">#{messages['jsf.iteration.archive.Message']}</p>
+        </s:div>
+      </s:fragment>
+    </s:div>
+  </h:form>
+</li>
+<li id="settings-documents">
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <a href="#" class="button button--snug l--push-top-half"
+          data-toggle="modal"
+          data-target="#modal-1" onclick="openUploadSourceDocPanel()"
+          title="#{messages['jsf.iteration.files.UploadNewSourceDocument']}">
+          <i class="i i--plus"></i>
+        </a>
+        <zanata:sortlist id="settings-document_sorting"
+          sortAction="#{versionHomeAction.sortSettingsDocumentList()}"
+          render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
+          sortingList="#{versionHomeAction.settingsDocumentSortingList}"/>
+      </div>
+
+      <h2 class="panel__heading">#{messages['jsf.SourceDocuments']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter iconClass="i--document"
+        listId="settings-document_form"
+        render="settings-document_form, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
+        id="settingsTabDocumentSearch"
+        placeholder="#{messages['jsf.document.search.placeholder']}"
+        actionBean="#{versionHomeAction.settingsTabDocumentFilter}"/>
+    </div>
+
+    <h:form id="settings-document_form" styleClass="l--push-bottom-0">
+      <ul class="list--panel">
+        <ui:repeat
+          value="#{versionHomeAction.settingsTabDocumentFilter.pagedFilteredList}"
+          var="document">
+          <li>
+            <div class="list__item__content">
+              <div class="list__item__info">
+                <label
+                  class="form__checkbox__label js-form__checkbox__label">#{document.name}</label>
+                <span class="list__item__meta">#{document.path}</span>
+              </div>
+              <div class="list__item__actions">
+                <ul class="list--horizontal">
+                  <li>
+                    <span class="txt--meta"
+                      title="#{versionHomeAction.getFormattedDate(document)}">
+                      <h:outputText escape="false"
+                        value="#{versionHomeAction.getLastUpdatedDescription(document)}"/>
+                      <i class="i i--clock"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <a href="#"
+                      onclick="openUploadSourcePanel('#{document.docId}'); return false;"
+                      title="#{messages['jsf.iteration.files.UpdateDocument']}">
+                      <i class="i i--import"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a4j:commandLink styleClass="txt--danger"
+                      action="#{versionHomeAction.deleteDocument(document.id)}"
+                      onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')"
+                      render="settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
+                      oncomplete="refreshStatistics()"
+                      title="#{messages['jsf.iteration.files.DeleteDocument']}">
+                      <i class="i i--remove"></i>
+                    </a4j:commandLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        </ui:repeat>
+      </ul>
+    </h:form>
+    <zanata:list-filter iconClass="i--document" listId="settings-document_form"
+      render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info"
+      id="settingsTabDocumentSearchBottom" bottomPanel="true"
+      placeholder="#{messages['jsf.document.search.placeholder']}"
+      actionBean="#{versionHomeAction.settingsTabDocumentFilter}"/>
+  </div>
+</li>
+<li id="settings-languages">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.Languages']}
+  </h2>
+
+  <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
+
+    <zanata:checkbox onValueChanged="bindCustomizedLocales"
+      checked="#{!versionHome.instance.overrideLocales}"
+      value="inheritesLanguage"
+      label="#{messages['jsf.iteration.inheriteLanguage.label']}"
+      styleClass="l--push-bottom-half" labelStyle="l--push-bottom-0"/>
+
+    <s:fragment rendered="#{versionHome.instance.overrideLocales}">
+      <ul class="list--slat list--highlight l--push-top-half">
+        <ui:repeat value="#{versionHome.getInstanceActiveLocales()}"
+          var="locale">
+          <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span
+            class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
+            <a4j:commandLink
+              oncomplete="refreshStatistics();zanata.form.appendCheckboxes('#settings-languages-form')"
+              action="#{versionHome.removeLanguage(locale.localeId)}"
+              styleClass="l--float-right txt--danger reveal__target"
+              execute="@this" render="settings-languages-form">
+              <i class="i--large i--remove"></i>
+            </a4j:commandLink>
+          </li>
+        </ui:repeat>
+        <li class="list--highlight__item--none">
+          <label
+            for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
+            #{messages['jsf.AddALanguage']}
+          </label>
+
+          <zanata:autocomplete
+            actionBean="#{versionHome.localeAutocomplete}"
+            maxlength="80" searchWhenFocus="true"
+            id="languageAutocomplete"
+            fetchValue="#{result.localeId}" render="settings-languages-form"
+            oncomplete="refreshStatistics();focusCurrentActiveInput();zanata.form.appendCheckboxes('#settings-languages-form')"
+            placeholder="#{messages['jsf.language.search.placeholder']}">
+            #{result.retrieveDisplayName()}<span
+            class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
+          </zanata:autocomplete>
+        </li>
+      </ul>
+    </s:fragment>
+  </h:form>
+</li>
+<li id="settings-translation">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{messages['jsf.Translation']}
+  </h2>
+  <h:form id="settings-translation-review-form" styleClass="l--push-bottom-0">
+    <h3 class="heading--secondary">#{messages['jsf.label.review']}</h3>
+
+    <div class="is-active" id="translation-review-form">
+      <zanata:checkbox
+        label="#{messages['jsf.iteration.requireTranslationReview']}"
+        onValueChanged="bindRequireReviewValue"
+        checked="#{versionHome.instance.requireTranslationReview}"
+        value="requireTranslationReview"/>
+
+      <p class="txt--meta">#{messages['jsf.iteration.requireReview.message']}
+        <a href="http://zanata.org/help/review/review-activating/"
+          target="_blank"
+          title="#{messages['jsf.iteration.requireReview.help']}"><i
+          class="i i--help"></i>
+        </a>
+      </p>
+    </div>
+  </h:form>
+
+  <hr/>
+
+  <h:form id="settings-translation-validation-form"
+    styleClass="l--push-bottom-0">
+    <h3 class="heading--secondary">#{messages['jsf.Validation']}</h3>
+
+    <p>#{messages['jsf.Validation.messages']}</p>
+
+    <a4j:commandButton styleClass="button--small l--push-bottom-half"
+      id="copy-project-validations"
+      action="#{versionHome.copyValidationFromProject()}"
+      value="#{messages['jsf.iteration.CopyProjectValidation.label']}"
+      render="settings-translation-validation-form"
+      disabled="#{versionHome.isValidationsSameAsProject()}"/>
+
+    <ul class="list--slat">
+      <ui:repeat value="#{versionHome.validationList}" var="validationAction">
+        <li class="js-example js-reveal">
+          <div class="g--tight">
+            <div class="g__item w--7-12">
+              <label class="l--push-bottom-0">
+                #{validationAction.id.displayName}
+              </label>
+
+              <p class="txt--meta l--push-bottom-quarter">
+                #{validationAction.description}
+                <a href="#" class="button--link js-reveal__toggle"
+                  data-target="##{validationAction.id.name()}-example"
+                  data-toggle-title="#{messages['jsf.tooltip.HideExample']}"
+                  title="#{messages['jsf.tooltip.ShowExample']}">
+                  <span class="js-reveal__toggle__text"
+                    data-toggle-value="Less">
+                    #{messages['jsf.tooltip.More']}
+                  </span>…
+                </a>
+              </p>
+            </div>
+            <div class="g__item w--5-12">
+              <div class="button--group txt--align-right">
+                <ui:repeat value="#{versionHome.validationStates}" var="state">
+                  <s:fragment rendered="#{validationAction.state eq state}">
+                    <input name="#{validationAction.id.name()}"
+                      id="#{validationAction.id.name()}-#{state}"
+                      checked="true" type="radio"
+                      onchange="onValidationOptionChange(this.id)"
+                      class="form__item__input js-example__setter"
+                      data-example=""/>
+                  </s:fragment>
+                  <s:fragment rendered="#{validationAction.state ne state}">
+                    <input name="#{validationAction.id.name()}"
+                      id="#{validationAction.id.name()}-#{state}"
+                      onchange="onValidationOptionChange(this.id)"
+                      type="radio" data-example=""
+                      class="form__item__input js-example__setter"/>
+                  </s:fragment>
+                  <label for="#{validationAction.id.name()}-#{state}"
+                    class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
+                </ui:repeat>
+              </div>
+            </div>
+          </div>
+          <div class="g--tight l--push-bottom-half is-hidden"
+            id="#{validationAction.id.name()}-example">
+            <div class="g__item w--1-2 l--push-top-quarter">
+              <h4 class="zeta heading--secondary txt--uppercase">
+                #{messages['jsf.validation.source']}
+              </h4>
+              <pre class="l--push-all-0"><code class="txt--mini">
+                <h:outputText value="#{validationAction.sourceExample}"
+                  escape="false"/>
+              </code></pre>
+            </div>
+            <div class="g__item w--1-2 l--push-top-quarter">
+              <h4 class="zeta heading--secondary txt--uppercase">
+                #{messages['jsf.validation.target']}
+              </h4>
+              <pre class="l--push-all-0"><code class="txt--mini">
+                <h:outputText value="#{validationAction.targetExample}"
+                  escape="false"/>
+              </code></pre>
+            </div>
+          </div>
+        </li>
+      </ui:repeat>
+    </ul>
+  </h:form>
+
+  <hr/>
+  <h3 class="heading--secondary">#{messages['jsf.CopyTrans']}</h3>
+
+  <p>#{messages['jsf.Copytrans.message']}
+    <a href="http://zanata.org/help/reuse/copytrans-explained/" target="_blank"
+      title="#{messages['jsf.iteration.CopyTransOpts.tooltip']}">
+      <i class="i i--help"></i>
+    </a>
+  </p>
+
+  <small class="txt--meta">
+    <h:outputFormat value="#{messages['jsf.CopyTrans.Action.projectSettings']}"
+      escape="false">
+      <f:param
+        value="#{urlUtil.projectUrl(versionHome.projectSlug)}/#settings-translation"/>
+    </h:outputFormat>
+  </small>
+
+  <h:form id="settings-translation-copy-trans2-form"
+    styleClass="l--push-bottom-0">
+    <s:div styleClass="bg--high l--pad-h-half l--pad-v-quarter l--push-top-1">
+      <s:div styleClass="g--tight" id="copy-trans">
+        <s:div styleClass="g__item w--2-3 l--push-bottom-quarter"
+          rendered="#{!copyTransAction.inProgress}">
+          <p class="l--push-bottom-0">
+            #{messages['jsf.iteration.copyTrans.start.question']}</p>
+
+          <p
+            class="txt--meta">#{messages['jsf.iteration.CopyTrans.message']}</p>
+        </s:div>
+        <s:div
+          styleClass="g__item w--2-3 l--push-top-half #{copyTransAction.inProgress? '': 'is-hidden'}">
+          <zanata:progressBar id="copy-trans-progress-bar"
+            actionBean="#{copyTransAction}"
+            render="copy-trans-progress-messages"
+            onCompleteRender="copy-trans"/>
+
+          <s:div id="copy-trans-progress-messages">
+            <p class="txt--meta">
+              <h:outputText
+                value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>
+              ,
+              <h:outputText
+                value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
+            </p>
+          </s:div>
+        </s:div>
+
+        <s:div styleClass="g__item w--1-3 txt--align-right l--push-v-quarter">
+          <a4j:commandButton render="copy-trans"
+            styleClass="button--primary"
+            action="#{copyTransAction.startCopyTrans}"
+            rendered="#{!copyTransAction.inProgress}"
+            value="#{messages['jsf.CopyTrans']}"/>
+
+          <a4j:commandButton render="copy-trans"
+            action="#{copyTransAction.cancel}"
+            rendered="#{copyTransAction.inProgress}"
+            value="#{messages['jsf.Cancel']}"/>
+        </s:div>
+      </s:div>
+    </s:div>
+  </h:form>
+</li>
+</ul>
+</div>
+</ui:composition>
