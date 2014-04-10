@@ -145,13 +145,14 @@ function clearHTML(listId) {
 
 jQuery(document).ready(function() {
   jQuery(this).click(function(event) {
-    if (jQuery(event.target).attr("class") != 'autocomplete__results') {
-      jQuery('.autocomplete__results').remove();
+    // FIXME this will only match if there is a single class only
+    if (!jQuery(event.target).hasClass('js-autocomplete__results')) {
+      jQuery('.js-autocomplete__results').remove();
     }
   });
 
   //prevent form submit when enter key pressed in the input field.
-  jQuery('.autocomplete__input').keydown(function(event) {
+  jQuery('.js-autocomplete__input').keydown(function(event) {
     if (isEnterKey(event)) {
       event.preventDefault();
     }
@@ -160,7 +161,7 @@ jQuery(document).ready(function() {
 
 function onResultKeyPressed(autocomplete, event, selectItemAction,
     selectItemFunction) {
-  var currentSelected = jQuery(autocomplete).find('.autocomplete__results')
+  var currentSelected = jQuery(autocomplete).find('.js-autocomplete__results')
       .children('.is-selected');
 
   if (isEnterKey(event)) {
@@ -173,7 +174,7 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     deselectRow(currentSelected);
     if (currentSelected.length == 0
         || jQuery(currentSelected).next().length == 0) {
-      selectRow(jQuery(autocomplete).find('.autocomplete__results').children(
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
           'li').first());
     } else {
       selectRow(jQuery(currentSelected).next("li"));
@@ -182,7 +183,7 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     // key: up
     deselectRow(currentSelected);
     if (currentSelected.length == 0) {
-      selectRow(jQuery(autocomplete).find('.autocomplete__results').children(
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
           'li').last());
     } else {
       selectRow(jQuery(currentSelected).prev("li"));
@@ -232,8 +233,8 @@ function onValueChange(inputField, event, renderResultFn) {
 
 function registerMouseEvent(autocompleteId, selectItemAction,
     selectItemFunction) {
-  jQuery("[id='" + autocompleteId + "']").find('.autocomplete__results')
-      .children('.autocomplete__result').each(function() {
+  jQuery("[id='" + autocompleteId + "']").find('.js-autocomplete__results')
+      .children('.js-autocomplete__result').each(function() {
         jQuery(this).mouseover(function() {
           selectRow(this);
         });
@@ -248,7 +249,7 @@ function registerMouseEvent(autocompleteId, selectItemAction,
       });
 
   var firstResult = jQuery("[id='" + autocompleteId + "']").find(
-      '.autocomplete__results').children('.autocomplete__result').first();
+      '.js-autocomplete__results').children('.js-autocomplete__result').first();
   if (firstResult.length != 0) {
     selectRow(firstResult);
   }
