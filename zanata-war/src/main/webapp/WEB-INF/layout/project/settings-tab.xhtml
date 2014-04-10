@@ -206,6 +206,12 @@
     #{messages['jsf.Languages']}
   </h2>
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
+    <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
+      value="#{messages['jsf.Language.useGlobal']}"
+      rendered="#{projectHome.instance.overrideLocales}"
+      action="#{projectHome.updateLanguagesFromGlobal()}"
+      render="settings-languages-form"/>
+
     <ul class="list--slat list--highlight l--push-top-half">
       <ui:repeat value="#{projectHome.getInstanceActiveLocales()}" var="locale">
         <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span

@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
@@ -70,6 +71,9 @@ import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -195,6 +199,15 @@ public class ProjectHome extends SlugHome<HProject> {
                 FacesMessage.SEVERITY_INFO,
                 zanataMessages.getMessage("jsf.project.LanguageRemoved",
                         locale.retrieveDisplayName()));
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void updateLanguagesFromGlobal() {
+        getInstance().setOverrideLocales(false);
+        update();
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                zanataMessages
+                        .getMessage("jsf.project.LanguageUpdateFromGlobal"));
     }
 
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
@@ -591,8 +604,8 @@ public class ProjectHome extends SlugHome<HProject> {
     private class ProjectLocaleAutocomplete extends LocaleAutocomplete {
 
         @Override
-        protected Set<HLocale> getLocales() {
-            return getInstance().getCustomizedLocales();
+        protected Collection<HLocale> getLocales() {
+            return localeServiceImpl.getSupportedLanguageByProject(getSlug());
         }
 
         /**
@@ -609,6 +622,7 @@ public class ProjectHome extends SlugHome<HProject> {
             if (!getInstance().isOverrideLocales()) {
                 getInstance().setOverrideLocales(true);
                 getInstance().getCustomizedLocales().clear();
+                getInstance().getCustomizedLocales().addAll(supportedLocales);
             }
             getInstance().getCustomizedLocales().add(locale);
 

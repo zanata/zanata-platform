@@ -257,7 +257,6 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         return slug != null && projectSlug != null;
     }
 
-    @CachedMethodResult
     public List<HLocale> getInstanceActiveLocales() {
         if (StringUtils.isNotEmpty(projectSlug) && StringUtils.isNotEmpty(slug)) {
             List<HLocale> locales =
