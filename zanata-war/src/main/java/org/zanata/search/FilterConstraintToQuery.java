@@ -77,6 +77,12 @@ public class FilterConstraintToQuery {
         return new FilterConstraintToQuery(constraints, documentIds);
     }
 
+    /**
+     * This builds a query for constructing TransUnit in editor. It returns a
+     * list of HTextFlow objects
+     *
+     * @return the HQL query
+     */
     public String toEntityQuery() {
         String docIdCondition;
         if (documentId != null) {
@@ -86,13 +92,18 @@ public class FilterConstraintToQuery {
             docIdCondition =
                     "tf.document.id in (" + documentIdList.placeHolder() + ")";
         }
+        return buildQuery("distinct tf", docIdCondition);
+    }
+
+    private String buildQuery(String selectStatement, String docIdCondition) {
+
         String obsoleteCondition = eq("tf.obsolete", "0");
         String searchCondition = buildSearchCondition();
         String stateCondition = buildStateCondition();
 
         QueryBuilder query =
                 QueryBuilder
-                        .select("distinct tf")
+                        .select(selectStatement)
                         .from("HTextFlow tf")
                         .leftJoin("tf.targets tfts")
                         .with(eq("tfts.index", locale.placeHolder()))
@@ -102,22 +113,18 @@ public class FilterConstraintToQuery {
         return query.toQueryString();
     }
 
+    /**
+     * This builds a query for editor modal navigation. It only select text flow
+     * id and text flow target content state.
+     *
+     * @return the HQL query
+     */
     public String toModalNavigationQuery() {
         String docIdCondition =
                 eq("tf.document.id", Parameters.documentId.placeHolder());
-        String obsoleteCondition = eq("tf.obsolete", "0");
-        String searchCondition = buildSearchCondition();
-        String stateCondition = buildStateCondition();
-        QueryBuilder queryBuilder =
-                QueryBuilder
-                        .select("distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos")
-                        .from("HTextFlow tf")
-                        .leftJoin("tf.targets tfts")
-                        .with(eq("tfts.index", locale.placeHolder()))
-                        .where(and(obsoleteCondition, docIdCondition,
-                                searchCondition, stateCondition))
-                        .orderBy("tf.pos");
-        return queryBuilder.toQueryString();
+        return buildQuery(
+                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos",
+                docIdCondition);
     }
 
     protected String buildSearchCondition() {
