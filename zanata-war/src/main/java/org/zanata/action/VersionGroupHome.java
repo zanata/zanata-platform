@@ -52,6 +52,7 @@ import org.zanata.service.impl.VersionGroupServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.FilterUtil;
+import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
@@ -100,11 +101,16 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
-            new AbstractListFilter<HPerson>() {
+            new InMemoryListFilter<HPerson>() {
                 @Override
-                protected List<HPerson> getFilteredList() {
-                    return FilterUtil.filterPersonList(getQuery(),
-                            getInstanceMaintainers());
+                protected List<HPerson> fetchAll() {
+                    return getInstanceMaintainers();
+                }
+
+                @Override
+                protected boolean include(HPerson elem, String filter) {
+                    return StringUtils.containsIgnoreCase(elem.getName(),
+                            filter);
                 }
             };
 

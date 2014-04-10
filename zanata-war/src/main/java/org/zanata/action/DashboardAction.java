@@ -50,6 +50,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
+import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
@@ -163,13 +164,12 @@ public class DashboardAction implements Serializable {
     }
 
     public long getProjectListPageStart() {
-        return projectList.getCurrentPageFirstRecord() + 1;
+        return projectList.getPageStartIdx();
     }
 
     public long getProjectListPageEnd() {
         return Math.min(projectList.getTotalRecords(),
-                projectList.getCurrentPageFirstRecord()
-                        + projectList.getCurrentPageData().size());
+                projectList.getPageEndIdx());
     }
 
     @CachedMethodResult
@@ -264,23 +264,22 @@ public class DashboardAction implements Serializable {
     }
 
     private class ProjectPageList
-            extends PagedDataHandler<HProject> {
+            extends AbstractListFilter<HProject> {
 
         @Override
-        protected List<HProject> fetchCurrentPage() {
+        protected List<HProject> fetchRecords(int start, int max,
+                String filter) {
             ProjectDAO projectDAO =
                     (ProjectDAO)Component.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
                     (HAccount) Component
                             .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
             return projectDAO.getProjectsForMaintainer(
-                            authenticatedAccount.getPerson(),
-                            ((Long)getCurrentPageFirstRecord()).intValue(),
-                            getPageSize());
+                    authenticatedAccount.getPerson(), start, max);
         }
 
         @Override
-        protected long fetchTotalRecords() {
+        protected long fetchTotalRecords(String filter) {
             ProjectDAO projectDAO =
                     (ProjectDAO)Component.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
