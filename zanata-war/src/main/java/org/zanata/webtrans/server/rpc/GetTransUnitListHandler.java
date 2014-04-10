@@ -186,7 +186,7 @@ public class GetTransUnitListHandler extends
 
     private boolean hasStatusAndSearchFilter(GetTransUnitList action) {
         return !action.isAcceptAllStatus()
-                || action.getTransUnitFilter() != EditorFilter.ALL;
+                || action.getTransUnitFilter().isAcceptAll();
     }
 
     private boolean hasValidationFilter(GetTransUnitList action) {
