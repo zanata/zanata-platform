@@ -18,7 +18,6 @@ import lombok.AccessLevel;
 import lombok.Setter;
 
 import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
-import static org.zanata.search.FilterConstraintToQuery.Parameters.documentId;
 import static org.zanata.util.HqlCriterion.eq;
 import static org.zanata.util.HqlCriterion.escapeWildcard;
 import static org.zanata.util.HqlCriterion.ilike;

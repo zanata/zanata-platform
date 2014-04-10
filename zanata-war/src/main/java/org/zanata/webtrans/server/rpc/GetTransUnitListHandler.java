@@ -87,7 +87,7 @@ public class GetTransUnitListHandler extends
         GetTransUnitsNavigationResult navigationResult = null;
         if (action.isNeedReloadIndex()) {
             GetTransUnitsNavigation getTransUnitsNavigation =
-                    new GetTransUnitsNavigation(action.getDocumentId().getId(),
+                    new GetTransUnitsNavigation(action.getDocumentId(),
                             action.getPhrase(), action.getFilterStates());
             log.debug("get trans unit navigation action: {}",
                     getTransUnitsNavigation);

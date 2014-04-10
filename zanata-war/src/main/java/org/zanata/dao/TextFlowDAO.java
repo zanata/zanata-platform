@@ -79,13 +79,12 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<HTextFlow> getNavigationByDocumentId(Long documentId,
+    public List<HTextFlow> getNavigationByDocumentId(DocumentId documentId,
             HLocale hLocale, ResultTransformer resultTransformer,
             FilterConstraints filterConstraints) {
         FilterConstraintToQuery toModalNavigationQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
-                        // TODO pahuang this docId needs refactor
-                        filterConstraints, new DocumentId(documentId, ""));
+                        filterConstraints, documentId);
 
         String hql = toModalNavigationQuery.toModalNavigationQuery();
         Query query = getSession().createQuery(hql);

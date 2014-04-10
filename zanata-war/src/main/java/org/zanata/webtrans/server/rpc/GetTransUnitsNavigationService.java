@@ -66,7 +66,7 @@ public class GetTransUnitsNavigationService {
                 new TextFlowResultTransformer(hLocale);
 
         textFlows =
-                textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale,
+                textFlowDAO.getNavigationByDocumentId(action.getDocumentId(), hLocale,
                         resultTransformer, filterConstraints);
         for (HTextFlow textFlow : textFlows) {
             TransUnitId transUnitId = new TransUnitId(textFlow.getId());

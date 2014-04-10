@@ -22,11 +22,12 @@ package org.zanata.webtrans.shared.rpc;
 
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
+import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.common.base.Objects;
 
 public class GetTransUnitsNavigation {
-    private Long id;
+    private DocumentId documentId;
     private String phrase;
 
     private ContentStateGroup activeStates;
@@ -35,15 +36,15 @@ public class GetTransUnitsNavigation {
     private GetTransUnitsNavigation() {
     }
 
-    public GetTransUnitsNavigation(Long id, String phrase,
+    public GetTransUnitsNavigation(DocumentId documentId, String phrase,
             ContentStateGroup activeStates) {
-        this.id = id;
+        this.documentId = documentId;
         this.phrase = phrase;
         this.activeStates = activeStates;
     }
 
     public GetTransUnitsNavigation(GetTransUnitActionContext context) {
-        this(context.getDocument().getId().getId(), context.getFindMessage(),
+        this(context.getDocument().getId(), context.getFindMessage(),
                 ContentStateGroup.builder()
                         .fromStates(context.getCurrentFilterStates()).build());
     }
@@ -53,8 +54,8 @@ public class GetTransUnitsNavigation {
         return new GetTransUnitsNavigation(context);
     }
 
-    public Long getId() {
-        return id;
+    public DocumentId getDocumentId() {
+        return documentId;
     }
 
     public String getPhrase() {
@@ -69,7 +70,7 @@ public class GetTransUnitsNavigation {
     public String toString() {
         // @formatter:off
       return Objects.toStringHelper(this).
-            add("id", id).
+            add("documentId", documentId).
             add("phrase", phrase).
             add("activeStates", activeStates).
             toString();
