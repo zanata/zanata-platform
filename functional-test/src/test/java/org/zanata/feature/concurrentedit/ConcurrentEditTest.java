@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
@@ -24,6 +25,7 @@ import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
 import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
+import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 /**
  * @author Patrick Huang <a
@@ -31,6 +33,7 @@ import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
  */
 @Category(DetailedTest.class)
 @Slf4j
+@Feature(bugzilla = 1067253, summary = "Propagate translation done by upload and copyTrans to editor")
 public class ConcurrentEditTest extends ZanataTestCase {
 
     @Rule

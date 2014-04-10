@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -45,6 +46,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
+@Feature(bugzilla = 980670, summary = "As a new maintainer, I wish to have my HTML files supported for translation by Zanata")
 public class HTMLDocumentTypeTest extends ZanataTestCase {
 
     @Rule
@@ -66,8 +68,8 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
         File docStorage = new File(documentStorageDirectory);
         assumeTrue("The storage folder is empty",
                 docStorage == null ||
-                !docStorage.exists() ||
-                docStorage.listFiles().length == 0);
+                        !docStorage.exists() ||
+                        docStorage.listFiles().length == 0);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
