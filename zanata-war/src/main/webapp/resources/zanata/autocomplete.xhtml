@@ -74,7 +74,7 @@
     onkeydown="onResultKeyPressed(this, event, #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
 
     <input type="text" maxlength="#{cc.attrs.maxlength}" autocomplete="off"
-      class="autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
+      class="js-autocomplete__input autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
       onkeyup="onValueChange(this, event, #{cc.attrs.id}RenderResult)"
       onfocus="onInputFocus(this, #{cc.attrs.id}RenderResult)"
       id="#{cc.attrs.id}-autocomplete__input"
@@ -85,9 +85,9 @@
     <s:div id="#{cc.attrs.id}-result">
       <ui:param value="#{cc.attrs.actionBean.suggest()}" name="resultList"/>
       <s:fragment rendered="#{not empty resultList}">
-        <ul class="autocomplete__results">
+        <ul class="js-autocomplete__results autocomplete__results">
           <ui:repeat value="#{resultList}" var="result">
-            <li class="autocomplete__result">
+            <li class="js-autocomplete__result autocomplete__result">
               <h:inputHidden value="#{cc.attrs.fetchValue}"/>
               <composite:insertChildren/>
             </li>
