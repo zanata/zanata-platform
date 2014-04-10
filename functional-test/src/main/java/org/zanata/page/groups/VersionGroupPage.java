@@ -5,10 +5,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
@@ -147,22 +144,22 @@ public class VersionGroupPage extends BasePage {
     }
 
     public VersionGroupPage clickLanguagesTab() {
-        getDriver().findElement(By.id("languages")).click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("languages")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickProjectsTab() {
-        getDriver().findElement(By.id("projects")).click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("projects")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickMaintainersTab() {
-        getDriver().findElement(By.id("maintainers")).click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("maintainers")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickSettingsTab() {
-        getDriver().findElement(By.id("settings")).click();
+        clickWhenTabEnabled(getDriver().findElement(By.id("settings")));
         return new VersionGroupPage(getDriver());
     }
 
@@ -210,4 +207,5 @@ public class VersionGroupPage extends BasePage {
         new Actions(getDriver()).sendKeys(Keys.ENTER);
         return new VersionGroupPage(getDriver());
     }
+
 }

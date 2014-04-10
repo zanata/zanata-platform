@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
@@ -228,20 +229,6 @@ public class ProjectBasePage extends BasePage {
             }
         }
         return "";
-    }
-
-    private void clickWhenTabEnabled(final WebElement tab) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                boolean clicked = false;
-                if (tab.isDisplayed() && tab.isEnabled()) {
-                    tab.click();
-                    clicked = true;
-                }
-                return clicked;
-            }
-        });
     }
 
 }

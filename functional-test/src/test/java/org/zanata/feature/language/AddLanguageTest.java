@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
@@ -43,36 +45,45 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Category(DetailedTest.class)
 public class AddLanguageTest {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
+    @Ignore("RHBZ-1086036")
     public void addLanguageAsEnabled() {
         String language = "Goa'uld";
         String languageDisplayName = "goa'uld[Goa'uld]";
-        ManageLanguagePage manageLanguagePage =
-                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
-                        .goToAdministration().goToManageLanguagePage();
+        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToHomePage()
+                .goToAdministration()
+                .goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        manageLanguagePage =
-                manageLanguagePage.addNewLanguage().inputLanguage(language)
-                        .saveLanguage();
+        manageLanguagePage = manageLanguagePage
+                .addNewLanguage()
+                .inputLanguage(language)
+                .saveLanguage();
 
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.hasItem(language));
+
         assertThat("The language is enabled by default",
                 manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .getEnabledLocaleList();
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible()
+                .getEnabledLocaleList();
 
         assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
@@ -104,6 +115,8 @@ public class AddLanguageTest {
                 manageLanguagePage.goToHomePage().goToProjects()
                         .goToProject("about fedora").gotoVersion("master")
                         .gotoSettingsTab().gotoSettingsLanguagesTab()
+                        .clickInheritCheckbox()
+                        .waitForLocaleListVisible()
                         .getEnabledLocaleList();
 
         assertThat("The language is disabled by default", enabledLocaleList,
@@ -125,6 +138,7 @@ public class AddLanguageTest {
                 manageLanguagePage.addNewLanguage().inputLanguage("ru-RU");
 
         Map<String, String> languageInfo = addLanguagePage.getLanguageDetails();
+
         assertThat("The name is correct", languageInfo.get("Name"),
                 Matchers.equalTo("Russian (Russia)"));
         assertThat("The native name is correct",
