@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
@@ -85,8 +86,12 @@ public class HTMLDocumentTypeTest {
         assertThat("Document uploaded notification shows",
                 projectVersionPage.getNotificationMessage(),
                 Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(htmlfile.getName()));
+
+        VersionDocumentsPage versionDocumentsPage =
+                projectVersionPage.gotoDocumentTab();
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(htmlfile.getName()));
 
         EditorPage editorPage =
                 projectVersionPage.goToProjects().goToProject("about fedora")

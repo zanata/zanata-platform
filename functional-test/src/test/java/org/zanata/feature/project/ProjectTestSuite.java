@@ -34,6 +34,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         CreateProjectTest.class,
         EditPermissionsTest.class,
+        EditProjectAboutTest.class,
         EditProjectGeneralTest.class,
         EditProjectLanguagesTest.class,
         EditProjectValidationsTest.class })
