@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +34,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.action.helper.PagedDataHandler;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
@@ -43,7 +41,6 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -59,10 +56,7 @@ import org.zanata.util.UrlUtil;
 
 import javax.annotation.Nullable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -98,7 +92,7 @@ public class DashboardAction implements Serializable {
     private HAccount authenticatedAccount;
 
     @Getter
-    private ProjectPageList projectList = new ProjectPageList();
+    private ProjectFilter projectList = new ProjectFilter();
 
     private final int USER_IMAGE_SIZE = 115;
 
@@ -263,7 +257,10 @@ public class DashboardAction implements Serializable {
         return "";
     }
 
-    private class ProjectPageList
+    /**
+     * Project list filter. Pages its elements directly from the database.
+     */
+    public class ProjectFilter
             extends AbstractListFilter<HProject> {
 
         @Override

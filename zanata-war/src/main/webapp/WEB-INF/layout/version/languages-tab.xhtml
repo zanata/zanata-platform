@@ -104,15 +104,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.languageTabLanguageFilter.currentPage}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
-          value="#{versionHomeAction.languageTabLanguageFilter.pagedFilteredList}"
+          value="#{versionHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink
@@ -294,15 +294,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.languageTabDocumentFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.languageTabDocumentFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionHomeAction.languageTabDocumentFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.languageTabDocumentFilter.currentPage}">
       <ul class="list--stats">
         <ui:repeat varStatus="status"
-          value="#{versionHomeAction.languageTabDocumentFilter.pagedFilteredList}"
+          value="#{versionHomeAction.languageTabDocumentFilter.currentPage}"
           var="document">
           <ui:param name="hasActions"
             value="#{versionHomeAction.selectedLocale.active and (identity.loggedIn or versionHomeAction.isPoDocument(document.docId) or (versionHomeAction.knownProjectType and !versionHomeAction.isPoDocument(document.docId)) or versionHomeAction.hasOriginal(document.path, document.name) or (versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)))}"/>

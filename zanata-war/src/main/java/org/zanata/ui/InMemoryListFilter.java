@@ -39,7 +39,7 @@ public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
     @Override
     protected long fetchTotalRecords(String filter) {
         loadElements();
-        return elements.size();
+        return fetchRecords(0, elements.size(), filter).size();
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
 
     /**
      * Indicates whether the element should be included in the results.
-     * 
+     *
      * @param elem
      *            The element to analyze
      * @param filter

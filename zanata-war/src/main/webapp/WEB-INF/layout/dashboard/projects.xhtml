@@ -44,16 +44,19 @@
           </h2>
         </header>
         <div class="panel__sub-header js-reveal">
-          <zanata:list-filter status="versionTab-versionsLoader"
+          <zanata:list-filter status="projectList-loader"
             listId="projectListForm"
-            render="projectListForm, versionSearchBottom-pager, versionSearchBottom-page-info"
+            render="projectListForm, projectSearchBottom-pager projectSearchBottom-page-info"
             id="projectSearch" iconClass="i--project"
-            placeholder="#{messages['jsf.version.search.placeholder']}"
-            actionBean="#{projectHomeAction.versionFilter}"/>
+            placeholder="#{messages['jsf.proj.search.placeholder']}"
+            actionBean="#{dashboardAction.projectList}"/>
         </div>
+        <a4j:status name="projectList-loader">
+          <f:facet name="start"><zanata:loader/></f:facet>
+        </a4j:status>
         <h:form id="projectListForm">
           <ul id="maintainedProjects" class="list--stats">
-            <ui:repeat value="#{dashboardAction.projectList.currentPageData}" var="project">
+            <ui:repeat value="#{dashboardAction.projectList.currentPage}" var="project">
               <li class="list__item--actionable">
                 <div class="list__item__action">
                   <div class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
@@ -103,29 +106,14 @@
               </li>
             </ui:repeat>
           </ul>
-          <div class="panel__results">
-          <div class="panel__results__type">
-            <i class="i i--document txt--neutral"></i>
-          </div>
-          <ul class="panel__pager">
-            <li>
-              <button class="panel__pager__button"
-                disabled="#{prevPageEnabled ? '' : 'disabled'}"
-                onclick="prevProjectPage(); return false;">
-                <i class="i--huge i--arrow-left"></i>
-              </button>
-            </li>
-            <li>
-              <button title="Next" class="panel__pager__button"
-                disabled="#{nextPageEnabled ? '' : 'disabled'}"
-                onclick="nextProjectPage(); return false;">
-                <i class="i--huge i--arrow-right"></i>
-              </button>
-            </li>
-          </ul>
-          <span class="txt--meta"><strong>#{dashboardAction.projectListPageStart}-#{dashboardAction.projectListPageEnd}</strong> of #{dashboardAction.projectList.totalRecords}</span>
-        </div>
         </h:form>
+        <zanata:list-filter status="projectList-loader"
+          listId="projectListForm"
+          render="projectListForm, projectSearch-pager projectSearch-page-info"
+          id="projectSearchBottom" iconClass="i--project"
+          placeholder="#{messages['jsf.proj.search.placeholder']}"
+          bottomPanel="true"
+          actionBean="#{dashboardAction.projectList}"/>
       </div>
     </div>
   </div>

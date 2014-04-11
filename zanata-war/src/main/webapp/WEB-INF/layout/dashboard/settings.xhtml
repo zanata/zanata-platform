@@ -69,10 +69,15 @@
                 </h:inputText>
               </s:decorate>
           </div>
-          <a4j:jsFunction name="updateEmail" action="#{userSettingsAction.updateEmail}"
-            render="emailUpdateForm" execute="@form"/>
-          <input id="updateEmailButton" type="submit" value="Update email"
-            class="button" onclick="updateEmail(); return false;"/>
+          <input id="updateEmailButton" type="submit"
+            value="Update email"
+            action="#{userSettingsAction.updateEmail}"
+            render="emailUpdateForm"
+            status="update-email-loader"
+            styleClass="button" jsfc="a4j:commandButton"/>
+          <a4j:status name="update-email-loader">
+            <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
+          </a4j:status>
         </h:form>
         <hr/>
         <s:fragment rendered="#{applicationConfiguration.internalAuth}">
@@ -99,11 +104,15 @@
                   maxlength="255"/>
               </s:decorate>
             </div>
-            <a4j:jsFunction name="changePassword" action="#{userSettingsAction.changePassword()}"
-              render="passwordChangeForm" execute="@form"/>
             <input id="changePasswordButton" type="submit"
-              value="Update password" class="button"
-              onclick="changePassword(); return false"/>
+              value="Update password" styleClass="button"
+              jsfc="a4j:commandButton"
+              action="#{userSettingsAction.changePassword()}"
+              render="passwordChangeForm"
+              status="change-password-loader"/>
+            <a4j:status name="change-password-loader">
+              <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
+            </a4j:status>
           </h:form>
         </s:fragment>
         <hr/>
@@ -217,7 +226,7 @@
             onclick="updateProfile(); return false;"/>
           <a4j:status name="profile-loader">
             <f:facet name="start">
-              <zanata:loader type="loader--large"/>
+              <zanata:loader layout="inline" type="loader"/>
             </f:facet>
           </a4j:status>
         </h:form>

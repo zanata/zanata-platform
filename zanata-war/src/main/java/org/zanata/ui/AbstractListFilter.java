@@ -79,6 +79,7 @@ public abstract class AbstractListFilter<T> {
 
     public void firstPage() {
         pageNumber = 1;
+        reset();
     }
 
     public void nextPage() {
@@ -100,7 +101,7 @@ public abstract class AbstractListFilter<T> {
     }
 
     public int getPageEndIdx() {
-        return getPageStartIdx() + pageSize;
+        return Math.min(getPageStartIdx() + pageSize, (int)totalRecords);
     }
 
     public void reset() {

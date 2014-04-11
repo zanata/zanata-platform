@@ -43,12 +43,12 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionHomeAction.groups and empty versionHomeAction.groupFilter.pagedFilteredList}">
+        rendered="#{not empty versionHomeAction.groups and empty versionHomeAction.groupFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <ul class="list--slat">
-        <ui:repeat value="#{versionHomeAction.groupFilter.pagedFilteredList}"
+        <ui:repeat value="#{versionHomeAction.groupFilter.currentPage}"
           var="group">
           <li class="l--pad-all-half">
             <s:link value="#{group.name}" propagation="none"
