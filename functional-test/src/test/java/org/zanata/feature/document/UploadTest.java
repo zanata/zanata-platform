@@ -22,6 +22,7 @@ package org.zanata.feature.document;
 
 import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -49,7 +50,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
+@Slf4j
 public class UploadTest {
 
     @Rule
@@ -71,8 +72,9 @@ public class UploadTest {
                 .concat("documents")
                 .concat(File.separator);
 
-        assumeFalse("The document storage directory does not exist",
-                new File(documentStorageDirectory).exists());
+        if (new File(documentStorageDirectory).exists()) {
+            log.warn("Document storage directory exists (cleanup incomplete)");
+        }
     }
 
     @Test

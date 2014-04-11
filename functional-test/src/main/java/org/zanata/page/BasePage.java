@@ -232,13 +232,14 @@ public class BasePage extends CorePage {
         return new ProjectsPage(getDriver());
     }
 
-    public void waitForSearchListContains(final String expected) {
+    public BasePage waitForSearchListContains(final String expected) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectSearchAutocompleteItems().contains(expected);
             }
         });
+        return new BasePage(getDriver());
     }
 
     public List<String> getProjectSearchAutocompleteItems() {
