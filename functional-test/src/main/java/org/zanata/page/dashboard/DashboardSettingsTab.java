@@ -31,7 +31,7 @@ import com.google.common.base.Predicate;
  */
 public class DashboardSettingsTab extends DashboardBasePage {
 
-    @FindBy(id = "emailUpdateForm:emailField:email")
+    @FindBy(id = "email-update-form:emailField:email")
     private WebElement emailField;
 
     @FindBy(id = "updateEmailButton")
