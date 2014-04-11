@@ -60,11 +60,9 @@ public class TimedAsyncHandle<V> extends AsyncTaskHandle<V> {
         if (this.startTime > 0 && currentProgress > 0) {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
-            long averageTimePerProgressUnit =
-                    timeElapsed / this.currentProgress;
-
-            return Optional.of(averageTimePerProgressUnit
-                    * (this.maxProgress - this.currentProgress));
+            int remainingUnits = this.maxProgress - this.currentProgress;
+            return Optional.of(timeElapsed * remainingUnits
+                    / this.currentProgress);
         } else {
             return Optional.absent();
         }
