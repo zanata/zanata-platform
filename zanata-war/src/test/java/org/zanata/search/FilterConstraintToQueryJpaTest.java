@@ -259,7 +259,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
                                 .includeStates(allContentStates)
-                                .resourceIdContains("s2").build(), documentId);
+                                .resourceIdIs("res2").build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);

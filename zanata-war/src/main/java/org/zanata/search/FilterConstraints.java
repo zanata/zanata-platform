@@ -231,7 +231,7 @@ public class FilterConstraints {
             return this;
         }
 
-        public Builder resourceIdContains(String resId) {
+        public Builder resourceIdIs(String resId) {
             this.resId = resId;
             return this;
         }

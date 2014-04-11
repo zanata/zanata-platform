@@ -204,7 +204,7 @@ public class FilterConstraintToQuery {
         if (Strings.isNullOrEmpty(constraints.getResId())) {
             return null;
         }
-        return ilike("resId", resId.placeHolder());
+        return eq("resId", resId.placeHolder());
     }
 
     private String buildMsgContextCondition() {
@@ -308,7 +308,7 @@ public class FilterConstraintToQuery {
             textFlowQuery.setParameterList(contentStateList.namedParam(),
                     constraints.getIncludedStates().asList());
         }
-        addWildcardSearchParamIfPresent(textFlowQuery, constraints.getResId(),
+        addExactMatchParamIfPresent(textFlowQuery, constraints.getResId(),
                 resId);
         addWildcardSearchParamIfPresent(textFlowQuery,
                 constraints.getMsgContext(), msgContext);
@@ -316,10 +316,8 @@ public class FilterConstraintToQuery {
                 constraints.getSourceComment(), sourceComment);
         addWildcardSearchParamIfPresent(textFlowQuery,
                 constraints.getTransComment(), targetComment);
-        if (!Strings.isNullOrEmpty(constraints.getLastModifiedByUser())) {
-            textFlowQuery.setParameter(lastModifiedBy.namedParam(),
-                    constraints.getLastModifiedByUser());
-        }
+        addExactMatchParamIfPresent(textFlowQuery,
+                constraints.getLastModifiedByUser(), lastModifiedBy);
         if (constraints.getChangedAfter() != null) {
             textFlowQuery.setParameter(lastChangedAfter.namedParam(),
                     constraints.getChangedAfter().toDate());
@@ -329,6 +327,14 @@ public class FilterConstraintToQuery {
                     constraints.getChangedBefore().toDate());
         }
         return textFlowQuery;
+    }
+
+    private static void addExactMatchParamIfPresent(Query textFlowQuery,
+            String filterProperty, Parameters filterParam) {
+        if (!Strings.isNullOrEmpty(filterProperty)) {
+            textFlowQuery
+                    .setParameter(filterParam.namedParam(), filterProperty);
+        }
     }
 
     private static Query addWildcardSearchParamIfPresent(Query textFlowQuery,
