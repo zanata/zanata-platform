@@ -6,7 +6,8 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -104,17 +105,20 @@ public class SampleProjectProfile {
     }
 
     private void purgeLuceneIndexes() {
-        FullTextSession fullTextSession =
-                Search.getFullTextSession((Session) entityManagerFactory
-                        .createEntityManager().getDelegate());
-
-        fullTextSession.purgeAll(HAccount.class);
-        fullTextSession.purgeAll(HGlossaryEntry.class);
-        fullTextSession.purgeAll(HGlossaryTerm.class);
-        fullTextSession.purgeAll(HProject.class);
-        fullTextSession.purgeAll(HProjectIteration.class);
-        fullTextSession.purgeAll(TransMemoryUnit.class);
-        fullTextSession.purgeAll(HTextFlowTarget.class);
+        FullTextEntityManager em =
+                Search.getFullTextEntityManager(
+                        entityManagerFactory.createEntityManager());
+        try {
+            em.purgeAll(HAccount.class);
+            em.purgeAll(HGlossaryEntry.class);
+            em.purgeAll(HGlossaryTerm.class);
+            em.purgeAll(HProject.class);
+            em.purgeAll(HProjectIteration.class);
+            em.purgeAll(TransMemoryUnit.class);
+            em.purgeAll(HTextFlowTarget.class);
+        } finally {
+            em.close();
+        }
     }
 
     public void makeSampleLanguages() {
