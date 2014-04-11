@@ -100,6 +100,8 @@ public class FilterConstraintToQuery {
         String obsoleteCondition = eq("tf.obsolete", "0");
         String searchCondition = buildSearchCondition();
         String stateCondition = buildStateCondition();
+        String otherSourceCondition = buildSourceConditionsOtherThanSearch();
+        String otherTargetCondition = buildTargetConditionsOtherThanSearch();
 
         QueryBuilder query =
                 QueryBuilder
@@ -108,14 +110,16 @@ public class FilterConstraintToQuery {
                         .leftJoin("tf.targets tfts")
                         .with(eq("tfts.index", locale.placeHolder()))
                         .where(and(obsoleteCondition, docIdCondition,
-                                searchCondition, stateCondition))
+                                searchCondition, stateCondition,
+                                otherSourceCondition, otherTargetCondition))
                         .orderBy("tf.pos");
         return query.toQueryString();
     }
 
     /**
      * This builds a query for editor modal navigation. It only select text flow
-     * id and text flow target content state.
+     * id and text flow target content state (text flow pos is also in select
+     * but just for ordering).
      *
      * @return the HQL query
      */
@@ -128,39 +132,23 @@ public class FilterConstraintToQuery {
     }
 
     protected String buildSearchCondition() {
+        if (!hasSearch) {
+            return null;
+        }
         String searchInSourceCondition = null;
-        List<String> sourceConjunction = Lists.newArrayList();
-        if (hasSearch && constraints.isSearchInSource()) {
-            String contentsCriterion =
+        if (constraints.isSearchInSource()) {
+            searchInSourceCondition =
                     contentCriterion.contentsCriterionAsString("tf",
                             constraints.isCaseSensitive(),
                             Parameters.searchString.placeHolder());
-            addToJunctionIfNotNull(sourceConjunction, contentsCriterion);
-        }
-        addToJunctionIfNotNull(sourceConjunction,
-                buildSourceCommentCondition(constraints.getSourceComment()));
-        addToJunctionIfNotNull(sourceConjunction, buildMsgContextCondition());
-        addToJunctionIfNotNull(sourceConjunction, buildResourceIdCondition());
-
-        if (!sourceConjunction.isEmpty()) {
-            searchInSourceCondition = QueryBuilder.and(sourceConjunction);
         }
 
         String searchInTargetCondition = null;
-        List<String> targetConjunction = Lists.newArrayList();
-
-        if (hasSearch && constraints.isSearchInTarget()) {
+        if (constraints.isSearchInTarget()) {
+            List<String> targetConjunction = Lists.newArrayList();
             targetConjunction.add(contentCriterion.contentsCriterionAsString(
                     null, constraints.isCaseSensitive(),
                     Parameters.searchString.placeHolder()));
-        }
-        addToJunctionIfNotNull(targetConjunction,
-                buildLastModifiedByCondition());
-        addToJunctionIfNotNull(targetConjunction,
-                buildTargetCommentCondition(constraints.getTransComment()));
-        addToJunctionIfNotNull(targetConjunction,
-                buildLastModifiedDateCondition());
-        if (!targetConjunction.isEmpty()) {
             targetConjunction.add(eq("textFlow", "tf"));
             targetConjunction.add(eq("locale", locale.placeHolder()));
 
@@ -169,19 +157,47 @@ public class FilterConstraintToQuery {
                             .where(QueryBuilder.and(targetConjunction))
                             .toQueryString();
         }
-        if (searchInSourceCondition == null && searchInTargetCondition == null) {
-            return null;
-        }
         return QueryBuilder
                 .or(searchInSourceCondition, searchInTargetCondition);
     }
 
-    private static List<String> addToJunctionIfNotNull(List<String> junction,
+    protected String buildSourceConditionsOtherThanSearch() {
+        List<String> sourceConjunction = Lists.newArrayList();
+        addToJunctionIfNotNull(sourceConjunction,
+                buildSourceCommentCondition(constraints.getSourceComment()));
+        addToJunctionIfNotNull(sourceConjunction, buildMsgContextCondition());
+        addToJunctionIfNotNull(sourceConjunction, buildResourceIdCondition());
+        if (sourceConjunction.isEmpty()) {
+            return null;
+        }
+        return QueryBuilder.and(sourceConjunction);
+    }
+
+    protected String buildTargetConditionsOtherThanSearch() {
+        List<String> targetConjunction = Lists.newArrayList();
+        addToJunctionIfNotNull(targetConjunction,
+                buildLastModifiedByCondition());
+        addToJunctionIfNotNull(targetConjunction,
+                buildTargetCommentCondition(constraints.getTransComment()));
+        addToJunctionIfNotNull(targetConjunction,
+                buildLastModifiedDateCondition());
+        if (targetConjunction.isEmpty()) {
+            return null;
+        }
+        targetConjunction.add(eq("textFlow", "tf"));
+        targetConjunction.add(eq("locale", locale.placeHolder()));
+
+        return QueryBuilder.exists().from("HTextFlowTarget")
+                .where(and(targetConjunction)).toQueryString();
+    }
+
+    private static boolean addToJunctionIfNotNull(List<String> junction,
             String criterion) {
         if (criterion != null) {
             junction.add(criterion);
+            return true;
         }
-        return junction;
+        return false;
     }
 
     private String buildResourceIdCondition() {

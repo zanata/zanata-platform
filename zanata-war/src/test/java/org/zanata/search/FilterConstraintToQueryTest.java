@@ -79,8 +79,8 @@ public class FilterConstraintToQueryTest {
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase("(("
-                        + SOURCE_CONTENT_CASE_INSENSITIVE + "))"));
+                Matchers.equalToIgnoringCase("("
+                        + SOURCE_CONTENT_CASE_INSENSITIVE + ")"));
     }
 
     @Test
@@ -113,9 +113,9 @@ public class FilterConstraintToQueryTest {
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase("(("
+                Matchers.equalToIgnoringCase("("
                         + SOURCE_CONTENT_CASE_INSENSITIVE
-                        + ") OR  EXISTS ( FROM HTextFlowTarget WHERE ("
+                        + " OR  EXISTS ( FROM HTextFlowTarget WHERE ("
                         + TARGET_CONTENT_CASE_INSENSITIVE + " AND textFlow=tf and locale=:locale)))"));
     }
 
@@ -233,9 +233,7 @@ WHERE (
     AND
         (
             (
-                (
-                    lower(tf.content0) LIKE :searchString
-                )
+                lower(tf.content0) LIKE :searchString
             )
         OR  EXISTS ( FROM HTextFlowTarget WHERE (
                 (
@@ -269,7 +267,7 @@ WHERE (
 ORDER BY tf.pos
  */
         assertThat(result, Matchers.equalTo(
-                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND (((lower(tf.content0) like :searchString)) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
+                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND ((lower(tf.content0) like :searchString) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
     }
 
     @Test

@@ -35,6 +35,9 @@
   <logger name="gwt-log">
     <level value="OFF" />
   </logger>
+  <logger name="org.zanata.search">
+    <level value="DEBUG" />
+  </logger>
   <root>
     <level value="ERROR" />
     <appender-ref ref="STDOUT" />

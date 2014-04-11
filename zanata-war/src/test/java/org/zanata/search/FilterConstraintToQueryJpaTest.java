@@ -35,9 +35,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Slf4j
 public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
-    private HLocale hLocale;
+    private ContentStateGroup untranslatedOnly = ContentStateGroup.builder()
+            .removeAll().includeNew(true).build();
     private ContentStateGroup allContentStates = ContentStateGroup.builder()
             .addAll().build();
+    private HLocale hLocale;
     private DocumentId documentId;
     private DateTime today = new DateTime();
     private DateTime yesterday = new DateTime().minusDays(1);
@@ -50,8 +52,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         hLocale =
                 EntityMakerBuilder.builder().build()
                         .makeAndPersist(getEm(), HLocale.class);
-        transformer = new GetTransUnitsNavigationService.TextFlowResultTransformer(
-                hLocale);
+        transformer =
+                new GetTransUnitsNavigationService.TextFlowResultTransformer(
+                        hLocale);
 
         admin = makePerson("admin");
         translator = makePerson("translator");
@@ -150,7 +153,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     @SuppressWarnings("unchecked")
     private List<HTextFlow> getNavigationResult(String navigationQuery,
             FilterConstraintToQuery constraintToQuery) {
-        org.hibernate.Query query = getSession().createQuery(navigationQuery).setResultTransformer(transformer);
+        org.hibernate.Query query =
+                getSession().createQuery(navigationQuery).setResultTransformer(
+                        transformer);
         return constraintToQuery.setQueryParameters(query, hLocale).list();
     }
 
@@ -180,20 +185,21 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         verifyIdAndContentStateMatches(result, navigationResult);
     }
 
-    private void verifyIdAndContentStateMatches(List<HTextFlow> one, List<HTextFlow> two) {
+    private void verifyIdAndContentStateMatches(List<HTextFlow> one,
+            List<HTextFlow> two) {
         assertThat(one.size(), Matchers.equalTo(two.size()));
         for (int i = 0; i < one.size(); i++) {
             HTextFlow textFlow1 = one.get(i);
             HTextFlow textFlow2 = two.get(i);
             assertThat(textFlow1.getId(), Matchers.equalTo(textFlow2.getId()));
-            assertThat(getContentState(textFlow1, hLocale), Matchers.equalTo(
-                    getContentState(textFlow2, hLocale)));
+            assertThat(getContentState(textFlow1, hLocale),
+                    Matchers.equalTo(getContentState(textFlow2, hLocale)));
         }
     }
 
-    private static ContentState getContentState(HTextFlow hTextFlow, HLocale hLocale) {
-        HTextFlowTarget target =
-                hTextFlow.getTargets().get(hLocale.getId());
+    private static ContentState getContentState(HTextFlow hTextFlow,
+            HLocale hLocale) {
+        HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
         return target == null ? ContentState.New : target.getState();
     }
 
@@ -218,13 +224,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     public void filterByUntranslated() {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
-                        FilterConstraints
-                                .builder()
-                                .keepNone()
-                                .includeStates(
-                                        ContentStateGroup.builder().removeAll()
-                                                .includeNew(true).build())
-                                .build(), documentId);
+                        FilterConstraints.builder().keepNone()
+                                .includeStates(untranslatedOnly).build(),
+                        documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
@@ -238,13 +240,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     public void filterByUntranslatedAndSourceContent() {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
-                        FilterConstraints
-                                .builder()
-                                .keepNone()
+                        FilterConstraints.builder().keepNone()
                                 .checkInSource(true)
-                                .includeStates(
-                                        ContentStateGroup.builder().removeAll()
-                                                .includeNew(true).build())
+                                .includeStates(untranslatedOnly)
                                 .filterBy("source 4").build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
@@ -359,11 +357,10 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     @Test
     public void filterByTargetChangedDateBefore() {
         FilterConstraintToQuery constraintToQuery =
-                FilterConstraintToQuery.filterInSingleDocument(
-                        FilterConstraints.builder().keepNone()
-                                .includeStates(allContentStates)
-                                .targetChangedBefore(today).build(),
-                        documentId);
+                FilterConstraintToQuery
+                        .filterInSingleDocument(FilterConstraints.builder()
+                                .keepNone().includeStates(allContentStates)
+                                .targetChangedBefore(today).build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
@@ -378,9 +375,26 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
-                                .includeStates(ContentStateGroup.builder().removeAll().includeNew(true).build())
-                                .lastModifiedBy("admin").build(),
-                        documentId);
+                                .includeStates(untranslatedOnly)
+                                .lastModifiedBy("admin").build(), documentId);
+
+        String hql = constraintToQuery.toEntityQuery();
+        List<HTextFlow> result = getResultList(hql, constraintToQuery);
+        List<String> ids = transformToResIds(result);
+        log.debug("result: {}", ids);
+        assertThat(ids, Matchers.contains("res4"));
+        verifyModalNavigationQuery(constraintToQuery, result);
+    }
+
+    @Test
+    public void filterByContentAndModifiedPersonAndState() {
+        FilterConstraintToQuery constraintToQuery =
+                FilterConstraintToQuery.filterInSingleDocument(
+                        FilterConstraints.builder().keepNone()
+                                .checkInSource(true).checkInTarget(true)
+                                .filterBy("source")
+                                .includeStates(untranslatedOnly)
+                                .lastModifiedBy("admin").build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
