@@ -25,10 +25,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,17 +47,17 @@ public class ProjectSearchTest {
 
     @Test
     public void successfulProjectSearchAndDisplay() {
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("about").waitForSearchListContains(
-                "about fedora");
+        BasePage basePage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("about")
+                .waitForSearchListContains("about fedora");
 
         assertThat("Normal user can see the project",
-                dashboardPage.getProjectSearchAutocompleteItems(),
+                basePage.getProjectSearchAutocompleteItems(),
                 hasItem("about fedora"));
 
         ProjectBasePage projectPage =
-                dashboardPage.clickSearchEntry("about fedora");
+                basePage.clickSearchEntry("about fedora");
 
         assertThat("The project page is the correct one", projectPage
                 .getProjectName().trim(), // UI adds a space
@@ -65,11 +66,11 @@ public class ProjectSearchTest {
 
     @Test
     public void unsuccessfulProjectSearch() {
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("arodef").waitForSearchListContains(
-                "Search Zanata for 'arodef'");
-        ProjectsPage projectsPage = dashboardPage.submitSearch();
+        ProjectsPage projectsPage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("arodef")
+                .waitForSearchListContains("Search Zanata for 'arodef'")
+                .submitSearch();
 
         assertThat("No projects are displayed", projectsPage
                 .getProjectNamesOnCurrentPage().isEmpty());
@@ -81,13 +82,13 @@ public class ProjectSearchTest {
                 .goToProject("about fedora").gotoSettingsTab()
                 .gotoSettingsGeneral().archiveProject().logout();
 
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("about").waitForSearchListContains(
-                "Search Zanata for 'about'");
+        BasePage basePage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("about")
+                .waitForSearchListContains("Search Zanata for 'about'");
 
         assertThat("User cannot see the obsolete project",
-                dashboardPage.getProjectSearchAutocompleteItems(),
+                basePage.getProjectSearchAutocompleteItems(),
                 not(hasItem("About Fedora")));
 
     }
