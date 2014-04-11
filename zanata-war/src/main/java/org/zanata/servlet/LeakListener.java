@@ -21,19 +21,21 @@
 
 package org.zanata.servlet;
 
-import java.util.logging.Level;
-
-import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventor;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Log
 public class LeakListener extends ClassLoaderLeakPreventor {
+
+    private static final Logger log = LoggerFactory
+            .getLogger(ClassLoaderLeakPreventor.class);
+
     protected void debug(String s) {
-        log.fine(s);
+        log.debug(s);
     }
 
     protected void info(String s) {
@@ -41,19 +43,19 @@ public class LeakListener extends ClassLoaderLeakPreventor {
     }
 
     protected void warn(String s) {
-        log.warning(s);
+        log.warn(s);
     }
 
     protected void warn(Throwable t) {
-        log.log(Level.WARNING, "", t);
+        log.warn("", t);
     }
 
     protected void error(String s) {
-        log.severe(s);
+        log.error(s);
     }
 
     protected void error(Throwable t) {
-        log.log(Level.SEVERE, "", t);
+        log.error("", t);
     }
 
 }
