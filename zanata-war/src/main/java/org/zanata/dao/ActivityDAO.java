@@ -187,7 +187,7 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
             return results;
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < results.length; i++) {
             if (objects.length >= i) {
                 Long count = (Long) objects[i];
                 results[i] = count == null ? 0 : count.intValue();

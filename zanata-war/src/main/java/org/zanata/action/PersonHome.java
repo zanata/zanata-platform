@@ -20,9 +20,6 @@
  */
 package org.zanata.action;
 
-import javax.faces.context.ExternalContext;
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -45,11 +42,6 @@ public class PersonHome extends EntityHome<HPerson> {
     */
     private static final long serialVersionUID = 1L;
 
-    private ExternalContext context = javax.faces.context.FacesContext
-            .getCurrentInstance().getExternalContext();
-    private HttpServletRequest request = (HttpServletRequest) context
-            .getRequest();
-
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
@@ -65,34 +57,4 @@ public class PersonHome extends EntityHome<HPerson> {
         }
         return id;
     }
-
-    public void regenerateApiKey() {
-        accountDAO.createApiKey(getInstance().getAccount());
-        getEntityManager().merge(getInstance().getAccount());
-        log.info("Reset API key for {}", getInstance().getAccount()
-                .getUsername());
-    }
-
-    public String getUrlKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".url=";
-    }
-
-    public String getApiKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".key=";
-    }
-
-    public String getUsernameKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".username=";
-    }
-
-    /*
-     * Replace server name that contains '.' to '_'
-     */
-    private String getKeyPrefix(String serverName) {
-        if (serverName == null) {
-            return "";
-        }
-        return serverName.replace(".", "_");
-    }
-
 }

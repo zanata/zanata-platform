@@ -72,6 +72,8 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.service.impl.EmailChangeService;
 
 import com.google.common.collect.Lists;
+import org.zanata.util.ComparatorUtil;
+import org.zanata.util.ZanataMessages;
 
 /**
  * This is an action class that should eventually replace the
@@ -108,6 +110,9 @@ public class UserSettingsAction {
     @In
     private LanguageTeamService languageTeamServiceImpl;
 
+    @In
+    private ZanataMessages zanataMessages;
+
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
@@ -132,6 +137,8 @@ public class UserSettingsAction {
 
     @Getter
     @Setter
+    @NotEmpty
+    @Size(min = 2, max = 80)
     private String accountName;
 
     @Create
@@ -268,6 +275,12 @@ public class UserSettingsAction {
         return account.getApiKey() != null;
     }
 
+    public String getAccountApiKey() {
+        HAccount account =
+                accountDAO.findById(authenticatedAccount.getId());
+        return account.getApiKey();
+    }
+
     public String getUrlKeyLabel() {
         return getKeyPrefix() + ".url=";
     }
@@ -319,15 +332,7 @@ public class UserSettingsAction {
         List<HLocale> localeList =
                 languageTeamServiceImpl.getLanguageMemberships(
                     authenticatedAccount.getUsername());
-        // TODO Sort this using ComparatorUtil's HLocale comparator
-        Collections.sort(localeList,
-                new Comparator<HLocale>() {
-                    @Override
-                    public int compare(HLocale hLocale, HLocale hLocale2) {
-                        return hLocale.retrieveDisplayName().compareTo(
-                                hLocale2.retrieveDisplayName());
-                    }
-                });
+        Collections.sort(localeList, ComparatorUtil.LOCALE_COMPARATOR);
         return localeList;
     }
 
@@ -335,9 +340,10 @@ public class UserSettingsAction {
     public void leaveLanguageTeam(String localeId) {
         languageTeamServiceImpl.leaveLanguageTeam(localeId,
                 authenticatedAccount.getPerson().getId());
-        // FIXME use localizable string
-        FacesMessages.instance().add("You have left the {0} language team",
-                localeId);
+        FacesMessages.instance().add(
+                zanataMessages.getMessage(
+                        "jsf.dashboard.settings.leaveLangTeam.message",
+                        localeId));
     }
 
     /**

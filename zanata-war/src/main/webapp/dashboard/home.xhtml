@@ -93,7 +93,7 @@
               class="js-tab"
               onclick="changeBrowserUrl(this.href); return false;">
                 <i class="i i--clock"></i>
-                <span class="is-hidden--s i__text--right">Activity</span>
+                <span class="is-hidden--s i__text--right">#{messages['jsf.dashboard.activity.title']}</span>
             </a>
           </li>
           <s:fragment rendered="#{dashboardAction.getUserMaintainedProjectsCount() > 0}">
@@ -103,7 +103,7 @@
                 class="js-tab"
                 onclick="changeBrowserUrl(this.href); return false;">
                 <i class="i i--project"></i>
-                <span class="is-hidden--s i__text--right">Projects </span>
+                <span class="is-hidden--s i__text--right">#{messages['jsf.dashboard.projects.title']}</span>
               </a>
             </li>
           </s:fragment>
@@ -113,7 +113,7 @@
               title="Account Settings"
               onclick="changeBrowserUrl(this.href); return false;">
                 <span
-                class="is-hidden--s i__text--left">Settings</span><i class="i i--settings"
+                class="is-hidden--s i__text--left">#{messages['jsf.dashboard.settings.tab.title']}</span><i class="i i--settings"
                 aria-hidden="true"></i>
             </a>
           </li>

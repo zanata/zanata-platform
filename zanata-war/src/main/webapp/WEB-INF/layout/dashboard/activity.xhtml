@@ -8,14 +8,14 @@
 
   <a4j:jsFunction name="loadNextActivity"
     action="#{activityAction.loadNextActivity()}"
-    render="activityListForm"/>
+    render="activity-list-form"/>
 
   <div class="panel">
     <div class="panel__header">
       <h2 class="panel__heading">#{messages['jsf.YourActivity']}</h2>
     </div>
     <ui:param name="activities" value="#{activityAction.getActivities()}"/>
-    <h:form id="activityListForm" styleClass="l--push-bottom-0">
+    <h:form id="activity-list-form" styleClass="l--push-bottom-0">
       <s:fragment rendered="#{activities.isEmpty()}">
         <div class="l--pad-all-half bg--high">
           <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
@@ -24,7 +24,7 @@
         </div>
       </s:fragment>
       <s:fragment rendered="#{not activities.isEmpty()}">
-        <ul id="activityList" class="list--panel loader__container">
+        <ul id="activity-list" class="list--panel loader__container">
           <ui:repeat value="#{activities}" var="activity">
             <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
               <p class="l--float-right txt--neutral l--push-left-half">

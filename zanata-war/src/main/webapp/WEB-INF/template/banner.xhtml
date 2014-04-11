@@ -118,12 +118,6 @@
             class="l--float-right i--inline i--dashboard"></i>
           </s:link>
         </li>
-        <li>
-          <s:link id="profile" view="/profile/view.xhtml" propagation="none">
-            #{messages['jsf.Settings']} <i
-            class="l--float-right i--inline i--settings"></i>
-          </s:link>
-        </li>
         <s:fragment rendered="#{s:hasRole('admin')}">
           <li>
             <s:link id="administration" view="/admin/home.xhtml"

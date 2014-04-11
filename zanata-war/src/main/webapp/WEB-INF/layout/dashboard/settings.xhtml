@@ -60,7 +60,7 @@
         <h2 class="l--push-top-0 gamma d--bottom">
           #{messages['jsf.dashboard.settings.accountSettings.label']}
         </h2>
-        <h:form id="emailUpdateForm" styleClass="l--constrain-large l--push-top-1">
+        <h:form id="email-update-form" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item l--push-bottom-1">
               <h:outputLabel for="email">#{messages['jsf.Email']}</h:outputLabel>
               <s:decorate id="emailField" template=" ../field.xhtml" enclose="true">
@@ -72,7 +72,7 @@
           <input id="updateEmailButton" type="submit"
             value="Update email"
             action="#{userSettingsAction.updateEmail}"
-            render="emailUpdateForm"
+            render="email-update-form"
             status="update-email-loader"
             styleClass="button" jsfc="a4j:commandButton"/>
           <a4j:status name="update-email-loader">
@@ -127,8 +127,8 @@
                   <ui:param name="credType" value="#{userSettingsAction.getCredentialsType(cred)}"/>
                   <li class="reveal--list-item list__item--#{credType}">
                     #{userSettingsAction.getCredentialsTypeDisplayName(credType)}
-                    <span class="txt--meta" title=""
-                      data-original-title="#{cred.user}">
+                    <span class="txt--meta"
+                      title="#{cred.user}">
                       <h:outputText
                         value="(#{cred.email != null ? cred.email : cred.user})" />
                     </span>
@@ -140,8 +140,7 @@
                       <i class="i--large i--remove"></i>
                     </a4j:commandLink>
                     <a href="#" class="l--float-right txt--danger reveal__target"
-                      title=""
-                      data-original-title="#{messages['jsf.dashboard.settings.removeAccount.label']}">
+                      title="#{messages['jsf.dashboard.settings.removeAccount.label']}">
                     </a>
                   </li>
                 </ui:repeat>
@@ -253,7 +252,8 @@
               </li>
             </ui:repeat>
           </ul>
-          <s:link styleClass="button" value="Join a language team"
+          <s:link styleClass="button"
+            value="#{messages['jsf.dashboard.settings.joinLangTeam.message']}"
             view="/language/home.xhtml"/>
         </h:form>
       </li>
@@ -264,10 +264,12 @@
         <h:form id="apiKeyForm">
           <p class="txt--meta">
             An API and configuration is needed for the CLI client
-            <a href="http://zanata.org/help/cli/cli-configuration/" title="" data-original-title="Help: Configuring the Client">
+            <a href="http://zanata.org/help/cli/cli-configuration/"
+              title="#{messages['jsf.dashboard.settings.clientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a> and Maven plugin
-            <a href="http://zanata.org/help/cli/cli-configuration/" title="" data-original-title="Help: Configuring the Maven Plugin">
+            <a href="http://zanata.org/help/cli/cli-configuration/"
+              title="#{messages['jsf.dashboard.settings.mavenClientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a>.
           </p>
@@ -282,7 +284,7 @@
               rendered="#{userSettingsAction.apiKeyGenerated}">
               <p>#{messages['jsf.YourCurrentApiKeyIs']}
                 <input id="apiKey" type="text" class="js-form__input--copyable"
-                  value="#{personHome.instance.account.apiKey}" readonly=""
+                  value="#{userSettingsAction.accountApiKey}" readonly=""
                   size="30"/>
               </p>
             </s:fragment>
@@ -296,7 +298,7 @@
             <textarea id="config" rows="4" readonly="" class="js-form__input--copyable">[servers]
 #{userSettingsAction.urlKeyLabel}#{applicationConfiguration.serverPath}/
 #{userSettingsAction.usernameKeyLabel}#{userSettingsAction.accountUsername}
-#{userSettingsAction.apiKeyLabel}#{personHome.instance.account.apiKey}
+#{userSettingsAction.apiKeyLabel}#{userSettingsAction.accountApiKey}
 </textarea>
           </div>
 
@@ -306,10 +308,6 @@
             </f:facet>
           </a4j:status>
         </h:form>
-      </li>
-      <li id="tab-vertical-5">
-        <h2 class="l--push-top-0 gamma d--bottom">Editor Settings</h2>
-
       </li>
     </ul>
   </div>

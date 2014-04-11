@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.base.Function;
+import lombok.NonNull;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -51,12 +52,14 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
 
 import javax.annotation.Nullable;
 
 import lombok.Getter;
+import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -86,6 +89,12 @@ public class DashboardAction implements Serializable {
     private ZanataIdentity identity;
 
     @In
+    private ZanataMessages zanataMessages;
+
+    @In
+    private ServiceLocator serviceLocator;
+
+    @In
     private UrlUtil urlUtil;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
@@ -94,7 +103,7 @@ public class DashboardAction implements Serializable {
     @Getter
     private ProjectFilter projectList = new ProjectFilter();
 
-    private final int USER_IMAGE_SIZE = 115;
+    private static final int USER_IMAGE_SIZE = 115;
 
     public String getUserImageUrl() {
         return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
@@ -114,7 +123,7 @@ public class DashboardAction implements Serializable {
                 ',', new Function<HLocale, String>() {
                     @Nullable
                     @Override
-                    public String apply(@Nullable HLocale locale) {
+                    public String apply(@NonNull HLocale locale) {
                         return locale.retrieveDisplayName();
                     }
                 });
@@ -240,19 +249,20 @@ public class DashboardAction implements Serializable {
     }
 
     public String getLastTranslatorMessage(HProject project) {
-        String lastTranslatorMessage = "Last translated by ";
         HPerson lastTrans = projectDAO.getLastTranslator(project);
         if( lastTrans != null ) {
             String username = lastTrans.getName();
             if(username == null || username.trim().isEmpty()) {
                 if( lastTrans.getAccount() != null ) {
-                    return lastTranslatorMessage + lastTrans.getAccount()
-                            .getUsername();
+                    username = lastTrans.getAccount().getUsername();
                 }
             }
             else {
-                return lastTranslatorMessage + lastTrans.getName();
+                username = lastTrans.getName();
             }
+            return zanataMessages.getMessage(
+                    "jsf.dashboard.activity.lastTranslatedBy.message",
+                    username);
         }
         return "";
     }
@@ -266,22 +276,26 @@ public class DashboardAction implements Serializable {
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
+            ServiceLocator serviceLocator = ServiceLocator.instance();
             ProjectDAO projectDAO =
-                    (ProjectDAO)Component.getInstance(ProjectDAO.class);
+                    serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
-                    (HAccount) Component
-                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+                    serviceLocator
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                                    HAccount.class);
             return projectDAO.getProjectsForMaintainer(
                     authenticatedAccount.getPerson(), start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
+            ServiceLocator serviceLocator = ServiceLocator.instance();
             ProjectDAO projectDAO =
-                    (ProjectDAO)Component.getInstance(ProjectDAO.class);
+                    serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
-                    (HAccount) Component
-                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+                    serviceLocator
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                                    HAccount.class);
             return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson());
         }
