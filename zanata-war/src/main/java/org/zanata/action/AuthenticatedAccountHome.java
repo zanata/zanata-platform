@@ -28,14 +28,16 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 
-@Name("personHome")
+/**
+ * A simple bean to hold the currently authenticated account.
+ */
+@Name("authenticatedAccountHome")
 @Scope(ScopeType.CONVERSATION)
 @Slf4j
-public class PersonHome extends EntityHome<HPerson> {
+public class AuthenticatedAccountHome extends EntityHome<HAccount> {
 
     /**
     *
@@ -45,16 +47,15 @@ public class PersonHome extends EntityHome<HPerson> {
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
-    @In
-    AccountDAO accountDAO;
-
     @Override
     public Object getId() {
-        Object id = super.getId();
-        if (id == null && authenticatedAccount != null
-                && authenticatedAccount.getPerson() != null) {
-            return authenticatedAccount.getPerson().getId();
+        if( authenticatedAccount == null ) {
+            return null;
         }
-        return id;
+        return authenticatedAccount.getId();
+    }
+
+    public HPerson getAuthenticatedPerson() {
+        return getInstance().getPerson();
     }
 }

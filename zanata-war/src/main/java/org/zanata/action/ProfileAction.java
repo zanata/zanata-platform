@@ -58,39 +58,4 @@ public class ProfileAction extends AbstractProfileAction implements Serializable
         authenticatedAccount.getPerson().setName(this.name);
         authenticatedAccount.getPerson().setEmail(this.email);
     }
-
-    @Transactional
-    public void edit() {
-        this.valid = true;
-        validateEmail(this.email);
-        validateUsername(username);
-
-        if (!this.isValid()) {
-            return;
-        }
-
-        if (authenticatedAccount != null) {
-            HPerson person =
-                    personDAO.findById(
-                            authenticatedAccount.getPerson().getId(), true);
-            person.setName(this.name);
-            personDAO.makePersistent(person);
-            personDAO.flush();
-            authenticatedAccount.getPerson().setName(this.name);
-            log.debug("updated successfully");
-            if (!authenticatedAccount.getPerson().getEmail().equals(this.email)) {
-                String activationKey =
-                        emailChangeService.generateActivationKey(person,
-                                this.email);
-                setActivationKey(activationKey);
-                renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
-                FacesMessages
-                        .instance()
-                        .add("You will soon receive an email with a link to activate your email account change.");
-            }
-        }
-    }
-
-    public void cancel() {
-    }
 }
