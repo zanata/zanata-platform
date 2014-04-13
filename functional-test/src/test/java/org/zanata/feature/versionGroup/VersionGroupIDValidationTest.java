@@ -99,9 +99,10 @@ public class VersionGroupIDValidationTest {
     @Before
     public void goToGroupPage() {
         if (groupPage == null) {
-            groupPage =
-                    new LoginWorkFlow().signIn("admin", "admin").goToGroups()
-                            .createNewGroup();
+            groupPage = new LoginWorkFlow()
+                    .signIn("admin", "admin")
+                    .goToGroups()
+                    .createNewGroup();
         }
     }
 
@@ -113,10 +114,11 @@ public class VersionGroupIDValidationTest {
 
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
-        groupPage =
-                groupPage.clearFields().inputGroupId(inputText)
-                        .inputGroupName(inputText)
-                    .saveGroupFailure();
+        groupPage = groupPage
+                .clearFields()
+                .inputGroupId(inputText)
+                .inputGroupName(inputText)
+                .saveGroupFailure();
 
         assertThat("Validation error is displayed for input:" + inputText,
                 groupPage.getFieldErrors(), Matchers.hasItem(errorMsg));

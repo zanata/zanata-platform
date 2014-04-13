@@ -22,6 +22,7 @@ package org.zanata.feature.document;
 
 import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.util.CleanDocumentStorageRule;
@@ -48,7 +50,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
+@Slf4j
 public class UploadTest {
 
     @Rule
@@ -64,11 +66,15 @@ public class UploadTest {
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        documentStorageDirectory =
-                CleanDocumentStorageRule.getDocumentStoragePath()
-                        .concat(File.separator).concat("documents")
-                        .concat(File.separator);
-        assumeFalse("", new File(documentStorageDirectory).exists());
+        documentStorageDirectory = CleanDocumentStorageRule
+                .getDocumentStoragePath()
+                .concat(File.separator)
+                .concat("documents")
+                .concat(File.separator);
+
+        if (new File(documentStorageDirectory).exists()) {
+            log.warn("Document storage directory exists (cleanup incomplete)");
+        }
     }
 
     @Test
@@ -92,17 +98,19 @@ public class UploadTest {
         assertThat("There is only one uploaded source file", new File(
                 documentStorageDirectory).list().length, Matchers.equalTo(1));
 
-        File newlyCreatedFile =
-                new File(
-                        documentStorageDirectory,
-                        testFileGenerator
-                                .getFirstFileNameInDirectory(documentStorageDirectory));
+        File newlyCreatedFile = new File(documentStorageDirectory,
+                testFileGenerator
+                        .getFirstFileNameInDirectory(documentStorageDirectory));
 
         assertThat("The contents of the file were also uploaded",
                 testFileGenerator.getTestFileContent(newlyCreatedFile),
                 Matchers.equalTo("This is a test file"));
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(testFileName);
+
         assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(testFileName));
+                versionDocumentsPage.sourceDocumentsContains(testFileName));
     }
 
     @Test
@@ -139,8 +147,8 @@ public class UploadTest {
                 !versionDocumentsTab.canSubmitDocument());
     }
 
-    // RHBZ990836
-    @Test(expected = RuntimeException.class)
+    @Test
+    @Ignore("RHBZ-990836")
     public void handleReallyBigFile() {
         File bigFile =
                 testFileGenerator.generateTestFileWithContent("bigFile",
@@ -148,7 +156,7 @@ public class UploadTest {
         long fileSizeInMB = (1024 * 1024) * 500;
         testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
 
-        assumeTrue("Data file " + bigFile + " is big",
+        assumeTrue("Data file " + bigFile.getName() + " is big",
                 bigFile.length() == fileSizeInMB);
 
         VersionLanguagesPage projectVersionPage =
@@ -210,8 +218,13 @@ public class UploadTest {
         assertThat("Document uploaded notification shows",
                 projectVersionPage.getNotificationMessage(),
                 Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(longFile.getName()));
+
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(longFile.getName());
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(longFile.getName()));
     }
 
     @Test
@@ -236,8 +249,13 @@ public class UploadTest {
         assertThat("Document uploaded notification shows",
                 projectVersionPage.getNotificationMessage(),
                 Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(emptyFile.getName()));
+
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(emptyFile.getName());
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(emptyFile.getName()));
     }
 
     @Test

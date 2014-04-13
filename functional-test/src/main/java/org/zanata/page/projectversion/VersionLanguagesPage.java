@@ -100,35 +100,6 @@ public class VersionLanguagesPage extends VersionBasePage {
         });
     }
 
-    public boolean sourceDocumentsContains(String document) {
-        gotoDocumentTab();
-        List<WebElement> documentList = getLanguageTabDocumentList();
-        for (final WebElement tableRow : documentList) {
-            if (tableRow.findElement(By.className("list__title")).getText()
-                    .contains(document)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private List<WebElement> getLanguageTabDocumentList() {
-
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(By.id("documents-document_list"))
-                        .isDisplayed();
-            }
-        });
-
-        List<WebElement> rows =
-                getDriver().findElement(By.id("documents-document_list"))
-                        .findElements(By.xpath("./li"));
-        return rows;
-    }
-
     private List<WebElement> getVersionTabDocumentList() {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override

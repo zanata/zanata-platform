@@ -30,7 +30,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -44,7 +43,6 @@ import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;

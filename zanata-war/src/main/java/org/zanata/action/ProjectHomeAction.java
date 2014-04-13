@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

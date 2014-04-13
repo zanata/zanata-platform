@@ -70,7 +70,8 @@ public class VersionFilteringTest {
                 equalTo("bravo"));
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
-                .goToProjectByName(projectName);
+                .goToProjectByName(projectName)
+                .waitForDisplayedVersions(2);
 
         assertThat("The version count is 2",
                 projectVersionsPage.getNumberOfDisplayedVersions(),
@@ -78,7 +79,7 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
 
         projectVersionsPage = projectVersionsPage
                 .clickSearchIcon()
@@ -103,7 +104,7 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
 
         projectVersionsPage = projectVersionsPage
                 .enterVersionSearch("bravo")
@@ -140,6 +141,6 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
     }
 }

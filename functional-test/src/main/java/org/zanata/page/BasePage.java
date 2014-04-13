@@ -236,13 +236,14 @@ public class BasePage extends CorePage {
         return new ProjectsPage(getDriver());
     }
 
-    public void waitForSearchListContains(final String expected) {
+    public BasePage waitForSearchListContains(final String expected) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectSearchAutocompleteItems().contains(expected);
             }
         });
+        return new BasePage(getDriver());
     }
 
     public List<String> getProjectSearchAutocompleteItems() {
@@ -270,6 +271,29 @@ public class BasePage extends CorePage {
                 });
         searchItem.click();
         return new ProjectVersionsPage(getDriver());
+    }
+
+    public String getHtmlSource(WebElement webElement) {
+        return (String) ((JavascriptExecutor) getDriver()).executeScript(
+                "return arguments[0].innerHTML;", webElement);
+    }
+
+    public void clickWhenTabEnabled(final WebElement tab) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                boolean clicked = false;
+                try {
+                    if (tab.isDisplayed() && tab.isEnabled()) {
+                        tab.click();
+                        clicked = true;
+                    }
+                } catch(WebDriverException wde) {
+                    return clicked;
+                }
+                return clicked;
+            }
+        });
     }
 
     public String getHtmlSource(WebElement webElement) {

@@ -21,6 +21,7 @@
 
 package org.zanata.page.projects;
 
+import com.google.common.base.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -34,6 +35,12 @@ public class ProjectAboutPage extends ProjectBasePage {
     }
 
     public String getAboutText() {
-        return getDriver().findElement(By.id("project-about")).getText();
+        return waitForTenSec().until(new Function<WebDriver, String>() {
+            @Override
+            public String apply(WebDriver driver) {
+                return getDriver()
+                        .findElement(By.id("project-about")).getText();
+            }
+        });
     }
 }

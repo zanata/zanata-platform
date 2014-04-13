@@ -70,15 +70,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
+      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
+      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
-          value="#{versionGroupHomeAction.languageTabLanguageFilter.currentPage}"
+          value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
           <li class="progress-bar__expander">
             <a4j:commandLink
@@ -198,15 +198,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
+        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
+        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{versionGroupHomeAction.languageTabVersionFilter.currentPage}"
+            value="#{versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}"
             var="version">
             <li class="progress-bar__expander">
               <s:link view="/iteration/view.xhtml">

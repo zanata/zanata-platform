@@ -294,6 +294,13 @@ public class ProjectHome extends SlugHome<HProject> {
                     "Project type not selected");
             return null;
         }
+
+        if (StringUtils.isEmpty(selectedProjectType)
+                || selectedProjectType.equals("null")) {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "Project type not selected");
+            return null;
+        }
         updateProjectType();
 
         if (authenticatedAccount != null) {
@@ -541,13 +548,6 @@ public class ProjectHome extends SlugHome<HProject> {
         return Arrays.asList(ValidationAction.State.values());
     }
 
-    @Override
-    public String update() {
-        conversationScopeMessages.clearMessages();
-        String state = super.update();
-        Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
-        return state;
-    }
 
     /**
      * This is for autocomplete components of which ConversationScopeMessages
@@ -581,7 +581,8 @@ public class ProjectHome extends SlugHome<HProject> {
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
-            }
+        }
+
 
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().addMaintainer(maintainer);
