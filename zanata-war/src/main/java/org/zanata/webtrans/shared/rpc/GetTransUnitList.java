@@ -21,7 +21,7 @@ public class GetTransUnitList extends
     private List<ValidationId> validationIds;
     private TransUnitId targetTransUnitId;
     private boolean needReloadIndex = false;
-    private EditorFilter transUnitFilter;
+    private EditorFilter editorFilter;
 
     private GetTransUnitList() {
     }
@@ -34,7 +34,7 @@ public class GetTransUnitList extends
         filterHasError = context.isFilterHasError();
         targetTransUnitId = context.getTargetTransUnitId();
         validationIds = context.getValidationIds();
-        transUnitFilter = context.getEditorFilter();
+        editorFilter = context.getEditorFilter();
     }
 
     private void setIncludeStates(ContentStateGroup contentStateGroup) {
@@ -69,11 +69,11 @@ public class GetTransUnitList extends
     }
 
     public String getPhrase() {
-        return this.transUnitFilter.getTextInContent();
+        return this.editorFilter.getTextInContent();
     }
 
-    public EditorFilter getTransUnitFilter() {
-        return transUnitFilter;
+    public EditorFilter getEditorFilter() {
+        return editorFilter;
     }
 
     public ContentStateGroup getFilterStates() {
@@ -127,7 +127,7 @@ public class GetTransUnitList extends
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
             add("needReloadIndex", needReloadIndex).
-            add("transUnitFilter", transUnitFilter).
+            add("editorFilter", editorFilter).
             toString();
       // @formatter:on
     }

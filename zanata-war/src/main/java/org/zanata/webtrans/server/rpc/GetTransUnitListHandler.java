@@ -40,7 +40,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -186,7 +185,7 @@ public class GetTransUnitListHandler extends
 
     private boolean hasStatusAndSearchFilter(GetTransUnitList action) {
         return !action.isAcceptAllStatus()
-                || !action.getTransUnitFilter().isAcceptAll();
+                || !action.getEditorFilter().isAcceptAll();
     }
 
     private boolean hasValidationFilter(GetTransUnitList action) {
