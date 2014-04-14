@@ -52,7 +52,7 @@ public class GetTransUnitActionContext {
     private boolean filterHasError;
     private TransUnitId targetTransUnitId;
     private List<ValidationId> validationIds;
-    private EditorFilter search = EditorFilter.ALL;
+    private EditorFilter editorFilter = EditorFilter.ALL;
 
     public GetTransUnitActionContext(DocumentInfo document) {
         this.document = document;
@@ -70,7 +70,7 @@ public class GetTransUnitActionContext {
         filterHasError = other.isFilterHasError();
         targetTransUnitId = other.getTargetTransUnitId();
         validationIds = other.getValidationIds();
-        search = other.getSearch();
+        editorFilter = other.getEditorFilter();
     }
 
     public DocumentInfo getDocument() {
@@ -84,12 +84,12 @@ public class GetTransUnitActionContext {
     }
 
     public String getFindMessage() {
-        return search.getTextInContent();
+        return editorFilter.getTextInContent();
     }
 
     public GetTransUnitActionContext changeFindMessage(String findMessage) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-        search = search.changeTextInContent(findMessage);
+        editorFilter = editorFilter.changeTextInContent(findMessage);
         return result;
     }
 
@@ -200,14 +200,14 @@ public class GetTransUnitActionContext {
         return result;
     }
 
-    public EditorFilter getSearch() {
-        return search;
+    public EditorFilter getEditorFilter() {
+        return editorFilter;
     }
 
-    public GetTransUnitActionContext changeSearch(EditorFilter search) {
-        GetTransUnitActionContext result =
-                new GetTransUnitActionContext(this);
-        result.search = search;
+    public GetTransUnitActionContext changeEditorFilter(
+            EditorFilter editorFilter) {
+        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
+        result.editorFilter = editorFilter;
         return result;
     }
 
@@ -219,7 +219,7 @@ public class GetTransUnitActionContext {
         result.filterUntranslated = false;
         result.filterApproved = false;
         result.filterRejected = false;
-        result.search = EditorFilter.ALL;
+        result.editorFilter = EditorFilter.ALL;
         return result;
     }
 
@@ -237,7 +237,7 @@ public class GetTransUnitActionContext {
             add("filterRejected", filterRejected).
             add("filterHasError", filterHasError).
             add("targetTransUnitId", targetTransUnitId).
-            add("search", search).
+            add("editorFilter", editorFilter).
             toString();
         // @formatter:on
     }
@@ -278,7 +278,7 @@ public class GetTransUnitActionContext {
             || filterHasError != newContext.filterHasError
             || offset != newContext.offset
             || !document.equals(newContext.document)
-            || !Objects.equal(search, newContext.search);
+            || !Objects.equal(editorFilter, newContext.editorFilter);
         // @formatter:on
     }
 

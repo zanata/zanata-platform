@@ -64,6 +64,7 @@ import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
@@ -127,7 +128,7 @@ public class NavigationServiceIntegrationTest {
         navigationStateHolder = new ModalNavigationStateHolder(configHolder);
         GetTransUnitActionContextHolder contextHolder =
                 new GetTransUnitActionContextHolder(configHolder);
-        contextHolder.initContext(DOCUMENT, null, null);
+        contextHolder.initContext(DOCUMENT, null, EditorFilter.ALL);
 
         service =
                 new NavigationService(eventBus, dispatcher, configHolder,

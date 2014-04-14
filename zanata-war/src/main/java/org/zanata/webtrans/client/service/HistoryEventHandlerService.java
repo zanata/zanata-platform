@@ -17,6 +17,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -80,6 +81,15 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
         DocumentId documentId =
                 documentListPresenter.getDocumentId(newHistoryToken
                         .getDocumentPath());
+        EditorFilter editorFilter =
+                new EditorFilter(newHistoryToken.getSearchText(),
+                        newHistoryToken.getResId(),
+                        newHistoryToken.getChangedBefore(),
+                        newHistoryToken.getChangedAfter(),
+                        newHistoryToken.getLastModifiedBy(),
+                        newHistoryToken.getSourceComment(),
+                        newHistoryToken.getTargetComment(),
+                        newHistoryToken.getMsgContext());
         if (!getTransUnitActionContextHolder.isContextInitialized()
                 && documentId != null) {
             DocumentInfo documentInfo =
@@ -90,11 +100,12 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
             TransUnitId transUnitId =
                     textFlowId == null ? null : new TransUnitId(textFlowId);
             getTransUnitActionContextHolder.initContext(documentInfo,
-                    newHistoryToken.getSearchText(), transUnitId);
+                    transUnitId, editorFilter);
             eventBus.fireEvent(new InitEditorEvent());
         }
 
         processForAppPresenter(documentId);
+        // TODO pahuang this needs to change to use editorFilter
         processForTransFilter(newHistoryToken);
         processForBookmarkedTextFlow(newHistoryToken);
         processMessageFilterOptions(newHistoryToken);

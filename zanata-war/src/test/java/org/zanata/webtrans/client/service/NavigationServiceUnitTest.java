@@ -84,8 +84,8 @@ public class NavigationServiceUnitTest {
         ModalNavigationStateHolder navigationStateHolder =
                 new ModalNavigationStateHolder(configHolder);
         contextHolder = new GetTransUnitActionContextHolder(configHolder);
-        contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"), null,
-                null);
+        contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"),
+                null, null);
         service =
                 new NavigationService(eventBus, dispatcher, configHolder,
                         mock(TableEditorMessages.class), pageModel,

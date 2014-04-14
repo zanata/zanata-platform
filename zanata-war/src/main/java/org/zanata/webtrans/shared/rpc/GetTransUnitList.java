@@ -34,7 +34,7 @@ public class GetTransUnitList extends
         filterHasError = context.isFilterHasError();
         targetTransUnitId = context.getTargetTransUnitId();
         validationIds = context.getValidationIds();
-        transUnitFilter = context.getSearch();
+        transUnitFilter = context.getEditorFilter();
     }
 
     private void setIncludeStates(ContentStateGroup contentStateGroup) {

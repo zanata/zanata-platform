@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,11 +27,12 @@ public class GetTransUnitActionContextHolder {
     }
 
     protected GetTransUnitActionContext initContext(DocumentInfo document,
-            String findMessage, TransUnitId targetTransUnitId) {
+            TransUnitId targetTransUnitId,
+            EditorFilter editorFilter) {
         // @formatter:off
         context = new GetTransUnitActionContext(document)
             .changeCount(configHolder.getState().getEditorPageSize())
-            .changeFindMessage(findMessage)
+            .changeEditorFilter(editorFilter)
             .changeFilterFuzzy(configHolder.getState().isFilterByFuzzy())
             .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
             .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
