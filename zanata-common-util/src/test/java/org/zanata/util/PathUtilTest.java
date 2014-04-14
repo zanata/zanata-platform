@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.util.PathUtil.PathResolutionException;
 
-@Test(groups = "unit-tests")
 public class PathUtilTest {
 
+    @Test
     public void testSubPath1() throws Exception {
         File dir = new File(".");
         File file = new File(dir, "sub/myfile.pot");
@@ -18,6 +18,7 @@ public class PathUtilTest {
                 + "myfile.pot"));
     }
 
+    @Test
     public void testSubPath2() throws Exception {
         File dir = new File("pot");
         File file = new File("pot/sub/myfile.pot");
@@ -25,6 +26,7 @@ public class PathUtilTest {
                 + "myfile.pot"));
     }
 
+    @Test
     public void testSubPath3() throws Exception {
         File dir = new File("/tmp/pot");
         File file = new File("/tmp/pot/sub/myfile.pot");
@@ -32,6 +34,7 @@ public class PathUtilTest {
                 + "myfile.pot"));
     }
 
+    @Test
     public void testGetRelativePathsUnix() {
         assertThat(PathUtil.getRelativePath("/var/data/stuff/xyz.dat",
                 "/var/data/", "/"), is("stuff/xyz.dat"));
@@ -42,6 +45,7 @@ public class PathUtilTest {
                 is("../../b/c"));
     }
 
+    @Test
     public void testGetRelativePathFileToFile() {
         String target = "C:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
         String base = "C:\\Windows\\Speech\\Common\\sapisvr.exe";
@@ -50,6 +54,7 @@ public class PathUtilTest {
         assertThat(relPath, is("..\\..\\Boot\\Fonts\\chs_boot.ttf"));
     }
 
+    @Test
     public void testGetRelativePathDirectoryToFile() {
         String target = "C:\\Windows\\Boot\\Fonts\\chs_boot.ttf";
         String base = "C:\\Windows\\Speech\\Common\\";
@@ -58,6 +63,7 @@ public class PathUtilTest {
         assertThat(relPath, is("..\\..\\Boot\\Fonts\\chs_boot.ttf"));
     }
 
+    @Test
     public void testGetRelativePathFileToDirectory() {
         String target = "C:\\Windows\\Boot\\Fonts";
         String base = "C:\\Windows\\Speech\\Common\\foo.txt";
@@ -66,6 +72,7 @@ public class PathUtilTest {
         assertThat(relPath, is("..\\..\\Boot\\Fonts"));
     }
 
+    @Test
     public void testGetRelativePathDirectoryToDirectory() {
         String target = "C:\\Windows\\Boot\\";
         String base = "C:\\Windows\\Speech\\Common\\";
@@ -75,7 +82,7 @@ public class PathUtilTest {
         assertThat(relPath, is(expected));
     }
 
-    @Test(expectedExceptions = { PathResolutionException.class })
+    @Test(expected = PathResolutionException.class)
     public void testGetRelativePathDifferentDriveLetters() {
         String target = "D:\\sources\\recovery\\RecEnv.exe";
         String base =

@@ -24,13 +24,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.zanata.common.ContentState.*;
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 import org.zanata.common.ContentState;
 
-@Test(groups = { "unit-tests" })
 public class ContentStateUtilTest {
+    @Test
     public void testAll() {
         test(New, list(""), New);
         test(New, list("", ""), New);

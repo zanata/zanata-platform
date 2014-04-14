@@ -12,14 +12,14 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.zanata.common.util.ElementBuilder;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ElementBuilderTest {
 
-    @BeforeMethod
-    private void before() throws IOException {
+    @Before
+    public void before() throws IOException {
         is = getClass().getResourceAsStream("ElementBuilderTest.xml");
     }
 
@@ -52,7 +52,8 @@ public class ElementBuilderTest {
         }
     }
 
-    @Test(enabled = false)
+    @Test
+    @Ignore
     public void buildElementXMLStreamReaderTransformer() throws Exception {
         // Nasty way to ensure that we get a Transformer which supports
         // StAXSource:

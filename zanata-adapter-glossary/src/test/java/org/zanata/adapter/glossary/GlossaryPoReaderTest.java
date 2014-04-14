@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
 
@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.equalTo;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Test(groups = "unit-tests")
 public class GlossaryPoReaderTest {
     private final File sourceFile = new File(
             "src/test/resources/glossary/fuel_hi.po"); // 578

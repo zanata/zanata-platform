@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 
@@ -41,7 +41,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Test(groups = "unit-tests")
 public class GlossaryCSVReaderTest {
 
     @Test

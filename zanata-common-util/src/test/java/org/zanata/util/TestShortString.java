@@ -3,9 +3,8 @@ package org.zanata.util;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.junit.Test;
 
 public class TestShortString {
 

@@ -8,14 +8,13 @@ import static org.hamcrest.Matchers.is;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 
-@Test(groups = { "unit-tests" })
 public class XliffWriterTest {
     private String testDir = "src/test/resources/";
     private String generateDir = "target/xliffGenerate/";
@@ -24,7 +23,7 @@ public class XliffWriterTest {
 
     private XliffReader reader;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         reader = new XliffReader();
     }
