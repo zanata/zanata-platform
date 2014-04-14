@@ -30,6 +30,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
@@ -40,6 +43,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -47,6 +51,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -74,6 +79,10 @@ public class GetTransUnitListHandler extends
     @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
+    // TODO pahuang this needs to be standardized in client
+    private DateTimeFormatter dateFormatter =
+            DateTimeFormat.forPattern("dd-MMM-yyyy");
+
     @Override
     public GetTransUnitListResult execute(GetTransUnitList action,
             ExecutionContext context) throws ActionException {
@@ -84,10 +93,30 @@ public class GetTransUnitListHandler extends
         int targetOffset = action.getOffset();
         int targetPageIndex = targetOffset / action.getCount();
         GetTransUnitsNavigationResult navigationResult = null;
+        EditorFilter editorFilter = action.getEditorFilter();
+        FilterConstraints constraints =
+                FilterConstraints
+                        .builder()
+                        .filterBy(editorFilter.getTextInContent())
+                        .lastModifiedBy(editorFilter.getLastModifiedByUser())
+                        .targetChangedBefore(
+                                parseDateIfPresent(editorFilter
+                                        .getLastModifiedBefore()))
+                        .targetChangedAfter(
+                                parseDateIfPresent(editorFilter
+                                        .getLastModifiedAfter()))
+                        .resourceIdIs(editorFilter.getResId())
+                        .msgContext(editorFilter.getMsgContext())
+                        .sourceCommentContains(editorFilter.getSourceComment())
+                        .targetCommentContains(editorFilter.getTransComment())
+                        .caseSensitive(false).checkInSource(true)
+                        .checkInTarget(true)
+                        .includeStates(action.getFilterStates()).build();
         if (action.isNeedReloadIndex()) {
             GetTransUnitsNavigation getTransUnitsNavigation =
                     new GetTransUnitsNavigation(action.getDocumentId(),
-                            action.getPhrase(), action.getFilterStates());
+                            action.getFilterStates(), action.getEditorFilter(),
+                            constraints);
             log.debug("get trans unit navigation action: {}",
                     getTransUnitsNavigation);
             navigationResult =
@@ -112,13 +141,19 @@ public class GetTransUnitListHandler extends
             }
         }
 
-        List<HTextFlow> textFlows = getTextFlows(action, hLocale, targetOffset);
+        List<HTextFlow> textFlows =
+                getTextFlows(action, hLocale, targetOffset, constraints);
 
         GetTransUnitListResult result =
                 transformToTransUnits(action, hLocale, textFlows, targetOffset,
                         targetPageIndex);
         result.setNavigationIndex(navigationResult);
         return result;
+    }
+
+    private DateTime parseDateIfPresent(String dateInString) {
+        return Strings.isNullOrEmpty(dateInString) ? null :
+                dateFormatter.parseDateTime(dateInString);
     }
 
     private int getTotalPageIndex(int indexListSize, int countPerPage) {
@@ -128,7 +163,7 @@ public class GetTransUnitListHandler extends
     }
 
     private List<HTextFlow> getTextFlows(GetTransUnitList action,
-            HLocale hLocale, int offset) {
+            HLocale hLocale, int offset, FilterConstraints constraints) {
         List<HTextFlow> textFlows;
         if (!hasStatusAndSearchFilter(action)) {
             log.debug("Fetch TransUnits:*");
@@ -155,11 +190,6 @@ public class GetTransUnitListHandler extends
         }
         // has status and other search field filter
         else {
-            FilterConstraints constraints =
-                    FilterConstraints.builder().filterBy(action.getPhrase())
-                            .caseSensitive(false).checkInSource(true)
-                            .checkInTarget(true)
-                            .includeStates(action.getFilterStates()).build();
             log.debug("Fetch TransUnits filtered by status and/or search: {}",
                     constraints);
             if (!hasValidationFilter(action)) {

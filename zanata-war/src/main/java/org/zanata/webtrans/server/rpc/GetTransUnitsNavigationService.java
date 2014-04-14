@@ -30,6 +30,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -37,6 +39,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
@@ -52,11 +55,6 @@ public class GetTransUnitsNavigationService {
 
     protected GetTransUnitsNavigationResult getNavigationIndexes(
             GetTransUnitsNavigation action, HLocale hLocale) {
-        FilterConstraints filterConstraints =
-                FilterConstraints.builder().filterBy(action.getPhrase())
-                        .checkInSource(true).checkInTarget(true)
-                        .includeStates(action.getActiveStates()).build();
-
         List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
         Map<TransUnitId, ContentState> transIdStateMap =
                 new HashMap<TransUnitId, ContentState>();
@@ -67,7 +65,7 @@ public class GetTransUnitsNavigationService {
 
         textFlows =
                 textFlowDAO.getNavigationByDocumentId(action.getDocumentId(), hLocale,
-                        resultTransformer, filterConstraints);
+                        resultTransformer, action.getConstraints());
         for (HTextFlow textFlow : textFlows) {
             TransUnitId transUnitId = new TransUnitId(textFlow.getId());
             idIndexList.add(transUnitId);

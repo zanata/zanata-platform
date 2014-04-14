@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
@@ -84,8 +85,8 @@ public class NavigationServiceUnitTest {
         ModalNavigationStateHolder navigationStateHolder =
                 new ModalNavigationStateHolder(configHolder);
         contextHolder = new GetTransUnitActionContextHolder(configHolder);
-        contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"),
-                null, null);
+        contextHolder.initContext(TestFixture.documentInfo(1, "a.pot"), null,
+                null);
         service =
                 new NavigationService(eventBus, dispatcher, configHolder,
                         mock(TableEditorMessages.class), pageModel,
@@ -308,7 +309,8 @@ public class NavigationServiceUnitTest {
         verify(dispatcher, times(2)).execute(actionCaptor.capture(),
                 resultCaptor.capture());
         GetTransUnitList getTransUnitList = actionCaptor.getValue();
-        assertThat(getTransUnitList.getPhrase(), Matchers.equalTo("search"));
+        assertThat(getTransUnitList.getEditorFilter().getTextInContent(),
+                Matchers.equalTo("search"));
     }
 
     @Test
