@@ -96,6 +96,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     private VersionAutocomplete versionAutocomplete = new VersionAutocomplete();
 
     @Getter
+    private GroupLocaleAutocomplete localeAutocomplete =
+            new GroupLocaleAutocomplete();
+
+    @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
                 @Override

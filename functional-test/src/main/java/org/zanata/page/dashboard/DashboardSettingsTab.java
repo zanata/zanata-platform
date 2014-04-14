@@ -34,7 +34,7 @@ public class DashboardSettingsTab extends DashboardBasePage {
     @FindBy(id = "email-update-form:emailField:email")
     private WebElement emailField;
 
-    @FindBy(id = "updateEmailButton")
+    @FindBy(id = "email-update-form:updateEmailButton")
     private WebElement updateEmailButton;
 
     @FindBy(id = "passwordChangeForm:oldPasswordField:oldPassword")
@@ -43,7 +43,7 @@ public class DashboardSettingsTab extends DashboardBasePage {
     @FindBy(id = "passwordChangeForm:newPasswordField:newPassword")
     private WebElement newPasswordField;
 
-    @FindBy(id = "changePasswordButton")
+    @FindBy(id = "passwordChangeForm:changePasswordButton")
     private WebElement changePasswordButton;
 
     public DashboardSettingsTab(WebDriver driver) {
@@ -58,13 +58,6 @@ public class DashboardSettingsTab extends DashboardBasePage {
 
     public DashboardSettingsTab clickUpdateEmailButton() {
         updateEmailButton.click();
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return !DashboardSettingsTab.this.getNotificationMessage()
-                        .contains("admin");
-            }
-        });
         return this;
     }
 
@@ -82,13 +75,6 @@ public class DashboardSettingsTab extends DashboardBasePage {
 
     public DashboardSettingsTab clickUpdatePasswordButton() {
         changePasswordButton.click();
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return !DashboardSettingsTab.this.getNotificationMessage()
-                        .contains("admin");
-            }
-        });
         return this;
     }
 }

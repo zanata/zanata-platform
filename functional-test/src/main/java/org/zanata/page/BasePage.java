@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -271,11 +272,6 @@ public class BasePage extends CorePage {
                 });
         searchItem.click();
         return new ProjectVersionsPage(getDriver());
-    }
-
-    public String getHtmlSource(WebElement webElement) {
-        return (String) ((JavascriptExecutor) getDriver()).executeScript(
-                "return arguments[0].innerHTML;", webElement);
     }
 
     public void clickWhenTabEnabled(final WebElement tab) {

@@ -105,7 +105,7 @@
           rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
           <s:fragment
             rendered="#{cc.attrs.actionBean.totalRecords gt cc.attrs.actionBean.pageSize}">
-            <strong>#{cc.attrs.actionBean.pageStartIdx+1}-#{cc.attrs.actionBean.pageEndIdx}</strong> of
+            <strong>#{cc.attrs.actionBean.pageStartIdx+1}-#{cc.attrs.actionBean.pageEndIdx+1}</strong> of
             #{cc.attrs.actionBean.totalRecords}
           </s:fragment>
           <s:fragment

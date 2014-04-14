@@ -73,14 +73,14 @@ public class AddLanguageTest {
                 manageLanguagePage.languageIsEnabled(language));
 
         List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                .gotoVersion("master")
-                .gotoSettingsTab()
-                .gotoSettingsLanguagesTab()
-                .clickInheritCheckbox()
-                .waitForLocaleListVisible()
-                .getEnabledLocaleList();
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsLanguagesTab()
+                        .clickInheritCheckbox()
+                        .waitForLocaleListVisible()
+                        .getEnabledLocaleList();
 
         assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
