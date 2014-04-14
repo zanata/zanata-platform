@@ -32,7 +32,6 @@
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
             <usedDependency>org.projectlombok:lombok</usedDependency>
             <usedDependency>org.hibernate:hibernate-search</usedDependency>

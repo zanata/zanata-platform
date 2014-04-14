@@ -722,7 +722,6 @@
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
             <usedDependency>org.apache.solr:solr-core</usedDependency>

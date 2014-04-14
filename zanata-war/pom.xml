@@ -124,7 +124,6 @@
           </execution>
         </executions>
         <configuration>
-          <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
             <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
             <!-- runtime dep for liquibase logging -->
