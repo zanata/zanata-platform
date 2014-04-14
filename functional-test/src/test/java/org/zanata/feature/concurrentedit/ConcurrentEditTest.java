@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -31,7 +32,8 @@ import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class ConcurrentEditTest {
+public class ConcurrentEditTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

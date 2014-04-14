@@ -32,6 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardActivityTab;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.DashboardProjectsTab;
@@ -44,7 +45,7 @@ import org.zanata.workflow.LoginWorkFlow;
 
 @Category(DetailedTest.class)
 @Slf4j
-public class DashboardTest {
+public class DashboardTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

@@ -31,6 +31,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.NoScreenshot;
@@ -42,8 +43,7 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-@NoScreenshot
-public class VersionGroupIDValidationTest {
+public class VersionGroupIDValidationTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();

@@ -30,6 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectsPage;
@@ -42,7 +43,7 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ProjectSearchTest {
+public class ProjectSearchTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

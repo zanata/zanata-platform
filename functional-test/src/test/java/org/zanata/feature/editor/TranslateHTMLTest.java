@@ -32,6 +32,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -49,7 +50,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeFalse;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-public class TranslateHTMLTest {
+public class TranslateHTMLTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

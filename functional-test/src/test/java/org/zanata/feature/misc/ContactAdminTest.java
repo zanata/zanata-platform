@@ -10,6 +10,7 @@ import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.util.AddUsersRule;
@@ -28,9 +29,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ContactAdminTest {
+public class ContactAdminTest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
+
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
