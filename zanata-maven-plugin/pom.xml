@@ -130,7 +130,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <failOnWarning>true</failOnWarning>
           <usedDependencies>
             <usedDependency>org.codehaus.plexus:plexus-utils</usedDependency>
           </usedDependencies>
