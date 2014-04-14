@@ -96,21 +96,27 @@ public class DashboardTest {
 
     @Test
     public void accountEmailModification() throws Exception {
+        final String successMessage =
+                "You will soon receive an email with a link to activate your email account change.";
         dashboard.gotoSettingsTab()
                  .typeNewAccountEmailAddress("new@fakeemail.com")
-                 .clickUpdateEmailButton();
-        assertThat(dashboard.getNotificationMessage()).startsWith(
-                "You will soon receive an email");
+                 .clickUpdateEmailButton()
+                 .waitForNotificationMessage(successMessage);
+        assertThat(dashboard.getNotificationMessage())
+                .isEqualTo(successMessage);
     }
 
     @Test
     public void passwordChange() throws Exception {
+        final String passwordChanged =
+                "Your password has been successfully changed.";
         dashboard.gotoSettingsTab()
                  .typeOldPassword("admin")
                  .typeNewPassword("admin2")
-                 .clickUpdatePasswordButton();
+                 .clickUpdatePasswordButton()
+                 .waitForNotificationMessage(passwordChanged);
         assertThat(dashboard.getNotificationMessage()).isEqualTo(
-                "Your password has been successfully changed.");
+                passwordChanged);
     }
 
     public boolean signInAs(String username, String password) {

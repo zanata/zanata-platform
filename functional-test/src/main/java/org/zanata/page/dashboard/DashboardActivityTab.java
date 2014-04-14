@@ -40,7 +40,7 @@ public class DashboardActivityTab extends DashboardBasePage {
 
     public List<WebElement> getMyActivityList() {
         WebElement listWrapper =
-                getDriver().findElement(By.id("activityList"));
+                getDriver().findElement(By.id("activity-list"));
 
         if (listWrapper != null) {
             return listWrapper.findElements(By.xpath("./li"));

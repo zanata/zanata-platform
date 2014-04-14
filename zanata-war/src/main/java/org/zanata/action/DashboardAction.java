@@ -80,9 +80,6 @@ public class DashboardAction implements Serializable {
     private AccountDAO accountDAO;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
     private ProjectDAO projectDAO;
 
     @In
@@ -90,12 +87,6 @@ public class DashboardAction implements Serializable {
 
     @In
     private ZanataMessages zanataMessages;
-
-    @In
-    private ServiceLocator serviceLocator;
-
-    @In
-    private UrlUtil urlUtil;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -166,61 +157,10 @@ public class DashboardAction implements Serializable {
         return DateUtil.formatShortDate(project.getLastChanged());
     }
 
-    public long getProjectListPageStart() {
-        return projectList.getPageStartIdx();
-    }
-
-    public long getProjectListPageEnd() {
-        return Math.min(projectList.getTotalRecords(),
-                projectList.getPageEndIdx());
-    }
-
     @CachedMethodResult
     public boolean canViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
-    }
-
-    @CachedMethodResult
-    public List<HProjectIteration> getProjectVersions(Long projectId) {
-        List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-        if (canViewObsolete()) {
-            result.addAll(projectIterationDAO.searchByProjectId(projectId));
-        } else {
-            result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(
-                    projectId, EntityStatus.OBSOLETE));
-        }
-        return result;
-    }
-
-    @CachedMethodResult
-    public boolean isUserMaintainer(Long projectId) {
-        HProject project = getProject(projectId);
-        return authenticatedAccount.getPerson().isMaintainer(project);
-    }
-
-    @CachedMethodResult
-    public int getDocumentCount(Long versionId) {
-        HProjectIteration version = getProjectVersion(versionId);
-        return version.getDocuments().size();
-    }
-
-    public String getFormattedDate(Date date) {
-        return DateUtil.formatShortDate(date);
-    }
-
-    @CachedMethodResult
-    private HProjectIteration getProjectVersion(Long versionId) {
-        return projectIterationDAO.findById(versionId, false);
-    }
-
-    @CachedMethodResult
-    private HProject getProject(Long projectId) {
-        return projectDAO.findById(projectId, false);
-    }
-
-    public String getCreateVersionUrl(String projectSlug) {
-        return urlUtil.createNewVersionUrl(projectSlug);
     }
 
     public DashboardUserStats getTodayStats() {

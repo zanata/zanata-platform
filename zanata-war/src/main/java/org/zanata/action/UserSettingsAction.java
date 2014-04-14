@@ -124,11 +124,13 @@ public class UserSettingsAction {
 
     @Getter
     @Setter
+    @NotEmpty
     @Size(min = 6, max = 20)
     private String newPassword;
 
     @Getter
     @Setter
+    @NotEmpty
     private String oldPassword;
 
     @Getter
