@@ -19,7 +19,7 @@ public class ContentCriterionTest {
                 FilterConstraintToQuery.Parameters.searchString
                         .placeHolder());
 
-        assertThat(hql, Matchers.equalTo("(tf.content0 like :searchTerm OR tf.content1 like :searchTerm)"));
+        assertThat(hql, Matchers.equalTo("(tf.content0 like :searchString OR tf.content1 like :searchString)"));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class ContentCriterionTest {
                 FilterConstraintToQuery.Parameters.searchString
                         .placeHolder());
 
-        assertThat(hql, Matchers.equalTo("(content0 like :searchTerm OR content1 like :searchTerm)"));
+        assertThat(hql, Matchers.equalTo("(content0 like :searchString OR content1 like :searchString)"));
     }
 
     @Test
@@ -37,6 +37,6 @@ public class ContentCriterionTest {
                 FilterConstraintToQuery.Parameters.searchString
                         .placeHolder());
 
-        assertThat(hql, Matchers.equalTo("(lower(content0) like :searchTerm OR lower(content1) like :searchTerm)"));
+        assertThat(hql, Matchers.equalTo("(lower(content0) like :searchString OR lower(content1) like :searchString)"));
     }
 }

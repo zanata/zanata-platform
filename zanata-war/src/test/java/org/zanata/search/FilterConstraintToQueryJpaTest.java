@@ -1,6 +1,10 @@
 package org.zanata.search;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
@@ -19,13 +23,11 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
+
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -43,9 +45,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     private DocumentId documentId;
     private DateTime today = new DateTime();
     private DateTime yesterday = new DateTime().minusDays(1);
+    private ResultTransformer transformer;
     private HPerson admin;
     private HPerson translator;
-    private ResultTransformer transformer;
 
     @BeforeMethod
     public void setUpData() {
@@ -56,8 +58,8 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 new GetTransUnitsNavigationService.TextFlowResultTransformer(
                         hLocale);
 
-        admin = makePerson("admin");
-        translator = makePerson("translator");
+        admin = makePerson("admin123");
+        translator = makePerson("translator123");
 
         HDocument hDocument =
                 EntityMakerBuilder.builder().reuseEntity(hLocale).build()
@@ -321,11 +323,12 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     @Test
     public void filterByTargetModifiedUser() {
+        String username = translator.getAccount().getUsername();
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
                                 .includeStates(allContentStates)
-                                .lastModifiedBy("translator").build(),
+                                .lastModifiedBy(username).build(),
                         documentId);
 
         String hql = constraintToQuery.toEntityQuery();
@@ -372,11 +375,12 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     @Test
     public void filterByUntranslatedAndModifiedPerson() {
+        String username = admin.getAccount().getUsername();
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
                                 .includeStates(untranslatedOnly)
-                                .lastModifiedBy("admin").build(), documentId);
+                                .lastModifiedBy(username).build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
@@ -388,13 +392,14 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     @Test
     public void filterByContentAndModifiedPersonAndState() {
+        String username = admin.getAccount().getUsername();
         FilterConstraintToQuery constraintToQuery =
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
                                 .checkInSource(true).checkInTarget(true)
                                 .filterBy("source")
                                 .includeStates(untranslatedOnly)
-                                .lastModifiedBy("admin").build(), documentId);
+                                .lastModifiedBy(username).build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);

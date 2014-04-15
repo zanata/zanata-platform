@@ -20,6 +20,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
@@ -144,7 +145,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
 
     protected void processForTransFilter(HistoryToken newHistoryToken) {
         boolean findMessageChanged =
-                !newHistoryToken.getSearchText().equals(
+                !Objects.equal(newHistoryToken.getSearchText(),
                         currentHistoryState.getSearchText());
         if (findMessageChanged) {
             Log.info("[gwt-history] trans filter search has changed");

@@ -81,7 +81,7 @@ public class GetTransUnitListHandler extends
 
     // TODO pahuang this needs to be standardized in client
     private DateTimeFormatter dateFormatter =
-            DateTimeFormat.forPattern("dd-MMM-yyyy");
+            DateTimeFormat.forPattern("dd-mm-yyyy");
 
     @Override
     public GetTransUnitListResult execute(GetTransUnitList action,
