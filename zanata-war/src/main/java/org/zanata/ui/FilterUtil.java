@@ -43,24 +43,6 @@ import com.google.common.collect.Lists;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class FilterUtil {
-    public static List<HLocale> filterLanguageList(final String query,
-            final List<HLocale> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HLocale> filtered =
-                Collections2.filter(unfiltered, new Predicate<HLocale>() {
-                    @Override
-                    public boolean apply(HLocale input) {
-                        return StringUtils.startsWithIgnoreCase(input
-                                .getLocaleId().getId(), query)
-                                || StringUtils.containsIgnoreCase(
-                                        input.retrieveDisplayName(), query);
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
 
     /**
      * Return filtered list of HPerson from personList which are NOT in
@@ -79,100 +61,6 @@ public class FilterUtil {
                         return !allPersonList.contains(input);
                     }
                 });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public static List<HPerson> filterPersonList(final String query,
-            final List<HPerson> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HPerson> filtered =
-                Collections2.filter(unfiltered, new Predicate<HPerson>() {
-                    @Override
-                    public boolean apply(HPerson input) {
-                        return StringUtils.containsIgnoreCase(input.getName(),
-                                query);
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public static List<HIterationGroup> filterGroupList(final String query,
-            final List<HIterationGroup> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HIterationGroup> filtered =
-                Collections2.filter(unfiltered,
-                        new Predicate<HIterationGroup>() {
-                            @Override
-                            public boolean apply(HIterationGroup input) {
-                                return StringUtils.containsIgnoreCase(
-                                        input.getName(), query)
-                                        || StringUtils.containsIgnoreCase(
-                                                input.getSlug(), query);
-                            }
-                        });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public static List<HDocument> filterDocumentList(final String query,
-            final List<HDocument> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HDocument> filtered =
-                Collections2.filter(unfiltered, new Predicate<HDocument>() {
-                    @Override
-                    public boolean apply(HDocument input) {
-                        return StringUtils.containsIgnoreCase(input.getName(),
-                                query)
-                                || StringUtils.containsIgnoreCase(
-                                        input.getPath(), query);
-                    }
-                });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public static List<HProjectIteration> filterVersionListWithProjectName(
-            final String query, final List<HProjectIteration> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HProjectIteration> filtered =
-                Collections2.filter(unfiltered,
-                        new Predicate<HProjectIteration>() {
-                            @Override
-                            public boolean apply(HProjectIteration input) {
-                                HProject project = input.getProject();
-                                return StringUtils.containsIgnoreCase(
-                                        project.getName(), query);
-                            }
-                        });
-
-        return Lists.newArrayList(filtered);
-    }
-
-    public static List<HProjectIteration> filterVersionList(final String query,
-            final List<HProjectIteration> unfiltered) {
-        if (StringUtils.isEmpty(query)) {
-            return unfiltered;
-        }
-        Collection<HProjectIteration> filtered =
-                Collections2.filter(unfiltered,
-                        new Predicate<HProjectIteration>() {
-                            @Override
-                            public boolean apply(HProjectIteration input) {
-                                input.getSlug();
-                                return StringUtils.containsIgnoreCase(
-                                        input.getSlug(), query);
-                            }
-                        });
 
         return Lists.newArrayList(filtered);
     }

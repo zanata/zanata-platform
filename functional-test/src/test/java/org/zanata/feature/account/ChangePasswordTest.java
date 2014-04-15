@@ -60,8 +60,6 @@ public class ChangePasswordTest {
     @Test
     @Category(BasicAcceptanceTest.class)
     public void changePasswordSuccessful() {
-        String passwordChanged = "Your password has been successfully changed.";
-
         DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");
         dashboard.gotoSettingsTab()

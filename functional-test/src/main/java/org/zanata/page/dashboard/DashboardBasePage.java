@@ -66,20 +66,6 @@ public class DashboardBasePage extends BasePage {
                 By.cssSelector("#activity.is-active")) != null;
     }
 
-    public void clickWhenTabEnabled(final WebElement tab) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                boolean clicked = false;
-                if (tab.isDisplayed() && tab.isEnabled()) {
-                    tab.click();
-                    clicked = true;
-                }
-                return clicked;
-            }
-        });
-    }
-
     public List<WebElement> getMyActivityList() {
         WebElement listWrapper =
                 getDriver().findElement(By.id("activity-list"));
@@ -98,11 +84,5 @@ public class DashboardBasePage extends BasePage {
     public DashboardSettingsTab gotoSettingsTab() {
         settingsTab.click();
         return new DashboardSettingsTab(getDriver());
-    }
-
-
-    public CreateProjectPage clickCreateYourOwn() {
-        getDriver().findElement(By.linkText("create your own")).click();
-        return new CreateProjectPage(getDriver());
     }
 }

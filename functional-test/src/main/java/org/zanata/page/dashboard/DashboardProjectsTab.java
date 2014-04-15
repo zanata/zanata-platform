@@ -23,6 +23,7 @@ package org.zanata.page.dashboard;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.zanata.page.projects.CreateProjectPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,5 +46,12 @@ public class DashboardProjectsTab extends DashboardBasePage {
             return listWrapper.findElements(By.xpath("./li"));
         }
         return new ArrayList<WebElement>();
+    }
+
+    public CreateProjectPage clickOnCreateProjectLink() {
+        WebElement createProjLink =
+                getDriver().findElement(By.id("create-project-link"));
+        createProjLink.click();
+        return new CreateProjectPage(getDriver());
     }
 }

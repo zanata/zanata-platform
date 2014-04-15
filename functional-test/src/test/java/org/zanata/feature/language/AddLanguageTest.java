@@ -53,9 +53,11 @@ public class AddLanguageTest {
     public void addLanguageAsEnabled() {
         String language = "Goa'uld";
         String languageDisplayName = "goa'uld[Goa'uld]";
-        ManageLanguagePage manageLanguagePage =
-                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
-                        .goToAdministration().goToManageLanguagePage();
+        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToHomePage()
+                .goToAdministration()
+                .goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -108,13 +110,13 @@ public class AddLanguageTest {
         assertThat("The language is disabled by default",
                 !manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .clickInheritCheckbox()
-                        .waitForLocaleListVisible()
-                        .getEnabledLocaleList();
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                .goToProjects()
+                .goToProject("about fedora").gotoVersion("master")
+                .gotoSettingsTab().gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible()
+                .getEnabledLocaleList();
 
         assertThat("The language is disabled by default", enabledLocaleList,
                 Matchers.not(Matchers.hasItem(languageDisplayName)));

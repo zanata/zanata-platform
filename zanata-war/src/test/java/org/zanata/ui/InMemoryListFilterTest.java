@@ -21,8 +21,6 @@
 package org.zanata.ui;
 
 import com.google.common.collect.Lists;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -33,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Test
 public class InMemoryListFilterTest {
 
     private InMemoryListFilter<Integer> listFilter;
@@ -138,8 +137,24 @@ public class InMemoryListFilterTest {
         assertThat(listFilter.getCurrentPage()).isEmpty();
 
         listFilter.clearFilter();
+        assertThat(listFilter.getFilter()).isNullOrEmpty();
         listFilter.reset();
         assertThat(listFilter.getPageNumber()).isEqualTo(1);
         assertThat(listFilter.getCurrentPage().size()).isEqualTo(10);
+    }
+
+    @Test
+    public void pageSize() throws Exception {
+        listFilter.setPageSize(5);
+
+        // Page 1
+        assertThat(listFilter.getCurrentPage().size()).isEqualTo(5);
+        assertThat(listFilter.getPageStartIdx()).isEqualTo(0);
+        assertThat(listFilter.getPageEndIdx()).isEqualTo(4);
+
+        // Page 2
+        listFilter.nextPage();
+        assertThat(listFilter.getPageStartIdx()).isEqualTo(5);
+        assertThat(listFilter.getPageEndIdx()).isEqualTo(9);
     }
 }
