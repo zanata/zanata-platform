@@ -166,12 +166,12 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
             getTranslatedStats(Long personId, Date startDate, Date endDate) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder
-                .append("select sum(tf.wordCount),count(tf),count(distinct doc) from HTextFlow tf, HTextFlowTarget tft, HDocument doc ");
+                .append("select sum(tft.textFlow.wordCount),count(tft.textFlow)," +
+                        "count(distinct tft.textFlow.document) " +
+                        "from HTextFlowTarget tft ");
         queryBuilder.append("where tft.translator.id = :personId ");
         queryBuilder
                 .append("and tft.lastChanged BETWEEN :startDate AND :endDate ");
-        queryBuilder.append("and tf.id = tft.textFlow.id ");
-        queryBuilder.append("and tf.document.id = doc.id ");
 
         Query q = getSession().createQuery(queryBuilder.toString());
         q.setParameter("personId", personId);
