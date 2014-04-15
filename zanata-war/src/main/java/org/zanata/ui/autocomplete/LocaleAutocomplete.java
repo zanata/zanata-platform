@@ -24,20 +24,23 @@ public abstract class LocaleAutocomplete extends AbstractAutocomplete<HLocale> {
     protected LocaleService localeServiceImpl = (LocaleService) Component
             .getInstance(LocaleServiceImpl.class);
 
-    protected abstract Set<HLocale> getLocales();
+    protected List<HLocale> supportedLocales = localeServiceImpl
+            .getSupportedLocales();
+
+    protected abstract Collection<HLocale> getLocales();
 
     /**
      * Return results on search
      */
     @Override
     public List<HLocale> suggest() {
-        List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
+        final Collection<HLocale> entityLocales = getLocales();
 
         Collection<HLocale> filtered =
-                Collections2.filter(localeList, new Predicate<HLocale>() {
+                Collections2.filter(supportedLocales, new Predicate<HLocale>() {
                     @Override
                     public boolean apply(HLocale input) {
-                        return FilterUtil.isIncludeLocale(getLocales(), input,
+                        return FilterUtil.isIncludeLocale(entityLocales, input,
                                 getQuery());
                     }
                 });

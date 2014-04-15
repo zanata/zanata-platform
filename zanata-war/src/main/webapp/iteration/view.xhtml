@@ -1,5 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -93,7 +94,7 @@
 
 <h:form>
   <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
-    oncomplete="refreshTooltip('version-page')"
+    oncomplete="refreshTooltip('version-page')" limitRender="true"
     render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
     action="#{versionHomeAction.resetPageData}"/>
 
