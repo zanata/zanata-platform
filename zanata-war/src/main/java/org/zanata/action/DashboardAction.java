@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import lombok.NonNull;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -110,14 +112,17 @@ public class DashboardAction implements Serializable {
 
     public String getUserLanguageTeams() {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
-        return StringUtil.concat(account.getPerson().getLanguageMemberships(),
-                ',', new Function<HLocale, String>() {
+        return StringUtils.join(
+                Collections2.transform(account.getPerson()
+                .getLanguageMemberships(),
+                 new Function<HLocale, Object>() {
                     @Nullable
                     @Override
-                    public String apply(@NonNull HLocale locale) {
+                    public Object apply(@NonNull HLocale locale) {
                         return locale.retrieveDisplayName();
                     }
-                });
+                }),
+            ", ");
     }
 
     @CachedMethodResult
@@ -185,7 +190,8 @@ public class DashboardAction implements Serializable {
     }
 
     public boolean isUserReviewer() {
-        return languageTeamServiceImpl.isUserReviewer(authenticatedAccount.getPerson().getId());
+        return languageTeamServiceImpl.isUserReviewer(
+                authenticatedAccount.getPerson().getId());
     }
 
     public String getLastTranslatorMessage(HProject project) {
@@ -224,7 +230,7 @@ public class DashboardAction implements Serializable {
                             .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
                                     HAccount.class);
             return projectDAO.getProjectsForMaintainer(
-                    authenticatedAccount.getPerson(), start, max);
+                    authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
@@ -237,7 +243,7 @@ public class DashboardAction implements Serializable {
                             .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
                                     HAccount.class);
             return projectDAO.getMaintainedProjectCount(
-                    authenticatedAccount.getPerson());
+                    authenticatedAccount.getPerson(), filter);
         }
     }
 }

@@ -136,6 +136,7 @@
                       styleClass="l--float-right txt--danger reveal__target"
                       action="#{userSettingsAction.remove(cred)}"
                       render="credentialsList"
+                      onclick="return confirm('#{messages['jsf.dashboard.settings.removeIdentity.confirm.message']}')"
                       title="">
                       <i class="i--large i--remove"></i>
                     </a4j:commandLink>
@@ -203,7 +204,9 @@
         </h2>
         <h:form id="profileForm" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item">
-            <h:outputText value="Username"/>
+            <label>
+              <h:outputText value="Username"/>
+            </label>
             <p class="l--push-bottom-0">#{userSettingsAction.accountUsername}</p>
             <small class="txt--meta">
               #{messages['jsf.dashboard.settings.usernameCannotBeChanged.message']}
@@ -219,7 +222,8 @@
           </div>
           <a4j:jsFunction name="updateProfile"
             action="#{userSettingsAction.updateProfile}"
-            render="profileForm" status="profile-loader" execute="@form"/>
+            render="profileForm,profile-overview" status="profile-loader"
+            execute="@form"/>
           <input type="submit" value="#{messages['jsf.dashboard.settings.updateProfile.label']}"
             class="button button--primary l--push-top-1"
             onclick="updateProfile(); return false;"/>
@@ -263,12 +267,14 @@
         </h2>
         <h:form id="apiKeyForm">
           <p class="txt--meta">
-            An API and configuration is needed for the CLI client
+            <h:outputText>
+              #{messages['jsf.dashboard.settings.apiKeyNeeded.message']}
+            </h:outputText>
             <a href="http://zanata.org/help/cli/cli-configuration/"
               title="#{messages['jsf.dashboard.settings.clientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a> and Maven plugin
-            <a href="http://zanata.org/help/cli/cli-configuration/"
+            <a href="http://zanata.org/help/maven-plugin/maven-plugin-install/"
               title="#{messages['jsf.dashboard.settings.mavenClientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a>.
@@ -278,7 +284,8 @@
               #{messages['jsf.dashboard.settings.apiKey.label']}
             </label>
             <s:fragment id="no_api_key"
-              rendered="#{not userSettingsAction.apiKeyGenerated}">#{messages['jsf.NotGenerated']}
+              rendered="#{not userSettingsAction.apiKeyGenerated}">
+                <p>#{messages['jsf.NotGenerated']}</p>
             </s:fragment>
             <s:fragment id="api_key"
               rendered="#{userSettingsAction.apiKeyGenerated}">

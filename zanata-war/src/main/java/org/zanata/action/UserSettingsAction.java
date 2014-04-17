@@ -327,6 +327,9 @@ public class UserSettingsAction {
         // TODO When more fields are added, we'll need a better solution
         authenticatedAccount.getPerson().setName( accountName );
         personDAO.makePersistent(person);
+        FacesMessages.instance().add(
+                zanataMessages.getMessage(
+                        "jsf.dashboard.settings.profileUpdated.message"));
     }
 
     // TODO Cache this

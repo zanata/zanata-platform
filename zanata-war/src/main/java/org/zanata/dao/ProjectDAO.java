@@ -361,27 +361,35 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     public List<HProject> getProjectsForMaintainer(HPerson maintainer,
-            int firstResult, int maxResults) {
+            String filter, int firstResult, int maxResults) {
+        final String sqlFilter = filter == null ? "" : filter;
         Query q =
                 getSession()
                         .createQuery(
                                 "from HProject p " +
                                 "where :maintainer in elements(p.maintainers) " +
+                                "and (p.name like :filter " +
+                                    "or p.slug like :filter) " +
                                 "order by p.name")
                         .setParameter("maintainer", maintainer)
+                        .setParameter("filter", "%" + sqlFilter + "%")
                         .setFirstResult(firstResult)
                         .setMaxResults(maxResults);
         return q.list();
     }
 
-    public int getMaintainedProjectCount(HPerson maintainer) {
+    public int getMaintainedProjectCount(HPerson maintainer, String filter) {
+        final String sqlFilter = filter == null ? "" : filter;
         Query q =
                 getSession()
                         .createQuery(
                                 "select count(p) from HProject p " +
-                                "where :maintainer in elements(p.maintainers)"
+                                "where :maintainer in elements(p.maintainers) " +
+                                "and (p.name like :filter " +
+                                    "or p.slug like :filter) "
                         )
-                        .setParameter("maintainer", maintainer);
+                        .setParameter("maintainer", maintainer)
+                        .setParameter("filter", "%" + sqlFilter + "%");
         return ((Long)q.uniqueResult()).intValue();
     }
 }
