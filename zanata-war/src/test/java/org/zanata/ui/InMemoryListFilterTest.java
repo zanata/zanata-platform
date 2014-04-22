@@ -146,6 +146,7 @@ public class InMemoryListFilterTest {
     @Test
     public void pageSize() throws Exception {
         listFilter.setPageSize(5);
+        assertThat(listFilter.getPageSize()).isEqualTo(5);
 
         // Page 1
         assertThat(listFilter.getCurrentPage().size()).isEqualTo(5);
