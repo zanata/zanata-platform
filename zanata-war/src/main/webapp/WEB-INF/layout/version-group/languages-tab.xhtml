@@ -80,7 +80,7 @@
         <ui:repeat
           value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
           var="hLocale">
-          <li class="progress-bar__expander">
+          <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink
               oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
               action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
@@ -91,14 +91,15 @@
               styleClass="bx--block #{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
-                  <span class="list__title">
+                  <h3 class="list__title">
                     #{hLocale.retrieveDisplayName()}
                     <s:span styleClass="badge--danger"
                       rendered="#{!versionGroupHomeAction.getMissingVersion(hLocale.localeId).isEmpty()}"
                       title="#{versionGroupHomeAction.getMissingVersionTitle(hLocale.localeId)}">
                       #{versionGroupHomeAction.getMissingVersion(hLocale.localeId).size()}
                     </s:span>
-                  </span>
+                  </h3>
+                  <span class="list__item__meta">#{hLocale.localeId}</span>
                 </div>
                 <div class="list__item__stats">
                   <a4j:status name="statistic-loader">

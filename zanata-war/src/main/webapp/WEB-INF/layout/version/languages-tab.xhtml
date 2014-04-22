@@ -410,11 +410,11 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}"
-                   title="#{displayUnit.title}">
-                    <span class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                 </span>
+                     <span class="#{displayUnit.cssClass}"
+                       title="#{displayUnit.title}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
+                        <span class="stats__unit">#{displayUnit.unit}</span>
+                     </span>
                   </s:div>
                 </div>
                 <zanata:statistic
