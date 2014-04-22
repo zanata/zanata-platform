@@ -211,10 +211,8 @@
 
         <s:div id="about_content" styleClass="is-hidden">
           <s:div id="project-about">
-            <h:outputFormat value="#{projectHome.instance.homeContent}"
-              escape="false"
+            <s:formattedText value="#{projectHome.instance.homeContent}"
               rendered="#{not empty projectHome.instance.homeContent}"/>
-
             <s:fragment rendered="#{empty projectHome.instance.homeContent}">
               #{messages['jsf.project.NoHomeContent']}
             </s:fragment>
