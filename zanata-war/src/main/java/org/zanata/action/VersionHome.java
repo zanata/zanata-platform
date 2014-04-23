@@ -40,7 +40,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -117,6 +116,11 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     public void createNew() {
         isNewInstance = true;
+        if (isNewInstance) {
+            selectedProjectType = getProject().getDefaultProjectType().name();
+        } else {
+            selectedProjectType = getInstance().getProjectType().name();
+        }
     }
 
     public HProject getProject() {
