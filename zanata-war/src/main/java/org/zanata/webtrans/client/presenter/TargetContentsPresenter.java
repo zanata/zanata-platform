@@ -107,7 +107,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
     // cached state
     private String findMessage;
     private boolean isDisplayButtons;
-    private boolean spellCheckEnabled;
 
     @Inject
     public TargetContentsPresenter(
@@ -136,9 +135,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         isDisplayButtons =
                 userOptionsService.getConfigHolder().getState()
                         .isDisplayButtons();
-        spellCheckEnabled =
-                userOptionsService.getConfigHolder().getState()
-                        .isSpellCheckEnabled();
 
         editorKeyShortcuts.registerKeys(this);
         saveAsApprovedConfirmation.setListener(this);
@@ -421,15 +417,11 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         boolean displayButtons =
                 userOptionsService.getConfigHolder().getState()
                         .isDisplayButtons();
-        boolean isSpellCheckEnabled =
-                userOptionsService.getConfigHolder().getState()
-                        .isSpellCheckEnabled();
 
-        if (isDisplayButtons != displayButtons
-                || spellCheckEnabled != isSpellCheckEnabled) {
+
+        if (isDisplayButtons != displayButtons) {
             for (TargetContentsDisplay contentsDisplay : displayList) {
                 contentsDisplay.showButtons(displayButtons);
-                contentsDisplay.setEnableSpellCheck(isSpellCheckEnabled);
             }
         }
 
@@ -438,7 +430,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
                         .getConfigHolder().getState()
                         .isShowSaveApprovedWarning());
         isDisplayButtons = displayButtons;
-        spellCheckEnabled = isSpellCheckEnabled;
     }
 
     @Override

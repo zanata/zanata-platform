@@ -142,8 +142,6 @@ public class TargetContentsView extends Composite implements
             Editor editor =
                     new Editor(target, rowIndex, listener, transUnit.getId());
             editor.ensureDebugId(transUnit.getRowIndex() + "-");
-            editor.setEnableSpellCheck(listener.getConfigState()
-                    .isSpellCheckEnabled());
             editorGrid.setWidget(rowIndex, 0, editor);
             editors.add(editor);
             rowIndex++;
@@ -204,13 +202,6 @@ public class TargetContentsView extends Composite implements
         cachedValue = newTransUnit;
         editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
         buttons.setId(cachedValue.getId());
-    }
-
-    @Override
-    public void setEnableSpellCheck(boolean spellCheckEnabled) {
-        for (ToggleEditor editor : editors) {
-            editor.setEnableSpellCheck(spellCheckEnabled);
-        }
     }
 
     @Override

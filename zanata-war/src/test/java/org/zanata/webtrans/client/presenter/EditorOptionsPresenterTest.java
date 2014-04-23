@@ -214,18 +214,6 @@ public class EditorOptionsPresenterTest {
     }
 
     @Test
-    public void onSpellCheckOptionChanged() {
-        configHolder.setSpellCheckEnabled(false);
-
-        presenter.onSpellCheckOptionChanged(true);
-
-        assertThat(configHolder.getState().isSpellCheckEnabled(),
-                Matchers.equalTo(true));
-        verify(eventBus).fireEvent(
-                UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-    }
-
-    @Test
     public void onTMDisplayModeChanged() {
         configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
 

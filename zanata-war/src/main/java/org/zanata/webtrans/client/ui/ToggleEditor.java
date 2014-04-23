@@ -27,8 +27,6 @@ public interface ToggleEditor extends IsWidget, HasText,
 
     void refresh();
 
-    void setEnableSpellCheck(Boolean enabled);
-
     TransUnitId getId();
 
     void switchType();

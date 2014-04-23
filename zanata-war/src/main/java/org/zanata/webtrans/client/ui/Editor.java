@@ -61,7 +61,7 @@ public class Editor extends Composite implements ToggleEditor {
     TextAreaWrapper textArea;
 
     // Timer period, in ms
-    private final int TYPING_TIMER_INTERVAL = 200;
+    private static final int TYPING_TIMER_INTERVAL = 200;
 
     // Has a key been pressed since the timer was started or the last firing
     private boolean keyPressedSinceTimer;
@@ -123,14 +123,6 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     protected void onEnsureDebugId(String baseID) {
         textArea.ensureDebugId(baseID+ "target-" + index);
-    }
-
-    @Override
-    public void setEnableSpellCheck(Boolean enabled) {
-        targetWrapper.getElement().setAttribute("contenteditable",
-                enabled.toString());
-        targetWrapper.getElement().setAttribute("spellcheck",
-                enabled.toString());
     }
 
     private void fireValidationEvent() {
@@ -270,7 +262,7 @@ public class Editor extends Composite implements ToggleEditor {
         if (editing) {
             // avoid focusing on wrong editor (in plural mode)
             textArea.setCursorPos(cursorPos);
-            textArea.setEditing(editing);
+            textArea.setEditing(true);
         }
     }
 

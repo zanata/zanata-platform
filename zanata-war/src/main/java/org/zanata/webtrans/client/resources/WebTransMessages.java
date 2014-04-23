@@ -26,9 +26,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("{0}")
     String statusBarLabelHours(String remainingHours);
 
-    @DefaultMessage("http://zanata.org/")
-    String hrefHelpLink();
-
     @DefaultMessage("{0} to {1} - Zanata Web Translation")
     String windowTitle(String workspaceName, String localeName);
 
@@ -70,9 +67,6 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Loading")
     String loading();
-
-    @DefaultMessage("Failed to load document from Server")
-    String loadDocFailed();
 
     @DefaultMessage("Path")
     String columnHeaderPath();
@@ -119,10 +113,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Searching")
     String searching();
 
-    @DefaultMessage("Search found results in {0} documents")
-    @AlternateMessage({ "one", "Search found results in 1 document" })
-    String searchFoundResultsInDocuments(@PluralCount int numDocs);
-
     @DefaultMessage("Showing results for search \"{0}\" ({1} text flows in {2} documents)")
     // @formatter:off
     @AlternateMessage({
@@ -147,12 +137,6 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Hide preview")
     String hidePreview();
-
-    @DefaultMessage("Preview replacement in all selected text flows.")
-    String previewSelectedDescription();
-
-    @DefaultMessage("Select text flows to enable preview.")
-    String previewSelectedDisabledDescription();
 
     @DefaultMessage("Previewing")
     String fetchingPreview();
@@ -190,9 +174,6 @@ public interface WebTransMessages extends Messages {
     @AlternateMessage({ "one", "Replaced \"{0}\" with \"{1}\" in 1 text flow" })
             String replacedTextInMultipleTextFlows(String searchText,
                     String replacement, @PluralCount int numFlows);
-
-    @DefaultMessage("Successfully replaced text")
-    String replacedTextSuccess();
 
     @DefaultMessage("Replace text failed in text flow {0}, error message: {1}")
     String replaceTextFailureWithMessage(String id, String errorMessage);
@@ -262,18 +243,8 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Undo not possible in read-only workspace")
     String cannotUndoInReadOnlyMode();
 
-    @DefaultMessage("Select entire document")
-    String selectAllInDocument();
-
-    @DefaultMessage("Select or deselect all matching text flows in this document")
-            String selectAllInDocumentDetailed();
-
     @DefaultMessage("No text flows selected")
     String noTextFlowsSelected();
-
-    @DefaultMessage("{0} text flows selected")
-    @AlternateMessage({ "one", "1 text flow selected" })
-    String numTextFlowsSelected(@PluralCount int selectedFlows);
 
     @DefaultMessage("Notification")
     String notification();
@@ -362,18 +333,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Publish chat content")
     String publishChatContent();
 
-    @DefaultMessage("Version")
-    String versionNumber();
-
-    @DefaultMessage("User")
-    String modifiedBy();
-
-    @DefaultMessage("Date")
-    String modifiedDate();
-
-    @DefaultMessage("Paste into Editor")
-    String pasteIntoEditor();
-
     @DefaultMessage("Translation History")
     String translationHistory();
 
@@ -433,9 +392,6 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Show System Errors")
     String showSystemErrors();
-
-    @DefaultMessage("Switch between syntax highlightable Editor and plain textarea (no syntax highlight but support spell check in all browser)")
-            String useCodeMirrorEditorTooltip();
 
     @DefaultMessage("Show warning when 'Save as Approved' triggered via keyboard shortcut")
             String showSaveApprovedWarningTooltip();
@@ -497,17 +453,11 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Refresh current page")
     String refreshCurrentPage();
 
-    @DefaultMessage("Enable spell check in editor (Firefox only)")
-    String spellCheckTooltip();
-
     @DefaultMessage("Translation Memory (TM) options")
     String transMemoryOption();
 
     @DefaultMessage("Display configuration")
     String displayConfiguration();
-
-    @DefaultMessage("Enable Reference for Source Language")
-    String enableReferenceForSourceLang();
 
     @DefaultMessage("Configure how you want your editor to look like")
     String displayConfigurationTooltip();
@@ -554,9 +504,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Download document with extension {0}")
     String downloadFileTitle(String key);
 
-    @DefaultMessage("Comment")
-    String reviewComment();
-
     @DefaultMessage("You")
     String you();
 
@@ -581,12 +528,10 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("'Enter' key saves immediately")
     String enterKeySaves();
 
-    @DefaultMessage("Use syntax highlighting Editor")
+    @DefaultMessage("Use syntax highlighting Editor (Warning: no spell check, long lines may have some wrapping issue)")
     String useSyntaxHighlight();
 
     @DefaultMessage("Show 'Save as Approved' warning")
     String showSaveApproveWarning();
 
-    @DefaultMessage("Enable Spell Check")
-    String enabledSpellCheck();
 }

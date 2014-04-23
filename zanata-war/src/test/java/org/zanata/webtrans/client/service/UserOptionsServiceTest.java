@@ -138,7 +138,7 @@ public class UserOptionsServiceTest {
     public void getEditorOptions() {
         Map<UserOptions, String> map = service.getEditorOptions();
 
-        assertThat(map.size(), Matchers.equalTo(18));
+        assertThat(map.size(), Matchers.equalTo(17));
 
         assertThat(map.containsKey(UserOptions.ShowErrors),
                 Matchers.equalTo(true));
@@ -154,8 +154,6 @@ public class UserOptionsServiceTest {
         assertThat(map.containsKey(UserOptions.UseCodeMirrorEditor),
                 Matchers.equalTo(true));
         assertThat(map.containsKey(UserOptions.TransMemoryDisplayMode),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.EnableSpellCheck),
                 Matchers.equalTo(true));
         assertThat(map.containsKey(UserOptions.FuzzyMessageFilter),
                 Matchers.equalTo(true));

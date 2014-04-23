@@ -159,16 +159,6 @@ public class EditorOptionsPresenter extends
     }
 
     @Override
-    public void onSpellCheckOptionChanged(Boolean spellCheckChkValue) {
-        if (userOptionsService.getConfigHolder().getState()
-                .isSpellCheckEnabled() != spellCheckChkValue) {
-            userOptionsService.getConfigHolder().setSpellCheckEnabled(
-                    spellCheckChkValue);
-            eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
-        }
-    }
-
-    @Override
     public void onTransMemoryDisplayModeChanged(DiffMode displayMode) {
         if (userOptionsService.getConfigHolder().getState()
                 .getTransMemoryDisplayMode() != displayMode) {
