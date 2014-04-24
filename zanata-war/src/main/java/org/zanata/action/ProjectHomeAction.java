@@ -230,8 +230,8 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 }
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.ALPHABETICAL)) {
-                return o1.getSlug().toLowerCase()
-                        .compareTo(o2.getSlug().toLowerCase());
+                return o1.getSlug()
+                        .compareToIgnoreCase(o2.getSlug());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_ACTIVITY)) {
 
