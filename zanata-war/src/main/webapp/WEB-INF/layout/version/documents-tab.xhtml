@@ -15,7 +15,9 @@
       sortAction="#{versionHomeAction.sortSourceDocumentList()}"
       oncomplete="refreshTooltip('#{rich:clientId('documents-document_form')}')"
       render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
-      sortingList="#{versionHomeAction.sourceDocumentSortingList}"/>
+      sortingList="#{versionHomeAction.sourceDocumentSortingList}"
+      onbegin="clearHTML('#{rich:clientId('documents-document_form')}')"
+      status="documentsTab-documentsLoader"/>
 
     <s:fragment
       rendered="#{versionHomeAction.documentUploadAllowed or s:hasPermission(versionHomeAction.version, 'update')}">
@@ -244,7 +246,9 @@
         sortAction="#{versionHomeAction.sortLanguageList(versionHomeAction.selectedDocument.id)}"
         render="documents-language_list, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
         oncomplete="refreshTooltip('#{rich:clientId('documents-language_list')}')"
-        sortingList="#{versionHomeAction.languageSortingList}"/>
+        sortingList="#{versionHomeAction.languageSortingList}"
+        onbegin="clearHTML('#{rich:clientId('documents-language_list')}')"
+        status="documentsTab-languagesLoader"/>
 
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">

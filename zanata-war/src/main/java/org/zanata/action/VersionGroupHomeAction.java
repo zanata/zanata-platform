@@ -197,15 +197,11 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public int compare(HLocale compareFrom, HLocale compareTo) {
-            final HLocale item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = compareFrom;
-                item2 = compareTo;
-            } else {
-                item1 = compareTo;
-                item2 = compareFrom;
+        public int compare(HLocale o1, HLocale o2) {
+            if (!sortingType.isDescending()) {
+                HLocale temp = o1;
+                o1 = o2;
+                o2 = temp;
             }
 
             SortingType.SortOption selectedSortOption =
@@ -217,19 +213,16 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
 
                 if (selectedVersionId == null) {
-                    wordStatistic1 =
-                            getStatisticsForLocale(item1.getLocaleId());
-                    wordStatistic2 =
-                            getStatisticsForLocale(item2.getLocaleId());
+                    wordStatistic1 = getStatisticsForLocale(o1.getLocaleId());
+                    wordStatistic2 = getStatisticsForLocale(o2.getLocaleId());
                 } else {
                     wordStatistic1 =
                             statisticMap.get(new VersionLocaleKey(
-                                    selectedVersionId, item1.getLocaleId()));
+                                    selectedVersionId, o1.getLocaleId()));
                     wordStatistic2 =
                             statisticMap.get(new VersionLocaleKey(
-                                    selectedVersionId, item2.getLocaleId()));
+                                    selectedVersionId, o2.getLocaleId()));
                 }
-
                 switch (selectedSortOption) {
                 case PERCENTAGE:
                     return Double.compare(
@@ -243,8 +236,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                             wordStatistic2.getUntranslated());
                 }
             } else {
-                return item1.retrieveDisplayName().compareTo(
-                        item2.retrieveDisplayName());
+                return o1.retrieveDisplayName().compareTo(
+                        o2.retrieveDisplayName());
             }
             return 0;
         }
@@ -261,16 +254,11 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public int compare(HProjectIteration compareFrom,
-                HProjectIteration compareTo) {
-            final HProjectIteration item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = compareFrom;
-                item2 = compareTo;
-            } else {
-                item1 = compareTo;
-                item2 = compareFrom;
+        public int compare(HProjectIteration o1, HProjectIteration o2) {
+            if (!sortingType.isDescending()) {
+                HProjectIteration temp = o1;
+                o1 = o2;
+                o2 = temp;
             }
 
             SortingType.SortOption selectedSortOption =
@@ -281,14 +269,14 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
                 if (selectedLocaleId != null) {
                     wordStatistic1 =
-                            statisticMap.get(new VersionLocaleKey(
-                                    item1.getId(), selectedLocaleId));
+                            statisticMap.get(new VersionLocaleKey(o1.getId(),
+                                    selectedLocaleId));
                     wordStatistic2 =
-                            statisticMap.get(new VersionLocaleKey(
-                                    item2.getId(), selectedLocaleId));
+                            statisticMap.get(new VersionLocaleKey(o2.getId(),
+                                    selectedLocaleId));
                 } else {
-                    wordStatistic1 = getStatisticForProject(item1.getId());
-                    wordStatistic2 = getStatisticForProject(item2.getId());
+                    wordStatistic1 = getStatisticForProject(o1.getId());
+                    wordStatistic2 = getStatisticForProject(o2.getId());
                 }
 
                 switch (selectedSortOption) {
@@ -304,8 +292,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                             wordStatistic2.getUntranslated());
                 }
             } else {
-                return item1.getProject().getName().toLowerCase()
-                        .compareTo(item2.getProject().getName().toLowerCase());
+                return o1.getProject().getName().toLowerCase()
+                        .compareTo(o2.getProject().getName().toLowerCase());
             }
             return 0;
         }
@@ -322,7 +310,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortLanguageList() {
         languageComparator.setSelectedVersionId(null);
         Collections.sort(activeLocales, languageComparator);
-        languageTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
@@ -331,18 +318,16 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long versionId) {
         languageComparator.setSelectedVersionId(versionId);
         Collections.sort(activeLocales, languageComparator);
-        projectTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
      * Sort project list based on selected locale - language tab
-     *
+     * 
      * @pa localeId
      */
     public void sortProjectList(LocaleId localeId) {
         versionComparator.setSelectedLocaleId(localeId);
         Collections.sort(projectIterations, versionComparator);
-        languageTabVersionFilter.resetQueryAndPage();
     }
 
     /**
@@ -351,7 +336,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortProjectList() {
         versionComparator.setSelectedLocaleId(null);
         Collections.sort(projectIterations, versionComparator);
-        projectTabVersionFilter.resetQueryAndPage();
     }
 
     public List<HLocale> getActiveLocales() {
@@ -447,7 +431,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     /**
      * Search for locale that is not activated in given version
-     *
+     * 
      * @param version
      */
     public List<LocaleId> getMissingLocale(HProjectIteration version) {
@@ -472,7 +456,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     /**
      * Search for version that doesn't activate given locale
-     *
+     * 
      * @param localeId
      */
     public List<HProjectIteration> getMissingVersion(LocaleId localeId) {

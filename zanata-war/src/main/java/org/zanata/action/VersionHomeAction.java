@@ -283,30 +283,26 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long documentId) {
         languageComparator.setSelectedDocumentId(documentId);
         Collections.sort(getSupportedLocale(), languageComparator);
-        documentsTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
      * Sort document list based on selected locale
-     *
+     * 
      * @param localeId
      */
     public void sortDocumentList(LocaleId localeId) {
         documentComparator.setSelectedLocaleId(localeId);
         Collections.sort(getDocuments(), documentComparator);
-        languageTabDocumentFilter.resetQueryAndPage();
     }
 
     public void sortSourceDocumentList() {
         sourceDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getSourceDocuments(), sourceDocumentComparator);
-        documentsTabDocumentFilter.resetQueryAndPage();
     }
 
     public void sortSettingsDocumentList() {
         settingsDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getDocuments(), settingsDocumentComparator);
-        settingsTabDocumentFilter.resetQueryAndPage();
     }
 
     @Override
@@ -334,7 +330,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         overallStatistic = new WordStatistic();
-        for (Map.Entry<LocaleId, WordStatistic> entry : localeStatisticMap.entrySet()) {
+        for (Map.Entry<LocaleId, WordStatistic> entry : localeStatisticMap
+                .entrySet()) {
             overallStatistic.add(entry.getValue());
         }
         overallStatistic.setRemainingHours(StatisticsUtil
@@ -418,7 +415,6 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public void setSelectedLocale(HLocale hLocale) {
         this.selectedLocale = hLocale;
-        resetPageData();
     }
 
     @Getter
@@ -880,25 +876,21 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public int compare(HDocument o1, HDocument o2) {
-            final HDocument item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = o1;
-                item2 = o2;
-            } else {
-                item1 = o2;
-                item2 = o1;
+            if (!sortingType.isDescending()) {
+                HDocument temp = o1;
+                o1 = o2;
+                o2 = temp;
             }
 
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
 
             if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
-                return item1.getName().compareTo(item2.getName());
+                return o1.getName().compareToIgnoreCase(o2.getName());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_SOURCE_UPDATE)) {
-                return DateUtil.compareDate(item1.getLastChanged(),
-                        item2.getLastChanged());
+                return DateUtil.compareDate(o1.getLastChanged(),
+                        o2.getLastChanged());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_TRANSLATED)) {
                 if (selectedLocaleId != null) {
@@ -918,16 +910,16 @@ public class VersionHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
                 if (selectedLocaleId != null) {
                     wordStatistic1 =
-                            getStatisticForDocument(item1.getId(),
+                            getStatisticForDocument(o1.getId(),
                                     selectedLocaleId);
 
                     wordStatistic2 =
-                            getStatisticForDocument(item2.getId(),
+                            getStatisticForDocument(o2.getId(),
                                     selectedLocaleId);
 
                 } else {
-                    wordStatistic1 = getDocumentStatistic(item1.getId());
-                    wordStatistic2 = getDocumentStatistic(item2.getId());
+                    wordStatistic1 = getDocumentStatistic(o1.getId());
+                    wordStatistic2 = getDocumentStatistic(o2.getId());
                 }
                 return compareWordStatistic(wordStatistic1, wordStatistic2,
                         selectedSortOption);
@@ -947,15 +939,11 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public int compare(HLocale compareFrom, HLocale compareTo) {
-            final HLocale item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = compareFrom;
-                item2 = compareTo;
-            } else {
-                item1 = compareTo;
-                item2 = compareFrom;
+        public int compare(HLocale o1, HLocale o2) {
+            if (!sortingType.isDescending()) {
+                HLocale temp = o1;
+                o1 = o2;
+                o2 = temp;
             }
 
             SortingType.SortOption selectedSortOption =
@@ -967,23 +955,21 @@ public class VersionHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
 
                 if (selectedDocumentId == null) {
-                    wordStatistic1 =
-                            getStatisticsForLocale(item1.getLocaleId());
-                    wordStatistic2 =
-                            getStatisticsForLocale(item2.getLocaleId());
+                    wordStatistic1 = getStatisticsForLocale(o1.getLocaleId());
+                    wordStatistic2 = getStatisticsForLocale(o2.getLocaleId());
                 } else {
                     wordStatistic1 =
                             getStatisticForDocument(selectedDocumentId,
-                                    item1.getLocaleId());
+                                    o1.getLocaleId());
                     wordStatistic2 =
                             getStatisticForDocument(selectedDocumentId,
-                                    item2.getLocaleId());
+                                    o2.getLocaleId());
                 }
                 return compareWordStatistic(wordStatistic1, wordStatistic2,
                         selectedSortOption);
             } else {
-                return item1.retrieveDisplayName().compareTo(
-                        item2.retrieveDisplayName());
+                return o1.retrieveDisplayName().compareTo(
+                        o2.retrieveDisplayName());
             }
         }
     }

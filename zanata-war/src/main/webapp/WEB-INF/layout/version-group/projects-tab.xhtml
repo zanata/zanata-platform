@@ -14,7 +14,9 @@
       <zanata:sortlist id="projects-project_sorting"
         sortAction="#{versionGroupHomeAction.sortProjectList()}"
         render="projects-project_form, projectTabVersionFilter-pager, projectTabVersionFilter-page-info, projectTabVersionFilterBottom-pager, projectTabVersionFilterBottom-page-info"
-        sortingList="#{versionGroupHomeAction.projectSortingList}"/>
+        sortingList="#{versionGroupHomeAction.projectSortingList}"
+        onbegin="clearHTML('#{rich:clientId('projects-project_form')}')"
+        status="projectsTab-projectsLoader"/>
 
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
@@ -152,7 +154,9 @@
       <zanata:sortlist id="projects-language_sorting"
         sortAction="#{versionGroupHomeAction.sortLanguageList(versionGroupHomeAction.selectedVersion.id)}"
         render="projects-language_list, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
-        sortingList="#{versionGroupHomeAction.languageSortingList}"/>
+        sortingList="#{versionGroupHomeAction.languageSortingList}"
+        onbegin="clearHTML('#{rich:clientId('projects-language_list')}')"
+        status="projectsTab-languagesLoader"/>
     </div>
 
     <a href="#" class="panel__header__back"
@@ -201,8 +205,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="#settings-languages" class="button--primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a href="javascript:void(0)" class="button--primary"
+              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
               #{messages['jsf.AddLanguages']}
             </a>
           </p>
