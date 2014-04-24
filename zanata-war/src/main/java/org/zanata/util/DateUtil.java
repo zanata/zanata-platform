@@ -19,9 +19,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * 
+ *
  */
 public class DateUtil {
     private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
@@ -38,7 +38,7 @@ public class DateUtil {
 
     /**
      * Format date to dd/MM/yy hh:mm a
-     * 
+     *
      * @param date
      * @return
      */
@@ -53,7 +53,7 @@ public class DateUtil {
 
     /**
      * Format date to hh:mm:ss
-     * 
+     *
      * @param date
      * @return
      */
@@ -69,7 +69,7 @@ public class DateUtil {
     /**
      * Return readable string of time different compare between 'then' and
      * current time e.g 10 minutes ago, 1 hour ago
-     * 
+     *
      * @param then
      * @return
      */

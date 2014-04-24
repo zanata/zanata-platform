@@ -287,7 +287,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     /**
      * Sort document list based on selected locale
-     * 
+     *
      * @param localeId
      */
     public void sortDocumentList(LocaleId localeId) {
@@ -876,14 +876,14 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public int compare(HDocument o1, HDocument o2) {
-            if (!sortingType.isDescending()) {
+            SortingType.SortOption selectedSortOption =
+                    sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
                 HDocument temp = o1;
                 o1 = o2;
                 o2 = temp;
             }
-
-            SortingType.SortOption selectedSortOption =
-                    sortingType.getSelectedSortOption();
 
             if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
@@ -940,14 +940,14 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public int compare(HLocale o1, HLocale o2) {
-            if (!sortingType.isDescending()) {
+            SortingType.SortOption selectedSortOption =
+                    sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
                 HLocale temp = o1;
                 o1 = o2;
                 o2 = temp;
             }
-
-            SortingType.SortOption selectedSortOption =
-                    sortingType.getSelectedSortOption();
 
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {

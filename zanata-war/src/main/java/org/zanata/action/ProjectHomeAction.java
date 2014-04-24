@@ -192,14 +192,15 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
         @Override
         public int compare(HProjectIteration o1, HProjectIteration o2) {
-            if (!sortingType.isDescending()) {
+            SortingType.SortOption selectedSortOption =
+                    sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
                 HProjectIteration temp = o1;
                 o1 = o2;
                 o2 = temp;
             }
 
-            SortingType.SortOption selectedSortOption =
-                    sortingType.getSelectedSortOption();
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)
                     && !selectedSortOption
