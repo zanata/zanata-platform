@@ -6,7 +6,6 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.joda.time.DateTime;
-import org.zanata.common.HasContents;
 import org.zanata.model.HLocale;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
@@ -36,8 +35,7 @@ public class FilterConstraintToQuery {
     private Collection<Long> documentIds;
 
     @Setter(AccessLevel.PACKAGE)
-    private ContentCriterion contentCriterion = new ContentCriterion(
-            HasContents.MAX_PLURALS);
+    private ContentCriterion contentCriterion = new ContentCriterion();
 
     private FilterConstraintToQuery(FilterConstraints constraints,
             DocumentId documentId) {
@@ -62,6 +60,8 @@ public class FilterConstraintToQuery {
             term = escapeWildcard(term);
             searchString = match(term, MatchMode.ANYWHERE);
         }
+        contentCriterion = new ContentCriterion()
+                .withCaseSensitive(constraints.isCaseSensitive());
     }
 
     public static FilterConstraintToQuery filterInSingleDocument(
@@ -138,17 +138,14 @@ public class FilterConstraintToQuery {
         String searchInSourceCondition = null;
         if (constraints.isSearchInSource()) {
             searchInSourceCondition =
-                    contentCriterion.contentsCriterionAsString("tf",
-                            constraints.isCaseSensitive(),
-                            Parameters.searchString.placeHolder());
+                    contentCriterion.withEntityAlias("tf")
+                            .contentsCriterionAsString();
         }
 
         String searchInTargetCondition = null;
         if (constraints.isSearchInTarget()) {
             List<String> targetConjunction = Lists.newArrayList();
-            targetConjunction.add(contentCriterion.contentsCriterionAsString(
-                    null, constraints.isCaseSensitive(),
-                    Parameters.searchString.placeHolder()));
+            targetConjunction.add(contentCriterion.contentsCriterionAsString());
             targetConjunction.add(eq("textFlow", "tf"));
             targetConjunction.add(eq("locale", locale.placeHolder()));
 
@@ -274,9 +271,8 @@ public class FilterConstraintToQuery {
 
                 nullTargetCondition =
                         and(nullTargetCondition,
-                                contentCriterion.contentsCriterionAsString(
-                                        "tf", constraints.isCaseSensitive(),
-                                        Parameters.searchString.placeHolder()));
+                                contentCriterion.withEntityAlias("tf")
+                                        .contentsCriterionAsString());
             }
             return QueryBuilder.or(stateInListCondition, nullTargetCondition);
         }

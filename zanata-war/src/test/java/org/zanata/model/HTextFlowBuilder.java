@@ -14,9 +14,12 @@ import lombok.experimental.Wither;
 import lombok.extern.slf4j.Slf4j;
 
 /**
-* @author Patrick Huang
-*         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
-*/
+ * A builder to build HTextFlow entity and possibly [HTextFlowTarget] [and
+ * HSimpleComment for source and/or target] [and HPotEntryData for msgCtxt].
+ *
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Wither

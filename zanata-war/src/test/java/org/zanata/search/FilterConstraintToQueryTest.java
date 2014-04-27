@@ -30,15 +30,9 @@ import com.google.common.collect.Lists;
 public class FilterConstraintToQueryTest {
     public static final ContentCriterion contentCriterion = new ContentCriterion(1);
     public static final String SOURCE_CONTENT_CASE_INSENSITIVE =
-            contentCriterion.contentsCriterionAsString("tf", false,
-                    searchString
-                            .placeHolder()
-            );
+            contentCriterion.withEntityAlias("tf").contentsCriterionAsString();
     public static final String TARGET_CONTENT_CASE_INSENSITIVE =
-            contentCriterion.contentsCriterionAsString(null, false,
-                    searchString
-                            .placeHolder()
-            );
+            contentCriterion.contentsCriterionAsString();
 
     public static final String QUERY_BEFORE_WHERE =
             "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale ";
