@@ -89,7 +89,7 @@ public class GetTransUnitActionContext {
 
     public GetTransUnitActionContext changeFindMessage(String findMessage) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-        result.editorFilter = result.editorFilter.changeTextInContent(findMessage);
+        result.editorFilter = EditorFilter.fromQuery(findMessage);
         return result;
     }
 
