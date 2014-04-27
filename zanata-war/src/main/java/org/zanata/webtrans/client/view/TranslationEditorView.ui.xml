@@ -40,8 +40,8 @@
   <g:LayoutPanel styleName="translatorEditorContainer">
     <g:layer top="0" height="2.5em">
       <g:HTMLPanel styleName="new-zanata">
-        <ul class="list--horizontal {style.topBar}">
-          <li>
+        <ul class="list--no-bullets {style.topBar}">
+          <li class="w--7-8">
             <g:Widget ui:field="transFilterView" />
           </li>
           <li class="{style.right-nav}">
