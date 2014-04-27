@@ -136,7 +136,7 @@
 
   <g:HTMLPanel tag="ul" styleName="{style.container} list--horizontal">
     <li class="w--1-2">
-      <fui:SearchField ui:field="searchField" />
+      <fui:EditorSearchField ui:field="searchField" />
     </li>
 
     <li class="{style.drop-down}">

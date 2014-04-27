@@ -20,38 +20,12 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.TextBox;
+public interface EditorSearchFieldListener {
+    void onSearchFieldValueChange(String value);
 
-/**
- * @author damason@redhat.com
- */
-public class SearchTextBox extends TextBox {
+    void onSearchFieldBlur();
 
-    public SearchTextBox() {
-    }
+    void onSearchFieldFocus();
 
-    public String getPlaceholder() {
-        return getElement().getAttribute("placeholder");
-    }
-
-    public void setPlaceholder(String text) {
-        getElement().setAttribute("placeholder", (text == null ? "" : text));
-    }
-
-    public String getAutocomplete() {
-        return getElement().getAttribute("autocomplete");
-    }
-
-    public void setAutocomplete(String text) {
-        getElement().setAttribute("autocomplete", (text == null ? "" : text));
-    }
-
-    public boolean isFocused() {
-        return isElementFocused(getElement());
-    }
-
-    private native boolean isElementFocused(Element element)/*-{
-        return element.ownerDocument.activeElement === element;
-    }-*/;
+    void onSearchFieldCancel();
 }

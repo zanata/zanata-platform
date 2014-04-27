@@ -34,6 +34,8 @@ public class TransFilterPresenterTest {
     private History history;
     @Mock
     private UserOptionsService userOptionsService;
+    @Mock
+    private KeyShortcutPresenter keyShortcutPresenter;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -45,7 +47,7 @@ public class TransFilterPresenterTest {
 
         presenter =
                 new TransFilterPresenter(display, eventBus, history,
-                        userOptionsService);
+                        userOptionsService, keyShortcutPresenter);
 
         verify(display).setListener(presenter);
     }

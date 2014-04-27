@@ -31,6 +31,7 @@ import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
+import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
 
@@ -42,15 +43,18 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     private final History history;
 
     private final UserOptionsService userOptionsService;
+    private final KeyShortcutPresenter keyShortcutPresenter;
 
     @Inject
     public TransFilterPresenter(final TransFilterDisplay display,
             final EventBus eventBus, final History history,
-            UserOptionsService userOptionsService) {
+            UserOptionsService userOptionsService,
+            KeyShortcutPresenter keyShortcutPresenter) {
         super(display, eventBus);
         display.setListener(this);
         this.history = history;
         this.userOptionsService = userOptionsService;
+        this.keyShortcutPresenter = keyShortcutPresenter;
     }
 
     @Override
@@ -89,6 +93,12 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         pushFilterHistory(translatedChkValue, fuzzyChkValue,
                 untranslatedChkValue, approvedChkValue, rejectedChkValue,
                 hasErrorChkValue);
+    }
+
+    @Override
+    public void onSearchFieldFocused(boolean focused) {
+        keyShortcutPresenter.setContextActive(ShortcutContext.Edit, !focused);
+        keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, !focused);
     }
 
     @Override
