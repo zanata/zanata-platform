@@ -71,7 +71,8 @@
     </div>
   </s:fragment>
 
-  <s:div styleClass="panel__results">
+  <s:div
+    styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom' : ''}">
     <s:div id="#{cc.attrs.id}-pager">
       <s:div styleClass="panel__results__type"
         rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.filteredListSize eq 0)}">

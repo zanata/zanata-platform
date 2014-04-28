@@ -59,6 +59,7 @@ import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.FilterUtil;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
@@ -180,7 +181,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
      */
     public void sortVersionList() {
         Collections.sort(projectVersions, versionComparator);
-        versionFilter.resetQueryAndPage();
     }
 
     private class VersionComparator implements Comparator<HProjectIteration> {
@@ -191,29 +191,25 @@ public class ProjectHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public int compare(HProjectIteration compareFrom,
-                HProjectIteration compareTo) {
-            final HProjectIteration item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = compareFrom;
-                item2 = compareTo;
-            } else {
-                item1 = compareTo;
-                item2 = compareFrom;
-            }
-
+        public int compare(HProjectIteration o1, HProjectIteration o2) {
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
+                HProjectIteration temp = o1;
+                o1 = o2;
+                o2 = temp;
+            }
+
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)
                     && !selectedSortOption
                             .equals(SortingType.SortOption.LAST_ACTIVITY)) {
 
                 WordStatistic wordStatistic1 =
-                        getStatisticForVersion(item1.getSlug());
+                        getStatisticForVersion(o1.getSlug());
                 WordStatistic wordStatistic2 =
-                        getStatisticForVersion(item2.getSlug());
+                        getStatisticForVersion(o2.getSlug());
 
                 if (selectedSortOption
                         .equals(SortingType.SortOption.PERCENTAGE)) {
@@ -234,22 +230,14 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 }
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.ALPHABETICAL)) {
-                return item1.getSlug().toLowerCase()
-                        .compareTo(item2.getSlug().toLowerCase());
+                return o1.getSlug()
+                        .compareToIgnoreCase(o2.getSlug());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_ACTIVITY)) {
 
-                Date date1 = getVersionLastActivityDate(item1.getId());
-                Date date2 = getVersionLastActivityDate(item2.getId());
-
-                if (date1 == date2) {
-                    return 0;
-                } else if (date1 == null) {
-                    return -1;
-                } else if (date2 == null) {
-                    return 1;
-                }
-                return date1.compareTo(date2);
+                Date date1 = getVersionLastActivityDate(o1.getId());
+                Date date2 = getVersionLastActivityDate(o2.getId());
+                return DateUtil.compareDate(date1, date2);
             }
             return 0;
         }

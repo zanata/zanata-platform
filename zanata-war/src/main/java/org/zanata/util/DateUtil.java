@@ -105,14 +105,14 @@ public class DateUtil {
     }
 
     public static int compareDate(Date date1, Date date2) {
-        if (date1 == date2) {
+        if (date1 == null && date2 == null) {
             return 0;
         }
-        if (date1 == null) {
-            return -1;
-        } else if (date2 == null) {
-            return 1;
+
+        if (date1 == null || date2 == null) {
+            return date1 == null ? -1 : 1;
         }
+
         return date1.compareTo(date2);
     }
 
