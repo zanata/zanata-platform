@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBException;
 
+import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientResponse;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +19,9 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.*;
+
+
+import com.google.common.collect.Sets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -169,6 +173,17 @@ public class TranslationServiceRestTest extends
         log.debug("actual:" + get.toString());
         ResourceTestUtil.clearPoTargetHeaders(base, get);
         assertThat(base.toString(), is(get.toString()));
+    }
+
+    @Test
+    public void invalidExtensionWillGetBadRequest() {
+        Resource res = resourceTestFactory.getTextFlowTest();
+        ClientResponse<TranslationsResource> response =
+                translationResource.getTranslations(res.getName(), DE,
+                        Sets.newHashSet("invalidExt"), true, "etag");
+
+        assertThat(response.getStatus(),
+                Matchers.equalTo(Status.BAD_REQUEST.getStatusCode()));
     }
 
     private <T> T cloneDTO(T dto) {

@@ -1345,9 +1345,12 @@ public class ResourceUtils {
             @SuppressWarnings("unchecked")
             Collection<String> invalidExtensions =
                     CollectionUtils.subtract(requestedExt, validExtensions);
-            throw new RuntimeException(
-                    "Unsupported Extensions within this context: "
-                            + StringUtils.join(invalidExtensions, ","));
+            Response response =
+                    Response.status(Status.BAD_REQUEST)
+                            .entity("Unsupported Extensions within this context: "
+                                    + StringUtils.join(invalidExtensions, ","))
+                            .build();
+            throw new WebApplicationException(response);
         }
     }
 
