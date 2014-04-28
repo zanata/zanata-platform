@@ -12,7 +12,7 @@ var globalMessageTimer;
 
 // automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
-  if (jQuery().zanata) {
+  if (zanata) {
     zanata.messages.activate('#messages .message--global');
   } else {
     jQuery('#messages .message--global').addClass('is-active');
@@ -22,7 +22,7 @@ function startGlobalMessageTimer() {
   clearTimeout(globalMessageTimer);
 
   globalMessageTimer = setTimeout(function() {
-    if (jQuery().zanata) {
+    if (zanata) {
       zanata.messages.deactivate('#messages .message--global');
     } else {
       jQuery('#messages .message--global').removeClass('is-active');
@@ -221,8 +221,8 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     deselectRow(currentSelected);
     if (currentSelected.length == 0
         || jQuery(currentSelected).next().length == 0) {
-      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
-          'li').first());
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results')
+          .children('li').first());
     } else {
       selectRow(jQuery(currentSelected).next("li"));
     }
@@ -230,8 +230,8 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     // key: up
     deselectRow(currentSelected);
     if (currentSelected.length == 0) {
-      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
-          'li').last());
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results')
+          .children('li').last());
     } else {
       selectRow(jQuery(currentSelected).prev("li"));
     }
@@ -305,6 +305,18 @@ function registerMouseEvent(autocompleteId, selectItemAction,
 function filterList(input, filterFn) {
   filterFn(jQuery(input).val());
 }
+
+/* ----------------------------------------------------------- */
+/*------------------zanata-sortlist component------------------*/
+/* ----------------------------------------------------------- */
+jQuery(document).ready(function() {
+  jQuery('a.js-sort-option').each(function() {
+    jQuery(this).click(function() {
+      jQuery(this).parent().siblings("li").children("a.js-sort-option").removeClass('is-active');
+      jQuery(this).addClass("is-active");
+    });
+  });
+});
 
 /* ----------------------------------------------------------- */
 /*----------------- zanata-checkbox component -----------------*/

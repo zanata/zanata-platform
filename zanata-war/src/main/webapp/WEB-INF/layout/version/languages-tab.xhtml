@@ -48,7 +48,9 @@
         sortAction="#{versionHomeAction.sortLanguageList()}"
         render="languages-language_form, languageTabLanguageSearch-pager, languageTabLanguageSearch-page-info, languageTabLanguageSearchBottom-pager, languageTabLanguageSearchBottom-page-info"
         oncomplete="refreshTooltip('languages-language_form');"
-        sortingList="#{versionHomeAction.languageSortingList}"/>
+        sortingList="#{versionHomeAction.languageSortingList}"
+        onbegin="clearHTML('#{rich:clientId('languages-language_form')}')"
+        status="languageTab-languagesLoader"/>
 
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
@@ -88,7 +90,7 @@
     </f:facet>
   </a4j:status>
 
-  <h:form id="languages-language_form" styleClass="l--push-bottom-0">
+  <h:form id="languages-language_form" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.supportedLocale}">
       <p class="txt--meta">#{messages['jsf.NoActiveLanguages']}</p>
@@ -185,7 +187,9 @@
       sortAction="#{versionHomeAction.sortDocumentList(versionHomeAction.selectedLocale.localeId)}"
       render="languages-document_list, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
       oncomplete="refreshTooltip('#{rich:clientId('languages-document_list')}')"
-      sortingList="#{versionHomeAction.documentSortingList}"/>
+      sortingList="#{versionHomeAction.documentSortingList}"
+      onbegin="clearHTML('#{rich:clientId('languages-document_list')}')"
+      status="languageTab-documentsLoader"/>
 
     <h:form styleClass="l--push-bottom-0 bx--inline"
       id="languages-export_options">
@@ -272,7 +276,7 @@
   </f:facet>
 </a4j:status>
 
-<h:form id="languages-document_list" styleClass="l--push-bottom-0">
+<h:form id="languages-document_list" styleClass="l--push-bottom-1">
   <s:div styleClass="l--pad-all-half"
     rendered="#{versionHomeAction.selectedLocale == null}">
     <p class="txt--meta">#{messages['jsf.SelectALanguageFromList']}</p>
@@ -410,11 +414,11 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}"
-                   title="#{displayUnit.title}">
-                    <span class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                 </span>
+                     <span class="#{displayUnit.cssClass}"
+                       title="#{displayUnit.title}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
+                        <span class="stats__unit">#{displayUnit.unit}</span>
+                     </span>
                   </s:div>
                 </div>
                 <zanata:statistic

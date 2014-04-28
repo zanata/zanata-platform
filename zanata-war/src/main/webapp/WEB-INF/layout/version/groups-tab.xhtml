@@ -25,14 +25,14 @@
       <f:facet name="start"><zanata:loader/></f:facet>
     </a4j:status>
 
-    <h:form id="groups-form" styleClass="l--push-bottom-0">
+    <h:form id="groups-form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.groups}">
         <p class="txt--meta">#{messages['jsf.NoGroups']}</p>
         <s:fragment
           rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
           <p>
-            <s:link styleClass="button-primary"
+            <s:link styleClass="button--primary"
               value="#{messages['jsf.group.FindGroup']}"
               view="/version-group/home.xhtml"
               propagation="none">

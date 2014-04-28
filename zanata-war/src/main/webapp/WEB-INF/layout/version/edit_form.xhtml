@@ -67,22 +67,19 @@
     valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
 
   <s:div id="project-type">
-    <ui:param name="currentProjectType"
-      value="#{versionHome.isNewInstance() ? versionHome.project.defaultProjectType.name(): versionHome.instance.projectType.name()}"/>
-
     <ul class="list--slat l--push-bottom-1">
       <ui:repeat value="#{versionHome.projectTypeList}" var="projectType">
         <li>
           <div class="form__radio js-form__radio"
             onclick="onProjectTypeChanged(this)">
             <s:fragment
-              rendered="#{currentProjectType eq projectType.name()}">
+              rendered="#{versionHome.selectedProjectType eq projectType.name()}">
               <input type="radio" name="project-type"
                 class="form__radio__input js-form__radio__input"
                 id="project-type-#{projectType.name()}" checked="true"/>
             </s:fragment>
             <s:fragment
-              rendered="#{currentProjectType ne projectType.name()}">
+              rendered="#{versionHome.selectedProjectType ne projectType.name()}">
               <input type="radio" name="project-type"
                 class="form__radio__input js-form__radio__input"
                 id="project-type-#{projectType.name()}"/>

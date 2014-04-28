@@ -14,7 +14,9 @@
           sortAction="#{projectHomeAction.sortVersionList()}"
           render="versions_form, versionSearch-pager, versionSearch-page-info, versionSearchBottom-pager, versionSearchBottom-page-info"
           oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
-          sortingList="#{projectHomeAction.versionSortingList}"/>
+          sortingList="#{projectHomeAction.versionSortingList}"
+          onbegin="clearHTML('#{rich:clientId('versions_form')}')"
+          status="versionTab-versionsLoader"/>
 
         <s:fragment
           rendered="#{s:hasPermission(projectHome.instance, 'update')}">
@@ -56,14 +58,14 @@
       <f:facet name="start"><zanata:loader/></f:facet>
     </a4j:status>
 
-    <h:form id="versions_form" styleClass="l--push-bottom-0">
+    <h:form id="versions_form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty projectHomeAction.projectVersions}">
         <p class="txt--meta">#{messages['jsf.NoVersions']}</p>
         <s:fragment
           rendered="#{s:hasPermission(projectHome.instance, 'update')}">
           <p>
-            <s:link styleClass="button-primary"
+            <s:link styleClass="button--primary"
               value="#{messages['jsf.project.NewVersion']}"
               view="/project/add_iteration.xhtml"
               propagation="none">
