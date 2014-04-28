@@ -81,8 +81,7 @@ public class ComparatorUtil {
             new Comparator<HProject>() {
                 @Override
                 public int compare(HProject o1, HProject o2) {
-                    return o2.getCreationDate().after(o1.getCreationDate()) ? 1
-                            : -1;
+                    return o2.getCreationDate().compareTo(o1.getCreationDate());
                 }
             };
 
