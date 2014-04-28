@@ -25,6 +25,7 @@ public class HistoryToken {
     // defaults
     protected static final MainView DEFAULT_VIEW = MainView.Documents;
     protected static final String DEFAULT_DOCUMENT_PATH = "";
+    protected static final String DEFAULT_SEARCH_TEXT = null;
     protected static final String DEFAULT_DOC_FILTER_TEXT = "";
     protected static final boolean DEFAULT_DOC_FILTER_EXACT = false;
     protected static final boolean DEFAULT_DOC_FILTER_CASE_SENSITIVE = false;
@@ -127,7 +128,7 @@ public class HistoryToken {
     }
 
     public void setSearchText(String value) {
-        this.searchText = value;
+        this.searchText = Strings.isNullOrEmpty(value) ? DEFAULT_SEARCH_TEXT : value;
     }
 
     public String getProjectSearchText() {
