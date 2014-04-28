@@ -88,7 +88,7 @@ public class EditorSearchField extends Composite {
     }
 
     public void setText(String text) {
-        filterTextBox.setValue(text, false);
+        filterTextBox.setText(text);
     }
 
     // fire filterTextBox#ValueChangeEvent

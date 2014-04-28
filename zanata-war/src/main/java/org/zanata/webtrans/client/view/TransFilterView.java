@@ -85,8 +85,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @Override
     public void setSearchTerm(String searchTerm) {
-        Log.info("setting search term (with event):[" + searchTerm + "]");
-        searchField.setValue(searchTerm);
+        searchField.setText(searchTerm);
     }
 
     @Override
@@ -142,6 +141,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     @Override
     public void onSearchFieldCancel() {
         searchField.setValue("");
+        listener.searchTerm("");
     }
 
     @UiHandler({ "translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk",

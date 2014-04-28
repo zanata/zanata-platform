@@ -434,7 +434,9 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
             userWorkspaceContext.setSelectedDoc(node.getDocInfo());
             // required in order to show the document selected in doclist when
             // loading from bookmarked history token
-            fireDocumentSelection(node.getDocInfo());
+            userWorkspaceContext.setSelectedDoc(node.getDocInfo());
+
+
         }
     }
 
