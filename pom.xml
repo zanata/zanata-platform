@@ -165,6 +165,11 @@
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <!-- The profile 'staticAnalysis' enables these -->
+    <enforcer.skip>true</enforcer.skip>
+    <findbugs.skip>true</findbugs.skip>
+    <mdep.analyze.skip>true</mdep.analyze.skip>
+
     <hamcrest.version>1.3</hamcrest.version>
     <lombok.version>1.12.6</lombok.version>
     <resteasy.version>2.3.3.Final</resteasy.version>
@@ -339,9 +344,53 @@ package.
                 <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
               </allowedRepositories>
             </requireNoRepositories>
+            <rule implementation="com.redhat.victims.VictimsRule">
+              <!--
+                Check the project's dependencies against the database using
+                name and version. The default mode for this is 'warning'.
+
+                Valid options are:
+
+                disabled: Rule is still run but only INFO level messages aand no errors.
+                warning : Rule will spit out a warning message but doesn't result in a failure.
+                fatal   : Rule will spit out an error message and fail the build.
+              -->
+              <metadata>warning</metadata>
+
+              <!--
+                Check the project's dependencies against the database using
+                the SHA-512 checksum of the artifact. The default is fatal.
+
+                Valid options are:
+
+                disabled: Rule is still run but only INFO level messages aand no errors.
+                warning : Rule will spit out a warning message but doesn't result in a failure.
+                fatal   : Rule will spit out an error message and fail the build.
+              -->
+              <!-- TODO change to fatal -->
+              <fingerprint>warning</fingerprint>
+
+              <!--
+                Disables the synchronization mechansim. By default the rule will
+                attempt to update the database for each build.
+
+                Valid options are:
+
+                auto  : Automatically update the database entries on each build.
+                daily : Update the database entries once per day.
+                off   : Disable the synchronization mechanism.
+              -->
+              <updates>daily</updates>
+            </rule>
           </rules>
         </configuration>
         <dependencies>
+          <dependency>
+            <groupId>com.redhat.victims</groupId>
+            <artifactId>enforce-victims-rule</artifactId>
+            <version>1.3.2</version>
+            <type>jar</type>
+          </dependency>
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
@@ -724,6 +773,23 @@ package.
     </profile>
 
     <profile>
+      <id>staticAnalysis</id>
+      <activation>
+        <property>
+          <name>staticAnalysis</name>
+        </property>
+      </activation>
+      <build>
+
+      </build>
+      <properties>
+        <enforcer.skip>false</enforcer.skip>
+        <findbugs.skip>false</findbugs.skip>
+        <mdep.analyze.skip>false</mdep.analyze.skip>
+      </properties>
+    </profile>
+
+    <profile>
       <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
       <id>it.test</id>
@@ -755,6 +821,7 @@ package.
       <properties>
         <allow.deploy.skip>false</allow.deploy.skip>
         <checkstyle.skip>true</checkstyle.skip>
+        <enforcer.skip>true</enforcer.skip>
         <findbugs.skip>true</findbugs.skip>
         <mavensign.expand.skip>*</mavensign.expand.skip>
         <mavensign.sign.skip>*</mavensign.sign.skip>
