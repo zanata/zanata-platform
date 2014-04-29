@@ -528,7 +528,7 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("'Enter' key saves immediately")
     String enterKeySaves();
 
-    @DefaultMessage("Use syntax highlighting Editor (Warning: no spell check, long lines may have some wrapping issue)")
+    @DefaultMessage("Use syntax highlighting Editor (Warning: no spell check, long lines may have some wrapping issues)")
     String useSyntaxHighlight();
 
     @DefaultMessage("Show 'Save as Approved' warning")

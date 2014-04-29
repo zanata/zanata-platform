@@ -713,9 +713,9 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         }
     }
 
-    public void switchEditor() {
+    public void toggleSyntaxHighlighting() {
         if (hasSelectedRow()) {
-            getCurrentDisplay().switchEditor();
+            getCurrentDisplay().toggleSyntaxHighlighting();
         }
     }
 }

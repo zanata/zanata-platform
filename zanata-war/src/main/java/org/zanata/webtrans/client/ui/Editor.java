@@ -246,7 +246,7 @@ public class Editor extends Composite implements ToggleEditor {
     }
 
     @Override
-    public void switchType() {
+    public void toggleType() {
         String currentText = textArea.getText();
         int cursorPos = textArea.getCursorPos();
         boolean editing = textArea.isEditing();

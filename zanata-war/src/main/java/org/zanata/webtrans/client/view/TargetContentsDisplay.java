@@ -74,7 +74,7 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
 
     ContentState getCachedState();
 
-    void switchEditor();
+    void toggleSyntaxHighlighting();
 
     interface Listener {
         void validate(ToggleEditor editor);

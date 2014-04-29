@@ -236,7 +236,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                         .setHandler(new KeyShortcutEventHandler() {
                             @Override
                             public void onKeyShortcut(KeyShortcutEvent event) {
-                                targetContentsPresenter.switchEditor();
+                                targetContentsPresenter.toggleSyntaxHighlighting();
                             }
                         }).build();
         keyShortcutPresenter.register(switchEditorShortcut);

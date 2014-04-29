@@ -165,9 +165,9 @@ public class TargetContentsView extends Composite implements
     }
 
     @Override
-    public void switchEditor() {
+    public void toggleSyntaxHighlighting() {
         for (ToggleEditor editor : editors) {
-            editor.switchType();
+            editor.toggleType();
         }
     }
 
