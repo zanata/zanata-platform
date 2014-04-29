@@ -314,7 +314,9 @@
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.ServerConfiguration'])}" />
     <navigation from-action="#{serverConfigurationBean.update}">
-      <redirect view-id="/admin/home.xhtml" />
+      <rule if-outcome="success">
+        <redirect view-id="/admin/home.xhtml" />
+      </rule>
     </navigation>
   </page>
 

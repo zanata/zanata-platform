@@ -4,7 +4,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
+import javax.ws.rs.core.Response;
+
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
@@ -22,6 +25,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ZanataRestCaller {
 
+    @Getter
     private final ZanataProxyFactory zanataProxyFactory;
 
     /**
@@ -70,8 +75,7 @@ public class ZanataRestCaller {
         project.setName(projectSlug);
 
         ClientResponse response = projectResource.put(project);
-        ClientUtility.checkResult(response);
-        response.releaseConnection();
+        checkStatusAndReleaseConnection(response);
 
         ProjectIteration iteration = new ProjectIteration();
         iteration.setId(iterationSlug);
@@ -80,8 +84,7 @@ public class ZanataRestCaller {
                         iterationSlug);
 
         ClientResponse iterationResponse = projectIteration.put(iteration);
-        ClientUtility.checkResult(iterationResponse);
-        iterationResponse.releaseConnection();
+        checkStatusAndReleaseConnection(iterationResponse);
     }
 
     public void deleteSourceDoc(String projectSlug, String iterationSlug,
@@ -89,8 +92,7 @@ public class ZanataRestCaller {
         ClientResponse<String> response = zanataProxyFactory
                 .getSourceDocResource(projectSlug, iterationSlug)
                 .deleteResource(resourceName);
-        ClientUtility.checkResult(response);
-        response.releaseConnection();
+        checkStatusAndReleaseConnection(response);
     }
 
     public int postSourceDocResource(String projectSlug, String iterationSlug,
@@ -110,8 +112,20 @@ public class ZanataRestCaller {
                 zanataProxyFactory.getSourceDocResource(projectSlug,
                         iterationSlug).putResource(idNoSlash, resource,
                         Collections.<String>emptySet(), copytrans);
-        ClientUtility.checkResult(response);
-        response.releaseConnection();
+        checkStatusAndReleaseConnection(response);
+    }
+
+    public static int checkStatusAndReleaseConnection(
+            Response response) {
+        ClientResponse<?> clientResponse = (ClientResponse<?>) response;
+        ClientUtility.checkResult(clientResponse);
+        clientResponse.releaseConnection();
+        return response.getStatus();
+    }
+
+    public static int getStatusAndReleaseConnection(Response response) {
+        ((BaseClientResponse) response).releaseConnection();
+        return response.getStatus();
     }
 
     public static Resource buildSourceResource(String name,
@@ -141,8 +155,7 @@ public class ZanataRestCaller {
                 .putTranslations(idNoSlash, localeId,
                         translationsResource,
                         Collections.<String>emptySet(), "auto");
-        ClientUtility.checkResult(response);
-        response.releaseConnection();
+        checkStatusAndReleaseConnection(response);
     }
 
     public static TranslationsResource buildTranslationResource(TextFlowTarget... targets) {

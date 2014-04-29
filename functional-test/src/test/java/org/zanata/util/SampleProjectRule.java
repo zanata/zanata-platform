@@ -21,14 +21,14 @@
 
 package org.zanata.util;
 
-import static org.zanata.util.SampleProjectClient.checkAndReleaseConnection;
+import java.util.Set;
 
-import com.google.common.collect.Sets;
-import java.util.HashSet;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.rules.ExternalResource;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.SampleProjectResource;
+import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
+
+import static org.zanata.util.SampleProjectClient.*;
 
 /**
  * @author Patrick Huang <a
@@ -37,24 +37,17 @@ import org.zanata.rest.SampleProjectResource;
 @Slf4j
 public class SampleProjectRule extends ExternalResource {
 
-    private final SampleProjectResource resource = SampleProjectClient.RESOURCE;
-
     @Override
     public void before() throws Throwable {
-        checkAndReleaseConnection(resource.deleteExceptEssentialData());
-        checkAndReleaseConnection(resource.makeSampleLanguages());
-        checkAndReleaseConnection(resource.makeSampleUsers());
-
-        HashSet<LocaleId> locales =
+        deleteExceptEssentialData();
+        makeSampleUsers();
+        makeSampleLanguages();
+        Set<LocaleId> locales =
                 Sets.newHashSet(LocaleId.FR, new LocaleId("hi"),
                         new LocaleId("pl"));
-        checkAndReleaseConnection(resource
-                .userJoinsLanguageTeams("translator", locales));
-
-        checkAndReleaseConnection(resource
-                .userJoinsLanguageTeams("glossarist", locales));
-
-        checkAndReleaseConnection(resource.makeSampleProject());
+        userJoinsLanguageTeam("translator", locales);
+        userJoinsLanguageTeam("glossarist", locales);
+        makeSampleProject();
     }
 
 }
