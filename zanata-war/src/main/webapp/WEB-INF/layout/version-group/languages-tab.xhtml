@@ -72,15 +72,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
-          value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
+          value="#{versionGroupHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink
@@ -204,15 +204,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}"
+            value="#{versionGroupHomeAction.languageTabVersionFilter.currentPage}"
             var="version">
             <li class="progress-bar__expander">
               <s:link view="/iteration/view.xhtml">

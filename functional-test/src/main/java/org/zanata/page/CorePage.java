@@ -122,6 +122,23 @@ public class CorePage extends AbstractPage {
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
+    public void waitForNotificationMessage(final String expectedMessage) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                List<WebElement> messages =
+                        getDriver().findElement(By.id("messages"))
+                                .findElements(By.tagName("li"));
+                for( WebElement message : messages ) {
+                    if( message.getText().trim().equals( expectedMessage ) ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
     public List<String> waitForErrors() {
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override

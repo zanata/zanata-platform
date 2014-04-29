@@ -20,8 +20,8 @@
 
   <!-- Dashboard Rules -->
   <rule>
-    <from casesensitive="true">^/dashboard/?(\?.*)?$</from>
-    <to last="true">/dashboard/home.seam$1</to>
+    <from casesensitive="true">^/dashboard(/([^?]*)\??(.*))?$</from>
+    <to last="true">/dashboard/home.seam$3</to>
   </rule>
 
   <!-- Admin Rules -->

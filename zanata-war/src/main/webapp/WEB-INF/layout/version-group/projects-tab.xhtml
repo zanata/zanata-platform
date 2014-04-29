@@ -73,15 +73,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.projectTabVersionFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionGroupHomeAction.projectTabVersionFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
       <ul class="list--stats" id="projects-project_list">
         <ui:repeat
-          value="#{versionGroupHomeAction.projectTabVersionFilter.pagedFilteredList}"
+          value="#{versionGroupHomeAction.projectTabVersionFilter.currentPage}"
           var="version">
           <li class="progress-bar__expander"
             id="#{version.project.slug}[#{version.slug}]">
@@ -214,15 +214,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.projectTabLanguageFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty versionGroupHomeAction.projectTabLanguageFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{versionGroupHomeAction.projectTabLanguageFilter.pagedFilteredList}"
+            value="#{versionGroupHomeAction.projectTabLanguageFilter.currentPage}"
             var="hLocale">
             <li class="progress-bar__expander panels__panel__item">
               <h:outputLink

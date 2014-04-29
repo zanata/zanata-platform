@@ -57,6 +57,7 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.FilterUtil;
+import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
@@ -121,11 +122,17 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @Getter
     private AbstractListFilter<HProjectIteration> versionFilter =
-            new AbstractListFilter<HProjectIteration>() {
+            new InMemoryListFilter<HProjectIteration>() {
                 @Override
-                protected List<HProjectIteration> getFilteredList() {
-                    return FilterUtil.filterVersionList(getQuery(),
-                            getProjectVersions());
+                protected List<HProjectIteration> fetchAll() {
+                    return getProjectVersions();
+                }
+
+                @Override
+                protected boolean include(HProjectIteration elem,
+                        String filter) {
+                    return StringUtils.containsIgnoreCase(
+                            elem.getSlug(), filter);
                 }
             };
 
@@ -349,7 +356,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     @Override
     public void resetPageData() {
         projectVersions = null;
-        versionFilter.resetQueryAndPage();
+        versionFilter.reset();
         loadStatistics();
     }
 

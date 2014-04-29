@@ -105,7 +105,6 @@ public class UploadTest {
         assertThat("The contents of the file were also uploaded",
                 testFileGenerator.getTestFileContent(newlyCreatedFile),
                 Matchers.equalTo("This is a test file"));
-
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
                 .waitForSourceDocsContains(testFileName);

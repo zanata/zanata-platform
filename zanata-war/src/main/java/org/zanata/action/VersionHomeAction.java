@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -77,6 +78,7 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.FilterUtil;
+import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
@@ -221,50 +223,56 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Getter
     private final DocumentFilter languageTabDocumentFilter =
-            new DocumentFilter() {
-                @Override
-                public int getFilteredListSize() {
-                    if (getSelectedLocale() == null) {
-                        return 0;
-                    }
-                    return getFilteredList().size();
-                }
-            };
+            new DocumentFilter();
 
     @Getter
     private final AbstractListFilter<HIterationGroup> groupFilter =
-            new AbstractListFilter<HIterationGroup>() {
+            new InMemoryListFilter<HIterationGroup>() {
                 @Override
-                protected List<HIterationGroup> getFilteredList() {
-                    return FilterUtil.filterGroupList(getQuery(), getGroups());
+                protected List<HIterationGroup> fetchAll() {
+                    return getGroups();
+                }
+
+                @Override
+                protected boolean include(HIterationGroup elem, String filter) {
+                    return StringUtils.containsIgnoreCase(elem.getName(),
+                            filter)
+                            || StringUtils.containsIgnoreCase(elem.getSlug(),
+                                    filter);
                 }
             };
 
     @Getter
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
-            new AbstractListFilter<HLocale>() {
+            new InMemoryListFilter<HLocale>() {
                 @Override
-                protected List<HLocale> getFilteredList() {
-                    return FilterUtil.filterLanguageList(getQuery(),
-                            getSupportedLocale());
+                protected List<HLocale> fetchAll() {
+                    return getSupportedLocale();
+                }
+
+                @Override
+                protected boolean include(HLocale elem, String filter) {
+                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
+                            .getId(), filter)
+                            || StringUtils.containsIgnoreCase(
+                                    elem.retrieveDisplayName(), filter);
                 }
             };
 
     @Getter
     private final AbstractListFilter<HLocale> documentsTabLanguageFilter =
-            new AbstractListFilter<HLocale>() {
+            new InMemoryListFilter<HLocale>() {
                 @Override
-                public int getFilteredListSize() {
-                    if (getSelectedDocument() == null) {
-                        return 0;
-                    }
-                    return getFilteredList().size();
+                protected List<HLocale> fetchAll() {
+                    return getSupportedLocale();
                 }
 
                 @Override
-                protected List<HLocale> getFilteredList() {
-                    return FilterUtil.filterLanguageList(getQuery(),
-                            getSupportedLocale());
+                protected boolean include(HLocale elem, String filter) {
+                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
+                            .getId(), filter)
+                            || StringUtils.containsIgnoreCase(
+                            elem.retrieveDisplayName(), filter);
                 }
             };
 
@@ -274,7 +282,6 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList() {
         languageComparator.setSelectedDocumentId(null);
         Collections.sort(getSupportedLocale(), languageComparator);
-        languageTabLanguageFilter.resetQueryAndPage();
     }
 
     /**
@@ -307,10 +314,10 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Override
     public void resetPageData() {
-        languageTabDocumentFilter.resetQueryAndPage();
-        documentsTabDocumentFilter.resetQueryAndPage();
-        settingsTabDocumentFilter.resetQueryAndPage();
-        languageTabLanguageFilter.resetQueryAndPage();
+        languageTabDocumentFilter.reset();
+        documentsTabDocumentFilter.reset();
+        settingsTabDocumentFilter.reset();
+        languageTabLanguageFilter.reset();
         documents = null;
         version = null;
         supportedLocale = null;
@@ -842,25 +849,35 @@ public class VersionHomeAction extends AbstractSortAction implements
         resetPageData();
     }
 
-    private class DocumentFilter extends AbstractListFilter<HDocument> {
+    private class DocumentFilter extends InMemoryListFilter<HDocument> {
         private DocumentDAO documentDAO = (DocumentDAO) Component
                 .getInstance(DocumentDAO.class);
 
         @Override
-        protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(),
-                    getDocuments(documentDAO));
+        protected List<HDocument> fetchAll() {
+            return getDocuments(documentDAO);
+        }
+
+        @Override
+        protected boolean include(HDocument elem, String filter) {
+            return StringUtils.containsIgnoreCase(elem.getName(), filter)
+                    || StringUtils.containsIgnoreCase(elem.getPath(), filter);
         }
     };
 
-    private class SourceDocumentFilter extends AbstractListFilter<HDocument> {
+    private class SourceDocumentFilter extends InMemoryListFilter<HDocument> {
         private DocumentDAO documentDAO = (DocumentDAO) Component
                 .getInstance(DocumentDAO.class);
 
         @Override
-        protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(),
-                    getSourceDocuments(documentDAO));
+        protected List<HDocument> fetchAll() {
+            return getSourceDocuments(documentDAO);
+        }
+
+        @Override
+        protected boolean include(HDocument elem, String filter) {
+            return StringUtils.containsIgnoreCase(elem.getName(), filter)
+                    || StringUtils.containsIgnoreCase(elem.getPath(), filter);
         }
     };
 

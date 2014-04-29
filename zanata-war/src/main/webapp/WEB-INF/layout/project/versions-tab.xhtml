@@ -78,15 +78,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.pagedFilteredList}">
+        rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{!projectHomeAction.versionFilter.pagedFilteredList.isEmpty()}">
+        rendered="#{!projectHomeAction.versionFilter.currentPage.isEmpty()}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{projectHomeAction.versionFilter.pagedFilteredList}"
+            value="#{projectHomeAction.versionFilter.currentPage}"
             var="version">
             <ui:param name="hasActions"
               value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(version)}"/>

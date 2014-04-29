@@ -15,4 +15,6 @@ public interface LanguageTeamService {
             throws ZanataServiceException;
 
     boolean leaveLanguageTeam(String locale, Long personId);
+
+    boolean isUserReviewer(Long personId);
 }

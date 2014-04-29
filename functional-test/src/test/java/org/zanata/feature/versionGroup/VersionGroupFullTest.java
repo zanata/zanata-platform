@@ -26,13 +26,12 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -48,7 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class VersionGroupFullTest {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     @Before
     public void before() {

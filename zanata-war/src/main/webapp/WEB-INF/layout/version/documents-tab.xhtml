@@ -88,15 +88,15 @@
   </s:div>
 
   <s:div styleClass="l--pad-all-half"
-    rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}">
+    rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
     <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
   </s:div>
 
   <s:fragment
-    rendered="#{not empty versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}">
+    rendered="#{not empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
     <ul class="list--stats" id="documents-document_list">
       <ui:repeat
-        value="#{versionHomeAction.documentsTabDocumentFilter.pagedFilteredList}"
+        value="#{versionHomeAction.documentsTabDocumentFilter.currentPage}"
         var="document">
         <ui:param name="hasActions"
           value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
@@ -318,15 +318,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}">
+        rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}">
+        rendered="#{not empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{versionHomeAction.documentsTabLanguageFilter.pagedFilteredList}"
+            value="#{versionHomeAction.documentsTabLanguageFilter.currentPage}"
             var="hLocale">
             <li class="progress-bar__expander">
 

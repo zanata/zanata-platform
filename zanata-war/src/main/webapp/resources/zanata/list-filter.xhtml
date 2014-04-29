@@ -37,22 +37,22 @@
 </composite:interface>
 <composite:implementation>
   <a4j:jsFunction name="#{cc.attrs.id}FilterList"
-    action="#{cc.attrs.actionBean.resetPage}" status="#{cc.attrs.status}"
+    action="#{cc.attrs.actionBean.firstPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
     limitRender="true"
     onbegin="clearHTML('#{rich:clientId(cc.attrs.listId)}')">
-    <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
+    <a4j:param name="val" assignTo="#{cc.attrs.actionBean.filter}"/>
   </a4j:jsFunction>
 
   <a4j:jsFunction name="#{cc.attrs.id}NextPage"
     action="#{cc.attrs.actionBean.nextPage}" status="#{cc.attrs.status}"
-    render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
+    render="#{cc.attrs.id}-page-info, #{cc.attrs.id}-pager, #{cc.attrs.render}"
     limitRender="true">
   </a4j:jsFunction>
 
   <a4j:jsFunction name="#{cc.attrs.id}PreviousPage"
     action="#{cc.attrs.actionBean.previousPage}" status="#{cc.attrs.status}"
-    render="#{cc.attrs.id}-page-info, #{cc.attrs.render}"
+    render="#{cc.attrs.id}-page-info, #{cc.attrs.id}-pager, #{cc.attrs.render}"
     limitRender="true">
   </a4j:jsFunction>
 
@@ -75,15 +75,16 @@
     styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom' : ''}">
     <s:div id="#{cc.attrs.id}-pager">
       <s:div styleClass="panel__results__type"
-        rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.filteredListSize eq 0)}">
+        rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
         <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
       </s:div>
       <s:fragment
-        rendered="#{cc.attrs.actionBean.filteredListSize ge cc.attrs.actionBean.getCountPerPage()}">
+        rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize}">
         <ul class="panel__pager">
           <li>
             <button title="#{messages['jsf.pager.PreviousPage']}"
               class="panel__pager__button"
+              disabled="#{cc.attrs.actionBean.allowsPreviousPage() ? '' : 'disabled'}"
               onclick="#{cc.attrs.id}PreviousPage()">
               <i class="i--huge i--arrow-left"></i>
             </button>
@@ -91,6 +92,7 @@
           <li>
             <button title="#{messages['jsf.pager.NextPage']}"
               class="panel__pager__button"
+              disabled="#{cc.attrs.actionBean.allowsNextPage() ? '' : 'disabled'}"
               onclick="#{cc.attrs.id}NextPage()">
               <i class="i--huge i--arrow-right"></i>
             </button>
@@ -101,15 +103,15 @@
     <span class="txt--meta">
       <s:span id="#{cc.attrs.id}-page-info">
         <s:fragment
-          rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.filteredListSize eq 0)}">
+          rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
           <s:fragment
-            rendered="#{cc.attrs.actionBean.filteredListSize gt cc.attrs.actionBean.getCountPerPage()}">
-            <strong>#{cc.attrs.actionBean.listRange}</strong> of
-            #{cc.attrs.actionBean.filteredListSize}
+            rendered="#{cc.attrs.actionBean.totalRecords gt cc.attrs.actionBean.pageSize}">
+            <strong>#{cc.attrs.actionBean.pageStartIdx+1}-#{cc.attrs.actionBean.pageEndIdx+1}</strong> of
+            #{cc.attrs.actionBean.totalRecords}
           </s:fragment>
           <s:fragment
-            rendered="#{cc.attrs.actionBean.filteredListSize le cc.attrs.actionBean.getCountPerPage()}">
-            <strong>#{cc.attrs.actionBean.filteredListSize}</strong>
+            rendered="#{cc.attrs.actionBean.totalRecords le cc.attrs.actionBean.pageSize}">
+            <strong>#{cc.attrs.actionBean.totalRecords}</strong>
           </s:fragment>
         </s:fragment>
       </s:span>
