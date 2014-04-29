@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import com.google.common.collect.Lists;
 
@@ -11,9 +12,6 @@ import com.google.common.collect.Lists;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class SortingType implements Serializable {
-
-    @Getter
-    private boolean descending = true;
 
     @Getter
     private SortOption selectedSortOption = SortOption.ALPHABETICAL;
@@ -27,23 +25,29 @@ public class SortingType implements Serializable {
 
     public void setSelectedSortOption(SortOption selectedSortOption) {
         if (this.selectedSortOption.equals(selectedSortOption)) {
-            descending = !descending;
+            selectedSortOption.setAscending(!selectedSortOption.isAscending());
         }
         this.selectedSortOption = selectedSortOption;
     }
 
     public enum SortOption {
-        PERCENTAGE("Percent translated"), HOURS("Hours remaining"), WORDS(
-                "Words remaining"), ALPHABETICAL("Alphabetical"),
-        LAST_ACTIVITY("Last activity"), LAST_SOURCE_UPDATE(
-                "Last source updated"), LAST_TRANSLATED("Last translated"),
-        LAST_UPDATED_BY_YOU("Last updated by you");
+        PERCENTAGE("Percent translated", false),
+        HOURS("Hours remaining", false), WORDS("Words remaining", false),
+        ALPHABETICAL("Alphabetical", true), LAST_ACTIVITY("Last activity",
+                false), LAST_SOURCE_UPDATE("Last source updated", false),
+        LAST_TRANSLATED("Last translated", false), LAST_UPDATED_BY_YOU(
+                "Last updated by you", false);
 
         @Getter
         String display;
 
-        SortOption(String display) {
+        @Getter
+        @Setter
+        boolean ascending; // default sort
+
+        SortOption(String display, boolean ascending) {
             this.display = display;
+            this.ascending = ascending;
         }
     }
 }

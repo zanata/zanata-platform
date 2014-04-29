@@ -33,6 +33,9 @@ import org.zanata.model.HProject;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @see org.zanata.action.EntityPagedListDataModel
+ */
 public class QueryProjectPagedListDataModel extends
         PagedListDataModel<HProject> implements Serializable {
     private static final long serialVersionUID = 1L;

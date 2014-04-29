@@ -28,6 +28,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTermComment;
@@ -88,7 +89,8 @@ public class SampleProjectProfile {
                 // project
                 HProjectIteration.class, HProject.class,
                 // account
-                HAccountActivationKey.class, HCredentials.class, HPerson.class, HAccount.class));
+                HAccountActivationKey.class, HPersonEmailValidationKey.class,
+                HCredentials.class, HPerson.class, HAccount.class));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);

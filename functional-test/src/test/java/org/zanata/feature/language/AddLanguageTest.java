@@ -63,10 +63,9 @@ public class AddLanguageTest {
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        manageLanguagePage = manageLanguagePage
-                .addNewLanguage()
-                .inputLanguage(language)
-                .saveLanguage();
+        manageLanguagePage =
+                manageLanguagePage.addNewLanguage().inputLanguage(language)
+                        .saveLanguage();
 
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -76,14 +75,14 @@ public class AddLanguageTest {
                 manageLanguagePage.languageIsEnabled(language));
 
         List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("master")
-                .gotoSettingsTab()
-                .gotoSettingsLanguagesTab()
-                .clickInheritCheckbox()
-                .waitForLocaleListVisible()
-                .getEnabledLocaleList();
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsLanguagesTab()
+                        .clickInheritCheckbox()
+                        .waitForLocaleListVisible()
+                        .getEnabledLocaleList();
 
         assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
@@ -111,13 +110,13 @@ public class AddLanguageTest {
         assertThat("The language is disabled by default",
                 !manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .clickInheritCheckbox()
-                        .waitForLocaleListVisible()
-                        .getEnabledLocaleList();
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                .goToProjects()
+                .goToProject("about fedora").gotoVersion("master")
+                .gotoSettingsTab().gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible()
+                .getEnabledLocaleList();
 
         assertThat("The language is disabled by default", enabledLocaleList,
                 Matchers.not(Matchers.hasItem(languageDisplayName)));

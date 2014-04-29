@@ -163,7 +163,9 @@
         <zanata:sortlist id="settings-document_sorting"
           sortAction="#{versionHomeAction.sortSettingsDocumentList()}"
           render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
-          sortingList="#{versionHomeAction.settingsDocumentSortingList}"/>
+          sortingList="#{versionHomeAction.settingsDocumentSortingList}"
+          onbegin="clearHTML('#{rich:clientId('settings-document_form')}')"
+          status="settingsTab-documentsLoader"/>
       </div>
 
       <h2 class="panel__heading">#{messages['jsf.SourceDocuments']}</h2>
@@ -171,6 +173,7 @@
 
     <div class="panel__sub-header js-reveal">
       <zanata:list-filter iconClass="i--document"
+        status="settingsTab-documentsLoader"
         listId="settings-document_form"
         render="settings-document_form, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
         id="settingsTabDocumentSearch"
@@ -178,10 +181,14 @@
         actionBean="#{versionHomeAction.settingsTabDocumentFilter}"/>
     </div>
 
-    <h:form id="settings-document_form" styleClass="l--push-bottom-0">
+    <a4j:status name="settingsTab-documentsLoader">
+      <f:facet name="start"><zanata:loader/></f:facet>
+    </a4j:status>
+
+    <h:form id="settings-document_form" styleClass="l--push-bottom-1">
       <ul class="list--panel">
         <ui:repeat
-          value="#{versionHomeAction.settingsTabDocumentFilter.pagedFilteredList}"
+          value="#{versionHomeAction.settingsTabDocumentFilter.currentPage}"
           var="document">
           <li>
             <div class="list__item__content">
@@ -254,7 +261,7 @@
               oncomplete="refreshStatistics();zanata.form.appendCheckboxes('#settings-languages-form')"
               action="#{versionHome.removeLanguage(locale.localeId)}"
               styleClass="l--float-right txt--danger reveal__target"
-              execute="@this" render="settings-languages-form">
+              render="settings-languages-form" execute="@this">
               <i class="i--large i--remove"></i>
             </a4j:commandLink>
           </li>

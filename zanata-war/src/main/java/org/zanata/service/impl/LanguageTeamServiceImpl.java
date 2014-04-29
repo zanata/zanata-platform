@@ -92,6 +92,11 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
         }
 
         return false;
+    }
 
+    @Override
+    public boolean isUserReviewer(Long personId) {
+        return !localeMemberDAO.findByPersonWithReviewerRole(personId)
+                .isEmpty();
     }
 }

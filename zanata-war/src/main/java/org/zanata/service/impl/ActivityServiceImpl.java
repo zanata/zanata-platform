@@ -35,6 +35,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -50,6 +51,10 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+import org.zanata.util.DateUtil;
+import org.zanata.util.StatisticsUtil;
+
+import com.google.common.collect.Lists;
 
 import com.google.common.collect.Lists;
 
@@ -231,5 +236,24 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public int getActivityCountByActor(long personId) {
         return activityDAO.getActivityCountByActor(personId);
+    }
+
+    @Override
+    public DashboardUserStats getDashboardUserStatistic(Long personId,
+            Date startDate, Date endDate) {
+        DashboardUserStats stats = new DashboardUserStats();
+        int[] result =
+                activityDAO.getTranslatedStats(personId, startDate, endDate);
+
+        stats.setWordsTranslated(result[0]);
+        stats.setMessagesTranslated(result[1]);
+        stats.setDocumentsTranslated(result[2]);
+
+        result = activityDAO.getReviewedStats(personId, startDate, endDate);
+        stats.setWordsReviewed(result[0]);
+        stats.setMessagesReviewed(result[1]);
+        stats.setDocumentsReviewed(result[2]);
+
+        return stats;
     }
 }

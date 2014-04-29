@@ -48,8 +48,16 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 @Scope(ScopeType.STATELESS)
 public class ServiceLocator {
 
+    public static ServiceLocator instance() {
+        return (ServiceLocator) Component.getInstance(ServiceLocator.class);
+    }
+
     public <T> T getInstance(Class<T> clazz) {
         return (T) Component.getInstance(clazz);
+    }
+
+    public <T> T getInstance(String name, Class<T> clazz) {
+        return (T) Component.getInstance(name);
     }
 
     public EntityManager getEntityManager() {

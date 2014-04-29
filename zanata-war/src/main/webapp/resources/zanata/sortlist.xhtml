@@ -20,29 +20,34 @@
     shortDescription="element to re-render after sorting"/>
   <composite:attribute name="oncomplete"
     shortDescription="The client-side script method to be called after the DOM is updated"/>
+  <composite:attribute name="onbegin"
+    shortDescription="The client-side script method to be called before sorting."/>
+  <composite:attribute name="status"
+    shortDescription=">Name of the request status component that will indicate the status of the sorting request"/>
 </composite:interface>
 
 <composite:implementation>
-  <div
-    class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+  <div id="#{cc.attrs.id}"
+    class="dropdown dropdown--header dropdown--small dropdown--right js-dropdown">
     <a class="dropdown__toggle js-dropdown__toggle" href="#">
       #{messages['jsf.Sort']}
       <i class="i i--arrow-down dropdown__toggle__icon"></i>
     </a>
-    <h:form styleClass="l--push-bottom-0" id="#{cc.attrs.id}-sort_options">
+    <h:form styleClass="l--push-bottom-0">
       <ul class="dropdown__content js-dropdown__content" role="content"
         aria-labelledby="dropdownContent">
         <ui:repeat value="#{cc.attrs.sortingList.sortOptions}" var="sortOption">
           <li>
-            <a4j:commandLink tabindex="-1"
-              action="#{cc.attrs.sortAction}" oncomplete="#{cc.attrs.oncomplete}"
-              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''}"
-              render="#{rich:clientId(cc.attrs.id.concat('-sort_options'))},#{cc.attrs.render}">
+            <a href="javascript:void(0)" jsfc="a4j:commandLink" tabindex="-1"
+              status="#{cc.attrs.status}" action="#{cc.attrs.sortAction}"
+              oncomplete="#{cc.attrs.oncomplete}"
+              styleClass="#{cc.attrs.sortingList.selectedSortOption eq sortOption ? 'is-active' : ''} js-sort-option"
+              render="#{cc.attrs.render}" onbegin="#{cc.attrs.onbegin}">
               #{sortOption.display}
               <f:setPropertyActionListener
                 target="#{cc.attrs.sortingList.selectedSortOption}"
                 value="#{sortOption}"/>
-            </a4j:commandLink>
+            </a>
           </li>
         </ui:repeat>
       </ul>

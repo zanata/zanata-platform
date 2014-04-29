@@ -399,6 +399,7 @@
   </page>
 
   <page view-id="/version-group/version_group.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
     <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
     <action execute="#{versionGroupHome.validateSuppliedId}" />
@@ -549,6 +550,7 @@
   </page>
 
   <page view-id="/project/project.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{projectHomeAction.slug}" />
     <action execute="#{projectHome.initialize}" />
@@ -590,6 +592,7 @@
 
   <!-- Project Iteration -->
   <page view-id="/iteration/view.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="projectSlug" value="#{versionHomeAction.projectSlug}" />
     <param name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
 
