@@ -13,17 +13,34 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
+import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HDocument;
+import org.zanata.model.HDocumentHistory;
+import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.security.HCredentials;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 
+import com.github.huangp.entityunit.entity.EntityCleaner;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Function;
@@ -51,6 +68,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
     @BeforeMethod
     public void setUpData() {
+        deleteData();
         hLocale =
                 EntityMakerBuilder.builder().build()
                         .makeAndPersist(getEm(), HLocale.class);
@@ -123,6 +141,29 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 .withTargetState(ContentState.Translated).build();
 
         getEm().flush();
+    }
+
+    private void deleteData() {
+        EntityCleaner.deleteAll(getEm(), Lists.<Class>newArrayList(
+                TransMemoryUnitVariant.class, TransMemoryUnit.class,
+                TransMemory.class,
+                Activity.class,
+                // glossary
+                HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
+                // tex flows and targets
+                HPoTargetHeader.class, HTextFlowTargetHistory.class,
+                HTextFlowTarget.class, HTextFlow.class,
+                // documents
+                HDocumentHistory.class, HDocument.class,
+                // locales
+                HLocaleMember.class, HLocale.class,
+                // version group
+                HIterationGroup.class,
+                // project
+                HProjectIteration.class, HProject.class,
+                // account
+                HAccountActivationKey.class, HCredentials.class, HPerson.class,
+                HAccount.class));
     }
 
     private HPerson makePerson(String username) {
