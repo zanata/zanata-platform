@@ -158,7 +158,7 @@ window.searchSuggestions = (function () {
     /*
      * Returns the word that the cursor is touching. Empty string if the cursor is not touching a word. null if the cursor is in a quoted section.
      * TODO damason returning '' or null is a bit crude, find a better way.
-     * 
+     *
      * cursor: int position within query of cursor
      */
     function getCursorWord (query, cursor) {
