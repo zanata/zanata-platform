@@ -312,8 +312,8 @@ public class HistoryTokenTests {
 
         token.setSearchText("text to be discarded");
         token.setSearchText("");
-        assertEquals("search text can be set to empty string", "",
-                token.getSearchText());
+        assertThat("empty search text is treated as null",
+                token.getSearchText(), Matchers.nullValue());
     }
 
     @Test
