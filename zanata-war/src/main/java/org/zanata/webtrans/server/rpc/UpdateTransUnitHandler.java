@@ -71,11 +71,11 @@ public class UpdateTransUnitHandler extends
                             }
                         });
         if (hasReviewUpdate.isPresent()) {
-            securityServiceImpl.checkWorkspaceAction(action,
-                SecurityService.TranslationAction.REVIEW);
+            securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
+                    SecurityService.TranslationAction.REVIEW);
         } else {
-            securityServiceImpl.checkWorkspaceAction(action,
-                SecurityService.TranslationAction.MODIFY);
+            securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
+                    SecurityService.TranslationAction.MODIFY);
         }
 
         return doTranslation(action.getWorkspaceId().getLocaleId(),
@@ -83,7 +83,7 @@ public class UpdateTransUnitHandler extends
                 action.getUpdateType());
     }
 
-    protected UpdateTransUnitResult doTranslation(LocaleId localeId,
+    public UpdateTransUnitResult doTranslation(LocaleId localeId,
             List<TransUnitUpdateRequest> updateRequests,
             EditorClientId editorClientId,
             TransUnitUpdated.UpdateType updateType) {
@@ -99,8 +99,8 @@ public class UpdateTransUnitHandler extends
 
         List<TranslationResult> translationResults =
                 translationServiceImpl.translate(localeId, updateRequests);
-        return transUnitUpdateHelper.generateUpdateTransUnitResult(
-                translationResults);
+        return transUnitUpdateHelper
+                .generateUpdateTransUnitResult(translationResults);
     }
 
     @Override

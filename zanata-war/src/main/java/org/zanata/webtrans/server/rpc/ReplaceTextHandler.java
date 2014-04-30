@@ -54,7 +54,7 @@ public class ReplaceTextHandler extends
     @Override
     public UpdateTransUnitResult execute(ReplaceText action,
             ExecutionContext context) throws ActionException {
-        securityServiceImpl.checkWorkspaceAction(action,
+        securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
             SecurityService.TranslationAction.MODIFY);
 
         replaceTextInUpdateRequests(action);

@@ -77,9 +77,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     // private static final String ACTION_IMPORT_TRANSLATION =
     // "import-translation";
 
-    public static final String EVENT_COPY_TRANS =
-            "org.zanata.rest.service.copyTrans";
-
     /** Project Identifier. */
     @PathParam("projectSlug")
     private String projectSlug;
@@ -285,13 +282,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             sb.append("warning: ").append(warning).append('\n');
         }
         return Response.ok(sb.toString()).tag(etag).build();
-    }
-
-    // TODO investigate how this became dead code, then delete
-    public void copyClosestEquivalentTranslation(HDocument document) {
-        if (applicationConfiguration.isCopyTransEnabled()) {
-            copyTransServiceImpl.copyTransForDocument(document);
-        }
     }
 
     // public for Seam's benefit (and the @Restrict in deleteTranslations)

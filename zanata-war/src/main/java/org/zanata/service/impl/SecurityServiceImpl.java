@@ -36,10 +36,8 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
  * @author Patrick Huang <a
@@ -60,31 +58,21 @@ public class SecurityServiceImpl implements SecurityService {
     @In
     ZanataIdentity identity;
 
-    @In
-    private TranslationWorkspaceManager translationWorkspaceManager;
-
     @Override
-    public SecurityCheckResult checkWorkspaceAction(
-        AbstractWorkspaceAction action,
-        TranslationAction translationAction)
+    public void checkWorkspaceAction(WorkspaceId workspaceId,
+            TranslationAction translationAction)
             throws NoSuchWorkspaceException {
-        WorkspaceId workspaceId = action.getWorkspaceId();
         HProject project = checkWorkspaceStatus(workspaceId);
 
-        TranslationWorkspace workspace =
-                translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
         HLocale locale =
                 localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
 
         identity.checkPermission(translationAction.action(), locale, project);
-
-        return new SecurityCheckResultImpl(locale, workspace);
     }
 
     @Override
     public HProject checkWorkspaceStatus(WorkspaceId workspaceId) {
         identity.checkLoggedIn();
-
         HProject project =
                 projectDAO.getBySlug(workspaceId.getProjectIterationId()
                         .getProjectSlug());

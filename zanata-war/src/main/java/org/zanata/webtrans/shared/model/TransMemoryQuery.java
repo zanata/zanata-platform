@@ -24,6 +24,7 @@ package org.zanata.webtrans.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.ToString;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -36,6 +37,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class TransMemoryQuery implements IsSerializable {
     private SearchType searchType;
     private List<String> queries;
+    private Condition project;
+    private Condition document;
+    private Condition res;
+    private Condition includeOwnTranslation = new Condition(true, null);
 
     @SuppressWarnings("unused")
     private TransMemoryQuery() {
@@ -60,6 +65,42 @@ public class TransMemoryQuery implements IsSerializable {
         }
     }
 
+    public TransMemoryQuery(List<String> queries, SearchType searchType,
+            Condition project, Condition document, Condition res) {
+        this(queries, searchType);
+        this.project = project;
+        this.document = document;
+        this.res = res;
+    }
+
+    public TransMemoryQuery(String query, SearchType searchType,
+            Condition project, Condition document, Condition res) {
+        this(query, searchType);
+        this.project = project;
+        this.document = document;
+        this.res = res;
+    }
+
+    public void setIncludeOwnTranslation(boolean isInclude, String tfId) {
+        this.includeOwnTranslation = new Condition(isInclude, tfId);
+    }
+
+    public Condition getProject() {
+        return project;
+    }
+
+    public Condition getDocument() {
+        return document;
+    }
+
+    public Condition getRes() {
+        return res;
+    }
+
+    public Condition getIncludeOwnTranslation() {
+        return includeOwnTranslation;
+    }
+
     public List<String> getQueries() {
         return queries;
     }
@@ -70,43 +111,99 @@ public class TransMemoryQuery implements IsSerializable {
 
     @Override
     public String toString() {
-        return "TransMemoryQuery [searchType=" + searchType + ", queries="
-                + (queries) + "]";
-        // return "TransMemoryQuery [searchType=" + searchType + ", queries=" +
-        // ShortString.shorten(queries) + "]";
+        return "TransMemoryQuery{" + "searchType=" + searchType + ", queries="
+                + queries + ", project=" + project + ", document=" + document
+                + ", res=" + res + ", includeOwnTranslation="
+                + includeOwnTranslation + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        TransMemoryQuery that = (TransMemoryQuery) o;
+
+        if (document != null ? !document.equals(that.document)
+                : that.document != null)
+            return false;
+        if (project != null ? !project.equals(that.project)
+                : that.project != null)
+            return false;
+        if (queries != null ? !queries.equals(that.queries)
+                : that.queries != null)
+            return false;
+        if (res != null ? !res.equals(that.res) : that.res != null)
+            return false;
+        if (searchType != that.searchType)
+            return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((queries == null) ? 0 : queries.hashCode());
-        result =
-                prime * result
-                        + ((searchType == null) ? 0 : searchType.hashCode());
+        int result = searchType != null ? searchType.hashCode() : 0;
+        result = 31 * result + (queries != null ? queries.hashCode() : 0);
+        result = 31 * result + (project != null ? project.hashCode() : 0);
+        result = 31 * result + (document != null ? document.hashCode() : 0);
+        result = 31 * result + (res != null ? res.hashCode() : 0);
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public static class Condition implements IsSerializable {
+        private boolean isCheck;
+        private String value;
+
+        public Condition(boolean isCheck, String value) {
+            this.isCheck = isCheck;
+            this.value = value;
+        }
+
+        public boolean isCheck() {
+            return isCheck;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        @SuppressWarnings("unused")
+        private Condition() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+
+            Condition condition = (Condition) o;
+
+            if (isCheck != condition.isCheck)
+                return false;
+            if (value != null ? !value.equals(condition.value)
+                    : condition.value != null)
+                return false;
+
             return true;
         }
-        if (obj == null) {
-            return false;
+
+        @Override
+        public int hashCode() {
+            int result = (isCheck ? 1 : 0);
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
         }
-        if (!(obj instanceof TransMemoryQuery)) {
-            return false;
+
+        @Override
+        public String toString() {
+            return "Condition{" + "isCheck=" + isCheck + ", value='" + value
+                    + '\'' + '}';
         }
-        TransMemoryQuery other = (TransMemoryQuery) obj;
-        if (queries == null) {
-            if (other.queries != null) {
-                return false;
-            }
-        } else if (!queries.equals(other.queries)) {
-            return false;
-        }
-        return searchType == other.searchType;
     }
 
 }

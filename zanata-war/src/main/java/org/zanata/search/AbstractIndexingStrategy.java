@@ -35,11 +35,17 @@ public abstract class AbstractIndexingStrategy<T> {
         int rowNum = 0;
         scrollableResults = queryResults(rowNum);
         try {
-            while (scrollableResults.next() && !handle.isCancelled()) {
+            while (scrollableResults.next()) {
+                if (handle != null && handle.isCancelled()) {
+                    break;
+                }
                 rowNum++;
                 T entity = (T) scrollableResults.get(0);
                 session.index(entity);
-                handle.increaseProgress(1);
+
+                if (handle != null) {
+                    handle.increaseProgress(1);
+                }
                 if (rowNum % sessionClearBatchSize == 0) {
                     log.info("periodic flush and clear for {} (n={})",
                             entityType, rowNum);

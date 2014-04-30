@@ -33,6 +33,8 @@ import static org.mockito.Mockito.*;
  */
 @Test(groups = { "jpa-tests" })
 public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
+    private SeamAutowire seam = SeamAutowire.instance();
+
     private TextFlowSearchService service;
     @Mock
     private LocaleService localeService;
@@ -52,14 +54,12 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
-        service = SeamAutowire.instance()
-            .reset()
+        seam.reset()
             .use("localeServiceImpl", localeService)
             .use("documentDAO", new DocumentDAO(getSession()))
             .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
-            .use("session", new FullTextSessionImpl(getSession()))
-            .autowire(TextFlowSearchServiceImpl.class);
+            .use("session", new FullTextSessionImpl(getSession()));
         // @formatter:on
         jaHLocale = getEm().find(HLocale.class, 3L);
         when(
@@ -71,6 +71,8 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     public void testFindTextFlows() throws Exception {
+        service = seam.autowire(TextFlowSearchServiceImpl.class);
+
         List<HTextFlow> result =
                 service.findTextFlows(workspaceId, FilterConstraints.builder()
                         .filterBy("file").build());

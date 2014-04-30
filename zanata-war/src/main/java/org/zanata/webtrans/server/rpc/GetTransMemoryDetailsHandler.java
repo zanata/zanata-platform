@@ -15,11 +15,10 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
-import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
@@ -40,6 +39,9 @@ public class GetTransMemoryDetailsHandler
 
     @In
     private ZanataIdentity identity;
+
+    @In
+    private TranslationMemoryService translationMemoryServiceImpl;
 
     @Override
     public TransMemoryDetailsList execute(GetTransMemoryDetailsAction action,
@@ -67,35 +69,13 @@ public class GetTransMemoryDetailsHandler
 
         for (HTextFlow tf : textFlows) {
             TransMemoryDetails memoryDetails =
-                    getTransMemoryDetail(hLocale, tf);
+                    translationMemoryServiceImpl.getTransMemoryDetail(hLocale,
+                            tf);
             items.add(memoryDetails);
         }
 
         log.info("Returning {} TM details", items.size());
         return new TransMemoryDetailsList(items);
-    }
-
-    protected TransMemoryDetails getTransMemoryDetail(HLocale hLocale,
-            HTextFlow tf) {
-        HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
-        HSimpleComment sourceComment = tf.getComment();
-        HSimpleComment targetComment = tft.getComment();
-        String docId = tf.getDocument().getDocId();
-        String iterationName = tf.getDocument().getProjectIteration().getSlug();
-        String projectName =
-                tf.getDocument().getProjectIteration().getProject().getName();
-        String msgContext =
-                (tf.getPotEntryData() == null) ? null : tf.getPotEntryData()
-                        .getContext();
-        String username = null;
-        if (tft.getLastModifiedBy() != null
-                && tft.getLastModifiedBy().hasAccount()) {
-            username = tft.getLastModifiedBy().getAccount().getUsername();
-        }
-        return new TransMemoryDetails(HSimpleComment.toString(sourceComment),
-                HSimpleComment.toString(targetComment), projectName,
-                iterationName, docId, tf.getResId(), msgContext,
-                tft.getState(), username, tft.getLastChanged());
     }
 
     @Override

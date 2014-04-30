@@ -20,22 +20,25 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.*;
+import java.util.List;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
-import org.zanata.model.*;
-import org.zanata.service.*;
-import org.zanata.service.TranslationService.*;
-import org.zanata.webtrans.server.*;
+import org.zanata.service.SecurityService;
+import org.zanata.service.TranslationService;
+import org.zanata.service.TranslationService.TranslationResult;
+import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import org.zanata.webtrans.shared.rpc.*;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated.*;
-
-import net.customware.gwt.dispatch.server.*;
-import net.customware.gwt.dispatch.shared.*;
+import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 /**
  * @author David Mason, damason@redhat.com
@@ -59,31 +62,29 @@ public class RevertTransUnitUpdatesHandler extends
     @Override
     public UpdateTransUnitResult execute(RevertTransUnitUpdates action,
             ExecutionContext context) throws ActionException {
-        SecurityService.SecurityCheckResult securityCheckResult =
-                securityServiceImpl.checkWorkspaceAction(action,
-                    SecurityService.TranslationAction.MODIFY);
-        HLocale hLocale = securityCheckResult.getLocale();
-        TranslationWorkspace workspace = securityCheckResult.getWorkspace();
+        securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
+                SecurityService.TranslationAction.MODIFY);
 
         if (Events.exists()) {
             for (TransUnitUpdateInfo updateInfo : action.getUpdatesToRevert()) {
-                Events.instance().raiseEvent(
-                        TextFlowTargetUpdateContextEvent.EVENT_NAME,
-                        new TextFlowTargetUpdateContextEvent(updateInfo
-                                .getTransUnit().getId(), hLocale.getLocaleId(),
-                                action.getEditorClientId(),
-                                UpdateType.NonEditorSave));
+                Events.instance()
+                        .raiseEvent(
+                                TextFlowTargetUpdateContextEvent.EVENT_NAME,
+                                new TextFlowTargetUpdateContextEvent(updateInfo
+                                        .getTransUnit().getId(), action
+                                        .getWorkspaceId().getLocaleId(), action
+                                        .getEditorClientId(),
+                                        UpdateType.NonEditorSave));
             }
         }
 
         List<TranslationResult> revertResults =
-                translationServiceImpl.revertTranslations(
-                        hLocale.getLocaleId(), action.getUpdatesToRevert());
+                translationServiceImpl.revertTranslations(action
+                        .getWorkspaceId().getLocaleId(), action
+                        .getUpdatesToRevert());
 
-
-        return transUnitUpdateHelper.generateUpdateTransUnitResult(
-                revertResults
-        );
+        return transUnitUpdateHelper
+                .generateUpdateTransUnitResult(revertResults);
     }
 
     @Override
