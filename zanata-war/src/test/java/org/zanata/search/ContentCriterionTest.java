@@ -21,7 +21,7 @@ public class ContentCriterionTest {
 
         assertThat(
                 hql,
-                Matchers.equalTo("(tf.content0 like :searchString OR tf.content1 like :searchString)"));
+                Matchers.equalTo("(tf.content0 like :SearchString OR tf.content1 like :SearchString)"));
     }
 
     @Test
@@ -31,7 +31,7 @@ public class ContentCriterionTest {
 
         assertThat(
                 hql,
-                Matchers.equalTo("(content0 like :searchString OR content1 like :searchString)"));
+                Matchers.equalTo("(content0 like :SearchString OR content1 like :SearchString)"));
     }
 
     @Test
@@ -40,6 +40,6 @@ public class ContentCriterionTest {
 
         assertThat(
                 hql,
-                Matchers.equalTo("(lower(content0) like :searchString OR lower(content1) like :searchString)"));
+                Matchers.equalTo("(lower(content0) like :SearchString OR lower(content1) like :SearchString)"));
     }
 }

@@ -13,6 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.Wither;
 
 /**
+ * A helper class to build HQL condition for HTextFlow and HTextFlowTarget
+ * contents match. Since we use content0...content6 to represent plurals it's
+ * tedious to write a match condition manually. This class use lombok
+ * {@link lombok.experimental.Wither} so that user can override number of
+ * content fields (default is 6 and easier to see result in test if override to,
+ * say, 2), case sensitivity and entity alias to suit particular use case.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -23,8 +30,8 @@ public class ContentCriterion {
     private final int numOfContentFields;
     private boolean caseSensitive;
     private String entityAlias;
-    private FilterConstraintToQuery.Parameters searchStringPram =
-            FilterConstraintToQuery.Parameters.searchString;
+    private final FilterConstraintToQuery.Parameters searchStringParam =
+            FilterConstraintToQuery.Parameters.SearchString;
 
     public ContentCriterion() {
         this(HasContents.MAX_PLURALS);
@@ -37,12 +44,13 @@ public class ContentCriterion {
 
     public String contentsCriterionAsString() {
         String propertyAlias =
-                Strings.isNullOrEmpty(entityAlias) ? "content" : entityAlias + ".content";
+                Strings.isNullOrEmpty(entityAlias) ? "content" : entityAlias
+                        + ".content";
         List<String> conditions = Lists.newArrayList();
         for (int i = 0; i < numOfContentFields; i++) {
             String contentFieldName = propertyAlias + i;
-            conditions.add(HqlCriterion.like(contentFieldName, this.caseSensitive,
-                    searchStringPram.placeHolder()));
+            conditions.add(HqlCriterion.like(contentFieldName,
+                    this.caseSensitive, searchStringParam.placeHolder()));
         }
         return QueryBuilder.or(conditions);
     }

@@ -78,8 +78,8 @@ public class FilterConstraintToQuery {
     }
 
     /**
-     * This builds a query for constructing TransUnit in editor. It returns a
-     * list of HTextFlow objects
+     * This builds a query for constructing TransUnit in editor.
+     * Executing the query will returns a list of HTextFlow objects.
      *
      * @return the HQL query
      */
@@ -87,10 +87,10 @@ public class FilterConstraintToQuery {
         String docIdCondition;
         if (documentId != null) {
             docIdCondition =
-                    eq("tf.document.id", Parameters.documentId.placeHolder());
+                    eq("tf.document.id", Parameters.DocumentId.placeHolder());
         } else {
             docIdCondition =
-                    "tf.document.id in (" + documentIdList.placeHolder() + ")";
+                    "tf.document.id in (" + DocumentIdList.placeHolder() + ")";
         }
         return buildQuery("distinct tf", docIdCondition);
     }
@@ -108,7 +108,7 @@ public class FilterConstraintToQuery {
                         .select(selectStatement)
                         .from("HTextFlow tf")
                         .leftJoin("tf.targets tfts")
-                        .with(eq("tfts.index", locale.placeHolder()))
+                        .with(eq("tfts.index", Locale.placeHolder()))
                         .where(and(obsoleteCondition, docIdCondition,
                                 searchCondition, stateCondition,
                                 otherSourceCondition, otherTargetCondition))
@@ -125,7 +125,7 @@ public class FilterConstraintToQuery {
      */
     public String toModalNavigationQuery() {
         String docIdCondition =
-                eq("tf.document.id", Parameters.documentId.placeHolder());
+                eq("tf.document.id", Parameters.DocumentId.placeHolder());
         return buildQuery(
                 "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos",
                 docIdCondition);
@@ -147,7 +147,7 @@ public class FilterConstraintToQuery {
             List<String> targetConjunction = Lists.newArrayList();
             targetConjunction.add(contentCriterion.contentsCriterionAsString());
             targetConjunction.add(eq("textFlow", "tf"));
-            targetConjunction.add(eq("locale", locale.placeHolder()));
+            targetConjunction.add(eq("locale", Locale.placeHolder()));
 
             searchInTargetCondition =
                     QueryBuilder.exists().from("HTextFlowTarget")
@@ -182,7 +182,7 @@ public class FilterConstraintToQuery {
             return null;
         }
         targetConjunction.add(eq("textFlow", "tf"));
-        targetConjunction.add(eq("locale", locale.placeHolder()));
+        targetConjunction.add(eq("locale", Locale.placeHolder()));
 
         return QueryBuilder.exists().from("HTextFlowTarget")
                 .where(and(targetConjunction)).toQueryString();
@@ -201,28 +201,28 @@ public class FilterConstraintToQuery {
         if (Strings.isNullOrEmpty(constraints.getResId())) {
             return null;
         }
-        return eq("resId", resId.placeHolder());
+        return eq("resId", ResId.placeHolder());
     }
 
     private String buildMsgContextCondition() {
         if (Strings.isNullOrEmpty(constraints.getMsgContext())) {
             return null;
         }
-        return ilike("tf.potEntryData.context", msgContext.placeHolder());
+        return ilike("tf.potEntryData.context", MsgContext.placeHolder());
     }
 
     private String buildSourceCommentCondition(String commentToSearch) {
         if (Strings.isNullOrEmpty(commentToSearch)) {
             return null;
         }
-        return ilike("tf.comment.comment", sourceComment.placeHolder());
+        return ilike("tf.comment.comment", SourceComment.placeHolder());
     }
 
     private String buildTargetCommentCondition(String transComment) {
         if (Strings.isNullOrEmpty(transComment)) {
             return null;
         }
-        return ilike("comment.comment", targetComment.placeHolder());
+        return ilike("comment.comment", TargetComment.placeHolder());
     }
 
     private String buildLastModifiedDateCondition() {
@@ -236,12 +236,12 @@ public class FilterConstraintToQuery {
         if (changedAfterTime != null) {
             changedAfter =
                     HqlCriterion.gt("lastChanged",
-                            lastChangedAfter.placeHolder());
+                            LastChangedAfter.placeHolder());
         }
         if (changedBeforeTime != null) {
             changedBefore =
                     HqlCriterion.lt("lastChanged",
-                            lastChangedBefore.placeHolder());
+                            LastChangedBefore.placeHolder());
         }
         return QueryBuilder.and(changedAfter, changedBefore);
     }
@@ -252,21 +252,21 @@ public class FilterConstraintToQuery {
         }
         List<String> conjunction = Lists.newArrayList();
         conjunction.add(eq("textFlow", "tf"));
-        conjunction.add(eq("locale", locale.placeHolder()));
+        conjunction.add(eq("locale", Locale.placeHolder()));
         String textFlowAndLocaleRestriction =
-                and(eq("textFlow", "tf"), eq("locale", locale.placeHolder()));
+                and(eq("textFlow", "tf"), eq("locale", Locale.placeHolder()));
 
         String stateInListWhereClause =
                 and(textFlowAndLocaleRestriction,
                         String.format("state in (%s)",
-                                contentStateList.placeHolder()));
+                                ContentStateList.placeHolder()));
         String stateInListCondition =
                 QueryBuilder.exists().from("HTextFlowTarget")
                         .where(stateInListWhereClause).toQueryString();
         if (constraints.getIncludedStates().hasNew()) {
             String nullTargetCondition =
                     String.format("%s not in indices(tf.targets)",
-                            locale.placeHolder());
+                            Locale.placeHolder());
             if (hasSearch && constraints.isSearchInSource()) {
 
                 nullTargetCondition =
@@ -284,42 +284,42 @@ public class FilterConstraintToQuery {
             return null;
         }
         return eq("lastModifiedBy.account.username",
-                lastModifiedBy.placeHolder());
+                LastModifiedBy.placeHolder());
     }
 
     public Query setQueryParameters(Query textFlowQuery, HLocale hLocale) {
         if (documentId != null) {
-            textFlowQuery.setParameter(Parameters.documentId.namedParam(),
+            textFlowQuery.setParameter(Parameters.DocumentId.namedParam(),
                     documentId.getId());
         } else {
-            textFlowQuery.setParameterList(documentIdList.namedParam(),
+            textFlowQuery.setParameterList(DocumentIdList.namedParam(),
                     documentIds);
         }
-        textFlowQuery.setParameter(locale.namedParam(), hLocale.getId());
+        textFlowQuery.setParameter(Locale.namedParam(), hLocale.getId());
         if (hasSearch) {
-            textFlowQuery.setParameter(Parameters.searchString.namedParam(),
+            textFlowQuery.setParameter(Parameters.SearchString.namedParam(),
                     searchString);
         }
         if (!constraints.getIncludedStates().hasAllStates()) {
-            textFlowQuery.setParameterList(contentStateList.namedParam(),
+            textFlowQuery.setParameterList(ContentStateList.namedParam(),
                     constraints.getIncludedStates().asList());
         }
         addExactMatchParamIfPresent(textFlowQuery, constraints.getResId(),
-                resId);
+                ResId);
         addWildcardSearchParamIfPresent(textFlowQuery,
-                constraints.getMsgContext(), msgContext);
+                constraints.getMsgContext(), MsgContext);
         addWildcardSearchParamIfPresent(textFlowQuery,
-                constraints.getSourceComment(), sourceComment);
+                constraints.getSourceComment(), SourceComment);
         addWildcardSearchParamIfPresent(textFlowQuery,
-                constraints.getTransComment(), targetComment);
+                constraints.getTransComment(), TargetComment);
         addExactMatchParamIfPresent(textFlowQuery,
-                constraints.getLastModifiedByUser(), lastModifiedBy);
+                constraints.getLastModifiedByUser(), LastModifiedBy);
         if (constraints.getChangedAfter() != null) {
-            textFlowQuery.setParameter(lastChangedAfter.namedParam(),
+            textFlowQuery.setParameter(LastChangedAfter.namedParam(),
                     constraints.getChangedAfter().toDate());
         }
         if (constraints.getChangedBefore() != null) {
-            textFlowQuery.setParameter(lastChangedBefore.namedParam(),
+            textFlowQuery.setParameter(LastChangedBefore.namedParam(),
                     constraints.getChangedBefore().toDate());
         }
         return textFlowQuery;
@@ -345,9 +345,9 @@ public class FilterConstraintToQuery {
     }
 
     enum Parameters {
-        searchString, contentStateList, locale, documentId, documentIdList,
-        resId, sourceComment, msgContext, targetComment, lastModifiedBy,
-        lastChangedAfter, lastChangedBefore;
+        SearchString, ContentStateList, Locale, DocumentId, DocumentIdList,
+        ResId, SourceComment, MsgContext, TargetComment, LastModifiedBy,
+        LastChangedAfter, LastChangedBefore;
 
         public String placeHolder() {
             return ":" + name();

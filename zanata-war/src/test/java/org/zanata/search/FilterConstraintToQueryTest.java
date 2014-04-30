@@ -137,7 +137,7 @@ public class FilterConstraintToQueryTest {
 
         assertThat(
                 result,
-                Matchers.equalToIgnoringCase(" EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList)))"));
+                Matchers.equalToIgnoringCase(" EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList)))"));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class FilterConstraintToQueryTest {
                 result,
                 Matchers.equalToIgnoringCase("( EXISTS "
                         + "( FROM HTextFlowTarget WHERE "
-                        + "((textFlow=tf AND locale=:locale) AND state in (:contentStateList))"
+                        + "((textFlow=tf AND locale=:locale) AND state in (:ContentStateList))"
                         + ") OR :locale not in indices(tf.targets)" + ")"));
     }
 
@@ -171,7 +171,7 @@ public class FilterConstraintToQueryTest {
                 result,
                 Matchers.equalToIgnoringCase("( EXISTS "
                         + "( FROM HTextFlowTarget WHERE "
-                        + "((textFlow=tf and locale=:locale) AND state in (:contentStateList))"
+                        + "((textFlow=tf and locale=:locale) AND state in (:ContentStateList))"
                         + ") OR " + "(:locale not in indices(tf.targets) AND "
                         + SOURCE_CONTENT_CASE_INSENSITIVE + ")" + ")"));
     }
@@ -245,7 +245,7 @@ WHERE (
                     textFlow=tf
                 AND locale  =:locale
                 )
-            AND state IN (:contentStateList)
+            AND state IN (:ContentStateList)
             )
             )
         OR
@@ -260,8 +260,8 @@ WHERE (
     )
 ORDER BY tf.pos
  */
-        assertThat(result, Matchers.equalTo(
-                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND ((lower(tf.content0) like :searchString) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:contentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
+        assertThat(result, Matchers.equalToIgnoringCase(
+                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND ((lower(tf.content0) like :searchString) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
     }
 
     @Test
@@ -276,14 +276,14 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameter(
-                FilterConstraintToQuery.Parameters.documentId.namedParam(),
+                FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(locale.namedParam(),
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(searchString.namedParam(),
+        verify(query).setParameter(SearchString.namedParam(),
                 "%file%");
         verify(query).setParameterList(
-                contentStateList.namedParam(),
+                ContentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -301,13 +301,13 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameterList(
-                documentIdList.namedParam(), docIdList);
-        verify(query).setParameter(locale.namedParam(),
+                DocumentIdList.namedParam(), docIdList);
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(searchString.namedParam(),
+        verify(query).setParameter(SearchString.namedParam(),
                 "%file%");
         verify(query).setParameterList(
-                contentStateList.namedParam(),
+                ContentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -324,12 +324,12 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameter(
-                FilterConstraintToQuery.Parameters.documentId.namedParam(),
+                FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(locale.namedParam(),
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
         verify(query).setParameterList(
-                contentStateList.namedParam(),
+                ContentStateList.namedParam(),
                 constraints.getIncludedStates().asList());
         verifyNoMoreInteractions(query);
     }
@@ -345,11 +345,11 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameter(
-                FilterConstraintToQuery.Parameters.documentId.namedParam(),
+                FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(locale.namedParam(),
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(searchString.namedParam(),
+        verify(query).setParameter(SearchString.namedParam(),
                 "%file%");
         verifyNoMoreInteractions(query);
     }
@@ -366,11 +366,11 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameter(
-                FilterConstraintToQuery.Parameters.documentId.namedParam(),
+                FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(locale.namedParam(),
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(searchString.namedParam(),
+        verify(query).setParameter(SearchString.namedParam(),
                 "%FiLe%");
         verifyNoMoreInteractions(query);
     }
@@ -387,11 +387,11 @@ ORDER BY tf.pos
         constraintToQuery.setQueryParameters(query, hLocale);
 
         verify(query).setParameter(
-                FilterConstraintToQuery.Parameters.documentId.namedParam(),
+                FilterConstraintToQuery.Parameters.DocumentId.namedParam(),
                 documentId.getId());
-        verify(query).setParameter(locale.namedParam(),
+        verify(query).setParameter(Locale.namedParam(),
                 hLocale.getId());
-        verify(query).setParameter(searchString.namedParam(),
+        verify(query).setParameter(SearchString.namedParam(),
                 "%\\% blah blah \\%%");
         verifyNoMoreInteractions(query);
     }
