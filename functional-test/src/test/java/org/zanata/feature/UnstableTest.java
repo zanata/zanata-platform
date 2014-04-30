@@ -32,5 +32,5 @@ package org.zanata.feature;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-public class UnstableTest {
+public interface UnstableTest {
 }

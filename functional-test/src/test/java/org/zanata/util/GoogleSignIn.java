@@ -59,7 +59,7 @@ public class GoogleSignIn {
      * to be in the form:
      * <p />
      * {@literal mvn <goals>
-     *     -Dgoogleopenid.credentials=username1:password1;username2:password2;}
+     *     -Dgoogleopenid.credentials=username1,password1;username2,password2;}
      *
      * @param username
      *            Username of username:password pair query
@@ -77,7 +77,7 @@ public class GoogleSignIn {
         }
 
         for (String signIn : googlePass.split(";")) {
-            String[] usernamePasswordPair = signIn.split(":");
+            String[] usernamePasswordPair = signIn.split(",");
             if (usernamePasswordPair.length > 0
                     && usernamePasswordPair[0].equals(username)) {
                 return usernamePasswordPair[1];
