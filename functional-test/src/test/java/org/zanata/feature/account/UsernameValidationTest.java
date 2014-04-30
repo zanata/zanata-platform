@@ -104,16 +104,14 @@ public class UsernameValidationTest extends ZanataTestCase {
     @Theory
     public void usernameCharacterValidation(String username) {
         log.info(testName.getMethodName() + " : " + username);
-        String errorMsg =
-                "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
-
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
                 .goToRegistration()
                 .enterUserName(username);
         registerPage.defocus();
 
-        assertThat(errorMsg).isIn(registerPage.waitForFieldErrors())
-                .as("Validation errors are shown");
+        assertThat(registerPage.waitForFieldErrors())
+                .contains(registerPage.USERNAMEVALIDATIONERROR)
+                .as("Username validation errors are shown");
     }
 }
