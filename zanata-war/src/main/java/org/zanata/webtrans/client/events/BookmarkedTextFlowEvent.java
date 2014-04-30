@@ -30,7 +30,7 @@ public class BookmarkedTextFlowEvent extends
     @Override
     public GetTransUnitActionContext updateContext(
             GetTransUnitActionContext currentContext) {
-        return currentContext.changeOffset(offset).changeTargetTransUnitId(
+        return currentContext.withOffset(offset).withTargetTransUnitId(
                 targetTransUnitId);
     }
 

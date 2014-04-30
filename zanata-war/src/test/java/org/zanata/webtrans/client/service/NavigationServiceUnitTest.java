@@ -13,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
@@ -103,7 +102,7 @@ public class NavigationServiceUnitTest {
         navigationStateHolder.init(idStateMap, idIndexList);
         initContext =
                 new GetTransUnitActionContext(TestFixture.documentInfo(1, ""))
-                        .changeCount(configHolder.getState()
+                        .withCount(configHolder.getState()
                                 .getEditorPageSize());
     }
 

@@ -87,7 +87,7 @@ public class GetTransUnitActionContext {
         return editorFilter.getTextInContent();
     }
 
-    public GetTransUnitActionContext changeFindMessage(String findMessage) {
+    public GetTransUnitActionContext withFindMessage(String findMessage) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.editorFilter = EditorFilter.fromQuery(findMessage);
         return result;
@@ -97,7 +97,7 @@ public class GetTransUnitActionContext {
         return filterTranslated;
     }
 
-    public GetTransUnitActionContext changeFilterTranslated(
+    public GetTransUnitActionContext withFilterTranslated(
             boolean filterTranslated) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterTranslated = filterTranslated;
@@ -108,7 +108,7 @@ public class GetTransUnitActionContext {
         return filterFuzzy;
     }
 
-    public GetTransUnitActionContext changeFilterFuzzy(boolean filterFuzzy) {
+    public GetTransUnitActionContext withFilterFuzzy(boolean filterFuzzy) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterFuzzy = filterFuzzy;
         return result;
@@ -126,22 +126,20 @@ public class GetTransUnitActionContext {
         return filterRejected;
     }
 
-    public GetTransUnitActionContext changeFilterUntranslated(
+    public GetTransUnitActionContext withFilterUntranslated(
             boolean filterUntranslated) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterUntranslated = filterUntranslated;
         return result;
     }
 
-    public GetTransUnitActionContext
-            changeFilterApproved(boolean filterApproved) {
+    public GetTransUnitActionContext withFilterApproved(boolean filterApproved) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterApproved = filterApproved;
         return result;
     }
 
-    public GetTransUnitActionContext
-            changeFilterRejected(boolean filterRejected) {
+    public GetTransUnitActionContext withFilterRejected(boolean filterRejected) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterRejected = filterRejected;
         return result;
@@ -151,8 +149,7 @@ public class GetTransUnitActionContext {
         return filterHasError;
     }
 
-    public GetTransUnitActionContext
-            changeFilterHasError(boolean filterHasError) {
+    public GetTransUnitActionContext withFilterHasError(boolean filterHasError) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.filterHasError = filterHasError;
         return result;
@@ -162,7 +159,7 @@ public class GetTransUnitActionContext {
         return targetTransUnitId;
     }
 
-    public GetTransUnitActionContext changeTargetTransUnitId(
+    public GetTransUnitActionContext withTargetTransUnitId(
             TransUnitId targetTransUnitId) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.targetTransUnitId = targetTransUnitId;
@@ -173,7 +170,7 @@ public class GetTransUnitActionContext {
         return offset;
     }
 
-    public GetTransUnitActionContext changeOffset(int offset) {
+    public GetTransUnitActionContext withOffset(int offset) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.offset = offset;
         return result;
@@ -183,7 +180,7 @@ public class GetTransUnitActionContext {
         return count;
     }
 
-    public GetTransUnitActionContext changeCount(int count) {
+    public GetTransUnitActionContext withCount(int count) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.count = count;
         return result;
@@ -193,7 +190,7 @@ public class GetTransUnitActionContext {
         return validationIds;
     }
 
-    public GetTransUnitActionContext changeValidationIds(
+    public GetTransUnitActionContext withValidationIds(
             List<ValidationId> validationIds) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.validationIds = validationIds;
@@ -204,22 +201,10 @@ public class GetTransUnitActionContext {
         return editorFilter;
     }
 
-    public GetTransUnitActionContext changeEditorFilter(
+    public GetTransUnitActionContext withEditorFilter(
             EditorFilter editorFilter) {
         GetTransUnitActionContext result = new GetTransUnitActionContext(this);
         result.editorFilter = editorFilter;
-        return result;
-    }
-
-    public GetTransUnitActionContext setAcceptAll() {
-        GetTransUnitActionContext result = new GetTransUnitActionContext(this);
-        result.filterTranslated = false;
-        result.filterFuzzy = false;
-        result.filterHasError = false;
-        result.filterUntranslated = false;
-        result.filterApproved = false;
-        result.filterRejected = false;
-        result.editorFilter = EditorFilter.ALL;
         return result;
     }
 

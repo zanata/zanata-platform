@@ -71,6 +71,6 @@ public class FindMessageEvent extends GwtEvent<FindMessageHandler> implements
             GetTransUnitActionContext currentContext) {
         Preconditions.checkNotNull(currentContext,
                 "current context can not be null");
-        return currentContext.changeFindMessage(message);
+        return currentContext.withFindMessage(message);
     }
 }

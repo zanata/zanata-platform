@@ -30,7 +30,7 @@ public class EditorPageSizeChangeEvent extends
             GetTransUnitActionContext currentContext) {
         Preconditions.checkNotNull(currentContext,
                 "current context can not be null");
-        return currentContext.changeCount(pageSize);
+        return currentContext.withCount(pageSize);
     }
 
     public int getPageSize() {

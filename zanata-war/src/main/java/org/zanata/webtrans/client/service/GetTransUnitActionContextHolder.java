@@ -31,16 +31,19 @@ public class GetTransUnitActionContextHolder {
             EditorFilter editorFilter) {
         // @formatter:off
         context = new GetTransUnitActionContext(document)
-            .changeCount(configHolder.getState().getEditorPageSize())
-            .changeEditorFilter(editorFilter)
-            .changeFilterFuzzy(configHolder.getState().isFilterByFuzzy())
-            .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
-            .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
-            .changeFilterApproved(configHolder.getState().isFilterByApproved())
-            .changeFilterRejected(configHolder.getState().isFilterByRejected())
-            .changeFilterHasError(configHolder.getState().isFilterByHasError())
-            .changeValidationIds(configHolder.getState().getEnabledValidationIds())
-            .changeTargetTransUnitId(targetTransUnitId);
+            .withCount(configHolder.getState().getEditorPageSize())
+            .withEditorFilter(editorFilter)
+            .withFilterFuzzy(configHolder.getState().isFilterByFuzzy())
+            .withFilterTranslated(
+                    configHolder.getState().isFilterByTranslated())
+            .withFilterUntranslated(
+                    configHolder.getState().isFilterByUntranslated())
+            .withFilterApproved(configHolder.getState().isFilterByApproved())
+            .withFilterRejected(configHolder.getState().isFilterByRejected())
+            .withFilterHasError(configHolder.getState().isFilterByHasError())
+            .withValidationIds(
+                    configHolder.getState().getEnabledValidationIds())
+            .withTargetTransUnitId(targetTransUnitId);
         // @formatter:on
 
         return context;
@@ -51,13 +54,13 @@ public class GetTransUnitActionContextHolder {
     }
 
     public GetTransUnitActionContext changeOffset(int targetOffset) {
-        context = context.changeOffset(targetOffset);
+        context = context.withOffset(targetOffset);
         return context;
     }
 
     public GetTransUnitActionContext changeTargetTransUnitId(
             TransUnitId transUnitId) {
-        context = context.changeTargetTransUnitId(transUnitId);
+        context = context.withTargetTransUnitId(transUnitId);
         return context;
     }
 

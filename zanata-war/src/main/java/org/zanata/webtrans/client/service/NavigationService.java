@@ -196,7 +196,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
             GetTransUnitActionContext context = contextHolder.getContext();
             GetTransUnitActionContext newContext =
                     contextHolder.changeOffset(context.getCount() * page)
-                            .changeTargetTransUnitId(null);
+                            .withTargetTransUnitId(null);
             Log.info("page index: " + page + " page context: " + newContext);
             requestTransUnitsAndUpdatePageIndex(newContext,
                     !configHolder.isAcceptAllStatus());
@@ -252,7 +252,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
         GetTransUnitActionContext context = contextHolder.getContext();
         GetTransUnitActionContext newContext =
                 contextHolder.changeOffset(context.getCount() * page)
-                        .changeTargetTransUnitId(transUnitId);
+                        .withTargetTransUnitId(transUnitId);
         Log.debug("page index: " + page + " page context: " + newContext);
         requestTransUnitsAndUpdatePageIndex(newContext,
                 !configHolder.isAcceptAllStatus());

@@ -87,12 +87,12 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
             GetTransUnitActionContext currentContext) {
         Preconditions.checkNotNull(currentContext,
                 "current context can not be null");
-        return currentContext.changeFilterFuzzy(filterFuzzy)
-                .changeFilterTranslated(filterTranslated)
-                .changeFilterUntranslated(filterUntranslated)
-                .changeFilterApproved(filterApproved)
-                .changeFilterRejected(filterRejected)
-                .changeFilterHasError(filterHasError);
+        return currentContext.withFilterFuzzy(filterFuzzy)
+                .withFilterTranslated(filterTranslated)
+                .withFilterUntranslated(filterUntranslated)
+                .withFilterApproved(filterApproved)
+                .withFilterRejected(filterRejected)
+                .withFilterHasError(filterHasError);
     }
 
     @Override
