@@ -83,7 +83,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
                 documentListPresenter.getDocumentId(newHistoryToken
                         .getDocumentPath());
         EditorFilter editorFilter =
-                new EditorFilter(newHistoryToken.getSearchText(),
+                new EditorFilter(newHistoryToken.getEditorTextSearch(),
                         newHistoryToken.getResId(),
                         newHistoryToken.getChangedBefore(),
                         newHistoryToken.getChangedAfter(),
@@ -145,12 +145,12 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
 
     protected void processForTransFilter(HistoryToken newHistoryToken) {
         boolean findMessageChanged =
-                !Objects.equal(newHistoryToken.getSearchText(),
-                        currentHistoryState.getSearchText());
+                !Objects.equal(newHistoryToken.getEditorTextSearch(),
+                        currentHistoryState.getEditorTextSearch());
         if (findMessageChanged) {
             Log.info("[gwt-history] trans filter search has changed");
             eventBus.fireEvent(new FindMessageEvent(newHistoryToken
-                    .getSearchText()));
+                    .getEditorTextSearch()));
         }
     }
 

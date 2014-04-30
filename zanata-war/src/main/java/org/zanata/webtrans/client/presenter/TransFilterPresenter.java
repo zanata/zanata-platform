@@ -73,7 +73,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     @Override
     public void searchTerm(String searchTerm) {
         HistoryToken newToken = history.getHistoryToken();
-        newToken.setSearchText(searchTerm);
+        newToken.setEditorTextSearch(searchTerm);
         history.newItem(newToken);
     }
 

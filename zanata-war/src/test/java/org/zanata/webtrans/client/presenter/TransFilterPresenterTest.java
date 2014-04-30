@@ -74,7 +74,7 @@ public class TransFilterPresenterTest {
 
         presenter.searchTerm("blah");
 
-        assertThat(historyToken.getSearchText(), Matchers.equalTo("blah"));
+        assertThat(historyToken.getEditorTextSearch(), Matchers.equalTo("blah"));
         verify(history).newItem(historyToken);
     }
 

@@ -213,7 +213,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         }
 
         // don't carry searches over to the next document
-        token.setSearchText("");
+        token.setEditorTextSearch("");
         history.newItem(token);
 
         userWorkspaceContext.setSelectedDoc(doc);

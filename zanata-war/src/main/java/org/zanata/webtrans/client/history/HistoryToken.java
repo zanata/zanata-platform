@@ -42,8 +42,7 @@ public class HistoryToken {
     private boolean docFilterExact;
     private boolean docFilterCaseSensitive;
     private String docFilterText;
-    // TODO pahuang rename to editorTextSearch
-    private String searchText;
+    private String editorTextSearch;
     private String resId;
     private String lastModifiedBy;
     private String changedBefore;
@@ -123,12 +122,12 @@ public class HistoryToken {
         projectSearchInTarget = searchInTarget;
     }
 
-    public String getSearchText() {
-        return this.searchText;
+    public String getEditorTextSearch() {
+        return this.editorTextSearch;
     }
 
-    public void setSearchText(String value) {
-        this.searchText = Strings.isNullOrEmpty(value) ? DEFAULT_SEARCH_TEXT : value;
+    public void setEditorTextSearch(String value) {
+        this.editorTextSearch = Strings.isNullOrEmpty(value) ? DEFAULT_SEARCH_TEXT : value;
     }
 
     public String getProjectSearchText() {
@@ -350,7 +349,7 @@ public class HistoryToken {
         filterUntranslated = false;
         filterApproved = false;
         filterRejected = false;
-        searchText = null;
+        editorTextSearch = null;
         resId = null;
         changedBefore = null;
         changedAfter = null;

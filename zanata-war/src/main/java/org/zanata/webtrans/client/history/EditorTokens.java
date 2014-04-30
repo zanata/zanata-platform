@@ -32,7 +32,7 @@ enum EditorTokens implements TokensConverter {
         if (key.equals(EditorTokens.KEY_DOCUMENT)) {
             historyToken.setDocumentPath(value);
         } else if (key.equals(EditorTokens.KEY_SEARCH_DOC_TEXT)) {
-            historyToken.setSearchText(value);
+            historyToken.setEditorTextSearch(value);
         } else if (key.equals(EditorTokens.KEY_TEXT_FLOW_ID)) {
             historyToken.setTextFlowId(value);
         }
@@ -84,7 +84,7 @@ enum EditorTokens implements TokensConverter {
             tokens.add(new Token(KEY_DOCUMENT, historyToken.getDocumentPath()));
         }
 
-        setIfExists(tokens, KEY_SEARCH_DOC_TEXT, historyToken.getSearchText());
+        setIfExists(tokens, KEY_SEARCH_DOC_TEXT, historyToken.getEditorTextSearch());
 
         if (historyToken.getTextFlowId() != null) {
             tokens.add(new Token(KEY_TEXT_FLOW_ID, historyToken.getTextFlowId()

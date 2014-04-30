@@ -134,7 +134,7 @@ public class HistoryEventHandlerServiceTest {
     @Test
     public void onProcessTransFilter() {
         HistoryToken token = new HistoryToken();
-        token.setSearchText("something");
+        token.setEditorTextSearch("something");
 
         service.processForTransFilter(token);
 
@@ -195,7 +195,7 @@ public class HistoryEventHandlerServiceTest {
         // Given: history token contains everything and editor context is loaded
         HistoryToken token = new HistoryToken();
         token.setDocFilterText("doc filter test");
-        token.setSearchText("search text");
+        token.setEditorTextSearch("search text");
         token.setProjectSearchText("project search text");
         token.setDocumentPath("doc/path");
         token.setProjectSearchReplacement("replacement");
@@ -248,7 +248,7 @@ public class HistoryEventHandlerServiceTest {
         // initialized
         HistoryToken token = new HistoryToken();
         token.setDocFilterText("doc filter test");
-        token.setSearchText("search text");
+        token.setEditorTextSearch("search text");
         token.setProjectSearchText("project search text");
         token.setDocumentPath("doc/path");
         token.setProjectSearchReplacement("replacement");
