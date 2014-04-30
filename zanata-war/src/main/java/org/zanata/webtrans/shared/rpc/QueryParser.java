@@ -21,6 +21,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Joiner;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -34,19 +35,28 @@ import java.util.Map;
  */
 public class QueryParser {
 
+    private static final String TEXT_KEY = "text",
+            RESID_KEY = "resource-id",
+            LAST_MODIFIED_BY_KEY = "last-modified-by",
+            LAST_MODIFIED_BEFORE_KEY = "last-modified-before",
+            LAST_MODIFIED_AFTER_KEY = "last-modified-after",
+            SOURCE_COMMENT_KEY = "source-comment",
+            TRANSLATION_COMMENT_KEY = "translation-comment",
+            MSGCTXT_KEY = "msgctxt";
 
-    private static String[] keys = {
-            "text",
-            "resource-id",
-            "last-modified-by",
-            "last-modified-before",
-            "last-modified-after",
-            "source-comment",
-            "translation-comment",
-            "msgctxt"
+    private static final String[] KEYS = {
+            TEXT_KEY,
+            RESID_KEY,
+            LAST_MODIFIED_BY_KEY,
+            LAST_MODIFIED_BEFORE_KEY,
+            LAST_MODIFIED_AFTER_KEY,
+            SOURCE_COMMENT_KEY,
+            TRANSLATION_COMMENT_KEY,
+            MSGCTXT_KEY
     };
 
     private static final RegExp keyRegex, valRegex;
+
     static {
         String plainChar = "[^\"\\\\]",
                 escapedChar = "\\\\",  // slash followed by any single character
@@ -54,13 +64,13 @@ public class QueryParser {
                 quotedText = "\"" + character + "*?\"", // any plain or escaped chars between quotes
                 value = "(?:" + character + "|" + quotedText + ")",
                 captureLeadingValue = "^(" + value + "*?)",
-                orKeys = join(keys, "|"), // keys.join("|"),
+                orKeys = Joiner.on("|").skipNulls().join(KEYS),
                 anyKey = "(?: (?:" + orKeys + "):)", // space, then key including colon
                 keyOrEndOfLine = "(?:" + anyKey + "|$)",
                 keyAndRemainderOfLine = "(" + keyOrEndOfLine + "(?:.*$)?)";
 
-        keyRegex = RegExp.compile( "^\\s*(" + orKeys + "):(.*)$" ); // new RegExp( "^\\s*(" + orKeys + "):(.*)$" ),
-        valRegex = RegExp.compile(captureLeadingValue + keyAndRemainderOfLine) ;// new RegExp(captureLeadingValue + keyAndRemainderOfLine);
+        keyRegex = RegExp.compile("^\\s*(" + orKeys + "):(.*)$");
+        valRegex = RegExp.compile(captureLeadingValue + keyAndRemainderOfLine);
     }
 
     public static EditorFilter parse(String query) {
@@ -68,14 +78,14 @@ public class QueryParser {
             return EditorFilter.ALL;
         }
         Map<String, String> o = parseRecursive(query, new HashMap<String, String>());
-        return new EditorFilter(o.get("text"),
-                o.get("resource-id"),
-                o.get("last-modified-before"),
-                o.get("last-modified-after"),
-                o.get("last-modified-by"),
-                o.get("source-comment"),
-                o.get("translation-comment"),
-                o.get("msgctxt")
+        return new EditorFilter(o.get(TEXT_KEY),
+                o.get(RESID_KEY),
+                o.get(LAST_MODIFIED_BEFORE_KEY),
+                o.get(LAST_MODIFIED_AFTER_KEY),
+                o.get(LAST_MODIFIED_BY_KEY),
+                o.get(SOURCE_COMMENT_KEY),
+                o.get(TRANSLATION_COMMENT_KEY),
+                o.get(MSGCTXT_KEY)
         );
     }
 
@@ -88,7 +98,7 @@ public class QueryParser {
             remainder = keyMatch.getGroup(2);
         } else {
             int defaultKey = 0;
-            key = keys[defaultKey];
+            key = KEYS[defaultKey];
             remainder = query;
         }
 
@@ -132,7 +142,7 @@ public class QueryParser {
         int pos = 0;
         char character;
 
-        for (; pos<text.length();) {
+        while (pos < text.length()) {
             character = text.charAt(pos);
             if (character == '\\' || character == '"') {
                 // strip out the character
@@ -145,15 +155,5 @@ public class QueryParser {
             }
         }
         return text;
-    }
-
-    private static String join (String[] values, String separator) {
-        String result = "";
-        boolean first = true;
-        for (String value : values) {
-            result = result + (first ? "" : separator) + value;
-            first = false;
-        }
-        return result;
     }
 }
