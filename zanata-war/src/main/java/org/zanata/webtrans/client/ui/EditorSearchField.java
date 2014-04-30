@@ -67,7 +67,6 @@ public class EditorSearchField extends Composite {
     private native void initTextBox(Element wrapper, EditorSearchFieldListener listener)/*-{
         var valueChangeCallback = this.@org.zanata.webtrans.client.ui.EditorSearchField::onValueChanged(Ljava/lang/String;Lorg/zanata/webtrans/client/ui/EditorSearchFieldListener;);
         $wnd.searchSuggestions.init(wrapper, function (newValue) {
-            console.log('editor search field change callback being fired now');
             valueChangeCallback(newValue, listener);
         });
     }-*/;
