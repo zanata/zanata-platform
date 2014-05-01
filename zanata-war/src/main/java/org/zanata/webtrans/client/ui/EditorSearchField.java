@@ -58,6 +58,7 @@ public class EditorSearchField extends Composite {
         this.listener = listener;
         initWidget(uiBinder.createAndBindUi(this));
         initTextBox(wrapper.getElement(), listener);
+        filterTextBox.ensureDebugId("editor-filter-box");
     }
 
     private void onValueChanged(String newValue, EditorSearchFieldListener listener) {
