@@ -18,18 +18,17 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.dashboard;
+package org.zanata.page.dashboard.dashboardsettings;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-
-import com.google.common.base.Predicate;
+import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class DashboardSettingsTab extends DashboardBasePage {
+public class DashboardAccountTab extends DashboardBasePage {
 
     @FindBy(id = "email-update-form:emailField:email")
     private WebElement emailField;
@@ -46,34 +45,34 @@ public class DashboardSettingsTab extends DashboardBasePage {
     @FindBy(id = "passwordChangeForm:changePasswordButton")
     private WebElement changePasswordButton;
 
-    public DashboardSettingsTab(WebDriver driver) {
+    public DashboardAccountTab(WebDriver driver) {
         super(driver);
     }
 
-    public DashboardSettingsTab typeNewAccountEmailAddress(String emailAddress) {
+    public DashboardAccountTab typeNewAccountEmailAddress(String emailAddress) {
         emailField.clear();
         emailField.sendKeys(emailAddress);
         return this;
     }
 
-    public DashboardSettingsTab clickUpdateEmailButton() {
+    public DashboardAccountTab clickUpdateEmailButton() {
         updateEmailButton.click();
         return this;
     }
 
-    public DashboardSettingsTab typeOldPassword(String oldPassword) {
+    public DashboardAccountTab typeOldPassword(String oldPassword) {
         oldPasswordField.clear();
         oldPasswordField.sendKeys(oldPassword);
         return this;
     }
 
-    public DashboardSettingsTab typeNewPassword(String newPassword) {
+    public DashboardAccountTab typeNewPassword(String newPassword) {
         newPasswordField.clear();
         newPasswordField.sendKeys(newPassword);
         return this;
     }
 
-    public DashboardSettingsTab clickUpdatePasswordButton() {
+    public DashboardAccountTab clickUpdatePasswordButton() {
         changePasswordButton.click();
         return this;
     }

@@ -158,4 +158,11 @@ public class DatabaseBackedConfig implements Serializable {
         return getConfigValue(HApplicationConfiguration.KEY_TERMS_CONDITIONS_URL);
     }
 
+    public String getMaxConcurrentRequestsPerApiKey() {
+        return getConfigValue(HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
+    }
+
+    public String getMaxActiveRequestsPerApiKey() {
+        return getConfigValue(HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY);
+    }
 }

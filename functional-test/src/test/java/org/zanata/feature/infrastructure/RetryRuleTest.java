@@ -26,6 +26,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.util.RetryRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,7 +36,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(BasicAcceptanceTest.class)
-public class RetryRuleTest {
+public class RetryRuleTest extends ZanataTestCase {
 
     @Rule
     public RetryRule retryRule = new RetryRule(2);

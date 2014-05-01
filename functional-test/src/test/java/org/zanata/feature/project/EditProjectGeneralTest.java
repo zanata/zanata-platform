@@ -25,6 +25,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
@@ -46,7 +47,7 @@ import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditProjectGeneralTest {
+public class EditProjectGeneralTest extends ZanataTestCase {
 
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();

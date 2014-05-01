@@ -27,13 +27,11 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.account.ChangePasswordPage;
-import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.dashboard.DashboardSettingsTab;
+import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -42,12 +40,11 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class ChangePasswordTest {
+public class ChangePasswordTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
@@ -62,10 +59,11 @@ public class ChangePasswordTest {
     public void changePasswordSuccessful() {
         DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");
-        dashboard.gotoSettingsTab()
-                 .typeOldPassword("translator")
-                 .typeNewPassword("newpassword")
-                 .clickUpdatePasswordButton();
+        dashboard.goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeOldPassword("translator")
+                .typeNewPassword("newpassword")
+                .clickUpdatePasswordButton();
 
         HomePage homePage = dashboard.logout();
         assertThat("User is logged out", !homePage.hasLoggedIn());
@@ -81,7 +79,8 @@ public class ChangePasswordTest {
                 "Old password is incorrect, please check and try again.";
         List<String> fieldErrors =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .gotoSettingsTab()
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
                         .typeOldPassword("nottherightpassword")
                         .typeNewPassword("somenewpassword")
                         .clickUpdatePasswordButton()
@@ -97,7 +96,8 @@ public class ChangePasswordTest {
         String mayNotBeEmpty = "may not be empty";
         List<String> fieldErrors =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .gotoSettingsTab()
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
                         .clickUpdatePasswordButton()
                         .getFieldErrors();
 
@@ -111,13 +111,14 @@ public class ChangePasswordTest {
         String passwordSizeError = "size must be between 6 and 20";
         String tooShort = "test5";
         String tooLong = "t12345678901234567890";
-        DashboardSettingsTab dashboardSettingsTab =
+        DashboardAccountTab dashboardAccountTab =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .gotoSettingsTab()
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
                         .typeOldPassword("translator");
 
         List<String> fieldErrors =
-            dashboardSettingsTab
+            dashboardAccountTab
                         .typeNewPassword(tooShort)
                         .clickUpdatePasswordButton()
                         .waitForFieldErrors();
@@ -126,7 +127,7 @@ public class ChangePasswordTest {
                 Matchers.hasItem(passwordSizeError));
 
         fieldErrors =
-                dashboardSettingsTab
+                dashboardAccountTab
                         .typeNewPassword(tooLong)
                         .clickUpdatePasswordButton()
                         .waitForFieldErrors();

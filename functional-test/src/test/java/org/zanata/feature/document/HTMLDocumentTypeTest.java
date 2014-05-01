@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
@@ -45,7 +46,8 @@ import static org.zanata.util.FunctionalTestHelper.assumeFalse;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class HTMLDocumentTypeTest {
+public class HTMLDocumentTypeTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

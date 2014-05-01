@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
@@ -30,7 +31,8 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ObsoleteTextTest {
+public class ObsoleteTextTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
     private ZanataRestCaller restCaller;

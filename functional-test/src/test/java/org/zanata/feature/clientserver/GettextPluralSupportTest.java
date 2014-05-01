@@ -15,6 +15,7 @@ import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.page.webtrans.Plurals;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -37,7 +38,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class GettextPluralSupportTest {
+public class GettextPluralSupportTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

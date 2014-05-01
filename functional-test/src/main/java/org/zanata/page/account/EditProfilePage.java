@@ -31,19 +31,19 @@ import org.zanata.page.utility.HomePage;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class EditProfilePage extends BasePage {
-    @FindBy(id = "editProfileForm:nameField:name")
+    @FindBy(id = "profile-form:nameField:name")
     private WebElement nameField;
 
-    @FindBy(id = "editProfileForm:usernameField:username")
+    @FindBy(id = "profile-form:usernameField:username")
     private WebElement usernameField;
 
-    @FindBy(id = "editProfileForm:emailField:email")
+    @FindBy(id = "profile-form:emailField:email")
     private WebElement emailField;
 
-    @FindBy(id = "editProfileForm:saveButton")
+    @FindBy(id = "profile-form:user-create-new")
     private WebElement saveButton;
 
-    @FindBy(id = "editProfileForm:cancelButton")
+    @FindBy(id = "profile-form:user-create-cancel")
     private WebElement cancelButton;
 
     public EditProfilePage(WebDriver driver) {
@@ -53,6 +53,7 @@ public class EditProfilePage extends BasePage {
     public EditProfilePage enterName(String name) {
         nameField.clear();
         nameField.sendKeys(name);
+        defocus();
         return new EditProfilePage(getDriver());
     }
 
@@ -64,6 +65,7 @@ public class EditProfilePage extends BasePage {
     public EditProfilePage enterEmail(String email) {
         emailField.clear();
         emailField.sendKeys(email);
+        defocus();
         return new EditProfilePage(getDriver());
     }
 
@@ -72,18 +74,9 @@ public class EditProfilePage extends BasePage {
         return new HomePage(getDriver());
     }
 
-    public MyAccountPage clickSaveChanges() {
-        saveButton.click();
-        return new MyAccountPage(getDriver());
-    }
-
     public EditProfilePage clickSaveAndExpectErrors() {
         saveButton.click();
         return new EditProfilePage(getDriver());
     }
 
-    public MyAccountPage clickCancel() {
-        cancelButton.click();
-        return new MyAccountPage(getDriver());
-    }
 }

@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
@@ -49,7 +50,7 @@ import static org.hamcrest.Matchers.is;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class VersionGroupUrlTest {
+public class VersionGroupUrlTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

@@ -395,4 +395,22 @@ public class ApplicationConfiguration implements Serializable {
         return Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(),
                 "//assets-zanata.rhcloud.com");
     }
+
+    public int getMaxConcurrentRequestsPerApiKey() {
+        String max =
+                databaseBackedConfig.getMaxConcurrentRequestsPerApiKey();
+        if (Strings.isNullOrEmpty(max)) {
+            return 6;
+        }
+        return Integer.parseInt(max);
+    }
+
+    public int getMaxActiveRequestsPerApiKey() {
+        String max =
+                databaseBackedConfig.getMaxActiveRequestsPerApiKey();
+        if (Strings.isNullOrEmpty(max)) {
+            return 2;
+        }
+        return Integer.parseInt(max);
+    }
 }

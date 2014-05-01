@@ -32,6 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardActivityTab;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.DashboardProjectsTab;
@@ -44,7 +45,7 @@ import org.zanata.workflow.LoginWorkFlow;
 
 @Category(DetailedTest.class)
 @Slf4j
-public class DashboardTest {
+public class DashboardTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -101,10 +102,11 @@ public class DashboardTest {
     public void accountEmailModification() throws Exception {
         final String successMessage =
                 "You will soon receive an email with a link to activate your email account change.";
-        dashboard.gotoSettingsTab()
-                 .typeNewAccountEmailAddress("new@fakeemail.com")
-                 .clickUpdateEmailButton()
-                 .waitForNotificationMessage(successMessage);
+        dashboard.goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeNewAccountEmailAddress("new@fakeemail.com")
+                .clickUpdateEmailButton()
+                .waitForNotificationMessage(successMessage);
         assertThat(dashboard.getNotificationMessage())
                 .isEqualTo(successMessage);
     }
@@ -113,11 +115,12 @@ public class DashboardTest {
     public void passwordChange() throws Exception {
         final String passwordChanged =
                 "Your password has been successfully changed.";
-        dashboard.gotoSettingsTab()
-                 .typeOldPassword("admin")
-                 .typeNewPassword("admin2")
-                 .clickUpdatePasswordButton()
-                 .waitForNotificationMessage(passwordChanged);
+        dashboard.goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeOldPassword("admin")
+                .typeNewPassword("admin2")
+                .clickUpdatePasswordButton()
+                .waitForNotificationMessage(passwordChanged);
         assertThat(dashboard.getNotificationMessage()).isEqualTo(
                 passwordChanged);
     }

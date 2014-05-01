@@ -5,7 +5,7 @@
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
     <param name="threshold" value="DEBUG" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%c{1}] - %m%n" />
+      <param name="ConversionPattern" value="%d %t %-5p [%c{1}] - %m%n" />
     </layout>
   </appender>
   <!--
@@ -35,8 +35,8 @@
   <logger name="gwt-log">
     <level value="OFF" />
   </logger>
-  <logger name="org.zanata.search">
-    <level value="DEBUG" />
+  <logger name="org.zanata.servlet">
+    <level value="ERROR"/>
   </logger>
   <root>
     <level value="ERROR" />

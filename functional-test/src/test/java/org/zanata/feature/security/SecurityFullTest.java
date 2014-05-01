@@ -31,11 +31,11 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -44,8 +44,8 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class SecurityFullTest {
+public class SecurityFullTest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 

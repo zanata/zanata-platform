@@ -26,6 +26,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.SampleProjectRule;
@@ -34,7 +35,7 @@ import org.zanata.workflow.LoginWorkFlow;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(DetailedTest.class)
-public class ManageSearchTest {
+public class ManageSearchTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,21 +18,19 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.administration;
-
-import org.concordion.api.extension.Extensions;
-import org.concordion.integration.junit4.ConcordionRunner;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.zanata.concordion.IndexPageBuilderExtension;
-import org.zanata.feature.ConcordionTest;
+package org.zanata.feature;
 
 /**
+ * Interface for the execution of the Unstable Test category.
+ *
+ * Tests in this category may encounter execution problems, for various reasons
+ * such as:<br/>
+ * - Relying on external interfaces (e.g. Google, Fedora, OpenShift)
+ * - Timeout/performance problems
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @see "http://junit.org/javadoc/4.9/org/junit/experimental/categories/Categories.html"
  */
-@RunWith(ConcordionRunner.class)
-@Extensions({ IndexPageBuilderExtension.class })
-@Category(ConcordionTest.class)
-public class AdministrationTest {
+public interface UnstableTest {
 }
