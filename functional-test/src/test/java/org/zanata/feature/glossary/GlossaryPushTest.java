@@ -40,7 +40,6 @@ import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.base.Joiner;
 
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/147311/">TCMS case</a>
@@ -86,9 +85,8 @@ public class GlossaryPushTest {
     public void translate() {
         new LoginWorkFlow().signIn("translator", "translator");
         editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        EDITOR_TEMPLATE, "about-fedora",
-                        "master", "fr", "About_Fedora"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("about-fedora",
+                        "master", "fr", "About_Fedora");
     }
 
     public void searchGlossary(String term) {

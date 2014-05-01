@@ -20,7 +20,6 @@ import org.zanata.workflow.LoginWorkFlow;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 
 /**
@@ -122,10 +121,8 @@ public class ObsoleteTextTest extends ZanataTestCase {
     }
 
     private static EditorPage openEditor() {
-        String url =
-                String.format(EDITOR_TEMPLATE, "obsolete-test", "master", "fr",
-                        "message1");
-        return new BasicWorkFlow().goToPage(url, EditorPage.class)
+        return new BasicWorkFlow().goToEditor("obsolete-test", "master", "fr",
+                "message1")
                 .setSyntaxHighlighting(false);
     }
 }

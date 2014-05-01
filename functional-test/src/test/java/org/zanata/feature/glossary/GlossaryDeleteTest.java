@@ -21,11 +21,12 @@
 package org.zanata.feature.glossary;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 import java.io.File;
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,9 +34,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
 import org.zanata.feature.ConcordionTest;
 import org.zanata.feature.ZanataTestCase;
-import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.RetryRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
@@ -95,8 +94,7 @@ public class GlossaryDeleteTest extends ZanataTestCase {
     }
 
     public EditorPage translate(String locale) {
-        return new BasicWorkFlow().goToPage(String.format(
-                EDITOR_TEMPLATE, "about-fedora", "master",
-                locale, "About_Fedora"), EditorPage.class);
+        return new BasicWorkFlow().goToEditor("about-fedora", "master",
+                locale, "About_Fedora");
     }
 }
