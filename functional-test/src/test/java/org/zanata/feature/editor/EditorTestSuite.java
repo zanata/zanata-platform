@@ -30,7 +30,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ TranslateHTMLTest.class, TranslateOdsTest.class,
         TranslateOpenOfficeTest.class, TranslateIdmlTest.class,
-        TranslateTextTest.class })
+        TranslateTextTest.class, EditorFilterMessagesTest.class })
 
 public class EditorTestSuite {
 }

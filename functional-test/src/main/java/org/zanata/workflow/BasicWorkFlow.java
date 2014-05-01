@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class BasicWorkFlow extends AbstractWebWorkFlow {
-    private static final String EDITOR_TEMPLATE = "webtrans/translate?project=%s&iteration=%s&localeId=%s&locale=en#view:doc;doc:%s";
+    public static final String EDITOR_TEMPLATE = "webtrans/translate?project=%s&iteration=%s&localeId=%s&locale=en#view:doc;doc:%s";
     public static final String PROJECT_VERSION_TEMPLATE = "iteration/view/%s/%s";
 
     public <P extends AbstractPage> P goToPage(String url, Class<P> pageClass) {
