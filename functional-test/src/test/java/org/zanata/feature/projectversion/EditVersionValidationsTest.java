@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
@@ -40,7 +41,7 @@ import static org.junit.Assume.assumeTrue;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditVersionValidationsTest {
+public class EditVersionValidationsTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();

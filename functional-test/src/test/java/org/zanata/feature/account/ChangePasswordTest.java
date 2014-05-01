@@ -29,9 +29,9 @@ import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -40,12 +40,11 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class ChangePasswordTest {
+public class ChangePasswordTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();

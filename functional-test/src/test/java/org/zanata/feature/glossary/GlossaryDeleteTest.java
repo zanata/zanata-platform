@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
 import org.zanata.feature.ConcordionTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.RetryRule;
@@ -48,7 +49,7 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @Category(ConcordionTest.class)
 @Slf4j
-public class GlossaryDeleteTest {
+public class GlossaryDeleteTest extends ZanataTestCase {
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 

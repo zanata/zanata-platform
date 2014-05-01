@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.account;
 
-import org.hamcrest.Matchers;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -28,22 +28,22 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.ValidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-@NoScreenshot
-public class ValidEmailAddressTest {
+public class ValidEmailAddressTest extends ZanataTestCase {
 
     @DataPoint
     public static ValidEmailAddressRFC2822 TEST_BASIC_EMAIL = BASIC_EMAIL;
@@ -99,15 +99,17 @@ public class ValidEmailAddressTest {
 
     @Theory
     public void validEmailAcceptance(ValidEmailAddressRFC2822 emailAddress) {
+        log.info(testName.getMethodName() + " : " + emailAddress);
         String errorMsg = "not a well-formed email address";
-        RegisterPage registerPage =
-                new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage = registerPage.enterEmail(emailAddress.toString());
-        registerPage.defocus();
 
-        assertThat("Email validation errors are not shown",
-                registerPage.getFieldErrors(),
-                Matchers.not(Matchers.hasItem(errorMsg)));
+        RegisterPage registerPage = new BasicWorkFlow()
+                .goToHome()
+                .goToRegistration()
+                .enterEmail(emailAddress.toString())
+                .registerFailure();
+
+        assertThat(errorMsg).isNotIn(registerPage.getFieldErrors())
+                .as("Email validation errors are not shown");
 
     }
 

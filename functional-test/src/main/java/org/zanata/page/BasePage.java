@@ -276,6 +276,7 @@ public class BasePage extends CorePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
+                waitForPageSilence();
                 boolean clicked = false;
                 try {
                     if (tab.isDisplayed() && tab.isEnabled()) {

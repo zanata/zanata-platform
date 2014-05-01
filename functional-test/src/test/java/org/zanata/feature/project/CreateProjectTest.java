@@ -29,10 +29,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -46,8 +46,7 @@ import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class CreateProjectTest {
+public class CreateProjectTest extends ZanataTestCase {
 
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();

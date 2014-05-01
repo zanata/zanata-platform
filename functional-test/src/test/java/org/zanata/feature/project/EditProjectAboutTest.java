@@ -25,6 +25,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projects.ProjectAboutPage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
 import org.zanata.util.SampleProjectRule;
@@ -40,7 +41,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditProjectAboutTest {
+public class EditProjectAboutTest extends ZanataTestCase {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();

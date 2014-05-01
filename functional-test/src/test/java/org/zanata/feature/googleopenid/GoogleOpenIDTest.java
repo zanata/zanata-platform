@@ -33,6 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.UnstableTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.googleaccount.GoogleManagePermissionsPage;
 import org.zanata.page.utility.HomePage;
@@ -47,7 +48,7 @@ import org.zanata.workflow.RegisterWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(UnstableTest.class)
-public class GoogleOpenIDTest {
+public class GoogleOpenIDTest extends ZanataTestCase {
 
     @Rule
     public CleanDatabaseRule cleanDatabaseRule = new CleanDatabaseRule();

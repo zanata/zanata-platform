@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.util.AddUsersRule;
@@ -45,13 +46,10 @@ import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class RateLimitRestAndUITest {
+public class RateLimitRestAndUITest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
-
-    // because of the time based nature, tests may fail occasionally
-    // @Rule
-    public RetryRule retryRule = new RetryRule(2);
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =

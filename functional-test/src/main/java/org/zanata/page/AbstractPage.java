@@ -28,12 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -52,6 +47,14 @@ public class AbstractPage {
     private final WebDriver driver;
     private final FluentWait<WebDriver> ajaxWaitForTenSec;
 
+    public AbstractPage(final WebDriver driver) {
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
+                this);
+        this.driver = driver;
+        ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
+        waitForPageSilence();
+    }
+
     public void reload() {
         getDriver().navigate().refresh();
     }
@@ -63,13 +66,6 @@ public class AbstractPage {
             log.warn("Failed to delete cookies: {}", cookies);
         }
         getDriver().navigate().refresh();
-    }
-
-    public AbstractPage(final WebDriver driver) {
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
-                this);
-        this.driver = driver;
-        ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
     }
 
     public WebDriver getDriver() {
@@ -152,6 +148,39 @@ public class AbstractPage {
                     log.warn("exception", e);
                     return false;
                 }
+            }
+        });
+    }
+
+    /**
+     * Wait for jQuery and Ajax calls to be 0
+     * If either are not defined, they can be assumed to be 0.
+     */
+    public void waitForPageSilence() {
+        // Wait for jQuery calls to be 0
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                int ajaxCalls;
+                int jQueryCalls;
+                try {
+                    jQueryCalls = Integer.parseInt(
+                            ((JavascriptExecutor) getDriver())
+                            .executeScript("return jQuery.active")
+                            .toString());
+                } catch (WebDriverException jCall) {
+                    jQueryCalls = 0;
+                }
+
+                try {
+                    ajaxCalls = Integer.parseInt(
+                            ((JavascriptExecutor) getDriver())
+                            .executeScript("return Ajax.activeRequestCount")
+                            .toString());
+                } catch (WebDriverException jCall) {
+                    ajaxCalls = 0;
+                }
+                return ajaxCalls + jQueryCalls == 0;
             }
         });
     }
