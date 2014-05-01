@@ -62,7 +62,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     @Inject
     public TransFilterView(UiMessages messages) {
         searchField = new EditorSearchField(this);
-        searchField.setPlaceholderText(messages.findSourceOrTargetString());
+        searchField.setPlaceholderText(messages.filterMesssagesByTerm());
         initWidget(uiBinder.createAndBindUi(this));
         hasErrorChk.setTitle(messages.invalidTooltip());
         getElement().setId("TransFilterView");
