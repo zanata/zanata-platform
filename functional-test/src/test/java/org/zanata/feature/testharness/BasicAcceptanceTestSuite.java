@@ -18,16 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.dashboard;
+package org.zanata.feature.testharness;
 
+import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 /**
+ * Extend the full test suite, but filter by the Basic Acceptance Test category
+ *
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ DashboardTest.class })
-public class DashboardTestSuite {
+@RunWith(Categories.class)
+@Categories.IncludeCategory(BasicAcceptanceTest.class)
+public class BasicAcceptanceTestSuite extends TestPlan {
 }
