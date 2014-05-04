@@ -589,4 +589,13 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Enable Spell Check")
     String enabledSpellCheck();
+
+    @DefaultMessage("Cancel: Esc")
+    String attentionKeyCancelLabel();
+
+    @DefaultMessage("Copy Source: G")
+    String attentionKeyCopySourceLabel();
+
+    @DefaultMessage("Toggle Syntax Highlighting: H")
+    String attentionKeyToggleSyntaxHighlightingLabel();
 }
