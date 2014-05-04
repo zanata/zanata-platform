@@ -31,7 +31,7 @@ public class AttentionKeyShortcutView extends PopupPanel implements
     @UiField
     FlowPanel shortcutContainer;
 
-    Label cancelLabel, shortcutLabel;
+    Label cancelLabel, shortcutLabel, toggleLabel;
 
     @Inject
     public AttentionKeyShortcutView() {
@@ -43,8 +43,11 @@ public class AttentionKeyShortcutView extends PopupPanel implements
         cancelLabel.setStyleName(style.shortcutHint());
         shortcutLabel = new Label("Copy Source: G");
         shortcutLabel.setStyleName(style.shortcutHint());
+        toggleLabel = new Label("Toggle Syntax Highlighting: H");
+        toggleLabel.setStyleName(style.shortcutHint());
         shortcutContainer.add(cancelLabel);
         shortcutContainer.add(shortcutLabel);
+        shortcutContainer.add(toggleLabel);
     }
 
     @Override
