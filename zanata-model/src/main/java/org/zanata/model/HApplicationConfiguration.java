@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import java.lang.reflect.Field;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -32,6 +34,9 @@ import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 @Entity
 @Setter
@@ -52,7 +57,12 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PIWIK_URL = "piwik.url";
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
     public static String KEY_TERMS_CONDITIONS_URL = "terms.conditions.url";
+    public static String KEY_MAX_CONCURRENT_REQ_PER_API_KEY = "max.concurrent.req.per.apikey";
+    public static String KEY_MAX_ACTIVE_REQ_PER_API_KEY = "max.active.req.per.apikey";
+
     private static final long serialVersionUID = 8652817113098817448L;
+
+    private static List<String> availableKeys;
 
     private String key;
     private String value;
@@ -71,5 +81,31 @@ public class HApplicationConfiguration extends ModelEntityBase {
     @Column(name = "config_value", nullable = false)
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Using reflection to get defined configuration key constants in
+     * HApplicationConfiguration.
+     */
+    public static List<String> getAvailableKeys() {
+        if (availableKeys != null) {
+            return availableKeys;
+        }
+        final HApplicationConfiguration dummy = new HApplicationConfiguration();
+        List<Field> availableConfigKeys =
+                Lists.newArrayList(HApplicationConfiguration.class.getFields());
+        availableKeys = Lists.transform(availableConfigKeys,
+                new Function<Field, String>() {
+                    @Override
+                    public String apply(Field input) {
+                        try {
+                            input.setAccessible(true);
+                            return (String) input.get(dummy);
+                        } catch (IllegalAccessException e) {
+                            throw Throwables.propagate(e);
+                        }
+                    }
+                });
+        return availableKeys;
     }
 }

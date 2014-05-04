@@ -28,8 +28,10 @@ import org.junit.runners.Suite;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ ManageUsersTest.class, ManageUsersFullTest.class,
-        AdministrationTest.class, EditHomePageTest.class,
-        EditTranslationMemoryTest.class, ManageSearchTest.class })
+@Suite.SuiteClasses({
+        EditHomePageTest.class,
+        EditTranslationMemoryTest.class,
+        ManageSearchTest.class,
+        ManageUsersFullTest.class })
 public class AdministrationTestSuite {
 }

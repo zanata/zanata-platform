@@ -23,6 +23,7 @@ package org.zanata.feature.projectversion;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -36,7 +37,7 @@ import static org.hamcrest.Matchers.equalTo;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class VersionFilteringTest {
+public class VersionFilteringTest extends ZanataTestCase {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();

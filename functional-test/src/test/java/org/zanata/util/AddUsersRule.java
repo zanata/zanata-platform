@@ -1,13 +1,15 @@
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.rules.ExternalResource;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.SampleProjectResource;
-
+import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 
-import static org.zanata.util.SampleProjectClient.checkAndReleaseConnection;
+import static org.zanata.util.SampleProjectClient.deleteExceptEssentialData;
+import static org.zanata.util.SampleProjectClient.makeSampleLanguages;
+import static org.zanata.util.SampleProjectClient.makeSampleUsers;
+import static org.zanata.util.SampleProjectClient.userJoinsLanguageTeam;
 
 /**
  * @author Patrick Huang <a
@@ -16,19 +18,23 @@ import static org.zanata.util.SampleProjectClient.checkAndReleaseConnection;
 @Slf4j
 public class AddUsersRule extends ExternalResource {
 
-    private final SampleProjectResource resource = SampleProjectClient.RESOURCE;
-
     @Override
-    protected void before() {
-        checkAndReleaseConnection(resource.deleteExceptEssentialData());
-        checkAndReleaseConnection(resource.makeSampleUsers());
-        checkAndReleaseConnection(resource.userJoinsLanguageTeams("translator",
+    protected void before() throws Exception {
+        deleteExceptEssentialData();
+        makeSampleUsers();
+        makeSampleLanguages();
+        userJoinsLanguageTeam("translator",
                 Sets.newHashSet(LocaleId.FR, new LocaleId("hi"),
-                        new LocaleId("pl"))));
+                        new LocaleId("pl")));
     }
 
     @Override
     protected void after() {
-        checkAndReleaseConnection(resource.deleteExceptEssentialData());
+        try {
+            deleteExceptEssentialData();
+        }
+        catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 }

@@ -54,11 +54,12 @@ public class GoogleSignIn {
     }
 
     /**
-     * Query the property for a GOOGLEID variable and return the stated
+     * Query the properties for a googleopenid.credentials entry and return a
      * password that corresponds to the indicated username. Expects the variable
      * to be in the form:
      * <p />
-     * {@literal mvn <goals> -DGOOGLEID=username1:password1;username2:password2;}
+     * {@literal mvn <goals>
+     *     -Dgoogleopenid.credentials=username1,password1;username2,password2;}
      *
      * @param username
      *            Username of username:password pair query
@@ -68,14 +69,15 @@ public class GoogleSignIn {
     public static String getSignIn(String username) {
         String googlePass;
         String empty = "";
-        googlePass = System.getProperty("GOOGLEID");
+        googlePass = PropertiesHolder.properties
+                .getProperty("googleopenid.credentials");
         if (Strings.isNullOrEmpty(googlePass)) {
-            log.info("Google open ID credential is not available");
+            log.info("Google OpenID credentials not set in properties");
             return empty;
         }
 
         for (String signIn : googlePass.split(";")) {
-            String[] usernamePasswordPair = signIn.split(":");
+            String[] usernamePasswordPair = signIn.split(",");
             if (usernamePasswordPair.length > 0
                     && usernamePasswordPair[0].equals(username)) {
                 return usernamePasswordPair[1];

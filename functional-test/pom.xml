@@ -53,7 +53,7 @@
     <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
-
+    <googleopenid.credentials>zanata.user.1:</googleopenid.credentials>
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
       -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
@@ -62,10 +62,17 @@
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
+    <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <smtp.port>2552</smtp.port>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-api</artifactId>
@@ -362,6 +369,15 @@
       <scope>system</scope>
       <systemPath>${zanata.war.location}</systemPath>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -518,6 +534,7 @@
                   <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                   <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
                   <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
+                  <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
                   <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
                 </systemProperties>
 

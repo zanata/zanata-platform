@@ -30,10 +30,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.administration.TranslationMemoryEditPage;
 import org.zanata.page.administration.TranslationMemoryPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.RetryRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -44,12 +44,10 @@ import org.zanata.workflow.TranslationMemoryWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditTranslationMemoryTest {
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+public class EditTranslationMemoryTest extends ZanataTestCase {
 
     @Rule
-    public RetryRule retryRule = new RetryRule(2);
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 

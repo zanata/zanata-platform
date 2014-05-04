@@ -31,6 +31,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.util.SampleProjectRule;
@@ -43,7 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class AddLanguageTest {
+public class AddLanguageTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -63,10 +64,9 @@ public class AddLanguageTest {
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.not(Matchers.hasItem(language)));
 
-        manageLanguagePage = manageLanguagePage
-                .addNewLanguage()
-                .inputLanguage(language)
-                .saveLanguage();
+        manageLanguagePage =
+                manageLanguagePage.addNewLanguage().inputLanguage(language)
+                        .saveLanguage();
 
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -76,14 +76,14 @@ public class AddLanguageTest {
                 manageLanguagePage.languageIsEnabled(language));
 
         List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("master")
-                .gotoSettingsTab()
-                .gotoSettingsLanguagesTab()
-                .clickInheritCheckbox()
-                .waitForLocaleListVisible()
-                .getEnabledLocaleList();
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsLanguagesTab()
+                        .clickInheritCheckbox()
+                        .waitForLocaleListVisible()
+                        .getEnabledLocaleList();
 
         assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
@@ -111,13 +111,13 @@ public class AddLanguageTest {
         assertThat("The language is disabled by default",
                 !manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .clickInheritCheckbox()
-                        .waitForLocaleListVisible()
-                        .getEnabledLocaleList();
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                .goToProjects()
+                .goToProject("about fedora").gotoVersion("master")
+                .gotoSettingsTab().gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible()
+                .getEnabledLocaleList();
 
         assertThat("The language is disabled by default", enabledLocaleList,
                 Matchers.not(Matchers.hasItem(languageDisplayName)));

@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleProjectRule;
@@ -35,7 +36,8 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ProjectMaintainerTest {
+public class ProjectMaintainerTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
     private ClientWorkFlow client = new ClientWorkFlow();

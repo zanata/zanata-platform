@@ -534,4 +534,12 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Show 'Save as Approved' warning")
     String showSaveApproveWarning();
 
+    @DefaultMessage("Cancel: Esc")
+    String attentionKeyCancelLabel();
+
+    @DefaultMessage("Copy Source: G")
+    String attentionKeyCopySourceLabel();
+
+    @DefaultMessage("Toggle Syntax Highlighting: H")
+    String attentionKeyToggleSyntaxHighlightingLabel();
 }

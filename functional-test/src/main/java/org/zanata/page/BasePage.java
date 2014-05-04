@@ -22,13 +22,18 @@ package org.zanata.page;
 
 import java.util.List;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectVersionsPage;
@@ -69,19 +74,17 @@ public class BasePage extends CorePage {
 
     private static final By BY_SIGN_IN = By.id("signin_link");
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
-    private static final By BY_PROFILE_LINK = By.id("profile");
+    private static final By BY_DASHBOARD_LINK = By.id("dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("administration");
 
     public BasePage(final WebDriver driver) {
         super(driver);
     }
 
-    public MyAccountPage goToMyProfile() {
+    public DashboardBasePage goToMyDashboard() {
         userAvatar.click();
-
-        clickLinkAfterAnimation(BY_PROFILE_LINK);
-
-        return new MyAccountPage(getDriver());
+        clickLinkAfterAnimation(BY_DASHBOARD_LINK);
+        return new DashboardBasePage(getDriver());
     }
 
     public ProjectsPage goToProjects() {
@@ -269,15 +272,11 @@ public class BasePage extends CorePage {
         return new ProjectVersionsPage(getDriver());
     }
 
-    public String getHtmlSource(WebElement webElement) {
-        return (String) ((JavascriptExecutor) getDriver()).executeScript(
-                "return arguments[0].innerHTML;", webElement);
-    }
-
     public void clickWhenTabEnabled(final WebElement tab) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
+                waitForPageSilence();
                 boolean clicked = false;
                 try {
                     if (tab.isDisplayed() && tab.isEnabled()) {
@@ -291,4 +290,10 @@ public class BasePage extends CorePage {
             }
         });
     }
+
+    public String getHtmlSource(WebElement webElement) {
+        return (String) ((JavascriptExecutor) getDriver()).executeScript(
+                "return arguments[0].innerHTML;", webElement);
+    }
+
 }

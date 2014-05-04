@@ -14,6 +14,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.ZanataRestCaller;
@@ -30,7 +31,7 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ConcurrentAccessTest {
+public class ConcurrentAccessTest extends ZanataTestCase {
 
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();

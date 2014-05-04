@@ -27,9 +27,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.account.SignInPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -37,8 +37,7 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class InactiveUserLoginTest {
+public class InactiveUserLoginTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();

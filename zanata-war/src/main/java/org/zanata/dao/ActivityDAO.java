@@ -29,6 +29,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.apicompat.common.ContentState;
 import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;
@@ -150,5 +151,90 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
             return 0;
         }
         return totalCount.intValue();
+    }
+
+    /**
+     * Return int[0]: Words translated, int[1]: Messages translated, int[2]:
+     * Documents translated
+     *
+     * @param personId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public int[]
+            getTranslatedStats(Long personId, Date startDate, Date endDate) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("select sum(tft.textFlow.wordCount),count(tft.textFlow)," +
+                        "count(distinct tft.textFlow.document) " +
+                        "from HTextFlowTarget tft ");
+        queryBuilder.append("where tft.translator.id = :personId ");
+        queryBuilder
+                .append("and tft.lastChanged BETWEEN :startDate AND :endDate ");
+
+        Query q = getSession().createQuery(queryBuilder.toString());
+        q.setParameter("personId", personId);
+        q.setParameter("startDate", startDate);
+        q.setParameter("endDate", endDate);
+        q.setCacheable(true);
+        q.setComment("activityDAO.getTranslatedStats");
+
+        Object[] objects = (Object[]) q.uniqueResult();
+
+        int[] results = new int[] { 0, 0, 0 };
+        if (objects.length < 1) {
+            return results;
+        }
+
+        for (int i = 0; i < results.length; i++) {
+            if (objects.length >= i) {
+                Long count = (Long) objects[i];
+                results[i] = count == null ? 0 : count.intValue();
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Return int[0]: Words reviewed, int[1]: Messages reviewed, int[2]:
+     * Documents reviewed
+     *
+     * @param personId
+     * @param startOfDay
+     * @param endOfTheDay
+     * @return
+     */
+    public int[] getReviewedStats(Long personId, Date startDate, Date endDate) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("select sum(tf.wordCount),count(tf),count(distinct doc) from HTextFlow tf, HTextFlowTarget tft, HDocument doc ");
+        queryBuilder.append("where tft.reviewer.id = :personId ");
+        queryBuilder
+                .append("and tft.lastChanged BETWEEN :startDate AND :endDate ");
+        queryBuilder.append("and tf.id = tft.textFlow.id ");
+        queryBuilder.append("and tf.document.id = doc.id ");
+
+        Query q = getSession().createQuery(queryBuilder.toString());
+        q.setParameter("personId", personId);
+        q.setParameter("startDate", startDate);
+        q.setParameter("endDate", endDate);
+        q.setCacheable(true);
+        q.setComment("activityDAO.getReviewedStats");
+
+        Object[] objects = (Object[]) q.uniqueResult();
+
+        int[] results = new int[] { 0, 0, 0 };
+        if (objects.length < 1) {
+            return results;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (objects.length >= i) {
+                Long count = (Long) objects[i];
+                results[i] = count == null ? 0 : count.intValue();
+            }
+        }
+        return results;
     }
 }

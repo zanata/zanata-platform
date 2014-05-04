@@ -27,8 +27,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.CorePage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
-import org.zanata.page.utility.DashboardPage;
 
 @Slf4j
 public class SignInPage extends CorePage {
@@ -58,9 +58,9 @@ public class SignInPage extends CorePage {
         return new SignInPage(getDriver());
     }
 
-    public DashboardPage clickSignIn() {
+    public DashboardBasePage clickSignIn() {
         signInButton.click();
-        return new DashboardPage(getDriver());
+        return new DashboardBasePage(getDriver());
     }
 
     public SignInPage clickSignInExpectError() {

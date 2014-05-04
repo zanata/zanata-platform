@@ -98,15 +98,15 @@
   </nav>
 
   <s:fragment
-    rendered="#{identity.loggedIn and personHome.instance.account.enabled}">
+    rendered="#{identity.loggedIn and authenticatedAccountHome.instance.enabled}">
     <nav class="header__user-nav js-dropdown">
       <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
         id="user--avatar"
-        title="#{personHome.instance.account.username}">
+        title="#{authenticatedAccountHome.instance.username}">
         <div class="badge__container">
           <div class="bx--round header__avatar">
             <img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
-              alt="#{personHome.instance.name}"/>
+              alt="#{authenticatedAccountHome.instance.person.name}"/>
           </div>
         </div>
       </a>
@@ -116,12 +116,6 @@
             propagation="none">
             #{messages['jsf.Dashboard']} <i
             class="l--float-right i--inline i--dashboard"></i>
-          </s:link>
-        </li>
-        <li>
-          <s:link id="profile" view="/profile/view.xhtml" propagation="none">
-            #{messages['jsf.Settings']} <i
-            class="l--float-right i--inline i--settings"></i>
           </s:link>
         </li>
         <s:fragment rendered="#{s:hasRole('admin')}">

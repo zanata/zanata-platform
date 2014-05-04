@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
@@ -43,7 +44,7 @@ import static org.hamcrest.Matchers.not;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class CreateProjectVersionTest {
+public class CreateProjectVersionTest extends ZanataTestCase {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();

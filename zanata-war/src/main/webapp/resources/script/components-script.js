@@ -5,6 +5,7 @@ function jqSelector(str) {
 
 jQuery(document).ready(function() {
   registerJsTab();
+  registerUrlModifiers();
 });
 
 var globalMessageTimer;
@@ -35,11 +36,47 @@ function refreshTooltip(wrapperId) {
   });
 }
 
+var globalMessageTimer;
+
+// automatically clear global message after 5 seconds
+function startGlobalMessageTimer() {
+  if (jQuery().zanata) {
+    zanata.messages.activate('#messages .message--global');
+  } else {
+    jQuery('#messages .message--global').addClass('is-active');
+  }
+
+  //stop previous timeout counter
+  clearTimeout(globalMessageTimer);
+
+  globalMessageTimer = setTimeout(function() {
+    if (jQuery().zanata) {
+      zanata.messages.deactivate('#messages .message--global');
+    } else {
+      jQuery('#messages .message--global').removeClass('is-active');
+    }
+  }, 5000);
+}
+
+function refreshTooltip(wrapperId) {
+  jQuery('#' + wrapperId).find('[title]').each(function() {
+    zanata.tooltip.init(this);
+  });
+}
+
 function registerJsTab() {
   jQuery('.js-tab').each(function() {
     jQuery(this).click(function() {
       onTabClick(this);
     });
+  });
+}
+
+// Registers all elements that modify the browser's url
+function registerUrlModifiers() {
+  jQuery('a.js-url-mod').click(function(e) {
+    changeBrowserUrl( jQuery(this).attr('href') );
+    e.preventDefault();
   });
 }
 
@@ -55,6 +92,7 @@ function updateStateFromUrl() {
   crossroads.parse(window.location.pathname);
 }
 
+// TODO Deprecated. See method below
 function updateUrl(urlPrefix, suffixToUpdate) {
   var newUrl = window.location.pathname;
   newUrl = newUrl.substring(0, newUrl.indexOf(urlPrefix) + urlPrefix.length)
@@ -64,6 +102,15 @@ function updateUrl(urlPrefix, suffixToUpdate) {
   }
   window.history.pushState(status, document.title, newUrl)
   updateStateFromUrl();
+}
+
+function changeBrowserUrl(url, refresh) {
+  refresh = refresh || false
+
+  var status = {path: url}
+  window.history.pushState(status, document.title, url)
+  if(refresh)
+    updateStateFromUrl();
 }
 
 jQuery(function() {
@@ -174,8 +221,8 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     deselectRow(currentSelected);
     if (currentSelected.length == 0
         || jQuery(currentSelected).next().length == 0) {
-      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
-          'li').first());
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results')
+          .children('li').first());
     } else {
       selectRow(jQuery(currentSelected).next("li"));
     }
@@ -183,8 +230,8 @@ function onResultKeyPressed(autocomplete, event, selectItemAction,
     // key: up
     deselectRow(currentSelected);
     if (currentSelected.length == 0) {
-      selectRow(jQuery(autocomplete).find('.js-autocomplete__results').children(
-          'li').last());
+      selectRow(jQuery(autocomplete).find('.js-autocomplete__results')
+          .children('li').last());
     } else {
       selectRow(jQuery(currentSelected).prev("li"));
     }
@@ -258,6 +305,18 @@ function registerMouseEvent(autocompleteId, selectItemAction,
 function filterList(input, filterFn) {
   filterFn(jQuery(input).val());
 }
+
+/* ----------------------------------------------------------- */
+/*------------------zanata-sortlist component------------------*/
+/* ----------------------------------------------------------- */
+jQuery(document).ready(function() {
+  jQuery('a.js-sort-option').each(function() {
+    jQuery(this).click(function() {
+      jQuery(this).parent().siblings("li").children("a.js-sort-option").removeClass('is-active');
+      jQuery(this).addClass("is-active");
+    });
+  });
+});
 
 /* ----------------------------------------------------------- */
 /*----------------- zanata-checkbox component -----------------*/

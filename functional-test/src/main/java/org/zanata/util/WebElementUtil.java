@@ -291,15 +291,16 @@ public class WebElementUtil {
     }
 
     public static List<WebElement> getSearchAutocompleteResults(
-            WebDriver driver, String formId, String id) {
-        try {
-            String locator = formId + ":" + id + ":" + id + "-result";
-            return driver.findElement(By.id(locator)).findElements(
-                    By.className("js-autocomplete__result"));
-        } catch (StaleElementReferenceException sere) {
-            log.warn("Stale reference encountered, returning empty list");
-            return Collections.emptyList();
-        }
+            WebDriver driver, final String formId, final String id) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<WebElement>>() {
+                @Override
+                public List<WebElement> apply(WebDriver input) {
+                    String locator = formId + ":" + id + ":" + id + "-result";
+                    return input.findElement(By.id(locator)).findElements(
+                            By.className("js-autocomplete__result"));
+                }
+        });
     }
 
     public static List<String> getSearchAutocompleteItems(WebDriver driver,
@@ -313,7 +314,6 @@ public class WebElementUtil {
                         return li.getText();
                     }
                 });
-
         return resultsText;
     }
 

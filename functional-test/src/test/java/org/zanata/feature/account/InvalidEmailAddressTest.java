@@ -21,7 +21,7 @@
 package org.zanata.feature.account;
 
 
-import org.hamcrest.Matchers;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -29,22 +29,22 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.rfc2822.InvalidEmailAddressRFC2822.*;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-@NoScreenshot
-public class InvalidEmailAddressTest {
+public class InvalidEmailAddressTest extends ZanataTestCase {
 
     @DataPoint
     public static InvalidEmailAddressRFC2822 TEST_PLAIN_ADDRESS = PLAIN_ADDRESS;
@@ -174,14 +174,17 @@ public class InvalidEmailAddressTest {
 
     @Theory
     public void invalidEmailRejection(InvalidEmailAddressRFC2822 emailAddress) {
+        log.info(testName.getMethodName() + " : " + emailAddress);
         String errorMsg = "not a well-formed email address";
-        RegisterPage registerPage =
-                new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage = registerPage.enterEmail(emailAddress.toString());
+
+        RegisterPage registerPage = new BasicWorkFlow()
+                .goToHome()
+                .goToRegistration()
+                .enterEmail(emailAddress.toString());
         registerPage.defocus();
 
-        assertThat("Email validation errors are not shown",
-                registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
+        assertThat(errorMsg).isIn(registerPage.waitForFieldErrors())
+                .as("The email formation error is displayed");
     }
 
 }

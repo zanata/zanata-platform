@@ -14,7 +14,9 @@
           sortAction="#{projectHomeAction.sortVersionList()}"
           render="versions_form, versionSearch-pager, versionSearch-page-info, versionSearchBottom-pager, versionSearchBottom-page-info"
           oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
-          sortingList="#{projectHomeAction.versionSortingList}"/>
+          sortingList="#{projectHomeAction.versionSortingList}"
+          onbegin="clearHTML('#{rich:clientId('versions_form')}')"
+          status="versionTab-versionsLoader"/>
 
         <s:fragment
           rendered="#{s:hasPermission(projectHome.instance, 'update')}">
@@ -56,7 +58,7 @@
       <f:facet name="start"><zanata:loader/></f:facet>
     </a4j:status>
 
-    <h:form id="versions_form" styleClass="l--push-bottom-0">
+    <h:form id="versions_form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty projectHomeAction.projectVersions}">
         <p class="txt--meta">#{messages['jsf.NoVersions']}</p>
@@ -76,15 +78,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.pagedFilteredList}">
+        rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{!projectHomeAction.versionFilter.pagedFilteredList.isEmpty()}">
+        rendered="#{!projectHomeAction.versionFilter.currentPage.isEmpty()}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{projectHomeAction.versionFilter.pagedFilteredList}"
+            value="#{projectHomeAction.versionFilter.currentPage}"
             var="version">
             <ui:param name="hasActions"
               value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(version)}"/>

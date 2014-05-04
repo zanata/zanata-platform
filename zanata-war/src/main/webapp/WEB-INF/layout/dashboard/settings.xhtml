@@ -1,0 +1,321 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <a4j:jsFunction name="regenerateApiKey"
+    action="#{userSettingsAction.regenerateApiKey}"
+    render="apiKeyForm" status="client-loader"/>
+
+  <h1>#{messages['jsf.dashboard.settings.title']}</h1>
+  <div class="tabs--vertical js-tabs">
+    <ul class="tabs__nav js-tabs-nav">
+      <li class="is-active">
+        <a id="account-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/account"
+          data-content="#account">
+          <i class="i i--left i--settings"></i>
+          <span class="is-hidden--m-l-down">
+            #{messages['jsf.dashboard.settings.account.tab.label']}
+          </span>
+        </a>
+      </li>
+      <li>
+        <a id="profile-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/profile"
+          data-content="#profile-content">
+          <i class="i i--left i--user"></i>
+          <span class="is-hidden--m-l-down">
+            #{messages['jsf.dashboard.settings.profile.tab.label']}
+          </span>
+        </a>
+      </li>
+      <li>
+        <a id="languages-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/languages"
+          data-content="#languages">
+          <i class="i i--left i--language"></i>
+          <span class="is-hidden--m-l-down">
+            #{messages['jsf.dashboard.settings.languages.tab.label']}
+          </span>
+        </a>
+      </li>
+      <li>
+        <a id="client-tab" class="js-url-mod"
+          href="#{request.contextPath}/dashboard/settings/client"
+          data-content="#client">
+          <i class="i i--left i--code"></i>
+          <span class="is-hidden--m-l-down">
+            #{messages['jsf.dashboard.settings.client.tab.label']}
+          </span>
+        </a>
+      </li>
+    </ul>
+    <ul class="tabs__content js-tabs-content">
+      <li class="is-active" id="account">
+        <h2 class="l--push-top-0 gamma d--bottom">
+          #{messages['jsf.dashboard.settings.accountSettings.label']}
+        </h2>
+        <h:form id="email-update-form" styleClass="l--constrain-large l--push-top-1">
+          <div class="form__item l--push-bottom-1">
+              <h:outputLabel for="email">#{messages['jsf.Email']}</h:outputLabel>
+              <s:decorate id="emailField" template=" ../field.xhtml" enclose="true">
+                <h:inputText id="email" value="#{userSettingsAction.emailAddress}"
+                  maxlength="255">
+                </h:inputText>
+              </s:decorate>
+          </div>
+          <input id="updateEmailButton" type="submit"
+            value="Update email"
+            action="#{userSettingsAction.updateEmail}"
+            render="email-update-form"
+            status="update-email-loader"
+            styleClass="button" jsfc="a4j:commandButton"/>
+          <a4j:status name="update-email-loader">
+            <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
+          </a4j:status>
+        </h:form>
+        <hr/>
+        <s:fragment rendered="#{applicationConfiguration.internalAuth}">
+          <h3 class="heading--secondary">
+            <h:outputText rendered="#{not userSettingsAction.passwordSet}"
+              value="#{messages['jsf.dashboard.settings.setPassword.label']}"/>
+            <h:outputText rendered="#{userSettingsAction.passwordSet}"
+              value="#{messages['jsf.dashboard.settings.changePassword.label']}"/>
+          </h3>
+          <h:form id="passwordChangeForm" styleClass="l--constrain-large">
+            <s:fragment rendered="#{userSettingsAction.passwordSet}">
+              <div class="form__item">
+                <h:outputLabel for="oldPassword">#{messages['jsf.OldPassword']}</h:outputLabel>
+                <s:decorate id="oldPasswordField" template=" ../field.xhtml" enclose="false">
+                  <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
+                    maxlength="255"/>
+                </s:decorate>
+              </div>
+            </s:fragment>
+            <div class="form__item l--push-bottom-1">
+              <h:outputLabel for="newPassword">#{messages['jsf.NewPassword']}</h:outputLabel>
+              <s:decorate id="newPasswordField" template=" ../field.xhtml" enclose="false">
+                <h:inputSecret id="newPassword" value="#{userSettingsAction.newPassword}"
+                  maxlength="255"/>
+              </s:decorate>
+            </div>
+            <input id="changePasswordButton" type="submit"
+              value="Update password" styleClass="button"
+              jsfc="a4j:commandButton"
+              action="#{userSettingsAction.changePassword()}"
+              render="passwordChangeForm"
+              status="change-password-loader"/>
+            <a4j:status name="change-password-loader">
+              <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
+            </a4j:status>
+          </h:form>
+        </s:fragment>
+        <hr/>
+        <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+          <h3 class="heading--secondary">
+            #{messages['jsf.dashboard.settings.connectedAccounts.label']}
+          </h3>
+          <h:form class="l--constrain-large">
+            <a4j:outputPanel id="credentialsList">
+              <ul class="list--slat list--highlight l--push-top-half">
+                <ui:repeat value="#{userSettingsAction.userCredentials}" var="cred">
+                  <ui:param name="credType" value="#{userSettingsAction.getCredentialsType(cred)}"/>
+                  <li class="reveal--list-item list__item--#{credType}">
+                    #{userSettingsAction.getCredentialsTypeDisplayName(credType)}
+                    <span class="txt--meta"
+                      title="#{cred.user}">
+                      <h:outputText
+                        value="(#{cred.email != null ? cred.email : cred.user})" />
+                    </span>
+                    <a4j:commandLink
+                      styleClass="l--float-right txt--danger reveal__target"
+                      action="#{userSettingsAction.remove(cred)}"
+                      render="credentialsList"
+                      onclick="return confirm('#{messages['jsf.dashboard.settings.removeIdentity.confirm.message']}')"
+                      title="">
+                      <i class="i--large i--remove"></i>
+                    </a4j:commandLink>
+                    <a href="#" class="l--float-right txt--danger reveal__target"
+                      title="#{messages['jsf.dashboard.settings.removeAccount.label']}">
+                    </a>
+                  </li>
+                </ui:repeat>
+              </ul>
+            </a4j:outputPanel>
+          </h:form>
+          <h:form>
+            <h4>#{messages['jsf.dashboard.settings.addAccount.label']}</h4>
+            <ul class="g--tight l--push-top-half">
+              <li class="g__item w--1-3 w--1-2-l l--push-bottom-half">
+                <h:commandButton styleClass="button button--google button--full"
+                  action="#{userSettingsAction.verifyCredentials('Google')}"
+                  value="Google"/>
+              </li>
+              <li class="g__item w--1-3 w--1-2-l l--push-bottom-half">
+                <h:commandButton styleClass="button button--yahoo button--full"
+                  action="#{userSettingsAction.verifyCredentials('Yahoo')}"
+                  value="Yahoo"/>
+              </li>
+              <li class="g__item w--1-3 w--1-2-l l--push-bottom-half">
+                <h:commandButton styleClass="button button--fedora button--full"
+                  action="#{userSettingsAction.verifyCredentials('Fedora')}"
+                  value="Fedora"/>
+              </li>
+              <li class="g__item">
+                <div class="l--pad-top-half l--pad-h-half bg--pop-higher">
+                  <label for="openid">#{messages['jsf.login.openid']}</label>
+                  <div class="g--tighter">
+                    <div class="g__item w--2-3">
+                      <h:inputText id="openid" value="#{userSettingsAction.openId}"/>
+                    </div>
+                    <div class="g__item w--1-3 l--push-bottom-half">
+                      <h:commandButton styleClass="button--full" value="Go"
+                        action="#{userSettingsAction.verifyCredentials('Generic')}"/>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </h:form>
+          <hr/>
+          <h:form>
+            <p>
+              <s:link styleClass="button button--warning" view="/profile/merge_account.xhtml">
+                #{messages['jsf.dashboard.settings.mergeAccounts.label']}
+              </s:link>
+            </p>
+            <small class="txt--meta">
+              #{messages['jsf.dashboard.settings.mergeAccount.info.label'] }
+              <span class="txt--warning">
+                #{messages['jsf.dashboard.settings.mergeAccount.warning.label'] }
+              </span>
+            </small>
+          </h:form>
+        </s:fragment>
+      </li>
+      <li id="profile-content">
+        <h2 class="l--push-top-0 gamma d--bottom">
+          #{messages['jsf.dashboard.settings.profileSettings.label']}
+        </h2>
+        <h:form id="profileForm" styleClass="l--constrain-large l--push-top-1">
+          <div class="form__item">
+            <label>
+              <h:outputText value="Username"/>
+            </label>
+            <p class="l--push-bottom-0">#{userSettingsAction.accountUsername}</p>
+            <small class="txt--meta">
+              #{messages['jsf.dashboard.settings.usernameCannotBeChanged.message']}
+            </small>
+          </div>
+          <div class="form__item">
+            <h:outputLabel for="nameField">#{messages['jsf.Name']}</h:outputLabel>
+            <s:decorate id="nameField" template=" ../field.xhtml" enclose="true">
+              <h:inputText id="accountName" value="#{userSettingsAction.accountName}"
+                maxlength="80">
+              </h:inputText>
+            </s:decorate>
+          </div>
+          <a4j:jsFunction name="updateProfile"
+            action="#{userSettingsAction.updateProfile}"
+            render="profileForm,profile-overview" status="profile-loader"
+            execute="@form"/>
+          <input id="updateProfileButton"
+            type="submit" value="#{messages['jsf.dashboard.settings.updateProfile.label']}"
+            class="button button--primary l--push-top-1"
+            onclick="updateProfile(); return false;"/>
+          <a4j:status name="profile-loader">
+            <f:facet name="start">
+              <zanata:loader layout="inline" type="loader"/>
+            </f:facet>
+          </a4j:status>
+        </h:form>
+      </li>
+      <li id="languages">
+        <h2 class="l--push-all-0 gamma d--bottom">
+          #{messages['jsf.dashboard.settings.languageTeams.label']}
+        </h2>
+        <h:form id="languageListForm">
+          <ul class="list--slat list--highlight l--push-v-half" id="version-languages">
+            <ui:repeat value="#{userSettingsAction.userLanguageTeams}" var="locale">
+              <li class="reveal--list-item">
+                #{locale.retrieveDisplayName()}
+                <span class="txt--understated l--push-left-quarter">
+                  [#{locale.localeId.id}]
+                </span>
+                <a4j:commandLink
+                  styleClass="l--float-right txt--danger reveal__target"
+                  action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
+                  render="languageListForm"
+                  onclick="return confirm('#{interpolator.interpolate(messages['jsf.dashboard.settings.leaveLanguageTeam.confirm.message'], locale.retrieveDisplayName())}')">
+                  <i class="i--large i--remove"></i>
+                </a4j:commandLink>
+              </li>
+            </ui:repeat>
+          </ul>
+          <s:link styleClass="button"
+            value="#{messages['jsf.dashboard.settings.joinLangTeam.message']}"
+            view="/language/home.xhtml"/>
+        </h:form>
+      </li>
+      <li id="client">
+        <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+          #{messages['jsf.dashboard.settings.clientSettings.label']}
+        </h2>
+        <h:form id="apiKeyForm">
+          <p class="txt--meta">
+            <h:outputText value="#{messages['jsf.dashboard.settings.apiKeyNeeded.message']}"/>
+            <a href="http://zanata.org/help/cli/cli-configuration/"
+              title="#{messages['jsf.dashboard.settings.clientConfigHelp.message']}">
+              <i class="i i--help"></i>
+            </a> and Maven plugin
+            <a href="http://zanata.org/help/maven-plugin/maven-plugin-install/"
+              title="#{messages['jsf.dashboard.settings.mavenClientConfigHelp.message']}">
+              <i class="i i--help"></i>
+            </a>.
+          </p>
+          <div class="form__item">
+            <label for="apiKey">
+              #{messages['jsf.dashboard.settings.apiKey.label']}
+            </label>
+            <s:fragment id="no_api_key"
+              rendered="#{not userSettingsAction.apiKeyGenerated}">
+                <p>#{messages['jsf.NotGenerated']}</p>
+            </s:fragment>
+            <s:fragment id="api_key"
+              rendered="#{userSettingsAction.apiKeyGenerated}">
+              <p>#{messages['jsf.YourCurrentApiKeyIs']}
+                <input id="apiKey" type="text" class="js-form__input--copyable"
+                  value="#{userSettingsAction.accountApiKey}" readonly=""
+                  size="30"/>
+              </p>
+            </s:fragment>
+          </div>
+          <button id="generateKeyButton" class="button"
+            onclick="if (confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
+            #{messages['jsf.dashboard.settings.generateNewApiKey.label']}
+          </button>
+          <div class="form__item l--push-top-1">
+            <label for="config">Configuration (zanata.ini)</label>
+            <textarea id="config" rows="4" readonly="" class="js-form__input--copyable">[servers]
+#{userSettingsAction.urlKeyLabel}#{applicationConfiguration.serverPath}/
+#{userSettingsAction.usernameKeyLabel}#{userSettingsAction.accountUsername}
+#{userSettingsAction.apiKeyLabel}#{userSettingsAction.accountApiKey}
+</textarea>
+          </div>
+
+          <a4j:status name="client-loader">
+            <f:facet name="start">
+              <zanata:loader type="loader--large"/>
+            </f:facet>
+          </a4j:status>
+        </h:form>
+      </li>
+    </ul>
+  </div>
+
+</ui:composition>

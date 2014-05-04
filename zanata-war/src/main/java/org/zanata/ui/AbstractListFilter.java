@@ -29,63 +29,87 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Helper class to assist with the paging of data.
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractListFilter<T> {
 
     @Getter
-    private final static int countPerPage = 20;
-
-    @Getter
-    private int currentPage = 0;
-
     @Setter
+    private int pageSize = 10;
+
     @Getter
-    private String query;
+    @Setter
+    private int pageNumber = 1;
 
-    abstract protected List<T> getFilteredList();
+    @Getter
+    @Setter
+    private String filter;
 
-    public int getFilteredListSize() {
-        return getFilteredList().size();
+    private List<T> currentPageData;
+
+    private long totalRecords = -1L;
+
+    public List<T> getCurrentPage() {
+        if( currentPageData == null ) {
+            currentPageData = fetchRecords(getPageStartIdx(),
+                    pageSize, filter);
+        }
+        return currentPageData;
     }
 
-    public List<T> getPagedFilteredList() {
-        List<List<T>> partition =
-                Lists.partition(getFilteredList(), getCountPerPage());
-
-        if (!partition.isEmpty() && partition.size() > getCurrentPage()) {
-            return partition.get(getCurrentPage());
+    public long getTotalRecords() {
+        if( totalRecords < 0 ) {
+            totalRecords = fetchTotalRecords(filter);
         }
-        return Lists.newArrayList();
-    };
+        return totalRecords;
+    }
 
-    public String getListRange() {
-        int total = getFilteredListSize();
-        int upperBound = total == 0 ? 0 : (currentPage * countPerPage) + 1;
-        int lowerBound = (currentPage + 1) * countPerPage;
-        lowerBound = lowerBound > total ? total : lowerBound;
-        if (upperBound == lowerBound) {
-            return String.valueOf(upperBound);
-        }
-        return upperBound + "-" + lowerBound;
+    protected abstract List<T> fetchRecords(int start, int max, String filter);
+
+    protected abstract long fetchTotalRecords(String filter);
+
+    public boolean allowsNextPage() {
+        return getTotalRecords() > pageNumber * pageSize;
+    }
+
+    public boolean allowsPreviousPage() {
+        return pageNumber > 1;
+    }
+
+    public void firstPage() {
+        pageNumber = 1;
+        reset();
     }
 
     public void nextPage() {
-        int totalPage =
-                (int) Math.ceil((double) getFilteredListSize() / countPerPage) - 1;
-        currentPage = Math.min(totalPage, currentPage + 1);
+        if(allowsNextPage()) {
+            pageNumber++;
+            reset();
+        }
     }
 
     public void previousPage() {
-        currentPage = Math.max(0, currentPage - 1);
+        if(allowsPreviousPage()) {
+            pageNumber--;
+            reset();
+        }
     }
 
-    public void resetQueryAndPage() {
-        resetPage();
-        query = "";
+    public int getPageStartIdx() {
+        return (pageNumber-1) * pageSize;
     }
 
-    public void resetPage() {
-        currentPage = 0;
+    public int getPageEndIdx() {
+        return Math.min(getPageStartIdx() + pageSize, (int)getTotalRecords()) - 1;
+    }
+
+    public void reset() {
+        currentPageData = null;
+        totalRecords = -1L;
+    }
+
+    public void clearFilter() {
+        filter = null;
     }
 }

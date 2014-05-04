@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.ClientWorkFlow;
@@ -47,7 +48,7 @@ import static org.hamcrest.Matchers.greaterThan;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class GlossaryAdminTest {
+public class GlossaryAdminTest extends ZanataTestCase {
 
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();

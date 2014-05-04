@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
@@ -47,7 +48,8 @@ import org.zanata.workflow.BasicWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class RegisterTest {
+public class RegisterTest extends ZanataTestCase {
+
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
     @ClassRule

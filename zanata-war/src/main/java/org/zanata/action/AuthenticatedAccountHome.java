@@ -20,9 +20,6 @@
  */
 package org.zanata.action;
 
-import javax.faces.context.ExternalContext;
-import javax.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -31,68 +28,34 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 
-@Name("personHome")
+/**
+ * A simple bean to hold the currently authenticated account.
+ */
+@Name("authenticatedAccountHome")
 @Scope(ScopeType.CONVERSATION)
 @Slf4j
-public class PersonHome extends EntityHome<HPerson> {
+public class AuthenticatedAccountHome extends EntityHome<HAccount> {
 
     /**
     *
     */
     private static final long serialVersionUID = 1L;
 
-    private ExternalContext context = javax.faces.context.FacesContext
-            .getCurrentInstance().getExternalContext();
-    private HttpServletRequest request = (HttpServletRequest) context
-            .getRequest();
-
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
-    @In
-    AccountDAO accountDAO;
-
     @Override
     public Object getId() {
-        Object id = super.getId();
-        if (id == null && authenticatedAccount != null
-                && authenticatedAccount.getPerson() != null) {
-            return authenticatedAccount.getPerson().getId();
+        if( authenticatedAccount == null ) {
+            return null;
         }
-        return id;
+        return authenticatedAccount.getId();
     }
 
-    public void regenerateApiKey() {
-        accountDAO.createApiKey(getInstance().getAccount());
-        getEntityManager().merge(getInstance().getAccount());
-        log.info("Reset API key for {}", getInstance().getAccount()
-                .getUsername());
+    public HPerson getAuthenticatedPerson() {
+        return getInstance().getPerson();
     }
-
-    public String getUrlKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".url=";
-    }
-
-    public String getApiKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".key=";
-    }
-
-    public String getUsernameKeyLabel() {
-        return getKeyPrefix(request.getServerName()) + ".username=";
-    }
-
-    /*
-     * Replace server name that contains '.' to '_'
-     */
-    private String getKeyPrefix(String serverName) {
-        if (serverName == null) {
-            return "";
-        }
-        return serverName.replace(".", "_");
-    }
-
 }

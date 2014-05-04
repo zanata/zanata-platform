@@ -27,24 +27,24 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.BasicAcceptanceTest;
 import org.zanata.feature.DetailedTest;
-import org.zanata.page.account.ChangePasswordPage;
-import org.zanata.page.account.MyAccountPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
+import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
+import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class ChangePasswordTest {
+public class ChangePasswordTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
@@ -57,22 +57,17 @@ public class ChangePasswordTest {
     @Test
     @Category(BasicAcceptanceTest.class)
     public void changePasswordSuccessful() {
-        MyAccountPage myAccountPage =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .enterOldPassword("translator")
-                        .enterNewPassword("newpassword")
-                        .enterConfirmNewPassword("newpassword")
-                        .changePassword();
+        DashboardBasePage dashboard =
+                new LoginWorkFlow().signIn("translator", "translator");
+        dashboard.goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeOldPassword("translator")
+                .typeNewPassword("newpassword")
+                .clickUpdatePasswordButton();
 
-        assertThat(
-                "Confirmation message is displayed",
-                myAccountPage.getNotificationMessage(),
-                Matchers.equalTo("Your password has been successfully changed."));
-
-        HomePage homePage = myAccountPage.logout();
+        HomePage homePage = dashboard.logout();
         assertThat("User is logged out", !homePage.hasLoggedIn());
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn("translator", "newpassword");
         assertThat("User has logged in with the new password",
                 dashboardPage.hasLoggedIn());
@@ -82,64 +77,33 @@ public class ChangePasswordTest {
     public void changePasswordCurrentPasswordFailure() {
         String incorrectPassword =
                 "Old password is incorrect, please check and try again.";
-        ChangePasswordPage changePasswordPage =
+        List<String> fieldErrors =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .enterOldPassword("nottherightpassword")
-                        .enterNewPassword("somenewpassword")
-                        .enterConfirmNewPassword("somenewpassword")
-                        .changePasswordExpectingFailure();
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
+                        .typeOldPassword("nottherightpassword")
+                        .typeNewPassword("somenewpassword")
+                        .clickUpdatePasswordButton()
+                        .getFieldErrors();
 
         assertThat("Incorrect password message displayed",
-                changePasswordPage.getErrors(),
+                fieldErrors,
                 Matchers.contains(incorrectPassword));
-    }
-
-    @Test
-    public void changePasswordConfirmationMismatch() {
-        String incorrectPassword = "Passwords do not match";
-        ChangePasswordPage changePasswordPage =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .enterOldPassword("translator")
-                        .enterNewPassword("somenewpassword")
-                        .enterConfirmNewPassword("differentpassword")
-                        .changePasswordExpectingFailure();
-
-        assertThat("Incorrect password message displayed",
-                changePasswordPage.getErrors(),
-                Matchers.contains(incorrectPassword));
-    }
-
-    @Test
-    public void changePasswordCancel() {
-        MyAccountPage myAccountPage =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .enterOldPassword("translator")
-                        .enterNewPassword("notnewpassword")
-                        .enterConfirmNewPassword("notnewpassword")
-                        .cancelChangePassword();
-
-        HomePage homePage = myAccountPage.logout();
-        assertThat("User is logged out", !homePage.hasLoggedIn());
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        assertThat("User has logged in with the original password",
-                dashboardPage.hasLoggedIn());
     }
 
     @Test
     public void changePasswordRequiredFieldsAreNotEmpty() {
-        String emptyPassword = "value is required";
-        ChangePasswordPage changePasswordPage =
+        String mayNotBeEmpty = "may not be empty";
+        List<String> fieldErrors =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .changePasswordExpectingFailure();
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
+                        .clickUpdatePasswordButton()
+                        .getFieldErrors();
 
         assertThat("Incorrect password message displayed",
-                changePasswordPage.getErrors(),
-                Matchers.contains(emptyPassword, emptyPassword, emptyPassword));
+                fieldErrors,
+                Matchers.contains(mayNotBeEmpty, mayNotBeEmpty));
     }
 
     @Test
@@ -147,22 +111,28 @@ public class ChangePasswordTest {
         String passwordSizeError = "size must be between 6 and 20";
         String tooShort = "test5";
         String tooLong = "t12345678901234567890";
-        ChangePasswordPage changePasswordPage =
+        DashboardAccountTab dashboardAccountTab =
                 new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile().goToChangePassword()
-                        .enterNewPassword("test5")
-                        .enterConfirmNewPassword(tooShort);
+                        .goToSettingsTab()
+                        .gotoSettingsAccountTab()
+                        .typeOldPassword("translator");
 
+        List<String> fieldErrors =
+            dashboardAccountTab
+                        .typeNewPassword(tooShort)
+                        .clickUpdatePasswordButton()
+                        .waitForFieldErrors();
         assertThat("Incorrect password message displayed",
-                changePasswordPage.waitForErrors(),
+                fieldErrors,
                 Matchers.hasItem(passwordSizeError));
 
-        changePasswordPage =
-                changePasswordPage.enterNewPassword(tooLong)
-                        .enterConfirmNewPassword(tooLong);
-
+        fieldErrors =
+                dashboardAccountTab
+                        .typeNewPassword(tooLong)
+                        .clickUpdatePasswordButton()
+                        .waitForFieldErrors();
         assertThat("Incorrect password message displayed",
-                changePasswordPage.waitForErrors(),
+                fieldErrors,
                 Matchers.hasItem(passwordSizeError));
     }
 }

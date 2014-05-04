@@ -66,6 +66,7 @@ import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.FilterUtil;
+import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
@@ -136,11 +137,16 @@ public class ProjectHome extends SlugHome<HProject> {
 
     @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
-            new AbstractListFilter<HPerson>() {
+            new InMemoryListFilter<HPerson>() {
                 @Override
-                protected List<HPerson> getFilteredList() {
-                    return FilterUtil.filterPersonList(getQuery(),
-                            getInstanceMaintainers());
+                protected List<HPerson> fetchAll() {
+                    return getInstanceMaintainers();
+                }
+
+                @Override
+                protected boolean include(HPerson elem, String filter) {
+                    return StringUtils.containsIgnoreCase(elem.getName(),
+                            filter);
                 }
             };
 
@@ -289,6 +295,13 @@ public class ProjectHome extends SlugHome<HProject> {
         conversationScopeMessages.clearMessages();
         String retValue = "";
         if (!validateSlug(getInstance().getSlug(), "slug")) {
+            return null;
+        }
+
+        if (StringUtils.isEmpty(selectedProjectType)
+                || selectedProjectType.equals("null")) {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    "Project type not selected");
             return null;
         }
 
@@ -545,13 +558,6 @@ public class ProjectHome extends SlugHome<HProject> {
         return Arrays.asList(ValidationAction.State.values());
     }
 
-    @Override
-    public String update() {
-        conversationScopeMessages.clearMessages();
-        String state = super.update();
-        Events.instance().raiseEvent(PROJECT_UPDATE, getInstance());
-        return state;
-    }
 
     /**
      * This is for autocomplete components of which ConversationScopeMessages
@@ -585,7 +591,8 @@ public class ProjectHome extends SlugHome<HProject> {
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
-            }
+        }
+
 
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().addMaintainer(maintainer);

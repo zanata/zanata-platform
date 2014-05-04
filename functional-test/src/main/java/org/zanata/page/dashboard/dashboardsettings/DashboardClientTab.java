@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,63 +18,35 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.account;
+package org.zanata.page.dashboard.dashboardsettings;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.zanata.page.BasePage;
+import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class MyAccountPage extends BasePage {
+public class DashboardClientTab extends DashboardBasePage {
 
-    @FindBy(id = "userConfig:generateApiButton")
+    @FindBy(id = "generateKeyButton")
     private WebElement generateApiKeyButton;
 
-    @FindBy(id = "apiKeyLabel")
+    @FindBy(id = "apiKey")
     private WebElement apiKeyLabel;
 
-    @FindBy(id = "configurationTextArea")
+    @FindBy(id = "config")
     private WebElement configurationTextArea;
 
-    @FindBy(linkText = "Edit Profile")
-    private WebElement editProfileButton;
-
-    @FindBy(linkText = "Change Password")
-    private WebElement changePasswordButton;
-
-    public MyAccountPage(WebDriver driver) {
+    public DashboardClientTab(WebDriver driver) {
         super(driver);
     }
 
-    public ChangePasswordPage goToChangePassword() {
-        changePasswordButton.click();
-        return new ChangePasswordPage(getDriver());
-    }
-
-    public EditProfilePage clickEditProfileButton() {
-        editProfileButton.click();
-        return new EditProfilePage(getDriver());
-    }
-
-    public String getFullName() {
-        return getDriver().findElement(By.id("main_body_content"))
-                .findElement(By.tagName("h1")).getText();
-    }
-
-    public String getUsername() {
-        return getDriver().findElement(By.id("main_body_content"))
-                .findElement(By.tagName("h3")).getText();
-    }
-
-    public MyAccountPage pressApiKeyGenerateButton() {
+    public DashboardClientTab pressApiKeyGenerateButton() {
         generateApiKeyButton.click();
         getDriver().switchTo().alert().accept();
-        return new MyAccountPage(getDriver());
+        return new DashboardClientTab(getDriver());
     }
 
     public String getApiKey() {
@@ -84,5 +56,4 @@ public class MyAccountPage extends BasePage {
     public String getConfigurationDetails() {
         return configurationTextArea.getText();
     }
-
 }

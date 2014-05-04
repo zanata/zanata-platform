@@ -21,7 +21,7 @@
 package org.zanata.workflow;
 
 import org.openqa.selenium.WebDriver;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.page.WebDriverFactory;
 
@@ -41,9 +41,9 @@ public class AbstractWebWorkFlow {
         return new HomePage(driver);
     }
 
-    public DashboardPage goToDashboard() {
+    public DashboardBasePage goToDashboard() {
         driver.get(hostUrl + "dashboard");
-        return new DashboardPage(driver);
+        return new DashboardBasePage(driver);
     }
 
     private static String appendTrailingSlash(String baseUrl) {

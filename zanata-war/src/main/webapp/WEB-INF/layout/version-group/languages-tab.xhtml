@@ -14,7 +14,9 @@
       <zanata:sortlist id="languages-language_sorting"
         sortAction="#{versionGroupHomeAction.sortLanguageList()}"
         render="languages-language_form, languageTabLanguageFilter-pager, languageTabLanguageFilter-page-info, languageTabLanguageFilterBottom-pager, languageTabLanguageFilterBottom-page-info"
-        sortingList="#{versionGroupHomeAction.languageSortingList}"/>
+        sortingList="#{versionGroupHomeAction.languageSortingList}"
+        onbegin="clearHTML('#{rich:clientId('languages-language_form')}')"
+        status="languageTab-languagesLoader"/>
 
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
@@ -54,7 +56,7 @@
     <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
-  <h:form id="languages-language_form" styleClass="l--push-bottom-0">
+  <h:form id="languages-language_form" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionGroupHomeAction.activeLocales}">
       <p class="txt--meta">#{messages['jsf.NoActiveLanguages']}</p>
@@ -70,15 +72,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
-          value="#{versionGroupHomeAction.languageTabLanguageFilter.pagedFilteredList}"
+          value="#{versionGroupHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink
@@ -146,7 +148,9 @@
       <zanata:sortlist id="languages-project_sorting"
         sortAction="#{versionGroupHomeAction.sortProjectList(versionGroupHomeAction.selectedLocale.localeId)}"
         render="languages-project_list, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
-        sortingList="#{versionGroupHomeAction.projectSortingList}"/>
+        sortingList="#{versionGroupHomeAction.projectSortingList}"
+        onbegin="clearHTML('#{rich:clientId('languages-project_list')}')"
+        status="languageTab-projectsLoader"/>
     </div>
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
@@ -155,7 +159,8 @@
     </a>
 
     <h2 class="panel__heading">
-      <zanata:loader jsHandle="true" layout="inline" type="loader--small" id="languagesTab-language-label-loader"/>
+      <zanata:loader jsHandle="true" layout="inline" type="loader--small"
+        id="languagesTab-language-label-loader"/>
       <s:span id="language-label">
         #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
       </s:span>
@@ -177,7 +182,7 @@
     <f:facet name="start"><zanata:loader/></f:facet>
   </a4j:status>
 
-  <h:form id="languages-project_list" styleClass="l--push-bottom-0">
+  <h:form id="languages-project_list" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{versionGroupHomeAction.selectedLocale == null}">
       <p class="txt--meta">#{messages['jsf.SelectALanguageFromList']}</p>
@@ -199,15 +204,15 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}">
+        rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
-            value="#{versionGroupHomeAction.languageTabVersionFilter.pagedFilteredList}"
+            value="#{versionGroupHomeAction.languageTabVersionFilter.currentPage}"
             var="version">
             <li class="progress-bar__expander">
               <s:link view="/iteration/view.xhtml">

@@ -1,5 +1,6 @@
 package org.zanata.util;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -28,6 +29,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTermComment;
@@ -45,6 +47,8 @@ import com.github.huangp.entityunit.entity.EntityMaker;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.entity.FixIdCallback;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,16 +92,34 @@ public class SampleProjectProfile {
                 // project
                 HProjectIteration.class, HProject.class,
                 // account
-                HAccountActivationKey.class, HCredentials.class, HPerson.class, HAccount.class));
+                HAccountActivationKey.class, HPersonEmailValidationKey.class,
+                HCredentials.class, HPerson.class, HAccount.class));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);
-        Query query = entityManager.createQuery(
-                "update HApplicationConfiguration set value = '' where key = :key");
-        query.setParameter("key", HApplicationConfiguration.KEY_HOME_CONTENT);
-        query.executeUpdate();
-        query.setParameter("key", HApplicationConfiguration.KEY_HELP_CONTENT);
-        query.executeUpdate();
+
+        List<HApplicationConfiguration> configurations = entityManager
+                .createQuery("from HApplicationConfiguration",
+                        HApplicationConfiguration.class).getResultList();
+
+        Iterable<HApplicationConfiguration> cleanableConfig =
+                Iterables.filter(configurations,
+                        new Predicate<HApplicationConfiguration>() {
+                            @Override
+                            public boolean
+                                    apply(HApplicationConfiguration input) {
+                                String key = input.getKey();
+                                // TODO if we ever need to test this settings, we need to reset values for following to default
+                                return !key
+                                        .equals(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS)
+                                        && !key.equals(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS)
+                                        && !key.equals(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
+                            }
+                        });
+        for (HApplicationConfiguration configuration : cleanableConfig) {
+            entityManager.remove(configuration);
+        }
+        entityManager.flush();
 
         purgeLuceneIndexes();
         // TODO probably should delete cache as well
