@@ -62,6 +62,7 @@
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
+    <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <smtp.port>2552</smtp.port>
   </properties>
 
@@ -533,6 +534,7 @@
                   <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                   <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
                   <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
+                  <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
                   <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
                 </systemProperties>
 
