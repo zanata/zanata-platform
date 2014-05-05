@@ -37,16 +37,16 @@ import org.zanata.page.projects.projectsettings.*;
 @Slf4j
 public class ProjectBasePage extends BasePage {
 
-    @FindBy(id = "versions")
+    @FindBy(id = "versions_tab")
     private WebElement versionsTab;
 
-    @FindBy(id = "maintainers")
+    @FindBy(id = "maintainers_tab")
     private WebElement maintainersTab;
 
-    @FindBy(id = "about")
+    @FindBy(id = "about_tab")
     private WebElement aboutTab;
 
-    @FindBy(id = "settings")
+    @FindBy(id = "settings_tab")
     private WebElement settingsTab;
 
     @FindBy(id = "settings-general_tab")
@@ -79,7 +79,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("versions_content"))
+                return getDriver().findElement(By.id("versions_tab"))
                         .isDisplayed();
             }
         });
@@ -91,7 +91,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("maintainers_content"))
+                return getDriver().findElement(By.id("maintainers_tab"))
                         .isDisplayed();
             }
         });
@@ -103,7 +103,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("about_content"))
+                return getDriver().findElement(By.id("about_tab"))
                         .isDisplayed();
             }
         });
@@ -127,7 +127,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings_content"))
+                return getDriver().findElement(By.id("settings_tab"))
                         .isDisplayed();
             }
         });
@@ -139,7 +139,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-general"))
+                return getDriver().findElement(By.id("settings-general_tab"))
                         .isDisplayed();
             }
         });
@@ -151,7 +151,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-permissions"))
+                return getDriver().findElement(By.id("settings-permissions_tab"))
                         .isDisplayed();
             }
         });
@@ -163,7 +163,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-translation"))
+                return getDriver().findElement(By.id("settings-translation_tab"))
                         .isDisplayed();
             }
         });
@@ -175,7 +175,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-languages"))
+                return getDriver().findElement(By.id("settings-languages_tab"))
                         .isDisplayed();
             }
         });
@@ -187,7 +187,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-about"))
+                return getDriver().findElement(By.id("settings-about_tab"))
                         .isDisplayed();
             }
         });

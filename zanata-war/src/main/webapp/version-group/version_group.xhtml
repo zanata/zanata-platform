@@ -19,31 +19,26 @@
   jQuery(function () {
     crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
       function (pre, slug, lang) {
-        onTabClick(jQuery('#languages'));
+        zanata.tabs.activate(jQuery('#languages_tab'));
         if (lang) {
           updateActiveRow(jQuery('a.' + lang))
-          toggleColumn('languages_content')
+          toggleColumn('languages')
           reloadLocale(lang)
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects',
-      function (pre, slug) {
-        onTabClick(jQuery('#projects'));
-      });
-
     crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
       function (pre, slug, proj, ver) {
-        onTabClick(jQuery('#projects'));
+        zanata.tabs.activate(jQuery('#projects_tab'));
         updateActiveRow(jQuery('#' + jqSelector(proj + "[" + ver + "]") +
           " a"));
-        toggleColumn('projects_content');
+        toggleColumn('projects');
         reloadVersion(proj, ver)
       });
 
     crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:',
       function (pre, slug, setting) {
-        onTabClick(jQuery('#settings'));
+        zanata.tabs.activate(jQuery('#settings_tab'));
         if (setting)
           zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
             "_tab"))
@@ -51,9 +46,8 @@
 
     crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:',
       function (pre, slug, section) {
-        if (!section)
-          section = "languages"
-        onTabClick(jQuery('#' + section));
+        section = section || 'languages'
+        zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
     renderStatistics();
@@ -147,120 +141,122 @@
 
 
   <div class="g__item w--1-m w--5-8-l w--2-3">
-    <div class="tabs--lined">
-      <nav class="tabs__nav">
-        <ul>
-          <li>
-            <a href="javascript:void(0)" id="languages" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages')">
-              <i class="i i--language"></i>
+    <div class="tabs--lined js-tabs">
+      <ul class="tabs__nav js-tabs-nav">
+        <li>
+          <a id="languages_tab"
+            href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages"
+            class="js-url-mod" data-content="#languages">
+            <i class="i i--language"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Languages']}
               </span>
-              <s:span styleClass="txt--neutral" id="languages-size">
-                #{versionGroupHomeAction.activeLocales.size}
-              </s:span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" id="projects" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects')">
-              <i class="i i--project"></i>
+            <s:span styleClass="txt--neutral" id="languages-size">
+              #{versionGroupHomeAction.activeLocales.size}
+            </s:span>
+          </a>
+        </li>
+        <li>
+          <a id="projects_tab"
+            href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects"
+            class="js-url-mod" data-content="#projects">
+            <i class="i i--project"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Projects']}
               </span>
-              <s:span styleClass="txt--neutral" id="projects-size">
-                #{versionGroupHomeAction.getProjectIterations().size}
-              </s:span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)" id="maintainers" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/maintainers')">
-              <i class="i i--users"></i>
+            <s:span styleClass="txt--neutral" id="projects-size">
+              #{versionGroupHomeAction.getProjectIterations().size}
+            </s:span>
+          </a>
+        </li>
+        <li>
+          <a id="maintainers_tab"
+            href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/maintainers"
+            class="js-url-mod" data-content="#maintainers">
+            <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Maintainers']}
               </span>
-              <s:span styleClass="txt--neutral" id="maintainers-size">
-                #{versionGroupHome.instance.maintainers.size}
-              </s:span>
-            </a>
+            <s:span styleClass="txt--neutral" id="maintainers-size">
+              #{versionGroupHome.instance.maintainers.size}
+            </s:span>
+          </a>
+        </li>
+
+        <s:fragment
+          rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+          <li class="tab__end">
+            <div
+              class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+              <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                title="#{messages['jsf.tooltip.MoreActions']}"><i
+                class="i i--ellipsis"></i></a>
+              <ul class="dropdown__content js-dropdown__content"
+                role="content"
+                aria-labelledby="dropdownContent">
+                <li>
+                  <s:link view="/version-group/request_to_join.xhtml"
+                    styleClass="i__item--right"
+                    propagation="none">
+                    <f:param name="emailType"
+                      value="request_to_join_group"/>
+                    <f:param name="versionGroupSlug"
+                      value="#{versionGroupHomeAction.slug}"/>
+                    <h:outputFormat
+                      value="#{messages['jsf.RequestAddProjectToGroup']}">
+                      <f:param value="#{versionGroupHome.instance.name}"/>
+                    </h:outputFormat>
+                    <i class="i i--project i__item__icon"></i>
+                  </s:link>
+                </li>
+              </ul>
+            </div>
           </li>
+        </s:fragment>
 
-          <s:fragment
-            rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
-            <li class="tab__end">
-              <div
-                class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
-                <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                  title="#{messages['jsf.tooltip.MoreActions']}"><i
-                  class="i i--ellipsis"></i></a>
-                <ul class="dropdown__content js-dropdown__content"
-                  role="content"
-                  aria-labelledby="dropdownContent">
-                  <li>
-                    <s:link view="/version-group/request_to_join.xhtml"
-                      styleClass="i__item--right"
-                      propagation="none">
-                      <f:param name="emailType"
-                        value="request_to_join_group"/>
-                      <f:param name="versionGroupSlug"
-                        value="#{versionGroupHomeAction.slug}"/>
-                      <h:outputFormat
-                        value="#{messages['jsf.RequestAddProjectToGroup']}">
-                        <f:param value="#{versionGroupHome.instance.name}"/>
-                      </h:outputFormat>
-                      <i class="i i--project i__item__icon"></i>
-                    </s:link>
-                  </li>
-                </ul>
-              </div>
-            </li>
-          </s:fragment>
-
-          <s:fragment
-            rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-            <li class="tab__end">
-              <a href="javascript:void(0)" id="settings" class="js-tab"
-                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings')">
+        <s:fragment
+          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+          <li class="tab__end">
+            <a id="settings_tab"
+              href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings"
+              class="js-url-mod" data-content="#settings">
                 <span class="is-hidden--s i__text--left">
                   #{messages['jsf.Settings']}
                 </span>
-                <i class="i i--settings"></i>
-              </a>
-            </li>
-          </s:fragment>
-        </ul>
-      </nav>
+              <i class="i i--settings"></i>
+            </a>
+          </li>
+        </s:fragment>
+      </ul>
 
-      <div class="tabs__content panels__container l--push-top-1">
-        <div id="languages_content" class="is-hidden">
+      <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+        <li id="languages">
           <ui:include
             src="../WEB-INF/layout/version-group/languages-tab.xhtml">
           </ui:include>
-        </div>
+        </li>
 
-        <div id="projects_content" class="is-hidden">
+        <li id="projects">
           <ui:include
             src="../WEB-INF/layout/version-group/projects-tab.xhtml"/>
-        </div>
+        </li>
 
-        <div id="maintainers_content" class="is-hidden">
+        <li id="maintainers">
           <zanata:maintainers-tab
             listSize="#{versionGroupHome.instanceMaintainers.size}"
             filterActionBean="#{versionGroupHome.maintainerFilter}"
             settingsUrl="#settings-maintainers"
             PermissionToUpdate="#{s:hasPermission(versionGroupHome.instance, 'update')}"/>
-        </div>
+        </li>
 
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
-          <div id="settings_content" class="is-hidden">
+          <li id="settings">
             <ui:include
               src="../WEB-INF/layout/version-group/settings-tab.xhtml"/>
-          </div>
+          </li>
         </s:fragment>
-      </div>
+      </ul>
     </div>
   </div>
 </div>

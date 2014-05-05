@@ -35,31 +35,31 @@ import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 
 public class DashboardBasePage extends BasePage {
 
-    @FindBy(id = "activity")
+    @FindBy(id = "activity_tab")
     private WebElement activityTab;
 
-    @FindBy(id = "projects")
+    @FindBy(id = "projects_tab")
     private WebElement projectsTab;
 
-    @FindBy(id = "settings")
+    @FindBy(id = "settings_tab")
     private WebElement settingsTab;
 
-    @FindBy(id = "account-tab")
+    @FindBy(id = "account_tab")
     private WebElement settingsAccountTab;
 
-    @FindBy(id = "profile-tab")
+    @FindBy(id = "profile_tab")
     private WebElement settingsProfileTab;
 
-    @FindBy(id = "client-tab")
+    @FindBy(id = "client_tab")
     private WebElement settingsClientTab;
 
-    @FindBy(id = "activity-today")
+    @FindBy(id = "activity-today_tab")
     private WebElement todaysActivityTab;
 
-    @FindBy(id = "activity-week")
+    @FindBy(id = "activity-week_tab")
     private WebElement thisWeeksActivityTab;
 
-    @FindBy(id = "activity-month")
+    @FindBy(id = "activity-month_tab")
     private WebElement thisMonthsActivityTab;
 
     public DashboardBasePage(final WebDriver driver) {

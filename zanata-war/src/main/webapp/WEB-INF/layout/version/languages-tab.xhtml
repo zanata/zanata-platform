@@ -62,8 +62,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a
-                href="#settings-languages" onclick="updateHashAndGotoUrl(this)">
+              <a class="js-url-mod"
+                onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages', true)">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -97,8 +97,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
         <p>
-          <a href="#settings-languages" class="button--primary"
-            onclick="updateHashAndGotoUrl(this)">
+          <a class="button--primary js-url-mod"
+            onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages', true)">
             #{messages['jsf.AddLanguages']}
           </a>
         </p>
@@ -123,7 +123,8 @@
               status="languageTab-documentsLoader"
               onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
-              onclick="updateActiveRow(this);toggleColumn('languages_content')">
+              onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/languages/#{hLocale.localeId}', true)"
+              styleClass="#{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">
@@ -240,7 +241,7 @@
   </div>
 
   <a href="#" class="panel__header__back"
-    onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
+    onclick="removeActiveRows('languages-language_list');toggleColumn('languages')"
     title="#{messages['Languages']}">
     <i class="i--huge i--arrow-left" aria-hidden="true"></i>
   </a>
@@ -289,8 +290,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a href="#settings-documents" class="button--primary"
-            onclick="updateHashAndGotoUrl(this)">
+          <a class="button--primary js-url-mod"
+            onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents', true)">
             #{messages['jsf.ManageDocuments']}
           </a>
         </p>

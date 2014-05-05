@@ -124,7 +124,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage clickSearchIcon() {
         getDriver()
-                .findElement(By.id("versions_content"))
+                .findElement(By.id("versions"))
                 .findElement(By.className("panel__search__button"))
                 .click();
         return new ProjectVersionsPage(getDriver());
