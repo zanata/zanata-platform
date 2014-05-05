@@ -140,4 +140,7 @@ public interface TableEditorMessages extends Messages {
 
     @DefaultMessage("Error message")
     String errorMessage();
+
+    @DefaultMessage("Turn syntax highlighting on or off. Spellcheck will not work when syntax highlighting is active.")
+    String switchBetweenEditor();
 }

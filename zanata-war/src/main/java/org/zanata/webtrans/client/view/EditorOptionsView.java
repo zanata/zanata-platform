@@ -63,7 +63,7 @@ public class EditorOptionsView extends Composite implements
 
     @UiField
     CheckBox showTMChk, showGlossaryChk, showOptionalTransUnitDetailsChk,
-            useCodeMirrorChk, showSaveApprovedWarningChk, spellCheckChk,
+            useCodeMirrorChk, showSaveApprovedWarningChk,
             enterChk, editorButtonsChk;
 
     @UiField
@@ -83,12 +83,8 @@ public class EditorOptionsView extends Composite implements
                         NavOption.class, navOptionRenderer);
         navOptionGroup.addToContainer(optionsContainer);
 
-        useCodeMirrorChk.setTitle(messages.useCodeMirrorEditorTooltip());
         showSaveApprovedWarningChk.setTitle(messages
                 .showSaveApprovedWarningTooltip());
-        // TODO at the moment browser spell check only works in Firefox. If
-        // later Chrome supports it then change the tooltip.
-        spellCheckChk.setTitle(messages.spellCheckTooltip());
 
         diffModeDiff.setText(uiMessages.diffModeAsDiff());
         diffModeHighlight.setText(uiMessages.diffModeAsHighlight());
@@ -161,11 +157,6 @@ public class EditorOptionsView extends Composite implements
                 .getValue());
     }
 
-    @UiHandler("spellCheckChk")
-    public void onSpellCheckChanged(ValueChangeEvent<Boolean> event) {
-        listener.onSpellCheckOptionChanged(spellCheckChk.getValue());
-    }
-
     @UiHandler({ "diffModeDiff", "diffModeHighlight" })
     public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event) {
         if (diffModeDiff.getValue()) {
@@ -210,7 +201,6 @@ public class EditorOptionsView extends Composite implements
         selectPageSize(state.getEditorPageSize());
         useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
         showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
-        spellCheckChk.setValue(state.isSpellCheckEnabled());
 
         if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL) {
             diffModeDiff.setValue(true);

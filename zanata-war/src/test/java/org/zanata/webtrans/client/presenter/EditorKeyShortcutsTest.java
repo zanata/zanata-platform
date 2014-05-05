@@ -213,10 +213,11 @@ public class EditorKeyShortcutsTest {
         when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
         when(messages.saveAsTranslated()).thenReturn("save approved");
         when(messages.copyFromSource()).thenReturn("copy from source");
+        when(messages.switchBetweenEditor()).thenReturn("switch editor");
 
         keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-        verify(keyShortcutPresenter, times(3)).register(
+        verify(keyShortcutPresenter, times(4)).register(
                 keyShortcutCaptor.capture());
         List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
         assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(
@@ -226,6 +227,8 @@ public class EditorKeyShortcutsTest {
         assertKeys(keys.get(2), "copy from source", true, true, new Keys(
                 Keys.ALT_KEY, 'G'));
         assertAttentionKeys(keys.get(2), new Keys('G'));
+        assertKeys(keys.get(3), "switch editor", true, true, new Keys(
+                Keys.CTRL_ALT_KEYS, 'H'));
     }
 
     @Test
@@ -234,12 +237,13 @@ public class EditorKeyShortcutsTest {
         when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
         when(messages.saveAsTranslated()).thenReturn("save approved");
         when(messages.copyFromSource()).thenReturn("copy from source");
+        when(messages.switchBetweenEditor()).thenReturn("switch editor");
 
         configHolder.setEnterSavesApproved(true);
 
         keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-        verify(keyShortcutPresenter, times(4)).register(
+        verify(keyShortcutPresenter, times(5)).register(
                 keyShortcutCaptor.capture());
         List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
         assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(
@@ -251,6 +255,8 @@ public class EditorKeyShortcutsTest {
         assertKeys(keys.get(3), "copy from source", true, true, new Keys(
                 Keys.ALT_KEY, 'G'));
         assertAttentionKeys(keys.get(3), new Keys('G'));
+        assertKeys(keys.get(4), "switch editor", true, true, new Keys(
+                Keys.CTRL_ALT_KEYS, 'H'));
     }
 
     @Test

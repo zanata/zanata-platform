@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.view;
 
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -31,20 +32,24 @@ public class AttentionKeyShortcutView extends PopupPanel implements
     @UiField
     FlowPanel shortcutContainer;
 
-    Label cancelLabel, shortcutLabel;
+    Label cancelLabel, shortcutLabel, toggleLabel;
 
     @Inject
-    public AttentionKeyShortcutView() {
+    public AttentionKeyShortcutView(WebTransMessages messages) {
         setWidget(uiBinder.createAndBindUi(this));
         setStyleName("keyShortcutPanel");
 
         // TODO get these from KeyShortcutPresenter
-        cancelLabel = new Label("Cancel: Esc");
+        cancelLabel = new Label(messages.attentionKeyCancelLabel());
         cancelLabel.setStyleName(style.shortcutHint());
-        shortcutLabel = new Label("Copy Source: G");
+        shortcutLabel = new Label(messages.attentionKeyCopySourceLabel());
         shortcutLabel.setStyleName(style.shortcutHint());
+        toggleLabel =
+                new Label(messages.attentionKeyToggleSyntaxHighlightingLabel());
+        toggleLabel.setStyleName(style.shortcutHint());
         shortcutContainer.add(cancelLabel);
         shortcutContainer.add(shortcutLabel);
+        shortcutContainer.add(toggleLabel);
     }
 
     @Override

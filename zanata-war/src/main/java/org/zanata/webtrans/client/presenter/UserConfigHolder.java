@@ -68,8 +68,7 @@ public class UserConfigHolder {
     public static final boolean DEFAULT_FILTER = false;
     public static final boolean DEFAULT_DISPLAY_BUTTONS = true;
     public static final boolean DEFAULT_ENTER_SAVES_APPROVED = false;
-    public static final boolean DEFAULT_USE_CODE_MIRROR = true;
-    public static final boolean DEFAULT_SPELL_CHECK = true;
+    public static final boolean DEFAULT_USE_CODE_MIRROR = false;
     public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
     public static final boolean DEFAULT_SHOW_PANEL = true;
     public static final String DEFAULT_SELECTED_REFERENCE = "none";
@@ -93,8 +92,6 @@ public class UserConfigHolder {
         state.filterByApproved = DEFAULT_FILTER;
         state.filterByRejected = DEFAULT_FILTER;
         state.filterByHasError = DEFAULT_FILTER;
-
-        state.spellCheckEnabled = DEFAULT_SPELL_CHECK;
 
         state.showTMPanel = DEFAULT_SHOW_PANEL;
         state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
@@ -198,11 +195,6 @@ public class UserConfigHolder {
         state.showSaveApprovedWarning = showSaveApprovedWarning;
     }
 
-    public void setSpellCheckEnabled(boolean spellCheckEnabled) {
-        state = new ConfigurationState(state);
-        state.spellCheckEnabled = spellCheckEnabled;
-    }
-
     public void setTMDisplayMode(DiffMode diffMode) {
         state = new ConfigurationState(state);
         state.transMemoryDisplayMode = diffMode;
@@ -268,7 +260,6 @@ public class UserConfigHolder {
         private String selectedReferenceForSourceLang;
 
         private boolean showSaveApprovedWarning;
-        private boolean spellCheckEnabled;
         private DiffMode transMemoryDisplayMode;
         private ThemesOption displayTheme;
 
@@ -297,7 +288,6 @@ public class UserConfigHolder {
             this.filterByRejected = old.isFilterByRejected();
             this.filterByHasError = old.isFilterByHasError();
             this.showSaveApprovedWarning = old.isShowSaveApprovedWarning();
-            this.spellCheckEnabled = old.isSpellCheckEnabled();
             this.transMemoryDisplayMode = old.getTransMemoryDisplayMode();
             this.displayTheme = old.getDisplayTheme();
             this.showTMPanel = old.isShowTMPanel();
@@ -363,10 +353,6 @@ public class UserConfigHolder {
 
         public boolean isShowSaveApprovedWarning() {
             return showSaveApprovedWarning;
-        }
-
-        public boolean isSpellCheckEnabled() {
-            return spellCheckEnabled;
         }
 
         public DiffMode getTransMemoryDisplayMode() {

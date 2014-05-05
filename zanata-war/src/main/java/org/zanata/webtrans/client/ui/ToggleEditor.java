@@ -27,9 +27,9 @@ public interface ToggleEditor extends IsWidget, HasText,
 
     void refresh();
 
-    void setEnableSpellCheck(Boolean enabled);
-
     TransUnitId getId();
+
+    void toggleType();
 
     static enum ViewMode {
         VIEW, EDIT
