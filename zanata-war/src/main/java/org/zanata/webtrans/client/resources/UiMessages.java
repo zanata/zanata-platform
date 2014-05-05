@@ -180,7 +180,7 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Color legend")
     String colorLegend();
 
-    @DefaultMessage("Click to see available filter terms(separate by space)")
+    @DefaultMessage("Click to see available filter terms (separate by space)")
     String filterMesssagesByTerm();
 
     @DefaultMessage("Show as Diff")
