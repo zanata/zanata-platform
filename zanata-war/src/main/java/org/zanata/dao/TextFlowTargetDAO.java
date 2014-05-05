@@ -2,7 +2,6 @@ package org.zanata.dao;
 
 import java.util.List;
 
-
 import com.google.common.base.Optional;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -17,11 +16,13 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.TranslationFinder;
 
 @Name("textFlowTargetDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
+public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
+        implements TranslationFinder {
 
     public TextFlowTargetDAO() {
         super(HTextFlowTarget.class);
@@ -33,7 +34,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
 
     /**
      * @param textFlow
-     * @param localeId
+     * @param locale
      * @return
      */
     public HTextFlowTarget getByNaturalId(HTextFlow textFlow, HLocale locale) {
@@ -130,7 +131,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
      * Finds all (including obsolete) translations for 'document' in 'locale'.
      *
      * @param document
-     * @param locale
+     * @param localeId
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -176,72 +177,84 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long> {
     /**
      * Finds the best matching translations for a single text flow and a locale.
      * Other parameters (context, document id, and project) can also influence
-     * what the best match is.
-     * A matching translation is one where the source text is exactly the
-     * same as the translation within the document and in the same locale.
+     * what the best match is. A matching translation is one where the source
+     * text is exactly the same as the translation within the document and in
+     * the same locale.
      *
-     * @param textFlow The text flow for which to find a matching translation.
-     * @param locale The locale in which to find matches.
-     * @param checkContext Whether to check for a matching context
-     * @param checkDocument Whether to check for a matching document id
-     * @param checkProject Whether to check for a matching project
-     * @return The single best possible match found in the system for the
-     * given text flow.
+     * @param textFlow
+     *            The text flow for which to find a matching translation.
+     * @param targetLocaleId
+     *            The locale in which to find matches.
+     * @param checkContext
+     *            Whether to check for a matching context
+     * @param checkDocument
+     *            Whether to check for a matching document id
+     * @param checkProject
+     *            Whether to check for a matching project
+     * @return The single best possible match found in the system for the given
+     *         text flow.
      */
-    public Optional<HTextFlowTarget> findBestMatchingTranslation(
-            HTextFlow textFlow, HLocale locale, boolean checkContext,
+    @Override
+    public Optional<HTextFlowTarget> searchBestMatchTransMemory(
+            HTextFlow textFlow, LocaleId targetLocaleId,
+            LocaleId sourceLocaleId, boolean checkContext,
             boolean checkDocument, boolean checkProject) {
 
         StringBuilder queryStr =
                 new StringBuilder(
-                        "select match "
-                                + "from HTextFlowTarget match, HTextFlow textFlow "
-                                + "where "
-                                + "textFlow.id = :textFlowId "
-                                + "and textFlow.contentHash = match.textFlow.contentHash "
-                                + "and match.locale = :locale "
+                        "select match\n"
+                                + "from HTextFlowTarget match\n"
+                                + "where match.textFlow.contentHash = :contentHash\n"
+                                + "and match.locale.localeId = :targetLocaleId\n"
                                 +
                                 // It's fine to reuse translation in Translated
                                 // state even if it came from a reviewable
                                 // project
-                                "and match.state in (:approvedState, :translatedState) "
+                                "and match.state in (:approvedState, :translatedState)\n"
                                 +
                                 // Do not reuse its own translation
-                                "and match.textFlow != textFlow "
+                                "and match.textFlow.id != :textFlowId\n"
                                 +
                                 // Do not reuse matches from obsolete entities
                                 // (iteration, project)
                                 // Obsolete document translations ARE reused
-                                "and match.textFlow.document.projectIteration.status != :obsoleteEntityStatus "
-                                + "and match.textFlow.document.projectIteration.project.status != :obsoleteEntityStatus ");
+                                "and match.textFlow.document.projectIteration.status != :obsoleteEntityStatus\n"
+                                + "and match.textFlow.document.projectIteration.project.status != :obsoleteEntityStatus\n");
         if (checkContext) {
-            queryStr.append("and match.textFlow.resId = textFlow.resId ");
+            queryStr.append("and match.textFlow.resId = :resId\n");
         }
         if (checkDocument) {
-            queryStr.append("and match.textFlow.document.docId = textFlow.document.docId ");
+            queryStr.append("and match.textFlow.document.docId = :docId\n");
         }
         if (checkProject) {
-            queryStr.append("and match.textFlow.document.projectIteration.project = textFlow.document.projectIteration.project ");
+            queryStr.append("and match.textFlow.document.projectIteration.project.id = :projectId\n");
         }
-        queryStr.append("order by (case when match.textFlow.resId = textFlow.resId then 0 else 1 end),"
-                + "(case when match.textFlow.document.docId = textFlow.document.docId then 0 else 1 end),"
-                + "(case when match.textFlow.document.projectIteration.project = textFlow.document.projectIteration.project then 0 else 1 end),"
-                + "match.lastChanged desc");
+        queryStr.append("order by\n"
+                + "  (case when match.textFlow.resId = :resId then 0 else 1 end),\n"
+                + "  (case when match.textFlow.document.docId\n"
+                + "    = :docId then 0 else 1 end),\n"
+                + "  (case when match.textFlow.document.projectIteration.project.id\n"
+                + "    = :projectId then 0 else 1 end),\n"
+                + "  match.lastChanged desc\n");
 
         Query q = getSession().createQuery(queryStr.toString());
 
-        q.setParameter("textFlowId", textFlow.getId())
-                .setParameter("locale", locale)
-                .setParameter("approvedState", ContentState.Approved)
-                .setParameter("translatedState", ContentState.Translated)
-                .setParameter("obsoleteEntityStatus", EntityStatus.OBSOLETE);
-        q.setCacheable(false); // don't try to cache scrollable results
+        q.setParameter("textFlowId", textFlow.getId());
+        q.setParameter("contentHash", textFlow.getContentHash());
+        q.setParameter("resId", textFlow.getResId());
+        q.setParameter("docId", textFlow.getDocument().getDocId());
+        q.setParameter("projectId", textFlow.getDocument()
+                .getProjectIteration().getProject().getId());
+        q.setParameter("targetLocaleId", targetLocaleId);
+        q.setParameter("approvedState", ContentState.Approved);
+        q.setParameter("translatedState", ContentState.Translated);
+        q.setParameter("obsoleteEntityStatus", EntityStatus.OBSOLETE);
+        q.setCacheable(false);
+        // don't try to cache scrollable results
         q.setComment("TextFlowTargetDAO.findMatchingTranslations");
         q.setMaxResults(1); // Get the first one (should be the best match
                             // because of the order by clause)
-        List results = q.list();
-        return results.isEmpty() ? Optional.<HTextFlowTarget> absent()
-                : Optional.of((HTextFlowTarget) results.get(0));
+        return Optional.fromNullable((HTextFlowTarget) q.uniqueResult());
     }
 
     /**

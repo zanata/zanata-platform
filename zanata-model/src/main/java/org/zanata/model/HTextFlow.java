@@ -48,6 +48,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,6 +64,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
@@ -84,7 +86,7 @@ import com.google.common.collect.ImmutableList;
  *
  */
 @Entity
-@EntityListeners({HTextFlow.EntityListener.class})
+@EntityListeners({ HTextFlow.EntityListener.class })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @NoArgsConstructor
@@ -153,7 +155,8 @@ public class HTextFlow extends HTextContainer implements Serializable,
         return id;
     }
 
-    protected void setId(Long id) {
+    @VisibleForTesting
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -188,6 +191,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @NaturalId
     @Size(max = 255)
     @NotEmpty
+    @Field(analyze = Analyze.NO)
     public String getResId() {
         return resId;
     }
@@ -416,6 +420,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
         this.wordCount = wordCount;
     }
 
+    @Field(analyze = Analyze.NO)
     public String getContentHash() {
         return contentHash;
     }

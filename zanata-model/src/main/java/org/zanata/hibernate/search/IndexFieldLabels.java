@@ -17,9 +17,13 @@ public interface IndexFieldLabels {
     public static final String DOCUMENT_ID_FIELD = "documentId";
     public static final String LOCALE_ID_FIELD = "locale";
     public static final String CONTENT_STATE_FIELD = "state";
+    public static final String LAST_CHANGED_FIELD = "lastChanged";
 
     public static final String TF_CONTENT = "textFlow.content-nocase";
     public static final String CONTENT = "content-nocase";
+    public static final String TF_RES_ID = "textFlow.resId";
+    public static final String TF_ID = "textFlow.id";
+    public static final String TF_CONTENT_HASH = "textFlow.contentHash";
 
     public static final String TF_CONTENT_FIELDS[] = { TF_CONTENT + 0,
             TF_CONTENT + 1, TF_CONTENT + 2, TF_CONTENT + 3, TF_CONTENT + 4,

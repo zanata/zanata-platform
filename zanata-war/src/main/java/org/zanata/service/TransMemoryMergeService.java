@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors
+ * Copyright 2014, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,34 +18,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.service;
 
 import java.util.List;
 
-import org.apache.lucene.queryParser.ParseException;
-import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.model.TransMemoryQuery;
+import net.customware.gwt.dispatch.shared.ActionException;
 
-/**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
- */
-public interface TranslationMemoryQueryService {
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
-    /**
-     * Performs the specified TM query via Hibernate Search
-     *
-     * @param query
-     * @param sourceLocale
-     * @param maxResult
-     *            number of results to return
-     * @return
-     * @throws ParseException
-     */
-    public List<Object[]> getSearchResult(TransMemoryQuery query,
-            LocaleId sourceLocale, LocaleId targetLocale, int maxResult)
-            throws ParseException;
+import com.google.common.base.Optional;
 
+public interface TransMemoryMergeService {
+
+    List<TranslationService.TranslationResult> executeMerge(
+            TransMemoryMerge action) throws ActionException;
 }

@@ -11,27 +11,25 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HAccount;
-import org.zanata.model.HProject;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.TestFixture;
-import org.zanata.model.po.HPotEntryData;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
-
 import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.shared.ActionException;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +46,7 @@ public class GetTransMemoryDetailsHandlerTest {
     private TextFlowDAO textFlowDAO;
     @Mock
     private LocaleService localeServiceImpl;
+
     private HLocale hLocale;
 
     @BeforeMethod
@@ -59,31 +58,11 @@ public class GetTransMemoryDetailsHandlerTest {
             .use("identity", identity)
             .use("textFlowDAO", textFlowDAO)
             .use("localeServiceImpl", localeServiceImpl)
+            .useImpl(TranslationMemoryServiceImpl.class)
             .ignoreNonResolvable()
             .autowire(GetTransMemoryDetailsHandler.class);
       // @formatter:on
         hLocale = TestFixture.setId(1L, new HLocale(LocaleId.EN));
-    }
-
-    @Test
-    public void testGetTransMemoryDetail() {
-        HTextFlow hTextFlow = TestFixture.makeApprovedHTextFlow(1, hLocale);
-        HPotEntryData potEntryData = new HPotEntryData();
-        potEntryData.setContext("msgContext");
-        hTextFlow.setPotEntryData(potEntryData);
-        hTextFlow.getTargets().put(hLocale.getId(),
-                addHTextFlowTarget(hLocale, hTextFlow, "admin"));
-        setProjectAndIterationSlug(hTextFlow, "project", "master");
-
-        TransMemoryDetails detail =
-                handler.getTransMemoryDetail(hLocale, hTextFlow);
-
-        assertThat(detail.getMsgContext(), Matchers.equalTo("msgContext"));
-        assertThat(detail.getProjectName(), Matchers.equalTo("project"));
-        assertThat(detail.getIterationName(), Matchers.equalTo("master"));
-        assertThat(detail.getDocId(),
-                Matchers.equalTo(hTextFlow.getDocument().getDocId()));
-        assertThat(detail.getLastModifiedBy(), Matchers.equalTo("admin"));
     }
 
     private static void setProjectAndIterationSlug(HTextFlow hTextFlow,

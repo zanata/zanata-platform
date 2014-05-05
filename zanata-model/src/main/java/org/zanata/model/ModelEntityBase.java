@@ -38,8 +38,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.hibernate.search.DateBridge;
+
+import com.google.common.annotations.VisibleForTesting;
 
 @EntityListeners({ModelEntityBase.EntityListener.class})
 @MappedSuperclass
@@ -58,7 +64,8 @@ public class ModelEntityBase implements Serializable, HashableState {
         return id;
     }
 
-    protected void setId(Long id) {
+    @VisibleForTesting
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -86,6 +93,8 @@ public class ModelEntityBase implements Serializable, HashableState {
     // NB: also used in HSimpleComment
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = DateBridge.class)
     public Date getLastChanged() {
         return lastChanged;
     }

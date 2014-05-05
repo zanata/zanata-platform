@@ -157,7 +157,9 @@ public class SearchIndexManager implements Serializable {
     public void startProcess() {
         String taskId =
                 asyncTaskManagerServiceImpl.startTask(new ReindexTask());
-        this.handle = (TimedAsyncHandle) asyncTaskManagerServiceImpl.getHandle(taskId);
+        this.handle =
+                (TimedAsyncHandle) asyncTaskManagerServiceImpl
+                        .getHandle(taskId);
     }
 
     @SuppressWarnings("rawtypes")
@@ -172,6 +174,12 @@ public class SearchIndexManager implements Serializable {
         return new ClassIndexer(session, handle, clazz, strategy);
     }
 
+    public void reindex(boolean purge, boolean reindex, boolean optimize)
+            throws Exception {
+        setOptions(purge, reindex, optimize);
+        new ReindexTask().call();
+    }
+
     /**
      * Private reindex Asynchronous task. NB: Separate from the main Bean class
      * as it is not recommended to reuse async tasks.
@@ -184,7 +192,7 @@ public class SearchIndexManager implements Serializable {
         @Override
         public TimedAsyncHandle<Void> getHandle() {
             if (handle == null) {
-                String name = getClass().getSimpleName(); //+":"+indexingOptions
+                String name = getClass().getSimpleName(); // +":"+indexingOptions
                 handle = new TimedAsyncHandle<Void>(name);
                 handle.setMaxProgress(getTotalOperations());
             }

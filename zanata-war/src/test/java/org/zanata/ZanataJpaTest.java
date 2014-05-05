@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 import org.zanata.testng.TestMethodListener;
 
 @Listeners(TestMethodListener.class)
-@Test(groups = { "jpa-tests" })
+@Test
 public abstract class ZanataJpaTest {
     private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
     private static final String PERSIST_NAME = "zanataTestDatasourcePU";
@@ -34,7 +34,7 @@ public abstract class ZanataJpaTest {
 
     @BeforeMethod
     @Before
-    public void setupEM() {
+    protected void setupEM() {
         log.debug("Setting up EM");
         em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -42,7 +42,7 @@ public abstract class ZanataJpaTest {
 
     @AfterMethod
     @After
-    public void shutdownEM() {
+    protected void shutdownEM() {
         log.debug("Shutting down EM");
         clearHibernateSecondLevelCache();
         em.getTransaction().rollback();
