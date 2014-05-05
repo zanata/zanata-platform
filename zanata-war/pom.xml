@@ -35,13 +35,7 @@
     <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-    <!-- Groovy properties -->
     <groovy.version>2.1.5</groovy.version>
-    <groovy.eclipse.batch.version>2.1.8-01</groovy.eclipse.batch.version>
-    <!-- NB: groovy-eclipse-compiler 2.8.0-01 breaks with Lombok.
-         Waiting for 2.9.0-01. -->
-    <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
-
     <zanata.web.assets.version>5</zanata.web.assets.version>
   </properties>
 
@@ -56,38 +50,43 @@
     </resources>
 
     <plugins>
-
       <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>addSources</goal>
+              <goal>addTestSources</goal>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>testGenerateStubs</goal>
+              <goal>testCompile</goal>
+              <goal>removeStubs</goal>
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <!-- groovy-eclipse-compiler 2.8.0-01 and later require maven-compiler-plugin 3.0 or higher -->
-        <configuration>
-          <compilerId>groovy-eclipse-compiler</compilerId>
-          <!-- set verbose to be true if you want lots of uninteresting messages -->
-          <!-- <verbose>true</verbose> -->
-          <!-- enable Lombok-Groovy support -->
-          <compilerArguments>
-            <javaAgentClass>lombok.core.Agent</javaAgentClass>
-          </compilerArguments>
-          <fork>true</fork>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-compiler</artifactId>
-            <version>${groovy.eclipse.compiler.version}</version>
-          </dependency>
-          <!-- groovy-eclipse-compiler 2.8.0-01 and later need an explicit dependency on groovy-eclipse-batch -->
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-batch</artifactId>
-            <version>${groovy.eclipse.batch.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-          </dependency>
-        </dependencies>
+      </plugin>
+      <plugin>
+        <!-- if including source jars, use the no-fork goals
+             otherwise both the Groovy sources and Java stub sources will get included in your jar -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -994,56 +993,6 @@
           </plugin>
         </plugins>
       </reporting>
-    </profile>
-
-    <!-- Profile to use latest groovy-eclipse-compiler for better error
-     reporting.  Please remove after upgrading to groovy-eclipse-compiler
-     2.9.0-01.
-    -->
-    <profile>
-      <id>newCompiler</id>
-      <activation>
-        <property>
-          <name>newCompiler</name>
-        </property>
-      </activation>
-      <properties>
-        <groovy.eclipse.compiler.version>2.9.0-01-20140221.234306-6</groovy.eclipse.compiler.version>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <configuration>
-              <rules>
-                <requireNoRepositories>
-                  <allowedPluginRepositories combine.children="append">
-                    <allowedPluginRepository>codehaus-snapshots</allowedPluginRepository>
-                  </allowedPluginRepositories>
-                </requireNoRepositories>
-              </rules>
-            </configuration>
-          </plugin>
-
-        </plugins>
-
-      </build>
-
-      <pluginRepositories>
-        <pluginRepository>
-          <id>codehaus-snapshots</id>
-          <name>Codehaus Snapshots</name>
-          <url>http://nexus.codehaus.org/snapshots/</url>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-
-      </pluginRepositories>
-
     </profile>
 
     <profile>
