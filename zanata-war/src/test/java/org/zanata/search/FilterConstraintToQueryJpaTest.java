@@ -137,19 +137,20 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         // 10. target translated by translator on yesterday
         baseBuilder.withLastModifiedBy(translator)
                 .withLastModifiedDate(yesterday).withResId("res10")
-                .withSourceContent("source 10").withTargetContent("target 10")
+                .withSourceContent("source 10").withTargetContent("target_10")
                 .withTargetState(ContentState.Translated).build();
 
         getEm().flush();
     }
 
     private void deleteData() {
-        EntityCleaner.deleteAll(getEm(), Lists.<Class>newArrayList(
+        EntityCleaner.deleteAll(getEm(), Lists.<Class> newArrayList(
                 TransMemoryUnitVariant.class, TransMemoryUnit.class,
                 TransMemory.class,
                 Activity.class,
                 // glossary
-                HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
+                HTermComment.class, HGlossaryTerm.class,
+                HGlossaryEntry.class,
                 // tex flows and targets
                 HPoTargetHeader.class, HTextFlowTargetHistory.class,
                 HTextFlowTarget.class, HTextFlow.class,
@@ -369,8 +370,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 FilterConstraintToQuery.filterInSingleDocument(
                         FilterConstraints.builder().keepNone()
                                 .includeStates(allContentStates)
-                                .lastModifiedBy(username).build(),
-                        documentId);
+                                .lastModifiedBy(username).build(), documentId);
 
         String hql = constraintToQuery.toEntityQuery();
         List<HTextFlow> result = getResultList(hql, constraintToQuery);
@@ -447,6 +447,22 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         List<String> ids = transformToResIds(result);
         log.debug("result: {}", ids);
         assertThat(ids, Matchers.contains("res4"));
+        verifyModalNavigationQuery(constraintToQuery, result);
+    }
+
+    @Test
+    public void testEscapeCharacter() {
+        FilterConstraintToQuery constraintToQuery =
+                FilterConstraintToQuery.filterInSingleDocument(
+                        FilterConstraints.builder().keepNone()
+                                .checkInSource(true).checkInTarget(true)
+                                .filterBy("_").includeStates(allContentStates)
+                                .build(), documentId);
+        String hql = constraintToQuery.toEntityQuery();
+        List<HTextFlow> result = getResultList(hql, constraintToQuery);
+        List<String> ids = transformToResIds(result);
+        log.debug("result: {}", ids);
+        assertThat(ids, Matchers.contains("res10"));
         verifyModalNavigationQuery(constraintToQuery, result);
     }
 

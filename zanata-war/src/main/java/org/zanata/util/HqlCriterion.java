@@ -30,7 +30,7 @@ public class HqlCriterion {
     }
 
     public static String escapeWildcard(String value) {
-        return value.replaceAll("%", "\\\\%");
+        return value.replaceAll("%", "\\\\%").replaceAll("_", "\\\\_");
     }
 
     public static String match(String pattern, MatchMode matchMode) {
