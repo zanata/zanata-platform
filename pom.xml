@@ -493,6 +493,16 @@
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-solrj</artifactId>
         <version>3.6.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
