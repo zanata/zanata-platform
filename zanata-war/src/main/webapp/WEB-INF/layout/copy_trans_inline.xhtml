@@ -4,10 +4,11 @@
   xmlns:h="http://java.sun.com/jsf/html">
 
   <script type="text/javascript">
-    function onValueChanged(checkbox) {
-      bindCopyTransValue(jQuery(checkbox).attr("name"),
-        jQuery(checkbox).attr("value"))
-    }
+    jQuery(document).ready(function () {
+      jQuery('.js-radio').click(function () {
+        bindCopyTransValue(jQuery(this).attr("name"), jQuery(this).val());
+      });
+    });
   </script>
 
   <ol class="list--slat">
@@ -21,7 +22,8 @@
             #{messages['jsf.iteration.CopyTrans.Condition.onContentMismatch.details']}</p>
         </div>
         <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
-          <button class="button button--small button--danger" disabled="">
+          <button class="button button--small button--danger"
+            disabled="disabled" onclick="return false;">
             #{messages['jsf.iteration.CopyTrans.Action.reject']}
           </button>
         </div>
@@ -42,25 +44,22 @@
         <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
-              var="ruleAction">
+              var="ruleAction" varStatus="status">
               <s:fragment
                 rendered="#{copyTransOptionsModel.contextMismatchAction ne ruleAction.action}">
-                <input id="contextMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:contextMismatch"
                   name="contextMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"/>
+                  class="form__item__input js-radio"/>
               </s:fragment>
               <s:fragment
                 rendered="#{copyTransOptionsModel.contextMismatchAction eq ruleAction.action}">
-                <input id="contextMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:contextMismatch"
                   name="contextMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"
-                  checked="true"/>
+                  class="form__item__input js-radio" checked="true"/>
               </s:fragment>
-              <label for="contextMismatch--#{ruleAction.action}"
+              <label for="#{status.index}:contextMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}
               </label>
@@ -83,25 +82,22 @@
         <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
-              var="ruleAction">
+              var="ruleAction" varStatus="status">
               <s:fragment
                 rendered="#{copyTransOptionsModel.projectMismatchAction ne ruleAction.action}">
-                <input id="projectMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:projectMismatch"
                   name="projectMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"/>
+                  class="form__item__input js-radio"/>
               </s:fragment>
               <s:fragment
                 rendered="#{copyTransOptionsModel.projectMismatchAction eq ruleAction.action}">
-                <input id="projectMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:projectMismatch"
                   name="projectMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"
-                  checked="true"/>
+                  class="form__item__input js-radio" checked="true"/>
               </s:fragment>
-              <label for="projectMismatch--#{ruleAction.action}"
+              <label for="#{status.index}:projectMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}
               </label>
@@ -126,25 +122,22 @@
         <div class="g__item w--5-8 txt--align-right l--push-bottom-quarter">
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
-              var="ruleAction">
+              var="ruleAction" varStatus="status">
               <s:fragment
                 rendered="#{copyTransOptionsModel.docIdMismatchAction ne ruleAction.action}">
-                <input id="docIdMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:docIdMismatch"
                   name="docIdMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"/>
+                  class="form__item__input js-radio"/>
               </s:fragment>
               <s:fragment
                 rendered="#{copyTransOptionsModel.docIdMismatchAction eq ruleAction.action}">
-                <input id="docIdMismatch--#{ruleAction.action}"
+                <input id="#{status.index}:docIdMismatch"
                   name="docIdMismatch"
-                  onclick="onValueChanged(this)"
                   value="#{ruleAction.action}" type="radio"
-                  class="form__item__input"
-                  checked="true"/>
+                  class="form__item__input js-radio" checked="true"/>
               </s:fragment>
-              <label for="docIdMismatch--#{ruleAction.action}"
+              <label for="#{status.index}:docIdMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}
               </label>
@@ -155,8 +148,11 @@
     </li>
     <li>
       <p class="list__title">
-        <h:outputText escape="false" value="#{messages['jsf.CopyTrans.Action.message']}"/></p>
-      <p class="txt--meta"><h:outputText escape="false" value="#{messages['jsf.CopyTrans.Action.message2']}"/></p>
+        <h:outputText escape="false"
+          value="#{messages['jsf.CopyTrans.Action.message']}"/></p>
+
+      <p class="txt--meta"><h:outputText escape="false"
+        value="#{messages['jsf.CopyTrans.Action.message2']}"/></p>
     </li>
   </ol>
 </ui:composition>

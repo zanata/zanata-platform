@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.model.HCopyTransOptions;
+import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.util.ZanataMessages;
 import com.google.common.collect.Lists;
 
@@ -48,7 +49,7 @@ import lombok.Setter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("copyTransOptionsModel")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.PAGE)
 @AutoCreate
 public class CopyTransOptionsModel implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -64,7 +65,7 @@ public class CopyTransOptionsModel implements Serializable {
 
     public HCopyTransOptions getInstance() {
         if (instance == null) {
-            instance = new HCopyTransOptions();
+            instance = CopyTransOptionFactory.getImplicitOptions();
         }
         return instance;
     }

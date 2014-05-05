@@ -40,7 +40,7 @@ var globalMessageTimer;
 
 // automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
-  if (jQuery().zanata) {
+  if (zanata) {
     zanata.messages.activate('#messages .message--global');
   } else {
     jQuery('#messages .message--global').addClass('is-active');
@@ -50,7 +50,7 @@ function startGlobalMessageTimer() {
   clearTimeout(globalMessageTimer);
 
   globalMessageTimer = setTimeout(function() {
-    if (jQuery().zanata) {
+    if (zanata) {
       zanata.messages.deactivate('#messages .message--global');
     } else {
       jQuery('#messages .message--global').removeClass('is-active');
@@ -75,7 +75,7 @@ function registerJsTab() {
 // Registers all elements that modify the browser's url
 function registerUrlModifiers() {
   jQuery('a.js-url-mod').click(function(e) {
-    changeBrowserUrl( jQuery(this).attr('href') );
+    changeBrowserUrl(jQuery(this).attr('href'));
     e.preventDefault();
   });
 }
@@ -107,9 +107,11 @@ function updateUrl(urlPrefix, suffixToUpdate) {
 function changeBrowserUrl(url, refresh) {
   refresh = refresh || false
 
-  var status = {path: url}
+  var status = {
+    path : url
+  }
   window.history.pushState(status, document.title, url)
-  if(refresh)
+  if (refresh)
     updateStateFromUrl();
 }
 
@@ -309,14 +311,18 @@ function filterList(input, filterFn) {
 /* ----------------------------------------------------------- */
 /*------------------zanata-sortlist component------------------*/
 /* ----------------------------------------------------------- */
-jQuery(document).ready(function() {
-  jQuery('a.js-sort-option').each(function() {
-    jQuery(this).click(function() {
-      jQuery(this).parent().siblings("li").children("a.js-sort-option").removeClass('is-active');
-      jQuery(this).addClass("is-active");
+jQuery(document).ready(
+    function() {
+      jQuery('a.js-sort-option').each(
+          function() {
+            jQuery(this).click(
+                function() {
+                  jQuery(this).parent().siblings("li").children(
+                      "a.js-sort-option").removeClass('is-active');
+                  jQuery(this).addClass("is-active");
+                });
+          });
     });
-  });
-});
 
 /* ----------------------------------------------------------- */
 /*----------------- zanata-checkbox component -----------------*/
