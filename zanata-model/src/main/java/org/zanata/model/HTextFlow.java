@@ -151,7 +151,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     @Id
     @GeneratedValue
-    @Field(analyze = Analyze.NO)
     public Long getId() {
         return id;
     }
