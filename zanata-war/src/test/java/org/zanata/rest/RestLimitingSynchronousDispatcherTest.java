@@ -49,6 +49,7 @@ public class RestLimitingSynchronousDispatcherTest {
         MockitoAnnotations.initMocks(this);
 
         when(request.getHttpHeaders().getRequestHeaders()).thenReturn(headers);
+        when(request.getHttpMethod()).thenReturn("GET");
         when(headers.getFirst(HeaderHelper.X_AUTH_TOKEN_HEADER)).thenReturn(
                 API_KEY);
 
