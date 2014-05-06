@@ -1,5 +1,6 @@
 package org.zanata.limits;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import lombok.AccessLevel;
@@ -32,7 +33,12 @@ public class RateLimitingProcessor {
 
     public void processApiKey(String apiKey, HttpResponse response,
             Runnable taskToRun) throws Exception {
-        RestCallLimiter rateLimiter = rateLimitManager.getLimiter(apiKey);
+        process(apiKey, response, taskToRun);
+    }
+
+    private void process(String key, HttpResponse response, Runnable taskToRun)
+            throws IOException {
+        RestCallLimiter rateLimiter = rateLimitManager.getLimiter(key);
 
         log.debug("check semaphore for {}", this);
 
@@ -40,7 +46,7 @@ public class RateLimitingProcessor {
             if (logLimiter.tryAcquire()) {
                 log.warn(
                         "{} has too many concurrent requests. Returning status 429",
-                        apiKey);
+                        key);
             }
             String errorMessage =
                     String.format(
@@ -50,4 +56,8 @@ public class RateLimitingProcessor {
         }
     }
 
+    public void processUsername(String username, HttpResponse response,
+            Runnable taskToRun) throws IOException {
+        process(username, response, taskToRun);
+    }
 }

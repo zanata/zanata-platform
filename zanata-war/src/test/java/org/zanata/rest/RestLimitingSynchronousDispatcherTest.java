@@ -92,4 +92,28 @@ public class RestLimitingSynchronousDispatcherTest {
         verify(dispatcher).getInvoker(request);
 
     }
+
+    @Test
+    public void willUseAuthenticatedUserApiKeyIfPresent() throws Exception {
+        authenticatedUser = new HAccount();
+        authenticatedUser.setApiKey("apiKeyInAuth");
+        doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
+
+        dispatcher.invoke(request, response);
+
+        verify(processor).processApiKey(same("apiKeyInAuth"), same(response),
+                taskCaptor.capture());
+    }
+
+    @Test
+    public void willUserUsernameIfNoApiKeyButAuthenticated() throws Exception {
+        authenticatedUser = new HAccount();
+        authenticatedUser.setUsername("admin");
+        doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
+
+        dispatcher.invoke(request, response);
+
+        verify(processor).processUsername(same("admin"), same(response),
+                taskCaptor.capture());
+    }
 }

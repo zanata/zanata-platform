@@ -71,8 +71,11 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
 
             if (authenticatedUser == null) {
                 processor.processApiKey(apiKey, response, taskToRun);
-            } else {
+            } else if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
                 processor.processApiKey(authenticatedUser.getApiKey(),
+                        response, taskToRun);
+            } else {
+                processor.processUsername(authenticatedUser.getUsername(),
                         response, taskToRun);
             }
 
