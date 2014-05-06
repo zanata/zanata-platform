@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.limits.RateLimitingProcessor;
+import org.zanata.model.HAccount;
 
 import static org.mockito.Mockito.*;
 
@@ -43,6 +44,7 @@ public class RestLimitingSynchronousDispatcherTest {
     private ResourceInvoker superInvoker;
     @Mock
     private MultivaluedMap<String, String> headers;
+    private HAccount authenticatedUser;
 
     @BeforeMethod
     public void beforeMethod() throws ServletException, IOException {
@@ -59,6 +61,7 @@ public class RestLimitingSynchronousDispatcherTest {
         // this way we can verify the task actually called super.invoke()
         doReturn(superInvoker).when(dispatcher).getInvoker(request);
         doNothing().when(dispatcher).invoke(request, response, superInvoker);
+        doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
     }
 
     @Test
@@ -80,7 +83,8 @@ public class RestLimitingSynchronousDispatcherTest {
             throws Exception {
         dispatcher.invoke(request, response);
 
-        verify(processor).process(same(API_KEY), same(response), taskCaptor.capture());
+        verify(processor).processApiKey(same(API_KEY), same(response),
+                taskCaptor.capture());
 
         // verify task is calling super.invoke
         Runnable task = taskCaptor.getValue();
