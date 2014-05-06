@@ -67,12 +67,12 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
                 String.format(BasicWorkFlow.EDITOR_TEMPLATE, "about-fedora",
                         "master", "fr", document);
         String urlWithFilterCondition =
-                urlForEditor + ";search:resource-id!cres1%20text!c%22hello%20w%22";
+                urlForEditor + ";search:hello%20w;resid:res1";
         EditorPage editorPage =
                 new BasicWorkFlow().goToPage(urlWithFilterCondition,
                         EditorPage.class).setSyntaxHighlighting(false);
 
         assertThat(editorPage.getMessageSources()).containsExactly("hello world");
-        assertThat(editorPage.getFilterQuery()).isEqualTo("resource-id:res1 text:\"hello w\"");
+        assertThat(editorPage.getFilterQuery().trim()).isEqualTo("text:hello w resource-id:res1");
     }
 }
