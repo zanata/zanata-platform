@@ -21,6 +21,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -136,5 +137,19 @@ public class EditorFilter implements IsSerializable {
 
     public boolean isAcceptAll() {
         return this.equals(ALL);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("textInContent", textInContent)
+                .add("resId", resId)
+                .add("lastModifiedBefore", lastModifiedBefore)
+                .add("lastModifiedAfter", lastModifiedAfter)
+                .add("lastModifiedByUser", lastModifiedByUser)
+                .add("sourceComment", sourceComment)
+                .add("transComment", transComment)
+                .add("msgContext", msgContext)
+                .toString();
     }
 }

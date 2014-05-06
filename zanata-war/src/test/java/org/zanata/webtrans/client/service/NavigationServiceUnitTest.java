@@ -20,7 +20,6 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
-import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
@@ -93,7 +92,6 @@ public class NavigationServiceUnitTest {
         service.addPageDataChangeListener(pageDataChangeListener);
 
         verify(eventBus).addHandler(DocumentSelectionEvent.getType(), service);
-        verify(eventBus).addHandler(FindMessageEvent.getType(), service);
         verify(eventBus).addHandler(NavTransUnitEvent.getType(), service);
         verify(eventBus).addHandler(EditorPageSizeChangeEvent.TYPE, service);
 
@@ -297,19 +295,6 @@ public class NavigationServiceUnitTest {
 
         assertThat(service.getSelectedOrNull().getStatus(),
                 Matchers.equalTo(ContentState.NeedReview));
-    }
-
-    @Test
-    public void testOnFindMessage() throws Exception {
-        service.init(initContext);
-
-        service.onFindMessage(new FindMessageEvent("search"));
-
-        verify(dispatcher, times(2)).execute(actionCaptor.capture(),
-                resultCaptor.capture());
-        GetTransUnitList getTransUnitList = actionCaptor.getValue();
-        assertThat(getTransUnitList.getEditorFilter().getTextInContent(),
-                Matchers.equalTo("search"));
     }
 
     @Test

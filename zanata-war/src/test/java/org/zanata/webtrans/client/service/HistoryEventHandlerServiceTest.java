@@ -18,7 +18,6 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
@@ -123,30 +122,6 @@ public class HistoryEventHandlerServiceTest {
     }
 
     @Test
-    public void onProcessTransFilterWillDoNothingIfHistoryNotChanged() {
-        HistoryToken token = new HistoryToken();
-
-        service.processForTransFilter(token);
-
-        verifyZeroInteractions(eventBus);
-    }
-
-    @Test
-    public void onProcessTransFilter() {
-        HistoryToken token = new HistoryToken();
-        token.setEditorTextSearch("something");
-
-        service.processForTransFilter(token);
-
-        verify(eventBus).fireEvent(eventCaptor.capture());
-        FindMessageEvent findMessageEvent =
-                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
-                        FindMessageEvent.class);
-        assertThat(findMessageEvent.getMessage(), Matchers.equalTo("something"));
-
-    }
-
-    @Test
     public void onProcessForProjectWideSearchWillDoNothingIfHistoryNotChanged() {
         HistoryToken token = new HistoryToken();
 
@@ -235,7 +210,8 @@ public class HistoryEventHandlerServiceTest {
         inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
         inOrder.verify(eventBus).fireEvent(
                 Mockito.isA(DocumentSelectionEvent.class));
-        inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
+        inOrder.verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
+        inOrder.verify(eventBus).fireEvent(Mockito.isA(FilterViewEvent.class));
         inOrder.verify(appPresenter).showView(token.getView());
 
         verifyNoMoreInteractions(documentListPresenter, appPresenter, eventBus,
@@ -248,7 +224,6 @@ public class HistoryEventHandlerServiceTest {
         // initialized
         HistoryToken token = new HistoryToken();
         token.setDocFilterText("doc filter test");
-        token.setEditorTextSearch("search text");
         token.setProjectSearchText("project search text");
         token.setDocumentPath("doc/path");
         token.setProjectSearchReplacement("replacement");
@@ -291,7 +266,6 @@ public class HistoryEventHandlerServiceTest {
         inOrder.verify(documentListPresenter).getDocumentInfo(documentId);
         inOrder.verify(eventBus).fireEvent(
                 Mockito.isA(DocumentSelectionEvent.class));
-        inOrder.verify(eventBus).fireEvent(Mockito.isA(FindMessageEvent.class));
         inOrder.verify(appPresenter).showView(token.getView());
 
         verifyNoMoreInteractions(documentListPresenter, appPresenter, eventBus,

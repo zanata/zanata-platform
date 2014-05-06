@@ -12,12 +12,12 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 /**
  * @author Patrick Huang <a
@@ -56,7 +56,6 @@ public class TransFilterPresenterTest {
     public void onBind() {
         presenter.onBind();
 
-        verify(eventBus).addHandler(FindMessageEvent.getType(), presenter);
         verify(eventBus).addHandler(FilterViewEvent.getType(), presenter);
     }
 
@@ -78,12 +77,6 @@ public class TransFilterPresenterTest {
         verify(history).newItem(historyToken);
     }
 
-    @Test
-    public void testOnFindMessage() throws Exception {
-        presenter.onFindMessage(new FindMessageEvent("search"));
-
-        verify(display).setSearchTerm("search");
-    }
 
     @Test
     public void onUnbind() {
@@ -98,7 +91,8 @@ public class TransFilterPresenterTest {
     @Test
     public void willSetOptionsBackOnFilterViewCancelEvent() {
         FilterViewEvent event =
-                new FilterViewEvent(true, true, true, true, true, false, true);
+                new FilterViewEvent(true, true, true, true, true, false,
+                        EditorFilter.ALL, true);
         HistoryToken historyToken = new HistoryToken();
         when(history.getHistoryToken()).thenReturn(historyToken);
 
@@ -125,13 +119,14 @@ public class TransFilterPresenterTest {
     }
 
     @Test
-    public void willDoNothingIfItsNotCancelEvent() {
+    public void willUpdateSearchTermIfItsNotCancelEvent() {
         FilterViewEvent cancelEvent =
-                new FilterViewEvent(true, true, true, true, true, false, false);
+                new FilterViewEvent(true, true, true, true, true, false,
+                        EditorFilter.ALL, false);
 
         presenter.onFilterView(cancelEvent);
 
-        verifyZeroInteractions(display);
+        verify(display).setSearchTerm("");
     }
 
     @Test

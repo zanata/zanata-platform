@@ -22,6 +22,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
@@ -155,5 +156,25 @@ public class QueryParser {
             }
         }
         return text;
+    }
+
+    public static String toQueryString(EditorFilter editorFilter) {
+        StringBuilder sb = new StringBuilder();
+        addIfNotEmpty(sb, TEXT_KEY, editorFilter.getTextInContent());
+        addIfNotEmpty(sb, RESID_KEY, editorFilter.getResId());
+        addIfNotEmpty(sb, LAST_MODIFIED_BY_KEY, editorFilter.getLastModifiedByUser());
+        addIfNotEmpty(sb, LAST_MODIFIED_BEFORE_KEY, editorFilter.getLastModifiedBefore());
+        addIfNotEmpty(sb, LAST_MODIFIED_AFTER_KEY, editorFilter.getLastModifiedAfter());
+        addIfNotEmpty(sb, SOURCE_COMMENT_KEY, editorFilter.getSourceComment());
+        addIfNotEmpty(sb, TRANSLATION_COMMENT_KEY, editorFilter.getTransComment());
+        addIfNotEmpty(sb, MSGCTXT_KEY, editorFilter.getMsgContext());
+        return sb.toString();
+    }
+
+    private static void addIfNotEmpty(StringBuilder stringBuilder, String key,
+            String value) {
+        if (!Strings.isNullOrEmpty(value)) {
+            stringBuilder.append(key).append(":").append(value).append(" ");
+        }
     }
 }

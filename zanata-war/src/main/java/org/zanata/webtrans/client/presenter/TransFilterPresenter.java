@@ -25,8 +25,6 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
-import org.zanata.webtrans.client.events.FindMessageEvent;
-import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
@@ -34,12 +32,14 @@ import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.TransFilterDisplay;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
+import org.zanata.webtrans.shared.rpc.QueryParser;
 
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
-        implements TransFilterDisplay.Listener, FindMessageHandler,
-        UserConfigChangeHandler, FilterViewEventHandler {
+        implements TransFilterDisplay.Listener, UserConfigChangeHandler,
+        FilterViewEventHandler {
     private final History history;
 
     private final UserOptionsService userOptionsService;
@@ -59,7 +59,6 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
 
     @Override
     protected void onBind() {
-        registerHandler(eventBus.addHandler(FindMessageEvent.getType(), this));
         registerHandler(eventBus.addHandler(FilterViewEvent.getType(), this));
         registerHandler(eventBus.addHandler(UserConfigChangeEvent.TYPE, this));
 
@@ -73,8 +72,22 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     @Override
     public void searchTerm(String searchTerm) {
         HistoryToken newToken = history.getHistoryToken();
-        newToken.setEditorTextSearch(searchTerm);
+        EditorFilter editorFilter = QueryParser.parse(searchTerm);
+
+        populateHistoryTokenForEditorFilter(newToken, editorFilter);
         history.newItem(newToken);
+    }
+
+    private static void populateHistoryTokenForEditorFilter(
+            HistoryToken newToken, EditorFilter editorFilter) {
+        newToken.setEditorTextSearch(editorFilter.getTextInContent());
+        newToken.setResId(editorFilter.getResId());
+        newToken.setChangedBefore(editorFilter.getLastModifiedBefore());
+        newToken.setChangedAfter(editorFilter.getLastModifiedAfter());
+        newToken.setLastModifiedBy(editorFilter.getLastModifiedByUser());
+        newToken.setSourceComment(editorFilter.getSourceComment());
+        newToken.setTargetComment(editorFilter.getTransComment());
+        newToken.setMsgContext(editorFilter.getMsgContext());
     }
 
     @Override
@@ -92,19 +105,14 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
 
         pushFilterHistory(translatedChkValue, fuzzyChkValue,
                 untranslatedChkValue, approvedChkValue, rejectedChkValue,
-                hasErrorChkValue);
+                hasErrorChkValue, null);
     }
 
     @Override
     public void onSearchFieldFocused(boolean focused) {
         keyShortcutPresenter.setContextActive(ShortcutContext.Edit, !focused);
-        keyShortcutPresenter.setContextActive(ShortcutContext.Navigation, !focused);
-    }
-
-    @Override
-    public void onFindMessage(FindMessageEvent event) {
-        // this is fired from HistoryEventHandlerService
-        display.setSearchTerm(event.getMessage());
+        keyShortcutPresenter.setContextActive(ShortcutContext.Navigation,
+                !focused);
     }
 
     @Override
@@ -132,7 +140,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
                     configurationState.isFilterByUntranslated(),
                     configurationState.isFilterByApproved(),
                     configurationState.isFilterByRejected(),
-                    configurationState.isFilterByHasError());
+                    configurationState.isFilterByHasError(), null);
         }
 
     }
@@ -147,8 +155,13 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
             pushFilterHistory(event.isFilterTranslated(),
                     event.isFilterFuzzy(), event.isFilterUntranslated(),
                     event.isFilterApproved(), event.isFilterRejected(),
-                    event.isFilterHasError());
+                    event.isFilterHasError(), event.getEditorFilter());
 
+        } else {
+            // this is fired from HistoryEventHandlerService
+            String searchTerm =
+                    QueryParser.toQueryString(event.getEditorFilter());
+            display.setSearchTerm(searchTerm);
         }
     }
 
@@ -167,7 +180,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
     private void pushFilterHistory(boolean filterByTranslated,
             boolean filterByFuzzy, boolean filterByUntranslated,
             boolean filterByApproved, boolean filterByRejected,
-            boolean filterByHasError) {
+            boolean filterByHasError, EditorFilter editorFilter) {
         HistoryToken token = history.getHistoryToken();
         token.setFilterTranslated(filterByTranslated);
         token.setFilterFuzzy(filterByFuzzy);
@@ -175,6 +188,10 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         token.setFilterApproved(filterByApproved);
         token.setFilterRejected(filterByRejected);
         token.setFilterHasError(filterByHasError);
+
+        if (editorFilter != null) {
+            populateHistoryTokenForEditorFilter(token, editorFilter);
+        }
         history.newItem(token);
     }
 }
