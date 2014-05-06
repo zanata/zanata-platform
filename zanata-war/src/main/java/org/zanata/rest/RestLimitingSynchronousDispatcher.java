@@ -49,7 +49,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     public void invoke(final HttpRequest request, final HttpResponse response) {
 
         HAccount authenticatedUser = getAuthenticatedUser();
-        String apiKey = Strings.nullToEmpty(HeaderHelper.getApiKey(request));
+        String apiKey = HeaderHelper.getApiKey(request);
 
         try {
             // we are not validating api key but will rate limit any api key
@@ -72,7 +72,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
             if (authenticatedUser == null) {
                 processor.processApiKey(apiKey, response, taskToRun);
             } else {
-                processor.processUsername(authenticatedUser.getUsername(),
+                processor.processApiKey(authenticatedUser.getApiKey(),
                         response, taskToRun);
             }
 
