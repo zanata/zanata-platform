@@ -17,6 +17,7 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
+    crossroads.ignoreState = true /* Make sure every url modification gets parsed */
     crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
       function (pre, slug, lang) {
         onTabClick(jQuery('#languages'));
@@ -151,8 +152,8 @@
       <nav class="tabs__nav">
         <ul>
           <li>
-            <a href="javascript:void(0)" id="languages" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages')">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages"
+              id="languages" class="js-tab js-url-mod">
               <i class="i i--language"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Languages']}
@@ -163,8 +164,8 @@
             </a>
           </li>
           <li>
-            <a href="javascript:void(0)" id="projects" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects')">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects"
+              id="projects" class="js-tab js-url-mod">
               <i class="i i--project"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Projects']}
@@ -175,8 +176,8 @@
             </a>
           </li>
           <li>
-            <a href="javascript:void(0)" id="maintainers" class="js-tab"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/maintainers')">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/maintainers"
+              id="maintainers" class="js-tab js-url-mod">
               <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Maintainers']}
@@ -221,8 +222,8 @@
           <s:fragment
             rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
             <li class="tab__end">
-              <a href="javascript:void(0)" id="settings" class="js-tab"
-                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings')">
+              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings"
+                id="settings" class="js-tab js-url-mod">
                 <span class="is-hidden--s i__text--left">
                   #{messages['jsf.Settings']}
                 </span>

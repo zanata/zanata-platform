@@ -75,8 +75,9 @@ function registerJsTab() {
 // Registers all elements that modify the browser's url
 function registerUrlModifiers() {
   jQuery('a.js-url-mod').click(function(e) {
-    changeBrowserUrl(jQuery(this).attr('href'));
     e.preventDefault();
+    var $this = jQuery(this);
+    changeBrowserUrl( $this.attr('href') );
   });
 }
 
