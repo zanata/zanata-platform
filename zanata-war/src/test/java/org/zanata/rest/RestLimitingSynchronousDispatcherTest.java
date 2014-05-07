@@ -62,6 +62,7 @@ public class RestLimitingSynchronousDispatcherTest {
         // this way we can verify the task actually called super.invoke()
         doReturn(superInvoker).when(dispatcher).getInvoker(request);
         doNothing().when(dispatcher).invoke(request, response, superInvoker);
+        authenticatedUser = null;
         doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
     }
 
@@ -71,6 +72,7 @@ public class RestLimitingSynchronousDispatcherTest {
         when(headers.getFirst(HeaderHelper.X_AUTH_TOKEN_HEADER)).thenReturn(
                 null);
         when(request.getUri().getPath()).thenReturn("/rest/in/peace");
+        doReturn(null).when(dispatcher).getAuthenticatedUser();
 
         dispatcher.invoke(request, response);
 
