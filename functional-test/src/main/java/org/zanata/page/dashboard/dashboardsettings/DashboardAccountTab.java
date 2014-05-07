@@ -30,6 +30,17 @@ import org.zanata.page.dashboard.DashboardBasePage;
  */
 public class DashboardAccountTab extends DashboardBasePage {
 
+    public static final String INCORRECT_OLD_PASSWORD_ERROR =
+            "Old password is incorrect, please check and try again.";
+
+    public static final String FIELD_EMPTY_ERROR = "may not be empty";
+
+    public static final String PASSWORD_LENGTH_ERROR =
+            "size must be between 6 and 20";
+
+    public static final String EMAIL_TAKEN_ERROR =
+            "This email address is already taken";
+
     @FindBy(id = "email-update-form:emailField:email")
     private WebElement emailField;
 

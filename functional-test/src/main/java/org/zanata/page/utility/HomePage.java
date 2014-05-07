@@ -30,6 +30,10 @@ import org.zanata.page.administration.EditHomeContentPage;
 
 public class HomePage extends BasePage {
 
+    public static final String SIGNUP_SUCCESS_MESSAGE =
+            "You will soon receive an email " +
+            "with a link to activate your account.";
+
     @FindBy(id = "main_body_content")
     private WebElement mainBodyContent;
 

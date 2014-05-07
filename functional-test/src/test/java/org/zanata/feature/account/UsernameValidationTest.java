@@ -29,6 +29,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
@@ -106,8 +107,11 @@ public class UsernameValidationTest extends ZanataTestCase {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
+    @Feature(summary = "The user must enter acceptable username characters" +
+            "to register",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Theory
-    public void usernameCharacterValidation(String username) {
+    public void usernameCharacterValidation(String username) throws Exception {
         log.info(testName.getMethodName() + " : " + username);
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
@@ -116,7 +120,7 @@ public class UsernameValidationTest extends ZanataTestCase {
         registerPage.defocus();
 
         assertThat(registerPage.waitForFieldErrors())
-                .contains(registerPage.USERNAMEVALIDATIONERROR)
+                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
                 .as("Username validation errors are shown");
     }
 }
