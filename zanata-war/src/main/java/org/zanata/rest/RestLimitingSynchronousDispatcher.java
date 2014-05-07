@@ -8,8 +8,11 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
+import org.jboss.seam.Component;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.limits.RateLimitingProcessor;
+import org.zanata.model.HAccount;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -45,11 +48,12 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     @Override
     public void invoke(final HttpRequest request, final HttpResponse response) {
 
-        String apiKey = Strings.nullToEmpty(HeaderHelper.getApiKey(request));
+        HAccount authenticatedUser = getAuthenticatedUser();
+        String apiKey = HeaderHelper.getApiKey(request);
 
         try {
             // we are not validating api key but will rate limit any api key
-            if (Strings.isNullOrEmpty(apiKey)) {
+            if (authenticatedUser == null && Strings.isNullOrEmpty(apiKey)) {
                 response.sendError(
                         Response.Status.UNAUTHORIZED.getStatusCode(),
                         API_KEY_ABSENCE_WARNING);
@@ -65,7 +69,15 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
                 }
             };
 
-            processor.process(apiKey, response, taskToRun);
+            if (authenticatedUser == null) {
+                processor.processApiKey(apiKey, response, taskToRun);
+            } else if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
+                processor.processApiKey(authenticatedUser.getApiKey(),
+                        response, taskToRun);
+            } else {
+                processor.processUsername(authenticatedUser.getUsername(),
+                        response, taskToRun);
+            }
 
         } catch (UnhandledException e) {
             Throwable cause = e.getCause();
@@ -89,5 +101,11 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
             log.error("error processing request", e);
             throw Throwables.propagate(e);
         }
+    }
+
+    @VisibleForTesting
+    protected HAccount getAuthenticatedUser() {
+        return (HAccount) Component
+                .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
     }
 }
