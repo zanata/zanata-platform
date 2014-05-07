@@ -3,6 +3,7 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:f="urn:import:org.zanata.webtrans.client"
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui"
+  xmlns:z="urn:import:org.zanata.webtrans.client.ui"
   ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
   ui:generateKeys="com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator"
   ui:generateLocales="en">
@@ -96,6 +97,9 @@
         <div class="new-zanata">
           <fui:UnorderedListWidget ui:field="notifications"
             styleName="list--no-bullets l--push-right-1" />
+        </div>
+        <div class="new-zanata">
+          <ul ui:field="notificationList" class="message--global list--no-bullets"/>
         </div>
         <g:TabLayoutPanel ui:field="content" styleName="{style.content}"
           barHeight="0" barUnit='EM' />

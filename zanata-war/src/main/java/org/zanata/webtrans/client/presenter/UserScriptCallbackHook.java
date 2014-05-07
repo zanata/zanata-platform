@@ -37,7 +37,7 @@ public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler {
     }
 
     private static native void attachCallbackMapToWindow()/*-{
-    $wnd.zanata = {
+    $wnd.zanataEvent = {
       description : "Add callback functions to the arrays for the available event types.\n"
           + " Callbacks take a single argument.",
       events : {
@@ -56,7 +56,7 @@ public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler {
 
     private static native void triggerAllTransUnitUpdatedCallbacksWith(
             TransUnitUpdatedEvent event)/*-{
-    callbacks = $wnd.zanata.events.transUnitUpdated.callbacks;
+    callbacks = $wnd.zanataEvent.events.transUnitUpdated.callbacks;
     for ( var i = 0; i < callbacks.length; i++) {
       callbacks[i](event);
     }
