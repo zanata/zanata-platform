@@ -48,6 +48,8 @@ public interface TransFilterDisplay extends WidgetDisplay, EditorSearchFieldList
 
     void setHasErrorFilter(boolean filterByHasError);
 
+    void selectPartialText(String text);
+
     interface Listener {
         void searchTerm(String searchTerm);
 

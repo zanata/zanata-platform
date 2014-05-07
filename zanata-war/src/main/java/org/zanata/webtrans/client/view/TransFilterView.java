@@ -207,6 +207,11 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     }
 
     @Override
+    public void selectPartialText(String text) {
+        searchField.selectText(text);
+    }
+
+    @Override
     public void setOptionsState(ConfigurationState state) {
         untranslatedChk.setValue(state.isFilterByUntranslated());
         fuzzyChk.setValue(state.isFilterByFuzzy());

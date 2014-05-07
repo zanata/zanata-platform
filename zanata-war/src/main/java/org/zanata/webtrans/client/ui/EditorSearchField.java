@@ -107,4 +107,11 @@ public class EditorSearchField extends Composite {
     public boolean isFocused() {
         return filterTextBox.isFocused();
     }
+
+    public void selectText(String text) {
+        int startIndex = filterTextBox.getText().indexOf(text);
+        if (startIndex > 0) {
+            filterTextBox.setSelectionRange(startIndex, text.length());
+        }
+    }
 }

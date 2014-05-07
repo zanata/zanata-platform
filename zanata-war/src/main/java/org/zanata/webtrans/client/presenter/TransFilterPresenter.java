@@ -25,6 +25,7 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.FilterViewEventHandler;
+import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeHandler;
 import org.zanata.webtrans.client.history.History;
@@ -35,11 +36,15 @@ import org.zanata.webtrans.client.view.TransFilterDisplay;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.QueryParser;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.inject.Inject;
 
 public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         implements TransFilterDisplay.Listener, UserConfigChangeHandler,
         FilterViewEventHandler {
+    private static final String DATE_PATTERN = "dd-mm-yyyy";
+
     private final History history;
 
     private final UserOptionsService userOptionsService;
@@ -71,11 +76,38 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
 
     @Override
     public void searchTerm(String searchTerm) {
-        HistoryToken newToken = history.getHistoryToken();
         EditorFilter editorFilter = QueryParser.parse(searchTerm);
+        boolean invalidBefore =
+                invalidDateFormat(editorFilter.getLastModifiedBefore());
+        boolean invalidAfter =
+                invalidDateFormat(editorFilter.getLastModifiedAfter());
+        if (invalidBefore || invalidAfter) {
+            eventBus.fireEvent(new NotificationEvent(
+                    NotificationEvent.Severity.Warning,
+                    "Invalid date, expected format dd-mm-yyyy"));
 
-        populateHistoryTokenForEditorFilter(newToken, editorFilter);
-        history.newItem(newToken);
+            display.selectPartialText(invalidBefore ? editorFilter
+                    .getLastModifiedBefore() : editorFilter
+                    .getLastModifiedAfter());
+        } else {
+            HistoryToken newToken = history.getHistoryToken();
+            populateHistoryTokenForEditorFilter(newToken, editorFilter);
+            history.newItem(newToken);
+        }
+
+    }
+
+    protected static boolean invalidDateFormat(String dateField) {
+        if (dateField == null) {
+            return false;
+        }
+        try {
+            DateTimeFormat.getFormat(DATE_PATTERN).parseStrict(
+                    dateField);
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+        return false;
     }
 
     private static void populateHistoryTokenForEditorFilter(

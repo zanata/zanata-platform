@@ -20,8 +20,10 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.List;
+
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -76,19 +78,19 @@ public class EditorFilter implements IsSerializable {
     }
 
     public String getResId() {
-        return resId;
+        return trimIfNotNull(resId);
     }
 
     public String getLastModifiedBefore() {
-        return lastModifiedBefore;
+        return trimIfNotNull(lastModifiedBefore);
     }
 
     public String getLastModifiedAfter() {
-        return lastModifiedAfter;
+        return trimIfNotNull(lastModifiedAfter);
     }
 
     public String getLastModifiedByUser() {
-        return lastModifiedByUser;
+        return trimIfNotNull(lastModifiedByUser);
     }
 
     public String getSourceComment() {
@@ -103,10 +105,8 @@ public class EditorFilter implements IsSerializable {
         return msgContext;
     }
 
-    public EditorFilter changeTextInContent(String findMessage) {
-        EditorFilter result = new EditorFilter(this);
-        result.textInContent = findMessage;
-        return result;
+    private static String trimIfNotNull(String field) {
+        return field == null ? null : field.trim();
     }
 
     @Override
