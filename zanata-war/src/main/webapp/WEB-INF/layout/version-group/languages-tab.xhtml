@@ -195,8 +195,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="#settings-projects" class="button--primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHome.instance.slug}/settings/projects"
+              class="button--primary" onclick="changeBrowserUrl(this.href, true); return false;">
               #{messages['jsf.AddProjectVersions']}
             </a>
           </p>
