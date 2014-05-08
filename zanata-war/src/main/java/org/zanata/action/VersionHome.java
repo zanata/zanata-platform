@@ -117,7 +117,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     public void createNew() {
         isNewInstance = true;
         if (isNewInstance) {
-            selectedProjectType = getProject().getDefaultProjectType().name();
+            ProjectType projectType = getProject().getDefaultProjectType();
+            if (projectType != null) {
+                selectedProjectType = projectType.name();
+            }
         } else {
             selectedProjectType = getInstance().getProjectType().name();
         }

@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+
+  <div class="modal" id="copy-trans-modal" tabindex="-1"
+    role="dialog" aria-hidden="true">
+    <div class="modal__dialog l--constrain-medium">
+      <header class="modal__header">
+        <h2 class="modal__title">#{messages['jsf.CopyTrans']}</h2>
+        <button class="modal__close button--link" data-dismiss="modal"><i
+          class="i i--huge i--cancel"></i></button>
+      </header>
+
+      <div class="modal__content">
+        <div class="message message--highlight l--pad-h-1">
+          #{messages['jsf.Copytrans.message2']}
+        </div>
+        <h:form class="l--push-h-1 l--push-v-half">
+          <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
+        </h:form>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="g--tight">
+          <s:div styleClass="g__item txt--align-right"
+            id="copy-trans-buttons">
+            <button styleClass="button--primary" jsfc="a4j:commandButton"
+              rendered="#{!copyTransAction.inProgress}"
+              onclick="runCopyTrans();zanata.modal.hide('#copy-trans-modal')" value="#{messages['jsf.CopyTrans.run']}"></button>
+
+            <button styleClass="button--danger" jsfc="a4j:commandButton"
+              rendered="#{copyTransAction.inProgress}"
+              onclick="cancelCopyTrans()" value="#{messages['jsf.Cancel']}"></button>
+          </s:div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</ui:composition>

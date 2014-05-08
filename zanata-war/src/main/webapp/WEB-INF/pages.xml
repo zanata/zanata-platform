@@ -605,7 +605,6 @@
     <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
 
     <action execute="#{versionHome.validateSuppliedId}" />
-    <action execute="#{copyTransAction.initialize}" />
 
     <navigation from-action="#{versionHomeAction.uploadSourceFile}">
       <redirect view-id="/iteration/view.xhtml">

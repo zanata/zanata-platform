@@ -25,13 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.util.SampleProjectRule;

@@ -18,19 +18,36 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
+package org.zanata.feature.language;
 
-package org.zanata.feature.search;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.workflow.LoginWorkFlow;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * List of test classes for the Search test suite.
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
- * @see org.zanata.feature.AggregateTestSuite
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ProjectSearchTest.class})
-public class SearchTestSuite {
+@Category(DetailedTest.class)
+public class JoinLanguageTeamTest extends ZanataTestCase {
+
+    @Test
+    public void translatorJoinsLanguageTeam() {
+        ManageLanguageTeamMemberPage manageTeamMemberPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToAdministration()
+                .goToManageLanguagePage()
+                .manageTeamMembersFor("pl")
+                .clickAddTeamMember()
+                .searchPersonAndAddToTeam("translator");
+
+        assertThat(manageTeamMemberPage.getMemberUsernames())
+                .contains("translator")
+                .as("Translator is a listed member of the pl team");
+    }
 }

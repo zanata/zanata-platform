@@ -1,11 +1,13 @@
 package org.zanata.limits;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.resteasy.spi.HttpResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.jboss.resteasy.spi.HttpResponse;
 
 /**
  * This class is used by RestLimitingSynchronousDispatcher to dispatch API calls
@@ -29,10 +31,14 @@ public class RateLimitingProcessor {
     private final LeakyBucket logLimiter = new LeakyBucket(1, 5,
             TimeUnit.MINUTES);
 
-    public void
-            process(String apiKey, HttpResponse response, Runnable taskToRun)
-                    throws Exception {
-        RestCallLimiter rateLimiter = rateLimitManager.getLimiter(apiKey);
+    public void processApiKey(String apiKey, HttpResponse response,
+            Runnable taskToRun) throws Exception {
+        process(apiKey, response, taskToRun);
+    }
+
+    private void process(String key, HttpResponse response, Runnable taskToRun)
+            throws IOException {
+        RestCallLimiter rateLimiter = rateLimitManager.getLimiter(key);
 
         log.debug("check semaphore for {}", this);
 
@@ -40,14 +46,18 @@ public class RateLimitingProcessor {
             if (logLimiter.tryAcquire()) {
                 log.warn(
                         "{} has too many concurrent requests. Returning status 429",
-                        apiKey);
+                        key);
             }
             String errorMessage =
                     String.format(
-                            "Too many concurrent request for this API key (maximum is %d)",
+                            "Too many concurrent requests for this user (maximum is %d)",
                             rateLimiter.getMaxConcurrentPermits());
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
     }
 
+    public void processUsername(String username, HttpResponse response,
+            Runnable taskToRun) throws IOException {
+        process(username, response, taskToRun);
+    }
 }

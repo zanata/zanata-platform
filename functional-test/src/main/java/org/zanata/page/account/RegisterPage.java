@@ -38,6 +38,9 @@ import java.util.Map;
  */
 public class RegisterPage extends CorePage {
 
+    public final String USERNAMEVALIDATIONERROR = "Between 3 and 20 lowercase "+
+            "letters, numbers and underscores only";
+
     @FindBy(id = "loginForm:name")
     private WebElement nameField;
 

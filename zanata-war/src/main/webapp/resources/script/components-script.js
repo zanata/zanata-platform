@@ -66,8 +66,9 @@ function refreshTooltip(wrapperId) {
 // Registers all elements that modify the browser's url
 function registerUrlModifiers() {
   jQuery('a.js-url-mod').click(function(e) {
-    changeBrowserUrl( jQuery(this).attr('href') );
     e.preventDefault();
+    var $this = jQuery(this);
+    changeBrowserUrl( $this.attr('href') );
   });
 }
 
@@ -78,9 +79,11 @@ function updateStateFromUrl() {
 function changeBrowserUrl(url, refresh) {
   refresh = refresh || false
 
-  var status = {path: url}
+  var status = {
+    path : url
+  }
   window.history.pushState(status, document.title, url)
-  if(refresh)
+  if (refresh)
     updateStateFromUrl();
 }
 
@@ -247,14 +250,18 @@ function filterList(input, filterFn) {
 /* ----------------------------------------------------------- */
 /*------------------zanata-sortlist component------------------*/
 /* ----------------------------------------------------------- */
-jQuery(document).ready(function() {
-  jQuery('a.js-sort-option').each(function() {
-    jQuery(this).click(function() {
-      jQuery(this).parent().siblings("li").children("a.js-sort-option").removeClass('is-active');
-      jQuery(this).addClass("is-active");
+jQuery(document).ready(
+    function() {
+      jQuery('a.js-sort-option').each(
+          function() {
+            jQuery(this).click(
+                function() {
+                  jQuery(this).parent().siblings("li").children(
+                      "a.js-sort-option").removeClass('is-active');
+                  jQuery(this).addClass("is-active");
+                });
+          });
     });
-  });
-});
 
 /* ----------------------------------------------------------- */
 /*----------------- zanata-checkbox component -----------------*/

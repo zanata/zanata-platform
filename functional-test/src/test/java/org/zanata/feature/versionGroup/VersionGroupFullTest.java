@@ -22,14 +22,13 @@ package org.zanata.feature.versionGroup;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.feature.ZanataTestCase;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
@@ -44,6 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @Category(DetailedTest.class)
 public class VersionGroupFullTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
     private DashboardBasePage dashboardPage;
@@ -148,7 +148,6 @@ public class VersionGroupFullTest extends ZanataTestCase {
     }
 
     @Test
-    @Ignore("at the moment direct input project version to add without auto-complete will not work")
     public void addANewProjectVersionToAnEmptyGroup()
         throws InterruptedException {
         String groupID = "add-version-to-empty-group";
@@ -161,14 +160,16 @@ public class VersionGroupFullTest extends ZanataTestCase {
                 .saveGroup()
                 .goToGroup(groupName)
                 .clickProjectsTab()
-                .clickAddProjectVersionsButton()
-                .enterProjectVersion("about-fedora master")
-                .confirmAddProject()
+                .clickAddProjectVersionsButton();
+
+        versionGroupPage = versionGroupPage
+                .enterProjectVersion("about-fedora")
+                .selectProjectVersion("about-fedora master")
                 .clickProjectsTab();
 
         assertThat("The version group shows in the list",
                 versionGroupPage.getProjectVersionsInGroup(),
-                Matchers.hasItem("about-fedora master"));
+                Matchers.hasItem("about fedora\nmaster"));
 
     }
 

@@ -40,30 +40,44 @@
   <a4j:param name="val2" assignTo="#{checked}"/>
 </a4j:jsFunction>
 
+<a4j:jsFunction name="bindCopyTransValue" limitRender="true"
+  action="#{copyTransAction.updateCopyTrans(action, value)}">
+  <a4j:param name="val1" assignTo="#{action}"/>
+  <a4j:param name="val2" assignTo="#{value}"/>
+</a4j:jsFunction>
+
 <h1>#{messages['jsf.iteration.VersionSettings']}</h1>
 
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li>
-    <a href="#settings-general" id="settings-general_tab" class="is-active">
+    <a id="settings-general_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/general"
+      class="js-url-mod is-active" data-content="#settings-general">
       <i class="i i--settings"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-documents" id="settings-documents_tab">
+    <a id="settings-documents_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/documents"
+      class="js-url-mod" data-content="#settings-documents">
       <i class="i i--document"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Documents']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-languages" id="settings-languages_tab">
+    <a id="settings-languages_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/languages"
+      class="js-url-mod" data-content="#settings-languages">
       <i class="i i--language"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-translation" id="settings-translation_tab">
+    <a id="settings-translation_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/translation"
+      class="js-url-mod" data-content="#settings-translation">
       <i class="i i--translate"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
     </a>
@@ -313,8 +327,7 @@
 
   <hr/>
 
-  <h:form id="settings-translation-validation-form"
-    styleClass="l--push-bottom-0">
+  <h:form id="settings-translation-validation-form">
     <h3 class="heading--secondary">#{messages['jsf.Validation']}</h3>
 
     <p>#{messages['jsf.Validation.messages']}</p>
@@ -397,71 +410,9 @@
       </ui:repeat>
     </ul>
   </h:form>
-
-  <hr/>
-  <h3 class="heading--secondary">#{messages['jsf.CopyTrans']}</h3>
-
-  <p>#{messages['jsf.Copytrans.message']}
-    <a href="http://zanata.org/help/reuse/copytrans-explained/" target="_blank"
-      title="#{messages['jsf.iteration.CopyTransOpts.tooltip']}">
-      <i class="i i--help"></i>
-    </a>
-  </p>
-
-  <small class="txt--meta">
-    <h:outputFormat value="#{messages['jsf.CopyTrans.Action.projectSettings']}"
-      escape="false">
-      <f:param
-        value="#{urlUtil.projectUrl(versionHome.projectSlug)}/#settings-translation"/>
-    </h:outputFormat>
-  </small>
-
-  <h:form id="settings-translation-copy-trans2-form"
-    styleClass="l--push-bottom-0">
-    <s:div styleClass="bg--high l--pad-h-half l--pad-v-quarter l--push-top-1">
-      <s:div styleClass="g--tight" id="copy-trans">
-        <s:div styleClass="g__item w--2-3 l--push-bottom-quarter"
-          rendered="#{!copyTransAction.inProgress}">
-          <p class="l--push-bottom-0">
-            #{messages['jsf.iteration.copyTrans.start.question']}</p>
-
-          <p
-            class="txt--meta">#{messages['jsf.iteration.CopyTrans.message']}</p>
-        </s:div>
-        <s:div
-          styleClass="g__item w--2-3 l--push-top-half #{copyTransAction.inProgress? '': 'is-hidden'}">
-          <zanata:progressBar id="copy-trans-progress-bar"
-            actionBean="#{copyTransAction}"
-            render="copy-trans-progress-messages"
-            onCompleteRender="copy-trans"/>
-
-          <s:div id="copy-trans-progress-messages">
-            <p class="txt--meta">
-              <h:outputText
-                value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>
-              ,
-              <h:outputText
-                value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
-            </p>
-          </s:div>
-        </s:div>
-
-        <s:div styleClass="g__item w--1-3 txt--align-right l--push-v-quarter">
-          <a4j:commandButton render="copy-trans"
-            styleClass="button--primary"
-            action="#{copyTransAction.startCopyTrans}"
-            rendered="#{!copyTransAction.inProgress}"
-            value="#{messages['jsf.CopyTrans']}"/>
-
-          <a4j:commandButton render="copy-trans"
-            action="#{copyTransAction.cancel}"
-            rendered="#{copyTransAction.inProgress}"
-            value="#{messages['jsf.Cancel']}"/>
-        </s:div>
-      </s:div>
-    </s:div>
-  </h:form>
 </li>
 </ul>
 </div>
+
+<ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
 </ui:composition>

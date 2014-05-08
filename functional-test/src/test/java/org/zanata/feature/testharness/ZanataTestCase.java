@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.feature;
+package org.zanata.feature.testharness;
 
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -29,12 +29,9 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
 import org.junit.rules.Timeout;
 import org.zanata.util.RetryRule;
-
-import java.lang.annotation.Inherited;
 
 /**
  * Global application of rules to Zanata functional tests
