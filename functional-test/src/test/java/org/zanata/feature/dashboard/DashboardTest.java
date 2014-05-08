@@ -31,8 +31,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.dashboard.DashboardActivityTab;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.DashboardProjectsTab;
@@ -72,6 +73,7 @@ public class DashboardTest extends ZanataTestCase {
     }
 
     @Test
+    @Category(BasicAcceptanceTest.class)
     public void dashboardBasicTests() throws Exception {
         assertThat(dashboardPresentAfterLogin())
                 .as("Dashboard is present").isTrue();

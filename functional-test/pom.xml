@@ -119,15 +119,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.concordion</groupId>
-      <artifactId>concordion</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.concordion</groupId>
-      <artifactId>concordion-extensions</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
@@ -629,7 +620,6 @@
               <printSummary>true</printSummary>
               <runOrder>alphabetical</runOrder>
               <!--<forkMode>always</forkMode>-->
-              <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
               <includes>
                 <include>${include.test.patterns}</include>
                 <!--index page-->
@@ -690,13 +680,6 @@
           <exclude>**/zanata.xml</exclude>
           <exclude>**/pom.xml</exclude>
         </excludes>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources/concordion</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
       </testResource>
     </testResources>
     <plugins>

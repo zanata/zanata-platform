@@ -27,8 +27,8 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
-import org.zanata.feature.DetailedTest;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.util.rfc2822.ValidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
@@ -101,16 +101,15 @@ public class ValidEmailAddressTest extends ZanataTestCase {
     public void validEmailAcceptance(ValidEmailAddressRFC2822 emailAddress) {
         log.info(testName.getMethodName() + " : " + emailAddress);
         String errorMsg = "not a well-formed email address";
-
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
                 .goToRegistration()
                 .enterEmail(emailAddress.toString())
                 .registerFailure();
+        registerPage.defocus();
 
         assertThat(errorMsg).isNotIn(registerPage.getFieldErrors())
                 .as("Email validation errors are not shown");
-
     }
 
 }

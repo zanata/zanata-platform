@@ -26,8 +26,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.dashboard.DashboardBasePage;
@@ -46,7 +46,6 @@ public class ManageUsersFullTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
-
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 

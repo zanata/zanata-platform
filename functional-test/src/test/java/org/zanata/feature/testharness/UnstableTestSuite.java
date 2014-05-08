@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,29 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature.startNewProject;
+package org.zanata.feature.testharness;
 
-import lombok.extern.slf4j.Slf4j;
-import org.junit.ClassRule;
+import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.zanata.util.AddUsersRule;
-
-@Slf4j
-@RunWith(Suite.class)
-// @formatter:off
-@Suite.SuiteClasses({
-    StartNewProjectTest.class,
-    CreateNewProjectTest.class,
-    CreateVersionAndAddToProjectTest.class,
-    AddLanguageTest.class,
-    TranslatorJoinsLanguageTeamTest.class,
-    PushPodirPluralProjectTest.class,
-    DocumentListInWebTransTest.class
-})
-// @formatter:on
-public class CreateSampleProjectTestSuite {
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
+import org.zanata.feature.testharness.TestPlan.UnstableTest;
+/**
+ * Extend the full test suite, but filter by the Unstable Test category
+ *
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
+@RunWith(Categories.class)
+@Categories.IncludeCategory(UnstableTest.class)
+public class UnstableTestSuite extends TestPlan {
 }

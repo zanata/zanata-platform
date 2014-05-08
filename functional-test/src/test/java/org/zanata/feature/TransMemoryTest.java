@@ -22,6 +22,7 @@
 package org.zanata.feature;
 
 import org.junit.Test;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.Constants;
 import org.zanata.workflow.LanguageWorkFlow;
@@ -34,7 +35,7 @@ import org.zanata.workflow.ProjectWorkFlow;
  */
 // @Test(groups = "manual-run", description =
 // "This test class only sets up test data on server. It's not verifying any TM features.")
-public class TransMemoryTest {
+public class TransMemoryTest extends ZanataTestCase {
 
     @Test(timeout = Constants.FIFTY_SEC)
     public void pushTransMemoryProject() {

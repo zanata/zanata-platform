@@ -23,7 +23,7 @@ package org.zanata.feature.projectversion;
 
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
