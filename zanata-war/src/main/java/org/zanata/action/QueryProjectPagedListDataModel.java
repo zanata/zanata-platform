@@ -25,13 +25,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.lucene.queryParser.ParseException;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.util.ServiceLocator;
 
 /**
  * @see org.zanata.action.EntityPagedListDataModel
@@ -54,8 +53,7 @@ public class QueryProjectPagedListDataModel extends
     @Override
     public DataPage<HProject> fetchPage(int startRow, int pageSize) {
         ProjectDAO projectDAO =
-                (ProjectDAO) Component.getInstance(ProjectDAO.class,
-                        ScopeType.STATELESS);
+                ServiceLocator.instance().getInstance(ProjectDAO.class);
 
         try {
             List<HProject> proj =

@@ -60,6 +60,10 @@ public class ServiceLocator {
         return (T) Component.getInstance(name);
     }
 
+    public <T> T getInstance(String name, ScopeType scope, Class<T> clazz) {
+        return (T) Component.getInstance(name, scope);
+    }
+
     public EntityManager getEntityManager() {
         return (EntityManager) Component.getInstance("entityManager");
     }

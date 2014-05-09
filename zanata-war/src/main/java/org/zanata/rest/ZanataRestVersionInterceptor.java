@@ -13,8 +13,8 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.jboss.seam.Component;
 import org.zanata.service.impl.VersionManager;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.VersionUtility;
 
 @ServerInterceptor
@@ -29,8 +29,7 @@ public class ZanataRestVersionInterceptor implements PreProcessInterceptor {
                         .getFirst(RestConstant.HEADER_VERSION_NO);
         String serverApiVer = VersionUtility.getAPIVersionInfo().getVersionNo();
         VersionManager verManager =
-                (VersionManager) Component.getInstance(VersionManager.class,
-                        APPLICATION);
+                ServiceLocator.instance().getInstance(VersionManager.class);
 
         return verManager.checkVersion(clientApiVer, serverApiVer) ? null
                 : ServerResponse

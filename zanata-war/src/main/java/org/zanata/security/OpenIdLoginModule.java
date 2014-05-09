@@ -31,8 +31,7 @@ import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
+import org.zanata.util.ServiceLocator;
 
 public class OpenIdLoginModule implements LoginModule {
     protected Set<String> roles = new HashSet<String>();
@@ -68,8 +67,7 @@ public class OpenIdLoginModule implements LoginModule {
             callbackHandler.handle(new Callback[] { cbName, cbPassword });
             username = cbName.getName();
             ZanataOpenId openid =
-                    (ZanataOpenId) Component.getInstance(ZanataOpenId.class,
-                            ScopeType.SESSION);
+                    ServiceLocator.instance().getInstance(ZanataOpenId.class);
             openid.login(ZanataIdentity.instance().getCredentials());
         } catch (Exception ex) {
             LoginException le = new LoginException(ex.getMessage());

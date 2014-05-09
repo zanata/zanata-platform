@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -37,6 +36,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.jboss.seam.util.AnnotatedBeanProperty;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.type.UserApiKey;
+import org.zanata.util.ServiceLocator;
 
 import static org.jboss.seam.ScopeType.APPLICATION;
 
@@ -158,7 +158,7 @@ public class ZanataJpaIdentityStore extends JpaIdentityStore {
         // also look in the credentials table
         if (user == null) {
             AccountDAO accountDAO =
-                    (AccountDAO) Component.getInstance(AccountDAO.class);
+                    ServiceLocator.instance().getInstance(AccountDAO.class);
             user = accountDAO.getByCredentialsId(username);
         }
         return user == null;

@@ -27,8 +27,8 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.jboss.resteasy.spi.interception.MessageBodyReaderContext;
 import org.jboss.resteasy.spi.interception.MessageBodyReaderInterceptor;
-import org.jboss.seam.Component;
 import org.zanata.rest.service.RestUtils;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Validates all objects being read from any of the REST endpoints with the
@@ -48,7 +48,7 @@ public class HibernateValidationInterceptor implements
         Object unmarshalledMssgBody = context.proceed();
 
         RestUtils restUtils =
-                (RestUtils) Component.getInstance(RestUtils.class);
+                ServiceLocator.instance().getInstance(RestUtils.class);
         restUtils.validateEntity(unmarshalledMssgBody);
 
         return unmarshalledMssgBody;

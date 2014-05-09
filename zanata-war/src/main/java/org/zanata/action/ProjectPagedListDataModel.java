@@ -23,10 +23,9 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
+import org.zanata.util.ServiceLocator;
 
 public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
         implements Serializable {
@@ -46,8 +45,7 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
     @Override
     public DataPage<HProject> fetchPage(int startRow, int pageSize) {
         ProjectDAO projectDAO =
-                (ProjectDAO) Component.getInstance(ProjectDAO.class,
-                        ScopeType.STATELESS);
+                ServiceLocator.instance().getInstance(ProjectDAO.class);
         List<HProject> proj =
                 projectDAO.getOffsetListOrderByName(startRow, pageSize,
                         filterActive, filterReadOnly, filterObsolete);

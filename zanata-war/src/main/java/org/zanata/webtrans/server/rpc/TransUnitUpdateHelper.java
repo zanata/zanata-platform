@@ -101,7 +101,8 @@ public class TransUnitUpdateHelper {
     }
 
     private static TransUnitTransformer getTransUnitTransformer() {
-        return (TransUnitTransformer) Component.getInstance(TransUnitTransformer.class);
+        return ServiceLocator.instance()
+                .getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo build(

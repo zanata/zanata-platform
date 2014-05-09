@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
@@ -33,6 +32,10 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
+import org.zanata.service.impl.GravatarServiceImpl;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.ValidationServiceImpl;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -83,25 +86,24 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     AccountDAO getAccountDAO() {
-        return (AccountDAO) Component.getInstance("accountDAO");
+        return ServiceLocator.instance().getInstance(AccountDAO.class);
     }
 
     GravatarService getGravatarService() {
-        return (GravatarService) Component.getInstance("gravatarServiceImpl");
+        return ServiceLocator.instance().getInstance(GravatarServiceImpl.class);
     }
 
     ProjectIterationDAO getProjectIterationDAO() {
-        return (ProjectIterationDAO) Component
-                .getInstance("projectIterationDAO");
+        return ServiceLocator.instance().getInstance(ProjectIterationDAO.class);
     }
 
     LocaleService getLocaleService() {
-        return (LocaleService) Component.getInstance("localeServiceImpl");
+        return ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
     }
 
     ValidationService getValidationService() {
-        return (ValidationService) Component
-                .getInstance("validationServiceImpl");
+        return ServiceLocator.instance().getInstance(
+                ValidationServiceImpl.class);
     }
 
     @Observer(ZanataInit.EVENT_Zanata_Startup)

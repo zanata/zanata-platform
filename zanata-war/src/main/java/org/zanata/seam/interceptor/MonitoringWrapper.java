@@ -28,12 +28,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.security.ZanataIdentity;
 
 import net.bull.javamelody.MonitoringFilter;
+import org.zanata.util.ServiceLocator;
 
 public class MonitoringWrapper extends MonitoringFilter {
 
@@ -49,8 +48,8 @@ public class MonitoringWrapper extends MonitoringFilter {
                 @Override
                 public void process() throws Exception {
                     ZanataIdentity identity =
-                            (ZanataIdentity) Component.getInstance(
-                                    ZanataIdentity.class, ScopeType.SESSION);
+                            ServiceLocator.instance().getInstance(
+                                    ZanataIdentity.class);
                     if (identity == null || !identity.isLoggedIn()) {
                         String signInUrl =
                                 httpRequest.getContextPath()

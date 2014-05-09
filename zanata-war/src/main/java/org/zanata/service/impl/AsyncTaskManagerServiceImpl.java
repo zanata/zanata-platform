@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -32,6 +31,7 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.TaskExecutor;
 import org.zanata.service.AsyncTaskManagerService;
+import org.zanata.util.ServiceLocator;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -68,7 +68,7 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService {
     public <V, H extends AsyncTaskHandle<V>> String startTask(
             AsyncTask<V, H> task) {
         TaskExecutor taskExecutor =
-                (TaskExecutor) Component.getInstance(TaskExecutor.class);
+                ServiceLocator.instance().getInstance(TaskExecutor.class);
         AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
         Long taskKey;
         taskKey = generateNextAvailableKey();

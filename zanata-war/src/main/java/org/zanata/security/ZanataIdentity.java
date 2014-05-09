@@ -28,8 +28,6 @@ import javax.security.auth.login.LoginException;
 
 import org.drools.FactHandle;
 import org.drools.StatefulSession;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -47,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import org.zanata.model.HAccount;
+import org.zanata.util.ServiceLocator;
 
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -89,8 +88,7 @@ public class ZanataIdentity extends Identity {
         }
 
         ZanataIdentity instance =
-                (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
-                        ScopeType.SESSION);
+                ServiceLocator.instance().getInstance(ZanataIdentity.class);
 
         if (instance == null) {
             throw new IllegalStateException("No Identity could be created");
@@ -259,8 +257,8 @@ public class ZanataIdentity extends Identity {
     @Nullable
     public String getAccountUsername() {
         HAccount authenticatedAccount =
-                (HAccount) Component
-                        .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+                ServiceLocator.instance().getInstance(
+                        JpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
         if (authenticatedAccount != null) {
             return authenticatedAccount.getUsername();
         }

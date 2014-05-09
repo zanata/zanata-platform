@@ -22,7 +22,6 @@ package org.zanata.async.tasks;
 
 import java.util.List;
 
-import org.jboss.seam.Component;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -30,6 +29,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Copy Trans task that runs copy trans for a whole project iteration and all
@@ -50,7 +50,7 @@ public class IterationCopyTransTask extends CopyTransTask {
     @Override
     protected int getMaxProgress() {
         LocaleService localeService =
-                (LocaleService) Component.getInstance(LocaleServiceImpl.class);
+                ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
         List<HLocale> localeList =
                 localeService.getSupportedLanguageByProjectIteration(
                         projectIteration.getProject().getSlug(),
@@ -62,8 +62,8 @@ public class IterationCopyTransTask extends CopyTransTask {
     @Override
     protected void callCopyTrans() {
         CopyTransService copyTransServiceImpl =
-                (CopyTransService) Component
-                        .getInstance(CopyTransServiceImpl.class);
+                ServiceLocator.instance().getInstance(
+                        CopyTransServiceImpl.class);
         copyTransServiceImpl.copyTransForIteration(projectIteration,
                 copyTransOptions);
     }
