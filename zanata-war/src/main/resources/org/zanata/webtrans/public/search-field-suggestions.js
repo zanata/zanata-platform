@@ -53,8 +53,8 @@ window.searchSuggestions = (function () {
     }
 
     function attachResultEvents (element) {
-      element.addEventListener('mouseover', function () { selectTargetResult(element); });
-      element.addEventListener('click', function () { insertTargetResult(element); });
+      element.addEventListener('mousemove', function () { selectTargetResult(element); });
+      element.addEventListener('mousedown', function () { insertTargetResult(element); });
     }
 
     for (i=0; i < resultElements.length; i++) {
