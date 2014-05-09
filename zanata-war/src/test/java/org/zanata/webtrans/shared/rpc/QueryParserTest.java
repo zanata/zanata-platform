@@ -136,22 +136,22 @@ public class QueryParserTest {
 
     @Test
     public void singleKeySearchForLastModifiedBy() {
-        filter = parse("last-modified-by: Ricky Rouse");
-        assertThat(filter.getLastModifiedByUser()).isEqualTo("Ricky Rouse");
+        filter = parse("last-modified-by: ricky_rouse");
+        assertThat(filter.getLastModifiedByUser()).isEqualTo("ricky_rouse");
         assertFilterKeysNullOrEmptyExcept(filter, "last-modified-by");
     }
 
     @Test
     public void singleKeySearchForLastModifiedBefore() {
-        filter = parse("last-modified-before: last tuesday");
-        assertThat(filter.getLastModifiedBefore()).isEqualTo("last tuesday");
+        filter = parse("last-modified-before: last-tuesday");
+        assertThat(filter.getLastModifiedBefore()).isEqualTo("last-tuesday");
         assertFilterKeysNullOrEmptyExcept(filter, "last-modified-before");
     }
 
     @Test
     public void singleKeySearchForLastModifiedAfter() {
-        filter = parse("last-modified-after: 1 O'Clock");
-        assertThat(filter.getLastModifiedAfter()).isEqualTo("1 O'Clock");
+        filter = parse("last-modified-after: 1pm");
+        assertThat(filter.getLastModifiedAfter()).isEqualTo("1pm");
         assertFilterKeysNullOrEmptyExcept(filter, "last-modified-after");
     }
 
@@ -258,6 +258,34 @@ public class QueryParserTest {
         filter = parse("text: last-modified-by\\: me");
         assertThat(filter.getLastModifiedByUser()).isNullOrEmpty();
         assertThat(filter.getTextInContent()).isEqualTo("last-modified-by: me");
+    }
+
+    @Test
+    public void escapedQuotesAreIgnored() {
+        filter = parse("\"it was \\\"last-modified-by: me\"");
+        assertThat(filter.getLastModifiedByUser()).isNullOrEmpty();
+        assertThat(filter.getTextInContent()).isEqualTo("it was \"last-modified-by: me");
+    }
+
+    @Test
+    public void lastModifiedByTakesSingleWord() {
+        filter = parse("last-modified-by: me the search");
+        assertThat(filter.getLastModifiedByUser()).isEqualTo("me");
+        assertThat(filter.getTextInContent()).isEqualTo("the search");
+    }
+
+    @Test
+    public void lastModifiedAfterTakesSingleWord() {
+        filter = parse("last-modified-after: yesterday the search");
+        assertThat(filter.getLastModifiedAfter()).isEqualTo("yesterday");
+        assertThat(filter.getTextInContent()).isEqualTo("the search");
+    }
+
+    @Test
+    public void lastModifiedBeforeTakesSingleWord() {
+        filter = parse("last-modified-before: today the search");
+        assertThat(filter.getLastModifiedBefore()).isEqualTo("today");
+        assertThat(filter.getTextInContent()).isEqualTo("the search");
     }
 
     private static void assertAllFilterKeysNullOrEmpty(EditorFilter filter) {

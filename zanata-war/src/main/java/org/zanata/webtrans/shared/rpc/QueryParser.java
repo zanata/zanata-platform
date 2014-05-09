@@ -26,7 +26,9 @@ import com.google.common.base.Strings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,7 +58,14 @@ public class QueryParser {
             MSGCTXT_KEY
     };
 
-    private static final RegExp keyRegex, valRegex;
+    private static final int DEFAULT_KEY = 0;
+    private static final List<String> KEYS_WITH_SINGLE_VALUE = Arrays.asList(
+            LAST_MODIFIED_BY_KEY,
+            LAST_MODIFIED_BEFORE_KEY,
+            LAST_MODIFIED_AFTER_KEY
+    );
+
+    private static final RegExp keyRegex, valRegex, leadingWordRegex;
 
     static {
         String plainChar = "[^\"\\\\]",
@@ -72,6 +81,10 @@ public class QueryParser {
 
         keyRegex = RegExp.compile("^\\s*(" + orKeys + "):(.*)$");
         valRegex = RegExp.compile(captureLeadingValue + keyAndRemainderOfLine);
+
+        String nonSpaceChar = "[^\"\\\\\\s]",
+                nonSpaceOrEscapedChar = "(?:" + nonSpaceChar + "|" + escapedChar + ")";
+        leadingWordRegex = RegExp.compile("^\\s*((?:" + nonSpaceOrEscapedChar + "+|" + quotedText + ")+)(.*)");
     }
 
     public static EditorFilter parse(String query) {
@@ -98,8 +111,7 @@ public class QueryParser {
             key = keyMatch.getGroup(1);
             remainder = keyMatch.getGroup(2);
         } else {
-            int defaultKey = 0;
-            key = KEYS[defaultKey];
+            key = KEYS[DEFAULT_KEY];
             remainder = query;
         }
 
@@ -111,6 +123,17 @@ public class QueryParser {
         } else {
             val = remainder;
             nextPart = "";
+        }
+
+        if (KEYS_WITH_SINGLE_VALUE.contains(key)) {
+            MatchResult wordMatch = leadingWordRegex.exec(val);
+            if (wordMatch != null) {
+                val = wordMatch.getGroup(1);
+                String otherWords = wordMatch.getGroup(2);
+                if (!Strings.isNullOrEmpty(otherWords.trim())) {
+                    joinValue(accumulator, KEYS[DEFAULT_KEY], otherWords);
+                }
+            }
         }
 
         joinValue(accumulator, key, val);
