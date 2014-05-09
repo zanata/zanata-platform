@@ -28,11 +28,6 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects',
-      function (pre, slug) {
-        onTabClick(jQuery('#projects'));
-      });
-
     crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
       function (pre, slug, proj, ver) {
         zanata.tabs.activate(jQuery('#projects_tab'));

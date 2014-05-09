@@ -28,8 +28,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a class="js-url-mod"
-                onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages', true)">
+              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -65,8 +65,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a class="button--primary js-url-mod"
-            onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages', true)">
+          <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+            onclick="changeBrowserUrl(this.href, true);return false;">
             #{messages['jsf.AddLanguages']}
           </a>
         </p>
@@ -199,8 +199,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a class="button--primary js-url-mod"
-              onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects', true)">
+            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+              onclick="changeBrowserUrl(this.href, true);return false;">
               #{messages['jsf.AddProjectVersions']}
             </a>
           </p>

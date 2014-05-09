@@ -33,10 +33,21 @@
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents/:docId*:',
       function (pre, projectSlug, versionSlug, docId) {
         zanata.tabs.activate(jQuery('#documents_tab'));
-        updateActiveRow(jQuery('#' + jqSelector(docId)).children().eq(1));
-        toggleColumn('documents');
-        reloadDocument(projectSlug, versionSlug, docId)
+        if (docId) {
+          updateActiveRow(jQuery('#' + jqSelector(docId)).children().eq(1));
+          toggleColumn('documents');
+          reloadDocument(projectSlug, versionSlug, docId)
+        }
       });
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting:',
+      function (pre, projectSlug, versionSlug, setting) {
+        zanata.tabs.activate(jQuery('#settings_tab'));
+        if (setting)
+          zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
+            "_tab"))
+      });
+
 
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section:',
       function (pre, projectSlug, versionSlug, section) {
@@ -248,7 +259,8 @@
 
       <s:div id="copy-trans-progress-messages"
         styleClass="txt--meta l--push-top-quarter">
-        <zanata:loader layout="inline" type="loader--small" rendered="#{copyTransAction.inProgress}"/>
+        <zanata:loader layout="inline" type="loader--small"
+          rendered="#{copyTransAction.inProgress}"/>
         <span>
           <h:outputText
             value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>

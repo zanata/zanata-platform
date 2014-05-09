@@ -51,8 +51,8 @@
         <p class="txt--meta">#{messages['jsf.NoMaintainers']}</p>
         <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
-            <a class="button--primary js-url-mod"
-              onclick="changeBrowserUrl('#{cc.attrs.settingsUrl}', true)">
+            <a class="button--primary" href="#{cc.attrs.settingsUrl}"
+              onclick="changeBrowserUrl(this.href, true);return false;">
               #{messages['jsf.AddAMaintainer']}
               <i class="i i--plus i__item__icon"></i>
             </a>
