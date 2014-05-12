@@ -34,6 +34,9 @@ public class AdministrationPage extends BasePage {
 
     private final By MANAGE_SEARCH_LINK = By.id("Admin_Manage_search_home");
 
+    private final By MANAGE_ROLES_ASSIGN_LINK =
+            By.id("Admin_Role_Assignment_Rules_home");
+
     public AdministrationPage(WebDriver driver) {
         super(driver);
     }
@@ -56,5 +59,10 @@ public class AdministrationPage extends BasePage {
     public ManageSearchPage goToManageSeachPage() {
         clickLinkAfterAnimation(MANAGE_SEARCH_LINK);
         return new ManageSearchPage(getDriver());
+    }
+
+    public RoleAssignmentsPage goToManageRoleAssignments() {
+        clickLinkAfterAnimation(MANAGE_ROLES_ASSIGN_LINK);
+        return new RoleAssignmentsPage(getDriver());
     }
 }

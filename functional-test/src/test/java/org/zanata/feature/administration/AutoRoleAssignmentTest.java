@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -26,7 +26,7 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.utility.HomePage;
+import org.zanata.page.administration.RoleAssignmentsPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -37,40 +37,41 @@ import static org.assertj.core.api.Assertions.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditHomePageTest extends ZanataTestCase {
+public class AutoRoleAssignmentTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Feature(summary = "The administrator can edit the home screen in " +
-            "WYSIWYG mode",
+    @Feature(summary = "The administrator can create a rule to assign roles " +
+            "at user sign in",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void editPageContent() throws Exception {
-        HomePage homePage = new LoginWorkFlow()
+    public void createAutoRoleAssignment() throws Exception {
+        RoleAssignmentsPage roleAssignmentsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
-                .goToHomePage()
-                .goToEditPageContent()
-                .enterText("Test")
-                .update();
+                .goToAdministration()
+                .goToManageRoleAssignments()
+                .clickCreateNew()
+                .enterIdentityPattern(".+ransla.+")
+                .selectRole("admin")
+                .saveRoleAssignment()
+                .cancelEditRoleAssignment();
 
-        assertThat(homePage.getMainBodyContent()).isEqualTo("Test")
-                .as("Homepage text has been updated");
-    }
+        assertThat(roleAssignmentsPage.getRulesByPattern())
+                .contains(".+ransla.+")
+                .as("The rule was created");
 
-    @Feature(summary = "The administrator can edit the home screen in " +
-            "html mode",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void editPageCode() throws Exception {
-        HomePage homePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
-                .goToEditPageCode()
-                .enterText("<b>Test</b>")
-                .update();
-
-        assertThat(homePage.getMainBodyContent()).isEqualTo("Test")
-                .as("Homepage text has been updated");
+        roleAssignmentsPage.logout();
+        {
+            // TODO: Bug? Remove me
+            new LoginWorkFlow()
+                    .signIn("translator", "translator")
+                    .logout();
+        }
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToAdministration()
+                .getTitle()).isEqualTo("Zanata: Administration")
+                .as("The translator user was automatically given admin rights");
     }
 }

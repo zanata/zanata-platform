@@ -57,6 +57,29 @@ public class TestFileGenerator {
             "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA1CAtGcaZq6xydHdOghbsy"
                     + "Pu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHHYgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGS"
                     + "P25eqzU1lDjejCsd26wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMUn9nFW";
+    // Generic tmx entry
+    private static String testTmxData =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n" +
+            "<tmx version=\"1.4\">\n" +
+            "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" " +
+            "creationtoolversion=\"unknown\" segtype=\"block\" " +
+            "o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" " +
+            "datatype=\"unknown\"/>\n" +
+            "  <body>\n" +
+            "<tu srclang=\"en-US\" tuid=\"about-fedora:master:" +
+            "About_Fedora:d033787962c24b1dc3e00316c86e578c\">" +
+            "<tuv xml:lang=\"en-US\"><seg>Fedora is an open, " +
+            "innovative, forward looking operating system and " +
+            "platform, based on Linux, that is always free for " +
+            "anyone to use, modify and distribute, now and forever. " +
+            "It is developed by a large community of people who " +
+            "strive to provide and maintain the very best in free, " +
+            "open source software and standards. Fedora is part of " +
+            "the Fedora Project, sponsored by Red Hat, Inc.</seg>" +
+            "</tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import " +
+            "Test</seg></tuv></tu>\n" +
+            "  </body>\n" + "</tmx>";
 
     public TestFileGenerator() {
     }
@@ -68,6 +91,15 @@ public class TestFileGenerator {
      */
     public String longFileName() {
         return longFileName;
+    }
+
+    /**
+     * Return a generic TMX data string
+     *
+     * @return String
+     */
+    public String tmxData() {
+        return testTmxData;
     }
 
     /**

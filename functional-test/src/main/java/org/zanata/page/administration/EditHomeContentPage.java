@@ -34,9 +34,6 @@ import org.zanata.page.utility.HomePage;
  */
 public class EditHomeContentPage extends BasePage {
 
-    @FindBy(className = "html.CSS1Compat")
-    private WebElement textEdit;
-
     @FindBy(id = "homeContentForm:update")
     private WebElement updateButton;
 
@@ -48,14 +45,26 @@ public class EditHomeContentPage extends BasePage {
     }
 
     public EditHomeContentPage enterText(String text) {
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        // Switch to the CKEditor frame
+        getDriver().switchTo().frame(waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(By.className("html.CSS1Compat"));
+                return getDriver().findElement(
+                        By.id("cke_contents_homeContentForm:homeContent:inp"))
+                        .findElement(By.tagName("iframe"));
+            }
+        }));
+
+        WebElement textEdit = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                System.out.println(getDriver().findElements(By.tagName("body")).size());
+                return getDriver().findElement(By.tagName("body"));
             }
         });
-        textEdit.click();
         textEdit.sendKeys(text);
+        // Switch back!
+        getDriver().switchTo().defaultContent();
         return new EditHomeContentPage(getDriver());
     }
 

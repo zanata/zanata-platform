@@ -44,6 +44,10 @@ public class TranslationMemoryPage extends BasePage {
     private static final int EXPORT_COLUMN = 5;
     private static final int ACTIONS_COLUMN = 6;
 
+    public static final String ID_UNAVAILABLE = "This Id is not available";
+    public static final String UPLOAD_ERROR =
+            "There was an error uploading the file";
+
     @FindBy(id = "createTmLink")
     private WebElement createTmLink;
 
