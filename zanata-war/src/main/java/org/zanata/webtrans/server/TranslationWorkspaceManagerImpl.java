@@ -32,9 +32,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
-import org.zanata.service.impl.GravatarServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -85,25 +82,39 @@ public class TranslationWorkspaceManagerImpl implements
                 EventRegistryFactory.getInstance().getEventRegistry();
     }
 
+    // TODO Requesting component by name for testability. This should be fixed
+    // in subsequent versions of AutoWire
     AccountDAO getAccountDAO() {
-        return ServiceLocator.instance().getInstance(AccountDAO.class);
+        return ServiceLocator.instance().getInstance("accountDAO",
+                AccountDAO.class);
     }
 
+    // TODO Requesting component by name for testability. This should be fixed
+    // in subsequent versions of AutoWire
     GravatarService getGravatarService() {
-        return ServiceLocator.instance().getInstance(GravatarServiceImpl.class);
+        return ServiceLocator.instance().getInstance("gravatarServiceImpl",
+                GravatarService.class);
     }
 
+    // TODO Requesting component by name for testability. This should be fixed
+    // in subsequent versions of AutoWire
     ProjectIterationDAO getProjectIterationDAO() {
-        return ServiceLocator.instance().getInstance(ProjectIterationDAO.class);
+        return ServiceLocator.instance().getInstance("projectIterationDAO",
+                ProjectIterationDAO.class);
     }
 
+    // TODO Requesting component by name for testability. This should be fixed
+    // in subsequent versions of AutoWire
     LocaleService getLocaleService() {
-        return ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
+        return ServiceLocator.instance().getInstance("localeServiceImpl",
+                LocaleService.class);
     }
 
+    // TODO Requesting component by name for testability. This should be fixed
+    // in subsequent versions of AutoWire
     ValidationService getValidationService() {
-        return ServiceLocator.instance().getInstance(
-                ValidationServiceImpl.class);
+        return ServiceLocator.instance().getInstance("validationServiceImpl",
+                ValidationService.class);
     }
 
     @Observer(ZanataInit.EVENT_Zanata_Startup)
