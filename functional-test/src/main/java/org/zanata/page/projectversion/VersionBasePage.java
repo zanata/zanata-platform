@@ -87,12 +87,12 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionDocumentsPage gotoDocumentTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("documents")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("documents_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                        .findElement(By.id("documents_content"))
+                        .findElement(By.id("documents"))
                         .isDisplayed();
             }
         });
@@ -100,12 +100,12 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionLanguagesPage gotoLanguageTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("languages")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("languages_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                        .findElement(By.id("languages_content"))
+                        .findElement(By.id("languages"))
                         .isDisplayed();
             }
         });
@@ -114,12 +114,12 @@ public class VersionBasePage extends BasePage {
 
     public VersionBasePage gotoSettingsTab() {
         slightPause();
-        clickWhenTabEnabled(getDriver().findElement(By.id("settings")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("settings_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                        .findElement(By.id("settings_content"))
+                        .findElement(By.id("settings"))
                         .isDisplayed();
             }
         });

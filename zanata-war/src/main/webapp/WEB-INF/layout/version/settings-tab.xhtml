@@ -51,25 +51,33 @@
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li>
-    <a href="#settings-general" id="settings-general_tab" class="is-active">
+    <a id="settings-general_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/general"
+      class="js-url-mod is-active" data-content="#settings-general">
       <i class="i i--settings"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-documents" id="settings-documents_tab">
+    <a id="settings-documents_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/documents"
+      class="js-url-mod" data-content="#settings-documents">
       <i class="i i--document"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Documents']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-languages" id="settings-languages_tab">
+    <a id="settings-languages_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/languages"
+      class="js-url-mod" data-content="#settings-languages">
       <i class="i i--language"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-translation" id="settings-translation_tab">
+    <a id="settings-translation_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/translation"
+      class="js-url-mod" data-content="#settings-translation">
       <i class="i i--translate"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
     </a>

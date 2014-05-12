@@ -49,7 +49,6 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -77,7 +76,6 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
@@ -153,6 +151,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     private WordStatistic overallStatistic;
 
     @Getter
+    @Setter
     private HLocale selectedLocale;
 
     @Getter
@@ -272,7 +271,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
                             .getId(), filter)
                             || StringUtils.containsIgnoreCase(
-                            elem.retrieveDisplayName(), filter);
+                                    elem.retrieveDisplayName(), filter);
                 }
             };
 
@@ -418,10 +417,6 @@ public class VersionHomeAction extends AbstractSortAction implements
             loadStatistics();
         }
         this.pageRendered = pageRendered;
-    }
-
-    public void setSelectedLocale(HLocale hLocale) {
-        this.selectedLocale = hLocale;
     }
 
     @Getter
@@ -686,6 +681,14 @@ public class VersionHomeAction extends AbstractSortAction implements
     private Optional<String> getOptionalParams() {
         return Optional.fromNullable(Strings.emptyToNull(sourceFileUpload
                 .getAdapterParams()));
+    }
+
+    public void setSelectedLocaleId(String localeId) {
+        this.selectedLocale = localeDAO.findByLocaleId(new LocaleId(localeId));
+    }
+
+    public void setSelectedDocumentId(String projectSlug, String versionSlug, String docId) {
+        this.selectedDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
     }
 
     // TODO add logging for disk writing errors

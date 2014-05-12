@@ -12,30 +12,37 @@
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li>
-    <a href="#settings-general" id="settings-general_tab"
-      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/general')"
-      class="is-active">
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/general"
+      id="settings-general_tab" class="js-url-mod is-active"
+      data-content="#settings-general">
       <i class="i i--settings"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-languages" id="settings-languages_tab"
-      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages')">
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+      id="settings-languages_tab" class="js-url-mod"
+      data-content="#settings-languages">
       <i class="i i--language"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-projects" id="settings-projects_tab"
-      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects')">
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+      id="settings-projects_tab" class="js-url-mod"
+      data-content="#settings-projects">
       <i class="i i--project"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Projects']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-maintainers" id="settings-maintainers_tab"
-      onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/maintainers')">
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/maintainers"
+      id="settings-maintainers_tab" class="js-url-mod"
+      data-content="#settings-maintainers">
       <i class="i i--users"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Maintainers']}</span>
     </a>

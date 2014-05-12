@@ -3,7 +3,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
@@ -15,7 +14,7 @@
   <div class="tabs--vertical js-tabs">
     <ul class="tabs__nav js-tabs-nav">
       <li>
-        <a id="account-tab" class="is-active js-url-mod"
+        <a id="account_tab" class="js-url-mod is-active"
           href="#{request.contextPath}/dashboard/settings/account"
           data-content="#account">
           <i class="i i--left i--settings"></i>
@@ -25,7 +24,7 @@
         </a>
       </li>
       <li>
-        <a id="profile-tab" class="js-url-mod"
+        <a id="profile_tab" class="js-url-mod"
           href="#{request.contextPath}/dashboard/settings/profile"
           data-content="#profile-content">
           <i class="i i--left i--user"></i>
@@ -35,7 +34,7 @@
         </a>
       </li>
       <li>
-        <a id="languages-tab" class="js-url-mod"
+        <a id="languages_tab" class="js-url-mod"
           href="#{request.contextPath}/dashboard/settings/languages"
           data-content="#languages">
           <i class="i i--left i--language"></i>
@@ -45,7 +44,7 @@
         </a>
       </li>
       <li>
-        <a id="client-tab" class="js-url-mod"
+        <a id="client_tab" class="js-url-mod"
           href="#{request.contextPath}/dashboard/settings/client"
           data-content="#client">
           <i class="i i--left i--code"></i>

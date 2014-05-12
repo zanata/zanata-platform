@@ -4,6 +4,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <script type="text/javascript">
@@ -52,31 +53,41 @@
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
   <li>
-    <a href="#settings-general" id="settings-general_tab" class="is-active">
+    <a id="settings-general_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/general"
+      class="js-url-mod is-active" data-content="#settings-general">
       <i class="i i--settings"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-languages" id="settings-languages_tab">
+    <a id="settings-languages_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/languages"
+      class="js-url-mod" data-content="#settings-languages">
       <i class="i i--language"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-translation" id="settings-translation_tab">
+    <a id="settings-translation_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/translation"
+      class="js-url-mod" data-content="#settings-translation">
       <i class="i i--translate"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-permissions" id="settings-permissions_tab">
+    <a id="settings-permissions_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/permissions"
+      class="js-url-mod" data-content="#settings-permissions">
       <i class="i i--users"></i>
       <span class="is-hidden--m-l-down">#{messages['jsf.Permissions']}</span>
     </a>
   </li>
   <li>
-    <a href="#settings-about" id="settings-about_tab">
+    <a id="settings-about_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/about"
+      class="js-url-mod" data-content="#settings-about">
       <i class="i i--info"></i>
           <span
             class="is-hidden--m-l-down">#{messages['jsf.project.About']}</span>
@@ -422,7 +433,7 @@
     </s:div>
   </h:form>
 </li>
-<li id="settings-about">
+<li id="settings-about" class="js-tabs-content">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
     #{messages['jsf.project.About']}
   </h2>
