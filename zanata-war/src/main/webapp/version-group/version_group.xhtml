@@ -17,8 +17,7 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.ignoreState = true
-    /* Make sure every url modification gets parsed */
+    crossroads.ignoreState = true /* Make sure every url modification gets parsed */
     crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
       function (pre, slug, lang) {
         zanata.tabs.activate(jQuery('#languages_tab'));
