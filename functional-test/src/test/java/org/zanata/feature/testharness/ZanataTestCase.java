@@ -51,8 +51,12 @@ public class ZanataTestCase {
     @Rule
     public TestName testName = new TestName();
 
-    @Rule
-    public Timeout timeout = new Timeout(MAX_TEST_DURATION);
+    /*
+     * rhbz1096552 - disable test timeout for now
+     * see https://bugzilla.redhat.com/show_bug.cgi?id=1096552
+     * @Rule
+     * public Timeout timeout = new Timeout(MAX_TEST_DURATION);
+     */
 
     public DateTime testFunctionStart;
 
