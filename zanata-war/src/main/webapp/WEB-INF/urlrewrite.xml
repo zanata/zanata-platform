@@ -69,16 +69,23 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/project/view/([^/]+)/?$</from>
-    <to last="true">/project/project.seam\?slug=$1</to>
+    <from casesensitive="true">^/project/view/([^/]+)(/([^?]*)\??(.*))?$</from>
+    <to
+      last="true">/project/project.seam\?slug=$1&amp;$4
+    </to>
   </rule>
+
 
   <!-- Project Iteration Rules -->
   <rule>
-    <from casesensitive="true">^/iteration/view/([^/]+)/(.+)$</from>
-    <to last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2
+    <from casesensitive="true">^/iteration/view/([^/]+)/([^/]+)(/([^?]*)\??(.*))?$
+    </from>
+    <to
+      last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;$4
     </to>
   </rule>
+
+
 
   <rule>
     <from casesensitive="true">^/iteration/source_files/([^/]+)/([^/]+)/?$
@@ -280,7 +287,8 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/version-group/view/([^/]+)(/([^?]*)\??(.*))?$</from>
+    <from casesensitive="true">^/version-group/view/([^/]+)(/([^?]*)\??(.*))?$
+    </from>
     <to
       last="true">/version-group/version_group.seam\?versionGroupSlug=$1&amp;$4
     </to>

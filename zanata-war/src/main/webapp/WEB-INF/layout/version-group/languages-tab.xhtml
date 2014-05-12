@@ -28,8 +28,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a href="javascript:void(0)"
-                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
+              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -53,7 +53,9 @@
   </div>
 
   <a4j:status name="languageTab-languagesLoader">
-    <f:facet name="start"><zanata:loader/></f:facet>
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-1">
@@ -63,8 +65,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a href="javascript:void(0)" class="button--primary"
-            onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
+          <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+            onclick="changeBrowserUrl(this.href, true);return false;">
             #{messages['jsf.AddLanguages']}
           </a>
         </p>
@@ -89,8 +91,8 @@
               onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
               status="languageTab-projectsLoader"
               render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/languages/#{hLocale.localeId}')"
-              styleClass="bx--block #{hLocale.localeId}">
+              onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages/#{hLocale.localeId}', true)"
+              styleClass="#{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">
@@ -153,7 +155,7 @@
         status="languageTab-projectsLoader"/>
     </div>
     <a href="#" class="panel__header__back"
-      onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
+      onclick="removeActiveRows('languages-language_list');toggleColumn('languages')"
       title="#{messages['Languages']}">
       <i class="i--huge i--arrow-left" aria-hidden="true"></i>
     </a>
@@ -179,7 +181,9 @@
   </div>
 
   <a4j:status name="languageTab-projectsLoader">
-    <f:facet name="start"><zanata:loader/></f:facet>
+    <f:facet name="start">
+      <zanata:loader/>
+    </f:facet>
   </a4j:status>
 
   <h:form id="languages-project_list" styleClass="l--push-bottom-1">
@@ -195,8 +199,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="#settings-projects" class="button--primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+              onclick="changeBrowserUrl(this.href, true);return false;">
               #{messages['jsf.AddProjectVersions']}
             </a>
           </p>

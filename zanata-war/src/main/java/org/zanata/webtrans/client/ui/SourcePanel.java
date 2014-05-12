@@ -116,7 +116,7 @@ public class SourcePanel extends Composite implements HasSelectableSource {
     public void setSelected(boolean selected) {
         if (selected) {
             container.setStyleName(style.selectedRow());
-            selectButton.setValue(selected, true);
+            selectButton.setValue(true, true);
         } else {
             container.setStyleName(style.nonSelectedRow());
         }

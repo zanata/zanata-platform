@@ -70,11 +70,11 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
     void updateCachedTargetsAndVersion(List<String> targets, Integer verNum,
             ContentState status);
 
-    void setEnableSpellCheck(boolean spellCheckEnabled);
-
     void updateCommentIndicator(int commentsCount);
 
     ContentState getCachedState();
+
+    void toggleSyntaxHighlighting();
 
     interface Listener {
         void validate(ToggleEditor editor);

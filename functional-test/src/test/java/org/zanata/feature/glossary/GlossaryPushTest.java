@@ -20,26 +20,25 @@
  */
 package org.zanata.feature.glossary;
 
-import java.io.File;
-import java.util.List;
-
-import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
-import org.concordion.integration.junit4.ConcordionRunner;
+import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
-import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.feature.ConcordionTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import com.google.common.base.Joiner;
 
+import java.io.File;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/147311/">TCMS case</a>
@@ -47,54 +46,89 @@ import com.google.common.base.Joiner;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
-        CustomResourceExtension.class })
-@Category(ConcordionTest.class)
-public class GlossaryPushTest {
+@Slf4j
+@Category(DetailedTest.class)
+public class GlossaryPushTest extends ZanataTestCase {
+
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
+    private ClientWorkFlow clientWorkFlow;
     private File projectRootPath;
-    private EditorPage editorPage;
+    private String userConfigPath;
+    private String basicUserConfigPath;
 
-    public String getUserConfigPath() {
-        return ClientWorkFlow.getUserConfigPath("glossarist");
+    private String pushCommand = "mvn --batch-mode zanata:glossary-push "+
+            "-Dglossary.lang=fr -Dzanata.glossaryFile=compendium_fr.po "+
+            "-Dzanata.userConfig=";
+
+    private String pushCSVCommand = "mvn --batch-mode zanata:glossary-push "+
+            "-Dzanata.glossaryFile=compendium_invalid.csv -Dglossary.lang=hi "+
+            "-Dzanata.userConfig=";
+
+    @Before
+    public void before() {
+        clientWorkFlow = new ClientWorkFlow();
+        projectRootPath = clientWorkFlow.getProjectRootPath("glossary");
+        userConfigPath = ClientWorkFlow.getUserConfigPath("glossarist");
+        basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
     }
 
-    public String getProjectLocation(String project) {
-        projectRootPath = clientWorkFlow.getProjectRootPath(project);
-        return projectRootPath.getAbsolutePath();
+    @Test
+    public void successfulGlossaryPush() throws Exception {
+        List<String> result = push(pushCommand, userConfigPath);
+        log.info(resultByLines(result));
+
+        assertThat(clientWorkFlow.isPushSuccessful(result))
+                .isTrue()
+                .as("The glossary push was successful");
+
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Admin has logged in");
+
+        EditorPage editorPage = new BasicWorkFlow()
+                .goToHome()
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .translate("fr", "About_Fedora");
+
+        editorPage.searchGlossary("filesystem");
+
+        assertThat(editorPage.getGlossaryResultTable().get(1).get(1))
+                .isEqualTo("système de fichiers")
+                .as("The first glossary result is correct");
     }
 
-    public List<String> push(String command, String configPath)
+    @Test
+    public void failedCSVGlossaryPush() throws Exception {
+        List<String> result = push(pushCSVCommand, userConfigPath);
+        log.info(resultByLines(result));
+
+        assertThat(clientWorkFlow.isPushSuccessful(result))
+                .isFalse()
+                .as("The glossary push was not successful");
+    }
+
+    private List<String> push(String command, String configPath)
             throws Exception {
         return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
     }
 
-    public boolean isPushSuccessful(List<String> output) {
-        return clientWorkFlow.isPushSuccessful(output);
-    }
-
-    public String resultByLines(List<String> output) {
+    private String resultByLines(List<String> output) {
         return Joiner.on("\n").join(output);
     }
 
-    public void translate() {
-        new LoginWorkFlow().signIn("translator", "translator");
-        editorPage =
-                new BasicWorkFlow().goToEditor("about-fedora",
-                        "master", "fr", "About_Fedora");
+    @Test
+    public void unauthorizedGlossaryPushRejected() throws Exception {
+        List<String> result = clientWorkFlow .callWithTimeout(
+                projectRootPath, pushCommand + userConfigPath);
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue()
+                .as("Glossary push was successful");
     }
 
-    public void searchGlossary(String term) {
-        editorPage.searchGlossary(term);
-    }
-
-    public String getFirstResult() {
-        // 2 row 2 column is glossary target
-        return editorPage.getGlossaryResultTable().get(1).get(1);
-    }
 }

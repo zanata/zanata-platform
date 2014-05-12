@@ -25,28 +25,31 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
+import org.zanata.page.projects.projectsettings.ProjectAboutTab;
+import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
+import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
+import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
+import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
 import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.page.projects.projectsettings.*;
 
 @Slf4j
 public class ProjectBasePage extends BasePage {
 
-    @FindBy(id = "versions")
+    @FindBy(id = "versions_tab")
     private WebElement versionsTab;
 
-    @FindBy(id = "maintainers")
+    @FindBy(id = "maintainers_tab")
     private WebElement maintainersTab;
 
-    @FindBy(id = "about")
+    @FindBy(id = "about_tab")
     private WebElement aboutTab;
 
-    @FindBy(id = "settings")
+    @FindBy(id = "settings_tab")
     private WebElement settingsTab;
 
     @FindBy(id = "settings-general_tab")
@@ -79,7 +82,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("versions_content"))
+                return getDriver().findElement(By.id("versions"))
                         .isDisplayed();
             }
         });
@@ -91,7 +94,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("maintainers_content"))
+                return getDriver().findElement(By.id("maintainers"))
                         .isDisplayed();
             }
         });
@@ -103,7 +106,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("about_content"))
+                return getDriver().findElement(By.id("about"))
                         .isDisplayed();
             }
         });
@@ -127,7 +130,7 @@ public class ProjectBasePage extends BasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings_content"))
+                return getDriver().findElement(By.id("settings_tab"))
                         .isDisplayed();
             }
         });

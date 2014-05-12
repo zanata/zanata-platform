@@ -43,8 +43,8 @@
           <s:fragment
             rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
             <li>
-              <a href="#settings-documents"
-                onclick="updateHashAndGotoUrl(this)">
+              <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageDocuments']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -100,8 +100,8 @@
         var="document">
         <ui:param name="hasActions"
           value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
-        <li
-          class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
+        <li id="#{document.docId}"
+          class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}" >
           <s:div styleClass="list__item__action" rendered="#{hasActions}">
             <div
               class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
@@ -194,7 +194,7 @@
             status="documentsTab-languagesLoader"
             onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
             render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
-            onclick="updateActiveRow(this);toggleColumn('documents_content')">
+            onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{document.docId}', true)">
             <div class="list__item__content">
               <div class="list__item__info">
                 <h3 class="list__title">#{document.name}</h3>
@@ -260,8 +260,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a
-                href="#settings-languages" onclick="updateHashAndGotoUrl(this)">
+              <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -270,6 +270,13 @@
         </div>
       </s:fragment>
     </div>
+
+    <a href="#" class="panel__header__back"
+      onclick="removeActiveRows('documents-document_list');toggleColumn('documents')"
+      title="#{messages['jsf.Documents']}">
+      <i class="i--huge i--arrow-left" aria-hidden="true"></i>
+    </a>
+
     <h2 class="panel__heading">
       <zanata:loader jsHandle="true" layout="inline" type="loader--small"
         id="documentsTab-document-label-loader"/>
@@ -308,9 +315,9 @@
         <s:fragment
           rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
           <p>
-            <a class="button--primary" href="#settings-languages"
-              onclick="updateHashAndGotoUrl(this)">
-              #{messages['jsf.ManageLanguage']} <i
+            <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
+              onclick="changeBrowserUrl(this.href, true);return false;">
+              #{messages['jsf.AddLanguages']} <i
               class="i i--settings i__item__icon"></i>
             </a>
           </p>

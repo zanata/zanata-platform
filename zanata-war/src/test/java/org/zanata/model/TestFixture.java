@@ -71,21 +71,31 @@ public class TestFixture {
                 .setStatus(contentState).setRowIndex((int) id).build();
     }
 
-    public static HTextFlow makeHTextFlow(long id, HLocale hLocale,
+    public static HTextFlow makeHTextFlow(long id, HLocale targetLocale,
             ContentState contentState) {
-        return makeHTextFlow(id, hLocale, contentState, "pot/message.pot");
+        return makeHTextFlow(id, new HLocale(LocaleId.EN_US), targetLocale, contentState, "pot/message.pot",
+                "versionSlug", "projectSlug");
     }
 
-    public static HTextFlow makeApprovedHTextFlow(long id, HLocale hLocale) {
-        return makeHTextFlow(id, hLocale, ContentState.Approved,
-                "pot/message.pot");
+    public static HTextFlow makeApprovedHTextFlow(long id, HLocale targetLocale) {
+        return makeHTextFlow(id, new HLocale(LocaleId.EN_US),targetLocale, ContentState.Approved,
+                "pot/message.pot", "versionSlug", "projectSlug");
     }
 
-    public static HTextFlow makeHTextFlow(long id, HLocale hLocale,
-            ContentState contentState, String docId) {
+    public static HTextFlow makeHTextFlow(long id, HLocale sourceLocale,
+            HLocale targetLocale, ContentState contentState, String docId,
+            String versionSlug, String projectSlug) {
+        HProject hProject = new HProject();
+        hProject.setSlug(projectSlug);
+
+        HProjectIteration hProjectIteration = new HProjectIteration();
+        hProjectIteration.setSlug(versionSlug);
+        hProjectIteration.setProject(hProject);
+
         HDocument hDocument =
                 new HDocument(docId, "message.po", "/src/main/resources",
-                        ContentType.PO, hLocale);
+                        ContentType.PO, sourceLocale);
+        hDocument.setProjectIteration(hProjectIteration);
         HTextFlow hTextFlow =
                 new HTextFlow(hDocument, "resId" + id, "hello world " + id);
         hTextFlow.setId(id);
@@ -97,7 +107,7 @@ public class TestFixture {
         target.setState(contentState);
         target.setLastChanged(new Date());
 
-        hTextFlow.getTargets().put(hLocale.getId(), target);
+        hTextFlow.getTargets().put(targetLocale.getId(), target);
         return hTextFlow;
     }
 

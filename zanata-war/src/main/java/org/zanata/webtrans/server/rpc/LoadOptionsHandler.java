@@ -128,13 +128,6 @@ public class LoadOptionsHandler extends
                     .getValueAsBoolean());
         }
 
-        if (filteredOptions.containsKey(UserOptions.EnableSpellCheck
-                .getPersistentName())) {
-            configHolder.setSpellCheckEnabled(filteredOptions.get(
-                    UserOptions.EnableSpellCheck.getPersistentName())
-                    .getValueAsBoolean());
-        }
-
         if (filteredOptions.containsKey(UserOptions.TransMemoryDisplayMode
                 .getPersistentName())) {
             configHolder.setTMDisplayMode(DiffMode.valueOf(filteredOptions.get(

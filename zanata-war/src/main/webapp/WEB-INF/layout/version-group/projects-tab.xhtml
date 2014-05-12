@@ -29,8 +29,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a href="javascript:void(0)"
-                onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects');">
+              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageProjects']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -64,8 +64,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a href="javascript:void(0)" class="button--primary"
-            onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/projects');">
+          <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+            onclick="changeBrowserUrl(this.href, true);return false;">
             #{messages['jsf.AddProjectVersions']}
           </a>
         </p>
@@ -91,7 +91,7 @@
               status="projectsTab-languagesLoader"
               onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
               render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/projects/#{version.project.slug}/#{version.slug}')"
+              onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects/#{version.project.slug}/#{version.slug}', true)"
               styleClass="bx--block">
               <div class="list__item">
                 <div class="list__item__info">
@@ -160,7 +160,7 @@
     </div>
 
     <a href="#" class="panel__header__back"
-      onclick="removeActiveRows('projects-project_list');toggleColumn('projects_content')"
+      onclick="removeActiveRows('projects-project_list');toggleColumn('projects')"
       title="#{messages['Projects']}">
       <i class="i--huge i--arrow-left"></i>
     </a>
@@ -205,8 +205,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a href="javascript:void(0)" class="button--primary"
-              onclick="updateUrl('/version-group/view/#{versionGroupHomeAction.slug}', '/settings/languages');">
+            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+              onclick="changeBrowserUrl(this.href, true);return false;">
               #{messages['jsf.AddLanguages']}
             </a>
           </p>

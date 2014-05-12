@@ -157,25 +157,6 @@ public class TransMemoryMergeStatusResolverTest {
     }
 
     @Test
-    public void differentResIdAndOptionIsReject() {
-        TransMemoryDetails tmDetail =
-                tmDetail(projectName, docId, "different res id", msgContext);
-        action = mergeTMActionWhenResIdIsDifferent(MergeRule.REJECT);
-        assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(80), null), is(nullValue()));
-    }
-
-    @Test
-    public void differentMsgContextAndOptionIsFuzzy() {
-        TransMemoryDetails tmDetail =
-                tmDetail(projectName, docId, resId, "different msg context");
-        action = mergeTMActionWhenResIdIsDifferent(MergeRule.FUZZY);
-        assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null),
-                equalTo(ContentState.NeedReview));
-    }
-
-    @Test
     public void differentMsgContextAndOptionIsIgnore() {
         TransMemoryDetails tmDetail =
                 tmDetail(projectName, docId, resId, "different msg context");
@@ -184,15 +165,6 @@ public class TransMemoryMergeStatusResolverTest {
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
                 tmResultWithSimilarity(100), null),
                 equalTo(ContentState.Translated));
-    }
-
-    @Test
-    public void differentMsgContextAndOptionIsReject() {
-        TransMemoryDetails tmDetail =
-                tmDetail(projectName, docId, resId, "different msg context");
-        action = mergeTMActionWhenResIdIsDifferent(MergeRule.REJECT);
-        assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(80), null), is(nullValue()));
     }
 
     @Test
@@ -216,15 +188,6 @@ public class TransMemoryMergeStatusResolverTest {
     }
 
     @Test
-    public void differentDocIdAndOptionIsReject() {
-        TransMemoryDetails tmDetail =
-                tmDetail(projectName, "different doc id", resId, msgContext);
-        action = mergeTMActionWhenDocIdIsDifferent(MergeRule.REJECT);
-        assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null), is(nullValue()));
-    }
-
-    @Test
     public void differentProjectNameAndOptionIsFuzzy() {
         TransMemoryDetails tmDetail =
                 tmDetail("different project name", docId, resId, msgContext);
@@ -243,15 +206,6 @@ public class TransMemoryMergeStatusResolverTest {
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,
                 tmResultWithSimilarity(100), null),
                 equalTo(ContentState.Translated));
-    }
-
-    @Test
-    public void differentProjectNameAndOptionIsReject() {
-        TransMemoryDetails tmDetail =
-                tmDetail("different project name", docId, resId, msgContext);
-        action = mergeTMActionWhenProjectNameIsDifferent(MergeRule.REJECT);
-        assertThat(resolver.decideStatus(action, textFlow, tmDetail,
-                tmResultWithSimilarity(100), null), is(nullValue()));
     }
 
     @Test
@@ -286,15 +240,6 @@ public class TransMemoryMergeStatusResolverTest {
         assertThat(resolver.decideStatus(transMemoryMerge,
                 tmResultWithSimilarityAndExternallyImported(100), null),
                 equalTo(ContentState.Translated));
-    }
-
-    @Test
-    public void fromImportedTmAndOptionIsReject() {
-        TransMemoryMerge transMemoryMerge =
-                mergeTMAction(importedMatch(MergeRule.REJECT));
-        assertThat(resolver.decideStatus(transMemoryMerge,
-                tmResultWithSimilarityAndExternallyImported(100), null),
-                nullValue());
     }
 
     private static MergeOptions importedMatch(MergeRule option) {

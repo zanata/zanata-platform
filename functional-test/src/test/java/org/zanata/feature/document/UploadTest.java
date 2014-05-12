@@ -29,13 +29,15 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
-import org.zanata.feature.ZanataTestCase;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
-import org.zanata.util.*;
+import org.zanata.util.CleanDocumentStorageRule;
+import org.zanata.util.SampleProjectRule;
+import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -46,8 +48,8 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
+@Slf4j
 public class UploadTest extends ZanataTestCase {
 
     @Rule

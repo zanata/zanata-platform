@@ -1,10 +1,9 @@
 // Escapes special characters and returns a valid jQuery selector
 function jqSelector(str) {
-  return str.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+  return str.replace(/([;&,\.\+\*\~':"\!\-\/\^#$%@\[\]\(\)=>\|])/g, '\\$1');
 }
 
 jQuery(document).ready(function() {
-  registerJsTab();
   registerUrlModifiers();
 });
 
@@ -40,7 +39,7 @@ var globalMessageTimer;
 
 // automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
-  if (jQuery().zanata) {
+  if (zanata) {
     zanata.messages.activate('#messages .message--global');
   } else {
     jQuery('#messages .message--global').addClass('is-active');
@@ -50,7 +49,7 @@ function startGlobalMessageTimer() {
   clearTimeout(globalMessageTimer);
 
   globalMessageTimer = setTimeout(function() {
-    if (jQuery().zanata) {
+    if (zanata) {
       zanata.messages.deactivate('#messages .message--global');
     } else {
       jQuery('#messages .message--global').removeClass('is-active');
@@ -64,52 +63,27 @@ function refreshTooltip(wrapperId) {
   });
 }
 
-function registerJsTab() {
-  jQuery('.js-tab').each(function() {
-    jQuery(this).click(function() {
-      onTabClick(this);
-    });
-  });
-}
-
 // Registers all elements that modify the browser's url
 function registerUrlModifiers() {
   jQuery('a.js-url-mod').click(function(e) {
-    changeBrowserUrl( jQuery(this).attr('href') );
     e.preventDefault();
+    var $this = jQuery(this);
+    changeBrowserUrl( $this.attr('href') );
   });
-}
-
-function onTabClick(tab) {
-  jQuery(tab).parent().siblings("li").children("a").removeClass('is-active');
-  jQuery(tab).addClass("is-active");
-  jQuery(tab).parents('.tabs--lined').children('.tabs__content')
-      .children('div').addClass('is-hidden');
-  jQuery('#' + jQuery(tab).attr('id') + '_content').removeClass('is-hidden');
 }
 
 function updateStateFromUrl() {
   crossroads.parse(window.location.pathname);
 }
 
-// TODO Deprecated. See method below
-function updateUrl(urlPrefix, suffixToUpdate) {
-  var newUrl = window.location.pathname;
-  newUrl = newUrl.substring(0, newUrl.indexOf(urlPrefix) + urlPrefix.length)
-      + suffixToUpdate;
-  var status = {
-    path : newUrl
-  }
-  window.history.pushState(status, document.title, newUrl)
-  updateStateFromUrl();
-}
-
 function changeBrowserUrl(url, refresh) {
   refresh = refresh || false
 
-  var status = {path: url}
+  var status = {
+    path : url
+  }
   window.history.pushState(status, document.title, url)
-  if(refresh)
+  if (refresh)
     updateStateFromUrl();
 }
 
@@ -120,39 +94,6 @@ jQuery(function() {
       crossroads.parse(state.path)
   })
 })
-
-function checkHashUrl(defaultTabId, defaultSettingsTabId) {
-  var originalHashUrl = window.location.hash;
-
-  // if hash equals #settings-{xyz}, update hash to #settings
-  if (window.location.hash) {
-    if (window.location.hash.substring(0, 9) == '#settings') {
-      window.location.hash = "#settings";
-    }
-
-    if (elementExists(window.location.hash)) {
-      defaultTabId = window.location.hash;
-    }
-  }
-  onTabClick(defaultTabId);
-  window.location.hash = defaultTabId;
-
-  if (window.location.hash.substring(0, 9) == "#settings") {
-    handleSettingsTab(defaultSettingsTabId, originalHashUrl);
-  }
-}
-
-function handleSettingsTab(defaultSettingsTabId, hashUrl) {
-  var selectedSettingsTabId = defaultSettingsTabId;
-  if (elementExists(hashUrl)) {
-    selectedSettingsTabId = hashUrl;
-  }
-  jQuery(selectedSettingsTabId)[0].click();
-}
-
-function elementExists(hashId) {
-  return jQuery(hashId).length != 0;
-}
 
 function updateActiveRow(clickedElement) {
   var parent = jQuery(clickedElement).parent();
@@ -309,14 +250,18 @@ function filterList(input, filterFn) {
 /* ----------------------------------------------------------- */
 /*------------------zanata-sortlist component------------------*/
 /* ----------------------------------------------------------- */
-jQuery(document).ready(function() {
-  jQuery('a.js-sort-option').each(function() {
-    jQuery(this).click(function() {
-      jQuery(this).parent().siblings("li").children("a.js-sort-option").removeClass('is-active');
-      jQuery(this).addClass("is-active");
+jQuery(document).ready(
+    function() {
+      jQuery('a.js-sort-option').each(
+          function() {
+            jQuery(this).click(
+                function() {
+                  jQuery(this).parent().siblings("li").children(
+                      "a.js-sort-option").removeClass('is-active');
+                  jQuery(this).addClass("is-active");
+                });
+          });
     });
-  });
-});
 
 /* ----------------------------------------------------------- */
 /*----------------- zanata-checkbox component -----------------*/

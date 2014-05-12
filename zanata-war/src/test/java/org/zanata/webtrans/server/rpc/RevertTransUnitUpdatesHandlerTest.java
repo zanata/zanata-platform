@@ -3,7 +3,6 @@ package org.zanata.webtrans.server.rpc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -15,6 +14,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -26,7 +26,9 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
@@ -44,16 +46,13 @@ public class RevertTransUnitUpdatesHandlerTest {
     @Mock
     private SecurityService securityServiceImpl;
     @Mock
-    private SecurityService.SecurityCheckResult checkResult;
-    @Mock
     private TranslationWorkspace translationWorkspace;
 
     @BeforeMethod
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance()
-                        .reset()
+                SeamAutowire.instance().reset()
                         .use("resourceUtils", new ResourceUtils())
                         .autowire(TransUnitTransformer.class);
         // @formatter:off
@@ -74,12 +73,9 @@ public class RevertTransUnitUpdatesHandlerTest {
                                 .makeTransUnit(1), 0, 0, ContentState.Approved));
         RevertTransUnitUpdates action =
                 new RevertTransUnitUpdates(updatesToRevert);
-        when(
-                securityServiceImpl.checkWorkspaceAction(action,
-                    SecurityService.TranslationAction.MODIFY)).thenReturn(
-                checkResult);
-        when(checkResult.getLocale()).thenReturn(new HLocale(LocaleId.EN_US));
-        when(checkResult.getWorkspace()).thenReturn(translationWorkspace);
+        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("", "",
+                ProjectType.File), LocaleId.EN_US));
+
         TranslationService.TranslationResult translationResult =
                 mockTranslationResult(ContentState.NeedReview, 0);
         when(

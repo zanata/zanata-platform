@@ -181,6 +181,8 @@ public class ZanataIdentity extends Identity {
      *            The permission action.
      * @param targets
      *            Targets for permissions.
+     * @throws NotLoggedInException if not authorised and not logged in
+     * @throws org.jboss.seam.security.AuthorizationException if logged in but not authorised
      */
     public void checkPermission(String action, Object... targets) {
         final List<FactHandle> handles = new ArrayList<FactHandle>();

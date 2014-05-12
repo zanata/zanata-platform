@@ -1,4 +1,4 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
@@ -15,22 +15,38 @@
 
 <ui:define name="center_content">
 <script type="text/javascript">
-  jQuery(document).ready(function () {
-    checkHashUrl('#versions', '#settings-general');
-    renderStatistics();
-  });
-</script>
-<h:form>
-  <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
-    render="versions_form"
-    oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
-    action="#{projectHomeAction.resetPageData}"/>
+  //<![CDATA[
+  jQuery(function () {
+    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}',
+      function (pre, slug, subSection) {
+        zanata.tabs.activate(jQuery('#settings_tab'));
+        subSection = subSection || 'general';
+        zanata.tabs.activate(jQuery('#settings-' + jqSelector(subSection) +
+          "_tab"));
+      });
 
-  <a4j:jsFunction name="renderStatistics" status="statistic-loader"
-    oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
-    render="versions_form"
-    action="#{projectHomeAction.setPageRendered(true)}"/>
-</h:form>
+    crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
+      function (pre, slug, section) {
+        section = section || 'versions'
+        zanata.tabs.activate(jQuery('#' + section + "_tab"))
+      });
+
+    updateStateFromUrl();
+    renderStatistics();
+  })
+  //]]>
+
+</script>
+
+<a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+  render="versions_form"
+  oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
+  action="#{projectHomeAction.resetPageData}"/>
+
+<a4j:jsFunction name="renderStatistics" status="statistic-loader"
+  oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
+  render="versions_form"
+  action="#{projectHomeAction.setPageRendered(true)}"/>
 
 <div class="g">
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
@@ -97,136 +113,134 @@
     </s:div>
 
     <s:fragment rendered="#{identity.loggedIn}">
-      <div class="panel l--push-top-half">
+      <ui:param name="activities"
+        value="#{projectHomeAction.getProjectLastActivity()}"/>
+
+      <s:div styleClass="panel l--push-top-half" rendered="#{not empty activities}">
         <div class="panel__header">
           <h2 class="panel__heading--small">
             #{messages['jsf.YourLastActivity']}
           </h2>
         </div>
         <div class="l--pad-all-half">
-          <ui:param name="activities"
-            value="#{projectHomeAction.getProjectLastActivity()}"/>
-          <s:fragment rendered="#{not empty activities}">
-            <ui:repeat value="#{activities}" var="activity">
-              <div class="txt--meta">
-                <zanata:activity-entry value="#{activity}"/>
-              </div>
-            </ui:repeat>
-          </s:fragment>
-          <s:fragment rendered="#{empty activities}">
-            <div class="l--pad-all-half bg--high">
-              <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
-
-              <p class="txt--meta">#{messages['jsf.NoActivityMessage']}</p>
+          <ui:repeat value="#{activities}" var="activity">
+            <div class="txt--meta">
+              <zanata:activity-entry value="#{activity}"/>
             </div>
-          </s:fragment>
+          </ui:repeat>
         </div>
-      </div>
+      </s:div>
     </s:fragment>
 
-  </div>
-  <div class="g__item w--1-m w--5-8-l w--2-3">
-    <div class="tabs--lined">
-      <nav class="tabs__nav">
-        <ul>
-          <li>
-            <a href="#versions" id="versions" class="is-active js-tab">
-              <i class="i i--version"></i>
+</div>
+<div class="g__item w--1-m w--5-8-l w--2-3">
+  <div class="tabs--lined js-tabs">
+    <ul class="tabs__nav js-tabs-nav">
+      <li>
+        <a id="versions_tab"
+          href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/versions"
+          class="js-url-mod" data-content="#versions">
+          <i class="i i--version"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Versions']}
                 <s:span styleClass="txt--neutral" id="versions-size">
                   #{projectHomeAction.getProjectVersions().size}
                 </s:span>
               </span>
-            </a>
-          </li>
-          <li>
-            <a href="#maintainers" id="maintainers" class="js-tab">
-              <i class="i i--users"></i>
+        </a>
+      </li>
+      <li>
+        <a id="maintainers_tab"
+          href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/maintainers"
+          class="js-url-mod" data-content="#maintainers">
+          <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.Maintainers']}
                 <s:span styleClass="txt--neutral" id="maintainers-size">
                   #{projectHome.instance.maintainers.size}
                 </s:span>
               </span>
-            </a>
-          </li>
-          <li>
-            <a href="#about" id="about" class="js-tab">
-              <i class="i i--info"></i>
+        </a>
+      </li>
+      <li>
+        <a id="about_tab"
+          href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/about"
+          class="js-url-mod" data-content="#about">
+          <i class="i i--info"></i>
               <span class="is-hidden--s i__text--right">
                 #{messages['jsf.project.About']}
               </span>
+        </a>
+      </li>
+      <s:fragment
+        rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+        <li class="tab__end">
+          <div
+            class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+            <a class="dropdown__toggle js-dropdown__toggle" href="#"
+              title="#{messages['jsf.tooltip.MoreActions']}">
+              <i class="i i--ellipsis"></i>
             </a>
-          </li>
-          <s:fragment
-            rendered="#{s:hasPermission(projectHome.instance, 'update')}">
-            <li class="tab__end">
-              <div
-                class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
-                <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                  title="#{messages['jsf.tooltip.MoreActions']}">
-                  <i class="i i--ellipsis"></i>
-                </a>
-                <ul class="dropdown__content js-dropdown__content"
-                  role="content" aria-labelledby="dropdownContent">
-                  <li>
-                    <h:outputLink id="exportTMXProjectLink"
-                      styleClass="i__item--right"
-                      onclick="return confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
-                      value="#{request.contextPath}/rest/tm/projects/#{projectHome.slug}">
-                      #{messages['jsf.ExportTMXProject']}<i
-                      class="i i--export i__item__icon"></i>
-                    </h:outputLink>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li class="tab__end">
-              <a href="#settings" id="settings" class="js-tab"
-                title="#{messages['jsf.project.ProjectSettings']}">
+            <ul class="dropdown__content js-dropdown__content"
+              role="content" aria-labelledby="dropdownContent">
+              <li>
+                <h:outputLink id="exportTMXProjectLink"
+                  styleClass="i__item--right"
+                  onclick="return confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
+                  value="#{request.contextPath}/rest/tm/projects/#{projectHome.slug}">
+                  #{messages['jsf.ExportTMXProject']}<i
+                  class="i i--export i__item__icon"></i>
+                </h:outputLink>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="tab__end">
+          <a id="settings_tab"
+            href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings"
+            class="js-url-mod" data-content="#settings"
+            title="#{messages['jsf.project.ProjectSettings']}">
                     <span class="is-hidden--s i__text--left">
                       #{messages['jsf.Settings']}
                     </span>
-                <i class="i i--settings"></i>
-              </a>
-            </li>
+            <i class="i i--settings"></i>
+          </a>
+        </li>
+      </s:fragment>
+    </ul>
+
+    <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+      <li id="versions">
+        <ui:include
+          src="../WEB-INF/layout/project/versions-tab.xhtml"/>
+      </li>
+
+      <li id="maintainers">
+        <zanata:maintainers-tab
+          listSize="#{projectHome.instanceMaintainers.size}"
+          filterActionBean="#{projectHome.maintainerFilter}"
+          settingsUrl="#settings-permissions"
+          PermissionToUpdate="#{s:hasPermission(projectHome.instance, 'update')}"/>
+      </li>
+
+      <li id="about">
+        <s:div id="project-about">
+          <s:formattedText value="#{projectHome.instance.homeContent}"
+            rendered="#{not empty projectHome.instance.homeContent}"/>
+          <s:fragment rendered="#{empty projectHome.instance.homeContent}">
+            #{messages['jsf.project.NoHomeContent']}
           </s:fragment>
-        </ul>
-      </nav>
+        </s:div>
+      </li>
 
-      <div class="tabs__content panels__container l--push-top-1">
-        <div id="versions_content" class="is-hidden">
+      <s:fragment
+        rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+        <li id="settings">
           <ui:include
-            src="../WEB-INF/layout/project/versions-tab.xhtml"/>
-        </div>
-
-        <s:div id="maintainers_content" styleClass="is-hidden">
-          <zanata:maintainers-tab
-            listSize="#{projectHome.instanceMaintainers.size}"
-            filterActionBean="#{projectHome.maintainerFilter}"
-            settingsUrl="#settings-permissions"
-            PermissionToUpdate="#{s:hasPermission(projectHome.instance, 'update')}"/>
-        </s:div>
-
-        <s:div id="about_content" styleClass="is-hidden">
-          <s:div id="project-about">
-            <s:formattedText value="#{projectHome.instance.homeContent}"
-              rendered="#{not empty projectHome.instance.homeContent}"/>
-            <s:fragment rendered="#{empty projectHome.instance.homeContent}">
-              #{messages['jsf.project.NoHomeContent']}
-            </s:fragment>
-          </s:div>
-        </s:div>
-
-        <s:fragment
-          rendered="#{s:hasPermission(projectHome.instance, 'update')}">
-          <s:div id="settings_content" styleClass="is-hidden">
-            <ui:include
-              src="../WEB-INF/layout/project/settings-tab.xhtml"/>
-          </s:div>
-        </s:fragment>
-      </div>
+            src="../WEB-INF/layout/project/settings-tab.xhtml"/>
+        </li>
+      </s:fragment>
+    </ul>
 
     </div>
   </div>

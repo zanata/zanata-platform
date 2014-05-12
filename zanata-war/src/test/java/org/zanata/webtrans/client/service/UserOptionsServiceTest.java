@@ -24,6 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.zanata.webtrans.shared.model.UserOptions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,11 +73,11 @@ public class UserOptionsServiceTest {
     @Test
     public void persistOptionChange() {
         Map<UserOptions, String> map = new HashMap<UserOptions, String>();
-        map.put(UserOptions.DocumentListPageSize, String.valueOf(1000));
-        map.put(UserOptions.EditorPageSize, String.valueOf(2000));
+        map.put(DocumentListPageSize, String.valueOf(1000));
+        map.put(EditorPageSize, String.valueOf(2000));
 
-        map.put(UserOptions.DisplayButtons, String.valueOf(false));
-        map.put(UserOptions.ShowErrors, String.valueOf(true));
+        map.put(DisplayButtons, String.valueOf(false));
+        map.put(ShowErrors, String.valueOf(true));
 
         service.persistOptionChange(map);
 
@@ -91,17 +92,17 @@ public class UserOptionsServiceTest {
 
         int docListSize =
                 Integer.parseInt(action.getConfigurationMap().get(
-                        UserOptions.DocumentListPageSize));
+                        DocumentListPageSize));
         int editorSize =
                 Integer.parseInt(action.getConfigurationMap().get(
-                        UserOptions.EditorPageSize));
+                        EditorPageSize));
 
         boolean showError =
                 Boolean.parseBoolean(action.getConfigurationMap().get(
-                        UserOptions.ShowErrors));
+                        ShowErrors));
         boolean displayButton =
                 Boolean.parseBoolean(action.getConfigurationMap().get(
-                        UserOptions.DisplayButtons));
+                        DisplayButtons));
 
         assertThat(docListSize, Matchers.equalTo(1000));
         assertThat(editorSize, Matchers.equalTo(2000));
@@ -118,19 +119,19 @@ public class UserOptionsServiceTest {
     public void getCommonOptions() {
         Map<UserOptions, String> map = service.getCommonOptions();
         assertThat(map.size(), Matchers.equalTo(2));
-        assertThat(map.containsKey(UserOptions.ShowErrors),
+        assertThat(map.containsKey(ShowErrors),
                 Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
+        assertThat(map.containsKey(Themes), Matchers.equalTo(true));
     }
 
     @Test
     public void getDocumentListOptions() {
         Map<UserOptions, String> map = service.getDocumentListOptions();
         assertThat(map.size(), Matchers.equalTo(3));
-        assertThat(map.containsKey(UserOptions.ShowErrors),
+        assertThat(map.containsKey(ShowErrors),
                 Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.DocumentListPageSize),
+        assertThat(map.containsKey(Themes), Matchers.equalTo(true));
+        assertThat(map.containsKey(DocumentListPageSize),
                 Matchers.equalTo(true));
     }
 
@@ -138,39 +139,13 @@ public class UserOptionsServiceTest {
     public void getEditorOptions() {
         Map<UserOptions, String> map = service.getEditorOptions();
 
-        assertThat(map.size(), Matchers.equalTo(18));
-
-        assertThat(map.containsKey(UserOptions.ShowErrors),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.Themes), Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.DisplayButtons),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.EnterSavesApproved),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.EditorPageSize),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.TranslatedMessageFilter),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.UseCodeMirrorEditor),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.TransMemoryDisplayMode),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.EnableSpellCheck),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.FuzzyMessageFilter),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.UntranslatedMessageFilter),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.ApprovedMessageFilter),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.RejectedMessageFilter),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.Navigation),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.ShowSaveApprovedWarning),
-                Matchers.equalTo(true));
-        assertThat(map.containsKey(UserOptions.SelectedReferenceLang),
-                Matchers.equalTo(true));
+        assertThat(map.keySet(), Matchers.containsInAnyOrder(ShowErrors,
+                Themes, DisplayButtons, EnterSavesApproved, EditorPageSize,
+                TranslatedMessageFilter, UseCodeMirrorEditor,
+                TransMemoryDisplayMode, FuzzyMessageFilter,
+                UntranslatedMessageFilter, ApprovedMessageFilter,
+                RejectedMessageFilter, Navigation, ShowSaveApprovedWarning,
+                SelectedReferenceLang, DisplayTransMemory, DisplayGlossary));
     }
 
     @Test

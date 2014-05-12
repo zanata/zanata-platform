@@ -22,7 +22,12 @@ public interface HasSearchType {
          * Fuzzy search for TextFlows which have similar strings for
          * corresponding plural forms
          */
-        FUZZY_PLURAL
+        FUZZY_PLURAL,
+
+        /**
+         * Search for exact terms using content hash from HTextFlow.
+         */
+        CONTENT_HASH,
     }
 
     SearchType getSearchType();

@@ -26,7 +26,8 @@
     shortDescription="Ids of component to render on complete"/>
 
   <composite:attribute name="type"
-    shortDescription="Type of statistic bar, 'large' or leave empty for default"/>
+    shortDescription="Type of statistic bar, 'large', 'full' or leave empty for default"
+    default=""/>
 
 </composite:interface>
 <composite:implementation>
@@ -72,11 +73,27 @@
           value="#{cc.attrs.actionBean.completedPercentage}"/>
       </s:div>
 
-      <s:div
-        styleClass="#{cc.attrs.type eq 'large' ? 'progress-bar--large' : 'progress-bar'}">
-        <span class="progress-bar__translated" style="width: 0%;"/>
-        <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
-      </s:div>
+      <s:fragment rendered="#{cc.attrs.type eq 'large'}">
+        <s:div styleClass="progress-bar progress-bar--large">
+          <span class="progress-bar__translated" style="width: 0%;"/>
+          <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
+        </s:div>
+      </s:fragment>
+
+      <s:fragment rendered="#{cc.attrs.type eq 'full'}">
+        <s:div styleClass="progress-bar progress-bar--full">
+          <span class="progress-bar__translated" style="width: 0%;"/>
+          <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
+        </s:div>
+      </s:fragment>
+
+      <s:fragment rendered="#{cc.attrs.type eq ''}">
+        <s:div styleClass="progress-bar">
+          <span class="progress-bar__translated" style="width: 0%;"/>
+          <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
+        </s:div>
+      </s:fragment>
+
     </s:div>
   </s:div>
 </composite:implementation>

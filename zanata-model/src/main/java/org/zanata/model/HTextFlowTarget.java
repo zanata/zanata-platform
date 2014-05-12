@@ -51,7 +51,6 @@ import lombok.Setter;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
@@ -83,7 +82,7 @@ import com.google.common.collect.Lists;
  *
  */
 @Entity
-@EntityListeners({HTextFlowTarget.EntityListener.class})
+@EntityListeners({ HTextFlowTarget.EntityListener.class })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter

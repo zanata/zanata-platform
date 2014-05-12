@@ -26,7 +26,6 @@ import org.zanata.model.HProject;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.AbstractWorkspaceAction;
 
 /**
  * @author Patrick Huang <a
@@ -38,17 +37,16 @@ public interface SecurityService {
      * This will check permission for performing an action upon translations
      * with given project and locale
      *
-     * @param action
-     *            abstract workspace action which contains locale id and project
-     *            slug
+     * @param workspaceId
+     *
      * @param translationAction
      *            translation action enum (at the moment only supports MODIFY)
      * @throws org.jboss.seam.security.AuthorizationException
      *             , org.jboss.seam.security.NotLoggedInException
      *             org.zanata.webtrans.shared.NoSuchWorkspaceException
      */
-    SecurityCheckResult checkWorkspaceAction(AbstractWorkspaceAction action,
-        TranslationAction translationAction)
+    void checkWorkspaceAction(WorkspaceId workspaceId,
+            TranslationAction translationAction)
             throws NoSuchWorkspaceException;
 
     HProject checkWorkspaceStatus(WorkspaceId workspaceId);

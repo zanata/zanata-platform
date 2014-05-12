@@ -39,7 +39,7 @@ public class ProjectMaintainersPage extends ProjectBasePage {
 
     public List<String> getMaintainers() {
         List<WebElement> rows = getDriver()
-                .findElement(By.id("maintainers_content"))
+                .findElement(By.id("maintainers"))
                 .findElements(By.tagName("li"));
         List<String> names = new ArrayList<String>();
         for (WebElement row : rows) {

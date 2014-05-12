@@ -18,15 +18,46 @@
 
 <ui:define name="center_content">
 <script type="text/javascript">
-  jQuery(document).ready(function () {
-    checkHashUrl('#languages', '#settings-general');
-    renderStatistics();
-  });
+  //<![CDATA[
+  jQuery(function () {
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang:',
+      function (pre, projectSlug, versionSlug, lang) {
+        zanata.tabs.activate(jQuery('#languages_tab'));
+        if (lang) {
+          updateActiveRow(jQuery('a.' + lang))
+          toggleColumn('languages')
+          reloadLocale(lang)
+        }
+      });
 
-  function updateHashAndGotoUrl(anchor) {
-    window.location.hash = jQuery(anchor).attr('href');
-    checkHashUrl('#languages_tab', '#settings-general_tab');
-  }
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents/:docId*:',
+      function (pre, projectSlug, versionSlug, docId) {
+        zanata.tabs.activate(jQuery('#documents_tab'));
+        if (docId) {
+          updateActiveRow(jQuery('#' + jqSelector(docId)).children().eq(1));
+          toggleColumn('documents');
+          reloadDocument(projectSlug, versionSlug, docId)
+        }
+      });
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting:',
+      function (pre, projectSlug, versionSlug, setting) {
+        zanata.tabs.activate(jQuery('#settings_tab'));
+        if (setting)
+          zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
+            "_tab"))
+      });
+
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section:',
+      function (pre, projectSlug, versionSlug, section) {
+        section = section || 'languages'
+        zanata.tabs.activate(jQuery('#' + section + "_tab"))
+      });
+
+    renderStatistics();
+  })
+  //]]>
 
 
   function openUploadSourceDocPanel() {
@@ -92,17 +123,35 @@
   }
 </script>
 
-<h:form>
-  <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
-    oncomplete="refreshTooltip('version-page')" limitRender="true"
-    render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
-    action="#{versionHomeAction.resetPageData}"/>
+<a4j:jsFunction name="reloadLocale"
+  render="languages-document_list, language-label">
+  <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
+</a4j:jsFunction>
 
-  <a4j:jsFunction name="renderStatistics" status="statistic-loader"
-    oncomplete="refreshTooltip('version-page')"
-    render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
-    action="#{versionHomeAction.setPageRendered(true)}"/>
-</h:form>
+<a4j:jsFunction name="reloadDocument"
+  render="documents-language_list, document-label"
+  action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
+  <a4j:param name="val1" assignTo="#{projSlug}"/>
+  <a4j:param name="val2" assignTo="#{verSlug}"/>
+  <a4j:param name="val3" assignTo="#{docId}"/>
+</a4j:jsFunction>
+
+<a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+  oncomplete="refreshTooltip('version-page')" limitRender="true"
+  render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
+  action="#{versionHomeAction.resetPageData}"/>
+
+<a4j:jsFunction name="renderStatistics" status="statistic-loader"
+  oncomplete="refreshTooltip('version-page');updateStateFromUrl()"
+  render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
+  action="#{versionHomeAction.setPageRendered(true)}"/>
+
+<a4j:jsFunction name="runCopyTrans" action="#{copyTransAction.startCopyTrans}"
+  render="copy-trans, copy-trans-buttons"/>
+
+<a4j:jsFunction name="cancelCopyTrans" action="#{copyTransAction.cancel}"
+  render="copy-trans, copy-trans-buttons"/>
+
 
 <div class="g" id="version-page">
 <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
@@ -185,125 +234,177 @@
     <zanata:loader type="loader--large"
       rendered="#{!versionHomeAction.pageRendered}"/>
   </s:div>
+
+  <s:div id="copy-trans"
+    styleClass="panel l--push-top-1 #{copyTransAction.inProgress ? '' : 'is-hidden'}">
+    <s:div styleClass="panel__header" rendered="#{copyTransAction.inProgress}">
+      <s:div
+        styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
+        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+
+        <a href="javascript:void(0)" onclick="cancelCopyTrans()"
+          title="#{messages['jsf.CopyTrans.cancel']}"
+          class="button--small button--link">#{messages['jsf.Cancel']}</a>
+
+      </s:div>
+
+      <h2 class="panel__heading--small">#{messages['jsf.CopyTrans']}</h2>
+    </s:div>
+
+    <div class="l--pad-all-half l--push-top-quarter">
+      <zanata:progressBar id="copy-trans-progress-bar"
+        actionBean="#{copyTransAction}"
+        render="copy-trans-progress-messages"
+        onCompleteRender="copy-trans-buttons, copy-trans"/>
+
+      <s:div id="copy-trans-progress-messages"
+        styleClass="txt--meta l--push-top-quarter">
+        <zanata:loader layout="inline" type="loader--small"
+          rendered="#{copyTransAction.inProgress}"/>
+        <span>
+          <h:outputText
+            value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>
+          ,
+          <h:outputText
+            value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
+        </span>
+      </s:div>
+    </div>
+  </s:div>
 </div>
 
 <div class="g__item w--1-m w--5-8-l w--2-3">
-  <div class="tabs--lined">
-    <nav class="tabs__nav">
-      <ul>
+  <div class="tabs--lined js-tabs">
+    <ul class="tabs__nav js-tabs-nav">
+      <li>
+        <a id="languages_tab"
+          href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/languages"
+          class="js-url-mod" data-content="#languages">
+          <i class="i i--language"></i>
+          <span class="is-hidden--s i__text--right">
+            #{messages['jsf.Languages']}
+            <s:span styleClass="txt--neutral" id="languages-size">
+              #{versionHomeAction.getSupportedLocale().size}
+            </s:span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a id="documents_tab"
+          href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents"
+          class="js-url-mod" data-content="#documents">
+          <i class="i i--document"></i>
+                <span class="is-hidden--s i__text--right">
+                  #{messages['jsf.Documents']}
+                  <s:span styleClass="txt--neutral"
+                    id="documents-size">
+                    #{versionHomeAction.getDocuments().size}
+                  </s:span>
+                </span>
+        </a>
+      </li>
+      <s:fragment rendered="#{not empty versionHomeAction.groups}">
         <li>
-          <a href="#languages" id="languages"
-            class="is-active js-tab">
-            <i class="i i--language"></i>
-                  <span class="is-hidden--s i__text--right">
-                    #{messages['jsf.Languages']}
-                    <s:span styleClass="txt--neutral" id="languages-size">
-                      #{versionHomeAction.getSupportedLocale().size}
-                    </s:span>
-                  </span>
+          <a id="groups_tab"
+            href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/groups"
+            class="js-url-mod" data-content="#groups">
+            <i class="i i--group"></i>
+                <span class="is-hidden--s i__text--right">
+                  #{messages['jsf.Groups']}
+                  <s:span styleClass="txt--neutral" id="groups-size">
+                    #{versionHomeAction.groups.size}
+                  </s:span>
+                </span>
           </a>
         </li>
-        <li>
-          <a href="#documents" id="documents" class="js-tab">
-            <i class="i i--document"></i>
-                  <span class="is-hidden--s i__text--right">
-                    #{messages['jsf.Documents']}
-                    <s:span styleClass="txt--neutral"
-                      id="documents-size">
-                      #{versionHomeAction.getDocuments().size}
-                    </s:span>
-                  </span>
-          </a>
-        </li>
-        <s:fragment rendered="#{not empty versionHomeAction.groups}">
-          <li>
-            <a href="#groups" id="groups" class="js-tab">
-              <i class="i i--group"></i>
-                  <span class="is-hidden--s i__text--right">
-                    #{messages['jsf.Groups']}
-                    <s:span styleClass="txt--neutral" id="groups-size">
-                      #{versionHomeAction.groups.size}
-                    </s:span>
-                  </span>
+      </s:fragment>
+      <s:fragment rendered="#{identity.loggedIn}">
+        <li class="tab__end">
+          <div
+            class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+            <a class="dropdown__toggle js-dropdown__toggle"
+              title="#{messages['jsf.tooltip.MoreActions']}" href="#">
+              <i class="i i--ellipsis"></i>
             </a>
-          </li>
-        </s:fragment>
-        <s:fragment rendered="#{identity.loggedIn}">
-          <li class="tab__end">
-            <div
-              class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
-              <a class="dropdown__toggle js-dropdown__toggle"
-                title="#{messages['jsf.tooltip.MoreActions']}" href="#">
-                <i class="i i--ellipsis"></i>
-              </a>
-              <ul class="dropdown__content js-dropdown__content"
-                role="content" aria-labelledby="dropdownContent">
+            <ul class="dropdown__content js-dropdown__content"
+              role="content" aria-labelledby="dropdownContent">
+              <li>
+                <h:outputLink id="exportTMXIterLink"
+                  onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                  styleClass="i__item--right"
+                  value="#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}">
+                  #{messages['jsf.iteration.ExportTMXIter']}<i
+                  class="i i--export i__item__icon"></i>
+                </h:outputLink>
+              </li>
+              <li>
+                <s:link title="#{messages['jsf.GenerateProjectConfig']}"
+                  styleClass="i__item--right"
+                  action="#{configurationAction.downloadGeneralConfig()}">
+                  <f:param name="projectSlug"
+                    value="#{versionHomeAction.projectSlug}"/>
+                  <f:param name="iterationSlug"
+                    value="#{versionHomeAction.versionSlug}"/>
+                  #{messages['jsf.ConfigFile']}
+                  <i class="i i--export i__item__icon"></i>
+                </s:link>
+              </li>
+              <s:fragment
+                rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
                 <li>
-                  <h:outputLink id="exportTMXIterLink"
-                    onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
-                    styleClass="i__item--right"
-                    value="#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}">
-                    #{messages['jsf.iteration.ExportTMXIter']}<i
-                    class="i i--export i__item__icon"></i>
-                  </h:outputLink>
+                  <a href="javascript:void(0)" class="i__item--right"
+                    onclick="zanata.modal.show('#copy-trans-modal')">
+                    #{messages['jsf.CopyTrans']}
+                    <i class="i i--translate i__item__icon"></i>
+                  </a>
                 </li>
-                <li>
-                  <s:link title="#{messages['jsf.GenerateProjectConfig']}"
-                    styleClass="i__item--right"
-                    action="#{configurationAction.downloadGeneralConfig()}">
-                    <f:param name="projectSlug"
-                      value="#{versionHomeAction.projectSlug}"/>
-                    <f:param name="iterationSlug"
-                      value="#{versionHomeAction.versionSlug}"/>
-                    #{messages['jsf.ConfigFile']}
-                    <i class="i i--export i__item__icon"></i>
-                  </s:link>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <s:fragment
-            rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
-            <li class="tab__end">
-              <a href="#settings" id="settings" class="js-tab"
-                title="#{messages['jsf.iteration.tooltip.VersionSettings']}">
-                    <span class="is-hidden--s i__text--left">
-                      #{messages['jsf.Settings']}
-                    </span>
-                <i class="i i--settings"></i>
-              </a>
-            </li>
-          </s:fragment>
-        </s:fragment>
-      </ul>
-    </nav>
+              </s:fragment>
+            </ul>
+          </div>
+        </li>
+      </s:fragment>
+      <s:fragment
+        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        <li class="tab__end">
+          <a id="settings_tab"
+            title="#{messages['jsf.iteration.tooltip.VersionSettings']}"
+            href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings"
+            class="js-url-mod" data-content="#settings">
+            <span class="is-hidden--s i__text--left">
+              #{messages['jsf.Settings']}
+            </span>
+            <i class="i i--settings"></i>
+          </a>
+        </li>
+      </s:fragment>
+    </ul>
 
-    <div class="tabs__content panels__container l--push-top-1">
-      <div id="languages_content" class="is-hidden">
+    <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+      <li id="languages">
         <ui:include
           src="../WEB-INF/layout/version/languages-tab.xhtml"/>
-      </div>
+      </li>
 
-      <div id="documents_content" class="is-hidden">
+      <li id="documents">
         <ui:include
           src="../WEB-INF/layout/version/documents-tab.xhtml"/>
-      </div>
+      </li>
 
-      <s:div id="groups_content" styleClass="is-hidden"
-        rendered="#{!versionHomeAction.groups.isEmpty()}">
-        <ui:include
-          src="../WEB-INF/layout/version/groups-tab.xhtml"/>
-      </s:div>
+      <s:fragment rendered="#{!versionHomeAction.groups.isEmpty()}">
+        <li id="groups">
+          <ui:include
+            src="../WEB-INF/layout/version/groups-tab.xhtml"/>
+        </li>
+      </s:fragment>
 
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
-        <div id="settings_content" class="is-hidden">
+        <li id="settings">
           <ui:include
             src="../WEB-INF/layout/version/settings-tab.xhtml"/>
-        </div>
+        </li>
       </s:fragment>
-    </div>
-
+    </ul>
   </div>
 </div>
 </div>
