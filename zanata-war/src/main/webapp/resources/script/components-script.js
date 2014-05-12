@@ -1,6 +1,9 @@
 // Escapes special characters and returns a valid jQuery selector
 function jqSelector(str) {
-  return str.replace(/([;&,\.\+\*\~':"\!\-\/\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+  if (str) {
+    return str.replace(/([;&,\.\+\*\~':"\!\-\/\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+  }
+  return str;
 }
 
 jQuery(document).ready(function() {
@@ -68,8 +71,17 @@ function registerUrlModifiers() {
   jQuery('a.js-url-mod').click(function(e) {
     e.preventDefault();
     var $this = jQuery(this);
-    changeBrowserUrl( $this.attr('href') );
+    changeBrowserUrl($this.attr('href'));
   });
+}
+
+function validateTab(tab, currentSection, defaultSection) {
+  if (jQuery(tab).length == 0) {
+    window.location.href = window.location.href.replace(currentSection,
+        defaultSection);
+    return defaultSection;
+  }
+  return currentSection;
 }
 
 function updateStateFromUrl() {

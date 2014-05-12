@@ -21,13 +21,14 @@
       function (pre, slug, subSection) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         subSection = subSection || 'general';
-        zanata.tabs.activate(jQuery('#settings-' + jqSelector(subSection) +
-          "_tab"));
+        subSection = validateTab("#settings-" + subSection + '_tab', subSection, 'general');
+        zanata.tabs.activate(jQuery('#settings-' + subSection + "_tab"));
       });
 
     crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
       function (pre, slug, section) {
-        section = section || 'versions'
+        section = section || 'versions';
+        section = validateTab('#' + section + "_tab", section, "versions");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
