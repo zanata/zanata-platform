@@ -49,12 +49,26 @@ window.searchSuggestions = (function () {
     function updateQueryAndCursor(query, cursorPos) {
       input.value = query;
       input.setSelectionRange(cursorPos, cursorPos);
+      input.focus();
       calculateSuggestions();
     }
 
+    // used to prevent hiding suggestions on input blur when clicking a suggestion
+    var currentlyClickingSuggestion = false;
+
     function attachResultEvents (element) {
       element.addEventListener('mousemove', function () { selectTargetResult(element); });
-      element.addEventListener('mousedown', function () { insertTargetResult(element); });
+      element.addEventListener('click', function () { insertTargetResult(element); });
+      element.addEventListener('mousedown', function (e) {
+        if (e.button === 0) {
+          currentlyClickingSuggestion = true;
+        }
+      });
+      document.addEventListener('mouseup', function (e) {
+        if (e.button === 0) {
+          currentlyClickingSuggestion = false;
+        }
+      });
     }
 
     for (i=0; i < resultElements.length; i++) {
@@ -103,15 +117,19 @@ window.searchSuggestions = (function () {
 
     input.addEventListener('focus', calculateSuggestions);
     input.addEventListener('blur', function () {
-      // clicking a suggestion will cause blur, but hiding suggestions
-      // interferes with the click event on the suggestion.
-      // if a suggestion was clicked, focus will return to the input.
-      setTimeout(function () {
-        if (document.activeElement !== input) {
-          hideSuggestions();
+      // clicking a suggestion will cause blur, but suggestions should not be
+      // hidden until any clicks on the suggestions have finished, and there
+      // has been time for focus to return to the input field
+      var interval = setInterval(function () {
+        if (!currentlyClickingSuggestion) {
+          clearInterval(interval);
+          setTimeout(function () {
+            if (document.activeElement !== input) {
+              hideSuggestions();
+            }
+          }, 100);
         }
-      }, 100);
-
+      }, 50);
     });
     input.addEventListener('click', function () {
       clearResultSelection();
