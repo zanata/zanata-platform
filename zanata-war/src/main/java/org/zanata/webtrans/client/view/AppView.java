@@ -32,18 +32,23 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.Breadcrumb;
 import org.zanata.webtrans.client.ui.HasTranslationStats.LabelFormat;
 import org.zanata.webtrans.client.ui.NotificationDetailsBox;
-import org.zanata.webtrans.client.ui.NotificationItem;
 import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
@@ -57,6 +62,14 @@ import com.google.inject.Inject;
 public class AppView extends Composite implements AppDisplay,
         NotificationDetailListener {
 
+    private Timer deactivateNotificationTimer = new Timer() {
+
+        @Override
+        public void run() {
+            deactivateNotification(notificationList);
+        }
+    };
+
     interface AppViewUiBinder extends UiBinder<LayoutPanel, AppView> {
     }
 
@@ -69,6 +82,8 @@ public class AppView extends Composite implements AppDisplay,
     }
 
     private static AppViewUiBinder uiBinder = GWT.create(AppViewUiBinder.class);
+    private static NotificationTemplate notificationTemplate = GWT
+            .create(NotificationTemplate.class);
 
     @UiField(provided = true)
     TransUnitCountBar translationStatsBar;
@@ -105,6 +120,8 @@ public class AppView extends Composite implements AppDisplay,
 
     @UiField
     UnorderedListWidget notifications;
+    @UiField
+    UListElement notificationList;
 
     private final NotificationDetailsBox notificationDetailsBox;
 
@@ -323,9 +340,14 @@ public class AppView extends Composite implements AppDisplay,
     }
 
     public void showNotification(NotificationEvent notification) {
-        notifications.clear();
-        notifications.add(new NotificationItem(messages, notification, this,
-                false));
+        notificationList.setInnerHTML(
+                createListItem(getMessageClass(notification.getSeverity()),
+                        notification.getMessage()).asString());
+        activateNotification(notificationList);
+        if (notification.getSeverity() == NotificationEvent.Severity.Info || notification.getSeverity() ==
+                NotificationEvent.Severity.Warning) {
+            deactivateNotificationTimer.schedule(5000);
+        }
     }
 
     @Override
@@ -338,5 +360,38 @@ public class AppView extends Composite implements AppDisplay,
     @Override
     public void closeMessage(NotificationEvent notificationEvent) {
         notifications.clear();
+    }
+
+    private static SafeHtml createListItem(String messageStyle, String message) {
+        return notificationTemplate.listItem(messageStyle,
+                new SafeHtmlBuilder().appendEscaped(message).toSafeHtml());
+    }
+
+    private static String getMessageClass(NotificationEvent.Severity severity) {
+        switch (severity) {
+            case Warning:
+                return "message--warning";
+            case Error:
+                return "message--danger";
+            case Info:
+                return "message--highlight";
+        }
+        return "message--highlight";
+    }
+
+    // @formatter:off
+    private static native void activateNotification(Element element)/*-{
+      $wnd.zanata.messages.activate(element);
+    }-*/;
+    private static native void deactivateNotification(Element element)/*-{
+      $wnd.zanata.messages.deactivate(element);
+    }-*/;
+    // @formatter:on
+
+    public interface NotificationTemplate extends SafeHtmlTemplates {
+        @Template("<li class='{0} message--removable js-message-removable'>{1}" +
+                "<a href='#' class='message__remove js-message-remove'><i class='i i--remove'></i></a>" +
+                "</li>")
+        SafeHtml listItem(String messageStyle, SafeHtml message);
     }
 }

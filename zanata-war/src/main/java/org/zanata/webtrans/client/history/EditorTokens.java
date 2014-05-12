@@ -2,6 +2,8 @@ package org.zanata.webtrans.client.history;
 
 import java.util.List;
 
+import com.google.common.base.Strings;
+
 enum EditorTokens implements TokensConverter {
     INSTANCE;
 
@@ -15,6 +17,13 @@ enum EditorTokens implements TokensConverter {
     static final String KEY_MESSAGE_FILTER_REJECTED = "rejected";
     static final String KEY_MESSAGE_FILTER_ERROR = "error";
     static final String VALUE_MESSAGE_FILTER = "show";
+    static final String KEY_RES_ID = "resid";
+    static final String KEY_MSG_CONTEXT = "msgcontext";
+    static final String KEY_SOURCE_COMMENT = "sourcecomment";
+    static final String KEY_TARGET_COMMENT = "targetcomment";
+    static final String KEY_LAST_MODIFIED_BY = "lastmodifiedby";
+    static final String KEY_CHANGED_BEFORE = "changedbefore";
+    static final String KEY_CHANGED_AFTER = "changedafter";
 
     @Override
     public void populateHistoryToken(HistoryToken historyToken, Token token) {
@@ -23,7 +32,7 @@ enum EditorTokens implements TokensConverter {
         if (key.equals(EditorTokens.KEY_DOCUMENT)) {
             historyToken.setDocumentPath(value);
         } else if (key.equals(EditorTokens.KEY_SEARCH_DOC_TEXT)) {
-            historyToken.setSearchText(value);
+            historyToken.setEditorTextSearch(value);
         } else if (key.equals(EditorTokens.KEY_TEXT_FLOW_ID)) {
             historyToken.setTextFlowId(value);
         }
@@ -45,6 +54,27 @@ enum EditorTokens implements TokensConverter {
         if (key.equals(KEY_MESSAGE_FILTER_ERROR)) {
             historyToken.setFilterHasError(true);
         }
+        if (key.equals(KEY_RES_ID)) {
+            historyToken.setResId(value);
+        }
+        if (key.equals(KEY_CHANGED_AFTER)) {
+            historyToken.setChangedAfter(value);
+        }
+        if (key.equals(KEY_CHANGED_BEFORE)) {
+            historyToken.setChangedBefore(value);
+        }
+        if (key.equals(KEY_MSG_CONTEXT)) {
+            historyToken.setMsgContext(value);
+        }
+        if (key.equals(KEY_SOURCE_COMMENT)) {
+            historyToken.setSourceComment(value);
+        }
+        if (key.equals(KEY_TARGET_COMMENT)) {
+            historyToken.setTargetComment(value);
+        }
+        if (key.equals(KEY_LAST_MODIFIED_BY)) {
+            historyToken.setLastModifiedBy(value);
+        }
     }
 
     @Override
@@ -54,11 +84,7 @@ enum EditorTokens implements TokensConverter {
             tokens.add(new Token(KEY_DOCUMENT, historyToken.getDocumentPath()));
         }
 
-        if (!historyToken.getSearchText().equals(
-                HistoryToken.DEFAULT_SEARCH_TEXT)) {
-            tokens.add(new Token(KEY_SEARCH_DOC_TEXT, historyToken
-                    .getSearchText()));
-        }
+        setIfExists(tokens, KEY_SEARCH_DOC_TEXT, historyToken.getEditorTextSearch());
 
         if (historyToken.getTextFlowId() != null) {
             tokens.add(new Token(KEY_TEXT_FLOW_ID, historyToken.getTextFlowId()
@@ -99,6 +125,21 @@ enum EditorTokens implements TokensConverter {
                 tokens.add(new Token(KEY_MESSAGE_FILTER_ERROR,
                         VALUE_MESSAGE_FILTER));
             }
+        }
+        setIfExists(tokens, KEY_RES_ID, historyToken.getResId());
+        setIfExists(tokens, KEY_MSG_CONTEXT, historyToken.getMsgContext());
+        setIfExists(tokens, KEY_SOURCE_COMMENT, historyToken.getSourceComment());
+        setIfExists(tokens, KEY_TARGET_COMMENT, historyToken.getTargetComment());
+        setIfExists(tokens, KEY_LAST_MODIFIED_BY,
+                historyToken.getLastModifiedBy());
+        setIfExists(tokens, KEY_CHANGED_AFTER, historyToken.getChangedAfter());
+        setIfExists(tokens, KEY_CHANGED_BEFORE, historyToken.getChangedBefore());
+    }
+
+    private static void
+            setIfExists(List<Token> tokens, String key, String value) {
+        if (!Strings.isNullOrEmpty(value)) {
+            tokens.add(new Token(key, value));
         }
     }
 }

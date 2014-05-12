@@ -5,6 +5,10 @@ import net.customware.gwt.presenter.client.widget.WidgetDisplay;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.MainView;
+import org.zanata.webtrans.client.ui.UnorderedListWidget;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.UListElement;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 /**
  * @author Patrick Huang <a

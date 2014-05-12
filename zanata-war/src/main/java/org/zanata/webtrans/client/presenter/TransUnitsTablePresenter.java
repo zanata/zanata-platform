@@ -213,7 +213,8 @@ public class TransUnitsTablePresenter extends
                 previousFilterOptions.isFilterUntranslated(),
                 previousFilterOptions.isFilterApproved(), previousFilterOptions
                         .isFilterRejected(), previousFilterOptions
-                        .isFilterHasError(), true));
+                        .isFilterHasError(), previousFilterOptions
+                        .getEditorFilter(), true));
         display.hideFilterConfirmation();
     }
 

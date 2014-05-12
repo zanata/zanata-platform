@@ -123,9 +123,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         // verify first message
         new LoginWorkFlow().signIn("admin", "admin");
         EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        BasicWorkFlow.EDITOR_TEMPLATE, "plurals", "master",
-                        "pl", "test"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("plurals", "master", "pl", "test");
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
                 Matchers.equalTo("One file removed"));

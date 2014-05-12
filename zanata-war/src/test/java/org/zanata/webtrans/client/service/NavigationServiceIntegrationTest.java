@@ -64,6 +64,7 @@ import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
@@ -127,7 +128,7 @@ public class NavigationServiceIntegrationTest {
         navigationStateHolder = new ModalNavigationStateHolder(configHolder);
         GetTransUnitActionContextHolder contextHolder =
                 new GetTransUnitActionContextHolder(configHolder);
-        contextHolder.initContext(DOCUMENT, null, null);
+        contextHolder.initContext(DOCUMENT, null, EditorFilter.ALL);
 
         service =
                 new NavigationService(eventBus, dispatcher, configHolder,
@@ -163,7 +164,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canMockHandler() {
-        service.requestTransUnitsAndUpdatePageIndex(context.changeCount(6),
+        service.requestTransUnitsAndUpdatePageIndex(context.withCount(6),
                 true);
 
         assertThat(getTransUnitListResult.getDocumentId(),
@@ -191,7 +192,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToFirstPage() {
-        service.init(context.changeCount(3));
+        service.init(context.withCount(3));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(0);
@@ -212,7 +213,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToLastPageWithNotPerfectDivide() {
-        service.init(context.changeCount(4));
+        service.init(context.withCount(4));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(1);
@@ -227,7 +228,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToLastPageWithPerfectDivide() {
-        service.init(context.changeCount(3));
+        service.init(context.withCount(3));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(1);
@@ -244,7 +245,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canHavePageCountGreaterThanActualSize() {
-        service.init(context.changeCount(10));
+        service.init(context.withCount(10));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(100);
@@ -262,7 +263,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToNextPage() {
-        service.init(context.changeCount(2));
+        service.init(context.withCount(2));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(1);
@@ -286,7 +287,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToPreviousPage() {
-        service.init(context.changeCount(2));
+        service.init(context.withCount(2));
         verifyDispatcherAndCallOnSuccess();
 
         // should be on first page already
@@ -321,7 +322,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void canGoToPage() {
-        service.init(context.changeCount(3));
+        service.init(context.withCount(3));
         verifyDispatcherAndCallOnSuccess();
 
         service.gotoPage(1);
@@ -347,7 +348,7 @@ public class NavigationServiceIntegrationTest {
 
     @Test
     public void onRPCSuccess() {
-        service.init(context.changeCount(3));
+        service.init(context.withCount(3));
         InOrder inOrder = inOrder(eventBus, transUnitsTablePresenter);
         inOrder.verify(eventBus).fireEvent(LoadingEvent.START_EVENT);
         verifyDispatcherAndCallOnSuccess();

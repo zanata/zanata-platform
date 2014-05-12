@@ -24,7 +24,6 @@ import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
 import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 /**
  * @author Patrick Huang <a
@@ -65,9 +64,8 @@ public class ConcurrentEditTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
         final EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        EDITOR_TEMPLATE, "base", "master", "pl",
-                        "test.pot"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("base", "master", "pl",
+                        "test.pot");
 
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
@@ -121,9 +119,8 @@ public class ConcurrentEditTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
         final EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        EDITOR_TEMPLATE, "base", "beta", "pl",
-                        "test.pot"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("base", "beta", "pl",
+                        "test.pot");
 
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it

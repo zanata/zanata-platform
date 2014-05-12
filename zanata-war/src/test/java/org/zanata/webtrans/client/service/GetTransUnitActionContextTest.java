@@ -39,7 +39,7 @@ public class GetTransUnitActionContextTest {
     public void testChangeFindMessage() throws Exception {
         String findMessage = context.getFindMessage();
         GetTransUnitActionContext result =
-                context.changeFindMessage("new find message");
+                context.withFindMessage("new find message");
 
         assertThat(context.getFindMessage(), Matchers.sameInstance(findMessage));
         assertThat(result.getFindMessage(),
@@ -48,7 +48,7 @@ public class GetTransUnitActionContextTest {
 
     @Test
     public void testChangeFilterTranslated() throws Exception {
-        GetTransUnitActionContext result = context.changeFilterTranslated(true);
+        GetTransUnitActionContext result = context.withFilterTranslated(true);
 
         assertThat(context.isFilterTranslated(), Matchers.is(false));
         assertThat(result.isFilterTranslated(), Matchers.is(true));
@@ -56,7 +56,7 @@ public class GetTransUnitActionContextTest {
 
     @Test
     public void testChangeFilterNeedReview() throws Exception {
-        GetTransUnitActionContext result = context.changeFilterFuzzy(true);
+        GetTransUnitActionContext result = context.withFilterFuzzy(true);
 
         assertThat(context.isFilterFuzzy(), Matchers.is(false));
         assertThat(result.isFilterFuzzy(), Matchers.is(true));
@@ -65,7 +65,7 @@ public class GetTransUnitActionContextTest {
     @Test
     public void testChangeFilterUntranslated() throws Exception {
         GetTransUnitActionContext result =
-                context.changeFilterUntranslated(true);
+                context.withFilterUntranslated(true);
 
         assertThat(context.isFilterUntranslated(), Matchers.is(false));
         assertThat(result.isFilterUntranslated(), Matchers.is(true));
@@ -73,7 +73,7 @@ public class GetTransUnitActionContextTest {
 
     @Test
     public void testChangeFilterApproved() throws Exception {
-        GetTransUnitActionContext result = context.changeFilterApproved(true);
+        GetTransUnitActionContext result = context.withFilterApproved(true);
 
         assertThat(context.isFilterApproved(), Matchers.is(false));
         assertThat(result.isFilterApproved(), Matchers.is(true));
@@ -81,7 +81,7 @@ public class GetTransUnitActionContextTest {
 
     @Test
     public void testChangeFilterRejected() throws Exception {
-        GetTransUnitActionContext result = context.changeFilterRejected(true);
+        GetTransUnitActionContext result = context.withFilterRejected(true);
 
         assertThat(context.isFilterRejected(), Matchers.is(false));
         assertThat(result.isFilterRejected(), Matchers.is(true));
@@ -89,24 +89,24 @@ public class GetTransUnitActionContextTest {
 
     @Test
     public void testNeedReloadList() throws Exception {
-        verifyNeedReloadTransUnits(context, context.changeFilterFuzzy(true),
+        verifyNeedReloadTransUnits(context, context.withFilterFuzzy(true),
                 NEEDED);
         verifyNeedReloadTransUnits(context,
-                context.changeFilterUntranslated(true), NEEDED);
+                context.withFilterUntranslated(true), NEEDED);
         verifyNeedReloadTransUnits(context,
-                context.changeFilterTranslated(true), NEEDED);
-        verifyNeedReloadTransUnits(context, context.changeFilterApproved(true),
+                context.withFilterTranslated(true), NEEDED);
+        verifyNeedReloadTransUnits(context, context.withFilterApproved(true),
                 NEEDED);
-        verifyNeedReloadTransUnits(context, context.changeFilterRejected(true),
+        verifyNeedReloadTransUnits(context, context.withFilterRejected(true),
                 NEEDED);
         verifyNeedReloadTransUnits(context,
                 context.changeDocument(documentInfo(99, "")), NEEDED);
         verifyNeedReloadTransUnits(context,
-                context.changeFindMessage("find message"), NEEDED);
-        verifyNeedReloadTransUnits(context, context.changeCount(2), NEEDED);
-        verifyNeedReloadTransUnits(context, context.changeOffset(2), NEEDED);
+                context.withFindMessage("find message"), NEEDED);
+        verifyNeedReloadTransUnits(context, context.withCount(2), NEEDED);
+        verifyNeedReloadTransUnits(context, context.withOffset(2), NEEDED);
         verifyNeedReloadTransUnits(context,
-                context.changeTargetTransUnitId(new TransUnitId(2)), NO_NEED);
+                context.withTargetTransUnitId(new TransUnitId(2)), NO_NEED);
     }
 
     private static void verifyNeedReloadTransUnits(
@@ -119,26 +119,26 @@ public class GetTransUnitActionContextTest {
     @Test
     public void testNeedReloadNavigationIndex() throws Exception {
         verifyNeedReloadNavigationIndex(context,
-                context.changeFilterFuzzy(true), NEEDED);
+                context.withFilterFuzzy(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeFilterUntranslated(true), NEEDED);
+                context.withFilterUntranslated(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeFilterTranslated(true), NEEDED);
+                context.withFilterTranslated(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeFilterApproved(true), NEEDED);
+                context.withFilterApproved(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeFilterRejected(true), NEEDED);
+                context.withFilterRejected(true), NEEDED);
         verifyNeedReloadNavigationIndex(context,
                 context.changeDocument(documentInfo(99, "")), NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeFindMessage("find message"), NEEDED);
+                context.withFindMessage("find message"), NEEDED);
 
-        verifyNeedReloadNavigationIndex(context, context.changeCount(2),
+        verifyNeedReloadNavigationIndex(context, context.withCount(2),
                 NO_NEED);
-        verifyNeedReloadNavigationIndex(context, context.changeOffset(2),
+        verifyNeedReloadNavigationIndex(context, context.withOffset(2),
                 NEEDED);
         verifyNeedReloadNavigationIndex(context,
-                context.changeTargetTransUnitId(new TransUnitId(2)), NO_NEED);
+                context.withTargetTransUnitId(new TransUnitId(2)), NO_NEED);
     }
 
     private static void verifyNeedReloadNavigationIndex(

@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,19 +27,23 @@ public class GetTransUnitActionContextHolder {
     }
 
     protected GetTransUnitActionContext initContext(DocumentInfo document,
-            String findMessage, TransUnitId targetTransUnitId) {
+            TransUnitId targetTransUnitId,
+            EditorFilter editorFilter) {
         // @formatter:off
         context = new GetTransUnitActionContext(document)
-            .changeCount(configHolder.getState().getEditorPageSize())
-            .changeFindMessage(findMessage)
-            .changeFilterFuzzy(configHolder.getState().isFilterByFuzzy())
-            .changeFilterTranslated(configHolder.getState().isFilterByTranslated())
-            .changeFilterUntranslated(configHolder.getState().isFilterByUntranslated())
-            .changeFilterApproved(configHolder.getState().isFilterByApproved())
-            .changeFilterRejected(configHolder.getState().isFilterByRejected())
-            .changeFilterHasError(configHolder.getState().isFilterByHasError())
-            .changeValidationIds(configHolder.getState().getEnabledValidationIds())
-            .changeTargetTransUnitId(targetTransUnitId);
+            .withCount(configHolder.getState().getEditorPageSize())
+            .withEditorFilter(editorFilter)
+            .withFilterFuzzy(configHolder.getState().isFilterByFuzzy())
+            .withFilterTranslated(
+                    configHolder.getState().isFilterByTranslated())
+            .withFilterUntranslated(
+                    configHolder.getState().isFilterByUntranslated())
+            .withFilterApproved(configHolder.getState().isFilterByApproved())
+            .withFilterRejected(configHolder.getState().isFilterByRejected())
+            .withFilterHasError(configHolder.getState().isFilterByHasError())
+            .withValidationIds(
+                    configHolder.getState().getEnabledValidationIds())
+            .withTargetTransUnitId(targetTransUnitId);
         // @formatter:on
 
         return context;
@@ -49,13 +54,13 @@ public class GetTransUnitActionContextHolder {
     }
 
     public GetTransUnitActionContext changeOffset(int targetOffset) {
-        context = context.changeOffset(targetOffset);
+        context = context.withOffset(targetOffset);
         return context;
     }
 
     public GetTransUnitActionContext changeTargetTransUnitId(
             TransUnitId transUnitId) {
-        context = context.changeTargetTransUnitId(transUnitId);
+        context = context.withTargetTransUnitId(transUnitId);
         return context;
     }
 

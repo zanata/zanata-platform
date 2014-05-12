@@ -2,6 +2,8 @@ package org.zanata.workflow;
 
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
+import org.zanata.page.webtrans.EditorPage;
+import com.google.common.base.Preconditions;
 
 /**
  * @author Patrick Huang <a
@@ -30,6 +32,15 @@ public class BasicWorkFlow extends AbstractWebWorkFlow {
             return relativeUrl.substring(1, relativeUrl.length());
         }
         return relativeUrl;
+    }
+    public EditorPage goToEditor(String project, String version, String locale, String doc) {
+        Preconditions.checkNotNull(project);
+        Preconditions.checkNotNull(version);
+        Preconditions.checkNotNull(locale);
+        Preconditions.checkNotNull(doc);
+        return goToPage(String.format(
+                BasicWorkFlow.EDITOR_TEMPLATE, project, version,
+                locale, doc), EditorPage.class);
     }
 
 }
