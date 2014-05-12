@@ -17,12 +17,14 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.ignoreState = true /* Make sure every url modification gets parsed */
+    crossroads.ignoreState = true
+    /* Make sure every url modification gets parsed */
     crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
       function (pre, slug, lang) {
         zanata.tabs.activate(jQuery('#languages_tab'));
-        if (lang) {
-          updateActiveRow(jQuery('a.' + lang))
+        var clickEle = jQuery('a.' + lang);
+        if (lang && clickEle.length != 0) {
+          updateActiveRow(clickEle)
           toggleColumn('languages')
           reloadLocale(lang)
         }
@@ -31,23 +33,28 @@
     crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
       function (pre, slug, proj, ver) {
         zanata.tabs.activate(jQuery('#projects_tab'));
-        updateActiveRow(jQuery('#' + jqSelector(proj + "[" + ver + "]") +
-          " a"));
-        toggleColumn('projects');
-        reloadVersion(proj, ver)
+        var clickEle = jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a")
+        if (clickEle.length != 0) {
+          updateActiveRow(clickEle);
+          toggleColumn('projects');
+          reloadVersion(proj, ver)
+        }
       });
 
     crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:',
       function (pre, slug, setting) {
         zanata.tabs.activate(jQuery('#settings_tab'));
-        if (setting)
-          zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
-            "_tab"))
+        setting = setting || 'general';
+        setting =
+          validateTab("#settings-" + setting + '_tab', setting, 'general');
+        zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
+          "_tab"))
       });
 
     crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:',
       function (pre, slug, section) {
         section = section || 'languages'
+        section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 

@@ -23,7 +23,8 @@
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang:',
       function (pre, projectSlug, versionSlug, lang) {
         zanata.tabs.activate(jQuery('#languages_tab'));
-        if (lang) {
+        var clickEle = jQuery('a.' + lang);
+        if (lang && clickEle.length != 0) {
           updateActiveRow(jQuery('a.' + lang))
           toggleColumn('languages')
           reloadLocale(lang)
@@ -33,8 +34,9 @@
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents/:docId*:',
       function (pre, projectSlug, versionSlug, docId) {
         zanata.tabs.activate(jQuery('#documents_tab'));
-        if (docId) {
-          updateActiveRow(jQuery('#' + jqSelector(docId)).children().eq(1));
+        var clickEle = jQuery('#' + jqSelector(docId)).children().eq(1);
+        if (docId && clickEle.length != 0) {
+          updateActiveRow(clickEle);
           toggleColumn('documents');
           reloadDocument(projectSlug, versionSlug, docId)
         }
@@ -43,15 +45,17 @@
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting:',
       function (pre, projectSlug, versionSlug, setting) {
         zanata.tabs.activate(jQuery('#settings_tab'));
-        if (setting)
-          zanata.tabs.activate(jQuery('#settings-' + jqSelector(setting) +
-            "_tab"))
+        setting = setting || 'general';
+        setting =
+          validateTab("#settings-" + setting + '_tab', setting, 'general');
+        zanata.tabs.activate(jQuery('#settings-' + setting + "_tab"))
       });
 
 
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section:',
       function (pre, projectSlug, versionSlug, section) {
         section = section || 'languages'
+        section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
