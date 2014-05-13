@@ -108,7 +108,8 @@ public class VersionGroupFullTest extends ZanataTestCase {
                 .goToGroups()
                 .createNewGroup()
                 .inputGroupId(groupID + groupIDExtra)
-                .inputGroupName(groupName);
+                .inputGroupName(groupName)
+                .saveGroupFailure();
 
         assertThat("User cannot enter more than 40 characters",
                 groupPage.getGroupIdValue(),

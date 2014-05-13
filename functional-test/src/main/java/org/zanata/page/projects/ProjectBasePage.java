@@ -126,6 +126,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectBasePage gotoSettingsTab() {
+        slightPause();
         clickWhenTabEnabled(settingsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override

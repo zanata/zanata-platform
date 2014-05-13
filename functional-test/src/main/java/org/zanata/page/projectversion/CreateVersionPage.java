@@ -62,7 +62,6 @@ public class CreateVersionPage extends BasePage {
                 getVersionIdField().clear();
                 new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
                 getVersionIdField().sendKeys(versionId);
-                defocus();
                 return true;
             }
         });

@@ -72,6 +72,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     }
 
     @Test
+    @Ignore("rhbz1097030")
     public void addMaintainerAsAdmin() {
         ProjectPermissionsTab projectPermissionsTab =
                 new LoginWorkFlow()
@@ -109,6 +110,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     }
 
     @Test
+    @Ignore("rhbz1097030")
     public void addMaintainerAsMaintainer() {
 
         assertThat("Translator has signed in",
@@ -147,6 +149,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     }
 
     @Test
+    @Ignore("rhbz1097030")
     public void removeMaintainer() {
 
         assertThat("Translator has signed in",

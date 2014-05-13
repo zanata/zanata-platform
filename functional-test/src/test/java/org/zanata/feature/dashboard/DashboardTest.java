@@ -107,10 +107,8 @@ public class DashboardTest extends ZanataTestCase {
         dashboard.goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .typeNewAccountEmailAddress("new@fakeemail.com")
-                .clickUpdateEmailButton()
-                .waitForNotificationMessage(successMessage);
-        assertThat(dashboard.getNotificationMessage())
-                .isEqualTo(successMessage);
+                .clickUpdateEmailButton();
+        assertThat(dashboard.expectNotification(successMessage));
     }
 
     @Test
@@ -121,10 +119,8 @@ public class DashboardTest extends ZanataTestCase {
                 .gotoSettingsAccountTab()
                 .typeOldPassword("admin")
                 .typeNewPassword("admin2")
-                .clickUpdatePasswordButton()
-                .waitForNotificationMessage(passwordChanged);
-        assertThat(dashboard.getNotificationMessage()).isEqualTo(
-                passwordChanged);
+                .clickUpdatePasswordButton();
+        assertThat(dashboard.expectNotification(passwordChanged));
     }
 
     @Test

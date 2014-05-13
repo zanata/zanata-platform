@@ -112,7 +112,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
         final EditorPage editor =
                 new BasicWorkFlow().goToEditor("properties-test",
                         "master", "pl", "test");
-        assertThat(editor.getMessageTargetAtRowIndex(1),
+        assertThat(editor.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("translation updated on client"));
     }
 

@@ -193,8 +193,7 @@ public class UploadTest extends ZanataTestCase {
                 .submitUpload();
         versionLanguagesPage.assertNoCriticalErrors();
         assertThat("Success message is shown",
-                versionLanguagesPage.getNotificationMessage(),
-                Matchers.not(Matchers.equalTo(successfullyUploaded)));
+                versionLanguagesPage.expectNotification(successfullyUploaded));
     }
 
     @Test
@@ -215,8 +214,7 @@ public class UploadTest extends ZanataTestCase {
                         .submitUpload();
 
         assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
+                projectVersionPage.expectNotification(successfullyUploaded));
 
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
@@ -246,8 +244,7 @@ public class UploadTest extends ZanataTestCase {
 
         assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
         assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
+                projectVersionPage.expectNotification(successfullyUploaded));
 
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
@@ -273,9 +270,8 @@ public class UploadTest extends ZanataTestCase {
                         .enterFilePath(unsupportedFile.getAbsolutePath())
                         .submitUpload();
 
-        assertThat("Unrecognized file extension for ",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(uploadFailed));
+        assertThat("Unrecognized file extension error is shown",
+                projectVersionPage.expectNotification(uploadFailed));
     }
 
 }

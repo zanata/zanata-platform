@@ -29,11 +29,6 @@ import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 public class CreateProjectPage extends BasePage {
-    @FindBy(id = "project-form:slugField:slug")
-    private WebElement projectIdField;
-
-    @FindBy(id = "project-form:nameField:name")
-    private WebElement projectNameField;
 
     @FindBy(id = "project-form:descriptionField:description")
     private WebElement descriptionField;
@@ -49,21 +44,19 @@ public class CreateProjectPage extends BasePage {
     }
 
     public CreateProjectPage enterProjectId(String projectId) {
-        projectIdField.sendKeys(projectId);
-        defocus();
+        getDriver().findElement(By.id("project-form:slugField:slug"))
+                .sendKeys(projectId);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterProjectName(final String projectName) {
-        getDriver().findElement(By.id("project-form:nameField:name")).sendKeys(
-                projectName);
-        defocus();
+        getDriver().findElement(By.id("project-form:nameField:name"))
+                .sendKeys(projectName);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterDescription(String projectDescription) {
         descriptionField.sendKeys(projectDescription);
-        defocus();
         return new CreateProjectPage(getDriver());
     }
 

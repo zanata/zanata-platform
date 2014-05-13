@@ -100,8 +100,6 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
                         .enterFilePath(testfile.getAbsolutePath())
                         .submitUpload().translate("fr", testfile.getName());
 
-        editorPage.setSyntaxHighlighting(false);
-
         assertThat("Item 1 shows Line One",
                 editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("Line One"));
@@ -125,10 +123,10 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 2 shows a translation of Line Two",
                 editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 3 shows a translation of Line Three",
                 editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Ligne Trois"));
 
@@ -136,13 +134,13 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
         editorPage.reload();
 
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(0),
+                editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(1),
+        assertThat("Item 2 shows a translation of Line Two",
+                editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(2),
+        assertThat("Item 3 shows a translation of Line Three",
+                editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Ligne Trois"));
     }
 }
