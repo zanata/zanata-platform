@@ -97,16 +97,19 @@ public class RegisterTest extends ZanataTestCase {
 
         fields.put("username", "bo");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are shown for string too short",
                 containsUsernameError(registerPage.getFieldErrors()));
 
         fields.put("username", "testusername");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are not shown",
                 !containsUsernameError(registerPage.getFieldErrors()));
 
         fields.put("username", "12345678901234567890a");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are shown for string too long",
                 containsUsernameError(registerPage.getFieldErrors()));
     }
@@ -132,6 +135,7 @@ public class RegisterTest extends ZanataTestCase {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .setFields(fields);
+        registerPage.defocus();
 
         assertThat("Email validation errors are shown",
                 registerPage.getFieldErrors(), Matchers.hasItem(errorMsg));
@@ -148,6 +152,8 @@ public class RegisterTest extends ZanataTestCase {
 
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
+        registerPage.defocus();
+
         assertThat("Value is required shows for all fields",
                 registerPage.waitForFieldErrors(),
                 Matchers.contains(errorMsg,
@@ -164,6 +170,7 @@ public class RegisterTest extends ZanataTestCase {
         fields.put("username", "______");
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
+        registerPage.defocus();
         assertThat("A username of all underscores is not valid",
                 registerPage.getFieldErrors(),
                 Matchers.hasItem(registerPage.USERNAMEVALIDATIONERROR));

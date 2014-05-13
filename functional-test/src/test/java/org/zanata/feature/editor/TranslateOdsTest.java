@@ -92,8 +92,6 @@ public class TranslateOdsTest extends ZanataTestCase {
         EditorPage editorPage =
                 projectVersionPage.translate("fr", testfile.getName());
 
-        editorPage.setSyntaxHighlighting(false);
-
         assertThat("Item 1 shows TestODS (the sheet name)",
                 editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("TestODS"));
@@ -129,16 +127,16 @@ public class TranslateOdsTest extends ZanataTestCase {
         assertThat("Item 1 shows a translation of the sheet name",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("TestODS"));
-        assertThat("Item 1 shows a translation of page name",
+        assertThat("Item 2 shows a translation of page name",
                 editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Début"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 3 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 4 shows a translation of Line Two",
                 editorPage.getBasicTranslationTargetAtRowIndex(3),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 5 shows a translation of Line Three",
                 editorPage.getBasicTranslationTargetAtRowIndex(4),
                 Matchers.equalTo("Ligne Trois"));
 
@@ -146,19 +144,19 @@ public class TranslateOdsTest extends ZanataTestCase {
         editorPage.reload();
 
         assertThat("Item 1 shows a translation of the sheet name",
-                editorPage.getMessageTargetAtRowIndex(0),
+                editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("TestODS"));
-        assertThat("Item 1 shows a translation of page name",
-                editorPage.getMessageTargetAtRowIndex(1),
+        assertThat("Item 2 shows a translation of page name",
+                editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Début"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(2),
+        assertThat("Item 3 shows a translation of Line One",
+                editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(3),
+        assertThat("Item 4 shows a translation of Line Two",
+                editorPage.getBasicTranslationTargetAtRowIndex(3),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(4),
+        assertThat("Item 5 shows a translation of Line Three",
+                editorPage.getBasicTranslationTargetAtRowIndex(4),
                 Matchers.equalTo("Ligne Trois"));
     }
 }

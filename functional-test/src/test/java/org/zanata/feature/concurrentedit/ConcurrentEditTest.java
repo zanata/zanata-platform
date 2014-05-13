@@ -82,7 +82,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getMessageTargetAtRowIndex(0);
+                return editorPage.getBasicTranslationTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }
@@ -133,7 +133,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getMessageTargetAtRowIndex(0);
+                return editorPage.getBasicTranslationTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }

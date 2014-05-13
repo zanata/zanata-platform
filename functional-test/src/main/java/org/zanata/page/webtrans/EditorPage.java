@@ -273,6 +273,7 @@ public class EditorPage extends BasePage {
         WebElement button = getDriver()
                 .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
         button.click();
+        slightPause();
         return this;
     }
 
