@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -71,6 +72,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
     }
 
     @Test
+    @Ignore("rhbz1097026")
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
@@ -106,8 +108,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         assertThat(pulledTargets, Matchers.equalTo(originalTargets));
 
         // translate on web UI and pull again
-        editorPage.setSyntaxHighlighting(false)
-                .translateTargetAtRowIndex(0, "one aoeuaouaou")
+        editorPage.translateTargetAtRowIndex(0, "one aoeuaouaou")
                 .saveAsFuzzyAtRow(0);
 
 
@@ -122,8 +123,9 @@ public class GettextPluralSupportTest extends ZanataTestCase {
     private static EditorPage verifyPluralPushedToEditor() {
         // verify first message
         new LoginWorkFlow().signIn("admin", "admin");
-        EditorPage editorPage =
-                new BasicWorkFlow().goToEditor("plurals", "master", "pl", "test");
+        EditorPage editorPage = new BasicWorkFlow()
+                .goToEditor("plurals", "master", "pl", "test")
+                .setSyntaxHighlighting(true);
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
                 Matchers.equalTo("One file removed"));

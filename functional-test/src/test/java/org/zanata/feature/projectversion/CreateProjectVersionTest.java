@@ -71,6 +71,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").clickCreateVersionLink()
                         .inputVersionId("");
+        createVersionPage.defocus();
 
         assertThat("The empty value is rejected",
                 createVersionPage.getErrors(),
@@ -83,27 +84,31 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").clickCreateVersionLink()
                         .inputVersionId("-A");
-
+        createVersionPage.defocus();
         String formatError =
                 "must start and end with letter or number, "
                         + "and contain only letters, numbers, underscores and hyphens.";
+
         assertThat("The input is rejected", createVersionPage.getErrors(),
                 hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("B-").waitForNumErrors(1);
+        createVersionPage.defocus();
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
                 hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("_C_").waitForNumErrors(1);
+        createVersionPage.defocus();
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
                 hasItem(formatError));
 
         createVersionPage =
                 createVersionPage.inputVersionId("A-B_C").waitForNumErrors(0);
+        createVersionPage.defocus();
 
         assertThat("The input is acceptable", createVersionPage.getErrors(),
                 not(hasItem(formatError)));
