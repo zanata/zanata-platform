@@ -120,7 +120,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
 
         List<HIterationGroup> filteredList = Lists.newArrayList();
         for (HIterationGroup obsoleteGroup : obsoleteVersions) {
-            if (person.isMaintainer(obsoleteGroup)) {
+            if (obsoleteGroup.getMaintainers().contains(person)) {
                 filteredList.add(obsoleteGroup);
             }
         }
