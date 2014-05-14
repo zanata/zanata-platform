@@ -144,22 +144,22 @@ public class VersionGroupPage extends BasePage {
     }
 
     public VersionGroupPage clickLanguagesTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("languages")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("languages_tab")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickProjectsTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("projects")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("projects_tab")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickMaintainersTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("maintainers")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("maintainers_tab")));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickSettingsTab() {
-        clickWhenTabEnabled(getDriver().findElement(By.id("settings")));
+        clickWhenTabEnabled(getDriver().findElement(By.id("settings_tab")));
         return new VersionGroupPage(getDriver());
     }
 
