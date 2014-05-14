@@ -198,7 +198,7 @@
             <a4j:commandLink
               action="#{versionGroupHome.removeMaintainer(maintainer)}"
               styleClass="l--float-right txt--danger reveal__target"
-              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers_content">
+              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form">
               <i class="i--large i--remove"></i>
             </a4j:commandLink>
           </li>
@@ -214,7 +214,7 @@
             actionBean="#{versionGroupHome.maintainerAutocomplete}"
             maxlength="80" minlength="3" id="maintainerAutocomplete"
             fetchValue="#{result.account.username}"
-            render="settings-maintainers-form"
+            render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
             oncomplete="focusCurrentActiveInput()"
             placeholder="#{messages['jsf.SearchUsers']}">
 

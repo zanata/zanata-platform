@@ -51,7 +51,6 @@ import org.zanata.service.VersionGroupService;
 import org.zanata.service.impl.VersionGroupServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.AbstractListFilter;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
@@ -199,6 +198,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                             .getMessage("jsf.group.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().removeMaintainer(maintainer);
+            maintainerFilter.reset();
             update();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     zanataMessages.getMessage("jsf.MaintainerRemoveFromGroup",
