@@ -342,7 +342,7 @@ public class ProjectHome extends SlugHome<HProject> {
                             .getMessage("jsf.project.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().getMaintainers().remove(person);
-
+            maintainerFilter.reset();
             update();
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
