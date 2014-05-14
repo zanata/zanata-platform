@@ -54,6 +54,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab();
 
+        projectLanguagesTab.slightPause();
+
         List<String> enabledLocaleList = projectLanguagesTab
                 .getEnabledLocaleList();
 
