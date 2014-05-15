@@ -22,10 +22,12 @@ package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -44,6 +46,9 @@ import static org.zanata.util.rfc2822.ValidEmailAddressRFC2822.*;
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class ValidEmailAddressTest extends ZanataTestCase {
+
+    @Rule
+    public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
 
     @DataPoint
     public static ValidEmailAddressRFC2822 TEST_BASIC_EMAIL = BASIC_EMAIL;

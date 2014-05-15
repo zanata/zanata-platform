@@ -44,11 +44,11 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canFilterByMultipleFields() {
         EditorPage editorPage =
                 new BasicWorkFlow().goToEditor("about-fedora", "master", "fr",
-                        document).setSyntaxHighlighting(false);
+                        document);
         assertThat(editorPage.getMessageSources()).containsExactly(
                 "hello world", "greetings", "hey");
         final EditorPage page = editorPage.inputFilterQuery("resource-id:res2");
@@ -61,7 +61,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         }, Matchers.contains("greetings"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorFilterIsBookmarkable() {
         String urlForEditor =
                 String.format(BasicWorkFlow.EDITOR_TEMPLATE, "about-fedora",
@@ -70,7 +70,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
                 urlForEditor + ";search:hello%20w;resid:res1";
         EditorPage editorPage =
                 new BasicWorkFlow().goToPage(urlWithFilterCondition,
-                        EditorPage.class).setSyntaxHighlighting(false);
+                        EditorPage.class);
 
         assertThat(editorPage.getMessageSources()).containsExactly("hello world");
         assertThat(editorPage.getFilterQuery().trim()).isEqualTo("text:hello w resource-id:res1");

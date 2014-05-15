@@ -63,7 +63,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
      * Setup.
      * @see TCMS Test Case 181711
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryView() {
         // Push a glossary
         File projectRootPath =

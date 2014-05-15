@@ -48,7 +48,7 @@ public class AddLanguageTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-1086036")
     public void addLanguageAsEnabled() {
         String language = "Goa'uld";
@@ -88,7 +88,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 Matchers.hasItem(languageDisplayName));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsDisabled() {
         String language = "Klingon";
         String languageDisplayName = "klingon[Klingon]";
@@ -122,7 +122,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 Matchers.not(Matchers.hasItem(languageDisplayName)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addKnownLanguage() {
         String language = "ru-RU";
         ManageLanguagePage manageLanguagePage =

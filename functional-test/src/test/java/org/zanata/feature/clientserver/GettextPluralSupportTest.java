@@ -71,7 +71,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("rhbz1097026")
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");

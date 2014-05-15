@@ -69,7 +69,7 @@ public class TranslateOdsTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicOdsFile() {
         File testfile = testFileGenerator.openTestFile("test-ods.ods");
 

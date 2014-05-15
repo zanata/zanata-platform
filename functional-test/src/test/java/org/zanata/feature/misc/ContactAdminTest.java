@@ -36,7 +36,7 @@ public class ContactAdminTest extends ZanataTestCase {
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testContactAdmin() {
         DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");

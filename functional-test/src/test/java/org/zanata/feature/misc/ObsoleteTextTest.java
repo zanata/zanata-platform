@@ -61,7 +61,7 @@ public class ObsoleteTextTest extends ZanataTestCase {
      * 10. Enter translation editor for bem and see whether the project and document are 100%translated.
      * </pre>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void obsoleteTextTest() {
         restCaller
                 .createProjectAndVersion("obsolete-test", "master", "gettext");

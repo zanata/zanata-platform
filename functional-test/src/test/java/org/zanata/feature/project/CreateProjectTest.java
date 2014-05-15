@@ -51,7 +51,7 @@ public class CreateProjectTest extends ZanataTestCase {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createABasicProject() {
 
@@ -67,7 +67,7 @@ public class CreateProjectTest extends ZanataTestCase {
                 equalTo("basicproject"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createABasicProjectWithHomepageContent() {
 
         HashMap<String, String> projectSettings = projectDefaults();

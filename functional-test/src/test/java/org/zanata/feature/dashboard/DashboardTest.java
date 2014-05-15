@@ -72,7 +72,7 @@ public class DashboardTest extends ZanataTestCase {
         dashboard = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void dashboardBasicTests() throws Exception {
         assertThat(dashboardPresentAfterLogin())
@@ -100,7 +100,7 @@ public class DashboardTest extends ZanataTestCase {
         return projectsTab.getMaintainedProjectList().size() > 0;
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void accountEmailModification() throws Exception {
         final String successMessage =
                 "You will soon receive an email with a link to activate your email account change.";
@@ -111,7 +111,7 @@ public class DashboardTest extends ZanataTestCase {
         assertThat(dashboard.expectNotification(successMessage));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passwordChange() throws Exception {
         final String passwordChanged =
                 "Your password has been successfully changed.";
@@ -123,7 +123,7 @@ public class DashboardTest extends ZanataTestCase {
         assertThat(dashboard.expectNotification(passwordChanged));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createProject() throws Exception {
         CreateProjectPage createProjectPage =
             dashboard.gotoProjectsTab().clickOnCreateProjectLink();

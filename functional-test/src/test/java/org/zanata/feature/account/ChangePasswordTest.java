@@ -54,7 +54,7 @@ public class ChangePasswordTest extends ZanataTestCase {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void changePasswordSuccessful() {
         DashboardBasePage dashboard =
@@ -73,7 +73,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 dashboardPage.hasLoggedIn());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordCurrentPasswordFailure() {
         String incorrectPassword =
                 "Old password is incorrect, please check and try again.";
@@ -91,7 +91,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 Matchers.contains(incorrectPassword));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordRequiredFieldsAreNotEmpty() {
         String mayNotBeEmpty = "may not be empty";
         List<String> fieldErrors =
@@ -106,7 +106,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 Matchers.contains(mayNotBeEmpty, mayNotBeEmpty));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordAreOfRequiredLength() {
         String passwordSizeError = "size must be between 6 and 20";
         String tooShort = "test5";

@@ -116,18 +116,13 @@ public class DashboardBasePage extends BasePage {
         return new DashboardClientTab(getDriver());
     }
 
-    public void waitForLoaderFinished() {
-        slightPause();
+    public void waitForUsernameChanged(final String current) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return !isLoaderVisible();
+                return !getUserFullName().equals(current);
             }
         });
     }
 
-    public boolean isLoaderVisible() {
-        return getDriver().findElement(By.className("loader__spinner"))
-                .isDisplayed();
-    }
 }

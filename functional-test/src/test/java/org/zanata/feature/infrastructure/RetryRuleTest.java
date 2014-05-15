@@ -41,7 +41,7 @@ public class RetryRuleTest extends ZanataTestCase {
     @Rule
     public RetryRule retryRule = new RetryRule(2);
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void retryPassAfterFail() {
         // Fail on the first execution, but pass on the second
         assertThat("Current try is greater than 1", retryRule.currentTry(),
@@ -51,7 +51,7 @@ public class RetryRuleTest extends ZanataTestCase {
                 Matchers.equalTo(2));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passWillPass() {
         assertThat("A normal passing test will pass", true);
         assertThat("And pass on the first try", retryRule.currentTry(),

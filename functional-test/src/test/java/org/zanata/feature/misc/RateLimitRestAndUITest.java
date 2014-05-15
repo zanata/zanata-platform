@@ -57,7 +57,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
             + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
     private String maxActivePathParam = "c/" + KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canConfigureRateLimitByWebUI() {
         new LoginWorkFlow().signIn("admin", "admin");
         BasicWorkFlow basicWorkFlow = new BasicWorkFlow();
@@ -85,7 +85,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 Matchers.equalTo("5"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canCallServerConfigurationRestService() throws Exception {
         ClientRequest clientRequest =
                 clientRequestAsAdmin("rest/configurations/"
@@ -135,7 +135,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         return clientRequest;
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void serverConfigurationRestServiceOnlyAvailableToAdmin()
             throws Exception {
         // all request should be rejected
@@ -167,7 +167,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         return clientRequest;
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canOnlyDealWithKnownConfiguration() throws Exception {
         ClientRequest clientRequest =
                 clientRequestAsAdmin("rest/configurations/c/abc");
@@ -180,7 +180,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         assertThat(getStatusAndReleaseConnection(getResponse), Matchers.is(404));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
         // translator creates the project/version
         final String projectSlug = "project";

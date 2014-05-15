@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorJoinsLanguageTeam() {
         ManageLanguageTeamMemberPage manageTeamMemberPage = new LoginWorkFlow()
                 .signIn("admin", "admin")

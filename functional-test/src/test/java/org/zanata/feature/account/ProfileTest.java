@@ -49,7 +49,7 @@ public class ProfileTest extends ZanataTestCase {
     private static final String serverUrl = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value());
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyProfileData() {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -72,7 +72,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersApiKey() {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
@@ -80,7 +80,8 @@ public class ProfileTest extends ZanataTestCase {
                 .goToSettingsClientTab();
         String currentApiKey = dashboardClientTab.getApiKey();
         dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
-        dashboardClientTab.waitForLoaderFinished();
+
+        dashboardClientTab.waitForApiKeyChanged(currentApiKey);
 
         assertThat(dashboardClientTab.getApiKey()).isNotEqualTo(currentApiKey)
                 .as("The user's api key is different");
@@ -94,7 +95,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key matches the label");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersName() {
         DashboardProfileTab dashboardProfileTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
@@ -102,13 +103,14 @@ public class ProfileTest extends ZanataTestCase {
                 .goToSettingsProfileTab()
                 .enterName("Tranny")
                 .clickUpdateProfileButton();
-        dashboardProfileTab.waitForLoaderFinished();
+
+        dashboardProfileTab.waitForUsernameChanged("translator");
 
         assertThat(dashboardProfileTab.getUserFullName()).isEqualTo("Tranny")
                 .as("The user's name has been changed");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emailValidationIsUsedOnProfileEdit() {
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")

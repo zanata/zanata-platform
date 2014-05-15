@@ -64,7 +64,7 @@ public class VersionGroupUrlTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testUrlChangeUpdatesActiveElements() {
         VersionGroupPage versionGroupPage = createVersionGroup();
         testBasicGroupUrl(versionGroupPage);
@@ -74,7 +74,7 @@ public class VersionGroupUrlTest extends ZanataTestCase {
         assertThat(versionGroupPage.isLanguagesTabActive(), is(true));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testTabClicksChangeUrl() {
         VersionGroupPage versionGroupPage = createVersionGroup();
 

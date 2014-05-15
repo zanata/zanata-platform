@@ -48,7 +48,7 @@ public class ProjectSearchTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulProjectSearchAndDisplay() {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
@@ -67,7 +67,7 @@ public class ProjectSearchTest extends ZanataTestCase {
                 equalTo("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulProjectSearch() {
         ProjectsPage projectsPage = new BasicWorkFlow()
                 .goToHome()
@@ -79,7 +79,7 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .getProjectNamesOnCurrentPage().isEmpty());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void normalUserCannotSearchObsolete() {
         new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                 .goToProject("about fedora").gotoSettingsTab()

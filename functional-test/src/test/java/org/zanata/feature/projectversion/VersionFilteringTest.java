@@ -42,7 +42,7 @@ public class VersionFilteringTest extends ZanataTestCase {
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void versionSearchFiltering() {
 
         String projectName = "versionsearchnums";

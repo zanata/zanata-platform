@@ -72,7 +72,7 @@ public class GlossaryDeleteTest extends ZanataTestCase {
         basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryDelete() throws Exception {
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath, pushCommand + userConfigPath);
@@ -109,7 +109,7 @@ public class GlossaryDeleteTest extends ZanataTestCase {
                 .as("The glossary result in row 2, column 2 is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unauthorizedGlossaryDeleteRejected() throws Exception {
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath, pushCommand + userConfigPath);

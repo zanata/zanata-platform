@@ -49,7 +49,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createASimpleProjectVersion() {
         VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
@@ -65,7 +65,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 equalTo("my-aboutfedora-version"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idFieldMustNotBeEmpty() {
         CreateVersionPage createVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
@@ -78,7 +78,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 hasItem("value is required"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idStartsAndEndsWithAlphanumeric() {
         CreateVersionPage createVersionPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -113,7 +113,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 not(hasItem(CreateVersionPage.VALIDATION_ERROR)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void versionCounterIsUpdated() {
 
         String projectName = "version nums";
