@@ -80,38 +80,37 @@ public class CreateProjectVersionTest extends ZanataTestCase {
 
     @Test
     public void idStartsAndEndsWithAlphanumeric() {
-        CreateVersionPage createVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").clickCreateVersionLink()
-                        .inputVersionId("-A");
-        createVersionPage.defocus();
-        String formatError =
-                "must start and end with letter or number, "
-                        + "and contain only letters, numbers, underscores and hyphens.";
-
-        assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
-
-        createVersionPage =
-                createVersionPage.inputVersionId("B-").waitForNumErrors(1);
+        CreateVersionPage createVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .clickCreateVersionLink()
+                .inputVersionId("-A");
         createVersionPage.defocus();
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
 
-        createVersionPage =
-                createVersionPage.inputVersionId("_C_").waitForNumErrors(1);
+        createVersionPage = createVersionPage.inputVersionId("B-");
         createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(1);
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
 
-        createVersionPage =
-                createVersionPage.inputVersionId("A-B_C").waitForNumErrors(0);
+        createVersionPage = createVersionPage.inputVersionId("_C_");
         createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(1);
+
+        assertThat("The input is rejected", createVersionPage.getErrors(),
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
+
+        createVersionPage = createVersionPage.inputVersionId("A-B_C");
+        createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(0);
 
         assertThat("The input is acceptable", createVersionPage.getErrors(),
-                not(hasItem(formatError)));
+                not(hasItem(CreateVersionPage.VALIDATION_ERROR)));
     }
 
     @Test

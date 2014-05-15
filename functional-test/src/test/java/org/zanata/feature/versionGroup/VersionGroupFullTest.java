@@ -99,24 +99,6 @@ public class VersionGroupFullTest extends ZanataTestCase {
     }
 
     @Test
-    public void groupIDFieldSize() {
-        String groupID = "abcdefghijklmnopqrstuvwxyzabcdefghijklmn";
-        String groupIDExtra = "xyz";
-        String groupName = "verifyIDFieldSizeName";
-
-        CreateVersionGroupPage groupPage = dashboardPage
-                .goToGroups()
-                .createNewGroup()
-                .inputGroupId(groupID + groupIDExtra)
-                .inputGroupName(groupName)
-                .saveGroupFailure();
-
-        assertThat("User cannot enter more than 40 characters",
-                groupPage.getGroupIdValue(),
-                Matchers.equalTo(groupID));
-    }
-
-    @Test
     public void groupDescriptionFieldSize() {
         String errorMsg = "value must be shorter than or equal to 100 characters";
         String groupID = "verifyDescriptionFieldSizeID";

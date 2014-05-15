@@ -93,6 +93,7 @@ public class BasePage extends CorePage {
     }
 
     private void clickNavMenuItem(final WebElement menuItem) {
+        scrollIntoView(menuItem);
         if (!menuItem.isDisplayed()) {
             // screen is too small the menu become dropdown
             getDriver().findElement(By.id("nav-main"))
@@ -153,6 +154,7 @@ public class BasePage extends CorePage {
     }
 
     public HomePage logout() {
+        scrollIntoView(userAvatar);
         userAvatar.click();
 
         clickLinkAfterAnimation(BY_SIGN_OUT);
@@ -296,4 +298,13 @@ public class BasePage extends CorePage {
                 "return arguments[0].innerHTML;", webElement);
     }
 
+    public void scrollIntoView(WebElement targetElement) {
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].scrollIntoView(true);", targetElement);
+    }
+
+    public void clickElement(By findby) {
+        scrollIntoView(getDriver().findElement(findby));
+        getDriver().findElement(findby).click();
+    }
 }
