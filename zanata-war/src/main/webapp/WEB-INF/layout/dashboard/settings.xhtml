@@ -86,7 +86,7 @@
             <h:outputText rendered="#{userSettingsAction.passwordSet}"
               value="#{messages['jsf.dashboard.settings.changePassword.label']}"/>
           </h3>
-          <h:form id="passwordChangeForm" styleClass="l--constrain-large">
+          <h:form id="passwordChangeForm" styleClass="l--constrain-large js-form-password-parent">
             <s:fragment rendered="#{userSettingsAction.passwordSet}">
               <div class="form__item">
                 <h:outputLabel for="oldPassword">#{messages['jsf.OldPassword']}</h:outputLabel>
@@ -98,9 +98,16 @@
             </s:fragment>
             <div class="form__item l--push-bottom-1">
               <h:outputLabel for="newPassword">#{messages['jsf.NewPassword']}</h:outputLabel>
-              <s:decorate id="newPasswordField" template=" ../field.xhtml" enclose="false">
-                <h:inputSecret id="newPassword" value="#{userSettingsAction.newPassword}"
-                  maxlength="255"/>
+              <s:decorate id="newPasswordField" template=" ../field.xhtml"
+                enclose="false">
+                <div class="form__password js-form-password">
+                  <h:inputSecret id="newPassword"
+                    value="#{userSettingsAction.newPassword}"
+                    styleClass="js-form-password-input form__input"
+                    maxlength="255"/>
+                  <a href="#"
+                    class="form__toggle js-form-password-toggle">Show</a>
+                </div>
               </s:decorate>
             </div>
             <input id="changePasswordButton" type="submit"
