@@ -39,6 +39,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
+import org.zanata.util.ZanataMessages;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -61,7 +62,7 @@ public class EmailServiceImpl implements EmailService {
     private ApplicationConfiguration applicationConfiguration;
 
     @In
-    Map<String, String> messages;
+    private ZanataMessages zanataMessages;
 
     private String toName;
     private String toEmailAddr;
@@ -79,7 +80,7 @@ public class EmailServiceImpl implements EmailService {
         log.info(
                 "Sent activation account email: toName '{}', toEmailAddress '{}'",
                 toName, toEmailAddr);
-        return "#{messages['jsf.Account.ActivationMessage']}";
+        return zanataMessages.getMessage("jsf.Account.ActivationMessage");
     }
 
     @Override
@@ -88,7 +89,7 @@ public class EmailServiceImpl implements EmailService {
             String replyEmail, String subject, String message, String language) {
         if (!coordinators.isEmpty()) {
             receivedReason =
-                    messages.get("jsf.email.coordinator.ReceivedReason");
+                    zanataMessages.getMessage("jsf.email.coordinator.ReceivedReason");
             for (HPerson coord : coordinators) {
                 toName = coord.getName();
                 toEmailAddr = coord.getEmail();
@@ -98,7 +99,7 @@ public class EmailServiceImpl implements EmailService {
                     "Sent language team coordinator email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}', language '{}'",
                     fromName, fromLoginName, replyEmail, subject, message,
                     language);
-            return "#{messages['jsf.email.coordinator.SentNotification']}";
+            return zanataMessages.getMessage("jsf.email.coordinator.SentNotification");
         } else {
             return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
                     replyEmail, subject, message);
@@ -110,8 +111,7 @@ public class EmailServiceImpl implements EmailService {
             List<HPerson> maintainers, String fromName, String fromLoginName,
             String replyEmail, String subject, String message) {
         if (!maintainers.isEmpty()) {
-            receivedReason =
-                    messages.get("jsf.email.group.maintainer.ReceivedReason");
+            receivedReason = zanataMessages.getMessage("jsf.email.group.maintainer.ReceivedReason");
             for (HPerson maintainer : maintainers) {
                 toName = maintainer.getName();
                 toEmailAddr = maintainer.getEmail();
@@ -120,7 +120,7 @@ public class EmailServiceImpl implements EmailService {
             log.info(
                     "Sent version group maintainer email: fromName '{}', fromLoginName '1}', replyEmail '{}', subject '{}', message '{}'",
                     fromName, fromLoginName, replyEmail, subject, message);
-            return "#{messages['jsf.email.group.maintainer.SentNotification']}";
+            return zanataMessages.getMessage("jsf.email.group.maintainer.SentNotification");
         } else {
             return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
                     replyEmail, subject, message);
@@ -133,7 +133,8 @@ public class EmailServiceImpl implements EmailService {
             String message) {
         List<String> adminEmails = applicationConfiguration.getAdminEmail();
         if (!adminEmails.isEmpty()) {
-            receivedReason = messages.get("jsf.email.admin.ReceivedReason");
+            receivedReason = zanataMessages.getMessage(
+                    "jsf.email.admin.ReceivedReason");
             toName =
                     ResourceBundle.instance().getString(
                             "jsf.ZanataAdministrator");
@@ -144,7 +145,7 @@ public class EmailServiceImpl implements EmailService {
             log.info(
                     "Sent server admin email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                     fromName, fromLoginName, replyEmail, subject, message);
-            return "#{messages['jsf.email.admin.SentNotification']}";
+            return zanataMessages.getMessage("jsf.email.admin.SentNotification");
         } else {
             return sendToAdminUsers(emailTemplate, fromName, fromLoginName,
                     replyEmail, subject, message);
@@ -159,7 +160,8 @@ public class EmailServiceImpl implements EmailService {
     private String sendToAdminUsers(String emailTemplate, String fromName,
             String fromLoginName, String replyEmail, String subject,
             String message) {
-        receivedReason = messages.get("jsf.email.admin.user.ReceivedReason");
+        receivedReason = zanataMessages.getMessage(
+                "jsf.email.admin.user.ReceivedReason");
         for (HPerson admin : getAdmins()) {
             toName = admin.getName();
             toEmailAddr = admin.getEmail();
@@ -169,7 +171,7 @@ public class EmailServiceImpl implements EmailService {
         log.info(
                 "Sent admin users email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
                 fromName, fromLoginName, replyEmail, subject, message);
-        return "#{messages['jsf.email.admin.SentNotification']}";
+        return zanataMessages.getMessage("jsf.email.admin.SentNotification");
     }
 
     /**
