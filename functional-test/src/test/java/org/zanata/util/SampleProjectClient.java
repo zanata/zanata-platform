@@ -46,12 +46,18 @@ public class SampleProjectClient {
         checkAndReleaseConnection(createRequest("/users").put());
     }
 
+    /**
+     * @param username
+     *            username to join language team
+     * @param localesCSV
+     *            locale ids separated by comma
+     */
     public static void userJoinsLanguageTeam(String username,
-            Set<LocaleId> locales) throws Exception {
+            String localesCSV) throws Exception {
         ClientRequest request =
                 createRequest("/accounts/u/" + username + "/languages");
 
-        checkAndReleaseConnection(request.queryParameter("locales", locales)
+        checkAndReleaseConnection(request.queryParameter("locales", localesCSV)
                 .put());
     }
 

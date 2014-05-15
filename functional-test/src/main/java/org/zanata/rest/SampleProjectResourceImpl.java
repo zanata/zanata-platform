@@ -1,14 +1,16 @@
 package org.zanata.rest;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
+
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -17,14 +19,12 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.util.SampleProjectProfile;
+
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
@@ -66,9 +66,18 @@ public class SampleProjectResourceImpl implements SampleProjectResource {
     @Transactional
     public Response userJoinsLanguageTeams(
         @PathParam("username") String username,
-        @QueryParam("locales") Set<LocaleId> locales) {
+        @QueryParam("locales") String localesCSV) {
 
-
+        List<String> localesIds = Lists.newArrayList(
+                Splitter.on(",").omitEmptyStrings().trimResults().split(
+                        localesCSV));
+        List<LocaleId> locales =
+                Lists.transform(localesIds, new Function<String, LocaleId>() {
+                    @Override
+                    public LocaleId apply(String input) {
+                        return new LocaleId(input);
+                    }
+                });
         final HPerson hPerson = entityManager
             .createQuery("from HPerson p where p.account.username = :username",
                 HPerson.class).setParameter("username", username).getSingleResult();

@@ -42,9 +42,7 @@ public class SampleProjectRule extends ExternalResource {
         deleteExceptEssentialData();
         makeSampleUsers();
         makeSampleLanguages();
-        Set<LocaleId> locales =
-                Sets.newHashSet(LocaleId.FR, new LocaleId("hi"),
-                        new LocaleId("pl"));
+        String locales = "fr,hi,pl";
         userJoinsLanguageTeam("translator", locales);
         userJoinsLanguageTeam("glossarist", locales);
         makeSampleProject();

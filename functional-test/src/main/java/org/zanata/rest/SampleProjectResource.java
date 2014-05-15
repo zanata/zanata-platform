@@ -23,7 +23,7 @@ public interface SampleProjectResource {
     @PUT
     @Path("/accounts/u/{username}/languages")
     Response userJoinsLanguageTeams(@PathParam("username") String username,
-            @QueryParam("locales") Set<LocaleId> locales);
+            @QueryParam("locales") String localesCSV);
 
     @PUT
     @Path("/users")

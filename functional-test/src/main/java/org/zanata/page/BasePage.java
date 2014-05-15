@@ -115,7 +115,7 @@ public class BasePage extends CorePage {
 
     public GlossaryPage goToGlossary() {
         // Dynamically find the link, as it is not present for every user
-        getDriver().findElement(By.id("glossary_link")).click();
+        clickNavMenuItem(getDriver().findElement(By.id("glossary_link")));
         return new GlossaryPage(getDriver());
     }
 
