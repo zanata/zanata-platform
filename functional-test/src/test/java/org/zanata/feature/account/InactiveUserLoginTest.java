@@ -42,7 +42,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void loginWithInactiveUser() {
         new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
                 .goToManageUserPage().editUserAccount("translator")

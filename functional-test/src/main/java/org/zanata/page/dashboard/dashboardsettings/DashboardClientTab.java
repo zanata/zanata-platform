@@ -20,6 +20,7 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
+import com.google.common.base.Predicate;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -55,5 +56,14 @@ public class DashboardClientTab extends DashboardBasePage {
 
     public String getConfigurationDetails() {
         return configurationTextArea.getText();
+    }
+
+    public void waitForApiKeyChanged(final String current) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return !getApiKey().equals(current);
+            }
+        });
     }
 }

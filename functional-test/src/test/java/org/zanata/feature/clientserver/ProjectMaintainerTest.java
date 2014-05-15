@@ -55,7 +55,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/91146/">91146</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void nonProjectMaintainerCanNotPush() {
         // admin creates the project
         ZanataRestCaller adminRestCaller = new ZanataRestCaller();
@@ -76,7 +76,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/91869/">91869</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void pushTransAndCopyTransTest() {
         // translator creates the project and become maintainer
         ZanataRestCaller restCaller =
@@ -134,7 +134,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/136564/">136564</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void projectMaintainerPullTest() throws IOException {
         ZanataRestCaller restCaller =
                 new ZanataRestCaller("translator",

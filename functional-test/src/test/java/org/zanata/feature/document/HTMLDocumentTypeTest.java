@@ -71,7 +71,7 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
                 docStorage.listFiles().length == 0);
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void uploadHTMLFile() {
         File htmlfile =
                 testFileGenerator

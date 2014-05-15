@@ -47,7 +47,7 @@ public class ManageSearchTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void regenerateSearchIndexes() {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()
@@ -70,7 +70,7 @@ public class ManageSearchTest extends ZanataTestCase {
                 manageSearchPage.noOperationsRunningIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Data set not large enough to achieve stable test")
     public void abortReindexes() {
         ManageSearchPage manageSearchPage = dashboardPage

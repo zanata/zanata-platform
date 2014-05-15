@@ -36,7 +36,7 @@ public class ConcurrentAccessTest extends ZanataTestCase {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void concurrentDocumentCreationWillNotCauseHibernateException()
             throws InterruptedException {
         final String projectSlug = "project";

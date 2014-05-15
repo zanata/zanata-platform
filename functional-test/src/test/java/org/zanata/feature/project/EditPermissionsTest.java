@@ -49,7 +49,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void maintainerDetailsAreDisplayed() {
         ProjectPermissionsTab projectPermissionsTab =
                 new LoginWorkFlow()
@@ -71,7 +71,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 hasItem("Administrator @admin"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("rhbz1097030")
     public void addMaintainerAsAdmin() {
         ProjectPermissionsTab projectPermissionsTab =
@@ -109,7 +109,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                         .settingsTabIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("rhbz1097030")
     public void addMaintainerAsMaintainer() {
 
@@ -148,7 +148,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 projectVersionsPage.settingsTabIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("rhbz1097030")
     public void removeMaintainer() {
 
@@ -186,7 +186,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     }
 
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Exception on self removal")
     public void removeSelfAsMaintainer() {
 

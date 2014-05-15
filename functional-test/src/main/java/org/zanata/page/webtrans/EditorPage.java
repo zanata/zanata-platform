@@ -208,6 +208,10 @@ public class EditorPage extends BasePage {
         return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
     }
 
+    public String getBasicTranslationTargetAtRowIndex(int rowIndex, Plurals plurals) {
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, plurals);
+    }
+
     private String getContentAtRowIndex(final long rowIndex,
             final String idFormat,
             final Plurals plural) {

@@ -46,7 +46,7 @@ public class EditHomePageTest extends ZanataTestCase {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Cannot access the editor via WebDriver")
     public void goToEditPageContent() {
         DashboardBasePage dashboard = new LoginWorkFlow().signIn("admin", "admin");
@@ -61,7 +61,7 @@ public class EditHomePageTest extends ZanataTestCase {
         editHomeContentPage.cancelUpdate();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void goToEditPageCode() {
         DashboardBasePage dashboard = new LoginWorkFlow().signIn("admin", "admin");
         EditHomeCodePage editHomeCodePage =

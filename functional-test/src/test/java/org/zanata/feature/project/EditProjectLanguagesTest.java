@@ -45,7 +45,7 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editProjectLanguages() {
         ProjectLanguagesTab projectLanguagesTab = new LoginWorkFlow()
                 .signIn("admin", "admin")

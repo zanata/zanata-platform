@@ -49,7 +49,7 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeVersionLanguages() {
 
         assertThat("Admin user has logged in",

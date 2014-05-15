@@ -68,7 +68,7 @@ public class TranslateTextTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicTextFile() {
         File testfile =
                 testFileGenerator.generateTestFileWithContent("basictext",

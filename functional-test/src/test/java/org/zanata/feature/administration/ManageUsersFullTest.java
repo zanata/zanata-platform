@@ -56,7 +56,7 @@ public class ManageUsersFullTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeAUsersUsername() {
         String username = "administratornamechange";
         ManageUserPage manageUserPage =

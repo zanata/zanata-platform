@@ -74,7 +74,7 @@ public class GlossaryPushTest extends ZanataTestCase {
         basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulGlossaryPush() throws Exception {
         List<String> result = push(pushCommand, userConfigPath);
         log.info(resultByLines(result));
@@ -83,14 +83,8 @@ public class GlossaryPushTest extends ZanataTestCase {
                 .isTrue()
                 .as("The glossary push was successful");
 
-        assertThat(new LoginWorkFlow()
-                .signIn("translator", "translator")
-                .loggedInAs())
-                .isEqualTo("translator")
-                .as("Admin has logged in");
-
-        EditorPage editorPage = new BasicWorkFlow()
-                .goToHome()
+        EditorPage editorPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoVersion("master")
@@ -103,7 +97,7 @@ public class GlossaryPushTest extends ZanataTestCase {
                 .as("The first glossary result is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void failedCSVGlossaryPush() throws Exception {
         List<String> result = push(pushCSVCommand, userConfigPath);
         log.info(resultByLines(result));
@@ -123,7 +117,7 @@ public class GlossaryPushTest extends ZanataTestCase {
         return Joiner.on("\n").join(output);
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unauthorizedGlossaryPushRejected() throws Exception {
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath, pushCommand + userConfigPath);

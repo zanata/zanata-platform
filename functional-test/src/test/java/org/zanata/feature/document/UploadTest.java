@@ -76,7 +76,7 @@ public class UploadTest extends ZanataTestCase {
         }
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void uploadedDocumentIsInFilesystem() {
         File originalFile =
@@ -112,7 +112,7 @@ public class UploadTest extends ZanataTestCase {
                 versionDocumentsPage.sourceDocumentsContains(testFileName));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void cancelFileUpload() {
         File cancelUploadFile =
                 testFileGenerator.generateTestFileWithContent(
@@ -134,7 +134,7 @@ public class UploadTest extends ZanataTestCase {
                         .sourceDocumentsContains("cancelFileUpload.txt"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFilenameUpload() {
         VersionDocumentsTab versionDocumentsTab =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
@@ -146,7 +146,7 @@ public class UploadTest extends ZanataTestCase {
                 !versionDocumentsTab.canSubmitDocument());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-990836")
     public void handleReallyBigFile() {
         File bigFile =
@@ -196,7 +196,7 @@ public class UploadTest extends ZanataTestCase {
                 versionLanguagesPage.expectNotification(successfullyUploaded));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void handleVeryLongFileNames() {
         File longFile =
                 testFileGenerator.generateTestFileWithContent(
@@ -224,7 +224,7 @@ public class UploadTest extends ZanataTestCase {
                 .sourceDocumentsContains(longFile.getName()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFile() {
         File emptyFile =
                 testFileGenerator.generateTestFileWithContent("emptyFile",
@@ -254,7 +254,7 @@ public class UploadTest extends ZanataTestCase {
                 .sourceDocumentsContains(emptyFile.getName()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectUnsupportedValidFiletype() {
         File unsupportedFile =
                 testFileGenerator.generateTestFileWithContent("testfodt",

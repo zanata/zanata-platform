@@ -42,7 +42,7 @@ public class EditProjectValidationsTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() {
 
         ProjectTranslationTab projectTranslationTab = new LoginWorkFlow()
@@ -87,7 +87,7 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                 .isValidationLevel("XML entity reference", "Error"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() {
         ProjectTranslationTab projectTranslationTab = new LoginWorkFlow()
                         .signIn("admin", "admin")
@@ -98,23 +98,27 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                         .setValidationLevel(
                                 "Positional printf (XSI extension)", "Error");
 
-        assertThat("The Positional printf level is Error",
-                projectTranslationTab.isValidationLevel(
+        projectTranslationTab.expectNotification(
+                "Updated validation Positional printf (XSI extension) to Error.");
+
+        assertThat("The Positional printf level is Error", projectTranslationTab
+                .isValidationLevel(
                         "Positional printf (XSI extension)", "Error"));
 
-        assertThat("The Printf level is Off",
-                projectTranslationTab
-                        .isValidationLevel("Printf variables", "Off"));
+        assertThat("The Printf level is Off", projectTranslationTab
+                .isValidationLevel("Printf variables", "Off"));
 
         projectTranslationTab = projectTranslationTab
                 .setValidationLevel("Printf variables", "Error");
 
-        assertThat("The Printf level is Error",
-                projectTranslationTab
-                        .isValidationLevel("Printf variables", "Error"));
+        projectTranslationTab.expectNotification(
+                "Updated validation Printf variables to Error.");
 
-        assertThat("The Positional printf level is Off",
-                projectTranslationTab.isValidationLevel(
+        assertThat("The Printf level is Error", projectTranslationTab
+                .isValidationLevel("Printf variables", "Error"));
+
+        assertThat("The Positional printf level is Off", projectTranslationTab
+                .isValidationLevel(
                         "Positional printf (XSI extension)", "Off"));
     }
 }

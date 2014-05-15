@@ -46,7 +46,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -77,7 +77,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     }
 
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyValidationsAreErrors() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -93,20 +93,13 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         EditorPage editorPage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
-                .translate("fr", "About_Fedora")
-                .setSyntaxHighlighting(false);
+                .translate("fr", "About_Fedora");
 
         assertThat("The text in the translation target is blank",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
                 equalTo(""));
 
-        editorPage.pasteIntoRowAtIndex(0, "\t");
-
-        assertThat("The text in the translation target is now a tab",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                equalTo("\t"));
-
-        editorPage.defocus();
+        editorPage.pasteIntoRowAtIndex(0, "\t").saveAsFuzzyAtRow(0);
         editorPage.waitForValidationErrorsVisible();
 
         assertThat("The notification area shows there's an error",
@@ -121,7 +114,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                         + "(source: 0, target: 1)"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCannotTurnOffEnforcedValidations() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -149,7 +142,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                         EditorPage.Validations.TABS));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -160,6 +153,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTranslationTab()
                 .setValidationLevel(
                         "Positional printf (XSI extension)", "Error");
+        versionTranslationTab.expectNotification(
+                "Updated validation Positional printf (XSI extension) to Error.");
 
         assertThat("The Positional printf level is Error",
                 versionTranslationTab.isValidationLevel(
@@ -168,6 +163,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 versionTranslationTab.isValidationLevel("Printf variables", "Off"));
 
         versionTranslationTab.setValidationLevel("Printf variables", "Error");
+        versionTranslationTab.expectNotification(
+                "Updated validation Printf variables to Error.");
 
         assertThat("The Printf level is Error",
                 versionTranslationTab.isValidationLevel("Printf variables", "Error"));
@@ -176,7 +173,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                         "Positional printf (XSI extension)", "Off"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCanEnableADisabledValidation() {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -193,8 +190,8 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .goToProjectByName("about fedora")
                 .gotoVersion("master")
                 .translate("fr", "About_Fedora")
-                .setSyntaxHighlighting(false)
-                .pasteIntoRowAtIndex(0, "\t");
+                .pasteIntoRowAtIndex(0, "\t")
+                .saveAsFuzzyAtRow(0);
 
         assertThat("The validation errors are not shown",
                 !editorPage.isValidationMessageCurrentTargetVisible());

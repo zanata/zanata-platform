@@ -30,6 +30,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -72,7 +73,7 @@ public class GlossaryDeleteTest extends ZanataTestCase {
         basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryDelete() throws Exception {
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath, pushCommand + userConfigPath);
@@ -87,21 +88,17 @@ public class GlossaryDeleteTest extends ZanataTestCase {
                 .as("Glossary delete was successful");
 
 
-        EditorPage editorPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("master")
-                .translate("hi", "About_Fedora")
-                .searchGlossary("hello");
+        new LoginWorkFlow().signIn("admin", "admin");
+        EditorPage editorPage =
+                new BasicWorkFlow().goToEditor("about-fedora", "master", "hi",
+                        "About_Fedora")
+                        .searchGlossary("hello");
 
         assertThat(editorPage.getGlossaryResultTable())
                 .as("Glossary table is empty").isEmpty();
 
-        editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
-                .translate("pl", "About_Fedora")
+        editorPage = new BasicWorkFlow().goToEditor("about-fedora", "master",
+                "pl", "About_Fedora")
                 .searchGlossary("hello");
 
         assertThat(editorPage.getGlossaryResultTable()
@@ -109,7 +106,7 @@ public class GlossaryDeleteTest extends ZanataTestCase {
                 .as("The glossary result in row 2, column 2 is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unauthorizedGlossaryDeleteRejected() throws Exception {
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath, pushCommand + userConfigPath);

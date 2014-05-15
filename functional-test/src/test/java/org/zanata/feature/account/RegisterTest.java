@@ -72,7 +72,7 @@ public class RegisterTest extends ZanataTestCase {
         homePage.deleteCookiesAndRefresh();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void registerSuccessful() {
         String successMessage = "You will soon receive an email with a link "+
@@ -90,7 +90,7 @@ public class RegisterTest extends ZanataTestCase {
                 Matchers.equalTo(successMessage));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() {
         fields.put("email", "length.test@test.com");
         RegisterPage registerPage = homePage.goToRegistration();
@@ -114,7 +114,7 @@ public class RegisterTest extends ZanataTestCase {
                 containsUsernameError(registerPage.getFieldErrors()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernamePreExisting() {
         String errorMsg = "This username is not available";
         RegisterPage registerPage = homePage
@@ -126,7 +126,7 @@ public class RegisterTest extends ZanataTestCase {
                 registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emailValidation() {
         String errorMsg = "not a well-formed email address";
         fields.put("email",
@@ -141,7 +141,7 @@ public class RegisterTest extends ZanataTestCase {
                 registerPage.getFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-1024150")
     public void requiredFields() {
         String errorMsg = "value is required";

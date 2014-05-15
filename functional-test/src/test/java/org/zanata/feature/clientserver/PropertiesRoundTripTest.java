@@ -59,36 +59,32 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
         properties.store(new FileWriter(propertiesSource), "comment");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullProperties() throws IOException,
             InterruptedException {
         restCaller.createProjectAndVersion("properties-test", "master",
                 "properties");
         // generate a zanata.xml
-        TestFileGenerator.generateZanataXml(new File(tempDir,
-                "zanata.xml"), "properties-test", "master", "properties", Lists
+        TestFileGenerator.generateZanataXml(new File(tempDir, "zanata.xml"),
+                "properties-test", "master", "properties", Lists
                 .newArrayList("pl"));
-        List<String> output =
-                client.callWithTimeout(tempDir,
-                        "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. -Dzanata.userConfig="
-                                + userConfigPath);
+        List<String> output = client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. "+
+                "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.equalTo(true));
 
-        EditorPage editorPage = verifyPushedToEditor()
-                .setSyntaxHighlighting(false);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(2,
-                        "translation updated approved")
-                        .approveTranslationAtRow(2);
+        EditorPage editorPage = verifyPushedToEditor();
+        editorPage = editorPage.translateTargetAtRowIndex(2,
+                "translation updated approved")
+                .approveTranslationAtRow(2);
 
         editorPage.translateTargetAtRowIndex(1, "translation updated fuzzy")
                 .saveAsFuzzyAtRow(1);
 
-        output =
-                client.callWithTimeout(tempDir,
-                        "mvn -B org.zanata:zanata-maven-plugin:pull -Dzanata.userConfig="
-                                + userConfigPath);
+        output = client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:pull " +
+                "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.is(true));
         File transFile = new File(tempDir, "test_pl.properties");
@@ -104,10 +100,10 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
         translations.store(new FileWriter(transFile), null);
 
         // push again
-        client.callWithTimeout(
-                tempDir,
-                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
-                        + userConfigPath);
+        client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:push " +
+                "-Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
+                + userConfigPath);
 
         final EditorPage editor =
                 new BasicWorkFlow().goToEditor("properties-test",

@@ -53,7 +53,7 @@ public class VersionGroupFullTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createABasicGroup() {
         String groupID = "basic-group";
@@ -74,7 +74,7 @@ public class VersionGroupFullTest extends ZanataTestCase {
                 Matchers.equalTo("Groups - ".concat(groupName)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void requiredFields() {
         String errorMsg = "value is required";
         String groupID = "verifyRequiredFieldsGroupID";
@@ -98,7 +98,7 @@ public class VersionGroupFullTest extends ZanataTestCase {
                 Matchers.contains(errorMsg));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void groupDescriptionFieldSize() {
         String errorMsg = "value must be shorter than or equal to 100 characters";
         String groupID = "verifyDescriptionFieldSizeID";
@@ -130,7 +130,7 @@ public class VersionGroupFullTest extends ZanataTestCase {
 
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addANewProjectVersionToAnEmptyGroup()
         throws InterruptedException {
         String groupID = "add-version-to-empty-group";

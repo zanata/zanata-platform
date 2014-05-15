@@ -23,9 +23,7 @@ public class AddUsersRule extends ExternalResource {
         deleteExceptEssentialData();
         makeSampleUsers();
         makeSampleLanguages();
-        userJoinsLanguageTeam("translator",
-                Sets.newHashSet(LocaleId.FR, new LocaleId("hi"),
-                        new LocaleId("pl")));
+        userJoinsLanguageTeam("translator", "fr,hi,pl");
     }
 
     @Override

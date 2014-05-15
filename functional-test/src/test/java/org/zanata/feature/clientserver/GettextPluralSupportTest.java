@@ -71,8 +71,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Test
-    @Ignore("rhbz1097026")
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
@@ -124,20 +123,19 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         // verify first message
         new LoginWorkFlow().signIn("admin", "admin");
         EditorPage editorPage = new BasicWorkFlow()
-                .goToEditor("plurals", "master", "pl", "test")
-                .setSyntaxHighlighting(true);
+                .goToEditor("plurals", "master", "pl", "test");
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
                 Matchers.equalTo("One file removed"));
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
                 Matchers.equalTo("%d files removed"));
         // nplural for Polish is 3
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetSingular),
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetSingular),
                 Matchers.equalTo("1 aoeuaouaou"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralOne),
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralOne),
                 Matchers.equalTo("%d aoeuaouao"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralTwo),
-                Matchers.equalTo(" "));
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralTwo),
+                Matchers.equalTo(""));
 
         return editorPage;
     }

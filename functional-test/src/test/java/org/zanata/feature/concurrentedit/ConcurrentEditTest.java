@@ -43,7 +43,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesRestServiceResults() {
         // create project and push source
         String projectSlug = "base";
@@ -87,7 +87,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
         }, Matchers.equalTo("hello world translated"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesCopyTransResults() throws Exception {
         // create project and populate master version
         String projectSlug = "base";

@@ -69,7 +69,7 @@ public class TranslateIdmlTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicIdmlFile() {
         File testfile = testFileGenerator.openTestFile("test-idml.idml");
 

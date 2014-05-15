@@ -48,7 +48,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToReadOnly() {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -77,7 +77,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 hasItem("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToWritable() {
         assertThat("The project is locked", new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -112,7 +112,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 hasItem("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectObsolete() {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -146,7 +146,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 not(hasItem("about fedora")));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAnObsoleteProjectAsActive() {
         ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -176,7 +176,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
 
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectName() {
         String replacementText = "a new name";
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
@@ -195,7 +195,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 Matchers.equalTo(replacementText));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectDescription() {
         String replacementText = "a new description";
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
@@ -218,7 +218,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 Matchers.hasItem(replacementText));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectType() {
         ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -238,7 +238,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 Matchers.equalTo("Properties"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeSourceLinks() {
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")

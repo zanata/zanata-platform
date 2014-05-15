@@ -62,7 +62,7 @@ public class InvalidGlossaryPushTest extends ZanataTestCase {
         userConfigPath = ClientWorkFlow.getUserConfigPath("glossarist");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulGlossaryPush() throws Exception {
         List<String> result = push(pushCommand, userConfigPath);
         log.info(resultByLines(result));
