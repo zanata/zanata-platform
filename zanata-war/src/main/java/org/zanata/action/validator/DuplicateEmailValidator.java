@@ -25,9 +25,8 @@ import java.io.Serializable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.zanata.dao.PersonDAO;
+import org.zanata.util.ServiceLocator;
 
 public class DuplicateEmailValidator implements
         ConstraintValidator<NotDuplicateEmail, String>, Serializable {
@@ -40,8 +39,7 @@ public class DuplicateEmailValidator implements
         if (string.length() == 0)
             return true;
         PersonDAO personDAO =
-                (PersonDAO) Component.getInstance(PersonDAO.class,
-                        ScopeType.STATELESS);
+                ServiceLocator.instance().getInstance(PersonDAO.class);
         return personDAO.findByEmail(string) == null;
     }
 

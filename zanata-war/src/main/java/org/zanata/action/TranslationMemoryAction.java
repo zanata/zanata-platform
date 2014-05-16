@@ -32,7 +32,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -49,6 +48,7 @@ import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.SlugEntityService;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -113,8 +113,9 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
             @Override
             public Void call() throws Exception {
                 TranslationMemoryResourceService tmResource =
-                        (TranslationMemoryResourceService) Component
-                                .getInstance("translationMemoryResource");
+                        ServiceLocator.instance().getInstance(
+                                "translationMemoryService",
+                                TranslationMemoryResourceService.class);
                 String msg =
                         tmResource.deleteTranslationUnitsUnguarded(
                                 transMemorySlug).toString();

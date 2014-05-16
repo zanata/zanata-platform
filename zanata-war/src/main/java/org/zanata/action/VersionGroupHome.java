@@ -32,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
@@ -55,6 +54,7 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.ZanataMessages;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -288,13 +288,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     private class VersionAutocomplete extends
             AbstractAutocomplete<HProjectIteration> {
-        private ProjectIterationDAO projectIterationDAO =
-                (ProjectIterationDAO) Component
-                        .getInstance(ProjectIterationDAO.class);
+        private ProjectIterationDAO projectIterationDAO = ServiceLocator
+                .instance().getInstance(ProjectIterationDAO.class);
 
-        private VersionGroupService versionGroupServiceImpl =
-                (VersionGroupService) Component
-                        .getInstance(VersionGroupServiceImpl.class);
+        private VersionGroupService versionGroupServiceImpl = ServiceLocator
+                .instance().getInstance(VersionGroupServiceImpl.class);
 
         @Override
         public List<HProjectIteration> suggest() {

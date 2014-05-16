@@ -37,10 +37,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.jboss.seam.Component;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.exception.ZanataServiceException;
@@ -51,6 +48,7 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.impl.TranslationFileServiceImpl;
 import org.zanata.service.impl.TranslationServiceImpl;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.client.ui.FileUploadDialog;
 
 /**
@@ -102,11 +100,11 @@ public class FileUploadServlet extends HttpServlet {
         // process only multipart requests
         if (ServletFileUpload.isMultipartContent(req)) {
             translationFileServiceImpl =
-                    (TranslationFileService) Component
-                            .getInstance(TranslationFileServiceImpl.class);
+                    ServiceLocator.instance().getInstance(
+                            TranslationFileServiceImpl.class);
             translationServiceImpl =
-                    (TranslationService) Component
-                            .getInstance(TranslationServiceImpl.class);
+                    ServiceLocator.instance().getInstance(
+                            TranslationServiceImpl.class);
 
             // Create a factory for disk-based file items
             FileItemFactory factory = new DiskFileItemFactory();

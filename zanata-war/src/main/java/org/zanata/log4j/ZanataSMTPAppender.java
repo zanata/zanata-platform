@@ -33,7 +33,7 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
-import org.jboss.seam.Component;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Extension of the {@link AlternateSMTPAppender} class that allows Zanata to
@@ -51,7 +51,9 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
     @Override
     public void activateOptions() {
         // Get Seam's email session instead
-        Session session = (Session) Component.getInstance("mailSession");
+        Session session =
+                ServiceLocator.instance().getInstance("mailSession",
+                        Session.class);
         // session.setDebug(true);
         msg = new MimeMessage(session);
 

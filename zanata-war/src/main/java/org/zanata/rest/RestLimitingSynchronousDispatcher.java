@@ -8,7 +8,6 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
-import org.jboss.seam.Component;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.limits.RateLimitingProcessor;
@@ -17,6 +16,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ServiceLocator;
 
 /**
  * This class extends RESTEasy's SynchronousDispatcher to limit API calls per
@@ -105,7 +105,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
 
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
-        return (HAccount) Component
-                .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+        return ServiceLocator.instance().getInstance(
+                JpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
     }
 }

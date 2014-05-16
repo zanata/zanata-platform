@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.jboss.resteasy.spi.NotFoundException;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
@@ -55,6 +54,7 @@ import org.zanata.service.impl.TranslationServiceImpl;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ServiceLocator;
 
 import javax.ws.rs.Path;
 
@@ -123,8 +123,8 @@ public class AsynchronousProcessResourceService implements
             @Override
             public Void call() throws Exception {
                 DocumentService documentServiceImpl =
-                        (DocumentService) Component
-                                .getInstance(DocumentServiceImpl.class);
+                        ServiceLocator.instance().getInstance(
+                                DocumentServiceImpl.class);
                 documentServiceImpl.saveDocument(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true);
                 // TODO This should update with real progress
@@ -154,8 +154,8 @@ public class AsynchronousProcessResourceService implements
             @Override
             public Void call() throws Exception {
                 DocumentService documentServiceImpl =
-                        (DocumentService) Component
-                                .getInstance(DocumentServiceImpl.class);
+                        ServiceLocator.instance().getInstance(
+                                DocumentServiceImpl.class);
                 documentServiceImpl.saveDocument(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true);
                 // TODO This should update with real progress
@@ -201,8 +201,8 @@ public class AsynchronousProcessResourceService implements
                     @Override
                     public List<String> call() throws Exception {
                         TranslationService translationServiceImpl =
-                                (TranslationService) Component
-                                        .getInstance(TranslationServiceImpl.class);
+                                ServiceLocator.instance().getInstance(
+                                        TranslationServiceImpl.class);
 
                         // Translate
                         List<String> messages =

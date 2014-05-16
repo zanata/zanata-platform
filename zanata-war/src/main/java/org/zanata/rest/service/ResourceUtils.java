@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -71,6 +70,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
 
 import com.google.common.base.Optional;
@@ -919,8 +919,9 @@ public class ResourceUtils {
         try {
             return ZANATA_GENERATOR_PREFIX
                     + " "
-                    + ((ApplicationConfiguration) Component.getInstance(
-                            ApplicationConfiguration.class)).getVersion();
+                    + (ServiceLocator.instance()
+                            .getInstance(ApplicationConfiguration.class))
+                            .getVersion();
         } catch (Exception e) {
             return ZANATA_GENERATOR_PREFIX + " UNKNOWN";
         }

@@ -31,7 +31,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.sf.ehcache.CacheManager;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -49,6 +48,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -164,11 +164,12 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     }
 
     DocumentDAO getDocumentDAO() {
-        return (DocumentDAO) Component.getInstance(DocumentDAO.class);
+        return ServiceLocator.instance().getInstance(DocumentDAO.class);
     }
 
     TextFlowTargetDAO getTextFlowTargetDAO() {
-        TextFlowTargetDAO textFlowTargetDAO = (TextFlowTargetDAO) Component.getInstance(TextFlowTargetDAO.class);
+        TextFlowTargetDAO textFlowTargetDAO =
+                ServiceLocator.instance().getInstance(TextFlowTargetDAO.class);
         return textFlowTargetDAO;
     }
 
@@ -179,7 +180,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static class HTextFlowTargetIdLoader extends
             CacheLoader<TranslatedDocumentKey, DocumentStatus> {
         DocumentDAO getDocumentDAO() {
-            return (DocumentDAO) Component.getInstance(DocumentDAO.class);
+            return ServiceLocator.instance().getInstance(DocumentDAO.class);
         }
 
         @Override

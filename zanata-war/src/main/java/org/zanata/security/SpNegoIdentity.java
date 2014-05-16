@@ -28,8 +28,6 @@ import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -39,6 +37,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.ServiceLocator;
 
 @Name("org.jboss.seam.security.spNegoIdentity")
 @Scope(SESSION)
@@ -53,8 +52,7 @@ public class SpNegoIdentity implements Serializable {
 
     public void authenticate() {
         ZanataIdentity identity =
-                (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
-                        ScopeType.SESSION);
+                ServiceLocator.instance().getInstance(ZanataIdentity.class);
         if (identity.isLoggedIn()) {
             if (Events.exists()) {
                 Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
@@ -84,8 +82,7 @@ public class SpNegoIdentity implements Serializable {
     public void login() {
         try {
             ZanataIdentity identity =
-                    (ZanataIdentity) Component.getInstance(
-                            ZanataIdentity.class, ScopeType.SESSION);
+                    ServiceLocator.instance().getInstance(ZanataIdentity.class);
             if (identity.isLoggedIn()) {
                 if (Events.exists()) {
                     Events.instance().raiseEvent(

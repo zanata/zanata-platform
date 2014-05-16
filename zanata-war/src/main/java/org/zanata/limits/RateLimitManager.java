@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -24,6 +23,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ServiceLocator;
 
 /**
  * @author Patrick Huang <a
@@ -48,7 +48,7 @@ public class RateLimitManager implements Introspectable {
     private int maxActive;
 
     public static RateLimitManager getInstance() {
-        return (RateLimitManager) Component.getInstance("rateLimitManager");
+        return ServiceLocator.instance().getInstance(RateLimitManager.class);
     }
 
     @Create
@@ -58,8 +58,8 @@ public class RateLimitManager implements Introspectable {
 
     private void readRateLimitState() {
         ApplicationConfiguration appConfig =
-                (ApplicationConfiguration) Component
-                        .getInstance("applicationConfiguration");
+                ServiceLocator.instance().getInstance(
+                        ApplicationConfiguration.class);
         maxConcurrent = appConfig.getMaxConcurrentRequestsPerApiKey();
         maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }

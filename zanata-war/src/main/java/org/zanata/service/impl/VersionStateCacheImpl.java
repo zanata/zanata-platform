@@ -24,7 +24,6 @@ package org.zanata.service.impl;
 
 import net.sf.ehcache.CacheManager;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
@@ -131,8 +130,8 @@ public class VersionStateCacheImpl implements VersionStateCache {
             CacheLoader<VersionLocaleKey, WordStatistic> {
 
         ProjectIterationDAO getProjectIterationDAO() {
-            return (ProjectIterationDAO) Component
-                    .getInstance(ProjectIterationDAO.class);
+            return ServiceLocator.instance().getInstance(
+                    ProjectIterationDAO.class);
         }
 
         @Override

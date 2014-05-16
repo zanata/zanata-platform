@@ -30,7 +30,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

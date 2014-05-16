@@ -12,13 +12,13 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Maintains a set of "safe" actions that may be performed by &lt;s:link/&gt;,
@@ -99,8 +99,7 @@ public class FixedSafeActions extends org.jboss.seam.navigation.SafeActions {
         if (!Contexts.isApplicationContextActive()) {
             throw new IllegalStateException("No active application context");
         }
-        return (FixedSafeActions) Component.getInstance(FixedSafeActions.class,
-                ScopeType.APPLICATION);
+        return ServiceLocator.instance().getInstance(FixedSafeActions.class);
     }
 
 }
