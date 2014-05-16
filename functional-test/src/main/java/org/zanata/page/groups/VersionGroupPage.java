@@ -204,23 +204,23 @@ public class VersionGroupPage extends BasePage {
     }
 
     public VersionGroupPage selectProjectVersion(final String searchEntry) {
-        WebElement searchItem = waitForTenSec().until(
-                new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                List<WebElement> items = WebElementUtil
-                        .getSearchAutocompleteResults(driver,
-                                "settings-projects-form",
-                                "versionAutocomplete");
-                for (WebElement item : items) {
-                    if (item.getText().equals(searchEntry)) {
-                        return item;
+        waitForTenSec().until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver driver) {
+                        List<WebElement> items = WebElementUtil
+                                .getSearchAutocompleteResults(driver,
+                                        "settings-projects-form",
+                                        "versionAutocomplete");
+                        for (WebElement item : items) {
+                            if (item.getText().equals(searchEntry)) {
+                                item.click();
+                                return true;
+                            }
+                        }
+                        return false;
                     }
-                }
-                return null;
-            }
-        });
-        searchItem.click();
+                });
         return new VersionGroupPage(getDriver());
     }
 

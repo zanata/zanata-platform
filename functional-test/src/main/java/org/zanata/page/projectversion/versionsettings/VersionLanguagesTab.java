@@ -144,28 +144,24 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public VersionLanguagesTab addLocale(final String localeId) {
-        waitForTenSec().until(new Function<WebDriver, List<WebElement>>() {
+        String message = "can not find locale - " + localeId;
+        waitForTenSec().withMessage(message).until(new Predicate<WebDriver>() {
             @Override
-            public List<WebElement> apply(WebDriver driver) {
-                return WebElementUtil.getSearchAutocompleteResults(driver,
-                        "settings-languages-form", "languageAutocomplete");
+            public boolean apply(WebDriver driver) {
+                List<WebElement> searchResults =
+                        WebElementUtil.getSearchAutocompleteResults(driver,
+                                "settings-languages-form",
+                                "languageAutocomplete");
+
+                for (WebElement searchResult : searchResults) {
+                    if (searchResult.getText().contains(localeId)) {
+                        searchResult.click();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
-
-        List<WebElement> searchResults =
-                WebElementUtil.getSearchAutocompleteResults(getDriver(),
-                        "settings-languages-form", "languageAutocomplete");
-
-        boolean clickedLocale = false;
-        for (WebElement searchResult : searchResults) {
-            if (searchResult.getText().contains(localeId)) {
-                searchResult.click();
-                clickedLocale = true;
-                break;
-            }
-        }
-        Preconditions.checkState(clickedLocale, "can not find locale - %s",
-                localeId);
 
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override

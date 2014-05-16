@@ -21,6 +21,7 @@
 
 package org.zanata.feature.project;
 
+import org.assertj.core.api.Assertions;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -93,10 +94,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .addLanguage("English (United States)[en-US]")
                 .getEnabledLocaleList();
 
-        assertThat("Three languages are available to translate",
-                enabledLocaleList,
+        Assertions.assertThat(
+                enabledLocaleList).
                 contains("English (United States)[en-US]",
                         "French[fr]",
-                        "Hindi[hi]"));
+                        "Hindi[hi]");
     }
 }
