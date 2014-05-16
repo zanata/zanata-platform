@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.zanata</groupId>
   <artifactId>zanata-parent</artifactId>
-  <version>18</version>
+  <version>19-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
