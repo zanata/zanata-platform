@@ -29,12 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nullable;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -56,7 +51,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
@@ -64,11 +58,13 @@ import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -188,6 +184,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
      */
     public void sortVersionList() {
         Collections.sort(projectVersions, versionComparator);
+        versionFilter.reset();
     }
 
     private class VersionComparator implements Comparator<HProjectIteration> {
