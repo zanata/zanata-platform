@@ -264,6 +264,9 @@ public class SampleProjectProfile {
                         // iteration
                         .addFieldOrPropertyMaker(HProjectIteration.class,
                                 "slug", FixedValueMaker.fix("master"))
+                        .addFieldOrPropertyMaker(HProject.class,
+                                "sourceViewURL",
+                          FixedValueMaker.EMPTY_STRING_MAKER)
                         // document
                         // public HDocument(String docId, String name, String
                         // path,
