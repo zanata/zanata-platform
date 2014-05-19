@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2-SNAPSHOT</version>
 
   </parent>
   <artifactId>zanata-maven-plugin</artifactId>
@@ -27,7 +27,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
     <url>https://github.com/zanata/zanata-client</url>
-    <tag>client-3.3.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <prerequisites>
