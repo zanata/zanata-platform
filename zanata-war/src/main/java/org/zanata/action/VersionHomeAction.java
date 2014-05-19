@@ -281,6 +281,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList() {
         languageComparator.setSelectedDocumentId(null);
         Collections.sort(getSupportedLocale(), languageComparator);
+        languageTabLanguageFilter.reset();
     }
 
     /**
@@ -289,6 +290,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long documentId) {
         languageComparator.setSelectedDocumentId(documentId);
         Collections.sort(getSupportedLocale(), languageComparator);
+        documentsTabLanguageFilter.reset();
     }
 
     /**
@@ -299,16 +301,19 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortDocumentList(LocaleId localeId) {
         documentComparator.setSelectedLocaleId(localeId);
         Collections.sort(getDocuments(), documentComparator);
+        languageTabDocumentFilter.reset();
     }
 
     public void sortSourceDocumentList() {
         sourceDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getSourceDocuments(), sourceDocumentComparator);
+        documentsTabDocumentFilter.reset();
     }
 
     public void sortSettingsDocumentList() {
         settingsDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getDocuments(), settingsDocumentComparator);
+        settingsTabDocumentFilter.reset();
     }
 
     @Override

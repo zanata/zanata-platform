@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -50,15 +47,16 @@ import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.ZanataMessages;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -326,6 +324,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortLanguageList() {
         languageComparator.setSelectedVersionId(null);
         Collections.sort(activeLocales, languageComparator);
+        languageTabLanguageFilter.reset();
     }
 
     /**
@@ -334,6 +333,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long versionId) {
         languageComparator.setSelectedVersionId(versionId);
         Collections.sort(activeLocales, languageComparator);
+        projectTabLanguageFilter.reset();
     }
 
     /**
@@ -344,6 +344,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortProjectList(LocaleId localeId) {
         versionComparator.setSelectedLocaleId(localeId);
         Collections.sort(projectIterations, versionComparator);
+        languageTabVersionFilter.reset();
     }
 
     /**
@@ -352,6 +353,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void sortProjectList() {
         versionComparator.setSelectedLocaleId(null);
         Collections.sort(projectIterations, versionComparator);
+        projectTabVersionFilter.reset();
     }
 
     public List<HLocale> getActiveLocales() {
