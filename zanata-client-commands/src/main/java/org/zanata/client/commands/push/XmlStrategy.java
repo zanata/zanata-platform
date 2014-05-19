@@ -24,13 +24,13 @@ package org.zanata.client.commands.push;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
@@ -60,8 +60,8 @@ public class XmlStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public Set<String> findDocNames(File srcDir, List<String> includes,
-            List<String> excludes, boolean useDefaultExclude,
+    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         Set<String> localDocNames = new HashSet<String>();

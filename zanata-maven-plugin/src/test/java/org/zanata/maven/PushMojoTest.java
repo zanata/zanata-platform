@@ -2,6 +2,7 @@ package org.zanata.maven;
 
 import java.util.Arrays;
 
+import com.google.common.collect.ImmutableList;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.PushPullType;
 
@@ -52,8 +53,8 @@ public class PushMojoTest extends ZanataMojoTest<PushSimpleMojo, PushCommand> {
         assertEquals(PushPullType.Both, pushMojo.getPushType());
         assertEquals(false, pushMojo.getCopyTrans());
         assertEquals("import", pushMojo.getMergeType());
-        assertEquals(Arrays.asList("includes"), pushMojo.getIncludes());
-        assertEquals(Arrays.asList("excludes"), pushMojo.getExcludes());
+        assertEquals(ImmutableList.of("includes"), pushMojo.getIncludes());
+        assertEquals(ImmutableList.of("excludes"), pushMojo.getExcludes());
         assertEquals(false, pushMojo.getDefaultExcludes());
     }
 
@@ -71,8 +72,8 @@ public class PushMojoTest extends ZanataMojoTest<PushSimpleMojo, PushCommand> {
         assertEquals(PushPullType.Trans, pushMojo.getPushType());
         assertEquals(false, pushMojo.getCopyTrans());
         assertEquals("import", pushMojo.getMergeType());
-        assertEquals(Arrays.asList("includes"), pushMojo.getIncludes());
-        assertEquals(Arrays.asList("excludes"), pushMojo.getExcludes());
+        assertEquals(ImmutableList.of("includes"), pushMojo.getIncludes());
+        assertEquals(ImmutableList.of("excludes"), pushMojo.getExcludes());
         assertEquals(false, pushMojo.getDefaultExcludes());
     }
 

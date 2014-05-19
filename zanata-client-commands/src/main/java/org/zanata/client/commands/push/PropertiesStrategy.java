@@ -25,9 +25,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -71,8 +71,8 @@ public class PropertiesStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public Set<String> findDocNames(File srcDir, List<String> includes,
-            List<String> excludes, boolean useDefaultExclude,
+    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         Set<String> localDocNames = new HashSet<String>();

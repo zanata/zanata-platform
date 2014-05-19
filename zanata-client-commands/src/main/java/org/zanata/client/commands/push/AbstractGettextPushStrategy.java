@@ -29,9 +29,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -48,8 +48,8 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
         super(new StringSet("comment;gettext"), ".pot");
     }
 
-    public Set<String> findDocNames(File srcDir, List<String> includes,
-            List<String> excludes, boolean useDefaultExclude,
+    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         Set<String> localDocNames = new HashSet<String>();

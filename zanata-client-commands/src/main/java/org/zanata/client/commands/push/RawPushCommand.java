@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.codec.binary.Hex;
 import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
@@ -112,22 +113,22 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         RawPushStrategy strat = new RawPushStrategy();
         strat.setPushOptions(getOpts());
 
-        List<String> types = new ArrayList<String>();
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
 
         ClientResponse<String> response = fileResource.acceptedFileTypes();
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         StringSet serverAcceptedTypes = new StringSet(response.getEntity());
-        if (getOpts().getFileTypes() != null) {
-            for (String type : getOpts().getFileTypes()) {
-                if (serverAcceptedTypes.contains(type)) {
-                    types.add(type);
-                } else {
-                    log.warn(
-                            "Requested type '{}' is not supported by the target server and will be ignored.",
-                            type);
-                }
+        for (String type : getOpts().getFileTypes()) {
+            if (serverAcceptedTypes.contains(type)) {
+                builder.add(type);
+            } else {
+                log.warn(
+                        "Requested type '{}' is not supported by the target server and will be ignored.",
+                        type);
             }
         }
+
+        ImmutableList<String> types = builder.build();
 
         if (types.isEmpty()) {
             log.info("no valid types specified; nothing to do");

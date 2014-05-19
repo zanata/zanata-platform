@@ -22,10 +22,11 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -44,7 +45,7 @@ public abstract class AbstractPushStrategy extends
     private String fileExtension;
 
     public abstract Set<String> findDocNames(File srcDir,
-            List<String> includes, List<String> excludes,
+            ImmutableList<String> includes, ImmutableList<String> excludes,
             boolean useDefaultExclude, boolean caseSensitive,
             boolean excludeLocaleFilenames) throws IOException;
 
@@ -81,6 +82,7 @@ public abstract class AbstractPushStrategy extends
      *            empty to find all source files, non-empty to find only the
      *            documents in this list
      * @param excludes
+     *            'excludes' patterns configured by the user
      * @param excludeLocaleFilenames
      *            adds entries to excludes to ignore any file with a locale id
      *            suffix before the file extension.
@@ -91,18 +93,31 @@ public abstract class AbstractPushStrategy extends
      *            case sensitive search for includes and excludes options
      * @return document paths for source files found in srcDir
      */
-    public String[] getSrcFiles(File srcDir, List<String> includes,
-            List<String> excludes, boolean excludeLocaleFilenames,
+    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean excludeLocaleFilenames,
             boolean useDefaultExclude, boolean isCaseSensitive) {
-        if (excludeLocaleFilenames) {
-            addExcludesForLocaleFilenames(excludes);
-        }
-        return getSrcFiles(srcDir, includes, excludes,
-                Collections.<String> singletonList(fileExtension),
+        ImmutableList<String> fullExcludes =
+                getFullExcludes(excludes, excludeLocaleFilenames);
+        return getSrcFiles(srcDir, includes, fullExcludes,
+                ImmutableList.of(fileExtension),
                 useDefaultExclude, isCaseSensitive);
     }
 
-    private void addExcludesForLocaleFilenames(List<String> excludes) {
+    private ImmutableList<String> getFullExcludes(ImmutableList<String> excludes,
+            boolean excludeLocaleFilenames) {
+        if (excludeLocaleFilenames) {
+            ImmutableList.Builder<String> builder = ImmutableList.builder();
+            // excludes may not be mutable, so make a copy
+            builder.addAll(excludes);
+            builder.addAll(getExcludesForLocaleFilenames());
+            return builder.build();
+        } else {
+            return excludes;
+        }
+    }
+
+    private List<String> getExcludesForLocaleFilenames() {
+        List<String> excludes = new ArrayList<String>();
         String sourceLang =
                 new LocaleId(getOpts().getSourceLang()).toJavaName();
 
@@ -112,6 +127,7 @@ public abstract class AbstractPushStrategy extends
                 excludes.add("**/*_" + loc + fileExtension);
             }
         }
+        return excludes;
     }
 
     protected String docNameToFilename(String docName) {
