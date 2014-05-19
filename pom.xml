@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>19</version>
+    <version>20-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -37,7 +37,6 @@
   <properties>
     <zanata.api.version>3.3.1</zanata.api.version>
     <zanata.common.version>3.3.0</zanata.common.version>
-    <powermock.version>1.4.12</powermock.version>
     <resteasy.version>3.0.1.Final</resteasy.version>
   </properties>
 
@@ -182,30 +181,6 @@
             <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-core</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-module-junit4</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
