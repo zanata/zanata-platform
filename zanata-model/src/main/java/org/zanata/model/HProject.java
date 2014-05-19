@@ -62,6 +62,7 @@ import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.model.type.EntityStatusType;
+import org.zanata.model.validator.Url;
 import org.zanata.rest.dto.Project;
 
 import com.google.common.collect.Lists;
@@ -98,6 +99,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     @Type(type = "text")
     private String homeContent;
 
+    @Url(canEndInSlash = true)
     private String sourceViewURL;
 
     private String sourceCheckoutURL;
