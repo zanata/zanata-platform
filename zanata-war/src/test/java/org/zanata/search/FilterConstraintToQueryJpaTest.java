@@ -80,7 +80,12 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         translator = makePerson("translator123");
 
         HDocument hDocument =
-                EntityMakerBuilder.builder().reuseEntity(hLocale).build()
+                EntityMakerBuilder
+                        .builder()
+                        .addFieldOrPropertyMaker(HProject.class,
+                                "sourceViewURL",
+                                FixedValueMaker.EMPTY_STRING_MAKER)
+                        .reuseEntity(hLocale).build()
                         .makeAndPersist(getEm(), HDocument.class);
         documentId = new DocumentId(hDocument.getId(), hDocument.getDocId());
 

@@ -95,6 +95,9 @@ public class UserSettingsAction {
     @In
     private EmailChangeService emailChangeService;
 
+    @In(create = true)
+    private ProfileAction profileAction;
+
     @In
     private PersonDAO personDAO;
 
@@ -165,8 +168,12 @@ public class UserSettingsAction {
             String activationKey =
                     emailChangeService.generateActivationKey(person,
                             emailAddress);
-            // setActivationKey(activationKey);
+            // TODO create a separate field for newEmail, perhaps in this class
+            // TODO should template and messages.properties use userSettingsAction, not profileAction?
+            profileAction.setEmail(emailAddress);
+            profileAction.setActivationKey(activationKey);
             renderer.render("/WEB-INF/facelets/email/email_validation.xhtml");
+
             FacesMessages
                     .instance()
                     .add("You will soon receive an email with a link to activate your email account change.");
