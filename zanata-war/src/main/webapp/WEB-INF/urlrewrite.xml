@@ -163,7 +163,7 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/account/validate_email/([^?]+)(.*)$</from>
+    <from casesensitive="true">^/account/validate_email/([^?]*)(.*)$</from>
     <to last="true">/account/email_validation.seam\?key=$1</to>
   </rule>
 
