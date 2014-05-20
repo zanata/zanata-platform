@@ -20,11 +20,10 @@ public class FeatureInventoryRecorder extends RunListener {
 
     public static final String PLAIN_FORMAT =
             "************** rhbz%d - %s -> [%s][%s]";
-    public static final String HTML_FORMAT =
-            "<li><a href='https://bugzilla.redhat.com/show_bug.cgi?id=%d'>rhbz%d</a> - %s [%s][%s]</li>\n";
     private boolean fileReport;
     private ThreadLocal<Feature> currentFeature = new ThreadLocal<Feature>();
     private PrintWriter printWriter;
+    private HTMLFeatureReporter htmlFeatureReporter = new HTMLFeatureReporter();
 
     @Override
     public void testRunStarted(Description description) throws Exception {
@@ -47,7 +46,8 @@ public class FeatureInventoryRecorder extends RunListener {
                 printWriter.append("<ul>");
                 fileReport = true;
             } catch (IOException e) {
-                System.out.println("can not create feature report at " + report);
+                System.out
+                        .println("can not create feature report at " + report);
             }
         }
     }
@@ -86,13 +86,15 @@ public class FeatureInventoryRecorder extends RunListener {
     @Override
     public void testFinished(Description description) throws Exception {
         super.testFinished(description);
-        reportFeature(TestResult.Passed, description.getDisplayName());
+        reportFeature(FeatureReporter.TestResult.Passed,
+                description.getDisplayName());
     }
 
     @Override
     public void testFailure(Failure failure) throws Exception {
         super.testFailure(failure);
-        reportFeature(TestResult.Failed, failure.getDescription()
+        reportFeature(FeatureReporter.TestResult.Failed, failure
+                .getDescription()
                 .getDisplayName());
     }
 
@@ -103,20 +105,19 @@ public class FeatureInventoryRecorder extends RunListener {
         if (featureOptional.isPresent()) {
             currentFeature.set(featureOptional.get());
         }
-        reportFeature(TestResult.Ignored, description.getDisplayName());
+        reportFeature(FeatureReporter.TestResult.Ignored,
+                description.getDisplayName());
     }
 
-    private void reportFeature(TestResult result, String displayName) {
+    private void reportFeature(FeatureReporter.TestResult result,
+            String displayName) {
         if (currentFeature.get() == null) {
             return;
         }
         Feature feature = currentFeature.get();
         if (fileReport) {
-            String entry =
-                    String.format(HTML_FORMAT, feature.bugzilla(),
-                            feature.bugzilla(), feature.summary(), displayName,
-                            result);
-            printWriter.append(entry);
+            printWriter.append(htmlFeatureReporter.toReportEntry(feature,
+                    displayName, result));
         } else {
             String msg =
                     String.format(PLAIN_FORMAT, feature.bugzilla(),
@@ -124,9 +125,5 @@ public class FeatureInventoryRecorder extends RunListener {
             System.out.println(msg);
         }
         currentFeature.remove();
-    }
-
-    enum TestResult {
-        Passed, Failed, Ignored
     }
 }

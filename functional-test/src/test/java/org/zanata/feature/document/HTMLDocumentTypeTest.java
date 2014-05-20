@@ -46,7 +46,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Feature(bugzilla = 980670, summary = "As a new maintainer, I wish to have my HTML files supported for translation by Zanata")
+@Feature(bugzilla = 980670, summary = "Maintainer can upload a HTML file for translation")
 public class HTMLDocumentTypeTest extends ZanataTestCase {
 
     @Rule
