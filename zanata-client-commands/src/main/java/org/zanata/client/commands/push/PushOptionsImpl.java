@@ -160,7 +160,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
                     + "--includes=\"src/myfile*.xml,**/*.xlf\"")
     public
             void setIncludes(String includes) {
-        this.includes = StringUtil.split(includes, ",");
+        this.includes = new ArrayList(StringUtil.split(includes, ","));
     }
 
     @Override
@@ -175,7 +175,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
                     + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
     public
             void setExcludes(String excludes) {
-        this.excludes = StringUtil.split(excludes, ",");
+        this.excludes = new ArrayList(StringUtil.split(excludes, ","));
     }
 
     @Override
@@ -223,7 +223,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     @Option(name = "--file-types", metaVar = "TYPES",
             usage = "File types to locate and transmit to the server.")
     public void setFileTypes(String fileTypes) {
-        this.fileTypes = StringUtil.split(fileTypes, ",");
+        this.fileTypes = new ArrayList(StringUtil.split(fileTypes, ","));
     }
 
     @Override
