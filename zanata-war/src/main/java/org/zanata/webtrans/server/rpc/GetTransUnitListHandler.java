@@ -79,9 +79,8 @@ public class GetTransUnitListHandler extends
     @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
-    // TODO pahuang this needs to be standardized in client
     private DateTimeFormatter dateFormatter =
-            DateTimeFormat.forPattern("dd-mm-yyyy");
+            DateTimeFormat.forPattern("yyyy-mm-dd");
 
     @Override
     public GetTransUnitListResult execute(GetTransUnitList action,
