@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -116,14 +117,14 @@ public class ActivityAction implements Serializable {
                     "jsf.dashboard.activity.translate.message",
                     activity.getWordCount(), getProjectUrl(activity),
                     getProjectName(activity), getEditorUrl(activity),
-                    getLastTextFlowContent(activity));
+                    StringEscapeUtils.escapeHtml(getLastTextFlowContent(activity)));
 
         case REVIEWED_TRANSLATION:
             return zanataMessages.getMessage(
                     "jsf.dashboard.activity.review.message",
                     activity.getWordCount(), getProjectUrl(activity),
                     getProjectName(activity), getEditorUrl(activity),
-                    getLastTextFlowContent(activity));
+                    StringEscapeUtils.escapeHtml(getLastTextFlowContent(activity)));
 
         case UPLOAD_SOURCE_DOCUMENT:
             return zanataMessages.getMessage(
