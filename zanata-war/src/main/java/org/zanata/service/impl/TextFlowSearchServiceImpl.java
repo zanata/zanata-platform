@@ -197,7 +197,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         FilterConstraintToQuery toQuery =
                 FilterConstraintToQuery.filterInMultipleDocuments(constraints,
                         documentIds);
-        String hql = toQuery.toHQL();
+        String hql = toQuery.toEntityQuery();
         log.debug("hql for searching: {}", hql);
         org.hibernate.Query query = session.createQuery(hql);
         toQuery.setQueryParameters(query, hLocale);

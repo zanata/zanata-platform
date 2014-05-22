@@ -25,7 +25,8 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.util.RetryRule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,12 +36,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(BasicAcceptanceTest.class)
-public class RetryRuleTest {
+public class RetryRuleTest extends ZanataTestCase {
 
     @Rule
     public RetryRule retryRule = new RetryRule(2);
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void retryPassAfterFail() {
         // Fail on the first execution, but pass on the second
         assertThat("Current try is greater than 1", retryRule.currentTry(),
@@ -50,7 +51,7 @@ public class RetryRuleTest {
                 Matchers.equalTo(2));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passWillPass() {
         assertThat("A normal passing test will pass", true);
         assertThat("And pass on the first try", retryRule.currentTry(),

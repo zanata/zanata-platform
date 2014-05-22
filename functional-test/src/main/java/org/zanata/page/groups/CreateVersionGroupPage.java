@@ -71,7 +71,7 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public CreateVersionGroupPage saveGroupFailure() {
-        clickAndCheckErrors(saveButton);
+        saveButton.click();
         return new CreateVersionGroupPage(getDriver());
     }
 

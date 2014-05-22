@@ -24,7 +24,6 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -37,6 +36,7 @@ import org.zanata.action.AuthenticationEvents;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataJpaIdentityStore;
+import org.zanata.util.ServiceLocator;
 
 /**
  * This class executes a Runnable Process asynchronously. Do not use this class
@@ -110,13 +110,13 @@ public class AsynchronousTaskExecutor {
             // Only if it's an authenticated task should it try and do this
             // injection
             AccountDAO accountDAO =
-                (AccountDAO) Component.getInstance(AccountDAO.class);
+                    ServiceLocator.instance().getInstance(AccountDAO.class);
             ZanataJpaIdentityStore idStore =
-                    (ZanataJpaIdentityStore) Component
-                            .getInstance(ZanataJpaIdentityStore.class);
+                    ServiceLocator.instance().getInstance(
+                            ZanataJpaIdentityStore.class);
             AuthenticationEvents authEvts =
-                (AuthenticationEvents) Component
-                    .getInstance(AuthenticationEvents.class);
+                    ServiceLocator.instance().getInstance(
+                            AuthenticationEvents.class);
             HAccount authenticatedAccount = accountDAO.getByUsername(username);
             authEvts.injectAuthenticatedPersonIntoWorkingMemory(authenticatedAccount);
             idStore.setAuthenticateUser(authenticatedAccount);

@@ -36,7 +36,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
 
-import org.jboss.seam.Component;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -48,7 +48,6 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -76,9 +75,10 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
-import org.zanata.ui.FilterUtil;
+import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.DocumentStatus;
@@ -151,6 +151,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     private WordStatistic overallStatistic;
 
     @Getter
+    @Setter
     private HLocale selectedLocale;
 
     @Getter
@@ -221,50 +222,56 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Getter
     private final DocumentFilter languageTabDocumentFilter =
-            new DocumentFilter() {
-                @Override
-                public int getFilteredListSize() {
-                    if (getSelectedLocale() == null) {
-                        return 0;
-                    }
-                    return getFilteredList().size();
-                }
-            };
+            new DocumentFilter();
 
     @Getter
     private final AbstractListFilter<HIterationGroup> groupFilter =
-            new AbstractListFilter<HIterationGroup>() {
+            new InMemoryListFilter<HIterationGroup>() {
                 @Override
-                protected List<HIterationGroup> getFilteredList() {
-                    return FilterUtil.filterGroupList(getQuery(), getGroups());
+                protected List<HIterationGroup> fetchAll() {
+                    return getGroups();
+                }
+
+                @Override
+                protected boolean include(HIterationGroup elem, String filter) {
+                    return StringUtils.containsIgnoreCase(elem.getName(),
+                            filter)
+                            || StringUtils.containsIgnoreCase(elem.getSlug(),
+                                    filter);
                 }
             };
 
     @Getter
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
-            new AbstractListFilter<HLocale>() {
+            new InMemoryListFilter<HLocale>() {
                 @Override
-                protected List<HLocale> getFilteredList() {
-                    return FilterUtil.filterLanguageList(getQuery(),
-                            getSupportedLocale());
+                protected List<HLocale> fetchAll() {
+                    return getSupportedLocale();
+                }
+
+                @Override
+                protected boolean include(HLocale elem, String filter) {
+                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
+                            .getId(), filter)
+                            || StringUtils.containsIgnoreCase(
+                                    elem.retrieveDisplayName(), filter);
                 }
             };
 
     @Getter
     private final AbstractListFilter<HLocale> documentsTabLanguageFilter =
-            new AbstractListFilter<HLocale>() {
+            new InMemoryListFilter<HLocale>() {
                 @Override
-                public int getFilteredListSize() {
-                    if (getSelectedDocument() == null) {
-                        return 0;
-                    }
-                    return getFilteredList().size();
+                protected List<HLocale> fetchAll() {
+                    return getSupportedLocale();
                 }
 
                 @Override
-                protected List<HLocale> getFilteredList() {
-                    return FilterUtil.filterLanguageList(getQuery(),
-                            getSupportedLocale());
+                protected boolean include(HLocale elem, String filter) {
+                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
+                            .getId(), filter)
+                            || StringUtils.containsIgnoreCase(
+                                    elem.retrieveDisplayName(), filter);
                 }
             };
 
@@ -274,7 +281,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList() {
         languageComparator.setSelectedDocumentId(null);
         Collections.sort(getSupportedLocale(), languageComparator);
-        languageTabLanguageFilter.resetQueryAndPage();
+        languageTabLanguageFilter.reset();
     }
 
     /**
@@ -283,7 +290,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortLanguageList(Long documentId) {
         languageComparator.setSelectedDocumentId(documentId);
         Collections.sort(getSupportedLocale(), languageComparator);
-        documentsTabLanguageFilter.resetQueryAndPage();
+        documentsTabLanguageFilter.reset();
     }
 
     /**
@@ -294,27 +301,27 @@ public class VersionHomeAction extends AbstractSortAction implements
     public void sortDocumentList(LocaleId localeId) {
         documentComparator.setSelectedLocaleId(localeId);
         Collections.sort(getDocuments(), documentComparator);
-        languageTabDocumentFilter.resetQueryAndPage();
+        languageTabDocumentFilter.reset();
     }
 
     public void sortSourceDocumentList() {
         sourceDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getSourceDocuments(), sourceDocumentComparator);
-        documentsTabDocumentFilter.resetQueryAndPage();
+        documentsTabDocumentFilter.reset();
     }
 
     public void sortSettingsDocumentList() {
         settingsDocumentComparator.setSelectedLocaleId(null);
         Collections.sort(getDocuments(), settingsDocumentComparator);
-        settingsTabDocumentFilter.resetQueryAndPage();
+        settingsTabDocumentFilter.reset();
     }
 
     @Override
     public void resetPageData() {
-        languageTabDocumentFilter.resetQueryAndPage();
-        documentsTabDocumentFilter.resetQueryAndPage();
-        settingsTabDocumentFilter.resetQueryAndPage();
-        languageTabLanguageFilter.resetQueryAndPage();
+        languageTabDocumentFilter.reset();
+        documentsTabDocumentFilter.reset();
+        settingsTabDocumentFilter.reset();
+        languageTabLanguageFilter.reset();
         documents = null;
         version = null;
         supportedLocale = null;
@@ -334,7 +341,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         overallStatistic = new WordStatistic();
-        for (Map.Entry<LocaleId, WordStatistic> entry : localeStatisticMap.entrySet()) {
+        for (Map.Entry<LocaleId, WordStatistic> entry : localeStatisticMap
+                .entrySet()) {
             overallStatistic.add(entry.getValue());
         }
         overallStatistic.setRemainingHours(StatisticsUtil
@@ -414,11 +422,6 @@ public class VersionHomeAction extends AbstractSortAction implements
             loadStatistics();
         }
         this.pageRendered = pageRendered;
-    }
-
-    public void setSelectedLocale(HLocale hLocale) {
-        this.selectedLocale = hLocale;
-        resetPageData();
     }
 
     @Getter
@@ -685,6 +688,14 @@ public class VersionHomeAction extends AbstractSortAction implements
                 .getAdapterParams()));
     }
 
+    public void setSelectedLocaleId(String localeId) {
+        this.selectedLocale = localeDAO.findByLocaleId(new LocaleId(localeId));
+    }
+
+    public void setSelectedDocumentId(String projectSlug, String versionSlug, String docId) {
+        this.selectedDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
+    }
+
     // TODO add logging for disk writing errors
     // TODO damason: unify this with Source/TranslationDocumentUpload
     private void uploadAdapterFile() {
@@ -846,25 +857,35 @@ public class VersionHomeAction extends AbstractSortAction implements
         resetPageData();
     }
 
-    private class DocumentFilter extends AbstractListFilter<HDocument> {
-        private DocumentDAO documentDAO = (DocumentDAO) Component
-                .getInstance(DocumentDAO.class);
+    private class DocumentFilter extends InMemoryListFilter<HDocument> {
+        private DocumentDAO documentDAO =
+                ServiceLocator.instance().getInstance(DocumentDAO.class);
 
         @Override
-        protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(),
-                    getDocuments(documentDAO));
+        protected List<HDocument> fetchAll() {
+            return getDocuments(documentDAO);
+        }
+
+        @Override
+        protected boolean include(HDocument elem, String filter) {
+            return StringUtils.containsIgnoreCase(elem.getName(), filter)
+                    || StringUtils.containsIgnoreCase(elem.getPath(), filter);
         }
     };
 
-    private class SourceDocumentFilter extends AbstractListFilter<HDocument> {
-        private DocumentDAO documentDAO = (DocumentDAO) Component
+    private class SourceDocumentFilter extends InMemoryListFilter<HDocument> {
+        private DocumentDAO documentDAO = ServiceLocator.instance()
                 .getInstance(DocumentDAO.class);
 
         @Override
-        protected List<HDocument> getFilteredList() {
-            return FilterUtil.filterDocumentList(getQuery(),
-                    getSourceDocuments(documentDAO));
+        protected List<HDocument> fetchAll() {
+            return getSourceDocuments(documentDAO);
+        }
+
+        @Override
+        protected boolean include(HDocument elem, String filter) {
+            return StringUtils.containsIgnoreCase(elem.getName(), filter)
+                    || StringUtils.containsIgnoreCase(elem.getPath(), filter);
         }
     };
 
@@ -880,25 +901,21 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public int compare(HDocument o1, HDocument o2) {
-            final HDocument item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = o1;
-                item2 = o2;
-            } else {
-                item1 = o2;
-                item2 = o1;
-            }
-
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
 
+            if (!selectedSortOption.isAscending()) {
+                HDocument temp = o1;
+                o1 = o2;
+                o2 = temp;
+            }
+
             if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
-                return item1.getName().compareTo(item2.getName());
+                return o1.getName().compareToIgnoreCase(o2.getName());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_SOURCE_UPDATE)) {
-                return DateUtil.compareDate(item1.getLastChanged(),
-                        item2.getLastChanged());
+                return DateUtil.compareDate(o1.getLastChanged(),
+                        o2.getLastChanged());
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LAST_TRANSLATED)) {
                 if (selectedLocaleId != null) {
@@ -918,16 +935,16 @@ public class VersionHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
                 if (selectedLocaleId != null) {
                     wordStatistic1 =
-                            getStatisticForDocument(item1.getId(),
+                            getStatisticForDocument(o1.getId(),
                                     selectedLocaleId);
 
                     wordStatistic2 =
-                            getStatisticForDocument(item2.getId(),
+                            getStatisticForDocument(o2.getId(),
                                     selectedLocaleId);
 
                 } else {
-                    wordStatistic1 = getDocumentStatistic(item1.getId());
-                    wordStatistic2 = getDocumentStatistic(item2.getId());
+                    wordStatistic1 = getDocumentStatistic(o1.getId());
+                    wordStatistic2 = getDocumentStatistic(o2.getId());
                 }
                 return compareWordStatistic(wordStatistic1, wordStatistic2,
                         selectedSortOption);
@@ -947,19 +964,15 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public int compare(HLocale compareFrom, HLocale compareTo) {
-            final HLocale item1, item2;
-
-            if (sortingType.isDescending()) {
-                item1 = compareFrom;
-                item2 = compareTo;
-            } else {
-                item1 = compareTo;
-                item2 = compareFrom;
-            }
-
+        public int compare(HLocale o1, HLocale o2) {
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
+                HLocale temp = o1;
+                o1 = o2;
+                o2 = temp;
+            }
 
             // Need to get statistic for comparison
             if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
@@ -967,23 +980,21 @@ public class VersionHomeAction extends AbstractSortAction implements
                 WordStatistic wordStatistic2;
 
                 if (selectedDocumentId == null) {
-                    wordStatistic1 =
-                            getStatisticsForLocale(item1.getLocaleId());
-                    wordStatistic2 =
-                            getStatisticsForLocale(item2.getLocaleId());
+                    wordStatistic1 = getStatisticsForLocale(o1.getLocaleId());
+                    wordStatistic2 = getStatisticsForLocale(o2.getLocaleId());
                 } else {
                     wordStatistic1 =
                             getStatisticForDocument(selectedDocumentId,
-                                    item1.getLocaleId());
+                                    o1.getLocaleId());
                     wordStatistic2 =
                             getStatisticForDocument(selectedDocumentId,
-                                    item2.getLocaleId());
+                                    o2.getLocaleId());
                 }
                 return compareWordStatistic(wordStatistic1, wordStatistic2,
                         selectedSortOption);
             } else {
-                return item1.retrieveDisplayName().compareTo(
-                        item2.retrieveDisplayName());
+                return o1.retrieveDisplayName().compareTo(
+                        o2.retrieveDisplayName());
             }
         }
     }

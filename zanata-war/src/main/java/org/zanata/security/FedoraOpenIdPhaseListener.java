@@ -29,10 +29,10 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.navigation.Pages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.ServiceLocator;
 
 public class FedoraOpenIdPhaseListener implements PhaseListener {
     private static final Logger LOGGER = LoggerFactory
@@ -48,7 +48,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener {
         }
 
         ZanataOpenId openid =
-                (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
+                ServiceLocator.instance().getInstance(ZanataOpenId.class);
         if (openid.getId() == null) {
             try {
                 sendXRDS();
@@ -74,7 +74,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener {
 
         // XXX ENCODE THE URL!
         ZanataOpenId open =
-                (ZanataOpenId) Component.getInstance(ZanataOpenId.class);
+                ServiceLocator.instance().getInstance(ZanataOpenId.class);
 
         out.println("<XRDS xmlns=\"xri://$xrd*($v*2.0)\"><XRD><Service>"
                 + "<Type>http://specs.openid.net/auth/2.0/return_to</Type><URI>"

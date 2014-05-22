@@ -22,10 +22,8 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.SearchField;
+import org.zanata.webtrans.client.ui.EditorSearchField;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -42,10 +40,8 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     private static TransFilterViewUiBinder uiBinder = GWT
             .create(TransFilterViewUiBinder.class);
 
-    // TODO deal with showing greyed-out text
-
     @UiField(provided = true)
-    SearchField searchField;
+    EditorSearchField searchField;
 
     @UiField
     Styles style;
@@ -54,9 +50,6 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
     CheckBox parentIncompleteChk, untranslatedChk, fuzzyChk, rejectedChk,
             parentCompleteChk, translatedChk, approvedChk, hasErrorChk;
 
-    private String hintMessage;
-
-    private boolean focused = false;
     private Listener listener;
 
     interface TransFilterViewUiBinder extends UiBinder<Widget, TransFilterView> {
@@ -68,9 +61,8 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @Inject
     public TransFilterView(UiMessages messages) {
-        searchField = new SearchField(this);
-        hintMessage = messages.findSourceOrTargetString();
-        searchField.setTextBoxTitle(hintMessage);
+        searchField = new EditorSearchField(this);
+        searchField.setPlaceholderText(messages.filterMesssagesByTerm());
         initWidget(uiBinder.createAndBindUi(this));
         hasErrorChk.setTitle(messages.invalidTooltip());
         getElement().setId("TransFilterView");
@@ -83,7 +75,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @Override
     public boolean isFocused() {
-        return focused;
+        return searchField.isFocused();
     }
 
     @Override
@@ -93,14 +85,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @Override
     public void setSearchTerm(String searchTerm) {
-        Log.info("setting search term:[" + searchTerm + "]");
-        if (Strings.isNullOrEmpty(searchTerm)) {
-            searchField.setText(hintMessage);
-            searchField.addStyleName(style.transFilterTextBoxEmpty());
-        } else {
-            searchField.removeStyleName(style.transFilterTextBoxEmpty());
-        }
-        searchField.setValue(searchTerm);
+        searchField.setText(searchTerm);
     }
 
     @Override
@@ -145,33 +130,18 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @Override
     public void onSearchFieldBlur() {
-        focused = false;
-        if (searchField.getText().isEmpty()) {
-            searchField.addStyleName(style.transFilterTextBoxEmpty());
-            searchField.setText(hintMessage);
-        }
+        listener.onSearchFieldFocused(false);
     }
 
     @Override
     public void onSearchFieldFocus() {
-        focused = true;
-    }
-
-    @Override
-    public void onSearchFieldClick() {
-        focused = true;
-        if (searchField.containStyleName(style.transFilterTextBoxEmpty())) {
-            searchField.setText("");
-            searchField.removeStyleName(style.transFilterTextBoxEmpty());
-        }
+        listener.onSearchFieldFocused(true);
     }
 
     @Override
     public void onSearchFieldCancel() {
-        if (!searchField.containStyleName(style.transFilterTextBoxEmpty())) {
-            searchField.setValue("");
-            searchField.addStyleName(style.transFilterTextBoxEmpty());
-        }
+        searchField.setValue("");
+        listener.searchTerm("");
     }
 
     @UiHandler({ "translatedChk", "fuzzyChk", "untranslatedChk", "approvedChk",
@@ -234,6 +204,11 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
         translatedChk.setValue(event.getValue());
         approvedChk.setValue(event.getValue());
         onFilterOptionsChanged(event);
+    }
+
+    @Override
+    public void selectPartialText(String text) {
+        searchField.selectText(text);
     }
 
     @Override

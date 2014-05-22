@@ -20,58 +20,46 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.webtrans.client.service.GetTransUnitActionContext;
+import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
+import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.common.base.Objects;
 
 public class GetTransUnitsNavigation {
-    private Long id;
-    private String phrase;
-
+    private DocumentId documentId;
     private ContentStateGroup activeStates;
+    private EditorFilter editorFilter;
+    private FilterConstraints constraints;
 
     @SuppressWarnings("unused")
     private GetTransUnitsNavigation() {
     }
 
-    public GetTransUnitsNavigation(Long id, String phrase,
-            ContentStateGroup activeStates) {
-        this.id = id;
-        this.phrase = phrase;
+    public GetTransUnitsNavigation(DocumentId documentId,
+            ContentStateGroup activeStates, EditorFilter editorFilter,
+            FilterConstraints constraints) {
+        this.documentId = documentId;
         this.activeStates = activeStates;
+        this.editorFilter = editorFilter;
+        this.constraints = constraints;
     }
 
-    public GetTransUnitsNavigation(GetTransUnitActionContext context) {
-        this(context.getDocument().getId().getId(), context.getFindMessage(),
-                ContentStateGroup.builder()
-                        .fromStates(context.getCurrentFilterStates()).build());
+    public DocumentId getDocumentId() {
+        return documentId;
     }
 
-    public static GetTransUnitsNavigation newAction(
-            GetTransUnitActionContext context) {
-        return new GetTransUnitsNavigation(context);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getPhrase() {
-        return this.phrase;
-    }
-
-    public ContentStateGroup getActiveStates() {
-        return activeStates;
+    public FilterConstraints getConstraints() {
+        return constraints;
     }
 
     @Override
     public String toString() {
         // @formatter:off
       return Objects.toStringHelper(this).
-            add("id", id).
-            add("phrase", phrase).
+            add("documentId", documentId).
             add("activeStates", activeStates).
+            add("editorFilter", editorFilter).
             toString();
       // @formatter:on
     }

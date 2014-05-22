@@ -20,149 +20,118 @@
  */
 package org.zanata.feature.account;
 
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
-import org.zanata.page.account.EditProfilePage;
-import org.zanata.page.account.MyAccountPage;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
+import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
+import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class ProfileTest {
+public class ProfileTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
     private static final String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
+    private static final String serverUrl = PropertiesHolder
+                .getProperty(Constants.zanataInstance.value());
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyProfileData() {
-        MyAccountPage myAccountPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToMyProfile();
+        DashboardClientTab dashboardClientTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToSettingsTab()
+                .goToSettingsClientTab();
 
-        assertThat("The user's name is displayed in bold",
-                myAccountPage.getFullName(), Matchers.equalTo("Administrator"));
+        assertThat(dashboardClientTab.getApiKey()).isEqualTo(adminsApiKey)
+                .as("The correct api key is present");
 
-        assertThat("The user's username is displayed in smaller bold",
-                myAccountPage.getUsername(), Matchers.equalTo("admin"));
+        assertThat(dashboardClientTab.getConfigurationDetails())
+                .contains("localhost.url="+serverUrl)
+                .as("The configuration url is correct");
 
-        assertThat("The correct api key is present", myAccountPage.getApiKey(),
-                Matchers.equalTo(adminsApiKey));
+        assertThat(dashboardClientTab.getConfigurationDetails())
+                .contains("localhost.username=admin")
+                .as("The configuration username is correct");
 
-        assertThat(
-                "The configuration url is correct",
-                myAccountPage.getConfigurationDetails(),
-                Matchers.containsString("localhost.url=http://localhost:9898/zanata/"));
-
-        assertThat("The configuration username is correct",
-                myAccountPage.getConfigurationDetails(),
-                Matchers.containsString("localhost.username=admin"));
-
-        assertThat("The configuration api key is correct",
-                myAccountPage.getConfigurationDetails(),
-                Matchers.containsString("localhost.key=".concat(adminsApiKey)));
+        assertThat(dashboardClientTab.getConfigurationDetails())
+                .contains("localhost.key=".concat(adminsApiKey))
+                .as("The configuration api key is correct");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersApiKey() {
-        MyAccountPage myAccountPage =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToMyProfile();
-        String currentApiKey = myAccountPage.getApiKey();
-        myAccountPage = myAccountPage.pressApiKeyGenerateButton();
+        DashboardClientTab dashboardClientTab = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToSettingsTab()
+                .goToSettingsClientTab();
+        String currentApiKey = dashboardClientTab.getApiKey();
+        dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
 
-        assertThat("The user's api key is different",
-                myAccountPage.getApiKey(),
-                Matchers.not(Matchers.equalTo(currentApiKey)));
+        dashboardClientTab.waitForApiKeyChanged(currentApiKey);
 
-        assertThat("The user's api key is not empty",
-                myAccountPage.getApiKey(),
-                Matchers.not(Matchers.isEmptyString()));
+        assertThat(dashboardClientTab.getApiKey()).isNotEqualTo(currentApiKey)
+                .as("The user's api key is different");
 
-        assertThat("The configuration api key matches the label",
-                myAccountPage.getConfigurationDetails(),
-                Matchers.containsString("localhost.key=".concat(myAccountPage
-                        .getApiKey())));
+        assertThat(dashboardClientTab.getApiKey()).isNotEmpty()
+                .as("The user's api key is not empty");
+
+        assertThat(dashboardClientTab.getConfigurationDetails())
+                .contains("localhost.key="
+                        .concat(dashboardClientTab.getApiKey()))
+                .as("The configuration api key matches the label");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersName() {
-        MyAccountPage myAccountPage = new LoginWorkFlow()
+        DashboardProfileTab dashboardProfileTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
-                .goToMyProfile();
-        myAccountPage = myAccountPage
-                .clickEditProfileButton()
+                .goToSettingsTab()
+                .goToSettingsProfileTab()
                 .enterName("Tranny")
-                .clickSaveChanges();
-        assertThat("The user's name has been changed",
-                myAccountPage.getFullName(),
-                Matchers.equalTo("Tranny"));
+                .clickUpdateProfileButton();
+
+        dashboardProfileTab.waitForUsernameChanged("translator");
+
+        assertThat(dashboardProfileTab.getUserFullName()).isEqualTo("Tranny")
+                .as("The user's name has been changed");
     }
 
-    @Test
-    public void changeUsersEmailAddress() {
-        MyAccountPage myAccountPage = new LoginWorkFlow()
-                .signIn("translator", "translator")
-                .goToMyProfile();
-        myAccountPage = myAccountPage
-                .clickEditProfileButton()
-                .enterEmail("anewemail@test.com")
-                .clickSaveChanges();
-        assertThat("The email link notification is displayed",
-                myAccountPage.getNotificationMessage(),
-                Matchers.equalTo("You will soon receive an email with a link "+
-                        "to activate your email account change."));
-    }
-
-    @Test
-    public void cancelChangeUsersProfile() {
-        MyAccountPage myAccountPage = new LoginWorkFlow()
-                .signIn("translator", "translator")
-                .goToMyProfile();
-        myAccountPage = myAccountPage
-                .clickEditProfileButton()
-                .enterName("Transistor")
-                .enterEmail("transistor@test.com")
-                .clickCancel();
-        assertThat("The user's name has been not changed",
-                myAccountPage.getFullName(),
-                Matchers.equalTo("translator"));
-        assertThat("No email change indication is shown",
-                myAccountPage.getNotificationMessage(),
-                Matchers.equalTo(""));
-    }
-
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emailValidationIsUsedOnProfileEdit() {
-        EditProfilePage editProfilePage = new LoginWorkFlow()
+        DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
-                .goToMyProfile()
-                .clickEditProfileButton()
-                .enterName("Transistor")
-                .enterEmail("admin@example.com")
-                .clickSaveAndExpectErrors();
+                .goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeNewAccountEmailAddress("admin@example.com")
+                .clickUpdateEmailButton();
 
-        assertThat("The email is rejected, being already taken",
-                editProfilePage.getErrors(),
-                Matchers.contains("This email address is already taken"));
+        assertThat(dashboardAccountTab.waitForFieldErrors())
+                .contains("This email address is already taken")
+                .as("The email is rejected, being already taken");
 
-        editProfilePage = editProfilePage
-                .enterEmail("test @example.com")
-                .clickSaveAndExpectErrors();
+        dashboardAccountTab = dashboardAccountTab
+                .goToMyDashboard()
+                .goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeNewAccountEmailAddress("test @example.com")
+                .clickUpdateEmailButton();
 
-        assertThat("The email is rejected, being of invalid format",
-                editProfilePage.getErrors(),
-                Matchers.contains("not a well-formed email address"));
+        assertThat(dashboardAccountTab.waitForFieldErrors())
+                .contains("not a well-formed email address")
+                .as("The email is rejected, being of invalid format");
     }
 }

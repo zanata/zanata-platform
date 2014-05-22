@@ -9,8 +9,7 @@
 
   <script type="text/javascript">
     function onProjectTypeChanged(radioForm) {
-      var id = jQuery(radioForm).children(".form__radio__input").attr("id");
-      var selectedProjectType = id.substring('project-type-'.length, id.length);
+      var selectedProjectType = jQuery(radioForm).children(".form__radio__input").val();
       jQuery(getSelectedProjectTypeId()).val(selectedProjectType);
     }
 
@@ -67,28 +66,28 @@
     valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
 
   <s:div id="project-type">
-    <ui:param name="currentProjectType"
-      value="#{versionHome.isNewInstance() ? versionHome.project.defaultProjectType.name(): versionHome.instance.projectType.name()}"/>
-
     <ul class="list--slat l--push-bottom-1">
-      <ui:repeat value="#{versionHome.projectTypeList}" var="projectType">
+      <ui:repeat value="#{versionHome.projectTypeList}" var="projectType"
+        varStatus="status">
         <li>
           <div class="form__radio js-form__radio"
             onclick="onProjectTypeChanged(this)">
             <s:fragment
-              rendered="#{currentProjectType eq projectType.name()}">
+              rendered="#{versionHome.selectedProjectType eq projectType.name()}">
               <input type="radio" name="project-type"
+                value="#{projectType.name()}"
                 class="form__radio__input js-form__radio__input"
-                id="project-type-#{projectType.name()}" checked="true"/>
+                id="#{status.index}:project-type" checked="true"/>
             </s:fragment>
             <s:fragment
-              rendered="#{currentProjectType ne projectType.name()}">
+              rendered="#{versionHome.selectedProjectType ne projectType.name()}">
               <input type="radio" name="project-type"
+                value="#{projectType.name()}"
                 class="form__radio__input js-form__radio__input"
-                id="project-type-#{projectType.name()}"/>
+                id="#{status.index}:project-type"/>
             </s:fragment>
 
-            <label for="project-type-#{projectType.name()}"
+            <label for="#{status.index}:project-type"
               class="form__radio__label">#{projectType.name()} <span
               class="txt--meta">#{messages['jsf.projectType.detail.'.concat(projectType)]}</span>
             </label>

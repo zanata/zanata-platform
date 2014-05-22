@@ -34,8 +34,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getEditorTextSearch(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -66,8 +66,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getEditorTextSearch(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -98,8 +98,8 @@ public class HistoryTokenTests {
                 "", token.getDocFilterText());
         assertFalse("default document filter exact match flag should be false",
                 token.getDocFilterExact());
-        assertEquals("default search text should be an empty string", "",
-                token.getSearchText());
+        assertThat("default search text should be null",
+                token.getEditorTextSearch(), Matchers.nullValue());
         assertEquals(
                 "default project-wide search text should be an empty string",
                 "", token.getProjectSearchText());
@@ -144,7 +144,7 @@ public class HistoryTokenTests {
         token = HistoryToken.fromTokenString(tokenString);
 
         assertEquals("search text should be set from token string",
-                "searchtext", token.getSearchText());
+                "searchtext", token.getEditorTextSearch());
         assertEquals(
                 "project-wide search text should be set from token string",
                 "projectsearchtext", token.getProjectSearchText());
@@ -185,7 +185,7 @@ public class HistoryTokenTests {
 
         assertEquals(
                 "search text should be set from any position in token string",
-                "searchtext", token.getSearchText());
+                "searchtext", token.getEditorTextSearch());
         assertEquals(
                 "project-wide search text should be set from any position in token string",
                 "projectsearchtext", token.getProjectSearchText());
@@ -230,8 +230,8 @@ public class HistoryTokenTests {
         assertEquals("unknown keys should be ignored", "",
                 token.getDocFilterText());
         assertFalse("unknown keys should be ignored", token.getDocFilterExact());
-        assertEquals("unknown keys should be ignored", "",
-                token.getSearchText());
+        assertThat("unknown keys should be ignored",
+                token.getEditorTextSearch(), Matchers.nullValue());
         assertEquals("unknown keys should be ignored", "",
                 token.getProjectSearchText());
         assertEquals("unknown keys should be ignored", "",
@@ -303,17 +303,17 @@ public class HistoryTokenTests {
     @Test
     public void getSetSearchText() {
         token = new HistoryToken();
-        token.setSearchText("some search text");
-        assertEquals("some search text", token.getSearchText());
-        token.setSearchText(null);
-        assertEquals(
-                "search text should be returned as empty string after setting to null",
-                "", token.getSearchText());
+        token.setEditorTextSearch("some search text");
+        assertEquals("some search text", token.getEditorTextSearch());
+        token.setEditorTextSearch(null);
+        assertThat(
+                "search text should be returned null after setting to null",
+                token.getEditorTextSearch(), Matchers.nullValue());
 
-        token.setSearchText("text to be discarded");
-        token.setSearchText("");
-        assertEquals("search text can be set to empty string", "",
-                token.getSearchText());
+        token.setEditorTextSearch("text to be discarded");
+        token.setEditorTextSearch("");
+        assertThat("empty search text is treated as null",
+                token.getEditorTextSearch(), Matchers.nullValue());
     }
 
     @Test
@@ -396,7 +396,7 @@ public class HistoryTokenTests {
         token.setDocumentPath("some/document");
         token.setDocFilterText("myfilter");
         token.setDocFilterExact(true);
-        token.setSearchText("searchtext");
+        token.setEditorTextSearch("searchtext");
         token.setProjectSearchText("projectsearchtext");
         token.setProjectSearchReplacement("replacementtext");
         token.setProjectSearchCaseSensitive(true);
@@ -421,7 +421,7 @@ public class HistoryTokenTests {
         token.setDocumentPath("some/document");
         token.setDocFilterText("myfilter");
         token.setDocFilterExact(true);
-        token.setSearchText("searchtext");
+        token.setEditorTextSearch("searchtext");
         token.setProjectSearchText("projectsearchtext");
         token.setProjectSearchReplacement("replacementtext");
         token.setProjectSearchCaseSensitive(true);
@@ -445,7 +445,7 @@ public class HistoryTokenTests {
                 token.getDocFilterExact());
         assertEquals(
                 "search text should survive a round-trip to and from token string",
-                "searchtext", token.getSearchText());
+                "searchtext", token.getEditorTextSearch());
         assertEquals(
                 "project-wide search text should survive a round-trip to and from token string",
                 "projectsearchtext", token.getProjectSearchText());
@@ -462,7 +462,7 @@ public class HistoryTokenTests {
         token = new HistoryToken();
         token.setDocumentPath("some:document;with!encodedchars");
         token.setDocFilterText("my!fil:ter;");
-        token.setSearchText(":search!text;");
+        token.setEditorTextSearch(":search!text;");
         token.setProjectSearchText("project:search;text!");
         token.setProjectSearchReplacement("re!place;ment:text");
 
@@ -479,7 +479,7 @@ public class HistoryTokenTests {
                 "my!fil:ter;", token.getDocFilterText());
         assertEquals(
                 "encodable characters in search text should survive a round-trip to and from token string",
-                ":search!text;", token.getSearchText());
+                ":search!text;", token.getEditorTextSearch());
         assertEquals(
                 "encodable characters in project-wide search text should survive a round-trip to and from token string",
                 "project:search;text!", token.getProjectSearchText());

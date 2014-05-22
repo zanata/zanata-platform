@@ -110,10 +110,6 @@ public class UserOptionsService {
                 Integer.toString(configHolder.getState().getEditorPageSize()));
         configMap.put(UserOptions.UseCodeMirrorEditor, Boolean
                 .toString(configHolder.getState().isUseCodeMirrorEditor()));
-        configMap
-                .put(UserOptions.EnableSpellCheck,
-                        Boolean.toString(configHolder.getState()
-                                .isSpellCheckEnabled()));
         configMap.put(UserOptions.TransMemoryDisplayMode, configHolder
                 .getState().getTransMemoryDisplayMode().name());
         configMap.put(UserOptions.DisplayTransMemory,

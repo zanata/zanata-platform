@@ -21,73 +21,77 @@
 
 package org.zanata.feature.search;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ProjectSearchTest {
+public class ProjectSearchTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulProjectSearchAndDisplay() {
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("about").waitForSearchListContains(
-                "about fedora");
+        BasePage basePage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("about")
+                .waitForSearchListContains("about fedora");
 
         assertThat("Normal user can see the project",
-                dashboardPage.getProjectSearchAutocompleteItems(),
+                basePage.getProjectSearchAutocompleteItems(),
                 hasItem("about fedora"));
 
         ProjectBasePage projectPage =
-                dashboardPage.clickSearchEntry("about fedora");
+                basePage.clickSearchEntry("about fedora");
 
         assertThat("The project page is the correct one", projectPage
                 .getProjectName().trim(), // UI adds a space
                 equalTo("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulProjectSearch() {
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("arodef").waitForSearchListContains(
-                "Search Zanata for 'arodef'");
-        ProjectsPage projectsPage = dashboardPage.submitSearch();
+        ProjectsPage projectsPage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("arodef")
+                .waitForSearchListContains("Search Zanata for 'arodef'")
+                .submitSearch();
 
         assertThat("No projects are displayed", projectsPage
                 .getProjectNamesOnCurrentPage().isEmpty());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void normalUserCannotSearchObsolete() {
         new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                 .goToProject("about fedora").gotoSettingsTab()
                 .gotoSettingsGeneral().archiveProject().logout();
 
-        DashboardPage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboardPage.enterSearch("about").waitForSearchListContains(
-                "Search Zanata for 'about'");
+        BasePage basePage = new BasicWorkFlow()
+                .goToHome()
+                .enterSearch("about")
+                .waitForSearchListContains("Search Zanata for 'about'");
 
         assertThat("User cannot see the obsolete project",
-                dashboardPage.getProjectSearchAutocompleteItems(),
+                basePage.getProjectSearchAutocompleteItems(),
                 not(hasItem("About Fedora")));
 
     }

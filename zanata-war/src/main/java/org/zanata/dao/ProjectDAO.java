@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,6 +24,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -267,5 +269,127 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         }
 
         return entityManager.createFullTextQuery(booleanQuery, HProject.class);
+    }
+
+    public List<HProject> findAllTranslatedProjects(HAccount account, int maxResults) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select distinct tft.textFlow.document.projectIteration.project " +
+                                "from HTextFlowTarget tft " +
+                                "where tft.translator = :translator")
+                        .setParameter("translator", account)
+                        .setMaxResults(maxResults);
+        return q.list();
+    }
+
+    public int getTranslatedProjectCount(HAccount account) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(distinct tft.textFlow.document.projectIteration.project) " +
+                                        "from HTextFlowTarget tft " +
+                                        "where tft.translator = :translator"
+                        )
+                        .setParameter("translator", account);
+        return ((Long)q.uniqueResult()).intValue();
+    }
+
+
+
+    /**
+     * @param project A project
+     * @param account The user for which the last translated date.
+     * @return A date indicating the last time on which account's user
+     * translated project.
+     */
+    public Date getLastTranslatedDate(HProject project, HAccount account) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select max (tft.lastChanged) " +
+                                        "from HTextFlowTarget tft " +
+                                        "where tft.translator = :translator " +
+                                        "and tft.textFlow.document.projectIteration.project = :project"
+                        )
+                        .setParameter("translator", account)
+                        .setParameter("project", project)
+                        .setCacheable(true);
+        return (Date)q.uniqueResult();
+    }
+
+    /**
+     * @param project A project
+     * @return A date indicating the last time when any user translated project
+     */
+    public Date getLastTranslatedDate(HProject project) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select max (tft.lastChanged) " +
+                                        "from HTextFlowTarget tft " +
+                                        "where tft.textFlow.document.projectIteration.project = :project"
+                        )
+                        .setParameter("project", project)
+                        .setCacheable(true);
+        return (Date)q.uniqueResult();
+    }
+
+    /**
+     * @param project A project
+     * @return A date indicating the last time when any user translated project
+     */
+    public HPerson getLastTranslator(HProject project) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select tft.translator " +
+                                "from HTextFlowTarget tft " +
+                                "where tft.textFlow.document.projectIteration.project = :project " +
+                                "order by tft.lastChanged desc"
+                        )
+                        .setParameter("project", project)
+                        .setMaxResults(1)
+                        .setCacheable(true);
+        List results = q.list();
+        if( results.isEmpty() ) {
+            return null;
+        }
+        else {
+            return (HPerson) results.get(0);
+        }
+    }
+
+    public List<HProject> getProjectsForMaintainer(HPerson maintainer,
+            String filter, int firstResult, int maxResults) {
+        final String sqlFilter = filter == null ? "" : filter;
+        Query q =
+                getSession()
+                        .createQuery(
+                                "from HProject p " +
+                                "where :maintainer in elements(p.maintainers) " +
+                                "and (p.name like :filter " +
+                                    "or p.slug like :filter) " +
+                                "order by p.name")
+                        .setParameter("maintainer", maintainer)
+                        .setParameter("filter", "%" + sqlFilter + "%")
+                        .setFirstResult(firstResult)
+                        .setMaxResults(maxResults);
+        return q.list();
+    }
+
+    public int getMaintainedProjectCount(HPerson maintainer, String filter) {
+        final String sqlFilter = filter == null ? "" : filter;
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(p) from HProject p " +
+                                "where :maintainer in elements(p.maintainers) " +
+                                "and (p.name like :filter " +
+                                    "or p.slug like :filter) "
+                        )
+                        .setParameter("maintainer", maintainer)
+                        .setParameter("filter", "%" + sqlFilter + "%");
+        return ((Long)q.uniqueResult()).intValue();
     }
 }

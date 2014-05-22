@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.httpclient.URIException;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.hamcrest.Matchers;
@@ -326,7 +325,7 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     }
 
     @Test
-    public void getDocument() throws URIException {
+    public void getDocument() throws Exception {
         String docName = "my/path/document.txt";
         String docUri = RestUtil.convertToDocumentURIId(docName);
         Resource resource = createSourceDoc(docName, false);
@@ -354,7 +353,7 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     }
 
     @Test
-    public void getDocumentWithResources() throws URIException {
+    public void getDocumentWithResources() throws Exception {
         LocaleId nbLocale = new LocaleId("de");
         String docName = "my/path/document.txt";
         String docUri = RestUtil.convertToDocumentURIId(docName);

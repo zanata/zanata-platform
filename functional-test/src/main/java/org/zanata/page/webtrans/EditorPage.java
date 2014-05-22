@@ -63,8 +63,9 @@ public class EditorPage extends BasePage {
     private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
     private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
 
-    @FindBy(id = "gwt-debug-transUnitTable")
-    private WebElement transUnitTable;
+    private By transUnitTableBy = By.id("gwt-debug-transUnitTable");
+    @FindBy(id = "gwt-debug-editor-filter-box")
+    private WebElement editorFilterField;
 
     public EditorPage(WebDriver driver) {
         super(driver);
@@ -163,7 +164,7 @@ public class EditorPage extends BasePage {
             @Override
             public WebElement apply(WebDriver input) {
                 WebElement element = getDriver()
-                        .findElement(By.id("gwt-uid-144"));
+                        .findElement(By.id("gwt-uid-143"));
                 if (element.isDisplayed()) {
                     return element;
                 }
@@ -205,6 +206,10 @@ public class EditorPage extends BasePage {
      */
     public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
         return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
+    }
+
+    public String getBasicTranslationTargetAtRowIndex(int rowIndex, Plurals plurals) {
+        return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, plurals);
     }
 
     private String getContentAtRowIndex(final long rowIndex,
@@ -272,6 +277,7 @@ public class EditorPage extends BasePage {
         WebElement button = getDriver()
                 .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
         button.click();
+        slightPause();
         return this;
     }
 
@@ -289,6 +295,12 @@ public class EditorPage extends BasePage {
     public String getStatistics() {
         return getDriver().findElement(By.id("gwt-debug-statistics-label"))
                 .getText();
+    }
+
+    public List<String> getMessageSources() {
+        List<WebElement> sources = getDriver().findElement(transUnitTableBy)
+                .findElements(By.className("sourceTable"));
+        return WebElementUtil.elementsToText(sources);
     }
 
     /**
@@ -435,4 +447,14 @@ public class EditorPage extends BasePage {
                 throw new RuntimeException("Unknown validation!");
         }
     }
+
+    public EditorPage inputFilterQuery(String query) {
+        editorFilterField.clear();
+        editorFilterField.sendKeys(query + Keys.ENTER);
+        return this;
+    }
+    public String getFilterQuery() {
+        return editorFilterField.getAttribute("value");
+    }
+
 }

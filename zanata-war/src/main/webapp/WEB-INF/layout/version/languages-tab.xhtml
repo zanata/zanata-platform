@@ -48,7 +48,9 @@
         sortAction="#{versionHomeAction.sortLanguageList()}"
         render="languages-language_form, languageTabLanguageSearch-pager, languageTabLanguageSearch-page-info, languageTabLanguageSearchBottom-pager, languageTabLanguageSearchBottom-page-info"
         oncomplete="refreshTooltip('languages-language_form');"
-        sortingList="#{versionHomeAction.languageSortingList}"/>
+        sortingList="#{versionHomeAction.languageSortingList}"
+        onbegin="clearHTML('#{rich:clientId('languages-language_form')}')"
+        status="languageTab-languagesLoader"/>
 
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
@@ -60,8 +62,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a
-                href="#settings-languages" onclick="updateHashAndGotoUrl(this)">
+              <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
+                onclick="changeBrowserUrl(this.href, true);return false;">
                 #{messages['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -88,15 +90,15 @@
     </f:facet>
   </a4j:status>
 
-  <h:form id="languages-language_form" styleClass="l--push-bottom-0">
+  <h:form id="languages-language_form" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.supportedLocale}">
       <p class="txt--meta">#{messages['jsf.NoActiveLanguages']}</p>
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
         <p>
-          <a href="#settings-languages" class="button--primary"
-            onclick="updateHashAndGotoUrl(this)">
+          <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
+            onclick="changeBrowserUrl(this.href, true);return false">
             #{messages['jsf.AddLanguages']}
           </a>
         </p>
@@ -104,15 +106,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionHomeAction.languageTabLanguageFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.languageTabLanguageFilter.currentPage}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
-          value="#{versionHomeAction.languageTabLanguageFilter.pagedFilteredList}"
+          value="#{versionHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
             <a4j:commandLink
@@ -121,7 +123,8 @@
               status="languageTab-documentsLoader"
               onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
               render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
-              onclick="updateActiveRow(this);toggleColumn('languages_content')">
+              onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/languages/#{hLocale.localeId}', true)"
+              styleClass="#{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">
@@ -185,7 +188,9 @@
       sortAction="#{versionHomeAction.sortDocumentList(versionHomeAction.selectedLocale.localeId)}"
       render="languages-document_list, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info"
       oncomplete="refreshTooltip('#{rich:clientId('languages-document_list')}')"
-      sortingList="#{versionHomeAction.documentSortingList}"/>
+      sortingList="#{versionHomeAction.documentSortingList}"
+      onbegin="clearHTML('#{rich:clientId('languages-document_list')}')"
+      status="languageTab-documentsLoader"/>
 
     <h:form styleClass="l--push-bottom-0 bx--inline"
       id="languages-export_options">
@@ -236,7 +241,7 @@
   </div>
 
   <a href="#" class="panel__header__back"
-    onclick="removeActiveRows('languages-language_list');toggleColumn('languages_content')"
+    onclick="removeActiveRows('languages-language_list');toggleColumn('languages')"
     title="#{messages['Languages']}">
     <i class="i--huge i--arrow-left" aria-hidden="true"></i>
   </a>
@@ -272,7 +277,7 @@
   </f:facet>
 </a4j:status>
 
-<h:form id="languages-document_list" styleClass="l--push-bottom-0">
+<h:form id="languages-document_list" styleClass="l--push-bottom-1">
   <s:div styleClass="l--pad-all-half"
     rendered="#{versionHomeAction.selectedLocale == null}">
     <p class="txt--meta">#{messages['jsf.SelectALanguageFromList']}</p>
@@ -285,8 +290,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a href="#settings-documents" class="button--primary"
-            onclick="updateHashAndGotoUrl(this)">
+          <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
+            onclick="changeBrowserUrl(this.href, true);return false;">
             #{messages['jsf.ManageDocuments']}
           </a>
         </p>
@@ -294,15 +299,15 @@
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
-      rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.languageTabDocumentFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.languageTabDocumentFilter.currentPage}">
       <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
-      rendered="#{not empty versionHomeAction.languageTabDocumentFilter.pagedFilteredList}">
+      rendered="#{not empty versionHomeAction.languageTabDocumentFilter.currentPage}">
       <ul class="list--stats">
         <ui:repeat varStatus="status"
-          value="#{versionHomeAction.languageTabDocumentFilter.pagedFilteredList}"
+          value="#{versionHomeAction.languageTabDocumentFilter.currentPage}"
           var="document">
           <ui:param name="hasActions"
             value="#{versionHomeAction.selectedLocale.active and (identity.loggedIn or versionHomeAction.isPoDocument(document.docId) or (versionHomeAction.knownProjectType and !versionHomeAction.isPoDocument(document.docId)) or versionHomeAction.hasOriginal(document.path, document.name) or (versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)))}"/>
@@ -410,11 +415,11 @@
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
-                 <span class="#{displayUnit.cssClass}"
-                   title="#{displayUnit.title}">
-                    <span class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                 </span>
+                     <span class="#{displayUnit.cssClass}"
+                       title="#{displayUnit.title}">
+                        <span class="stats__figure">#{displayUnit.figure}</span>
+                        <span class="stats__unit">#{displayUnit.unit}</span>
+                     </span>
                   </s:div>
                 </div>
                 <zanata:statistic

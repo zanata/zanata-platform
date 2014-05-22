@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
 import org.zanata.util.SampleProjectRule;
@@ -41,18 +43,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class AddLanguageTest {
+public class AddLanguageTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("RHBZ-1086036")
     public void addLanguageAsEnabled() {
         String language = "Goa'uld";
         String languageDisplayName = "goa'uld[Goa'uld]";
-        ManageLanguagePage manageLanguagePage =
-                new LoginWorkFlow().signIn("admin", "admin").goToHomePage()
-                        .goToAdministration().goToManageLanguagePage();
+        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToHomePage()
+                .goToAdministration()
+                .goToManageLanguagePage();
 
         assertThat("The language is not listed",
                 manageLanguagePage.getLanguageLocales(),
@@ -65,20 +70,25 @@ public class AddLanguageTest {
         assertThat("The language is listed",
                 manageLanguagePage.getLanguageLocales(),
                 Matchers.hasItem(language));
+
         assertThat("The language is enabled by default",
                 manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                        .goToProjects()
+                        .goToProject("about fedora")
+                        .gotoVersion("master")
+                        .gotoSettingsTab()
+                        .gotoSettingsLanguagesTab()
+                        .clickInheritCheckbox()
+                        .waitForLocaleListVisible()
                         .getEnabledLocaleList();
 
         assertThat("The language is enabled by default", enabledLocaleList,
                 Matchers.hasItem(languageDisplayName));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsDisabled() {
         String language = "Klingon";
         String languageDisplayName = "klingon[Klingon]";
@@ -100,17 +110,19 @@ public class AddLanguageTest {
         assertThat("The language is disabled by default",
                 !manageLanguagePage.languageIsEnabled(language));
 
-        List<String> enabledLocaleList =
-                manageLanguagePage.goToHomePage().goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsLanguagesTab()
-                        .getEnabledLocaleList();
+        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+                .goToProjects()
+                .goToProject("about fedora").gotoVersion("master")
+                .gotoSettingsTab().gotoSettingsLanguagesTab()
+                .clickInheritCheckbox()
+                .waitForLocaleListVisible()
+                .getEnabledLocaleList();
 
         assertThat("The language is disabled by default", enabledLocaleList,
                 Matchers.not(Matchers.hasItem(languageDisplayName)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addKnownLanguage() {
         String language = "ru-RU";
         ManageLanguagePage manageLanguagePage =
@@ -125,6 +137,7 @@ public class AddLanguageTest {
                 manageLanguagePage.addNewLanguage().inputLanguage("ru-RU");
 
         Map<String, String> languageInfo = addLanguagePage.getLanguageDetails();
+
         assertThat("The name is correct", languageInfo.get("Name"),
                 Matchers.equalTo("Russian (Russia)"));
         assertThat("The native name is correct",

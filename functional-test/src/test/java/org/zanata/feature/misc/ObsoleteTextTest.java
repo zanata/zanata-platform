@@ -7,7 +7,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
@@ -19,7 +20,6 @@ import org.zanata.workflow.LoginWorkFlow;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 
 /**
@@ -30,7 +30,8 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ObsoleteTextTest {
+public class ObsoleteTextTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
     private ZanataRestCaller restCaller;
@@ -60,7 +61,7 @@ public class ObsoleteTextTest {
      * 10. Enter translation editor for bem and see whether the project and document are 100%translated.
      * </pre>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void obsoleteTextTest() {
         restCaller
                 .createProjectAndVersion("obsolete-test", "master", "gettext");
@@ -120,10 +121,8 @@ public class ObsoleteTextTest {
     }
 
     private static EditorPage openEditor() {
-        String url =
-                String.format(EDITOR_TEMPLATE, "obsolete-test", "master", "fr",
-                        "message1");
-        return new BasicWorkFlow().goToPage(url, EditorPage.class)
+        return new BasicWorkFlow().goToEditor("obsolete-test", "master", "fr",
+                "message1")
                 .setSyntaxHighlighting(false);
     }
 }

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -35,14 +35,8 @@
     <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-    <!-- Groovy properties -->
     <groovy.version>2.1.5</groovy.version>
-    <groovy.eclipse.batch.version>2.1.8-01</groovy.eclipse.batch.version>
-    <!-- NB: groovy-eclipse-compiler 2.8.0-01 breaks with Lombok.
-         Waiting for 2.9.0-01. -->
-    <groovy.eclipse.compiler.version>2.7.0-01</groovy.eclipse.compiler.version>
-
-    <zanata.web.assets.version>4</zanata.web.assets.version>
+    <zanata.web.assets.version>5</zanata.web.assets.version>
   </properties>
 
   <build>
@@ -56,38 +50,43 @@
     </resources>
 
     <plugins>
-
       <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>addSources</goal>
+              <goal>addTestSources</goal>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>testGenerateStubs</goal>
+              <goal>testCompile</goal>
+              <goal>removeStubs</goal>
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <!-- groovy-eclipse-compiler 2.8.0-01 and later require maven-compiler-plugin 3.0 or higher -->
-        <configuration>
-          <compilerId>groovy-eclipse-compiler</compilerId>
-          <!-- set verbose to be true if you want lots of uninteresting messages -->
-          <!-- <verbose>true</verbose> -->
-          <!-- enable Lombok-Groovy support -->
-          <compilerArguments>
-            <javaAgentClass>lombok.core.Agent</javaAgentClass>
-          </compilerArguments>
-          <fork>true</fork>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-compiler</artifactId>
-            <version>${groovy.eclipse.compiler.version}</version>
-          </dependency>
-          <!-- groovy-eclipse-compiler 2.8.0-01 and later need an explicit dependency on groovy-eclipse-batch -->
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-batch</artifactId>
-            <version>${groovy.eclipse.batch.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-          </dependency>
-        </dependencies>
+      </plugin>
+      <plugin>
+        <!-- if including source jars, use the no-fork goals
+             otherwise both the Groovy sources and Java stub sources will get included in your jar -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -132,7 +131,6 @@
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- used by REST API interfaces -->
-            <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
             <!-- used indirectly by drools -->
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
@@ -142,6 +140,8 @@
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!-- used for gwt super devmode -->
             <usedDependency>org.json:json</usedDependency>
+             <!--used to log sql and parameters when debugging Hibernate -->
+            <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
 
             <!-- Grandfathered entries: -->
             <!-- TODO validate or remove each of these -->
@@ -996,56 +996,6 @@
       </reporting>
     </profile>
 
-    <!-- Profile to use latest groovy-eclipse-compiler for better error
-     reporting.  Please remove after upgrading to groovy-eclipse-compiler
-     2.9.0-01.
-    -->
-    <profile>
-      <id>newCompiler</id>
-      <activation>
-        <property>
-          <name>newCompiler</name>
-        </property>
-      </activation>
-      <properties>
-        <groovy.eclipse.compiler.version>2.9.0-01-20140221.234306-6</groovy.eclipse.compiler.version>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <configuration>
-              <rules>
-                <requireNoRepositories>
-                  <allowedPluginRepositories combine.children="append">
-                    <allowedPluginRepository>codehaus-snapshots</allowedPluginRepository>
-                  </allowedPluginRepositories>
-                </requireNoRepositories>
-              </rules>
-            </configuration>
-          </plugin>
-
-        </plugins>
-
-      </build>
-
-      <pluginRepositories>
-        <pluginRepository>
-          <id>codehaus-snapshots</id>
-          <name>Codehaus Snapshots</name>
-          <url>http://nexus.codehaus.org/snapshots/</url>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-
-      </pluginRepositories>
-
-    </profile>
-
     <profile>
       <id>gwt-i18n</id>
       <activation>
@@ -1107,6 +1057,18 @@
   </profiles>
 
   <dependencies>
+
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.9.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
     <dependency>
       <groupId>org.assertj</groupId>
@@ -1233,7 +1195,6 @@
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-remoting</artifactId>
     </dependency>
-
     <!-- RestEasy dependencies -->
 
     <dependency>
@@ -1389,6 +1350,19 @@
           <groupId>com.sun</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.huangp</groupId>
+      <artifactId>entityunit</artifactId>
+      <version>0.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.log4jdbc</groupId>
+      <artifactId>log4jdbc</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -1624,11 +1598,6 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.web</groupId>
       <artifactId>jbossweb</artifactId>
       <scope>provided</scope>
@@ -1825,12 +1794,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.concordion</groupId>
-      <artifactId>concordion-extensions</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
     </dependency>
@@ -2019,7 +1982,7 @@
     <dependency>
       <groupId>se.jiderhamn</groupId>
       <artifactId>classloader-leak-prevention</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.3</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.cxf</groupId>

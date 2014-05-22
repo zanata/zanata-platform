@@ -20,7 +20,6 @@
  */
 package org.zanata.seam.mail;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -28,6 +27,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.mail.MailSession;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Overrides Seam's default MailSession component to dynamically define
@@ -53,8 +53,8 @@ public class ZanataMailSession extends MailSession {
 
     protected void setup() {
         ApplicationConfiguration appConfig =
-                (ApplicationConfiguration) Component
-                        .getInstance(ApplicationConfiguration.class);
+                ServiceLocator.instance().getInstance(
+                        ApplicationConfiguration.class);
 
         // Override default properties
         setHost(appConfig.getEmailServerHost());

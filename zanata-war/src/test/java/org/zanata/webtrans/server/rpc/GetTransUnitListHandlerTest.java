@@ -141,8 +141,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     public void testExecuteWithStatusFilterOnly() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFilterFuzzy(true)
-                        .changeFilterUntranslated(true));
+                        document).withFilterFuzzy(true)
+                        .withFilterUntranslated(true));
         prepareActionAndMockLocaleService(action);
 
         GetTransUnitListResult result = handler.execute(action, null);
@@ -158,7 +158,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     public void testExecuteWithHasErrorFilterOnly() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFilterHasError(true));
+                        document).withFilterHasError(true));
         prepareActionAndMockLocaleService(action);
 
         GetTransUnitListResult result = handler.execute(action, null);
@@ -177,8 +177,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         // to 10 and start from index 2
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFindMessage("FiLe").changeCount(10)
-                        .changeOffset(1));
+                        document).withFindMessage("FiLe").withCount(10)
+                        .withOffset(1));
         prepareActionAndMockLocaleService(action);
 
         // When:
@@ -199,9 +199,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         GetTransUnitList action =
                 GetTransUnitList
                         .newAction(new GetTransUnitActionContext(document)
-                                .changeFindMessage("FiLe")
-                                .changeFilterUntranslated(true)
-                                .changeFilterFuzzy(true));
+                                .withFindMessage("FiLe")
+                                .withFilterUntranslated(true)
+                                .withFilterFuzzy(true));
         prepareActionAndMockLocaleService(action);
 
         // When:
@@ -219,9 +219,9 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     public void testExecuteWithSearchAndStatusFilter2() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFindMessage("FiLe")
-                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
-                        .changeFilterHasError(true));
+                        document).withFindMessage("FiLe")
+                        .withFilterUntranslated(true).withFilterFuzzy(true)
+                        .withFilterHasError(true));
         prepareActionAndMockLocaleService(action);
 
         // When:
@@ -245,10 +245,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
 
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFindMessage("FiLe")
-                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
-                        .changeFilterHasError(true).changeOffset(offset)
-                        .changeCount(countPerPage));
+                        document).withFindMessage("FiLe")
+                        .withFilterUntranslated(true).withFilterFuzzy(true)
+                        .withFilterHasError(true).withOffset(offset)
+                        .withCount(countPerPage));
 
         prepareActionAndMockLocaleService(action);
 
@@ -277,10 +277,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
 
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
-                        document).changeFindMessage("FiLe")
-                        .changeFilterUntranslated(true).changeFilterFuzzy(true)
-                        .changeFilterHasError(true).changeOffset(offset)
-                        .changeCount(countPerPage));
+                        document).withFindMessage("FiLe")
+                        .withFilterUntranslated(true).withFilterFuzzy(true)
+                        .withFilterHasError(true).withOffset(offset)
+                        .withCount(countPerPage));
         action.setNeedReloadIndex(true);
 
         prepareActionAndMockLocaleService(action);

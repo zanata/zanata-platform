@@ -23,7 +23,10 @@ package org.zanata.seam;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -45,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
+import com.google.common.base.Preconditions;
 
 /**
  * Helps with Auto-wiring of Seam components for integrated tests without the
@@ -567,6 +571,12 @@ public class SeamAutowire {
                 }
             }
         }
+    }
+
+    public static String getComponentName(Class componentClass) {
+        Annotation name = componentClass.getAnnotation(Name.class);
+        Preconditions.checkNotNull(name);
+        return ((Name) name).value();
     }
 
 }

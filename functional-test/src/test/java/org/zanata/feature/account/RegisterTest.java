@@ -32,13 +32,13 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -47,7 +47,8 @@ import org.zanata.workflow.BasicWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class RegisterTest {
+public class RegisterTest extends ZanataTestCase {
+
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
     @ClassRule
@@ -71,7 +72,7 @@ public class RegisterTest {
         homePage.deleteCookiesAndRefresh();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void registerSuccessful() {
         String successMessage = "You will soon receive an email with a link "+
@@ -89,28 +90,31 @@ public class RegisterTest {
                 Matchers.equalTo(successMessage));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() {
         fields.put("email", "length.test@test.com");
         RegisterPage registerPage = homePage.goToRegistration();
 
         fields.put("username", "bo");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are shown for string too short",
                 containsUsernameError(registerPage.getFieldErrors()));
 
         fields.put("username", "testusername");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are not shown",
                 !containsUsernameError(registerPage.getFieldErrors()));
 
         fields.put("username", "12345678901234567890a");
         registerPage = registerPage.setFields(fields);
+        registerPage.defocus();
         assertThat("Size errors are shown for string too long",
                 containsUsernameError(registerPage.getFieldErrors()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernamePreExisting() {
         String errorMsg = "This username is not available";
         RegisterPage registerPage = homePage
@@ -122,7 +126,7 @@ public class RegisterTest {
                 registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emailValidation() {
         String errorMsg = "not a well-formed email address";
         fields.put("email",
@@ -131,17 +135,16 @@ public class RegisterTest {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .setFields(fields);
+        registerPage.defocus();
 
         assertThat("Email validation errors are shown",
                 registerPage.getFieldErrors(), Matchers.hasItem(errorMsg));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-1024150")
     public void requiredFields() {
         String errorMsg = "value is required";
-        String emailErrorMsg =
-                "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
         fields.put("name", "");
         fields.put("username", "");
         fields.put("email", "");
@@ -149,9 +152,13 @@ public class RegisterTest {
 
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
+        registerPage.defocus();
+
         assertThat("Value is required shows for all fields",
                 registerPage.waitForFieldErrors(),
-                Matchers.contains(errorMsg, emailErrorMsg, errorMsg, errorMsg));
+                Matchers.contains(errorMsg,
+                        registerPage.USERNAMEVALIDATIONERROR,
+                        errorMsg, errorMsg));
     }
 
     /*
@@ -159,14 +166,14 @@ public class RegisterTest {
      */
     @Test(expected = AssertionError.class)
     public void bug981498_underscoreRules() {
-        String errorMsg =
-                "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
         fields.put("email", "bug981498test@example.com");
         fields.put("username", "______");
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
+        registerPage.defocus();
         assertThat("A username of all underscores is not valid",
-                registerPage.getFieldErrors(), Matchers.hasItem(errorMsg));
+                registerPage.getFieldErrors(),
+                Matchers.hasItem(registerPage.USERNAMEVALIDATIONERROR));
     }
 
     /*
@@ -174,8 +181,8 @@ public class RegisterTest {
      * the given input.
      */
     private boolean containsUsernameError(List<String> errors) {
-        return errors.contains("lowercase letters and digits "+
-                "(regex \"^[a-z\\d_]{3,20}$\")") ||
+        return errors.contains("Between 3 and 20 lowercase "+
+                "letters, numbers and underscores only") ||
                 errors.contains("size must be between 3 and 20");
     }
 }

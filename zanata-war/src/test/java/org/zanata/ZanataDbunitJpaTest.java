@@ -74,7 +74,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
 
     @BeforeMethod
     @Before
-    public void prepareDataBeforeTest() {
+    protected void prepareDataBeforeTest() {
         // This is not pretty but we unfortunately can not have dependencies
         // between @BeforeClass methods.
         // This was a basic design mistake and we can't change it now because we

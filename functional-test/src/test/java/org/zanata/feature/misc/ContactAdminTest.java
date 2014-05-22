@@ -8,9 +8,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.ContactAdminFormPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.page.utility.HelpPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
@@ -28,15 +29,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ContactAdminTest {
+public class ContactAdminTest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testContactAdmin() {
-        DashboardPage dashboard =
+        DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");
         ContactAdminFormPage contactAdminFormPage =
                 dashboard.goToHelp().clickContactAdmin();

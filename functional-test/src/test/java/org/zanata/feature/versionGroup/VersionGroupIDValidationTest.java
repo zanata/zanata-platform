@@ -29,11 +29,12 @@ import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -42,8 +43,10 @@ import org.zanata.workflow.LoginWorkFlow;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-@NoScreenshot
-public class VersionGroupIDValidationTest {
+public class VersionGroupIDValidationTest extends ZanataTestCase {
+
+    @Rule
+    public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
@@ -99,9 +102,10 @@ public class VersionGroupIDValidationTest {
     @Before
     public void goToGroupPage() {
         if (groupPage == null) {
-            groupPage =
-                    new LoginWorkFlow().signIn("admin", "admin").goToGroups()
-                            .createNewGroup();
+            groupPage = new LoginWorkFlow()
+                    .signIn("admin", "admin")
+                    .goToGroups()
+                    .createNewGroup();
         }
     }
 
@@ -113,10 +117,11 @@ public class VersionGroupIDValidationTest {
 
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
-        groupPage =
-                groupPage.clearFields().inputGroupId(inputText)
-                        .inputGroupName(inputText)
-                    .saveGroupFailure();
+        groupPage = groupPage
+                .clearFields()
+                .inputGroupId(inputText)
+                .inputGroupName(inputText)
+                .saveGroupFailure();
 
         assertThat("Validation error is displayed for input:" + inputText,
                 groupPage.getFieldErrors(), Matchers.hasItem(errorMsg));

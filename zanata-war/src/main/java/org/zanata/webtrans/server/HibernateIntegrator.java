@@ -4,13 +4,12 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
-import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Hibernate SPI. Register event listener for entity lifecycle events.
@@ -28,8 +27,8 @@ public class HibernateIntegrator implements Integrator {
             final EventListenerRegistry eventListenerRegistry =
                     serviceRegistry.getService(EventListenerRegistry.class);
             TranslationUpdateListener updateListener =
-                    (TranslationUpdateListener) Component
-                            .getInstance(TranslationUpdateListener.class);
+                    ServiceLocator.instance().getInstance(
+                            TranslationUpdateListener.class);
             log.info("register event listener: {}", updateListener);
             // We have to use POST_UPDATE not POST_UPDATE_COMMIT. Because we
             // still need to access some other entities to make transunit. After

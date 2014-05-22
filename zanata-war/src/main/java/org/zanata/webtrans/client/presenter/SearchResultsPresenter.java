@@ -491,9 +491,9 @@ public class SearchResultsPresenter extends
         token.clearEditorFilterAndSearch();
         token.setView(MainView.Editor);
         if (runSearch) {
-            token.setSearchText(token.getProjectSearchText());
+            token.setEditorTextSearch(token.getProjectSearchText());
         } else {
-            token.setSearchText("");
+            token.setEditorTextSearch("");
         }
         history.newItem(token);
     }

@@ -30,12 +30,11 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.WebDriverException;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectMaintainersPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -45,13 +44,12 @@ import org.zanata.workflow.ProjectWorkFlow;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class EditPermissionsTest {
+public class EditPermissionsTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void maintainerDetailsAreDisplayed() {
         ProjectPermissionsTab projectPermissionsTab =
                 new LoginWorkFlow()
@@ -73,7 +71,8 @@ public class EditPermissionsTest {
                 hasItem("Administrator @admin"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("rhbz1097030")
     public void addMaintainerAsAdmin() {
         ProjectPermissionsTab projectPermissionsTab =
                 new LoginWorkFlow()
@@ -110,7 +109,8 @@ public class EditPermissionsTest {
                         .settingsTabIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("rhbz1097030")
     public void addMaintainerAsMaintainer() {
 
         assertThat("Translator has signed in",
@@ -148,7 +148,8 @@ public class EditPermissionsTest {
                 projectVersionsPage.settingsTabIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("rhbz1097030")
     public void removeMaintainer() {
 
         assertThat("Translator has signed in",
@@ -185,7 +186,7 @@ public class EditPermissionsTest {
     }
 
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Exception on self removal")
     public void removeSelfAsMaintainer() {
 

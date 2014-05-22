@@ -34,6 +34,10 @@ import java.util.Map;
 
 public class CreateVersionPage extends BasePage {
 
+    public final static String VALIDATION_ERROR =
+            "must start and end with letter or number, "
+            + "and contain only letters, numbers, underscores and hyphens.";
+
     @FindBy(id = "create-version-form:project-type")
     private WebElement projectTypeSelection;
 
@@ -62,7 +66,6 @@ public class CreateVersionPage extends BasePage {
                 getVersionIdField().clear();
                 new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
                 getVersionIdField().sendKeys(versionId);
-                defocus();
                 return true;
             }
         });

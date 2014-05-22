@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -41,6 +42,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+@Slf4j
 public class WebElementUtil {
     private WebElementUtil() {
     }
@@ -289,17 +291,22 @@ public class WebElementUtil {
     }
 
     public static List<WebElement> getSearchAutocompleteResults(
-            WebDriver driver, String formId, String id) {
-        return driver.findElement(
-                By.id(formId + ":" + id + ":" + id + "-result")).findElements(
-                By.xpath(".//ul[@class='autocomplete__results']/li"));
+            WebDriver driver, final String formId, final String id) {
+        return waitForTenSeconds(driver).until(
+                new Function<WebDriver, List<WebElement>>() {
+                @Override
+                public List<WebElement> apply(WebDriver input) {
+                    String locator = formId + ":" + id + ":" + id + "-result";
+                    return input.findElement(By.id(locator)).findElements(
+                            By.className("js-autocomplete__result"));
+                }
+        });
     }
 
     public static List<String> getSearchAutocompleteItems(WebDriver driver,
             final String formId, final String id) {
         List<WebElement> results =
                 getSearchAutocompleteResults(driver, formId, id);
-
         List<String> resultsText =
                 Lists.transform(results, new Function<WebElement, String>() {
                     @Override
@@ -307,7 +314,6 @@ public class WebElementUtil {
                         return li.getText();
                     }
                 });
-
         return resultsText;
     }
 

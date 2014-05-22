@@ -21,6 +21,7 @@
 package org.zanata.workflow;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
@@ -78,12 +79,14 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         ProjectsPage projectsPage = goToHome().goToProjects();
         List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
         log.info("current projects: {}", projects);
-        return projectsPage.clickOnCreateProjectLink()
-                .enterProjectId(settings.get("Project ID"))
+        CreateProjectPage createProjectPage = projectsPage
+                .clickOnCreateProjectLink()
                 .enterProjectName(settings.get("Name"))
+                .enterProjectId(settings.get("Project ID"))
                 .enterDescription(settings.get("Description"))
-                .selectProjectType(settings.get("Project Type"))
-                .pressCreateProject();
+                .selectProjectType(settings.get("Project Type"));
+        createProjectPage.slightPause(); // Unusual timing issue
+        return createProjectPage.pressCreateProject();
     }
 
     public static HashMap<String, String> projectDefaults() {

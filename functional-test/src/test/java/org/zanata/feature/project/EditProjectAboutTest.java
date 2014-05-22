@@ -22,9 +22,11 @@
 package org.zanata.feature.project;
 
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectAboutPage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
 import org.zanata.util.SampleProjectRule;
@@ -40,12 +42,12 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditProjectAboutTest {
+public class EditProjectAboutTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addAboutPageDetails() {
 
         String aboutText = "This is my about text for AF";
@@ -67,7 +69,7 @@ public class EditProjectAboutTest {
                 .enterAboutText(aboutText)
                 .pressSave();
 
-        //TODO waitForNotification
+        projectAboutTab.expectNotification("Successfully updated");
         ProjectAboutPage projectAboutPage = projectAboutTab.gotoAboutTab();
 
         assertThat("The text in the About tab is correct",

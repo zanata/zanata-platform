@@ -46,6 +46,7 @@ import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import com.google.common.collect.Lists;
@@ -142,7 +143,7 @@ public class TransUnitsTablePresenterTest {
 
         presenter.onFilterView(new FilterViewEvent(viewTranslated, viewFuzzy,
                 viewUntranslated, viewApproved, viewRejected, viewHasError,
-                cancelFilter));
+                EditorFilter.ALL, cancelFilter));
 
         verifyNoMoreInteractions(eventBus, display, targetContentsPresenter);
     }
@@ -155,7 +156,7 @@ public class TransUnitsTablePresenterTest {
 
         // When: not a cancel event
         presenter.onFilterView(new FilterViewEvent(true, false, true, false,
-                false, false, false));
+                false, false, EditorFilter.ALL, false));
 
         // Then:
         verify(display).showFilterConfirmation();
@@ -168,7 +169,7 @@ public class TransUnitsTablePresenterTest {
                 .thenReturn(false);
         FilterViewEvent event =
                 new FilterViewEvent(true, false, true, false, false, false,
-                        false);
+                        EditorFilter.ALL, false);
 
         // When:
         presenter.onFilterView(event);

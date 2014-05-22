@@ -24,9 +24,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.page.utility.DashboardPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
@@ -49,12 +50,12 @@ import static org.hamcrest.Matchers.is;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class VersionGroupUrlTest {
+public class VersionGroupUrlTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     private ZanataRestCaller restCaller;
 
@@ -63,7 +64,7 @@ public class VersionGroupUrlTest {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testUrlChangeUpdatesActiveElements() {
         VersionGroupPage versionGroupPage = createVersionGroup();
         testBasicGroupUrl(versionGroupPage);
@@ -73,7 +74,7 @@ public class VersionGroupUrlTest {
         assertThat(versionGroupPage.isLanguagesTabActive(), is(true));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testTabClicksChangeUrl() {
         VersionGroupPage versionGroupPage = createVersionGroup();
 

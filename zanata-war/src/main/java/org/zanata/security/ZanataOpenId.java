@@ -27,8 +27,6 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -43,7 +41,6 @@ import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
-import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -65,6 +62,7 @@ import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
+import org.zanata.util.ServiceLocator;
 
 @Name("org.jboss.seam.security.zanataOpenId")
 @Scope(SESSION)
@@ -233,10 +231,9 @@ public class ZanataOpenId implements OpenIdAuthCallback {
         authResult = new OpenIdAuthenticationResult();
         // TODO inject these
         identity =
-                (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
-                        ScopeType.SESSION);
+                ServiceLocator.instance().getInstance(ZanataIdentity.class);
         applicationConfiguration =
-                (ApplicationConfiguration) Component.getInstance(
+                ServiceLocator.instance().getInstance(
                         ApplicationConfiguration.class);
     }
 

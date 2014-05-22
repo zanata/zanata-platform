@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
@@ -28,6 +27,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Contains static helper functions used inside the rules files.
@@ -61,7 +61,7 @@ public class SecurityFunctions {
     public static boolean isUserTranslatorOfLanguage(HLocale lang) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
-                (PersonDAO) Component.getInstance(PersonDAO.class);
+                ServiceLocator.instance().getInstance(PersonDAO.class);
 
         if (authenticatedAccount != null) {
             return personDAO.isUserInLanguageTeamWithRoles(
@@ -74,7 +74,7 @@ public class SecurityFunctions {
     public static boolean isUserReviewerOfLanguage(HLocale lang) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
-                (PersonDAO) Component.getInstance(PersonDAO.class);
+                ServiceLocator.instance().getInstance(PersonDAO.class);
 
         if (authenticatedAccount != null) {
             return personDAO.isUserInLanguageTeamWithRoles(
@@ -87,7 +87,7 @@ public class SecurityFunctions {
     public static boolean isUserCoordinatorOfLanguage(HLocale lang) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
-                (PersonDAO) Component.getInstance(PersonDAO.class);
+                ServiceLocator.instance().getInstance(PersonDAO.class);
 
         if (authenticatedAccount != null) {
             return personDAO.isUserInLanguageTeamWithRoles(
@@ -100,7 +100,7 @@ public class SecurityFunctions {
     public static boolean isLanguageTeamMember(HLocale lang) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
-                (PersonDAO) Component.getInstance(PersonDAO.class);
+                ServiceLocator.instance().getInstance(PersonDAO.class);
 
         if (authenticatedAccount != null) {
             return personDAO.isUserInLanguageTeamWithRoles(
@@ -111,12 +111,12 @@ public class SecurityFunctions {
     }
 
     private static final ZanataIdentity getIdentity() {
-        return (ZanataIdentity) Component.getInstance(ZanataIdentity.class,
-                ScopeType.SESSION);
+        return ServiceLocator.instance().getInstance(ZanataIdentity.class);
     }
 
     private static final HAccount getAuthenticatedAccount() {
-        return (HAccount) Component.getInstance(
-                JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION);
+        return ServiceLocator.instance().getInstance(
+                JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION,
+                HAccount.class);
     }
 }

@@ -40,11 +40,6 @@
         <ui:text from="{messages.showSaveApproveWarning}" />
       </g:CheckBox>
     </li>
-    <li>
-      <g:CheckBox ui:field="spellCheckChk">
-        <ui:text from="{messages.enabledSpellCheck}" />
-      </g:CheckBox>
-    </li>
 
     <li class="l--push-v-half">
       <h5 class="txt--invert txt--align-center">

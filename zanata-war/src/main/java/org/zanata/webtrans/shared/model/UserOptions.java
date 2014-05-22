@@ -14,7 +14,6 @@ public enum UserOptions implements IsSerializable {
     DisplayButtons(editor()+ ".DisplayButtons"),
     EditorPageSize(editor()+ ".PageSize"),
     UseCodeMirrorEditor(editor()+ ".codeMirrorEditor"),
-    EnableSpellCheck(editor()+ ".enableSpellCheck"),
     TransMemoryDisplayMode(editor()+ ".transMemoryDisplayMode"),
     DisplayTransMemory(editor()+ ".displayTransMemory"),
     DisplayGlossary(editor()+ ".displayGlossary"),

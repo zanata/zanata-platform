@@ -20,28 +20,34 @@
  */
 package org.zanata.feature.account;
 
-import org.hamcrest.Matchers;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
-@NoScreenshot
-public class UsernameValidationTest {
+public class UsernameValidationTest extends ZanataTestCase {
+
+    @Rule
+    public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
+
     @DataPoint
     public static String INVALID_PIPE = "user|name";
     @DataPoint
@@ -102,15 +108,15 @@ public class UsernameValidationTest {
 
     @Theory
     public void usernameCharacterValidation(String username) {
-        String errorMsg =
-                "lowercase letters and digits (regex \"^[a-z\\d_]{3,20}$\")";
-        RegisterPage registerPage =
-                new BasicWorkFlow().goToHome().goToRegistration();
-        registerPage = registerPage.enterUserName(username);
+        log.info(testName.getMethodName() + " : " + username);
+        RegisterPage registerPage = new BasicWorkFlow()
+                .goToHome()
+                .goToRegistration()
+                .enterUserName(username);
         registerPage.defocus();
 
-        assertThat("Validation errors are shown",
-                registerPage.waitForFieldErrors(),
-                Matchers.hasItem(errorMsg));
+        assertThat(registerPage.waitForFieldErrors())
+                .contains(registerPage.USERNAMEVALIDATIONERROR)
+                .as("Username validation errors are shown");
     }
 }

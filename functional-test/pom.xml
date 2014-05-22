@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.4.0-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -53,7 +53,7 @@
     <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
-
+    <googleopenid.credentials>zanata.user.1:</googleopenid.credentials>
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
       -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787
@@ -62,10 +62,17 @@
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
+    <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <smtp.port>2552</smtp.port>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-api</artifactId>
@@ -109,15 +116,6 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.concordion</groupId>
-      <artifactId>concordion</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.concordion</groupId>
-      <artifactId>concordion-extensions</artifactId>
     </dependency>
 
     <dependency>
@@ -362,6 +360,10 @@
       <scope>system</scope>
       <systemPath>${zanata.war.location}</systemPath>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
 
   </dependencies>
 
@@ -518,6 +520,7 @@
                   <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
                   <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
                   <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
+                  <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
                   <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
                 </systemProperties>
 
@@ -617,7 +620,6 @@
               <printSummary>true</printSummary>
               <runOrder>alphabetical</runOrder>
               <!--<forkMode>always</forkMode>-->
-              <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
               <includes>
                 <include>${include.test.patterns}</include>
                 <!--index page-->
@@ -678,13 +680,6 @@
           <exclude>**/zanata.xml</exclude>
           <exclude>**/pom.xml</exclude>
         </excludes>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources/concordion</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>**/*.*</include>
-        </includes>
       </testResource>
     </testResources>
     <plugins>

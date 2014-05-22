@@ -23,7 +23,6 @@ package org.zanata.service.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -33,6 +32,7 @@ import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
 import org.zanata.service.LockManagerService;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Default implementation of the {@link LockManagerService} interface. Manages
@@ -79,8 +79,8 @@ public class LockManagerServiceImpl implements LockManagerService {
 
     private String getCurrentUser() {
         HAccount user =
-                (HAccount) Component
-                        .getInstance(JpaIdentityStore.AUTHENTICATED_USER);
+                ServiceLocator.instance().getInstance(
+                        JpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
         String newLocker = user != null ? user.getUsername() : "unknown";
         return newLocker;
     }

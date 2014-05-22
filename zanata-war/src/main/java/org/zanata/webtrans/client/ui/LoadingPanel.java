@@ -41,6 +41,7 @@ public class LoadingPanel extends DecoratedPopupPanel {
             final Resources resources) {
         super(false, true);
         setStyleName("loadingPanel");
+        ensureDebugId("loading-panel");
         add(new Image(resources.spinnerLarge()));
     }
 }

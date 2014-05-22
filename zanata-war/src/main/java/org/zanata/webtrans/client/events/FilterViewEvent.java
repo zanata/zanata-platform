@@ -2,6 +2,7 @@ package org.zanata.webtrans.client.events;
 
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -14,7 +15,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
      */
     private static Type<FilterViewEventHandler> TYPE;
     public static final FilterViewEvent DEFAULT = new FilterViewEvent(false,
-            false, false, false, false, false, false);
+            false, false, false, false, false, EditorFilter.ALL, false);
 
     /**
      * Gets the type associated with this event.
@@ -31,16 +32,19 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
     private boolean filterTranslated, filterFuzzy, filterUntranslated,
             filterApproved, filterRejected, filterHasError;
     private boolean cancelFilter;
+    private EditorFilter editorFilter;
 
     public FilterViewEvent(boolean filterTranslated, boolean filterFuzzy,
             boolean filterUntranslated, boolean filterApproved,
-            boolean filterRejected, boolean filterHasError, boolean cancelFilter) {
+            boolean filterRejected, boolean filterHasError,
+            EditorFilter editorFilter, boolean cancelFilter) {
         this.filterTranslated = filterTranslated;
         this.filterFuzzy = filterFuzzy;
         this.filterUntranslated = filterUntranslated;
         this.filterApproved = filterApproved;
         this.filterRejected = filterRejected;
         this.filterHasError = filterHasError;
+        this.editorFilter = editorFilter;
         this.cancelFilter = cancelFilter;
     }
 
@@ -82,17 +86,22 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
         return filterHasError;
     }
 
+    public EditorFilter getEditorFilter() {
+        return editorFilter;
+    }
+
     @Override
     public GetTransUnitActionContext updateContext(
             GetTransUnitActionContext currentContext) {
         Preconditions.checkNotNull(currentContext,
                 "current context can not be null");
-        return currentContext.changeFilterFuzzy(filterFuzzy)
-                .changeFilterTranslated(filterTranslated)
-                .changeFilterUntranslated(filterUntranslated)
-                .changeFilterApproved(filterApproved)
-                .changeFilterRejected(filterRejected)
-                .changeFilterHasError(filterHasError);
+        return currentContext.withFilterFuzzy(filterFuzzy)
+                .withFilterTranslated(filterTranslated)
+                .withFilterUntranslated(filterUntranslated)
+                .withFilterApproved(filterApproved)
+                .withFilterRejected(filterRejected)
+                .withFilterHasError(filterHasError)
+                .withEditorFilter(editorFilter);
     }
 
     @Override
@@ -104,6 +113,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
                 .add("filterApproved", filterApproved)
                 .add("filterRejected", filterRejected)
                 .add("filterHasError", filterHasError)
+                .add("editorFilter", editorFilter)
                 .add("cancelFilter", cancelFilter).toString();
     }
 }

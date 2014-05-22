@@ -56,7 +56,7 @@ public class ProjectAboutTab extends ProjectBasePage {
     }
 
     public ProjectAboutTab pressSave() {
-        getDriver().findElement(By.linkText("Save notes")).click();
+        clickElement(By.linkText("Save notes"));
         return new ProjectAboutTab(getDriver());
     }
 }

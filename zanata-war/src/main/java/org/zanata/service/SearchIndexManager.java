@@ -136,6 +136,12 @@ public class SearchIndexManager implements Serializable {
         this.handle = (TimedAsyncHandle) asyncTaskManagerServiceImpl.getHandle(taskId);
     }
 
+    public void reindex(boolean purge, boolean reindex, boolean optimize)
+            throws Exception {
+        setOptions(purge, reindex, optimize);
+        new ReindexTask(entityManagerFactory).call();
+    }
+
     /**
      * Private reindex Asynchronous task. NB: Separate from the main Bean class
      * as it is not recommended to reuse async tasks.
@@ -150,7 +156,7 @@ public class SearchIndexManager implements Serializable {
 
         public ReindexTask(EntityManagerFactory entityManagerFactory) {
             this.entityManagerFactory = entityManagerFactory;
-            String name = getClass().getSimpleName(); //+":"+indexingOptions
+            String name = getClass().getSimpleName(); // +":"+indexingOptions
             this.handle = new TimedAsyncHandle<Void>(name);
             FullTextSession session = openFullTextSession();
             try {

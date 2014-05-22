@@ -24,8 +24,9 @@ package org.zanata.feature.projectversion;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
@@ -43,12 +44,12 @@ import static org.hamcrest.Matchers.not;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class CreateProjectVersionTest {
+public class CreateProjectVersionTest extends ZanataTestCase {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createASimpleProjectVersion() {
         VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
@@ -64,51 +65,55 @@ public class CreateProjectVersionTest {
                 equalTo("my-aboutfedora-version"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idFieldMustNotBeEmpty() {
         CreateVersionPage createVersionPage =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
                         .goToProject("about fedora").clickCreateVersionLink()
                         .inputVersionId("");
+        createVersionPage.defocus();
 
         assertThat("The empty value is rejected",
                 createVersionPage.getErrors(),
                 hasItem("value is required"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idStartsAndEndsWithAlphanumeric() {
-        CreateVersionPage createVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").clickCreateVersionLink()
-                        .inputVersionId("-A");
-
-        String formatError =
-                "must start and end with letter or number, "
-                        + "and contain only letters, numbers, underscores and hyphens.";
-        assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
-
-        createVersionPage =
-                createVersionPage.inputVersionId("B-").waitForNumErrors(1);
+        CreateVersionPage createVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .clickCreateVersionLink()
+                .inputVersionId("-A");
+        createVersionPage.defocus();
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
 
-        createVersionPage =
-                createVersionPage.inputVersionId("_C_").waitForNumErrors(1);
+        createVersionPage = createVersionPage.inputVersionId("B-");
+        createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(1);
 
         assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(formatError));
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
 
-        createVersionPage =
-                createVersionPage.inputVersionId("A-B_C").waitForNumErrors(0);
+        createVersionPage = createVersionPage.inputVersionId("_C_");
+        createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(1);
+
+        assertThat("The input is rejected", createVersionPage.getErrors(),
+                hasItem(CreateVersionPage.VALIDATION_ERROR));
+
+        createVersionPage = createVersionPage.inputVersionId("A-B_C");
+        createVersionPage.defocus();
+        createVersionPage = createVersionPage.waitForNumErrors(0);
 
         assertThat("The input is acceptable", createVersionPage.getErrors(),
-                not(hasItem(formatError)));
+                not(hasItem(CreateVersionPage.VALIDATION_ERROR)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void versionCounterIsUpdated() {
 
         String projectName = "version nums";

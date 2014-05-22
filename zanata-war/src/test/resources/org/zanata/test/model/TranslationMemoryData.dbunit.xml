@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<dataset>
+  <HProject defaultProjectType="Gettext" id="100" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    slug="same-project" homeContent=""
+    description="Original Project from which translations will be copied"
+    name="Original Project" overrideLocales="FALSE"
+    restrictedByRoles="FALSE" status="A" />
+  <HProjectIteration id="100" versionNum="1"
+    creationDate="2009-09-01 20:30:46" lastChanged="2009-09-01 20:30:46"
+    slug="same-version" parentId="[NULL]"
+    project_id="100" overrideLocales="FALSE"
+    status="A" />
+
+  <HDocument id="100" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    contentType="text/plain" docId="/same/document0"
+    locale="4" name="document0"
+    path="/same" project_iteration_id="100"
+    revision="1" obsolete="0" />
+
+  <HDocument id="101" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    contentType="text/plain" docId="/same/document1"
+    locale="4" name="document1"
+    path="/same" project_iteration_id="100"
+    revision="1" obsolete="0" />
+
+  <HTextFlow id="100" obsolete="0" pos="0"
+    resId="same-context" revision="1"
+    document_id="100" wordCount="2"
+    contentHash="e0a15a5bbf6075a9ef58b8978b7b8634" plural="false"
+    content0="Source Content" />
+  <HTextFlow id="101" obsolete="false" pos="1"
+    resId="bbb5da9ad2bd9d24df29caead537b840" revision="1"
+    document_id="100" wordCount="6"
+    contentHash="57a7945966a33a90dc5be48032d76be4" plural="true"
+    content0="One file removed" content1="%d files removed" />
+  <HTextFlow id="102" obsolete="false" pos="2"
+    resId="991c3bb02eed7e0bc4fafee332c8dd8a" revision="1"
+    document_id="100" wordCount="7"
+    contentHash="85bba7013cdc879531579c964833dfbe" plural="true"
+    content0="One other file removed" content1="%d files removed" />
+  <HTextFlow id="103" obsolete="false" pos="3"
+    resId="2f41b1729c9cafa6cc77339a1e2f1548" revision="1"
+    document_id="100" wordCount="7"
+    contentHash="6bd3ba9a918f90c253a6221aab87edf6" plural="true"
+    content0="One file removed_" content1="%d more files removed" />
+  <HTextFlow id="104" obsolete="false" pos="4"
+    resId="70bb21ae1ac3541d171f91f83e19892e" revision="1"
+    document_id="100" wordCount="5"
+    contentHash="7f1dd7bb266621cdd63a2466b7b0675e" plural="true"
+    content0="File removed" content1="%d files removed" />
+  <HTextFlow id="105" obsolete="false" pos="5"
+    resId="4f31017425b665ac21b4cbee02145c96" revision="1"
+    document_id="100" wordCount="7"
+    contentHash="d5e61b01244f4dd1c9fb22c46b609eab" plural="true"
+    content0="Yet Another File removed" content1="%d files removed" />
+  <HTextFlow id="106" obsolete="false" pos="6"
+    resId="15a5b15799e3dc7b7e57fad2b9c1663d" revision="1"
+    document_id="100" wordCount="7"
+    contentHash="976526bf633a187721c4d31e05b5367f" plural="true"
+    content0="2 Another File removed" content1="%d files removed" />
+  <HTextFlow id="107" obsolete="false" pos="7"
+    resId="f1980b66e0a43405f3199d92774695cf" revision="1"
+    document_id="100" wordCount="1"
+    contentHash="f1980b66e0a43405f3199d92774695cf" plural="false"
+    content0="msgid" />
+  <HTextFlow id="108" obsolete="false" pos="8"
+    resId="621017d44c2bbb8ae4583aa855c5cf3a" revision="1"
+    document_id="101" wordCount="6"
+    contentHash="cb5859c717f73e94c8951fe31444dad4" plural="true"
+    content0="%d files removed" content1="One file removed" />
+  <HTextFlow id="109" obsolete="false" pos="9"
+    resId="45e4812014d83dde5666ebdf5a8ed1ed" revision="1"
+    document_id="101" wordCount="2"
+    contentHash="370211fa34b356c2741f907171280edf" plural="true"
+    content0="aaaaaaaaaaaa" content1="bbbbbbbbbbb" />
+  <HTextFlow id="110" obsolete="false" pos="10"
+    resId="050641dae3041cdbbd37cc508e98e6ef" revision="1"
+    document_id="101" wordCount="2"
+    contentHash="92267c4857016887b82da67e63a4bc4e" plural="true"
+    content0="file bbbbbbbbbbb" content1="aaaaaaaaaaaa" />
+  <HTextFlow id="111" obsolete="true" pos="11"
+    resId="050641dae3041cdbbd37cc508e98e6ee" revision="1"
+    document_id="101" wordCount="2"
+    contentHash="92267c4857016887b82da67e63a4bc4e" plural="true"
+    content0="bbbbbbbbbbb" content1="aaaaaaaaaaaa" />
+
+  <!-- de Target -->
+  <HTextFlowTarget id="100" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    locale="3" state="3" tf_id="100" tf_revision="1"
+    content0="target-content-de" />
+  <HTextFlowTarget id="60" creationDate="2012-07-09 09:42:41.0"
+    lastChanged="2012-08-08 12:21:57.0" versionNum="8" state="2" tf_revision="1"
+    locale="3" tf_id="101" content0="%d files removed" />
+  <HTextFlowTarget id="61" creationDate="2012-07-09 09:42:43.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="5" state="1" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="102"
+    content0="fhjhj" />
+  <HTextFlowTarget id="62" creationDate="2012-07-09 09:42:46.0"
+    lastChanged="2012-07-09 11:10:15.0" versionNum="3" state="2" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="103" content0="adsf" />
+  <HTextFlowTarget id="63" creationDate="2012-07-09 11:11:21.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="105"
+    content0="ZXc" />
+  <HTextFlowTarget id="64" creationDate="2012-07-09 11:11:21.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="1" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="104"
+    content0="ZXc" />
+
+  <HTextFlowTarget id="65" creationDate="2012-07-09 11:11:21.0"
+    lastChanged="2012-07-09 11:11:21.0" versionNum="1" state="2" tf_revision="1"
+    last_modified_by_id="1" locale="3" tf_id="110"
+    content0="test-content" />
+
+  <!-- es Target -->
+  <HTextFlowTarget id="101" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    locale="5" state="2"
+    tf_id="100" tf_revision="1"
+    content0="target-content-es" />
+
+
+  <HProjectIteration id="101" versionNum="1"
+    creationDate="2009-09-01 20:30:46" lastChanged="2009-09-01 20:30:46"
+    slug="different-version" parentId="[NULL]"
+    project_id="100" overrideLocales="TRUE" status="A" />
+
+  <HProjectIteration_Locale projectIterationId="101" localeId="3" />
+
+
+  <!-- Different Empty Project -->
+  <HProject defaultProjectType="Gettext" id="1000"
+    versionNum="1" creationDate="2009-09-01 20:30:16"
+    lastChanged="2009-09-01 20:30:16" slug="different-project"
+    description="New Project for translations to be copied"
+    homeContent="" name="Different Project"
+    overrideLocales="FALSE" restrictedByRoles="FALSE"
+    status="A" />
+  <HProjectIteration id="1000" versionNum="1"
+    creationDate="2009-09-01 20:30:46" lastChanged="2009-09-01 20:30:46"
+    slug="different-version" parentId="[NULL]"
+    project_id="1000" overrideLocales="TRUE" status="A" />
+  <HProjectIteration_Locale projectIterationId="1000" localeId="3" />
+
+  <!-- used by org.zanata.service.impl.TranslationMemoryServiceImplTest
+       .searchBestMatchTargetTest -->
+  <HProjectIteration id="102" versionNum="1"
+    creationDate="2009-09-01 20:30:46" lastChanged="2009-09-01 20:30:46"
+    slug="newer-version" parentId="[NULL]"
+    project_id="100" overrideLocales="FALSE"
+    status="A" />
+  <HDocument id="102" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    contentType="text/plain" docId="/same/document0"
+    locale="4" name="document0"
+    path="/same" project_iteration_id="102"
+    revision="1" obsolete="0" />
+  <HTextFlow id="112" obsolete="0" pos="0"
+    resId="same-context" revision="1"
+    document_id="102" wordCount="2"
+    contentHash="e0a15a5bbf6075a9ef58b8978b7b8634" plural="false"
+    content0="Source Content" />
+  <HTextFlowTarget id="103" versionNum="1"
+    creationDate="2009-09-02 20:30:16" lastChanged="2009-09-02 20:30:16"
+    locale="3" state="3" tf_id="112" tf_revision="1"
+    content0="newer content" />
+
+  <!-- also used by org.zanata.service.impl.TranslationMemoryServiceImplTest
+       .searchBestMatchTargetTest -->
+  <HProjectIteration id="103" versionNum="1"
+    creationDate="2009-09-01 20:30:46" lastChanged="2009-09-01 20:30:46"
+    slug="newest-version" parentId="[NULL]"
+    project_id="100" overrideLocales="FALSE"
+    status="A" />
+  <HDocument id="103" versionNum="1"
+    creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+    contentType="text/plain" docId="/same/document0"
+    locale="4" name="document0"
+    path="/same" project_iteration_id="103"
+    revision="1" obsolete="0" />
+  <HTextFlow id="113" obsolete="0" pos="0"
+    resId="same-context" revision="1"
+    document_id="103" wordCount="2"
+    contentHash="e0a15a5bbf6075a9ef58b8978b7b8634" plural="false"
+    content0="Source Content" />
+  <HTextFlowTarget id="102" versionNum="1"
+    creationDate="2009-09-03 20:30:16" lastChanged="2009-09-03 20:30:16"
+    locale="3" state="3" tf_id="113" tf_revision="1"
+    content0="most recent content (but not highest id)" />
+
+
+
+</dataset>

@@ -314,7 +314,9 @@
     <action
       execute="#{breadcrumbs.addLocation('', messages['jsf.ServerConfiguration'])}" />
     <navigation from-action="#{serverConfigurationBean.update}">
-      <redirect view-id="/admin/home.xhtml" />
+      <rule if-outcome="success">
+        <redirect view-id="/admin/home.xhtml" />
+      </rule>
     </navigation>
   </page>
 
@@ -399,6 +401,7 @@
   </page>
 
   <page view-id="/version-group/version_group.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
     <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
     <action execute="#{versionGroupHome.validateSuppliedId}" />
@@ -549,6 +552,7 @@
   </page>
 
   <page view-id="/project/project.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{projectHomeAction.slug}" />
     <action execute="#{projectHome.initialize}" />
@@ -576,7 +580,7 @@
     <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
     <param name="projectSlug" value="#{versionHome.projectSlug}" />
     <action execute="#{versionHome.validateProjectSlug}" />
-    <action execute="#{versionHome.createNew}" />
+    <action execute="#{versionHome.init(true)}" />
 
     <navigation from-action="#{versionHome.persist}">
       <redirect view-id="/iteration/view.xhtml">
@@ -590,6 +594,7 @@
 
   <!-- Project Iteration -->
   <page view-id="/iteration/view.xhtml">
+    <header name="Cache-Control" value="no-cache, no-store, max-age=0, must-revalidate"/>
     <param name="projectSlug" value="#{versionHomeAction.projectSlug}" />
     <param name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
 
@@ -599,10 +604,18 @@
     <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
     <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
 
+    <action execute="#{versionHome.init(false)}" />
     <action execute="#{versionHome.validateSuppliedId}" />
-    <action execute="#{copyTransAction.initialize}" />
 
     <navigation from-action="#{versionHomeAction.uploadSourceFile}">
+      <redirect view-id="/iteration/view.xhtml">
+        <param name="projectSlug"
+          value="#{versionHome.projectSlug}" />
+        <param name="iterationSlug"
+          value="#{versionHome.instance.slug}" />
+      </redirect>
+    </navigation>
+    <navigation from-action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}">
       <redirect view-id="/iteration/view.xhtml">
         <param name="projectSlug"
           value="#{versionHome.projectSlug}" />

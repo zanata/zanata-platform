@@ -29,11 +29,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.TranslationMemoryEditPage;
 import org.zanata.page.administration.TranslationMemoryPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.RetryRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -44,12 +44,10 @@ import org.zanata.workflow.TranslationMemoryWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditTranslationMemoryTest {
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+public class EditTranslationMemoryTest extends ZanataTestCase {
 
     @Rule
-    public RetryRule retryRule = new RetryRule(2);
+    public AddUsersRule addUsersRule = new AddUsersRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
@@ -60,7 +58,7 @@ public class EditTranslationMemoryTest {
                 Matchers.equalTo("admin"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createNewTranslationMemory() {
         String newTMId = "newtmtest";
         String tmDescription = "A new test TM";
@@ -82,7 +80,7 @@ public class EditTranslationMemoryTest {
                 Matchers.equalTo(tmDescription));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void abortCreate() {
         String abortName = "aborttmtest";
         String abortDescription = "abort tm description";
@@ -98,7 +96,7 @@ public class EditTranslationMemoryTest {
                 Matchers.not(Matchers.hasItem(abortName)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translationMemoryIdsAreUnique() {
         String nonUniqueTMId = "doubletmtest";
         String nameError = "This Id is not available";
@@ -130,7 +128,7 @@ public class EditTranslationMemoryTest {
                 Matchers.hasItem(nameError));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void importTranslationMemory() {
         String importTMId = "importmtest";
         File importFile =
@@ -159,7 +157,7 @@ public class EditTranslationMemoryTest {
 
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectEmptyTranslation() {
         String rejectTMId = "rejectemptytmtest";
 
@@ -178,7 +176,7 @@ public class EditTranslationMemoryTest {
                 Matchers.equalTo("0"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void deleteTranslationMemory() {
         String deleteTMId = "deletetmtest";
 
@@ -198,7 +196,7 @@ public class EditTranslationMemoryTest {
                 Matchers.not(Matchers.hasItem(deleteTMId)));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontDeleteTranslationMemory() {
         String dontDeleteTMId = "dontdeletetmtest";
 
@@ -218,7 +216,7 @@ public class EditTranslationMemoryTest {
                 Matchers.hasItem(dontDeleteTMId));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void clearTranslationMemory() {
         String clearTMId = "cleartmtest";
         File importFile =
@@ -253,7 +251,7 @@ public class EditTranslationMemoryTest {
                         "0"), Matchers.equalTo("0"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontClearTranslationMemory() {
         String clearTMId = "dontcleartmtest";
         File importFile =
@@ -288,7 +286,7 @@ public class EditTranslationMemoryTest {
                 Matchers.equalTo("1"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void mustClearBeforeDelete() {
         String forceClear = "forcecleartodelete";
         File importFile =

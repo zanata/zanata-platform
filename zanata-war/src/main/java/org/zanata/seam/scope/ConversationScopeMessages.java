@@ -26,13 +26,13 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import com.google.common.collect.Lists;
+import org.zanata.util.ServiceLocator;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -68,7 +68,7 @@ public class ConversationScopeMessages implements Serializable {
     }
 
     public static ConversationScopeMessages instance() {
-        return (ConversationScopeMessages) Component
-                .getInstance(ConversationScopeMessages.class);
+        return ServiceLocator.instance().getInstance(
+                ConversationScopeMessages.class);
     }
 }

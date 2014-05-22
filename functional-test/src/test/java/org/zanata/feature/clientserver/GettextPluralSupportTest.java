@@ -8,13 +8,15 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.page.webtrans.Plurals;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -37,7 +39,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class GettextPluralSupportTest {
+public class GettextPluralSupportTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -68,7 +71,7 @@ public class GettextPluralSupportTest {
         restCaller = new ZanataRestCaller();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
@@ -104,8 +107,7 @@ public class GettextPluralSupportTest {
         assertThat(pulledTargets, Matchers.equalTo(originalTargets));
 
         // translate on web UI and pull again
-        editorPage.setSyntaxHighlighting(false)
-                .translateTargetAtRowIndex(0, "one aoeuaouaou")
+        editorPage.translateTargetAtRowIndex(0, "one aoeuaouaou")
                 .saveAsFuzzyAtRow(0);
 
 
@@ -120,22 +122,20 @@ public class GettextPluralSupportTest {
     private static EditorPage verifyPluralPushedToEditor() {
         // verify first message
         new LoginWorkFlow().signIn("admin", "admin");
-        EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        BasicWorkFlow.EDITOR_TEMPLATE, "plurals", "master",
-                        "pl", "test"), EditorPage.class);
+        EditorPage editorPage = new BasicWorkFlow()
+                .goToEditor("plurals", "master", "pl", "test");
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
                 Matchers.equalTo("One file removed"));
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
                 Matchers.equalTo("%d files removed"));
         // nplural for Polish is 3
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetSingular),
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetSingular),
                 Matchers.equalTo("1 aoeuaouaou"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralOne),
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralOne),
                 Matchers.equalTo("%d aoeuaouao"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0, Plurals.TargetPluralTwo),
-                Matchers.equalTo(" "));
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralTwo),
+                Matchers.equalTo(""));
 
         return editorPage;
     }

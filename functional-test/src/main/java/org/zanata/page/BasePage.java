@@ -26,13 +26,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.zanata.page.account.MyAccountPage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.projects.ProjectVersionsPage;
@@ -73,19 +74,17 @@ public class BasePage extends CorePage {
 
     private static final By BY_SIGN_IN = By.id("signin_link");
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
-    private static final By BY_PROFILE_LINK = By.id("profile");
+    private static final By BY_DASHBOARD_LINK = By.id("dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("administration");
 
     public BasePage(final WebDriver driver) {
         super(driver);
     }
 
-    public MyAccountPage goToMyProfile() {
+    public DashboardBasePage goToMyDashboard() {
         userAvatar.click();
-
-        clickLinkAfterAnimation(BY_PROFILE_LINK);
-
-        return new MyAccountPage(getDriver());
+        clickLinkAfterAnimation(BY_DASHBOARD_LINK);
+        return new DashboardBasePage(getDriver());
     }
 
     public ProjectsPage goToProjects() {
@@ -94,6 +93,7 @@ public class BasePage extends CorePage {
     }
 
     private void clickNavMenuItem(final WebElement menuItem) {
+        scrollIntoView(menuItem);
         if (!menuItem.isDisplayed()) {
             // screen is too small the menu become dropdown
             getDriver().findElement(By.id("nav-main"))
@@ -115,7 +115,7 @@ public class BasePage extends CorePage {
 
     public GlossaryPage goToGlossary() {
         // Dynamically find the link, as it is not present for every user
-        getDriver().findElement(By.id("glossary_link")).click();
+        clickNavMenuItem(getDriver().findElement(By.id("glossary_link")));
         return new GlossaryPage(getDriver());
     }
 
@@ -154,6 +154,7 @@ public class BasePage extends CorePage {
     }
 
     public HomePage logout() {
+        scrollIntoView(userAvatar);
         userAvatar.click();
 
         clickLinkAfterAnimation(BY_SIGN_OUT);
@@ -236,13 +237,14 @@ public class BasePage extends CorePage {
         return new ProjectsPage(getDriver());
     }
 
-    public void waitForSearchListContains(final String expected) {
+    public BasePage waitForSearchListContains(final String expected) {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectSearchAutocompleteItems().contains(expected);
             }
         });
+        return new BasePage(getDriver());
     }
 
     public List<String> getProjectSearchAutocompleteItems() {
@@ -272,9 +274,37 @@ public class BasePage extends CorePage {
         return new ProjectVersionsPage(getDriver());
     }
 
+    public void clickWhenTabEnabled(final WebElement tab) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                waitForPageSilence();
+                boolean clicked = false;
+                try {
+                    if (tab.isDisplayed() && tab.isEnabled()) {
+                        tab.click();
+                        clicked = true;
+                    }
+                } catch(WebDriverException wde) {
+                    return clicked;
+                }
+                return clicked;
+            }
+        });
+    }
+
     public String getHtmlSource(WebElement webElement) {
         return (String) ((JavascriptExecutor) getDriver()).executeScript(
                 "return arguments[0].innerHTML;", webElement);
     }
 
+    public void scrollIntoView(WebElement targetElement) {
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].scrollIntoView(true);", targetElement);
+    }
+
+    public void clickElement(By findby) {
+        scrollIntoView(getDriver().findElement(findby));
+        getDriver().findElement(findby).click();
+    }
 }

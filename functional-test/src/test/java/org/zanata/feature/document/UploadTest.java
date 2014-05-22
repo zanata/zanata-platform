@@ -22,25 +22,26 @@ package org.zanata.feature.document;
 
 import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
@@ -48,8 +49,8 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class UploadTest {
+@Slf4j
+public class UploadTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -64,14 +65,18 @@ public class UploadTest {
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        documentStorageDirectory =
-                CleanDocumentStorageRule.getDocumentStoragePath()
-                        .concat(File.separator).concat("documents")
-                        .concat(File.separator);
-        assumeFalse("", new File(documentStorageDirectory).exists());
+        documentStorageDirectory = CleanDocumentStorageRule
+                .getDocumentStoragePath()
+                .concat(File.separator)
+                .concat("documents")
+                .concat(File.separator);
+
+        if (new File(documentStorageDirectory).exists()) {
+            log.warn("Document storage directory exists (cleanup incomplete)");
+        }
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void uploadedDocumentIsInFilesystem() {
         File originalFile =
@@ -92,20 +97,22 @@ public class UploadTest {
         assertThat("There is only one uploaded source file", new File(
                 documentStorageDirectory).list().length, Matchers.equalTo(1));
 
-        File newlyCreatedFile =
-                new File(
-                        documentStorageDirectory,
-                        testFileGenerator
-                                .getFirstFileNameInDirectory(documentStorageDirectory));
+        File newlyCreatedFile = new File(documentStorageDirectory,
+                testFileGenerator
+                        .getFirstFileNameInDirectory(documentStorageDirectory));
 
         assertThat("The contents of the file were also uploaded",
                 testFileGenerator.getTestFileContent(newlyCreatedFile),
                 Matchers.equalTo("This is a test file"));
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(testFileName);
+
         assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(testFileName));
+                versionDocumentsPage.sourceDocumentsContains(testFileName));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void cancelFileUpload() {
         File cancelUploadFile =
                 testFileGenerator.generateTestFileWithContent(
@@ -127,7 +134,7 @@ public class UploadTest {
                         .sourceDocumentsContains("cancelFileUpload.txt"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFilenameUpload() {
         VersionDocumentsTab versionDocumentsTab =
                 new LoginWorkFlow().signIn("admin", "admin").goToProjects()
@@ -139,8 +146,8 @@ public class UploadTest {
                 !versionDocumentsTab.canSubmitDocument());
     }
 
-    // RHBZ990836
-    @Test(expected = RuntimeException.class)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("RHBZ-990836")
     public void handleReallyBigFile() {
         File bigFile =
                 testFileGenerator.generateTestFileWithContent("bigFile",
@@ -148,7 +155,7 @@ public class UploadTest {
         long fileSizeInMB = (1024 * 1024) * 500;
         testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
 
-        assumeTrue("Data file " + bigFile + " is big",
+        assumeTrue("Data file " + bigFile.getName() + " is big",
                 bigFile.length() == fileSizeInMB);
 
         VersionLanguagesPage projectVersionPage =
@@ -186,11 +193,10 @@ public class UploadTest {
                 .submitUpload();
         versionLanguagesPage.assertNoCriticalErrors();
         assertThat("Success message is shown",
-                versionLanguagesPage.getNotificationMessage(),
-                Matchers.not(Matchers.equalTo(successfullyUploaded)));
+                versionLanguagesPage.expectNotification(successfullyUploaded));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void handleVeryLongFileNames() {
         File longFile =
                 testFileGenerator.generateTestFileWithContent(
@@ -208,13 +214,17 @@ public class UploadTest {
                         .submitUpload();
 
         assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(longFile.getName()));
+                projectVersionPage.expectNotification(successfullyUploaded));
+
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(longFile.getName());
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(longFile.getName()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFile() {
         File emptyFile =
                 testFileGenerator.generateTestFileWithContent("emptyFile",
@@ -234,13 +244,17 @@ public class UploadTest {
 
         assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
         assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(emptyFile.getName()));
+                projectVersionPage.expectNotification(successfullyUploaded));
+
+        VersionDocumentsPage versionDocumentsPage = projectVersionPage
+                .gotoDocumentTab()
+                .waitForSourceDocsContains(emptyFile.getName());
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(emptyFile.getName()));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectUnsupportedValidFiletype() {
         File unsupportedFile =
                 testFileGenerator.generateTestFileWithContent("testfodt",
@@ -256,9 +270,8 @@ public class UploadTest {
                         .enterFilePath(unsupportedFile.getAbsolutePath())
                         .submitUpload();
 
-        assertThat("Unrecognized file extension for ",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(uploadFailed));
+        assertThat("Unrecognized file extension error is shown",
+                projectVersionPage.expectNotification(uploadFailed));
     }
 
 }

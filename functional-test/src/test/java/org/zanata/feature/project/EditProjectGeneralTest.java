@@ -21,105 +21,83 @@
 package org.zanata.feature.project;
 
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.util.AddUsersRule;
+import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import org.zanata.workflow.ProjectWorkFlow;
-
-import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
-import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
 
 /**
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditProjectGeneralTest {
+public class EditProjectGeneralTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToReadOnly() {
-
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "deactivateproject");
-        projectSettings.put("Name", "Deactivate Project Test");
-
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                equalTo("admin"));
-
-        new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectsPage projectsPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
-                .lockProject();
-
-        ProjectsPage projectsPage = new BasicWorkFlow()
-                .goToHome()
+                .lockProject()
                 .goToProjects()
                 .setActiveFilterEnabled(true)
                 .setReadOnlyFilterEnabled(false)
                 .setObsoleteFilterEnabled(false)
-                .waitForProjectVisibility(projectSettings.get("Name"), false);
+                .waitForProjectVisibility("about fedora", false);
 
         assertThat("The project is not displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
-                not(hasItem(projectSettings.get("Name"))));
+                not(hasItem("about fedora")));
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(true)
                 .setObsoleteFilterEnabled(false)
-                .waitForProjectVisibility(projectSettings.get("Name"), true);
+                .waitForProjectVisibility("about fedora", true);
 
         assertThat("The project is now displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem(projectSettings.get("Name")));
+                hasItem("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToWritable() {
-
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "rewritableproject");
-        projectSettings.put("Name", "Rewrite Project Test");
-
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                equalTo("admin"));
-
-        assertThat("The project is locked",
-                new ProjectWorkFlow()
-                        .createNewProject(projectSettings)
-                        .gotoSettingsTab()
-                        .gotoSettingsGeneral()
-                        .lockProject()
-                        .goToProjects()
-                        .setActiveFilterEnabled(false)
-                        .setReadOnlyFilterEnabled(true)
-                        .setObsoleteFilterEnabled(false)
-                        .waitForProjectVisibility(
-                                projectSettings.get("Name"), true)
-                        .getProjectNamesOnCurrentPage(),
-                hasItem(projectSettings.get("Name")));
+        assertThat("The project is locked", new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsGeneral()
+                .lockProject()
+                .goToProjects()
+                .setActiveFilterEnabled(false)
+                .setReadOnlyFilterEnabled(true)
+                .setObsoleteFilterEnabled(false)
+                .waitForProjectVisibility("about fedora", true)
+                .getProjectNamesOnCurrentPage(),
+                hasItem("about fedora"));
 
         ProjectsPage projectsPage = new BasicWorkFlow()
                 .goToHome()
                 .goToProjects()
-                .goToProject(projectSettings.get("Name"))
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .unlockProject()
@@ -127,41 +105,19 @@ public class EditProjectGeneralTest {
                 .setActiveFilterEnabled(true)
                 .setReadOnlyFilterEnabled(false)
                 .setObsoleteFilterEnabled(false)
-                .waitForProjectVisibility(projectSettings.get("Name"), true);
+                .waitForProjectVisibility("about fedora", true);
 
         assertThat("The project is now displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem(projectSettings.get("Name")));
+                hasItem("about fedora"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectObsolete() {
-
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "setobsoleteproject");
-        projectSettings.put("Name", "Obsolete Project Test");
-        projectSettings.put("Project Type", "File");
-
-        assertThat("Translator can log in",
-                new LoginWorkFlow()
-                        .signIn("translator", "translator")
-                        .loggedInAs(),
-                equalTo("translator"));
-
-        assertThat("Archiving is not available to non admin",
-                new ProjectWorkFlow()
-                        .createNewProject(projectSettings)
-                        .gotoSettingsTab()
-                        .gotoSettingsGeneral()
-                        .isArchiveButtonAvailable(),
-                not(true));
-
-        new BasicWorkFlow().goToHome().logout();
-
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
-                .goToProject(projectSettings.get("Name"))
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .archiveProject()
@@ -169,92 +125,64 @@ public class EditProjectGeneralTest {
 
         assertThat("The project is not displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
-                not(hasItem(projectSettings.get("Name"))));
+                not(hasItem("about fedora")));
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(false)
                 .setObsoleteFilterEnabled(true);
 
-        projectsPage
-                .waitForProjectVisibility(projectSettings.get("Name"), true);
+        projectsPage.waitForProjectVisibility("about fedora", true);
 
         assertThat("The project is now displayed",
                 projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem(projectSettings.get("Name")));
+                hasItem("about fedora"));
 
         projectsPage.logout();
 
-        assertThat("User cannot navigate to a project",
-                new LoginWorkFlow()
-                        .signIn("translator", "translator")
-                        .goToProjects()
-                        .getProjectNamesOnCurrentPage(),
-                not(hasItem(projectSettings.get("Name"))));
+        assertThat("User cannot navigate to a project", new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToProjects()
+                .getProjectNamesOnCurrentPage(),
+                not(hasItem("about fedora")));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAnObsoleteProjectAsActive() {
-
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "setobsoleteprojectactive");
-        projectSettings.put("Name", "Unobsolete Project Test");
-        projectSettings.put("Project Type", "File");
-
-        assertThat("Translator can log in",
-                new LoginWorkFlow()
-                        .signIn("translator", "translator")
-                        .loggedInAs(),
-                equalTo("translator"));
-
-        new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
-                .logout();
-
-        ProjectGeneralTab projectGeneralTab =
-                new LoginWorkFlow()
-                    .signIn("admin", "admin")
-                    .goToProjects()
-                    .goToProject(projectSettings.get("Name"))
-                    .gotoSettingsTab()
-                    .gotoSettingsGeneral()
-                    .archiveProject()
-                    .goToProjects()
-                    .setObsoleteFilterEnabled(true)
-                    .goToProject(projectSettings.get("Name"))
-                    .gotoSettingsTab()
-                    .gotoSettingsGeneral()
-                    .unarchiveProject();
+                .archiveProject()
+                .goToProjects()
+                .setObsoleteFilterEnabled(true)
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsGeneral()
+                .unarchiveProject();
 
         assertThat("The archive button is now available",
                 projectGeneralTab.isArchiveButtonAvailable());
 
-        assertThat("Translator can view the project",
-                new LoginWorkFlow()
-                    .signIn("translator", "translator")
-                    .goToProjects()
-                    .goToProject(projectSettings.get("Name"))
-                    .getProjectName(),
-                equalTo(projectSettings.get("Name")));
+        projectGeneralTab.logout();
+
+        assertThat("Translator can view the project", new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToProjects()
+                .goToProject("about fedora")
+                .getProjectName(),
+                equalTo("about fedora"));
 
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectName() {
-
         String replacementText = "a new name";
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "changeName");
-        projectSettings.put("Name", "Project Name Change Test");
-
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                Matchers.equalTo("admin"));
-
-        ProjectVersionsPage projectVersionsPage =
-                new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .enterProjectName(replacementText)
@@ -267,53 +195,41 @@ public class EditProjectGeneralTest {
                 Matchers.equalTo(replacementText));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectDescription() {
-
         String replacementText = "a new description";
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "changeDescription");
-        projectSettings.put("Name", "Project Description Test");
-        projectSettings.put("Description", "An old description");
+        ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora");
 
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                Matchers.equalTo("admin"));
+        assertThat("The description is default",
+                projectVersionsPage.getContentAreaParagraphs(),
+                not(hasItem(replacementText)));
 
-        ProjectVersionsPage projectVersionsPage =
-                new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectGeneralTab projectGeneralTab = projectVersionsPage
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .enterDescription(replacementText)
-                .updateProject()
-                .goToProjects()
-                .goToProject(projectSettings.get("Name"));
+                .updateProject();
 
         assertThat("The text has changed",
-                projectVersionsPage.getContentAreaParagraphs(),
+                projectGeneralTab.getContentAreaParagraphs(),
                 Matchers.hasItem(replacementText));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectType() {
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "changeType");
-        projectSettings.put("Name", "Project Type Test");
-
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                Matchers.equalTo("admin"));
-
-        ProjectGeneralTab projectGeneralTab =
-                new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .selectProjectType("Properties")
                 .updateProject()
                 .goToProjects()
-                .goToProject(projectSettings.get("Name"))
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral();
 
@@ -322,26 +238,19 @@ public class EditProjectGeneralTest {
                 Matchers.equalTo("Properties"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeSourceLinks() {
-        HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "changeLinks");
-        projectSettings.put("Name", "Project Links Test");
-
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                Matchers.equalTo("admin"));
-
-        ProjectVersionsPage projectVersionsPage =
-                new ProjectWorkFlow()
-                .createNewProject(projectSettings)
+        ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .enterHomePage("http://www.example.com")
                 .enterRepository("http://www.test.com")
                 .updateProject()
                 .goToProjects()
-                .goToProject(projectSettings.get("Name"));
+                .goToProject("about fedora");
 
         assertThat("The homepage is correct",
                 projectVersionsPage.getHomepage(),

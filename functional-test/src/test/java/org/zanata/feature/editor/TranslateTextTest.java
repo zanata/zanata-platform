@@ -28,7 +28,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -45,7 +46,7 @@ import static org.zanata.util.FunctionalTestHelper.assumeFalse;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class TranslateTextTest {
+public class TranslateTextTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
@@ -67,7 +68,7 @@ public class TranslateTextTest {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicTextFile() {
         File testfile =
                 testFileGenerator.generateTestFileWithContent("basictext",
@@ -88,8 +89,6 @@ public class TranslateTextTest {
                         .pressUploadFileButton()
                         .enterFilePath(testfile.getAbsolutePath())
                         .submitUpload().translate("fr", testfile.getName());
-
-        editorPage.setSyntaxHighlighting(false);
 
         assertThat("Item 1 shows Line One",
                 editorPage.getMessageSourceAtRowIndex(0),
@@ -114,10 +113,10 @@ public class TranslateTextTest {
         assertThat("Item 1 shows a translation of Line One",
                 editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 2 shows a translation of Line Two",
                 editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
+        assertThat("Item 3 shows a translation of Line Three",
                 editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Ligne Trois"));
 
@@ -125,13 +124,13 @@ public class TranslateTextTest {
         editorPage.reload();
 
         assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(0),
+                editorPage.getBasicTranslationTargetAtRowIndex(0),
                 Matchers.equalTo("Une Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(1),
+        assertThat("Item 2 shows a translation of Line Two",
+                editorPage.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getMessageTargetAtRowIndex(2),
+        assertThat("Item 3 shows a translation of Line Three",
+                editorPage.getBasicTranslationTargetAtRowIndex(2),
                 Matchers.equalTo("Ligne Trois"));
     }
 }

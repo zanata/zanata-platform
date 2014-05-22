@@ -57,9 +57,6 @@ public class ProjectGeneralTab extends ProjectBasePage {
     @FindBy(id = "settings-general-form:repoField:repo")
     private WebElement repoField;
 
-    @FindBy(id = "settings-general-form:button-update-settings")
-    private WebElement updateButton;
-
     public ProjectGeneralTab(WebDriver driver) {
         super(driver);
     }
@@ -107,7 +104,9 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab selectProjectType(String projectType) {
         assert getProjectTypes().containsKey(projectType);
-        getProjectTypes().get(projectType).click();
+        WebElement projectTypeButton = getProjectTypes().get(projectType);
+        scrollIntoView(projectTypeButton);
+        projectTypeButton.click();
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -158,9 +157,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab archiveProject() {
-        getDriver().findElement(
-                By.id("settings-general-form:button-archive-project"))
-                .click();
+        clickElement(By.id("settings-general-form:button-archive-project"));
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -169,9 +166,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab unarchiveProject() {
-        getDriver().findElement(
-                By.id("settings-general-form:button-unarchive-project"))
-                .click();
+        clickElement(By.id("settings-general-form:button-unarchive-project"));
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -180,9 +175,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab lockProject() {
-        getDriver().findElement(
-                By.id("settings-general-form:button-lock-project"))
-                .click();
+        clickElement(By.id("settings-general-form:button-lock-project"));
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -191,9 +184,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab unlockProject() {
-        getDriver().findElement(
-                By.id("settings-general-form:button-unlock-project"))
-                .click();
+        clickElement(By.id("settings-general-form:button-unlock-project"));
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -224,7 +215,14 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab updateProject() {
-        clickAndCheckErrors(updateButton);
+        scrollIntoView(updateButton());
+        clickAndCheckErrors(updateButton());
         return new ProjectGeneralTab(getDriver());
     }
+
+    private WebElement updateButton() {
+        return getDriver().findElement(
+                By.id("settings-general-form:button-update-settings"));
+    }
+
 }

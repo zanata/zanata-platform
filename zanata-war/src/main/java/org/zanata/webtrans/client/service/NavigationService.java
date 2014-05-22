@@ -32,8 +32,6 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.EditorPageSizeChangeEventHandler;
-import org.zanata.webtrans.client.events.FindMessageEvent;
-import org.zanata.webtrans.client.events.FindMessageHandler;
 import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.events.InitEditorEventHandler;
 import org.zanata.webtrans.client.events.LoadingEvent;
@@ -76,7 +74,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class NavigationService implements TransUnitUpdatedEventHandler,
-        FindMessageHandler, DocumentSelectionHandler, NavTransUnitHandler,
+        DocumentSelectionHandler, NavTransUnitHandler,
         EditorPageSizeChangeEventHandler, BookmarkedTextFlowEventHandler,
         InitEditorEventHandler, RequestSelectTableRowEventHandler {
     public static final int FIRST_PAGE = 0;
@@ -113,7 +111,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
     private void bindHandlers() {
         eventBus.addHandler(DocumentSelectionEvent.getType(), this);
         eventBus.addHandler(TransUnitUpdatedEvent.getType(), this);
-        eventBus.addHandler(FindMessageEvent.getType(), this);
         eventBus.addHandler(NavTransUnitEvent.getType(), this);
         eventBus.addHandler(EditorPageSizeChangeEvent.TYPE, this);
         eventBus.addHandler(BookmarkedTextFlowEvent.TYPE, this);
@@ -196,7 +193,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
             GetTransUnitActionContext context = contextHolder.getContext();
             GetTransUnitActionContext newContext =
                     contextHolder.changeOffset(context.getCount() * page)
-                            .changeTargetTransUnitId(null);
+                            .withTargetTransUnitId(null);
             Log.info("page index: " + page + " page context: " + newContext);
             requestTransUnitsAndUpdatePageIndex(newContext,
                     !configHolder.isAcceptAllStatus());
@@ -252,7 +249,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
         GetTransUnitActionContext context = contextHolder.getContext();
         GetTransUnitActionContext newContext =
                 contextHolder.changeOffset(context.getCount() * page)
-                        .changeTargetTransUnitId(transUnitId);
+                        .withTargetTransUnitId(transUnitId);
         Log.debug("page index: " + page + " page context: " + newContext);
         requestTransUnitsAndUpdatePageIndex(newContext,
                 !configHolder.isAcceptAllStatus());
@@ -277,11 +274,6 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
         navigationStateHolder.updateState(updatedTU.getId(),
                 updatedTU.getStatus());
         return pageModel.updateIfInCurrentPage(updatedTU);
-    }
-
-    @Override
-    public void onFindMessage(FindMessageEvent findMessageEvent) {
-        execute(findMessageEvent);
     }
 
     @Override

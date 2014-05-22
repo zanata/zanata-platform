@@ -26,10 +26,10 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.SignInPage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -37,13 +37,12 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class InactiveUserLoginTest {
+public class InactiveUserLoginTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void loginWithInactiveUser() {
         new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
                 .goToManageUserPage().editUserAccount("translator")

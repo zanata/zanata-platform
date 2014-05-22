@@ -8,7 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -23,7 +24,6 @@ import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
 import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
 
 /**
  * @author Patrick Huang <a
@@ -31,7 +31,8 @@ import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class ConcurrentEditTest {
+public class ConcurrentEditTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -42,7 +43,7 @@ public class ConcurrentEditTest {
         restCaller = new ZanataRestCaller();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesRestServiceResults() {
         // create project and push source
         String projectSlug = "base";
@@ -63,9 +64,8 @@ public class ConcurrentEditTest {
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
         final EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        EDITOR_TEMPLATE, "base", "master", "pl",
-                        "test.pot"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("base", "master", "pl",
+                        "test.pot");
 
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
@@ -82,12 +82,12 @@ public class ConcurrentEditTest {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getMessageTargetAtRowIndex(0);
+                return editorPage.getBasicTranslationTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesCopyTransResults() throws Exception {
         // create project and populate master version
         String projectSlug = "base";
@@ -119,9 +119,8 @@ public class ConcurrentEditTest {
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
         final EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        EDITOR_TEMPLATE, "base", "beta", "pl",
-                        "test.pot"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("base", "beta", "pl",
+                        "test.pot");
 
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
@@ -134,7 +133,7 @@ public class ConcurrentEditTest {
         editorPage.waitFor(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return editorPage.getMessageTargetAtRowIndex(0);
+                return editorPage.getBasicTranslationTargetAtRowIndex(0);
             }
         }, Matchers.equalTo("hello world translated"));
     }

@@ -16,7 +16,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -26,6 +25,7 @@ import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.web.ServletContexts;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
@@ -162,7 +162,7 @@ public class SeamDispatch implements Dispatch {
         Class<? extends ActionHandler> handlerClazz =
                 handlers.get(action.getClass());
         final ActionHandler<A, R> handler =
-                (ActionHandler<A, R>) Component.getInstance(handlerClazz);
+                ServiceLocator.instance().getInstance(handlerClazz);
 
         if (handler == null)
             throw new UnsupportedActionException(action);

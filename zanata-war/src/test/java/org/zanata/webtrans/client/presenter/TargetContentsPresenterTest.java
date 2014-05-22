@@ -544,7 +544,6 @@ public class TargetContentsPresenterTest {
     public void onUserConfigChangeEvent() {
         // Given: change default settings in config
         configHolder.setDisplayButtons(false);
-        configHolder.setSpellCheckEnabled(false);
 
         // When:
         presenter
@@ -555,7 +554,6 @@ public class TargetContentsPresenterTest {
         verify(saveAsApprovedConfirmation).setShowSaveApprovedWarning(
                 userOptionsService.getConfigHolder().getState()
                         .isShowSaveApprovedWarning());
-        verify(display, times(3)).setEnableSpellCheck(false);
     }
 
     @Test

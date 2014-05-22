@@ -23,7 +23,6 @@ package org.zanata.security;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -39,6 +38,7 @@ import org.zanata.model.security.HCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -155,8 +155,7 @@ public class AuthenticationManager {
     public void kerberosLogin() {
         if (applicationConfiguration.isKerberosAuth()) {
             SpNegoIdentity spNegoIdentity =
-                    (SpNegoIdentity) Component.getInstance(
-                            SpNegoIdentity.class, ScopeType.SESSION);
+                    ServiceLocator.instance().getInstance(SpNegoIdentity.class);
             spNegoIdentity.authenticate();
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {
@@ -208,7 +207,26 @@ public class AuthenticationManager {
      */
     public void openIdAuthenticate(OpenIdProviderType openIdProviderType,
             OpenIdAuthCallback callback) {
+        openIdAuthenticate(null, openIdProviderType, callback);
+    }
+
+    /**
+     * Authenticates an Open Id user. This method <b>will not</b> log in the
+     * authenticated user. Because control needs to be handled over to the Open
+     * Id provider, a callback may be provided to perform actions after the
+     * authentication attempt is finished.
+     *
+     * @param openId The Open Id identifier to be used.
+     * @param openIdProviderType
+     *            Open Id provider to use for authentication
+     * @param callback
+     *            Contains the logic to execute after the authentication
+     *            attempt.
+     */
+    public void openIdAuthenticate(String openId,
+            OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback) {
         ZanataCredentials volatileCreds = new ZanataCredentials();
+        volatileCreds.setUsername(openId);
         volatileCreds.setAuthType(AuthenticationType.OPENID);
         volatileCreds.setOpenIdProviderType(openIdProviderType);
         zanataOpenId.login(volatileCreds, callback);

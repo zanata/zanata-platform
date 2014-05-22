@@ -25,13 +25,13 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,15 +41,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class EditHomePageTest {
+public class EditHomePageTest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Cannot access the editor via WebDriver")
     public void goToEditPageContent() {
-        DashboardPage dashboard = new LoginWorkFlow().signIn("admin", "admin");
+        DashboardBasePage dashboard = new LoginWorkFlow().signIn("admin", "admin");
         EditHomeContentPage editHomeContentPage =
                 dashboard.goToHomePage().goToEditPageContent();
 
@@ -61,9 +61,9 @@ public class EditHomePageTest {
         editHomeContentPage.cancelUpdate();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void goToEditPageCode() {
-        DashboardPage dashboard = new LoginWorkFlow().signIn("admin", "admin");
+        DashboardBasePage dashboard = new LoginWorkFlow().signIn("admin", "admin");
         EditHomeCodePage editHomeCodePage =
                 dashboard.goToHomePage().goToEditPageCode();
 

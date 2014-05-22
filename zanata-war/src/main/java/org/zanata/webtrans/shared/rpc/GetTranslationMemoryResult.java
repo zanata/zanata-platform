@@ -1,6 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
@@ -9,14 +9,14 @@ public class GetTranslationMemoryResult implements DispatchResult {
     private static final long serialVersionUID = 1L;
 
     private GetTranslationMemory request;
-    private ArrayList<TransMemoryResultItem> transmemories;
+    private List<TransMemoryResultItem> transmemories;
 
     @SuppressWarnings("unused")
     private GetTranslationMemoryResult() {
     }
 
     public GetTranslationMemoryResult(GetTranslationMemory request,
-            ArrayList<TransMemoryResultItem> transmemories) {
+            List<TransMemoryResultItem> transmemories) {
         this.request = request;
         this.transmemories = transmemories;
     }
@@ -28,7 +28,7 @@ public class GetTranslationMemoryResult implements DispatchResult {
         return request;
     }
 
-    public ArrayList<TransMemoryResultItem> getMemories() {
+    public List<TransMemoryResultItem> getMemories() {
         return transmemories;
     }
 }

@@ -23,10 +23,13 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import lombok.NonNull;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -35,16 +38,29 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
+import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.ServiceLocator;
+import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
+
+import javax.annotation.Nullable;
+
+import lombok.Getter;
+import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -56,7 +72,13 @@ public class DashboardAction implements Serializable {
     private GravatarService gravatarServiceImpl;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
+    private ActivityService activityServiceImpl;
+
+    @In
+    private LanguageTeamService languageTeamServiceImpl;
+
+    @In
+    private AccountDAO accountDAO;
 
     @In
     private ProjectDAO projectDAO;
@@ -65,12 +87,15 @@ public class DashboardAction implements Serializable {
     private ZanataIdentity identity;
 
     @In
-    private UrlUtil urlUtil;
+    private ZanataMessages zanataMessages;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
-    private final int USER_IMAGE_SIZE = 115;
+    @Getter
+    private ProjectFilter projectList = new ProjectFilter();
+
+    private static final int USER_IMAGE_SIZE = 115;
 
     public String getUserImageUrl() {
         return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
@@ -82,6 +107,21 @@ public class DashboardAction implements Serializable {
 
     public String getUserFullName() {
         return authenticatedAccount.getPerson().getName();
+    }
+
+    public String getUserLanguageTeams() {
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
+        return StringUtils.join(
+                Collections2.transform(account.getPerson()
+                .getLanguageMemberships(),
+                 new Function<HLocale, Object>() {
+                    @Nullable
+                    @Override
+                    public Object apply(@NonNull HLocale locale) {
+                        return locale.retrieveDisplayName();
+                    }
+                }),
+            ", ");
     }
 
     @CachedMethodResult
@@ -110,55 +150,99 @@ public class DashboardAction implements Serializable {
         return sortedList;
     }
 
+    public String getLastTranslatedTimeLapseMessage(HProject project) {
+        Date lastTranslatedDate = projectDAO.getLastTranslatedDate(project);
+        // TODO i18n needed
+        return lastTranslatedDate == null ? "never" :
+                DateUtil.getHowLongAgoDescription(lastTranslatedDate);
+    }
+
+    public String getLastTranslatedTime(HProject project) {
+        return DateUtil.formatShortDate(project.getLastChanged());
+    }
+
     @CachedMethodResult
     public boolean canViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
     }
 
-    @CachedMethodResult
-    public List<HProjectIteration> getProjectVersions(Long projectId) {
-        List<HProjectIteration> result = new ArrayList<HProjectIteration>();
-        if (canViewObsolete()) {
-            result.addAll(projectIterationDAO.searchByProjectId(projectId));
-        } else {
-            result.addAll(projectIterationDAO.searchByProjectIdExcludingStatus(
-                    projectId, EntityStatus.OBSOLETE));
+    public DashboardUserStats getTodayStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfDay(now), DateUtil.getEndOfTheDay(now));
+    }
+
+    public DashboardUserStats getWeekStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfWeek(now), DateUtil.getEndOfTheWeek(now));
+    }
+
+    public DashboardUserStats getMonthStats() {
+        Date now = new Date();
+        return activityServiceImpl.getDashboardUserStatistic(
+                authenticatedAccount.getPerson().getId(),
+                DateUtil.getStartOfMonth(now), DateUtil.getEndOfTheMonth(now));
+    }
+
+    public boolean isUserReviewer() {
+        return languageTeamServiceImpl.isUserReviewer(
+                authenticatedAccount.getPerson().getId());
+    }
+
+    public String getLastTranslatorMessage(HProject project) {
+        HPerson lastTrans = projectDAO.getLastTranslator(project);
+        if( lastTrans != null ) {
+            String username = lastTrans.getName();
+            if(username == null || username.trim().isEmpty()) {
+                if( lastTrans.getAccount() != null ) {
+                    username = lastTrans.getAccount().getUsername();
+                }
+            }
+            else {
+                username = lastTrans.getName();
+            }
+            return zanataMessages.getMessage(
+                    "jsf.dashboard.activity.lastTranslatedBy.message",
+                    username);
         }
-        return result;
+        return "";
     }
 
-    @CachedMethodResult
-    public boolean isUserMaintainer(Long projectId) {
-        HProject project = getProject(projectId);
-        return authenticatedAccount.getPerson().isMaintainer(project);
-    }
+    /**
+     * Project list filter. Pages its elements directly from the database.
+     */
+    public class ProjectFilter
+            extends AbstractListFilter<HProject> {
 
-    @CachedMethodResult
-    public int getDocumentCount(Long versionId) {
-        HProjectIteration version = getProjectVersion(versionId);
-        return version.getDocuments().size();
-    }
+        @Override
+        protected List<HProject> fetchRecords(int start, int max,
+                String filter) {
+            ServiceLocator serviceLocator = ServiceLocator.instance();
+            ProjectDAO projectDAO =
+                    serviceLocator.getInstance(ProjectDAO.class);
+            HAccount authenticatedAccount =
+                    serviceLocator
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                                    HAccount.class);
+            return projectDAO.getProjectsForMaintainer(
+                    authenticatedAccount.getPerson(), filter, start, max);
+        }
 
-    public String getFormattedDate(Date date) {
-        return DateUtil.formatShortDate(date);
-    }
-
-    @CachedMethodResult
-    private HProjectIteration getProjectVersion(Long versionId) {
-        return projectIterationDAO.findById(versionId, false);
-    }
-
-    @CachedMethodResult
-    private HProject getProject(Long projectId) {
-        return projectDAO.findById(projectId, false);
-    }
-
-    public String getCreateVersionUrl(String projectSlug) {
-        return urlUtil.createNewVersionUrl(projectSlug);
-    }
-
-    public String getDocumentUrl(String projectSlug, String versionSlug) {
-        return urlUtil.sourceFilesViewUrl(projectSlug, versionSlug);
+        @Override
+        protected long fetchTotalRecords(String filter) {
+            ServiceLocator serviceLocator = ServiceLocator.instance();
+            ProjectDAO projectDAO =
+                    serviceLocator.getInstance(ProjectDAO.class);
+            HAccount authenticatedAccount =
+                    serviceLocator
+                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                                    HAccount.class);
+            return projectDAO.getMaintainedProjectCount(
+                    authenticatedAccount.getPerson(), filter);
+        }
     }
 }

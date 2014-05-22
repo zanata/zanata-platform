@@ -5,7 +5,7 @@
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
     <param name="threshold" value="DEBUG" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p [%c{1}] - %m%n" />
+      <param name="ConversionPattern" value="%d %t %-5p [%c{1}] - %m%n" />
     </layout>
   </appender>
   <!--
@@ -22,13 +22,21 @@
       </logger>
   -->
   <!-- below will log hibernate generated SQL-->
-  <!--
-  <logger name="org.hibernate.SQL">
-      <level value="TRACE" />
+  <!--<logger name="org.hibernate.SQL">-->
+      <!--<level value="TRACE" />-->
+  <!--</logger>-->
+  <!-- this require log4jdbc -->
+  <!--<logger name="jdbc.sqlonly">-->
+    <!--<level value="DEBUG" />-->
+  <!--</logger>-->
+  <logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
+    <level value="OFF" />
   </logger>
-  -->
   <logger name="gwt-log">
     <level value="OFF" />
+  </logger>
+  <logger name="org.zanata.servlet">
+    <level value="ERROR"/>
   </logger>
   <root>
     <level value="ERROR" />

@@ -1,19 +1,26 @@
 package org.zanata.search;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.MatchMode;
+import org.joda.time.DateTime;
 import org.zanata.model.HLocale;
+import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import lombok.AccessLevel;
+import lombok.Setter;
 
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.like;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
+import static org.zanata.util.HqlCriterion.eq;
+import static org.zanata.util.HqlCriterion.escapeWildcard;
+import static org.zanata.util.HqlCriterion.ilike;
+import static org.zanata.util.HqlCriterion.match;
 import static org.zanata.util.QueryBuilder.and;
 
 /**
@@ -21,24 +28,14 @@ import static org.zanata.util.QueryBuilder.and;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class FilterConstraintToQuery {
-    protected static final String SEARCH_NAMED_PARAM = "searchString";
-    protected static final String STATE_LIST_NAMED_PARAM = "contentStateList";
-    protected static final String LOCALE_NAMED_PARAM = "locale";
-    protected static final String DOC_ID_NAMED_PARAM = "docId";
-    protected static final String DOC_IDS_LIST_NAMED_PARAM = "documentIds";
-    private static final String SEARCH_PLACEHOLDER = ":" + SEARCH_NAMED_PARAM;
-    private static final String STATE_LIST_PLACEHOLDER = ":"
-            + STATE_LIST_NAMED_PARAM;
-    private static final String LOCALE_PLACEHOLDER = ":" + LOCALE_NAMED_PARAM;
-    private static final String DOC_ID_PLACEHOLDER = ":" + DOC_ID_NAMED_PARAM;
-    private static final String DOC_IDS_LIST_PLACEHOLDER = ":"
-            + DOC_IDS_LIST_NAMED_PARAM;
-
     private final FilterConstraints constraints;
     private final boolean hasSearch;
     private String searchString;
     private DocumentId documentId;
     private Collection<Long> documentIds;
+
+    @Setter(AccessLevel.PACKAGE)
+    private ContentCriterion contentCriterion = new ContentCriterion();
 
     private FilterConstraintToQuery(FilterConstraints constraints,
             DocumentId documentId) {
@@ -60,10 +57,11 @@ public class FilterConstraintToQuery {
                     constraints.isCaseSensitive() ? constraints
                             .getSearchString() : constraints.getSearchString()
                             .toLowerCase();
-            term = term.replaceAll("%", "\\\\%"); // we need to escape % in
-                                                  // database query
-            searchString = "%" + term + "%";
+            term = escapeWildcard(term);
+            searchString = match(term, MatchMode.ANYWHERE);
         }
+        contentCriterion = new ContentCriterion()
+                .withCaseSensitive(constraints.isCaseSensitive());
     }
 
     public static FilterConstraintToQuery filterInSingleDocument(
@@ -79,29 +77,58 @@ public class FilterConstraintToQuery {
         return new FilterConstraintToQuery(constraints, documentIds);
     }
 
-    public String toHQL() {
+    /**
+     * This builds a query for constructing TransUnit in editor.
+     * Executing the query will returns a list of HTextFlow objects.
+     *
+     * @return the HQL query
+     */
+    public String toEntityQuery() {
         String docIdCondition;
         if (documentId != null) {
             docIdCondition =
-                    eq("tf.document.id", DOC_ID_PLACEHOLDER).toString();
+                    eq("tf.document.id", Parameters.DocumentId.placeHolder());
         } else {
             docIdCondition =
-                    "tf.document.id in (" + DOC_IDS_LIST_PLACEHOLDER + ")";
+                    "tf.document.id in (" + DocumentIdList.placeHolder() + ")";
         }
-        String obsoleteCondition = eq("tf.obsolete", "0").toString();
+        return buildQuery("distinct tf", docIdCondition);
+    }
+
+    private String buildQuery(String selectStatement, String docIdCondition) {
+
+        String obsoleteCondition = eq("tf.obsolete", "0");
         String searchCondition = buildSearchCondition();
         String stateCondition = buildStateCondition();
+        String otherSourceCondition = buildSourceConditionsOtherThanSearch();
+        String otherTargetCondition = buildTargetConditionsOtherThanSearch();
 
         QueryBuilder query =
                 QueryBuilder
-                        .select("distinct tf")
+                        .select(selectStatement)
                         .from("HTextFlow tf")
                         .leftJoin("tf.targets tfts")
-                        .with(eq("tfts.index", LOCALE_PLACEHOLDER).toString())
+                        .with(eq("tfts.index", Locale.placeHolder()))
                         .where(and(obsoleteCondition, docIdCondition,
-                            searchCondition, stateCondition))
+                                searchCondition, stateCondition,
+                                otherSourceCondition, otherTargetCondition))
                         .orderBy("tf.pos");
         return query.toQueryString();
+    }
+
+    /**
+     * This builds a query for editor modal navigation. It only select text flow
+     * id and text flow target content state (text flow pos is also in select
+     * but just for ordering).
+     *
+     * @return the HQL query
+     */
+    public String toModalNavigationQuery() {
+        String docIdCondition =
+                eq("tf.document.id", Parameters.DocumentId.placeHolder());
+        return buildQuery(
+                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos",
+                docIdCondition);
     }
 
     protected String buildSearchCondition() {
@@ -110,79 +137,225 @@ public class FilterConstraintToQuery {
         }
         String searchInSourceCondition = null;
         if (constraints.isSearchInSource()) {
-            searchInSourceCondition = contentsCriterion("tf").toString();
+            searchInSourceCondition =
+                    contentCriterion.withEntityAlias("tf")
+                            .contentsCriterionAsString();
         }
+
         String searchInTargetCondition = null;
         if (constraints.isSearchInTarget()) {
-            Criterion targetWhereClause =
-                    Restrictions.conjunction().add(eq("textFlow", "tf"))
-                            .add(eq("locale", LOCALE_PLACEHOLDER))
-                            .add(contentsCriterion(null));
+            List<String> targetConjunction = Lists.newArrayList();
+            targetConjunction.add(contentCriterion.contentsCriterionAsString());
+            targetConjunction.add(eq("textFlow", "tf"));
+            targetConjunction.add(eq("locale", Locale.placeHolder()));
+
             searchInTargetCondition =
                     QueryBuilder.exists().from("HTextFlowTarget")
-                            .where(targetWhereClause.toString())
+                            .where(QueryBuilder.and(targetConjunction))
                             .toQueryString();
         }
         return QueryBuilder
                 .or(searchInSourceCondition, searchInTargetCondition);
     }
 
-  private Criterion contentsCriterion(String alias) {
-        String propertyAlias =
-                Strings.isNullOrEmpty(alias) ? "content" : alias + ".content";
-        String caseFunction = constraints.isCaseSensitive() ? "" : "lower";
-        Disjunction disjunction = Restrictions.disjunction();
-        for (int i = 0; i < 6; i++) {
-            String contentFieldName =
-                    String.format("%s(%s%s)", caseFunction, propertyAlias, i);
-            disjunction.add(like(contentFieldName, SEARCH_PLACEHOLDER));
+    protected String buildSourceConditionsOtherThanSearch() {
+        List<String> sourceConjunction = Lists.newArrayList();
+        addToJunctionIfNotNull(sourceConjunction,
+                buildSourceCommentCondition(constraints.getSourceComment()));
+        addToJunctionIfNotNull(sourceConjunction, buildMsgContextCondition());
+        addToJunctionIfNotNull(sourceConjunction, buildResourceIdCondition());
+        if (sourceConjunction.isEmpty()) {
+            return null;
         }
-        return disjunction;
+        return QueryBuilder.and(sourceConjunction);
+    }
+
+    protected String buildTargetConditionsOtherThanSearch() {
+        List<String> targetConjunction = Lists.newArrayList();
+        addToJunctionIfNotNull(targetConjunction,
+                buildLastModifiedByCondition());
+        addToJunctionIfNotNull(targetConjunction,
+                buildTargetCommentCondition(constraints.getTransComment()));
+        addToJunctionIfNotNull(targetConjunction,
+                buildLastModifiedDateCondition());
+        if (targetConjunction.isEmpty()) {
+            return null;
+        }
+        targetConjunction.add(eq("textFlow", "tf"));
+        targetConjunction.add(eq("locale", Locale.placeHolder()));
+
+        return QueryBuilder.exists().from("HTextFlowTarget")
+                .where(and(targetConjunction)).toQueryString();
+    }
+
+    private static boolean addToJunctionIfNotNull(List<String> junction,
+            String criterion) {
+        if (criterion != null) {
+            junction.add(criterion);
+            return true;
+        }
+        return false;
+    }
+
+    private String buildResourceIdCondition() {
+        if (Strings.isNullOrEmpty(constraints.getResId())) {
+            return null;
+        }
+        return eq("resId", ResId.placeHolder());
+    }
+
+    private String buildMsgContextCondition() {
+        if (Strings.isNullOrEmpty(constraints.getMsgContext())) {
+            return null;
+        }
+        return ilike("tf.potEntryData.context", MsgContext.placeHolder());
+    }
+
+    private String buildSourceCommentCondition(String commentToSearch) {
+        if (Strings.isNullOrEmpty(commentToSearch)) {
+            return null;
+        }
+        return ilike("tf.comment.comment", SourceComment.placeHolder());
+    }
+
+    private String buildTargetCommentCondition(String transComment) {
+        if (Strings.isNullOrEmpty(transComment)) {
+            return null;
+        }
+        return ilike("comment.comment", TargetComment.placeHolder());
+    }
+
+    private String buildLastModifiedDateCondition() {
+        DateTime changedBeforeTime = constraints.getChangedBefore();
+        DateTime changedAfterTime = constraints.getChangedAfter();
+        if (changedBeforeTime == null && changedAfterTime == null) {
+            return null;
+        }
+        String changedAfter = null;
+        String changedBefore = null;
+        if (changedAfterTime != null) {
+            changedAfter =
+                    HqlCriterion.gt("lastChanged",
+                            LastChangedAfter.placeHolder());
+        }
+        if (changedBeforeTime != null) {
+            changedBefore =
+                    HqlCriterion.lt("lastChanged",
+                            LastChangedBefore.placeHolder());
+        }
+        return QueryBuilder.and(changedAfter, changedBefore);
     }
 
     protected String buildStateCondition() {
         if (constraints.getIncludedStates().hasAllStates()) {
             return null;
         }
-        Criterion textFlowAndLocaleRestriction =
-                Restrictions.and(eq("textFlow", "tf"),
-                        eq("locale", LOCALE_PLACEHOLDER));
+        List<String> conjunction = Lists.newArrayList();
+        conjunction.add(eq("textFlow", "tf"));
+        conjunction.add(eq("locale", Locale.placeHolder()));
+        String textFlowAndLocaleRestriction =
+                and(eq("textFlow", "tf"), eq("locale", Locale.placeHolder()));
 
         String stateInListWhereClause =
-                and(textFlowAndLocaleRestriction.toString(),
-                        String.format("state in (%s)", STATE_LIST_PLACEHOLDER));
+                and(textFlowAndLocaleRestriction,
+                        String.format("state in (%s)",
+                                ContentStateList.placeHolder()));
         String stateInListCondition =
                 QueryBuilder.exists().from("HTextFlowTarget")
                         .where(stateInListWhereClause).toQueryString();
         if (constraints.getIncludedStates().hasNew()) {
             String nullTargetCondition =
                     String.format("%s not in indices(tf.targets)",
-                            LOCALE_PLACEHOLDER);
+                            Locale.placeHolder());
             if (hasSearch && constraints.isSearchInSource()) {
+
                 nullTargetCondition =
-                        and(nullTargetCondition, contentsCriterion("tf")
-                                .toString());
+                        and(nullTargetCondition,
+                                contentCriterion.withEntityAlias("tf")
+                                        .contentsCriterionAsString());
             }
             return QueryBuilder.or(stateInListCondition, nullTargetCondition);
         }
         return stateInListCondition;
     }
 
+    protected String buildLastModifiedByCondition() {
+        if (Strings.isNullOrEmpty(constraints.getLastModifiedByUser())) {
+            return null;
+        }
+        return eq("lastModifiedBy.account.username",
+                LastModifiedBy.placeHolder());
+    }
+
     public Query setQueryParameters(Query textFlowQuery, HLocale hLocale) {
         if (documentId != null) {
-            textFlowQuery.setParameter(DOC_ID_NAMED_PARAM, documentId.getId());
+            textFlowQuery.setParameter(Parameters.DocumentId.namedParam(),
+                    documentId.getId());
         } else {
-            textFlowQuery.setParameterList(DOC_IDS_LIST_NAMED_PARAM,
+            textFlowQuery.setParameterList(DocumentIdList.namedParam(),
                     documentIds);
         }
-        textFlowQuery.setParameter(LOCALE_NAMED_PARAM, hLocale.getId());
+        textFlowQuery.setParameter(Locale.namedParam(), hLocale.getId());
         if (hasSearch) {
-            textFlowQuery.setParameter(SEARCH_NAMED_PARAM, searchString);
+            textFlowQuery.setParameter(Parameters.SearchString.namedParam(),
+                    searchString);
         }
         if (!constraints.getIncludedStates().hasAllStates()) {
-            textFlowQuery.setParameterList(STATE_LIST_NAMED_PARAM, constraints
-                    .getIncludedStates().asList());
+            textFlowQuery.setParameterList(ContentStateList.namedParam(),
+                    constraints.getIncludedStates().asList());
+        }
+        addExactMatchParamIfPresent(textFlowQuery, constraints.getResId(),
+                ResId);
+        addWildcardSearchParamIfPresent(textFlowQuery,
+                constraints.getMsgContext(), MsgContext);
+        addWildcardSearchParamIfPresent(textFlowQuery,
+                constraints.getSourceComment(), SourceComment);
+        addWildcardSearchParamIfPresent(textFlowQuery,
+                constraints.getTransComment(), TargetComment);
+        addExactMatchParamIfPresent(textFlowQuery,
+                constraints.getLastModifiedByUser(), LastModifiedBy);
+        if (constraints.getChangedAfter() != null) {
+            textFlowQuery.setParameter(LastChangedAfter.namedParam(),
+                    constraints.getChangedAfter().toDate());
+        }
+        if (constraints.getChangedBefore() != null) {
+            textFlowQuery.setParameter(LastChangedBefore.namedParam(),
+                    constraints.getChangedBefore().toDate());
         }
         return textFlowQuery;
+    }
+
+    private static void addExactMatchParamIfPresent(Query textFlowQuery,
+            String filterProperty, Parameters filterParam) {
+        if (!Strings.isNullOrEmpty(filterProperty)) {
+            textFlowQuery
+                    .setParameter(filterParam.namedParam(), filterProperty);
+        }
+    }
+
+    private static Query addWildcardSearchParamIfPresent(Query textFlowQuery,
+            String filterProperty, Parameters filterParam) {
+        if (!Strings.isNullOrEmpty(filterProperty)) {
+            String escapedAndLowered =
+                    HqlCriterion.escapeWildcard(filterProperty.toLowerCase());
+            textFlowQuery.setParameter(filterParam.namedParam(),
+                    HqlCriterion.match(escapedAndLowered, MatchMode.ANYWHERE));
+        }
+        return textFlowQuery;
+    }
+
+    enum Parameters {
+        SearchString, ContentStateList, Locale, DocumentId, DocumentIdList,
+        ResId, SourceComment, MsgContext, TargetComment, LastModifiedBy,
+        LastChangedAfter, LastChangedBefore;
+
+        public String placeHolder() {
+            return ":" + name();
+        }
+
+        public String namedParam() {
+            return name();
+        }
+
     }
 }

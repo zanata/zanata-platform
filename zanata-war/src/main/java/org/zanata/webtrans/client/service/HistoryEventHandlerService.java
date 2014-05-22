@@ -6,7 +6,6 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.FilterViewEvent;
-import org.zanata.webtrans.client.events.FindMessageEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.HistoryToken;
@@ -17,8 +16,11 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
+import org.zanata.webtrans.shared.rpc.QueryParser;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Objects;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.inject.Inject;
@@ -80,6 +82,7 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
         DocumentId documentId =
                 documentListPresenter.getDocumentId(newHistoryToken
                         .getDocumentPath());
+        EditorFilter editorFilter = getEditorFilterFromToken(newHistoryToken);
         if (!getTransUnitActionContextHolder.isContextInitialized()
                 && documentId != null) {
             DocumentInfo documentInfo =
@@ -90,17 +93,28 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
             TransUnitId transUnitId =
                     textFlowId == null ? null : new TransUnitId(textFlowId);
             getTransUnitActionContextHolder.initContext(documentInfo,
-                    newHistoryToken.getSearchText(), transUnitId);
+                    transUnitId, editorFilter);
             eventBus.fireEvent(new InitEditorEvent());
         }
 
         processForAppPresenter(documentId);
-        processForTransFilter(newHistoryToken);
         processForBookmarkedTextFlow(newHistoryToken);
         processMessageFilterOptions(newHistoryToken);
 
         currentHistoryState = newHistoryToken;
         appPresenter.showView(newHistoryToken.getView());
+    }
+
+    private static EditorFilter getEditorFilterFromToken(
+            HistoryToken newHistoryToken) {
+        return new EditorFilter(newHistoryToken.getEditorTextSearch(),
+                newHistoryToken.getResId(),
+                newHistoryToken.getChangedBefore(),
+                newHistoryToken.getChangedAfter(),
+                newHistoryToken.getLastModifiedBy(),
+                newHistoryToken.getSourceComment(),
+                newHistoryToken.getTargetComment(),
+                newHistoryToken.getMsgContext());
     }
 
     protected void processForDocumentListPresenter(HistoryToken token) {
@@ -128,17 +142,6 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
         if (docId != null) {
             eventBus.fireEvent(new DocumentSelectionEvent(documentListPresenter
                     .getDocumentInfo(docId)));
-        }
-    }
-
-    protected void processForTransFilter(HistoryToken newHistoryToken) {
-        boolean findMessageChanged =
-                !newHistoryToken.getSearchText().equals(
-                        currentHistoryState.getSearchText());
-        if (findMessageChanged) {
-            Log.info("[gwt-history] trans filter search has changed");
-            eventBus.fireEvent(new FindMessageEvent(newHistoryToken
-                    .getSearchText()));
         }
     }
 
@@ -171,6 +174,11 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
     }
 
     protected void processMessageFilterOptions(HistoryToken token) {
+        EditorFilter newEditorToken = getEditorFilterFromToken(token);
+        EditorFilter oldEditorToken =
+                getEditorFilterFromToken(currentHistoryState);
+        boolean editorFilterChanged =
+                !Objects.equal(newEditorToken, oldEditorToken);
         if (!equal(token.isFilterUntranslated(),
                 currentHistoryState.isFilterUntranslated())
                 || !equal(token.isFilterFuzzy(),
@@ -182,14 +190,15 @@ public class HistoryEventHandlerService implements ValueChangeHandler<String> {
                 || !equal(token.isFilterRejected(),
                         currentHistoryState.isFilterRejected())
                 || !equal(token.isFilterHasError(),
-                        currentHistoryState.isFilterHasError())) {
-            Log.info("[gwt-history] message filter option has changed");
+                        currentHistoryState.isFilterHasError())
+                || editorFilterChanged) {
+            Log.info("[gwt-history] message filter has changed");
 
             eventBus.fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
             eventBus.fireEvent(new FilterViewEvent(token.isFilterTranslated(),
                     token.isFilterFuzzy(), token.isFilterUntranslated(), token
                             .isFilterApproved(), token.isFilterRejected(),
-                    token.isFilterHasError(), false));
+                    token.isFilterHasError(), newEditorToken, false));
         }
     }
 

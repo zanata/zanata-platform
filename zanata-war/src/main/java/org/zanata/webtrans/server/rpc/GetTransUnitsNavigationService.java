@@ -30,6 +30,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -37,6 +39,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
@@ -52,11 +55,6 @@ public class GetTransUnitsNavigationService {
 
     protected GetTransUnitsNavigationResult getNavigationIndexes(
             GetTransUnitsNavigation action, HLocale hLocale) {
-        FilterConstraints filterConstraints =
-                FilterConstraints.builder().filterBy(action.getPhrase())
-                        .checkInSource(true).checkInTarget(true)
-                        .includeStates(action.getActiveStates()).build();
-
         List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
         Map<TransUnitId, ContentState> transIdStateMap =
                 new HashMap<TransUnitId, ContentState>();
@@ -66,8 +64,8 @@ public class GetTransUnitsNavigationService {
                 new TextFlowResultTransformer(hLocale);
 
         textFlows =
-                textFlowDAO.getNavigationByDocumentId(action.getId(), hLocale,
-                        resultTransformer, filterConstraints);
+                textFlowDAO.getNavigationByDocumentId(action.getDocumentId(), hLocale,
+                        resultTransformer, action.getConstraints());
         for (HTextFlow textFlow : textFlows) {
             TransUnitId transUnitId = new TransUnitId(textFlow.getId());
             idIndexList.add(transUnitId);
@@ -84,6 +82,8 @@ public class GetTransUnitsNavigationService {
      * proxies.
      */
     private static class SimpleHTextFlow extends HTextFlow {
+        private static final long serialVersionUID = 1L;
+
         public SimpleHTextFlow(Long id, ContentState contentState,
                 HLocale hLocale) {
             super();
@@ -97,6 +97,7 @@ public class GetTransUnitsNavigationService {
     public static class TextFlowResultTransformer implements ResultTransformer {
         public static final String ID = "id";
         public static final String CONTENT_STATE = "state";
+        private static final long serialVersionUID = 1L;
         private final HLocale hLocale;
 
         public TextFlowResultTransformer(HLocale hLocale) {

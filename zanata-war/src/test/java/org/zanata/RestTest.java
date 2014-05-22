@@ -34,6 +34,7 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.seam.util.Naming;
 import org.junit.After;
@@ -125,11 +126,11 @@ public abstract class RestTest {
 
     @Before
     public void signalBeforeTest() {
-        RemoteTestSignaler signaler =
-                ProxyFactory.create(RemoteTestSignaler.class,
-                        getRestEndpointUrl());
+        ClientRequest clientRequest =
+                new ClientRequest(getRestEndpointUrl() + "test/remote/signal/before");
+        clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
-            signaler.signalBeforeTest(this.getClass().getName());
+            clientRequest.queryParameter("c", this.getClass().getName()).post();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,11 +138,11 @@ public abstract class RestTest {
 
     @After
     public void signalAfterTest() {
-        RemoteTestSignaler signaler =
-                ProxyFactory.create(RemoteTestSignaler.class,
-                        getRestEndpointUrl());
+        ClientRequest clientRequest =
+                new ClientRequest(getRestEndpointUrl() + "test/remote/signal/after");
+        clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
-            signaler.signalAfterTest(this.getClass().getName());
+            clientRequest.queryParameter("c", this.getClass().getName()).post();
         } catch (Exception e) {
             e.printStackTrace();
         }

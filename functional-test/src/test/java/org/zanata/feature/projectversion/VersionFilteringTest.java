@@ -23,6 +23,7 @@ package org.zanata.feature.projectversion;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -36,12 +37,12 @@ import static org.hamcrest.Matchers.equalTo;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class VersionFilteringTest {
+public class VersionFilteringTest extends ZanataTestCase {
 
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void versionSearchFiltering() {
 
         String projectName = "versionsearchnums";
@@ -70,7 +71,8 @@ public class VersionFilteringTest {
                 equalTo("bravo"));
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
-                .goToProjectByName(projectName);
+                .goToProjectByName(projectName)
+                .waitForDisplayedVersions(2);
 
         assertThat("The version count is 2",
                 projectVersionsPage.getNumberOfDisplayedVersions(),
@@ -78,7 +80,7 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
 
         projectVersionsPage = projectVersionsPage
                 .clickSearchIcon()
@@ -103,7 +105,7 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
 
         projectVersionsPage = projectVersionsPage
                 .enterVersionSearch("bravo")
@@ -140,6 +142,6 @@ public class VersionFilteringTest {
 
         assertThat("The versions are correct",
                 projectVersionsPage.getVersions(),
-                contains("alpha", "bravo"));
+                contains("bravo", "alpha"));
     }
 }

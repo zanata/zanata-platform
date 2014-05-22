@@ -20,25 +20,25 @@
  */
 package org.zanata.feature.glossary;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.workflow.BasicWorkFlow.EDITOR_TEMPLATE;
-
-import java.io.File;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
-import org.zanata.feature.ConcordionTest;
-import org.zanata.page.administration.ManageSearchPage;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.RetryRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
+
+import java.io.File;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/167899/">TCMS case</a>
@@ -46,56 +46,76 @@ import org.zanata.workflow.LoginWorkFlow;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Category(ConcordionTest.class)
+@Category(DetailedTest.class)
 @Slf4j
-public class GlossaryDeleteTest {
+public class GlossaryDeleteTest extends ZanataTestCase {
+
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
+    private ClientWorkFlow clientWorkFlow;
+    private File projectRootPath;
+    private String userConfigPath;
+    private String basicUserConfigPath;
 
-    @Test
-    public void testGlossaryDelete() {
-        File projectRootPath =
-                clientWorkFlow.getProjectRootPath("glossary");
-        String userConfigPath =
-                ClientWorkFlow.getUserConfigPath("glossaryadmin");
+    private String pushCommand = "mvn --batch-mode zanata:glossary-push "+
+            "-Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv "+
+            "-Dzanata.userConfig=";
 
-        List<String> result =
-                clientWorkFlow
-                        .callWithTimeout(
-                            projectRootPath,
-                            "mvn --batch-mode zanata:glossary-push -Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv -Dzanata.userConfig="
-                                + userConfigPath);
+    private String deleteCommand = "mvn --batch-mode zanata:glossary-delete "+
+            "-Dzanata.lang=hi -Dzanata.userConfig=";
 
-        assertThat(clientWorkFlow.isPushSuccessful(result),
-                Matchers.is(true));
+    @Before
+    public void before() {
+        clientWorkFlow = new ClientWorkFlow();
+        projectRootPath = clientWorkFlow.getProjectRootPath("glossary");
+        userConfigPath = ClientWorkFlow.getUserConfigPath("glossaryadmin");
+        basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
+    }
 
-        result =
-                clientWorkFlow.callWithTimeout(projectRootPath,
-                    "mvn --batch-mode zanata:glossary-delete -Dzanata.lang=hi -Dzanata.userConfig="
-                        + userConfigPath);
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void testGlossaryDelete() throws Exception {
+        List<String> result = clientWorkFlow .callWithTimeout(
+                projectRootPath, pushCommand + userConfigPath);
 
-        assertThat(clientWorkFlow.isPushSuccessful(result),
-                Matchers.is(true));
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue()
+                .as("Glossary push was successful");
+
+        result = clientWorkFlow.callWithTimeout(projectRootPath,
+                deleteCommand + userConfigPath);
+
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue()
+                .as("Glossary delete was successful");
+
 
         new LoginWorkFlow().signIn("admin", "admin");
+        EditorPage editorPage =
+                new BasicWorkFlow().goToEditor("about-fedora", "master", "hi",
+                        "About_Fedora")
+                        .searchGlossary("hello");
 
-        List<List<String>> hiGlossaryResult =
-                translate("hi").searchGlossary("hello")
-                        .getGlossaryResultTable();
-        assertThat(hiGlossaryResult, Matchers.empty());
+        assertThat(editorPage.getGlossaryResultTable())
+                .as("Glossary table is empty").isEmpty();
 
-        List<List<String>> plGlossaryResult =
-                translate("pl").searchGlossary("hello")
-                        .getGlossaryResultTable();
-        // 2 row 2 column is glossary target
-        assertThat(plGlossaryResult.get(1).get(1), Matchers.equalTo("cześć"));
+        editorPage = new BasicWorkFlow().goToEditor("about-fedora", "master",
+                "pl", "About_Fedora")
+                .searchGlossary("hello");
+
+        assertThat(editorPage.getGlossaryResultTable()
+                .get(1).get(1)).isEqualTo("cześć")
+                .as("The glossary result in row 2, column 2 is correct");
     }
 
-    public EditorPage translate(String locale) {
-        return new BasicWorkFlow().goToPage(String.format(
-                EDITOR_TEMPLATE, "about-fedora", "master",
-                locale, "About_Fedora"), EditorPage.class);
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void unauthorizedGlossaryDeleteRejected() throws Exception {
+        List<String> result = clientWorkFlow .callWithTimeout(
+                projectRootPath, pushCommand + userConfigPath);
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue()
+                .as("Glossary push was successful");
+        result = clientWorkFlow .callWithTimeout(
+                projectRootPath, deleteCommand + basicUserConfigPath);
+        assertThat(clientWorkFlow.isPushSuccessful(result)).isFalse()
+                .as("Glossary delete was not successful");
     }
+
 }

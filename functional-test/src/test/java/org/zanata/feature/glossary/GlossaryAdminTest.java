@@ -27,7 +27,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.ClientWorkFlow;
@@ -47,7 +48,7 @@ import static org.hamcrest.Matchers.greaterThan;
  */
 @Category(DetailedTest.class)
 @Slf4j
-public class GlossaryAdminTest {
+public class GlossaryAdminTest extends ZanataTestCase {
 
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
@@ -62,7 +63,7 @@ public class GlossaryAdminTest {
      * Setup.
      * @see TCMS Test Case 181711
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryView() {
         // Push a glossary
         File projectRootPath =

@@ -43,6 +43,7 @@ import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
+import org.zanata.util.ServiceLocator;
 
 /**
  * @author Carlos Munoz <a
@@ -140,7 +141,7 @@ public class AccountMergeAction implements Serializable {
         public void afterOpenIdAuth(OpenIdAuthenticationResult result) {
             if (result.isAuthenticated()) {
                 AccountDAO accountDAO =
-                        (AccountDAO) Component.getInstance(AccountDAO.class);
+                        ServiceLocator.instance().getInstance(AccountDAO.class);
                 HAccount account =
                         accountDAO.getByCredentialsId(result
                                 .getAuthenticatedId());

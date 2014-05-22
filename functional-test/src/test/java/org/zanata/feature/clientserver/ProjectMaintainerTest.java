@@ -1,16 +1,16 @@
 package org.zanata.feature.clientserver;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.List;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.SampleProjectRule;
@@ -18,10 +18,11 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.util.TestFileGenerator.generateZanataXml;
@@ -35,7 +36,8 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ProjectMaintainerTest {
+public class ProjectMaintainerTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
     private ClientWorkFlow client = new ClientWorkFlow();
@@ -53,7 +55,7 @@ public class ProjectMaintainerTest {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/91146/">91146</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void nonProjectMaintainerCanNotPush() {
         // admin creates the project
         ZanataRestCaller adminRestCaller = new ZanataRestCaller();
@@ -74,7 +76,7 @@ public class ProjectMaintainerTest {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/91869/">91869</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void pushTransAndCopyTransTest() {
         // translator creates the project and become maintainer
         ZanataRestCaller restCaller =
@@ -132,7 +134,7 @@ public class ProjectMaintainerTest {
      * TCMS test case <a
      * href="https://tcms.engineering.redhat.com/case/136564/">136564</a>
      */
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void projectMaintainerPullTest() throws IOException {
         ZanataRestCaller restCaller =
                 new ZanataRestCaller("translator",

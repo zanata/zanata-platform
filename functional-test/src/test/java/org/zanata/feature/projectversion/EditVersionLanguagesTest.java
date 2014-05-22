@@ -24,7 +24,8 @@ package org.zanata.feature.projectversion;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -43,12 +44,12 @@ import static org.hamcrest.Matchers.not;
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class EditVersionLanguagesTest {
+public class EditVersionLanguagesTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeVersionLanguages() {
 
         assertThat("Admin user has logged in",

@@ -29,8 +29,6 @@ public interface EditorOptionsDisplay extends WidgetDisplay {
 
         void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning);
 
-        void onSpellCheckOptionChanged(Boolean spellCheckChkValue);
-
         void onTransMemoryDisplayModeChanged(DiffMode displayMode);
 
         void onTMOrGlossaryDisplayOptionsChanged(Boolean showTMChkValue,

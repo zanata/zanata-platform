@@ -12,7 +12,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
@@ -33,7 +34,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class PropertiesRoundTripTest {
+public class PropertiesRoundTripTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -57,36 +59,32 @@ public class PropertiesRoundTripTest {
         properties.store(new FileWriter(propertiesSource), "comment");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullProperties() throws IOException,
             InterruptedException {
         restCaller.createProjectAndVersion("properties-test", "master",
                 "properties");
         // generate a zanata.xml
-        TestFileGenerator.generateZanataXml(new File(tempDir,
-                "zanata.xml"), "properties-test", "master", "properties", Lists
+        TestFileGenerator.generateZanataXml(new File(tempDir, "zanata.xml"),
+                "properties-test", "master", "properties", Lists
                 .newArrayList("pl"));
-        List<String> output =
-                client.callWithTimeout(tempDir,
-                        "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. -Dzanata.userConfig="
-                                + userConfigPath);
+        List<String> output = client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. "+
+                "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.equalTo(true));
 
-        EditorPage editorPage = verifyPushedToEditor()
-                .setSyntaxHighlighting(false);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(2,
-                        "translation updated approved")
-                        .approveTranslationAtRow(2);
+        EditorPage editorPage = verifyPushedToEditor();
+        editorPage = editorPage.translateTargetAtRowIndex(2,
+                "translation updated approved")
+                .approveTranslationAtRow(2);
 
         editorPage.translateTargetAtRowIndex(1, "translation updated fuzzy")
                 .saveAsFuzzyAtRow(1);
 
-        output =
-                client.callWithTimeout(tempDir,
-                        "mvn -B org.zanata:zanata-maven-plugin:pull -Dzanata.userConfig="
-                                + userConfigPath);
+        output = client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:pull " +
+                "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output), Matchers.is(true));
         File transFile = new File(tempDir, "test_pl.properties");
@@ -102,25 +100,23 @@ public class PropertiesRoundTripTest {
         translations.store(new FileWriter(transFile), null);
 
         // push again
-        client.callWithTimeout(
-                tempDir,
-                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
-                        + userConfigPath);
+        client.callWithTimeout(tempDir,
+                "mvn -B org.zanata:zanata-maven-plugin:push " +
+                "-Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
+                + userConfigPath);
 
         final EditorPage editor =
-                new BasicWorkFlow().goToPage(String.format(
-                        BasicWorkFlow.EDITOR_TEMPLATE, "properties-test",
-                        "master", "pl", "test"), EditorPage.class);
-        assertThat(editor.getMessageTargetAtRowIndex(1),
+                new BasicWorkFlow().goToEditor("properties-test",
+                        "master", "pl", "test");
+        assertThat(editor.getBasicTranslationTargetAtRowIndex(1),
                 Matchers.equalTo("translation updated on client"));
     }
 
     private static EditorPage verifyPushedToEditor() {
         new LoginWorkFlow().signIn("admin", "admin");
         EditorPage editorPage =
-                new BasicWorkFlow().goToPage(String.format(
-                        BasicWorkFlow.EDITOR_TEMPLATE, "properties-test",
-                        "master", "pl", "test"), EditorPage.class);
+                new BasicWorkFlow().goToEditor("properties-test",
+                        "master", "pl", "test");
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0),
                 Matchers.equalTo("hello world"));

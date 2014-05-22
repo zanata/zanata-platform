@@ -27,6 +27,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -101,7 +102,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public List<String> getVersions() {
         return WebElementUtil.elementsToText(getDriver(),
-                By.className("list__title"));
+                By.xpath("//h3[@class='list__title']"));
     }
 
     public int getNumberOfDisplayedVersions() {
@@ -114,7 +115,8 @@ public class ProjectVersionsPage extends ProjectBasePage {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getNumberOfDisplayedVersions() == expected;
+                return getNumberOfDisplayedVersions() == expected &&
+                        getVersions().size() == expected;
             }
         });
         return new ProjectVersionsPage(getDriver());
@@ -122,14 +124,22 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage clickSearchIcon() {
         getDriver()
-                .findElement(By.id("versions_content"))
+                .findElement(By.id("versions"))
                 .findElement(By.className("panel__search__button"))
                 .click();
         return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectVersionsPage clearVersionSearch() {
-        getDriver().findElement(By.id("versionSearch__input")).clear();
+        int maxKeys = 500;
+        while (!getDriver().findElement(By.id("versionSearch__input"))
+                .getAttribute("value").isEmpty() && maxKeys > 0) {
+            getDriver().findElement(By.id("versionSearch__input"))
+                .sendKeys(Keys.BACK_SPACE);
+        }
+        if (maxKeys == 0) {
+            log.warn("Exceeded max keypresses for clearing search bar");
+        }
         return new ProjectVersionsPage(getDriver());
     }
 

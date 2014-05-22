@@ -13,7 +13,8 @@ import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.ZanataRestCaller;
@@ -30,12 +31,12 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ConcurrentAccessTest {
+public class ConcurrentAccessTest extends ZanataTestCase {
 
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void concurrentDocumentCreationWillNotCauseHibernateException()
             throws InterruptedException {
         final String projectSlug = "project";

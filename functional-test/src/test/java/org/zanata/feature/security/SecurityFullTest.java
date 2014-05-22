@@ -29,13 +29,13 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.BasicAcceptanceTest;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
-import org.zanata.util.NoScreenshot;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -44,8 +44,8 @@ import org.zanata.workflow.LoginWorkFlow;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@NoScreenshot
-public class SecurityFullTest {
+public class SecurityFullTest extends ZanataTestCase {
+
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
@@ -55,16 +55,16 @@ public class SecurityFullTest {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void signInSuccessful() {
-        DashboardPage dashboardPage =
+        DashboardBasePage dashboardPage =
                 new LoginWorkFlow().signIn("admin", "admin");
         assertThat("User is logged in", dashboardPage.loggedInAs(),
                 equalTo("admin"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void signInFailure() {
         SignInPage signInPage = new LoginWorkFlow()
@@ -75,7 +75,7 @@ public class SecurityFullTest {
                 Matchers.hasItem("Login failed"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-987707 | Cannot intercept email yet")
     public void resetPasswordSuccessful() {
         SignInPage signInPage =
@@ -88,7 +88,7 @@ public class SecurityFullTest {
         // TODO: Reset Success page
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void resetPasswordFailureForInvalidAccount() {
         SignInPage signInPage =
                 new BasicWorkFlow().goToHome().clickSignInLink();
@@ -102,7 +102,7 @@ public class SecurityFullTest {
                 equalTo("No such account found"));
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void invalidResetPasswordFieldEntries() {
         SignInPage signInPage =
                 new BasicWorkFlow().goToHome().clickSignInLink();
@@ -123,7 +123,7 @@ public class SecurityFullTest {
 
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyResetPasswordFieldEntries() {
         SignInPage signInPage =
                 new BasicWorkFlow().goToHome().clickSignInLink();

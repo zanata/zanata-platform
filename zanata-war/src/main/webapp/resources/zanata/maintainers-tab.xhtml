@@ -51,8 +51,8 @@
         <p class="txt--meta">#{messages['jsf.NoMaintainers']}</p>
         <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
-            <a href="#{cc.attrs.settingsUrl}" class="button-primary"
-              onclick="updateHashAndGotoUrl(this)">
+            <a class="button--primary" href="#{cc.attrs.settingsUrl}"
+              onclick="changeBrowserUrl(this.href, true);return false;">
               #{messages['jsf.AddAMaintainer']}
               <i class="i i--plus i__item__icon"></i>
             </a>
@@ -61,14 +61,14 @@
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
-        rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.pagedFilteredList}">
+        rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.currentPage}">
         <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
-        rendered="#{not empty cc.attrs.filterActionBean.pagedFilteredList}">
+        rendered="#{not empty cc.attrs.filterActionBean.currentPage}">
         <ul class="list--slat">
-          <ui:repeat value="#{cc.attrs.filterActionBean.pagedFilteredList}"
+          <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}"
             var="maintainer">
             <li class="l--pad-all-half">
             <span class="w--r-1 bx--round l--push-right-quarter">

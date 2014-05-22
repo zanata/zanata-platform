@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.jboss.seam.Component;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
@@ -48,6 +47,7 @@ import org.zanata.service.impl.ConfigurationServiceImpl;
 import org.zanata.service.impl.FileSystemServiceImpl;
 
 import com.google.common.base.Optional;
+import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
 
@@ -94,7 +94,7 @@ public class ZipFileBuildTask implements
 
         // Max documents to process
         DocumentDAO documentDAO =
-                (DocumentDAO) Component.getInstance(DocumentDAO.class);
+                ServiceLocator.instance().getInstance(DocumentDAO.class);
         final List<HDocument> allIterationDocs =
                 documentDAO
                         .getAllByProjectIteration(projectSlug, iterationSlug);
@@ -109,20 +109,19 @@ public class ZipFileBuildTask implements
     public String call() throws Exception {
         // Needed Components
         DocumentDAO documentDAO =
-                (DocumentDAO) Component.getInstance(DocumentDAO.class);
+                ServiceLocator.instance().getInstance(DocumentDAO.class);
         LocaleDAO localeDAO =
-                (LocaleDAO) Component.getInstance(LocaleDAO.class);
+                ServiceLocator.instance().getInstance(LocaleDAO.class);
         ResourceUtils resourceUtils =
-                (ResourceUtils) Component.getInstance(ResourceUtils.class);
+                ServiceLocator.instance().getInstance(ResourceUtils.class);
         TextFlowTargetDAO textFlowTargetDAO =
-                (TextFlowTargetDAO) Component
-                        .getInstance(TextFlowTargetDAO.class);
+                ServiceLocator.instance().getInstance(TextFlowTargetDAO.class);
         FileSystemService fileSystemService =
-                (FileSystemService) Component
-                        .getInstance(FileSystemServiceImpl.class);
+                ServiceLocator.instance().getInstance(
+                        FileSystemServiceImpl.class);
         ConfigurationService configurationService =
-                (ConfigurationService) Component
-                        .getInstance(ConfigurationServiceImpl.class);
+                ServiceLocator.instance().getInstance(
+                        ConfigurationServiceImpl.class);
 
         final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
         final HLocale hLocale =

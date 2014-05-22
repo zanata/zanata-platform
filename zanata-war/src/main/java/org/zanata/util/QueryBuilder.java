@@ -74,15 +74,19 @@ public final class QueryBuilder {
     }
 
     public static String and(String... ops) {
-        WhereExpression clause =
-                LogicalExpression.conjunction(Lists.newArrayList(ops));
-        return clause.toWhereClause();
+        return and(Lists.newArrayList(ops));
+    }
+
+    public static String and(List<String> ops) {
+        return LogicalExpression.conjunction(ops).toWhereClause();
     }
 
     public static String or(String... ops) {
-        WhereExpression clause =
-                LogicalExpression.disjunction(Lists.newArrayList(ops));
-        return clause.toWhereClause();
+        return or(Lists.newArrayList(ops));
+    }
+
+    public static String or(List<String> ops) {
+        return LogicalExpression.disjunction(ops).toWhereClause();
     }
 
     public QueryBuilder leftJoin(String association) {

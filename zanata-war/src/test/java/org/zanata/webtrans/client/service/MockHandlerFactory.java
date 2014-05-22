@@ -81,7 +81,7 @@ public class MockHandlerFactory {
 
         // trans unit navigation index handler
         when(
-                textFlowDAO.getNavigationByDocumentId(eq(documentId.getId()),
+                textFlowDAO.getNavigationByDocumentId(eq(documentId),
                         eq(hLocale), isA(ResultTransformer.class),
                         isA(FilterConstraints.class))).thenReturn(hTextFlows);
         return handler;

@@ -25,28 +25,29 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.ManageSearchPage;
-import org.zanata.page.utility.DashboardPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(DetailedTest.class)
-public class ManageSearchTest {
+public class ManageSearchTest extends ZanataTestCase {
 
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    private DashboardPage dashboardPage;
+    private DashboardBasePage dashboardPage;
 
     @Before
     public void before() {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void regenerateSearchIndexes() {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()
@@ -69,7 +70,7 @@ public class ManageSearchTest {
                 manageSearchPage.noOperationsRunningIsDisplayed());
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Data set not large enough to achieve stable test")
     public void abortReindexes() {
         ManageSearchPage manageSearchPage = dashboardPage

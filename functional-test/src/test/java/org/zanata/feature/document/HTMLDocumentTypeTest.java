@@ -27,7 +27,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
@@ -37,14 +39,15 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.FunctionalTestHelper.assumeFalse;
+import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class HTMLDocumentTypeTest {
+public class HTMLDocumentTypeTest extends ZanataTestCase {
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -61,10 +64,14 @@ public class HTMLDocumentTypeTest {
                 CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator);
-        assumeFalse("", new File(documentStorageDirectory).exists());
+        File docStorage = new File(documentStorageDirectory);
+        assumeTrue("The storage folder is empty",
+                docStorage == null ||
+                !docStorage.exists() ||
+                docStorage.listFiles().length == 0);
     }
 
-    @Test
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void uploadHTMLFile() {
         File htmlfile =
                 testFileGenerator
@@ -82,11 +89,15 @@ public class HTMLDocumentTypeTest {
                         .pressUploadFileButton()
                         .enterFilePath(htmlfile.getAbsolutePath())
                         .submitUpload();
+
         assertThat("Document uploaded notification shows",
-                projectVersionPage.getNotificationMessage(),
-                Matchers.equalTo(successfullyUploaded));
-        assertThat("Document shows in table",
-                projectVersionPage.sourceDocumentsContains(htmlfile.getName()));
+                projectVersionPage.expectNotification(successfullyUploaded));
+
+        VersionDocumentsPage versionDocumentsPage =
+                projectVersionPage.gotoDocumentTab();
+
+        assertThat("Document shows in table", versionDocumentsPage
+                .sourceDocumentsContains(htmlfile.getName()));
 
         EditorPage editorPage =
                 projectVersionPage.goToProjects().goToProject("about fedora")

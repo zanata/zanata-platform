@@ -20,22 +20,22 @@
  */
 package org.zanata.feature.glossary;
 
+import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.TestRule;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.ClientWorkFlow;
+
 import java.io.File;
 import java.util.List;
 
-import org.concordion.api.extension.Extensions;
-import org.concordion.ext.ScreenshotExtension;
-import org.concordion.ext.TimestampFormatterExtension;
-import org.concordion.integration.junit4.ConcordionRunner;
-import org.junit.Rule;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
-import org.zanata.concordion.CustomResourceExtension;
-import org.zanata.feature.ConcordionTest;
-import org.zanata.util.SampleProjectRule;
-import org.zanata.workflow.ClientWorkFlow;
-import com.google.common.base.Joiner;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/169230/">TCMS case</a>
@@ -43,34 +43,39 @@ import com.google.common.base.Joiner;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RunWith(ConcordionRunner.class)
-@Extensions({ ScreenshotExtension.class, TimestampFormatterExtension.class,
-        CustomResourceExtension.class })
-@Category(ConcordionTest.class)
-public class InvalidGlossaryPushTest {
+@Category(DetailedTest.class)
+@Slf4j
+public class InvalidGlossaryPushTest extends ZanataTestCase {
+
     @Rule
     public TestRule sampleProjectRule = new SampleProjectRule();
 
-    private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
+    private String pushCommand = "mvn --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.glossaryFile=compendium_fr_invalid.po -Dzanata.userConfig=";
+    private ClientWorkFlow clientWorkFlow;
+    private String userConfigPath;
     private File projectRootPath;
 
-    public String getUserConfigPath() {
-        return ClientWorkFlow.getUserConfigPath("glossarist");
+    @Before
+    public void before() {
+        clientWorkFlow = new ClientWorkFlow();
+        projectRootPath = clientWorkFlow.getProjectRootPath("glossary");
+        userConfigPath = ClientWorkFlow.getUserConfigPath("glossarist");
     }
 
-    public String getProjectLocation(String project) {
-        projectRootPath = clientWorkFlow.getProjectRootPath(project);
-        return projectRootPath.getAbsolutePath();
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void successfulGlossaryPush() throws Exception {
+        List<String> result = push(pushCommand, userConfigPath);
+        log.info(resultByLines(result));
+
+        assertThat(clientWorkFlow.isPushSuccessful(result))
+                .isFalse()
+                .as("The glossary push was not successful");
     }
 
     public List<String> push(String command, String configPath)
             throws Exception {
         return clientWorkFlow.callWithTimeout(projectRootPath, command
                 + configPath);
-    }
-
-    public boolean isPushFailed(List<String> output) {
-        return !clientWorkFlow.isPushSuccessful(output);
     }
 
     public String resultByLines(List<String> output) {

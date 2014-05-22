@@ -105,14 +105,14 @@ public class DateUtil {
     }
 
     public static int compareDate(Date date1, Date date2) {
-        if (date1 == date2) {
+        if (date1 == null && date2 == null) {
             return 0;
         }
-        if (date1 == null) {
-            return -1;
-        } else if (date2 == null) {
-            return 1;
+
+        if (date1 == null || date2 == null) {
+            return date1 == null ? -1 : 1;
         }
+
         return date1.compareTo(date2);
     }
 
@@ -122,5 +122,84 @@ public class DateUtil {
     public static class DateUnitAndFigure {
         private String unit; // s(second) m(minute) or d(day)
         private int figure;
+    }
+
+    /**
+     * return start of the day date. e.g Tue Mar 25 12:31:00 EST 2014 returns
+     * Tue Mar 25 00:00:00 EST 2014
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getStartOfDay(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).dayOfWeek().roundFloorCopy();
+        return truncateMonth.toDate();
+    }
+
+    /**
+     * return end of the day date. e.g Tue Mar 25 12:31:00 EST 2014 returns Tue
+     * Mar 25 23:59:59 EST 2014
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getEndOfTheDay(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).dayOfWeek().roundCeilingCopy()
+                        .minusMillis(1);
+        return truncateMonth.toDate();
+    }
+
+    /**
+     * return first day of the week date. (Monday being the first day)
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getStartOfWeek(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).weekOfWeekyear().roundFloorCopy();
+        return truncateMonth.toDate();
+    }
+
+    /**
+     * return last day of the week date. (Sunday being the last day)
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getEndOfTheWeek(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).weekOfWeekyear().roundCeilingCopy()
+                        .minusMillis(1);
+        return truncateMonth.toDate();
+    }
+
+    /**
+     * return first day of the month date. e.g Tue Mar 25 12:31:00 EST 2014
+     * returns Tue Mar 1 00:00:00 EST 2014
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getStartOfMonth(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).monthOfYear().roundFloorCopy();
+        return truncateMonth.toDate();
+    }
+
+    /**
+     * return last day of the month date. e.g Tue Mar 25 12:31:00 EST 2014
+     * returns Tue Mar 31 23:59:59 EST 2014
+     *
+     * @param actionTime
+     * @return
+     */
+    public static Date getEndOfTheMonth(Date actionTime) {
+        DateTime truncateMonth =
+                new DateTime(actionTime).monthOfYear().roundCeilingCopy()
+                        .minusMillis(1);
+        return truncateMonth.toDate();
     }
 }
