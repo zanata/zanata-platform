@@ -123,7 +123,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                 selectedProjectType = projectType.name();
             }
         } else {
-            selectedProjectType = getInstance().getProjectType().name();
+            ProjectType versionProjectType = getInstance().getProjectType();
+            if(versionProjectType != null) {
+                selectedProjectType = versionProjectType.name();
+            }
         }
     }
 
