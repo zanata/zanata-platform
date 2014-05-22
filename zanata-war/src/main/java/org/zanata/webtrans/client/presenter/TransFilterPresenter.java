@@ -43,7 +43,7 @@ import com.google.inject.Inject;
 public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         implements TransFilterDisplay.Listener, UserConfigChangeHandler,
         FilterViewEventHandler {
-    private static final String DATE_PATTERN = "dd-mm-yyyy";
+    private static final String DATE_PATTERN = "yyyy-mm-dd";
 
     private final History history;
 
@@ -84,7 +84,7 @@ public class TransFilterPresenter extends WidgetPresenter<TransFilterDisplay>
         if (invalidBefore || invalidAfter) {
             eventBus.fireEvent(new NotificationEvent(
                     NotificationEvent.Severity.Warning,
-                    "Invalid date, expected format dd-mm-yyyy"));
+                    "Invalid date, expected format yyyy-mm-dd"));
 
             display.selectPartialText(invalidBefore ? editorFilter
                     .getLastModifiedBefore() : editorFilter

@@ -49,8 +49,8 @@
         <li class="js-suggest__result autocomplete__result" data-key="text">text: <span class="txt--understated">source and target text</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="resource-id">resource-id: <span class="txt--understated">exact Resource ID for a string</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="last-modified-by">last-modified-by: <span class="txt--understated">username</span></li>
-        <li class="js-suggest__result autocomplete__result" data-key="last-modified-before">last-modified-before: <span class="txt--understated">date in format dd-mm-yyyy</span></li>
-        <li class="js-suggest__result autocomplete__result" data-key="last-modified-after">last-modified-after: <span class="txt--understated">date in format dd-mm-yyyy</span></li>
+        <li class="js-suggest__result autocomplete__result" data-key="last-modified-before">last-modified-before: <span class="txt--understated">date in format yyyy-mm-dd</span></li>
+        <li class="js-suggest__result autocomplete__result" data-key="last-modified-after">last-modified-after: <span class="txt--understated">date in format yyyy-mm-dd</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="source-comment">source-comment: <span class="txt--understated">source comment text</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="translation-comment">translation-comment: <span class="txt--understated">translation comment text</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="msgctxt">msgctxt: <span class="txt--understated">exact Message Context for a string</span></li>
