@@ -191,16 +191,19 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-servlet</artifactId>
         <version>${gwt.version}</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
         <version>${gwt.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.inject</groupId>
@@ -718,7 +721,8 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>2.5.0</version>
+          <!-- NB In some cases, we might not want to use gwt.version here -->
+          <version>${gwt.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
