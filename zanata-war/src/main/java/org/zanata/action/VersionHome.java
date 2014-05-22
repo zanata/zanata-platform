@@ -26,10 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -57,12 +61,9 @@ import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Name("versionHome")
 @Slf4j
@@ -106,16 +107,16 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Setter
     private boolean isNewInstance = false;
 
-    @Getter
     @Setter
+    @Getter
     private String selectedProjectType;
 
     @Getter
     private VersionLocaleAutocomplete localeAutocomplete =
             new VersionLocaleAutocomplete();
 
-    public void createNew() {
-        isNewInstance = true;
+    public void init(boolean isNewInstance) {
+        this.isNewInstance = isNewInstance;
         if (isNewInstance) {
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {
@@ -276,8 +277,13 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     }
 
     public boolean isValidationsSameAsProject() {
-        return getInstance().getCustomizedValidations().equals(
-                getInstance().getProject().getCustomizedValidations());
+
+        Collection<ValidationAction> versionValidations =
+                validationServiceImpl.getValidationActions(projectSlug,
+                        slug);
+        Collection<ValidationAction> projectValidations =
+                validationServiceImpl.getValidationActions(projectSlug);
+        return versionValidations.equals(projectValidations);
     }
 
     public void copyValidationFromProject() {
@@ -409,8 +415,14 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private class VersionLocaleAutocomplete extends LocaleAutocomplete {
 
         @Override
-        protected Set<HLocale> getLocales() {
-            return getInstance().getCustomizedLocales();
+        protected Collection<HLocale> getLocales() {
+            if (StringUtils.isNotEmpty(projectSlug)
+                    && StringUtils.isNotEmpty(slug)) {
+                return localeServiceImpl
+                        .getSupportedLanguageByProjectIteration(projectSlug,
+                                slug);
+            }
+            return Lists.newArrayList();
         }
 
         /**
