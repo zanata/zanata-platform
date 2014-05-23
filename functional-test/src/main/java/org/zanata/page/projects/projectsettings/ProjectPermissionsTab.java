@@ -31,6 +31,7 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -77,24 +78,12 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     public ProjectPermissionsTab clickRemoveOn(String maintainer) {
-        for (WebElement maintainersLi : getSettingsMaintainersElement()) {
-            String displayedUsername = getUsername(maintainersLi);
-            if (displayedUsername.equals(maintainer)) {
-                maintainersLi.findElement(By.tagName("a")).click();
-                break;
-            }
-        }
+        getMaintainerElementFromList(maintainer).click();
         return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectBasePage clickRemoveOnSelf(String maintainer) {
-        for (WebElement maintainersLi : getSettingsMaintainersElement()) {
-            String displayedUsername = getUsername(maintainersLi);
-            if (displayedUsername.equals(maintainer)) {
-                maintainersLi.findElement(By.tagName("a")).click();
-                break;
-            }
-        }
+        getMaintainerElementFromList(maintainer).click();
         return new ProjectBasePage(getDriver());
     }
 
@@ -102,6 +91,21 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         return maintainersLi
                 .findElement(By.xpath(".//span[@class='txt--meta']")).getText()
                 .replace("@", "");
+    }
+
+    private WebElement getMaintainerElementFromList(final String maintainer) {
+        return waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                for (WebElement maintainersLi : getSettingsMaintainersElement()) {
+                    String displayedUsername = getUsername(maintainersLi);
+                    if (displayedUsername.equals(maintainer)) {
+                        return maintainersLi.findElement(By.tagName("a"));
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     public ProjectPermissionsTab waitForMaintainersContains(
@@ -125,8 +129,10 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     public List<WebElement> getSettingsMaintainersElement() {
-        return getDriver().findElement(By.id("settings-permissions-form"))
-                .findElements(By.xpath(".//ul/li[@class='reveal--list-item']"));
+        return getDriver()
+                .findElement(By.id("settings-permissions-form"))
+                .findElement(By.id("maintainers-list"))
+                .findElements(By.tagName("li"));
     }
 
     public List<String> getSettingsMaintainersList() {
