@@ -80,7 +80,7 @@ public class GetTransUnitListHandler extends
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
     private DateTimeFormatter dateFormatter =
-            DateTimeFormat.forPattern("yyyy-mm-dd");
+            DateTimeFormat.forPattern("yyyy-MM-dd");
 
     @Override
     public GetTransUnitListResult execute(GetTransUnitList action,
