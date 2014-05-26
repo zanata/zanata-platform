@@ -271,6 +271,15 @@
     <url-pattern>/webtrans/files/upload</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>gwtServlet</servlet-name>
+    <servlet-class>org.zanata.webtrans.server.GwtDispatchService</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>gwtServlet</servlet-name>
+    <url-pattern>/seam/resource/gwt</url-pattern>
+  </servlet-mapping>
+
   <!-- Uncomment this to enable the H2Console
 
   <servlet>

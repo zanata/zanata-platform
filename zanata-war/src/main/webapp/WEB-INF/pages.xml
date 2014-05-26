@@ -771,6 +771,11 @@
     </navigation>
   </page>
 
+  <!-- we need to explicitly secure webtrans after removing seam remoting -->
+  <page view-id="/webtrans/Application.xhtml">
+    <restrict>#{identity.isLoggedIn()}</restrict>
+  </page>
+
   <!-- Exceptions -->
   <exception class="org.zanata.exception.KeyNotFoundException"
     log-level="warn">
