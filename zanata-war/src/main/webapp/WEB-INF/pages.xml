@@ -772,8 +772,14 @@
   </page>
 
   <!-- we need to explicitly secure webtrans after removing seam remoting -->
-  <page view-id="/webtrans/Application.xhtml">
-    <restrict>#{identity.isLoggedIn()}</restrict>
+  <page view-id="/webtrans/Application.xhtml" conversation-required="false">
+    <navigation evaluate="#{identity.isLoggedIn()}">
+      <rule if-outcome="false">
+        <redirect view-id="/account/sign_in">
+          <param name="continue" value="#{userRedirect.encodedUrl}" />
+        </redirect>
+      </rule>
+    </navigation>
   </page>
 
   <!-- Exceptions -->
