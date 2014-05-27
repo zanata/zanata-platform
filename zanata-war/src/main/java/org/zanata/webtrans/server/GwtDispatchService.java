@@ -1,8 +1,6 @@
 package org.zanata.webtrans.server;
 
-import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.Action;
@@ -13,11 +11,22 @@ import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.DispatchService;
 
-import com.google.common.base.Throwables;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
+ * This is the GWT RPC endpoint for all GWT RPC calls. GWT will create client
+ * stub with interface name XXXAsync and bind server class that implements XXX.
+ * In our case the XXX is DispatchService.
+ *
+ * This class extends GWT provided RemoteServiceServlet which handles
+ * serialization of request and response of RPC calls. It will delegate the
+ * actual call to SeamDispatch based on generic type information.
+ *
+ * @see org.zanata.webtrans.client.rpc.SeamDispatchAsync
+ * @see org.zanata.webtrans.shared.DispatchServiceAsync
+ * @see com.google.gwt.user.server.rpc.RemoteServiceServlet
+ * @see SeamDispatch
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -38,9 +47,10 @@ public class GwtDispatchService extends RemoteServiceServlet implements
                     result[0] = dispatch.execute(action);
                 }
             }.run();
-        }
-        catch (ServletException e) {
+        } catch (ServletException e) {
             Throwable cause = e.getCause();
+            // ActionException is under shared package which is serializable by
+            // GWT.
             if (cause != null && cause instanceof ActionException) {
                 throw ActionException.class.cast(cause);
             }
