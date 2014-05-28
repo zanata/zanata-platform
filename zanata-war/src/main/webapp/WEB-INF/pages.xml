@@ -330,11 +330,24 @@
 
     <navigation
       from-action="#{languageSearchAction.manageMembers(language.localeId.id)}">
-      <redirect view-id="/language/language.xhtml">
+      <redirect view-id="/admin/language.xhtml">
         <param name="id" value="#{language.localeId.id}" />
       </redirect>
     </navigation>
   </page>
+
+  <page view-id="/admin/language.xhtml">
+    <param name="id" value="#{languageTeamAction.language}" />
+    <action execute="#{breadcrumbs.clear}" />
+    <action
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+    <action
+      execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', messages['jsf.ManageLanguage'])}" />
+    <action
+      execute="#{breadcrumbs.addLocation('', languageTeamAction.language)}" />
+  </page>
+
+
 
   <page view-id="/admin/rolerules.xhtml">
     <action execute="#{breadcrumbs.clear}" />
