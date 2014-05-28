@@ -66,9 +66,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                         ServerConfigurationPage.class);
 
         assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(),
-                Matchers.isEmptyString());
+                Matchers.equalTo("default is 6"));
         assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(),
-                Matchers.isEmptyString());
+                Matchers.equalTo("default is 2"));
 
         AdministrationPage administrationPage =
                 serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
