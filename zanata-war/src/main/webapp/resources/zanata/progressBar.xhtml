@@ -55,7 +55,7 @@
       jQuery(uncompletedBar).css('margin-left', completedPercentage + "%");
 
       var inProgress = jQuery("[id='#{cc.attrs.id}-inProgress']").val();
-      if (inProgress == 'false' && completedPercentage == '100') {
+      if (inProgress == 'false' || completedPercentage == '100') {
         onCompleteFunction();
       }
     }
