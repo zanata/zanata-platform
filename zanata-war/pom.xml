@@ -1192,10 +1192,6 @@
       <artifactId>jboss-seam-mail</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-remoting</artifactId>
-    </dependency>
     <!-- RestEasy dependencies -->
 
     <dependency>
