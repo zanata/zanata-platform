@@ -21,20 +21,22 @@
 
 package org.zanata.feature.project;
 
-import org.assertj.core.api.Assertions;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
-import org.zanata.util.SampleProjectRule;
-import org.zanata.workflow.LoginWorkFlow;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.assertj.core.api.Assertions;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
+import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.LoginWorkFlow;
 
 /**
  * @author Damian Jansen
@@ -43,8 +45,8 @@ import static org.hamcrest.Matchers.*;
 @Category(DetailedTest.class)
 public class EditProjectLanguagesTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editProjectLanguages() {
