@@ -1,7 +1,11 @@
 package org.zanata.rest.client;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -10,15 +14,22 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.SystemUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequestFactory;
@@ -32,18 +43,24 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
 
+// TODO fix deprecation warnings
 public class ZanataProxyFactory implements ITranslationResourcesFactory {
-    private String clientVersion;
-    private String serverVersion;
+    private static final Logger log = LoggerFactory
+            .getLogger(ZanataProxyFactory.class);
 
     static {
         ResteasyProviderFactory instance =
                 ResteasyProviderFactory.getInstance();
         RegisterBuiltin.register(instance);
+
+        if (!SystemUtils.isJavaVersionAtLeast(1.7f)) {
+            log.warn("Please upgrade to Java 1.7 or later, or you may have trouble connecting to some secure hosts.");
+        }
     }
 
-    private static final Logger log = LoggerFactory
-            .getLogger(ZanataProxyFactory.class);
+    private String clientVersion;
+    private String serverVersion;
+
     private final ClientRequestFactory crf;
 
     /**
@@ -67,8 +84,7 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
     public ZanataProxyFactory(URI base, String username, String apiKey,
             VersionInfo clientApiVersion, boolean logHttp,
             boolean sslCertDisabled) {
-        ClientExecutor clientExecutor =
-                sslCertDisabled ? createClientExecutor() : null;
+        ClientExecutor clientExecutor = createClientExecutor(sslCertDisabled);
 
         crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
         crf.setFollowRedirects(true);
@@ -105,28 +121,60 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         }
     }
 
-    private static ClientExecutor createClientExecutor() {
+    private static ClientExecutor createClientExecutor(boolean sslCertDisabled) {
         try {
+            final SSLContext sslContext = SSLContext.getInstance("TLS");
+
             // Create a trust manager that does not validate certificate chains
             // against our server
-            TrustManager[] trustOurCerts =
-                    new TrustManager[] { new AcceptAllX509TrustManager() };
+            final TrustManager[] trustAllCerts;
+            if (sslCertDisabled) {
+                trustAllCerts =
+                        new TrustManager[]{ new AcceptAllX509TrustManager() };
+            } else {
+                trustAllCerts = null;
+            }
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustOurCerts, new SecureRandom());
+            sslContext.init(null, trustAllCerts, new SecureRandom());
 
-            SSLSocketFactory factory = new SSLSocketFactory(sslContext);
+            SSLSocketFactory factory = new SSLSocketFactory(sslContext) {
+                @Override
+                public Socket connectSocket(
+                        int connectTimeout,
+                        Socket socket,
+                        HttpHost host,
+                        InetSocketAddress remoteAddress,
+                        InetSocketAddress localAddress,
+                        HttpContext context) throws IOException,
+                        ConnectTimeoutException {
+                    if (socket instanceof SSLSocket) {
+                        try {
+                            PropertyUtils.setProperty(socket, "host",
+                                    host.getHostName());
+                        } catch (Exception ex) {
+                            log.warn("Unable to enable SNI; you may have trouble connecting to some secure hosts. Please ensure that you are running Java 1.7 or later.");
+                        }
+                    }
+                    return super.connectSocket(connectTimeout, socket, host, remoteAddress,
+                            localAddress, context);
+                }
+            };
 
             HttpClient client = new DefaultHttpClient();
+
+            if (sslCertDisabled) {
+                X509HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+                factory.setHostnameVerifier(hostnameVerifier);
+            }
+
             ClientConnectionManager manager = client.getConnectionManager();
             manager.getSchemeRegistry().register(
                     new Scheme("https", 443, factory));
             return new ApacheHttpClient4Executor(client);
 
         } catch (Exception e) {
-            log.warn("error disabling SSL certificate", e);
+            log.warn("error creating SSL client", e);
         }
-        log.warn("fall back to SSL certificate verification.");
         return null;
     }
 
