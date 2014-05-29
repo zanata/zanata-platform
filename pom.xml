@@ -461,7 +461,6 @@ package.
             <configuration>
               <descriptionProperty>gitDescribe</descriptionProperty>
               <extraArguments>
-                <param>--dirty</param>
               </extraArguments>
             </configuration>
           </execution>
