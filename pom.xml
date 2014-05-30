@@ -315,6 +315,8 @@
                 <!--                         <exclude>javassist:javassist</exclude> -->
                 <!-- use org.apache.httpcomponents -->
                 <exclude>commons-httpclient:commons-httpclient</exclude>
+                <!-- use commons-beanutils:commons-beanutils -->
+                <exclude>commons-beanutils:commons-beanutils-core</exclude>
                 <!-- use org.slf4j:jcl-over-slf4j -->
                 <exclude>commons-logging:commons-logging</exclude>
                 <!-- use org.mockito:mockito-core -->
@@ -1035,12 +1037,12 @@ package.
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.8.3</version>
-      </dependency>
-
-      <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils-core</artifactId>
-        <version>1.8.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
