@@ -42,8 +42,7 @@
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils-core</artifactId>
-      <version>1.8.3</version>
+      <artifactId>commons-beanutils</artifactId>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
