@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import org.zanata.model.HAccount;
+import org.zanata.security.permission.MultiTargetList;
 import org.zanata.util.ServiceLocator;
 
 import static org.jboss.seam.ScopeType.SESSION;
@@ -135,9 +136,9 @@ public class ZanataIdentity extends Identity {
     }
 
     /**
-     * Indicates if the user has permissions on a variable number of facts. This
-     * method is a utility provision for Seam's lack of multi-fact insertion
-     * into working memory.
+     * Indicates if the user has permission to perform an action on a variable
+     * number of targets. This is provided as an extension to Seam's single
+     * target permission capabilities.
      *
      * @param action
      *            The permission action.
@@ -145,65 +146,25 @@ public class ZanataIdentity extends Identity {
      *            Targets for permissions.
      */
     public boolean hasPermission(String action, Object... targets) {
-        final List<FactHandle> handles = new ArrayList<FactHandle>();
-        StatefulSession securityContext =
-                RuleBasedPermissionResolver.instance().getSecurityContext();
-
-        synchronized (securityContext) {
-            // First target
-            Object firstTarget = targets.length > 0 ? targets[0] : null;
-
-            // Insert the rest of the targets into working memory
-            for (int i = 1; i < targets.length; i++) {
-                handles.add(securityContext.insert(targets[i]));
-            }
-
-            // Run the permission check
-            boolean result = super.hasPermission(firstTarget, action);
-
-            // Retract all inserted targets
-            for (FactHandle handle : handles) {
-                securityContext.retract(handle);
-            }
-
-            return result;
-        }
+        return super
+                .hasPermission(MultiTargetList.fromTargets(targets), action);
     }
 
     /**
-     * Checks permissions on a variable number of facts. This method is a
-     * utility provision for Seam's lack of multi-fact insertion into working
-     * memory.
+     * Checks permissions on a variable number of targets.This is provided as an
+     * extension to Seam's single target permission capabilities.
      *
      * @param action
      *            The permission action.
      * @param targets
      *            Targets for permissions.
-     * @throws NotLoggedInException if not authorised and not logged in
-     * @throws org.jboss.seam.security.AuthorizationException if logged in but not authorised
+     * @throws NotLoggedInException
+     *             if not authorised and not logged in
+     * @throws org.jboss.seam.security.AuthorizationException
+     *             if logged in but not authorised
      */
     public void checkPermission(String action, Object... targets) {
-        final List<FactHandle> handles = new ArrayList<FactHandle>();
-        StatefulSession securityContext =
-                RuleBasedPermissionResolver.instance().getSecurityContext();
-
-        synchronized (securityContext) {
-            // First target
-            Object firstTarget = targets.length > 0 ? targets[0] : null;
-
-            // Insert the rest of the targets into working memory
-            for (int i = 1; i < targets.length; i++) {
-                handles.add(securityContext.insert(targets[i]));
-            }
-
-            // Run the permission check
-            super.checkPermission(firstTarget, action);
-
-            // Retract all inserted targets
-            for (FactHandle handle : handles) {
-                securityContext.retract(handle);
-            }
-        }
+        super.checkPermission(MultiTargetList.fromTargets(targets), action);
     }
 
     @Override
