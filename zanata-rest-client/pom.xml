@@ -16,6 +16,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
     <url>https://github.com/zanata/zanata-client</url>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
@@ -38,6 +39,17 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils-core</artifactId>
+      <version>1.8.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
