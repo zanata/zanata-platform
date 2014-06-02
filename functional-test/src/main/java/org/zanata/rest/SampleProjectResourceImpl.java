@@ -53,6 +53,18 @@ public class SampleProjectResourceImpl implements SampleProjectResource {
     }
 
     @Override
+    @Transactional
+    public Response addLanguage(final String localeId) {
+        new RunAsOperation() {
+            @Override
+            public void execute() {
+                sampleProjectProfile.makeLanguage(new LocaleId(localeId));
+            }
+        }.addRole("admin").run();
+        return Response.ok().build();
+    }
+
+    @Override
     public Response makeSampleUsers() {
         new RunAsOperation() {
             public void execute() {

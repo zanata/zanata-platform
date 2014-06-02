@@ -63,4 +63,9 @@ public class SampleProjectClient {
         checkAndReleaseConnection(createRequest("/languages").put());
     }
 
+    public static void addLanguage(String localeId) throws Exception {
+        checkAndReleaseConnection(createRequest("/languages/l/" + localeId)
+                .put());
+    }
+
 }

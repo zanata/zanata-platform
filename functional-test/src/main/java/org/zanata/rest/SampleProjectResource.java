@@ -21,6 +21,10 @@ public interface SampleProjectResource {
     Response makeSampleLanguages();
 
     @PUT
+    @Path("/languages/l/{locale}")
+    Response addLanguage(@PathParam("locale") String localeId);
+
+    @PUT
     @Path("/accounts/u/{username}/languages")
     Response userJoinsLanguageTeams(@PathParam("username") String username,
             @QueryParam("locales") Set<LocaleId> locales);

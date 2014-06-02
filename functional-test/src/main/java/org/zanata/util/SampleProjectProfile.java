@@ -3,7 +3,6 @@ package org.zanata.util;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -140,13 +139,15 @@ public class SampleProjectProfile {
     }
 
     public void makeSampleLanguages() {
-        forLocale(true, LocaleId.FR).makeAndPersist(entityManager,
-                HLocale.class);
+        makeLanguage(LocaleId.FR);
 
-        forLocale(true, new LocaleId("hi")).makeAndPersist(entityManager,
-                HLocale.class);
+        makeLanguage(new LocaleId("hi"));
 
-        forLocale(true, new LocaleId("pl")).makeAndPersist(entityManager,
+        makeLanguage(new LocaleId("pl"));
+    }
+
+    public void makeLanguage(LocaleId localeId) {
+        forLocale(true, localeId).makeAndPersist(entityManager,
                 HLocale.class);
     }
 
