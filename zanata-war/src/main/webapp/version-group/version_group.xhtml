@@ -6,6 +6,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template.xhtml">
 
@@ -62,13 +63,17 @@
   //]]>
 </script>
 
-<a4j:jsFunction name="reloadLocale"
-  render="languages-project_list, language-label">
+<a4j:jsFunction name="reloadLocale" status="languageTab-projectsLoader"
+  onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
+  oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
+  render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info">
   <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="reloadVersion"
-  render="projects-language_list, project-label"
+<a4j:jsFunction name="reloadVersion" status="projectsTab-languagesLoader"
+  onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
+  oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader')"
+  render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
   action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
   <a4j:param name="val1" assignTo="#{projSlug}"/>
   <a4j:param name="val2" assignTo="#{verSlug}"/>

@@ -85,14 +85,8 @@
           var="version">
           <li class="progress-bar__expander"
             id="#{version.project.slug}[#{version.slug}]">
-            <a4j:commandLink
-              oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader')"
-              action="#{versionGroupHomeAction.setSelectedVersion(version)}"
-              status="projectsTab-languagesLoader"
-              onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
-              render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
-              onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects/#{version.project.slug}/#{version.slug}', true)"
-              styleClass="bx--block">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects/#{version.project.slug}/#{version.slug}"
+             onclick="changeBrowserUrl(this.href, true);return false">
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">#{version.project.name}</h3>
@@ -131,7 +125,7 @@
               <zanata:statistic
                 value="#{versionGroupHomeAction.getStatisticForProject(version.id)}"
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
-            </a4j:commandLink>
+            </a>
           </li>
         </ui:repeat>
       </ul>

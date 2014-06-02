@@ -188,13 +188,8 @@
               </ul>
             </div>
           </s:div>
-          <a4j:commandLink
-            oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
-            action="#{versionHomeAction.setSelectedDocument(document)}"
-            status="documentsTab-languagesLoader"
-            onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
-            render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
-            onclick="changeBrowserUrl('#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{document.docId}', true)">
+          <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{document.docId}"
+            onclick="changeBrowserUrl(this.href, true);return false;">
             <div class="list__item__content">
               <div class="list__item__info">
                 <h3 class="list__title">#{document.name}</h3>
@@ -222,8 +217,7 @@
             <zanata:statistic
               value="#{versionHomeAction.getDocumentStatistic(document.id)}"
               rendered="#{versionHomeAction.pageRendered}"/>
-
-          </a4j:commandLink>
+          </a>
         </li>
       </ui:repeat>
     </ul>
