@@ -43,7 +43,7 @@ import com.google.common.collect.Lists;
 /**
  * Holds all application permissions and provides a way to evaluate these
  * permissions for an object and an action.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */

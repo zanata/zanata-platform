@@ -52,24 +52,28 @@ public class PermissionEvaluatorTest {
     @Test
     public void alwaysEvaluates() throws Exception {
         Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class, "evaluatesToTrueAlways");
+                getStaticMethod(SimpleTestEvaluators.class,
+                        "evaluatesToTrueAlways");
         assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator, null)).isTrue();
+                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+                        null)).isTrue();
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
                         null,
                         new HProject())).isTrue();
         assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator, "my-action")).isTrue();
+                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+                        "my-action")).isTrue();
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
                         "my-action", new HProject())).isTrue();
     }
-    
+
     @Test
     public void evaluatesForClass() throws Exception {
         Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class, "evaluatesForHProject");
+                getStaticMethod(SimpleTestEvaluators.class,
+                        "evaluatesForHProject");
 
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
@@ -82,36 +86,37 @@ public class PermissionEvaluatorTest {
                         null, new HProjectIteration())).isTrue();
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                    "my-action", new HProjectIteration())).isTrue();
+                        "my-action", new HProjectIteration())).isTrue();
     }
 
     @Test
     public void evaluatesForAction() throws Exception {
         Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class, "evaluatesForAction");
+                getStaticMethod(SimpleTestEvaluators.class,
+                        "evaluatesForAction");
 
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
                         null, new HProject())).isFalse();
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                    "my-action", new HProject())).isFalse();
+                        "my-action", new HProject())).isFalse();
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                    "specific-action", new HProject())).isTrue();
+                        "specific-action", new HProject())).isTrue();
         // The evaluator method expects a target, so null won't be
         // evaluated
         assertThat(
                 simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
                         null, "specific-action")).isFalse();
     }
-    
+
     @Test
     public void evaluatesForMultiTargets() throws Exception {
         Method evaluator =
                 getStaticMethod(SimpleTestEvaluators.class,
                         "evaluatesForMultiTarget");
-        
+
         assertThat(simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
                 "multi-target-action", new HProject(), new HLocale()
                 )).isTrue();
@@ -142,115 +147,117 @@ public class PermissionEvaluatorTest {
     @Test
     public void alwaysGrant() throws Exception {
         assertThat(
-            complexPermissionEvaluator.evaluatePermission("always-grant"))
-            .isTrue();
+                complexPermissionEvaluator.evaluatePermission("always-grant"))
+                .isTrue();
     }
 
     @Test
     public void alwaysGrantWithSingleArgument() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("always-grant", new HProject())).isTrue();
+                .evaluatePermission("always-grant", new HProject())).isTrue();
     }
 
     @Test
     public void alwaysGrantWithMultipleArguments() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("always-grant", new HProject(), "A string",
-                new HProjectIteration())).isTrue();
+                .evaluatePermission("always-grant", new HProject(), "A string",
+                        new HProjectIteration())).isTrue();
     }
 
     @Test
     public void alwaysDenyForStringBuilder() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("any-action", new StringBuilder())).isFalse();
+                .evaluatePermission("any-action", new StringBuilder()))
+                .isFalse();
     }
 
     @Test
     public void allowSpecificActionAndType() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("action-1", new HProject())).isTrue();
+                .evaluatePermission("action-1", new HProject())).isTrue();
     }
 
     @Test
     public void allowCorrectActionButDifferentType() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("action-1", new HProjectIteration())).isTrue();
+                .evaluatePermission("action-1", new HProjectIteration()))
+                .isTrue();
     }
 
     @Test
     public void allowMatchingActionWithMultipleTargets() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("action-1", new HProjectIteration(),
-                "A string")).isTrue();
+                .evaluatePermission("action-1", new HProjectIteration(),
+                        "A string")).isTrue();
     }
 
     @Test
     public void allowAnyMultiAction() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-1", new HProjectIteration()))
-            .isTrue();
+                .evaluatePermission("multi-action-1", new HProjectIteration()))
+                .isTrue();
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-2", new HProjectIteration()))
-            .isTrue();
+                .evaluatePermission("multi-action-2", new HProjectIteration()))
+                .isTrue();
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-3", new HProjectIteration()))
-            .isTrue();
+                .evaluatePermission("multi-action-3", new HProjectIteration()))
+                .isTrue();
     }
 
     @Test
     public void allowCorrectMultiActionWithDifferentType() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-1", new HProject()))
-            .isTrue();
+                .evaluatePermission("multi-action-1", new HProject()))
+                .isTrue();
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-2", new HProject()))
-            .isTrue();
+                .evaluatePermission("multi-action-2", new HProject()))
+                .isTrue();
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("multi-action-3", new HProject()))
-            .isTrue();
+                .evaluatePermission("multi-action-3", new HProject()))
+                .isTrue();
     }
 
     @Test
     public void injectActionAndAllow() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("action-should-grant", new HAccount()))
-            .isTrue();
+                .evaluatePermission("action-should-grant", new HAccount()))
+                .isTrue();
     }
 
     @Test
     public void injectActionAndDeny() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("action-should-deny", new HAccount()))
-            .isFalse();
+                .evaluatePermission("action-should-deny", new HAccount()))
+                .isFalse();
     }
 
     @Test
     public void multiTargetAllow() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("please-allow", new LocaleId("de-DE"),
-                new HProject())).isTrue();
+                .evaluatePermission("please-allow", new LocaleId("de-DE"),
+                        new HProject())).isTrue();
     }
 
     @Test
     public void multiTargetDenyWithWrongAction() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("please-deny", new LocaleId("de-DE"),
-                new HProject())).isFalse();
+                .evaluatePermission("please-deny", new LocaleId("de-DE"),
+                        new HProject())).isFalse();
     }
 
     @Test
     public void multiTargetDenyWithDifferentTargetTypes() throws Exception {
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("please-allow", new LocaleId("de-DE"),
-                new HProjectIteration())).isFalse();
+                .evaluatePermission("please-allow", new LocaleId("de-DE"),
+                        new HProjectIteration())).isFalse();
     }
 
     @Test
     public void multiTargetDenyCheckFailed() throws Exception {
         // Only allows German
         assertThat(complexPermissionEvaluator
-            .evaluatePermission("please-allow", new LocaleId("es-ES"),
-                new HProject())).isFalse();
+                .evaluatePermission("please-allow", new LocaleId("es-ES"),
+                        new HProject())).isFalse();
     }
 
     @Test
@@ -259,7 +266,7 @@ public class PermissionEvaluatorTest {
                 .evaluatePermission("please-allow", new HProject(),
                         new LocaleId("de-DE"))).isTrue();
     }
-    
+
     @Test
     public void allowWhenAllArgsPresentInOrder() {
         assertThat(
@@ -318,14 +325,15 @@ public class PermissionEvaluatorTest {
         public static boolean evaluatesToTrueAlways() {
             return true;
         }
-        
+
         @ResolvesPermissions
         public static boolean evaluatesForHProject(HProject project) {
             return true;
         }
 
         @ResolvesPermissions(action = "specific-action")
-        public static boolean evaluatesForAction(Object target, @Action String action) {
+        public static boolean evaluatesForAction(Object target,
+                @Action String action) {
             return true;
         }
 
@@ -354,14 +362,17 @@ public class PermissionEvaluatorTest {
             return true;
         }
 
-        @ResolvesPermissions(action = {"multi-action-1", "multi-action-2", "multi-action-3"})
-        public static boolean allowMultipleActionsForProjectIterations(HProjectIteration iteration) {
+        @ResolvesPermissions(action = { "multi-action-1", "multi-action-2",
+                "multi-action-3" })
+        public static boolean allowMultipleActionsForProjectIterations(
+                HProjectIteration iteration) {
             return true;
         }
 
         // Do not define any other methods that take an HAccount
         @ResolvesPermissions
-        public static boolean programaticallyAllowForAction(HAccount account, @Action String action) {
+        public static boolean programaticallyAllowForAction(HAccount account,
+                @Action String action) {
             return action.endsWith("should-grant");
         }
 

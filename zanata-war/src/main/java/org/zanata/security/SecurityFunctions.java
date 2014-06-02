@@ -53,9 +53,7 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     The Following Rules are for Identity Management
-
+     * The Following Rules are for Identity Management
      **************************************************************************/
 
     @ResolvesPermissions(action = "create")
@@ -74,9 +72,7 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Project ownership rules
-
+     * Project ownership rules
      **************************************************************************/
 
     /* Any authenticated user can create a project */
@@ -109,10 +105,10 @@ public class SecurityFunctions {
     @ResolvesPermissions(action = { "update",
             "add-iteration" })
     public static boolean canUpdateProjectOrAddIteration(HProject project) {
-        if(!getIdentity().isLoggedIn()) {
+        if (!getIdentity().isLoggedIn()) {
             return false;
         }
-        
+
         return getAuthenticatedAccount().getPerson().isMaintainer(project);
     }
 
@@ -128,13 +124,11 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Translation rules
-
+     * Translation rules
      **************************************************************************/
 
     /* Language Team members can add a translation for their language teams */
-    @ResolvesPermissions(action = {"add-translation", "modify-translation"})
+    @ResolvesPermissions(action = { "add-translation", "modify-translation" })
     public static boolean canTranslate(HProject project, HLocale lang) {
         return isUserAllowedAccess(project) && isUserTranslatorOfLanguage(lang);
     }
@@ -172,14 +166,14 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Review translation rules
-
+     * Review translation rules
      **************************************************************************/
     /* Language Team reviewer can approve/reject translation */
     // TODO Unify these two permission actions into a single one
-    @ResolvesPermissions(action = {"review-translation", "translation-review"})
-    public static boolean canReviewTranslation(HProject project, HLocale locale) {
+    @ResolvesPermissions(
+            action = { "review-translation", "translation-review" })
+    public static boolean
+            canReviewTranslation(HProject project, HLocale locale) {
         return isUserAllowedAccess(project) && isUserReviewerOfLanguage(locale);
     }
 
@@ -231,13 +225,11 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Glossary rules
-
+     * Glossary rules
      **************************************************************************/
 
     /* 'glossarist' can push and update glossaries */
-    @ResolvesPermissions(action = {"glossary-insert", "glossary-update"})
+    @ResolvesPermissions(action = { "glossary-insert", "glossary-update" })
     public static boolean canPushGlossary() {
         return getIdentity().hasRole("glossarist");
     }
@@ -250,9 +242,7 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Language Team Coordinator rules
-
+     * Language Team Coordinator rules
      **************************************************************************/
 
     /* Anyone can read Locale members */
@@ -284,9 +274,7 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     View Obsolete Project and Project Iteration rules
-
+     * View Obsolete Project and Project Iteration rules
      **************************************************************************/
 
     // Only admin can view obsolete projects
@@ -303,9 +291,7 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     Mark Project and Project Iteration obsolete rules
-
+     * Mark Project and Project Iteration obsolete rules
      **************************************************************************/
 
     // Only admin can archive projects
@@ -322,55 +308,47 @@ public class SecurityFunctions {
     }
 
     /***************************************************************************
-
-     File Download rules
-
+     * File Download rules
      **************************************************************************/
 
     /*
      * Permissions to download files. NOTE: Currently any authenticated user can
      * download files
      */
-    @ResolvesPermissions(action = {"download-single", "download-all"})
+    @ResolvesPermissions(action = { "download-single", "download-all" })
     public static boolean canDownloadFiles(HProjectIteration projectIteration) {
         return getIdentity().isLoggedIn();
     }
 
     /***************************************************************************
-
-     Version Group rules
-
+     * Version Group rules
      **************************************************************************/
-    @ResolvesPermissions(action = {"update", "insert"})
+    @ResolvesPermissions(action = { "update", "insert" })
     public static boolean canInsertAndUpdateVersionGroup(HIterationGroup group) {
         return getAuthenticatedAccount().getPerson().isMaintainer(group);
     }
-    
+
     @ResolvesPermissions(action = "view-obsolete")
     public static boolean canViewObsoleteVersionGroup(HIterationGroup group) {
-        return getAuthenticatedAccount().getPerson().isMaintainerOfVersionGroups();
+        return getAuthenticatedAccount().getPerson()
+                .isMaintainerOfVersionGroups();
     }
 
     /***************************************************************************
-
-     Copy Trans rules
-
+     * Copy Trans rules
      **************************************************************************/
 
-    /** Admins and Project maintainers can perform copy-trans  */
+    /** Admins and Project maintainers can perform copy-trans */
     @ResolvesPermissions(action = "copy-trans")
     public static boolean canRunCopyTrans(HProjectIteration iteration) {
         return getAuthenticatedAccount().getPerson().isMaintainer(
                 iteration.getProject());
     }
 
-
     /*****************************************************************************************
-
-     Review comment rules
-
+     * Review comment rules
      ******************************************************************************************/
-    
+
     @ResolvesPermissions(action = "review-comment")
     public static boolean canCommentOnReview(HLocale locale, HProject project) {
         return isUserAllowedAccess(project) && isLanguageTeamMember(locale);
@@ -391,14 +369,14 @@ public class SecurityFunctions {
                 JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION,
                 HAccount.class);
     }
-    
+
     private static final <T> T extractTarget(Object[] array, Class<T> type) {
-        for( int i = 0; i < array.length; i++ ) {
+        for (int i = 0; i < array.length; i++) {
             Object arrayElement = array[i];
-            if( type.isAssignableFrom(arrayElement.getClass()) ) {
-                return (T)arrayElement;
+            if (type.isAssignableFrom(arrayElement.getClass())) {
+                return (T) arrayElement;
             }
         }
         return null;
-    } 
+    }
 }
