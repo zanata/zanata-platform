@@ -23,8 +23,6 @@ package org.zanata.webtrans.client.ui;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.keys.TimedAction;
@@ -38,7 +36,6 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
-
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,6 +46,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  *
@@ -98,9 +97,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
             final NavigationService navigationService,
             final TimerFactory timer, final EventBus eventBus) {
         super(false, true, ShortcutContext.ValidationWarningPopup,
-                keyShortcutPresenter);
-
-        setStyleName("new-zanata");
+                keyShortcutPresenter, false);
 
         returnToEditor = new Button(messages.returnToEditor());
         saveAsFuzzy = new Button(messages.saveAsFuzzy());
@@ -118,6 +115,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         });
 
         setGlassEnabled(true);
+        getCaption().setText(messages.invalidTranslation());
         setWidget(container);
         hide();
     }
@@ -157,6 +155,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
             public void onClick(ClickEvent event) {
                 // clear data in navigation service to ensure first run of
                 // copyTranslationToEditor() = false
+                timer.cancel();
                 navigationService.clearData();
                 listener.gotoRow(documentInfo, transUnitId);
                 timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
