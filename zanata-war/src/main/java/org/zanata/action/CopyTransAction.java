@@ -152,12 +152,22 @@ public class CopyTransAction implements Serializable, ProgressBar {
                 zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
     }
 
-    public String getDocumentsProcessed() {
+    public String getCurrentProgress() {
         CopyTransTask.CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {
-            return String.valueOf(handle.getDocumentsProcessed());
+            return String.valueOf(handle.getCurrentProgress());
+        }
+        return "";
+    }
+
+    public String getMaxProgress() {
+        CopyTransTask.CopyTransTaskHandle handle =
+                copyTransManager
+                        .getCopyTransProcessHandle(getProjectIteration());
+        if (handle != null) {
+            return String.valueOf(handle.getMaxProgress());
         }
         return "";
     }

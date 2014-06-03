@@ -55,8 +55,9 @@ public class DocumentCopyTransTask extends CopyTransTask {
                 localeService.getSupportedLanguageByProjectIteration(document
                         .getProjectIteration().getProject().getSlug(), document
                         .getProjectIteration().getSlug());
-
-        return localeList.size();
+        int localeCount = localeList.size();
+        int textFlowCount = document.getTextFlows().size();
+        return localeCount * textFlowCount;
     }
 
     @Override

@@ -76,7 +76,8 @@ public class CopyTransServiceImpl implements CopyTransService {
      *            the locale of translations to copy
      */
     private void copyTransForDocumentLocale(HDocument document,
-            final HLocale targetLocale, final HCopyTransOptions options) {
+            final HLocale targetLocale, final HCopyTransOptions options,
+            Optional<CopyTransTaskHandle> taskHandleOpt) {
 
         int numCopied = 0;
         int start = 0;
@@ -87,7 +88,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         while (start < document.getTextFlows().size()) {
             numCopied +=
                     copyTransForBatch(document, start, COPY_TRANS_BATCH_SIZE,
-                            targetLocale, options);
+                            targetLocale, options, taskHandleOpt);
             start += COPY_TRANS_BATCH_SIZE;
         }
 
@@ -117,7 +118,8 @@ public class CopyTransServiceImpl implements CopyTransService {
      */
     private int copyTransForBatch(HDocument document, final int batchStart,
             final int batchLength, final HLocale targetLocale,
-            final HCopyTransOptions options) {
+            final HCopyTransOptions options,
+            Optional<CopyTransTaskHandle> taskHandleOpt) {
 
         try {
             boolean requireTranslationReview =
@@ -126,11 +128,18 @@ public class CopyTransServiceImpl implements CopyTransService {
             List<HTextFlow> docTextFlows = document.getTextFlows();
             int batchEnd =
                     Math.min(batchStart + batchLength, docTextFlows.size());
+            int batchSize = batchEnd - batchStart;
             List<HTextFlow> copyTargets =
                     docTextFlows.subList(batchStart, batchEnd);
-            return copyTransWorkFactory.createCopyTransWork(targetLocale,
-                    options, document, requireTranslationReview, copyTargets)
-                    .workInTransaction();
+            Integer numCopied =
+                    copyTransWorkFactory.createCopyTransWork(targetLocale,
+                            options, document, requireTranslationReview,
+                            copyTargets)
+                            .workInTransaction();
+            if (taskHandleOpt.isPresent()) {
+                taskHandleOpt.get().increaseProgress(batchSize);
+            }
+            return numCopied;
         } catch (Exception e) {
             log.warn("exception during copy trans", e);
             return 0;
@@ -172,11 +181,8 @@ public class CopyTransServiceImpl implements CopyTransService {
             if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
                 return;
             }
-            copyTransForDocumentLocale(document, targetLocale, copyTransOpts);
-        }
-
-        if (taskHandleOpt.isPresent()) {
-            taskHandleOpt.get().incrementDocumentsProcessed();
+            copyTransForDocumentLocale(document, targetLocale, copyTransOpts,
+                    taskHandleOpt);
         }
         log.info("copyTrans finished: document \"{}\"", document.getDocId());
     }
