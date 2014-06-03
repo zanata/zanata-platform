@@ -22,10 +22,13 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import javax.transaction.SystemException;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.transaction.Transaction;
 import org.zanata.async.AsyncUtils;
 import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -37,6 +40,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
@@ -90,7 +94,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                             targetLocale, options);
             start += COPY_TRANS_BATCH_SIZE;
         }
-
+        documentDAO.clear();
         // Advance the task handler if there is one
         Optional<CopyTransTaskHandle> taskHandle =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
@@ -123,7 +127,8 @@ public class CopyTransServiceImpl implements CopyTransService {
             boolean requireTranslationReview =
                     document.getProjectIteration()
                             .getRequireTranslationReview();
-            List<HTextFlow> docTextFlows = document.getTextFlows();
+            HDocument hDocument = documentDAO.findById(document.getId());
+            List<HTextFlow> docTextFlows = hDocument.getTextFlows();
             int batchEnd =
                     Math.min(batchStart + batchLength, docTextFlows.size());
             List<HTextFlow> copyTargets =
