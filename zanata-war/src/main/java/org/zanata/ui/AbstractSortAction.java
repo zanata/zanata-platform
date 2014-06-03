@@ -55,6 +55,12 @@ public abstract class AbstractSortAction {
 
     protected DisplayUnit getDisplayUnit(SortingType.SortOption sortOption,
             WordStatistic statistic, Date date) {
+
+        if (statistic.getTotal() == 0) {
+            return new DisplayUnit("stats--mini", getMessage("jsf.document.noContent.label"),
+                    "", getMessage("jsf.document.noContent.title"));
+        }
+
         DisplayUnit displayUnit;
         String displayString = null;
 
