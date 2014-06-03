@@ -85,7 +85,7 @@
               </h:selectBooleanCheckbox>
               <h:outputText value="#{messages['jsf.Active']}"/>
 
-              <richext:spacer width="5"/>
+              &nbsp;
               <h:selectBooleanCheckbox
                 title="#{messages['jsf.FilterReadOnlyProjects']}"
                 value="#{projectAction.showReadOnly}">
@@ -93,7 +93,7 @@
               </h:selectBooleanCheckbox>
               <h:outputText value="#{messages['jsf.ReadOnly']}"/>
 
-              <richext:spacer width="5"/>
+              &nbsp;
               <s:fragment
                 rendered="#{s:hasPermission('HProject','view-obsolete')}">
                 <h:selectBooleanCheckbox
