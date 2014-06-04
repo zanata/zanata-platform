@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import org.zanata.common.LocaleId;
 
 @Path("/test/data/sample")
-public interface SampleProjectResource {
+public interface SampleDataResource {
 
 
     @PUT

@@ -23,7 +23,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
-import org.zanata.util.SampleProjectClient;
+import org.zanata.util.SampleDataResourceClient;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 
@@ -58,7 +58,7 @@ public class CopyTransTuningTest {
     @Before
     public void setUp() throws Exception {
         for (LocaleId locale : translatedLocales) {
-            SampleProjectClient.addLanguage(locale.getId());
+            SampleDataResourceClient.addLanguage(locale.getId());
         }
 
         restCaller = new ZanataRestCaller();
