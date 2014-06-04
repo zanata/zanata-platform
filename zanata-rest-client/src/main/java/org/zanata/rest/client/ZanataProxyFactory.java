@@ -137,28 +137,35 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
 
             sslContext.init(null, trustAllCerts, new SecureRandom());
 
-            SSLSocketFactory factory = new SSLSocketFactory(sslContext) {
-                @Override
-                public Socket connectSocket(
-                        int connectTimeout,
-                        Socket socket,
-                        HttpHost host,
-                        InetSocketAddress remoteAddress,
-                        InetSocketAddress localAddress,
-                        HttpContext context) throws IOException,
-                        ConnectTimeoutException {
-                    if (socket instanceof SSLSocket) {
-                        try {
-                            PropertyUtils.setProperty(socket, "host",
-                                    host.getHostName());
-                        } catch (Exception ex) {
-                            log.warn("Unable to enable SNI; you may have trouble connecting to some secure hosts. Please ensure that you are running Java 1.7 or later.");
+            SSLSocketFactory factory;
+            if (sslCertDisabled) {
+                // avoid triggering the problem described here:
+                // https://stackoverflow.com/questions/7615645/ssl-handshake-alert-unrecognized-name-error-since-upgrade-to-java-1-7-0
+                factory = new SSLSocketFactory(sslContext);
+            } else {
+                factory = new SSLSocketFactory(sslContext) {
+                    @Override
+                    public Socket connectSocket(
+                            int connectTimeout,
+                            Socket socket,
+                            HttpHost host,
+                            InetSocketAddress remoteAddress,
+                            InetSocketAddress localAddress,
+                            HttpContext context) throws IOException {
+                        if (socket instanceof SSLSocket) {
+                            try {
+                                PropertyUtils.setProperty(socket, "host",
+                                        host.getHostName());
+                            } catch (Exception ex) {
+                                log.warn(
+                                        "Unable to enable SNI; you may have trouble connecting to some secure hosts. Please ensure that you are running Java 1.7 or later.");
+                            }
                         }
+                        return super.connectSocket(connectTimeout, socket, host,
+                                remoteAddress, localAddress, context);
                     }
-                    return super.connectSocket(connectTimeout, socket, host, remoteAddress,
-                            localAddress, context);
-                }
-            };
+                };
+            }
 
             HttpClient client = new DefaultHttpClient();
 
