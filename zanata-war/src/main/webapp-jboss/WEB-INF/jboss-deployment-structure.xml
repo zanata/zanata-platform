@@ -14,15 +14,22 @@
       <module name="javax.faces.api" />
       <module name="javax.mail.api" />
       <module name="javax.servlet.api" />
+      <module name="javax.transaction.api"/>
+      <module name="javax.validation.api" />
       <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
-      <module name="org.dom4j" />
       <module name="org.hibernate" />
+      <module name="org.hibernate.commons-annotations" />
       <module name="org.hibernate.validator" />
+      <module name="org.javassist" />
       <module name="org.jboss.security.negotiation" />
       <module name="org.slf4j" />
       <module name="com.h2database.h2" />
+      <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+      <module name="org.jboss.resteasy.resteasy-jaxb-provider" />
+      <module name="org.jboss.resteasy.resteasy-jaxrs" />
+      <module name="org.jboss.resteasy.resteasy-multipart-provider" />
     </dependencies>
   </deployment>
 </jboss-deployment-structure>

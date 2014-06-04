@@ -168,7 +168,7 @@
             <usedDependency>org.antlr:antlr</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
-            <!-- Used by lucene search -->
+            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <usedDependency>org.hibernate:hibernate-search</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
@@ -187,6 +187,8 @@
             <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
+            <!-- Required for jboss startup at org.jboss.seam.init.Initialization.initComponentsFromXmlDocuments(Initialization.java:205) -->
+            <usedDependency>dom4j:dom4j</usedDependency>
             <!-- NB: Don't add anything without a comment explaining how the
                  dependency is used -->
           </usedDependencies>
@@ -1206,6 +1208,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>javassist</groupId>
@@ -1220,15 +1223,18 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <artifactId>
@@ -1260,6 +1266,7 @@
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
@@ -1301,6 +1308,12 @@
       <artifactId>antlr</artifactId>
       <version>3.3</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
     </dependency>
 
     <!-- Richfaces -->
@@ -1533,7 +1546,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-analyzers</artifactId>
@@ -1636,6 +1653,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- This must appear before arquillian dependencies -->
@@ -1927,6 +1945,7 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
