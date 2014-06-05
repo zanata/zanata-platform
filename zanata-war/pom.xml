@@ -1311,9 +1311,15 @@
     </dependency>
 
     <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>1.6.1</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Richfaces -->
@@ -1653,7 +1659,6 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- This must appear before arquillian dependencies -->
@@ -1945,12 +1950,6 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
       <scope>provided</scope>
     </dependency>
 
