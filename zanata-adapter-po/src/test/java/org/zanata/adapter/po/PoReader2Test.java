@@ -9,7 +9,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -43,15 +46,17 @@ public class PoReader2Test {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    private Resource getTemplate() {
+    private Resource getTemplate() throws FileNotFoundException {
         InputSource inputSource =
                 new InputSource(new File(testDir, "pot/RPM.pot").toURI()
                         .toString());
         inputSource.setEncoding("utf8");
+        InputStream inputStream =
+            new FileInputStream(new File(testDir, "pot/RPM.pot"));
 
         log.debug("parsing template");
         Resource doc =
-                poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
+                poReader.extractTemplate(inputStream, LocaleId.EN_US, "doc1");
         assertThat(doc.getTextFlows().size(), is(137));
         return doc;
     }
@@ -65,8 +70,10 @@ public class PoReader2Test {
                 new InputSource(new File(testDir, locale + "/RPM.po").toURI()
                         .toString());
         inputSource.setEncoding("utf8");
+        InputStream inputStream =
+                new FileInputStream(new File(testDir, locale + "/RPM.po"));
         log.debug("extracting target: " + locale);
-        TranslationsResource targetDoc = poReader.extractTarget(inputSource);
+        TranslationsResource targetDoc = poReader.extractTarget(inputStream);
         List<TextFlowTarget> textFlowTargets = targetDoc.getTextFlowTargets();
         assertThat(textFlowTargets.size(), is(137));
         TextFlowTarget target = textFlowTargets.iterator().next();
@@ -103,7 +110,7 @@ public class PoReader2Test {
     }
 
     @Test
-    public void extractTemplate() {
+    public void extractTemplate() throws FileNotFoundException {
         getTemplate();
     }
 
@@ -113,10 +120,12 @@ public class PoReader2Test {
                 new InputSource(new File(testDir, "pot/invalid.pot").toURI()
                         .toString());
         inputSource.setEncoding("utf8");
+        InputStream inputStream =
+            new FileInputStream(new File(testDir, "pot/invalid.pot"));
 
         exception.expect(RuntimeException.class);
         exception.expectMessage("unsupported charset");
-        poReader.extractTemplate(inputSource, LocaleId.EN_US, "doc1");
+        poReader.extractTemplate(inputStream, LocaleId.EN_US, "doc1");
     }
 
     @Test
@@ -125,19 +134,21 @@ public class PoReader2Test {
         InputSource inputSource =
                 new InputSource(new File(testDir, locale + "/invalid.po")
                         .toURI().toString());
+        InputStream inputStream =
+                new FileInputStream(new File(testDir, locale + "/invalid.po"));
         inputSource.setEncoding("utf8");
         log.debug("extracting target: " + locale);
 
         exception.expect(RuntimeException.class);
         exception.expectMessage("unsupported charset");
-        poReader.extractTarget(inputSource);
+        poReader.extractTarget(inputStream);
     }
 
     @Test
     public void testContentStateApprovedSingle() {
         Message m = new Message();
         m.setMsgstr("s");
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.Translated));
     }
 
@@ -146,7 +157,7 @@ public class PoReader2Test {
         Message m = new Message();
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s0", 0);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.Translated));
     }
 
@@ -156,7 +167,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s0", 0);
         m.addMsgstrPlural("s1", 1);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.Translated));
     }
 
@@ -164,14 +175,14 @@ public class PoReader2Test {
     public void testContentStateNewSingle1() {
         Message m = new Message();
         m.setMsgstr("");
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
     @Test
     public void testContentStateNewSingle2() {
         Message m = new Message();
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
@@ -180,7 +191,7 @@ public class PoReader2Test {
         Message m = new Message();
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("", 0);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
@@ -190,7 +201,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("s1", 1);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
@@ -198,7 +209,7 @@ public class PoReader2Test {
     public void testContentStateNewPlural3() {
         Message m = new Message();
         m.setMsgidPlural("plural");
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
@@ -208,7 +219,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("", 1);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.New));
     }
 
@@ -229,7 +240,7 @@ public class PoReader2Test {
         Message m = new Message();
         m.setFuzzy(true);
         m.setMsgstr("s");
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
@@ -239,7 +250,7 @@ public class PoReader2Test {
         m.setFuzzy(true);
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s", 0);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
@@ -250,7 +261,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("", 0);
         m.addMsgstrPlural("s1", 1);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
@@ -261,7 +272,7 @@ public class PoReader2Test {
         m.setMsgidPlural("plural");
         m.addMsgstrPlural("s0", 0);
         m.addMsgstrPlural("s1", 1);
-        ContentState actual1 = PoReader2.getContentState(m);
+        ContentState actual1 = PoBaseStreamingParser.getContentState(m);
         assertThat(actual1, is(ContentState.NeedReview));
     }
 
