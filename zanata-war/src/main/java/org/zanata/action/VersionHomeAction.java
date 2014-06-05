@@ -151,11 +151,9 @@ public class VersionHomeAction extends AbstractSortAction implements
     private WordStatistic overallStatistic;
 
     @Getter
-    @Setter
     private HLocale selectedLocale;
 
     @Getter
-    @Setter
     private HDocument selectedDocument;
 
     @In
