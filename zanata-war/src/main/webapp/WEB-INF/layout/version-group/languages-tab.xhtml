@@ -85,14 +85,9 @@
           value="#{versionGroupHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
-            <a4j:commandLink
-              oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
-              action="#{versionGroupHomeAction.setSelectedLocale(hLocale)}"
-              onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
-              status="languageTab-projectsLoader"
-              render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
-              onclick="changeBrowserUrl('#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages/#{hLocale.localeId}', true)"
-              styleClass="#{hLocale.localeId}">
+            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages/#{hLocale.localeId}"
+              onclick="changeBrowserUrl(this.href, true);return false;"
+              class="#{hLocale.localeId}">
               <div class="list__item">
                 <div class="list__item__info">
                   <h3 class="list__title">
@@ -127,7 +122,7 @@
               <zanata:statistic
                 value="#{versionGroupHomeAction.getStatisticsForLocale(hLocale.localeId)}"
                 rendered="#{versionGroupHomeAction.pageRendered}"/>
-            </a4j:commandLink>
+            </a>
           </li>
         </ui:repeat>
       </ul>
