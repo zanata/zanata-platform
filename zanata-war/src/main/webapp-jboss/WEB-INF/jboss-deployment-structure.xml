@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
-<jboss-deployment-structure>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
   <deployment>
-    <!-- If the Yaml provider is present, it will be used as the default for provider for 'Accept: */*'
-     requests -->
+    <!-- These exclusions let us use RESTEasy 2 instead of the
+         container's version -->
+    <exclude-subsystems>
+      <subsystem name="jaxrs" />
+    </exclude-subsystems>
     <exclusions>
-      <module name="org.jboss.resteasy.resteasy-yaml-provider" />
     </exclusions>
     <dependencies>
       <!-- needed by arquillian test -->
       <module name="com.h2database.h2" />
       <module name="javax.annotation.api" />
+      <!-- not needed for wildfly: -->
+      <module name="javax.ejb.api" />
       <module name="javax.el.api" />
       <module name="javax.faces.api" />
+      <!-- not needed for wildfly: -->
+      <module name="javax.interceptor.api" />
       <module name="javax.mail.api" />
       <module name="javax.servlet.api" />
       <module name="javax.transaction.api"/>
       <module name="javax.validation.api" />
+      <!-- not needed for wildfly: -->
+      <module name="javax.xml.bind.api" />
+      <!-- not needed for wildfly: -->
+      <module name="javax.ws.rs.api" />
       <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
