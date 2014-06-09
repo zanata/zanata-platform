@@ -205,6 +205,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         CopyTransService copyTransService =
                 seam.autowire(CopyTransServiceImpl.class);
         copyTransService.copyTransForIteration(projectIteration, options);
+        getEm().flush();
 
         // Validate execution
         HTextFlow targetTextFlow =

@@ -72,7 +72,7 @@ public class CopyTransTuningTest {
         restCaller.createProjectAndVersion(PROJECT_SLUG, "3.5",
                 projectType);
 
-        final int numOfTextFlows = 500;
+        final int numOfTextFlows = 2000;
         Resource message1 =
                 buildSourceResource("message1", generateTextFlows(
                         numOfTextFlows));
@@ -145,12 +145,13 @@ public class CopyTransTuningTest {
     @Test
     public void pushPreviousVersions() {
         pushSource("master");
-        pushSource("3.3");
-        pushSource("3.4");
+//        pushSource("3.3");
+//        pushSource("3.4");
         pushSource("3.5");
         pushTargets("master");
-        pushTargets("3.3");
-        pushTargets("3.4");
+//        pushTargets("3.3");
+//        pushTargets("3.4");
+/*
 
         List<String> locales = Lists.transform(translatedLocales,
                 Functions.toStringFunction());
@@ -165,6 +166,7 @@ public class CopyTransTuningTest {
             Assertions.assertThat(translationStatistics.getPercentTranslated())
                     .isEqualTo(100);
         }
+*/
 
     }
 

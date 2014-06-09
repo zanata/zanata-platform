@@ -274,7 +274,9 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
             hTextFlowTarget.setVersionNum(0); // this will be incremented when
                                               // content is set (below)
+            // TODO pahuang getTargets just to make sure hTextFlowTarget is persisted in the end
             hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
+//            getSession().persist(hTextFlowTarget);
         }
         return hTextFlowTarget;
     }
