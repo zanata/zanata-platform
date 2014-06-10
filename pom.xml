@@ -68,6 +68,8 @@
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
     <jdbc.version>5.1.26</jdbc.version>
+
+    <resteasy.scope>compile</resteasy.scope>
   </properties>
 
   <dependencyManagement>
