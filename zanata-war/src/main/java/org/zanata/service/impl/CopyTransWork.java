@@ -13,6 +13,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.ITextFlow;
 import org.zanata.service.TranslationFinder;
 import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
@@ -39,7 +40,7 @@ class CopyTransWork extends Work<Integer> {
     private final HCopyTransOptions options;
     private final HDocument document;
     private final List<HTextFlow> copyTargets;
-    private final HLocale targetLocale;
+    private final List<HLocale> targetLocales;
     private final boolean requireTranslationReview;
     private final TranslationFinder translationFinder;
     private final TextFlowTargetDAO textFlowTargetDAO;
@@ -159,20 +160,22 @@ class CopyTransWork extends Work<Integer> {
         }
 
         for (HTextFlow textFlow : copyTargets) {
-            if (shouldFindMatch(textFlow, targetLocale,
-                    requireTranslationReview)) {
+            for (HLocale targetLocale : targetLocales) {
+                if (shouldFindMatch(textFlow, targetLocale,
+                        requireTranslationReview)) {
 
-                Optional<HTextFlowTarget> bestMatch =
-                        translationFinder.searchBestMatchTransMemory(textFlow,
-                                targetLocale.getLocaleId(), document
-                                        .getLocale().getLocaleId(),
-                                checkContext, checkDocument, checkProject);
-                if (bestMatch.isPresent()) {
-                    numCopied++;
+                    Optional<HTextFlowTarget> bestMatch =
+                            translationFinder.searchBestMatchTransMemory(textFlow,
+                                    targetLocale.getLocaleId(), document
+                                            .getLocale().getLocaleId(),
+                                    checkContext, checkDocument, checkProject);
+                    if (bestMatch.isPresent()) {
+                        numCopied++;
 
-                    saveCopyTransMatch(bestMatch.get(), textFlow, options,
-                            requireTranslationReview);
+                        saveCopyTransMatch(bestMatch.get(), textFlow, options,
+                                requireTranslationReview);
 
+                    }
                 }
             }
         }

@@ -57,7 +57,7 @@ public class CopyTransWorkFactory {
     @In
     private VersionStateCache versionStateCacheImpl;
 
-    public CopyTransWork createCopyTransWork(HLocale targetLocale,
+    public CopyTransWork createCopyTransWork(List<HLocale> targetLocale,
             HCopyTransOptions options, HDocument document,
             boolean requireTranslationReview, List<HTextFlow> copyTargets) {
         return new CopyTransWork(options, document, copyTargets, targetLocale,

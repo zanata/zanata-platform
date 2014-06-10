@@ -48,9 +48,9 @@ public class CopyTransTuningTest {
 
     private List<LocaleId> translatedLocales =
             ImmutableList.<LocaleId> builder()
-                    .add(new LocaleId("ja"))
-                    .add(new LocaleId("de"))
-                    .add(new LocaleId("es"))
+//                    .add(new LocaleId("ja"))
+//                    .add(new LocaleId("de"))
+//                    .add(new LocaleId("es"))
                     .add(new LocaleId("zh")).build();
     private Resource[] resources;
     private Pair[] translations;
