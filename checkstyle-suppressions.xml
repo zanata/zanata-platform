@@ -5,7 +5,8 @@
   "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-  <suppress checks=".*" files=".*(compressed.*\.js|min\.js|\.eot|\.gif|\.ico|\.patch|\.png|\.ttf|\.woff|\.yml)" />
+  <suppress checks=".*" files=".*(compressed.*\.js|min\.js|\.yml|\.patch)" />
+  <suppress checks=".*" files=".*(\.eot|\.gif|\.ico|\.png|\.ttf|\.woff)" />
   <!-- Ignore old Liquibase changelogs -->
   <suppress checks=".*" files=".*db\.changelog-(1\..a?|2\..|3\.[01])\.xml" />
   <suppress checks=".*" files=".*db/.*_baseline\.sql" />
