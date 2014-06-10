@@ -60,6 +60,7 @@ public class JBossSSOLoginModule implements LoginModule {
     private String username;
     private char[] password;
     private String jbossSSOServerUrl = "https://sso.jboss.org";
+    private boolean loginSuccessful;
 
     @Override
     public void initialize(Subject subject, CallbackHandler callbackHandler,
@@ -74,6 +75,7 @@ public class JBossSSOLoginModule implements LoginModule {
 
     @Override
     public boolean login() throws LoginException {
+        loginSuccessful = false;
         try {
             NameCallback cbName = new NameCallback("Enter username");
             PasswordCallback cbPassword =
@@ -83,26 +85,22 @@ public class JBossSSOLoginModule implements LoginModule {
             callbackHandler.handle(new Callback[] { cbName, cbPassword });
             username = cbName.getName();
             password = cbPassword.getPassword();
-        } catch (Exception ex) {
-            LoginException le = new LoginException(ex.getMessage());
-            le.initCause(ex);
-            throw le;
-        }
 
-        // Send the request to JBoss.org's REST service
-        HttpClient httpClient = new DefaultHttpClient();
-        StringBuilder requestUrl =
-                new StringBuilder(jbossSSOServerUrl + "/rest/auth?");
-        String passwordHash =
-                HashUtil.md5Hex(username
-                        + HashUtil.md5Hex(new String(password)));
-        requestUrl.append("u=" + username);
-        requestUrl.append("&h=" + passwordHash);
-        HttpGet getAuthRequest = new HttpGet(requestUrl.toString());
+            // Send the request to JBoss.org's REST service
+            HttpClient httpClient = new DefaultHttpClient();
+            StringBuilder requestUrl =
+                    new StringBuilder(jbossSSOServerUrl + "/rest/auth?");
+            String passwordHash =
+                    HashUtil.md5Hex(username
+                            + HashUtil.md5Hex(new String(password)));
+            requestUrl.append("u=" + username);
+            requestUrl.append("&h=" + passwordHash);
+            HttpGet getAuthRequest = new HttpGet(requestUrl.toString());
 
-        try {
             HttpResponse authResponse = httpClient.execute(getAuthRequest);
-            if (authResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            loginSuccessful =
+                    authResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+            if (loginSuccessful) {
                 // read json
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode parsedResponse =
@@ -113,14 +111,13 @@ public class JBossSSOLoginModule implements LoginModule {
                 //parsedResponse.get("email");
                 log.info("JBoss.org user " + username
                         + " successfully authenticated");
-                return true;
             }
             else {
                 log.info("JBoss.org user " + username
                         + " failed authentication");
-                return false;
             }
-        } catch (IOException ex) {
+            return loginSuccessful;
+        } catch (Exception ex) {
             LoginException le = new LoginException(ex.getMessage());
             le.initCause(ex);
             throw le;
@@ -129,6 +126,9 @@ public class JBossSSOLoginModule implements LoginModule {
 
     @Override
     public boolean commit() throws LoginException {
+        if(!loginSuccessful) {
+            return false;
+        }
         subject.getPrincipals().add(new SimplePrincipal(username));
         return true;
     }

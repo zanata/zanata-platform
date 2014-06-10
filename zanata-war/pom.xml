@@ -123,7 +123,6 @@
           </execution>
         </executions>
         <configuration>
-          <failOnWarning>true</failOnWarning>
           <usedDependencies combine.children="append">
             <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
             <!-- runtime dep for liquibase logging -->
@@ -1888,6 +1887,15 @@
       <groupId>org.ocpsoft.prettytime</groupId>
       <artifactId>prettytime</artifactId>
       <version>3.0.2.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
     </dependency>
 
     <!-- openid4java -->
