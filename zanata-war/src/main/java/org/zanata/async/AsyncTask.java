@@ -20,6 +20,7 @@
  */
 package org.zanata.async;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 /**
@@ -40,6 +41,6 @@ public interface AsyncTask<V, H extends AsyncTaskHandle<V>> extends Callable<V> 
      * @return The handle used to keep task information. Tasks must always
      *         return the same instance of a handle.
      */
-    H getHandle();
+    @Nonnull H getHandle();
 
 }

@@ -39,25 +39,24 @@ import lombok.extern.slf4j.Slf4j;
 public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T> {
     public static final int MAX_QUERY_ROWS = 5000;
 
-    public SimpleClassIndexingStrategy(Class<T> entityType,
-            FullTextSession session) {
-        super(entityType, session);
+    public SimpleClassIndexingStrategy(Class<T> entityType) {
+        super(entityType);
     }
 
     @Override
-    protected void onEntityIndexed(int rowNum) {
+    protected void onEntityIndexed(int rowNum, FullTextSession session) {
         if (rowNum % MAX_QUERY_ROWS == 0) {
             log.info("restarting query for {} (rowNum={})", getEntityType(),
                     rowNum);
             getScrollableResults().close();
-            setScrollableResults(queryResults(rowNum));
+            setScrollableResults(queryResults(rowNum, session));
         }
     }
 
     @Override
-    protected ScrollableResults queryResults(int offset) {
+    protected ScrollableResults queryResults(int offset, FullTextSession session) {
         Query query =
-                getSession().createQuery("from " + getEntityType().getName());
+                session.createQuery("from " + getEntityType().getName());
         query.setFirstResult(offset);
         query.setMaxResults(MAX_QUERY_ROWS);
         return query.scroll(ScrollMode.FORWARD_ONLY);
