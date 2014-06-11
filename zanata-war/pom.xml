@@ -166,9 +166,10 @@
             <!-- Used for security.drl -->
             <usedDependency>org.drools:drools-compiler</usedDependency>
             <usedDependency>org.antlr:antlr</usedDependency>
+            <!-- Used by lucene search -->
+            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
-            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <usedDependency>org.hibernate:hibernate-search</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
