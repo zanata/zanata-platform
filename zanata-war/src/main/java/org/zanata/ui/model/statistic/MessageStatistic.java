@@ -5,6 +5,8 @@ package org.zanata.ui.model.statistic;
  */
 public class MessageStatistic extends AbstractStatistic {
 
+    private static final long serialVersionUID = 1L;
+
     public MessageStatistic() {
         super();
     }
