@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import net.sf.ehcache.CacheManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
@@ -23,7 +24,8 @@ import org.testng.annotations.Test;
 import org.zanata.testng.TestMethodListener;
 
 @Listeners(TestMethodListener.class)
-@Test
+// single threaded because of ehcache (perhaps other reasons too)
+@Test(singleThreaded = true)
 public abstract class ZanataJpaTest {
     private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
     private static final String PERSIST_NAME = "zanataTestDatasourcePU";
@@ -36,6 +38,7 @@ public abstract class ZanataJpaTest {
     @Before
     protected void setupEM() {
         log.debug("Setting up EM");
+        CacheManager.getInstance().clearAll();
         em = emf.createEntityManager();
         em.getTransaction().begin();
     }
@@ -50,6 +53,7 @@ public abstract class ZanataJpaTest {
             em.close();
         }
         em = null;
+        CacheManager.getInstance().clearAll();
     }
 
     protected EntityManager getEm() {
