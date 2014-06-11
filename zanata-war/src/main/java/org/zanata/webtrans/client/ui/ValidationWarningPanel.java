@@ -89,7 +89,9 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
 
     private final EventBus eventBus;
 
-    private static int CHECK_EDITOR_SELECTED_DURATION = 500;
+    private static int CHECK_EDITOR_SELECTED_DURATION = 300;
+
+    private boolean saveAsFuzzyOpt;
 
     @Inject
     public ValidationWarningPanel(TableEditorMessages messages,
@@ -131,10 +133,14 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
                 && selectedTransUnit.getId().equals(transUnitId)) {
             timer.cancel();
             eventBus.fireEvent(new CopyDataToEditorEvent(targets));
-            hide();
+            if(saveAsFuzzyOpt) {
+                listener.saveAsFuzzy(transUnitId);
+            }
+            saveAsFuzzyOpt = false;
         } else {
             timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
         }
+        hide();
     }
 
     public void setListener(TargetContentsDisplay.Listener listener) {
@@ -146,8 +152,9 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
         saveAsFuzzy.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                hide();
-                listener.saveAsFuzzy(transUnitId);
+                listener.gotoRow(documentInfo, transUnitId);
+                saveAsFuzzyOpt = true;
+                copyTranslationToEditor();
             }
         });
         returnToEditor.addClickHandler(new ClickHandler() {
@@ -158,7 +165,8 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
                 timer.cancel();
                 navigationService.clearData();
                 listener.gotoRow(documentInfo, transUnitId);
-                timer.schedule(CHECK_EDITOR_SELECTED_DURATION);
+                saveAsFuzzyOpt = false;
+                copyTranslationToEditor();
             }
         });
     }
@@ -177,6 +185,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
     private void refreshView(Map<ValidationAction, List<String>> errorMessages) {
         translations.clear();
         errorList.clear();
+        saveAsFuzzyOpt = false;
 
         for (String target : targets) {
             SafeHtmlBuilder builder = new SafeHtmlBuilder();
