@@ -230,4 +230,19 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 hLocale.getLocaleId(), constraints);
         return result;
     }
+
+    public long countActiveTextFlowsInProjectIteration(Long projIterId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HTextFlow tf " +
+                                        "where tf.obsolete = 0 and " +
+                                        "tf.document.obsolete = 0 and " +
+                                        "tf.document.iteration.id=:projIterId");
+        q.setParameter("projIterId", projIterId);
+        q.setCacheable(true).setComment(
+                "TextFlowDAO.countTextFlowsInProjectIteration");
+        return (Long) q.uniqueResult();
+    }
+
 }

@@ -22,7 +22,9 @@ package org.zanata.async.tasks;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.Component;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -30,6 +32,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Copy Trans task that runs copy trans for a whole project iteration and all
@@ -38,8 +41,10 @@ import org.zanata.service.impl.LocaleServiceImpl;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class IterationCopyTransTask extends CopyTransTask {
     private HProjectIteration projectIteration;
+    private long maxProgress = -1;
 
     public IterationCopyTransTask(HProjectIteration projectIteration,
             HCopyTransOptions options) {
@@ -49,14 +54,27 @@ public class IterationCopyTransTask extends CopyTransTask {
 
     @Override
     protected int getMaxProgress() {
-        LocaleService localeService =
-                (LocaleService) Component.getInstance(LocaleServiceImpl.class);
-        List<HLocale> localeList =
-                localeService.getSupportedLanguageByProjectIteration(
-                        projectIteration.getProject().getSlug(),
-                        projectIteration.getSlug());
-
-        return projectIteration.getDocuments().size() * localeList.size();
+        if (maxProgress < 0) {
+            ServiceLocator locator = ServiceLocator.instance();
+            log.debug("counting locales");
+            LocaleService localeService =
+                    locator.getInstance(LocaleServiceImpl.class);
+            List<HLocale> localeList =
+                    localeService.getSupportedLanguageByProjectIteration(
+                            projectIteration.getProject().getSlug(),
+                            projectIteration.getSlug());
+            int localeCount = localeList.size();
+            log.debug("counting locales finished");
+            log.debug("counting textflows");
+            TextFlowDAO textFlowDAO =
+                    locator.getInstance(TextFlowDAO.class);
+            long textFlowCount = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                    projectIteration.getId());
+            log.debug("counting textflows finished");
+            maxProgress = localeCount * textFlowCount;
+        }
+        // TODO use long for progress everywhere
+        return (int) maxProgress;
     }
 
     @Override
