@@ -111,19 +111,20 @@
         <type>pom</type>
       </dependency>
 
-
-      <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>bom</artifactId>
-        <version>${seam.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.jboss.as</groupId>
         <artifactId>jboss-as-parent</artifactId>
         <version>${jboss.as.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Seam bom goes last because it uses outdated dependencies,
+           and isn't being updated -->
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>bom</artifactId>
+        <version>${seam.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
