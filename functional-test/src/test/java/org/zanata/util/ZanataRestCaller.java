@@ -156,13 +156,13 @@ public class ZanataRestCaller {
 
     public void postTargetDocResource(String projectSlug, String iterationSlug,
             String idNoSlash, LocaleId localeId,
-            TranslationsResource translationsResource) {
+            TranslationsResource translationsResource, String mergeType) {
 
         ClientResponse<String> response = zanataProxyFactory
                 .getTranslatedDocResource(projectSlug, iterationSlug)
                 .putTranslations(idNoSlash, localeId,
                         translationsResource,
-                        Collections.<String>emptySet(), "auto");
+                        Collections.<String>emptySet(), mergeType);
         checkStatusAndReleaseConnection(response);
     }
 

@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,15 +20,11 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.SampleDataResourceClient;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 
-import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 /**
  * This is a manual test that will help tuning/troubleshooting copyTrans. This
@@ -48,9 +43,9 @@ public class CopyTransTuningTest {
 
     private List<LocaleId> translatedLocales =
             ImmutableList.<LocaleId> builder()
-//                    .add(new LocaleId("ja"))
-//                    .add(new LocaleId("de"))
-//                    .add(new LocaleId("es"))
+                    .add(new LocaleId("ja"))
+                    .add(new LocaleId("de"))
+                    .add(new LocaleId("es"))
                     .add(new LocaleId("zh")).build();
     private Resource[] resources;
     private Pair[] translations;
@@ -85,7 +80,7 @@ public class CopyTransTuningTest {
         Resource message4 =
                 buildSourceResource("message4", generateTextFlows(
                         numOfTextFlows));
-        resources = new Resource[] { message1, message2, message3, message4 };
+        resources = new Resource[] { message1/*, message2, message3, message4*/ };
 
         TranslationsResource translation1 =
                 buildTranslationResource(generateTextFlowTargets(
@@ -99,10 +94,10 @@ public class CopyTransTuningTest {
         TranslationsResource translation4 =
                 buildTranslationResource(generateTextFlowTargets(
                 numOfTextFlows));
-        translations = new Pair[] { Pair.of(message1, translation1),
+        translations = new Pair[] { Pair.of(message1, translation1)/*,
                 Pair.of(message2, translation2),
                 Pair.of(message3, translation3),
-                Pair.of(message4, translation4) };
+                Pair.of(message4, translation4)*/ };
     }
 
     private static TextFlow[] generateTextFlows(int numOfTextFlows) {
@@ -137,7 +132,7 @@ public class CopyTransTuningTest {
                         iterationSlug, pair.source.getName(), localeId);
                 restCaller.postTargetDocResource(PROJECT_SLUG, iterationSlug,
                         pair.source.getName(),
-                        localeId, pair.target);
+                        localeId, pair.target, "import");
             }
         }
     }
