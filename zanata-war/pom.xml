@@ -1263,6 +1263,7 @@
     <dependency>
       <groupId>org.jboss.spec.javax.faces</groupId>
       <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -1343,6 +1344,7 @@
     <dependency>
       <groupId>com.sun.faces</groupId>
       <artifactId>jsf-impl</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Hibernate / JPA -->
@@ -1660,6 +1662,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- This must appear before arquillian dependencies -->
@@ -1946,6 +1949,7 @@
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
       <version>4.0.14.Final</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1980,6 +1984,7 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.12</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

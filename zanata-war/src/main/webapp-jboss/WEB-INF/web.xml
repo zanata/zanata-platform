@@ -66,12 +66,6 @@
     <param-value>DEFAULT</param-value>
   </context-param>-->
 
-  <context-param>
-    <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
-    <param-value>${war_bundles_jsf_impl}</param-value>
-  </context-param>
-
-
   <!--
   Make sure Liquibase is the first listener (after ClassLoaderLeakPreventor),
   so that it can update the database schema before
