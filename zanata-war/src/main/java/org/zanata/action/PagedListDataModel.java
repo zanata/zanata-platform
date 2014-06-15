@@ -24,6 +24,8 @@ import java.io.Serializable;
 
 import javax.faces.model.DataModel;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.exception.ZanataServiceException;
@@ -33,22 +35,25 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         Serializable {
     private static final long serialVersionUID = 1L;
     private int DEFAULT_PAGESIZE = 15;
+
+    @Getter
+    @Setter
     private int pageSize = DEFAULT_PAGESIZE;
+
+    @Getter
+    @Setter
     private int rowIndex;
+
+    @Getter
+    @Setter
+    private int scrollerPage = 1;
+
     private DataPage<E> page;
 
     public PagedListDataModel() {
         super();
         this.rowIndex = -1;
         this.page = null;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getPageSize() {
-        return pageSize;
     }
 
     @SuppressWarnings("unchecked")
@@ -59,14 +64,6 @@ public abstract class PagedListDataModel<E> extends DataModel implements
             throw new ZanataServiceException(
                     "Wrapped data class cast exception");
         }
-    }
-
-    public int getRowIndex() {
-        return rowIndex;
-    }
-
-    public void setRowIndex(int index) {
-        rowIndex = index;
     }
 
     public int getRowCount() {
