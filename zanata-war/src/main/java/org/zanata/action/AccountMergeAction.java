@@ -27,7 +27,6 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -72,7 +71,7 @@ public class AccountMergeAction implements Serializable {
     @Getter
     private HAccount obsoleteAccount;
 
-    private OpenIdProviderType providerType;
+    private OpenIdProviderType providerType = OpenIdProviderType.Fedora;
 
     private boolean accountsValid;
 

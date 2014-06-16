@@ -1,65 +1,175 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:a4j="http://richfaces.org/a4j"
+  template="../WEB-INF/template/template.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.profile.MergeAccount']}</ui:define>
+    name="page_title">#{messages['jsf.profile.MergeAccount']}
+  </ui:define>
 
   <ui:define name="head">
-    <!-- Load jQuery -->
-    <rich:jQuery query="jquery"/>
-
     <script type="text/javascript">
-      function showLoginButton() {
-        jQuery("[id='#{rich:clientId('verifyButton')}']").show();
+      function updateLoginType(selectedElement, showUsername,
+                               usernameLabel, showPassword) {
+
+        var fieldSelector = "[id='#{rich:clientId('login_provider')}']";
+        jQuery(fieldSelector).val(jQuery(selectedElement).children('input').attr('value'));
+
+        var usernamefieldSelector = "#providerUsernameField";
+        if (showUsername) {
+          jQuery("[id='#{rich:clientId('identityLabel')}']").html(usernameLabel);
+          jQuery(usernamefieldSelector).removeClass("is-hidden");
+        }
+        else {
+          jQuery(usernamefieldSelector).addClass("is-hidden");
+        }
+
+        var passwordfieldSelector = "#providerPasswordField";
+        if (showPassword) {
+          jQuery(passwordfieldSelector).removeClass("is-hidden");
+        }
+        else {
+          jQuery(passwordfieldSelector).addClass("is-hidden");
+        }
       }
     </script>
+
   </ui:define>
 
   <ui:define name="center_content">
-    <h:form
-      rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
+    <div class="g--centered">
+      <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
 
-      <div class="content_box">
-        <p><h:outputText value="#{messages['jsf.profile.MergeAccount.info']}"/>
+        <p class="txt--meta l--push-all-0">
+          <a href="#{request.contextPath}/dashboard/settings/account"
+            onclick="changeBrowserUrl(this.href, true);">
+            #{messages['jsf.Dashboard']}
+          </a>
         </p>
+
+        <h1 class="l--push-all-0">#{messages['jsf.profile.MergeAccount']}</h1>
+
+        <h:form
+          rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}"
+          styleClass="l--push-top-1">
+          <p>
+            <h:outputText
+              value="#{messages['jsf.profile.MergeAccount.info']}"/>
+          </p>
+
+          <ul class="list--slat l--push-bottom-1">
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="updateLoginType(this, true, '#{messages['jsf.login.openid.fedora']}')">
+                <input type="radio" name="auth-type" value="Fedora"
+                  class="form__radio__input js-form__radio__input"
+                  id="fedora:auth-type" checked="true"/>
+                <label for="fedora:auth-type" class="form__radio__label">
+                  <span class="list__item--fedora">Fedora</span>
+                </label>
+              </div>
+            </li>
+
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="updateLoginType(this, false)">
+                <input type="radio" name="auth-type" value="Google"
+                  class="form__radio__input js-form__radio__input"
+                  id="google:auth-type"/>
+                <label for="google:auth-type" class="form__radio__label">
+                  <span class="list__item--google">Google</span>
+                </label>
+              </div>
+            </li>
+
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="updateLoginType(this, true, '#{messages['jsf.login.openid.yahoo']}')">
+                <input type="radio" name="auth-type" value="Yahoo"
+                  class="form__radio__input js-form__radio__input"
+                  id="yahoo:auth-type"/>
+                <label for="yahoo:auth-type" class="form__radio__label">
+                  <span class="list__item--yahoo">Yahoo</span>
+                </label>
+              </div>
+            </li>
+
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="updateLoginType(this, true, '#{messages['jsf.login.openid']}')">
+                <input type="radio" name="auth-type" value="Generic"
+                  class="form__radio__input js-form__radio__input"
+                  id="openid:auth-type"/>
+                <label for="openid:auth-type" class="form__radio__label">
+                  <span class="list__item--openid">OpenId</span>
+                </label>
+              </div>
+            </li>
+
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="updateLoginType(this, true, '#{messages['jsf.login.internal']}', true)">
+                <input type="radio" name="auth-type" value="INTERNAL"
+                  class="form__radio__input js-form__radio__input"
+                  id="zanata:auth-type"/>
+                <label for="zanata:auth-type" class="form__radio__label">
+                  <span class="list__item--zanata">Zanata</span>
+                </label>
+              </div>
+            </li>
+          </ul>
+
+          <h:inputHidden id="login_provider"
+            value="${accountMergeAction.providerType}"/>
+
+          <hr></hr>
+
+          <div class="l--push-top-half form__item"
+            id="providerUsernameField">
+            <h:outputLabel id="identityLabel" for="username">
+              #{messages['jsf.FedoraUsername']}
+            </h:outputLabel>
+            <s:decorate template="../WEB-INF/layout/field.xhtml"
+              enclose="true">
+              <h:inputText id="username"
+                value="#{accountMergeAction.username}"/>
+            </s:decorate>
+          </div>
+
+          <div class="l--push-top-half form__item is-hidden"
+            id="providerPasswordField">
+            <h:outputLabel id="passwordLabel" for="password">
+              #{messages['jsf.Password']}
+            </h:outputLabel>
+            <s:decorate template="../WEB-INF/layout/field.xhtml"
+              enclose="true">
+              <h:inputSecret id="password" value="#{loginAction.password}"/>
+            </s:decorate>
+          </div>
+
+          <div class="l--push-top-1">
+            <h:commandButton styleClass="button--primary button--full"
+              value="#{messages['jsf.identities.Verify']}"
+              action="#{accountMergeAction.loginToMergingAccount}"/>
+          </div>
+        </h:form>
+
+        <h:form styleClass="l--push-top-1"
+          rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
+            <p>
+              <h:outputText escape="false"
+                value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
+            </p>
+          <h:commandButton styleClass="button--primary l--push-right-quarter"
+            value="#{messages['jsf.profile.MergeAccount.confirm']}"
+            action="#{accountMergeAction.mergeAccounts}"/>
+          <h:commandButton value="#{messages['jsf.Cancel']}"
+            action="#{accountMergeAction.cancel}"/>
+        </h:form>
       </div>
-      <rich:panel>
-        <ui:include src="../WEB-INF/layout/login_provider.xhtml">
-          <ui:param name="providerField"
-            value="#{accountMergeAction.providerType}"/>
-          <ui:param name="usernameField"
-            value="#{accountMergeAction.username}"/>
-          <ui:param name="onProviderChange" value="showLoginButton();"/>
-        </ui:include>
-
-        <div style="clear: both">
-          <h:commandButton id="verifyButton"
-            value="#{messages['jsf.identities.Verify']}"
-            action="#{accountMergeAction.loginToMergingAccount}"
-            style="display:none"/>
-        </div>
-      </rich:panel>
-
-    </h:form>
-
-    <h:form
-      rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
-      <div class="content_box">
-        <p><h:outputText escape="false"
-          value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
-        </p>
-      </div>
-      <h:commandButton value="#{messages['jsf.profile.MergeAccount.confirm']}"
-        action="#{accountMergeAction.mergeAccounts}"/>
-      <h:commandButton value="#{messages['jsf.Cancel']}"
-        action="#{accountMergeAction.cancel}"/>
-    </h:form>
+    </div>
   </ui:define>
-
 </ui:composition>
