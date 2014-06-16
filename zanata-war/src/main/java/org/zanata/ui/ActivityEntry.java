@@ -27,7 +27,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.Activity;

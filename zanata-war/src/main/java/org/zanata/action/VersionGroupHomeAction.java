@@ -33,7 +33,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -109,6 +108,10 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     private Map<VersionLocaleKey, WordStatistic> statisticMap;
 
     private Map<LocaleId, List<HProjectIteration>> missingLocaleVersionMap;
+
+    private final Map<LocaleId, WordStatistic> localeStats = Maps.newHashMap();
+
+    private final Map<Long, WordStatistic> projectStats = Maps.newHashMap();
 
     @Getter
     private SortingType projectSortingList = new SortingType(
@@ -364,7 +367,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         return activeLocales;
     }
 
-    @CachedMethodResult
     public DisplayUnit getStatisticFigureForProjectWithLocale(
             SortingType.SortOption sortOption, LocaleId localeId,
             Long projectIterationId) {
@@ -374,56 +376,56 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         return getDisplayUnit(sortOption, statistic, null);
     }
 
-    @CachedMethodResult
     public DisplayUnit getStatisticFigureForLocale(
             SortingType.SortOption sortOption, LocaleId localeId) {
         WordStatistic statistic = getStatisticsForLocale(localeId);
         return getDisplayUnit(sortOption, statistic, null);
     }
 
-    @CachedMethodResult
     public DisplayUnit getStatisticFigureForProject(
             SortingType.SortOption sortOption, Long projectIterationId) {
         WordStatistic statistic = getStatisticForProject(projectIterationId);
         return getDisplayUnit(sortOption, statistic, null);
     }
 
-    @CachedMethodResult
     public WordStatistic getStatisticsForLocale(LocaleId localeId) {
-        WordStatistic statistic = new WordStatistic();
-        for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
-                .entrySet()) {
-            if (entry.getKey().getLocaleId().equals(localeId)) {
-                statistic.add(entry.getValue());
+        if( !localeStats.containsKey(localeId) ) {
+            WordStatistic statistic = new WordStatistic();
+            for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
+                    .entrySet()) {
+                if (entry.getKey().getLocaleId().equals(localeId)) {
+                    statistic.add(entry.getValue());
+                }
             }
+            statistic
+                    .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
+            localeStats.put(localeId, statistic);
         }
-        statistic
-                .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
-        return statistic;
+        return localeStats.get(localeId);
     }
 
-    @CachedMethodResult
     public WordStatistic getStatisticForProject(Long projectIterationId) {
-        WordStatistic statistic = new WordStatistic();
-        for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
-                .entrySet()) {
-            if (entry.getKey().getProjectIterationId()
-                    .equals(projectIterationId)) {
-                statistic.add(entry.getValue());
+        if( !projectStats.containsKey(projectIterationId) ) {
+            WordStatistic statistic = new WordStatistic();
+            for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
+                    .entrySet()) {
+                if (entry.getKey().getProjectIterationId()
+                        .equals(projectIterationId)) {
+                    statistic.add(entry.getValue());
+                }
             }
+            statistic
+                    .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
+            projectStats.put(projectIterationId, statistic);
         }
-        statistic
-                .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
-        return statistic;
+        return projectStats.get(projectIterationId);
     }
 
-    @CachedMethodResult
     public WordStatistic getSelectedLocaleStatistic(Long projectIterationId) {
         return statisticMap.get(new VersionLocaleKey(projectIterationId,
                 selectedLocale.getLocaleId()));
     }
 
-    @CachedMethodResult
     public WordStatistic getSelectedVersionStatistic(LocaleId localeId) {
         return statisticMap.get(new VersionLocaleKey(selectedVersion.getId(),
                 localeId));
@@ -541,6 +543,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         projectTabVersionFilter.reset();
         languageTabLanguageFilter.reset();
         languageTabVersionFilter.reset();
+        localeStats.clear();
         loadStatistics();
     }
 

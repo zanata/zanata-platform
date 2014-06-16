@@ -48,7 +48,6 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -65,7 +64,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.ui.AbstractListFilter;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
@@ -122,6 +120,9 @@ public class ProjectHome extends SlugHome<HProject> {
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
+
+    @Getter(lazy = true)
+    private final List<HProjectIteration> versions = fetchVersions();
 
     @Getter
     @Setter
@@ -431,8 +432,7 @@ public class ProjectHome extends SlugHome<HProject> {
         return allRoles;
     }
 
-    @CachedMethodResult
-    public List<HProjectIteration> getVersions() {
+    private List<HProjectIteration> fetchVersions() {
         List<HProjectIteration> results = new ArrayList<HProjectIteration>();
 
         for (HProjectIteration iteration : getInstance().getProjectIterations()) {
