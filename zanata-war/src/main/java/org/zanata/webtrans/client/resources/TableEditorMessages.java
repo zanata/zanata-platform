@@ -135,6 +135,9 @@ public interface TableEditorMessages extends Messages {
     @DefaultMessage("You are trying to save an invalid translation")
     String validationErrorMessage();
 
+    @DefaultMessage("Invalid translation")
+    String invalidTranslation();
+
     @DefaultMessage("Translation")
     String translation();
 
