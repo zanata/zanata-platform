@@ -258,7 +258,6 @@
         <groupId>de.novanic.gwteventservice</groupId>
         <artifactId>eventservice-rpc</artifactId>
         <version>${gwteventservice.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>de.novanic.gwteventservice</groupId>
