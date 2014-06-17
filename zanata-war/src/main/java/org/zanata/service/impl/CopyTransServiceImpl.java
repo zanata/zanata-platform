@@ -76,10 +76,11 @@ public class CopyTransServiceImpl implements CopyTransService {
      *
      * @param document
      *            the document to copy translations into
-     * @param targetLocales
+     * @param targetLocale
+     *            the locale of translations to copy
      */
     private void copyTransForDocumentLocale(HDocument document,
-            final List<HLocale> targetLocales, final HCopyTransOptions options,
+            final HLocale targetLocale, final HCopyTransOptions options,
             Optional<CopyTransTaskHandle> taskHandleOpt) {
 
         int numCopied = 0;
@@ -91,7 +92,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         while (start < document.getTextFlows().size()) {
             numCopied +=
                     copyTransForBatch(document, start, COPY_TRANS_BATCH_SIZE,
-                            targetLocales, options, taskHandleOpt);
+                            targetLocale, options, taskHandleOpt);
             start += COPY_TRANS_BATCH_SIZE;
         }
         documentDAO.clear();
@@ -105,24 +106,22 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         log.info(
                 "copyTrans: {} {} translations for document \"{}{}\" - duration: {}",
-                numCopied, targetLocales, document.getPath(),
+                numCopied, targetLocale.getLocaleId(), document.getPath(),
                 document.getName(), stopwatch);
     }
 
     /**
      * Perform copy trans on a batch of text flows for a document.
      *
-     *
      * @param batchStart
      *            USE_HIBERNATE_SEARCH The text flow position to start copying.
      * @param batchLength
      *            The number of text flows on which to perform copy trans,
      *            starting from batchStart.
-     * @param targetLocales
      * @return The number of actual copied translations for the segment.
      */
     private int copyTransForBatch(HDocument document, final int batchStart,
-            final int batchLength, final List<HLocale> targetLocales,
+            final int batchLength, final HLocale targetLocale,
             final HCopyTransOptions options,
             Optional<CopyTransTaskHandle> taskHandleOpt) {
 
@@ -138,13 +137,12 @@ public class CopyTransServiceImpl implements CopyTransService {
             List<HTextFlow> copyTargets =
                     docTextFlows.subList(batchStart, batchEnd);
             Integer numCopied =
-                    copyTransWorkFactory.createCopyTransWork(targetLocales,
+                    copyTransWorkFactory.createCopyTransWork(targetLocale,
                             options, document, requireTranslationReview,
                             copyTargets)
                             .workInTransaction();
             if (taskHandleOpt.isPresent()) {
-                taskHandleOpt.get().increaseProgress(
-                        batchSize * targetLocales.size());
+                taskHandleOpt.get().increaseProgress(batchSize);
             }
             return numCopied;
         } catch (Exception e) {
@@ -179,17 +177,18 @@ public class CopyTransServiceImpl implements CopyTransService {
         log.info("copyTrans start: document \"{}\"", document.getDocId());
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
-        if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
-            return;
-        }
         List<HLocale> localeList =
                 localeServiceImpl.getSupportedLanguageByProjectIteration(
                         document.getProjectIteration().getProject().getSlug(),
                         document.getProjectIteration().getSlug());
 
-
-        copyTransForDocumentLocale(document, localeList, copyTransOpts,
-                taskHandleOpt);
+        for (HLocale targetLocale : localeList) {
+            if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
+                return;
+            }
+            copyTransForDocumentLocale(document, targetLocale, copyTransOpts,
+                    taskHandleOpt);
+        }
         log.info("copyTrans finished: document \"{}\"", document.getDocId());
     }
 

@@ -117,7 +117,7 @@ public class CopyTransServiceUnitTest {
         when(localeServiceImpl.getSupportedLanguageByProjectIteration(projSlug, iterSlug)).thenReturn(localeList);
 
         when(copyTransWorkFactory
-                .createCopyTransWork(anyListOf(HLocale.class),
+                .createCopyTransWork(any(HLocale.class),
                         any(HCopyTransOptions.class), any(HDocument.class),
                         anyBoolean(), anyListOf(HTextFlow.class)))
                 .thenReturn(
@@ -134,7 +134,7 @@ public class CopyTransServiceUnitTest {
 
         ctService.copyTransForDocument(doc, optionsIn);
 
-        verify(copyTransWorkFactory).createCopyTransWork(localeList, optionsOut, doc,
+        verify(copyTransWorkFactory).createCopyTransWork(de, optionsOut, doc,
                 requireReview, textFlows);
         verify(copyTransWork).work();
     }
