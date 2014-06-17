@@ -544,6 +544,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         languageTabLanguageFilter.reset();
         languageTabVersionFilter.reset();
         localeStats.clear();
+        projectStats.clear();
         loadStatistics();
     }
 
