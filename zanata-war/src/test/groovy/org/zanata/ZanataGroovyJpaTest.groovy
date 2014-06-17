@@ -76,6 +76,9 @@ abstract class ZanataGroovyJpaTest {
     public void shutdownEM() {
         log.debug("Shutting down EM");
         em.getTransaction().rollback();
+        if (em.isOpen()) {
+            em.close();
+        }
         em = null;
     }
 

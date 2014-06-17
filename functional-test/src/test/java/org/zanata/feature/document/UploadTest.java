@@ -23,7 +23,6 @@ package org.zanata.feature.document;
 import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -41,12 +40,12 @@ import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 @Slf4j
@@ -94,22 +93,24 @@ public class UploadTest extends ZanataTestCase {
                         .submitUpload();
 
         // We should be able to assume the new file is the only file
-        assertThat("There is only one uploaded source file", new File(
-                documentStorageDirectory).list().length, Matchers.equalTo(1));
+        assertThat(new File(documentStorageDirectory).list().length)
+                .isEqualTo(1)
+                .as("There is only one uploaded source file");
 
         File newlyCreatedFile = new File(documentStorageDirectory,
                 testFileGenerator
                         .getFirstFileNameInDirectory(documentStorageDirectory));
 
-        assertThat("The contents of the file were also uploaded",
-                testFileGenerator.getTestFileContent(newlyCreatedFile),
-                Matchers.equalTo("This is a test file"));
+        assertThat(testFileGenerator.getTestFileContent(newlyCreatedFile))
+                .isEqualTo("This is a test file")
+                .as("The contents of the file were also uploaded");
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
                 .waitForSourceDocsContains(testFileName);
 
-        assertThat("Document shows in table",
-                versionDocumentsPage.sourceDocumentsContains(testFileName));
+        assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
+                .isTrue()
+                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -129,42 +130,48 @@ public class UploadTest extends ZanataTestCase {
                 .enterFilePath(cancelUploadFile.getAbsolutePath())
                 .cancelUpload();
 
-        assertThat("Document does not show in table",
-                !versionDocumentsTab
-                        .sourceDocumentsContains("cancelFileUpload.txt"));
+        assertThat(versionDocumentsTab.sourceDocumentsContains("cancelFileUpload.txt"))
+            .isFalse()
+            .as("Document does not show in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFilenameUpload() {
-        VersionDocumentsTab versionDocumentsTab =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsDocumentsTab()
-                        .pressUploadFileButton();
+        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab().gotoSettingsDocumentsTab()
+                .pressUploadFileButton();
 
-        assertThat("The upload button is not available",
-                !versionDocumentsTab.canSubmitDocument());
+        assertThat(versionDocumentsTab.canSubmitDocument())
+                .isFalse()
+                .as("The upload button is not available");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-990836")
     public void handleReallyBigFile() {
         File bigFile =
-                testFileGenerator.generateTestFileWithContent("bigFile",
-                        ".txt", "Big file content");
+                testFileGenerator.generateTestFileWithContent(
+                        "bigFile", ".txt", "Big file content");
         long fileSizeInMB = (1024 * 1024) * 500;
         testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
 
         assumeTrue("Data file " + bigFile.getName() + " is big",
                 bigFile.length() == fileSizeInMB);
 
-        VersionLanguagesPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(bigFile.getAbsolutePath())
-                        .submitUpload();
+        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(bigFile.getAbsolutePath())
+                .submitUpload();
 
         projectVersionPage.assertNoCriticalErrors();
         // TODO: Verify graceful handling of scenario
@@ -179,86 +186,99 @@ public class UploadTest extends ZanataTestCase {
         String successfullyUploaded =
                 "Document " + noFile.getName() + " uploaded.";
 
-        VersionDocumentsTab versionDocumentsTab =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(noFile.getAbsolutePath());
+        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(noFile.getAbsolutePath());
 
-        assertThat("Data file " + noFile.getName() + " does not exist",
-                noFile.delete() && !noFile.exists());
+        assertThat(noFile.delete() && !noFile.exists())
+                .as("Data file " + noFile.getName() + " does not exist");
 
         VersionLanguagesPage versionLanguagesPage = versionDocumentsTab
                 .submitUpload();
         versionLanguagesPage.assertNoCriticalErrors();
-        assertThat("Success message is shown",
-                versionLanguagesPage.expectNotification(successfullyUploaded));
+        assertThat(versionLanguagesPage.expectNotification(successfullyUploaded))
+                .isTrue()
+                .as("Success message is shown");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void handleVeryLongFileNames() {
-        File longFile =
-                testFileGenerator.generateTestFileWithContent(
-                        testFileGenerator.longFileName(), ".txt",
-                        "This filename is long");
+        File longFile = testFileGenerator.generateTestFileWithContent(
+                testFileGenerator.longFileName(), ".txt",
+                "This filename is long");
         String successfullyUploaded =
                 "Document " + longFile.getName() + " uploaded.";
 
-        VersionLanguagesPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(longFile.getAbsolutePath())
-                        .submitUpload();
+        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(longFile.getAbsolutePath())
+                .submitUpload();
 
-        assertThat("Document uploaded notification shows",
-                projectVersionPage.expectNotification(successfullyUploaded));
+        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
+                .isTrue()
+                .as("Document uploaded notification shows");
 
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
                 .waitForSourceDocsContains(longFile.getName());
 
-        assertThat("Document shows in table", versionDocumentsPage
-                .sourceDocumentsContains(longFile.getName()));
+        assertThat(versionDocumentsPage.sourceDocumentsContains(longFile.getName()))
+                .isTrue()
+                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFile() {
-        File emptyFile =
-                testFileGenerator.generateTestFileWithContent("emptyFile",
-                        ".txt", "");
+        File emptyFile = testFileGenerator
+                .generateTestFileWithContent("emptyFile", ".txt", "");
         String successfullyUploaded =
                 "Document " + emptyFile.getName() + " uploaded.";
 
         assumeTrue("File is empty", emptyFile.length() == 0);
 
-        VersionLanguagesPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").gotoVersion("master")
-                        .gotoSettingsTab().gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(emptyFile.getAbsolutePath())
-                        .submitUpload();
+        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(emptyFile.getAbsolutePath())
+                .submitUpload();
 
-        assertThat("Data file emptyFile.txt still exists", emptyFile.exists());
-        assertThat("Document uploaded notification shows",
-                projectVersionPage.expectNotification(successfullyUploaded));
+        assertThat(emptyFile.exists())
+                .isTrue()
+                .as("Data file emptyFile.txt still exists");
+        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
+                .isTrue()
+                .as("Document uploaded notification shows");
 
         VersionDocumentsPage versionDocumentsPage = projectVersionPage
                 .gotoDocumentTab()
                 .waitForSourceDocsContains(emptyFile.getName());
 
-        assertThat("Document shows in table", versionDocumentsPage
-                .sourceDocumentsContains(emptyFile.getName()));
+        assertThat(versionDocumentsPage.sourceDocumentsContains(emptyFile.getName()))
+                .isTrue()
+                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectUnsupportedValidFiletype() {
-        File unsupportedFile =
-                testFileGenerator.generateTestFileWithContent("testfodt",
-                        ".fodt", "<xml></xml>");
+        File unsupportedFile = testFileGenerator
+                .generateTestFileWithContent("testfodt", ".fodt", "<xml></xml>");
         String uploadFailed =
                 "Unrecognized file extension for " + unsupportedFile.getName();
 
@@ -270,8 +290,9 @@ public class UploadTest extends ZanataTestCase {
                         .enterFilePath(unsupportedFile.getAbsolutePath())
                         .submitUpload();
 
-        assertThat("Unrecognized file extension error is shown",
-                projectVersionPage.expectNotification(uploadFailed));
+        assertThat(projectVersionPage.expectNotification(uploadFailed))
+                .isTrue()
+                .as("Unrecognized file extension error is shown");
     }
 
 }

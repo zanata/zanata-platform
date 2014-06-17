@@ -15,7 +15,7 @@
     <h:form>
       <div style="text-align: center">
         <rich:dataScroller renderIfSinglePage="false" for="searchResults"
-          page="#{projectSearch.scrollerPage}" id="scroller"
+          page="#{projectSearch.projectPagedListDataModel.scrollerPage}" id="scroller"
           fastControls="hide" render="scroller, searchResults">
           <f:facet name="first">
             <h:outputText value="" styleClass="icon-to-start"/>
@@ -52,7 +52,7 @@
       </div>
 
       <rich:dataTable id="searchResults" columnsWidth="200px,200px,80px"
-        rows="#{projectSearch.pageSize}"
+        rows="#{projectSearch.projectPagedListDataModel.pageSize}"
         value="#{projectSearch.getProjectPagedListDataModel()}" var="project">
         <rich:column>
           <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>

@@ -48,7 +48,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     public boolean sourceDocumentsContains(String document) {
-        List<WebElement> documentList = getLanguageTabDocumentList();
+        List<WebElement> documentList = getDocumentsTabDocumentList();
         for (final WebElement tableRow : documentList) {
             if (tableRow.findElement(By.className("list__title")).getText()
                     .contains(document)) {
@@ -58,7 +58,7 @@ public class VersionDocumentsPage extends VersionBasePage {
         return false;
     }
 
-    private List<WebElement> getLanguageTabDocumentList() {
+    private List<WebElement> getDocumentsTabDocumentList() {
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {

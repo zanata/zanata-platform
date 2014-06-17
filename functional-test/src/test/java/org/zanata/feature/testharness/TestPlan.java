@@ -76,7 +76,7 @@ import org.zanata.feature.versionGroup.*;
         EditTranslationMemoryTest.class,
         EditTranslationMemoryTest.class,
         ManageSearchTest.class,
-        ManageUsersFullTest.class,
+        ManageUsersTest.class,
 
         /* Client-Server
          * Usage of the mvn client

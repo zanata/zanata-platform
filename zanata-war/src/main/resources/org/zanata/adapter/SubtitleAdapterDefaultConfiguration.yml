@@ -1,0 +1,24 @@
+useLD.b=true
+localizeOutside.b=true
+startString="
+endString="
+extractOuterStrings.b=false
+useBSlashEscape.b=true
+oneLevelGroups.b=false
+regexOptions.i=40
+mimeType=text/plain
+ruleCount.i=1
+rule0.ruleName=Rule
+rule0.ruleType.i=1
+rule0.expr=^(\d\d:\d\d:\d\d.*?|\d\d:\d\d\.\d\d\d.*?)\n(.*?)(\n\n|\z)
+rule0.groupSource.i=2
+rule0.groupTarget.i=-1
+rule0.groupName.i=1
+rule0.groupNote.i=-1
+rule0.preserveWS.b=true
+rule0.useCodeFinder.b=true
+rule0.sample=1$0a$00:00:20,000 --> 00:00:24,400 X1:100 X2:600 Y1:050 Y2:100$0a$text line 1$0a$line 2$0a$$0a$2$0a$00:00:24,600 --> 00:00:27,800$0a$Text entry 2$0a$
+rule0.codeFinderRules.count.i=1
+rule0.codeFinderRules.rule0=<\w+.*?>|</\w+.*?>
+rule0.codeFinderRules.sample=test <b>bold</b>, <a href='link' more="&lt;value&gt;"/> test
+rule0.codeFinderRules.useAllRulesWhenTesting.b=false

@@ -365,7 +365,8 @@
 
   <h3 class="heading--secondary">#{messages['jsf.Maintainers']}</h3>
   <h:form id="settings-permissions-form" styleClass="l--push-bottom-0">
-    <ul class="list--slat list--highlight l--push-top-half">
+    <ul id="maintainers-list"
+      class="list--slat list--highlight l--push-top-half">
       <ui:repeat value="#{projectHome.getInstanceMaintainers()}"
         var="maintainer">
         <li class="reveal--list-item">
@@ -375,6 +376,7 @@
           </span> #{maintainer.name}
           <span class="txt--meta">@#{maintainer.account.username}</span>
           <a4j:commandLink
+            id="remove-maintainer-button"
             action="#{projectHome.removeMaintainer(maintainer)}"
             oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
             styleClass="l--float-right txt--danger reveal__target"

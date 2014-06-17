@@ -20,29 +20,9 @@
  */
 package org.zanata.service.impl;
 
-import static org.jboss.seam.ScopeType.STATELESS;
-import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT;
-import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
-import static org.zanata.common.DocumentType.HTML;
-import static org.zanata.common.DocumentType.IDML;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_GRAPHICS;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_PRESENTATION;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_SPREADSHEET;
-import static org.zanata.common.DocumentType.OPEN_DOCUMENT_TEXT;
-import static org.zanata.common.DocumentType.PLAIN_TEXT;
-import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.MapMaker;
 import lombok.extern.slf4j.Slf4j;
-
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -54,6 +34,7 @@ import org.zanata.adapter.IDMLAdapter;
 import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.adapter.SubtitleAdapter;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -67,8 +48,27 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.MapMaker;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.jboss.seam.ScopeType.STATELESS;
+import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT;
+import static org.zanata.common.DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+import static org.zanata.common.DocumentType.HTML;
+import static org.zanata.common.DocumentType.IDML;
+import static org.zanata.common.DocumentType.OPEN_DOCUMENT_GRAPHICS;
+import static org.zanata.common.DocumentType.OPEN_DOCUMENT_PRESENTATION;
+import static org.zanata.common.DocumentType.OPEN_DOCUMENT_SPREADSHEET;
+import static org.zanata.common.DocumentType.OPEN_DOCUMENT_TEXT;
+import static org.zanata.common.DocumentType.PLAIN_TEXT;
+import static org.zanata.common.DocumentType.SUBTITLE;
+import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 
 /**
  * Default implementation of the TranslationFileService interface.
@@ -94,6 +94,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(XML_DOCUMENT_TYPE_DEFINITION, DTDAdapter.class);
         DOCTYPEMAP.put(IDML, IDMLAdapter.class);
         DOCTYPEMAP.put(HTML, HTMLAdapter.class);
+        DOCTYPEMAP.put(SUBTITLE, SubtitleAdapter.class);
     }
 
     private static Set<String> SUPPORTED_EXTENSIONS =

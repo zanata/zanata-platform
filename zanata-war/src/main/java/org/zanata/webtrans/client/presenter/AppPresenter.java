@@ -480,6 +480,9 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
 
     @Override
     public void onNotification(NotificationEvent event) {
-        display.showNotification(event);
+        if (event.getSeverity() == Severity.Warning
+                || event.getSeverity() == Severity.Error) {
+            display.showNotification(event);
+        }
     }
 }

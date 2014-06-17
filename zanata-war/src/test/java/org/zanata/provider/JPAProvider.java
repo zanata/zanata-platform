@@ -52,6 +52,9 @@ public class JPAProvider {
         log.debug("Shutting down EM");
         clearHibernateSecondLevelCache();
         em.getTransaction().rollback();
+        if (em.isOpen()) {
+            em.close();
+        }
         em = null;
     }
 

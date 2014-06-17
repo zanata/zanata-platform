@@ -22,11 +22,11 @@ package org.zanata.feature.document;
 
 import java.io.File;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -37,13 +37,13 @@ import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.FunctionalTestHelper.assumeTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
 public class HTMLDocumentTypeTest extends ZanataTestCase {
@@ -52,63 +52,122 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Rule
-    public CleanDocumentStorageRule documentStorageRule =
-            new CleanDocumentStorageRule();
+    public CleanDocumentStorageRule documentStorageRule;
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        String documentStorageDirectory =
-                CleanDocumentStorageRule.getDocumentStoragePath()
-                        .concat(File.separator).concat("documents")
-                        .concat(File.separator);
-        File docStorage = new File(documentStorageDirectory);
-        assumeTrue("The storage folder is empty",
-                docStorage == null ||
-                !docStorage.exists() ||
-                docStorage.listFiles().length == 0);
+        documentStorageRule = new CleanDocumentStorageRule();
+        ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsPermissionsTab()
+                .enterSearchMaintainer("translator")
+                .selectSearchMaintainer("translator");
+        projectPermissionsTab.expectNotification(
+                "Maintainer 'translator' has been added to project.");
+        projectPermissionsTab = projectPermissionsTab.clickRemoveOn("admin");
+        projectPermissionsTab.expectNotification("Maintainer 'Administrator' " +
+                "has been removed from project.");
+        projectPermissionsTab.logout();
     }
 
+    @Feature(bugzilla = 980670,
+            summary = "Administrator can upload a HTML file for translation",
+            tcmsTestCaseIds = { 377743 },
+            tcmsTestPlanIds = { 5316 } )
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void uploadHTMLFile() {
-        File htmlfile =
-                testFileGenerator
-                        .generateTestFileWithContent("testhtmlfile", ".html",
-                                "<html><title>Test content</title><br>This is <b>Bold</b> text</html>");
+    public void uploadHTMLFileAsAdministrator() throws Exception {
+            File htmlfile = testFileGenerator.generateTestFileWithContent(
+            "testhtmlfile", ".html",
+            "<html><title>Test content</title>" +
+            "<br>This is <b>Bold</b> text</html>");
         String testFileName = htmlfile.getName();
         String successfullyUploaded = "Document " + testFileName + " uploaded.";
-        VersionLanguagesPage projectVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin")
-                        .goToProjects()
-                        .goToProject("about fedora")
-                        .gotoVersion("master")
-                        .gotoSettingsTab()
-                        .gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(htmlfile.getAbsolutePath())
-                        .submitUpload();
+        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(htmlfile.getAbsolutePath())
+                .submitUpload();
 
-        assertThat("Document uploaded notification shows",
-                projectVersionPage.expectNotification(successfullyUploaded));
+        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
+                .isTrue()
+                .as("Document uploaded notification shows");
 
         VersionDocumentsPage versionDocumentsPage =
                 projectVersionPage.gotoDocumentTab();
 
-        assertThat("Document shows in table", versionDocumentsPage
-                .sourceDocumentsContains(htmlfile.getName()));
+        assertThat(versionDocumentsPage.
+                sourceDocumentsContains(htmlfile.getName()))
+                .as("Document shows in table");
 
-        EditorPage editorPage =
-                projectVersionPage.goToProjects().goToProject("about fedora")
-                        .gotoVersion("master").translate("pl", testFileName);
+        EditorPage editorPage = projectVersionPage
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .translate("pl", testFileName);
 
-        assertThat("The first translation source is correct",
-                editorPage.getMessageSourceAtRowIndex(0),
-                Matchers.equalTo("Test content"));
-        assertThat("The second translation source is correct",
-                editorPage.getMessageSourceAtRowIndex(1),
-                Matchers.equalTo("This is <g2>Bold</g2> text"));
+        assertThat(editorPage.getMessageSourceAtRowIndex(0))
+                .isEqualTo("Test content")
+                .as("The first translation source is correct");
+        assertThat(editorPage.getMessageSourceAtRowIndex(1))
+                .isEqualTo("This is <g2>Bold</g2> text")
+                .as("The second translation source is correct");
+    }
 
+    @Feature(bugzilla = 980670,
+            summary = "Maintainer can upload a HTML file for translation",
+            tcmsTestCaseIds = { 377837 },
+            tcmsTestPlanIds = { 5316 } )
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void uploadHTMLFileAsMaintainer() throws Exception {
+        File htmlfile = testFileGenerator.generateTestFileWithContent(
+                "testhtmlfile", ".html",
+                "<html><title>Test content</title>" +
+                "<br>This is <b>Bold</b> text</html>");
+        String testFileName = htmlfile.getName();
+        String successfullyUploaded = "Document " + testFileName + " uploaded.";
+        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(htmlfile.getAbsolutePath())
+                .submitUpload();
+
+        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
+                .as("Document uploaded notification shows");
+
+        VersionDocumentsPage versionDocumentsPage =
+                projectVersionPage.gotoDocumentTab();
+
+        assertThat(versionDocumentsPage
+                .sourceDocumentsContains(htmlfile.getName()))
+                .as("Document shows in table");
+
+        EditorPage editorPage = projectVersionPage
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoVersion("master")
+                .translate("pl", testFileName);
+
+        assertThat(editorPage.getMessageSourceAtRowIndex(0))
+                .isEqualTo("Test content")
+                .as("The first translation source is correct");
+        assertThat(editorPage.getMessageSourceAtRowIndex(1))
+                .isEqualTo("This is <g2>Bold</g2> text")
+                .as("The second translation source is correct");
     }
 }
