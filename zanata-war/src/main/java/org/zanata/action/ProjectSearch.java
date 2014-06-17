@@ -34,10 +34,6 @@ public class ProjectSearch implements Serializable {
 
     private final static int DEFAULT_PAGE_SIZE = 30;
 
-    @Getter
-    @Setter
-    private int scrollerPage = 1;
-
     @In
     private ZanataIdentity identity;
 
@@ -49,10 +45,6 @@ public class ProjectSearch implements Serializable {
 
     // Count of result to be return as part of autocomplete
     private final static int INITIAL_RESULT_COUNT = 5;
-
-    public int getPageSize() {
-        return queryProjectPagedListDataModel.getPageSize();
-    }
 
     public DataModel getProjectPagedListDataModel() {
         queryProjectPagedListDataModel.setIncludeObsolete(identity

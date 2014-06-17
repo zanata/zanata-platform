@@ -34,14 +34,14 @@
       <s:fragment rendered="#{projectAction.getEmpty()}">
         <h:outputText value="#{messages['jsf.NoProjectExists']}"/>
       </s:fragment>
-      <s:fragment rendered="#{!projectAction.getEmpty()}" id="projectList">
+      <s:fragment rendered="#{!projectAction.getEmpty()}">
         <h:form id="form">
 
           <div style="text-align: center">
             <rich:dataScroller renderIfSinglePage="false" for="projectList"
               maxPages="10"
-              page="#{projectAction.scrollerPage}" id="scroller" render="sc2"
-              fastControls="hide">
+              page="#{projectAction.projectPagedListDataModel.scrollerPage}"
+              id="scroller" render="sc2" fastControls="hide">
               <f:facet name="first">
                 <h:outputText value="" styleClass="icon-to-start"/>
               </f:facet>
@@ -107,7 +107,7 @@
           </s:div>
           <br/>
           <rich:dataTable id="projectList"
-            rows="#{projectAction.pageSize}"
+            rows="#{projectAction.projectPagedListDataModel.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
             <rich:column width="270px" sortBy="#{project.name}">
               <f:facet name="header">#{messages['jsf.ProjectName']}
@@ -155,9 +155,9 @@
 
           <div style="text-align: center">
             <rich:dataScroller align="center" for="projectList" maxPages="10"
-              page="#{projectAction.scrollerPage}" id="sc2" render="scroller"
-              fastControls="hide"
-              renderIfSinglePage="false">
+              page="#{projectAction.projectPagedListDataModel.scrollerPage}"
+              id="sc2" render="scroller"
+              fastControls="hide" renderIfSinglePage="false">
               <f:facet name="first">
                 <h:outputText value="" styleClass="icon-to-start"/>
               </f:facet>
