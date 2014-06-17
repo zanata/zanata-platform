@@ -1,2 +1,4 @@
 #!/bin/bash -e
-exec mvn -q exec:java -Dexec.args="$*"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJ_DIR=$SCRIPT_DIR/../..
+exec mvn -f $PROJ_DIR/pom.xml -q exec:java -Dexec.args="$*"
