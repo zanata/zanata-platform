@@ -38,6 +38,8 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
+import org.zanata.security.AuthenticationType;
+import org.zanata.security.ZanataCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -64,36 +66,38 @@ public class AccountMergeAction implements Serializable {
 
     @Getter
     @Setter
-    private String username;
+    private String openId = "http://";
 
     @In(required = false, scope = ScopeType.SESSION)
     @Out(required = false, scope = ScopeType.SESSION)
     @Getter
     private HAccount obsoleteAccount;
 
-    private OpenIdProviderType providerType = OpenIdProviderType.Fedora;
-
     private boolean accountsValid;
-
-    public String getProviderType() {
-        return providerType != null ? providerType.toString() : "";
-    }
-
-    public void setProviderType(String providerType) {
-        try {
-            this.providerType = OpenIdProviderType.valueOf(providerType);
-        } catch (IllegalArgumentException e) {
-            this.providerType = OpenIdProviderType.Generic;
-        }
-    }
 
     public boolean getAccountsValid() {
         return accountsValid;
     }
 
-    public void loginToMergingAccount() {
-        authenticationManager.openIdAuthenticate(this.providerType,
-                new AccountMergeAuthCallback());
+    public void loginToMergingAccount(String provider) {
+        if (provider.equalsIgnoreCase("Internal")) {
+            // no implementation for internal account merging yet
+        } else {
+            OpenIdProviderType providerType;
+            try {
+                providerType = OpenIdProviderType.valueOf(provider);
+            } catch (IllegalArgumentException e) {
+                providerType = OpenIdProviderType.Generic;
+            }
+
+            if (providerType == OpenIdProviderType.Generic) {
+                authenticationManager.openIdAuthenticate(openId, providerType,
+                        new AccountMergeAuthCallback());
+            } else {
+                authenticationManager.openIdAuthenticate(providerType,
+                        new AccountMergeAuthCallback());
+            }
+        }
     }
 
     public boolean isAccountSelected() {
