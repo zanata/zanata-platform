@@ -1,8 +1,5 @@
 package org.zanata.client;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 
@@ -31,7 +28,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  *
  */
 @PrepareForTest(SubCommandHandler2.class)
-@PowerMockIgnore("org.apache.log4j.*")
+@PowerMockIgnore({"com.sun.*", "org.apache.log4j.*", "org.xml.*", "javax.xml.*"})
 @RunWith(PowerMockRunner.class)
 public class ZanataClientTest {
     @Rule
