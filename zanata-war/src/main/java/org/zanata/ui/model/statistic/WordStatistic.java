@@ -8,6 +8,8 @@ import lombok.Setter;
  */
 public class WordStatistic extends AbstractStatistic {
 
+    private static final long serialVersionUID = -8807499518683834883L;
+
     @Getter
     @Setter
     private double remainingHours;
