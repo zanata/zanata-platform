@@ -65,9 +65,9 @@ class CopyTransWork extends Work<Integer> {
         }
 
         MatchRulePair p = pairs.get(0);
-        // rejection is already handled in query (excluded in
-        // searchBestMatchTransMemory)
-        if (shouldDowngradeToFuzzy(p.getMatchResult().get(),
+        if (shouldReject(p.getMatchResult().get(), p.getRuleAction())) {
+            return New;
+        } else if (shouldDowngradeToFuzzy(p.getMatchResult().get(),
                 p.getRuleAction())) {
             return determineContentStateFromMatchRules(
                     pairs.subList(1, pairs.size()), NeedReview);
@@ -128,7 +128,7 @@ class CopyTransWork extends Work<Integer> {
             Supplier<Boolean> projectMatches, Supplier<Boolean> docIdMatches,
             HCopyTransOptions options, boolean requireTranslationReview,
             ContentState matchingTargetState) {
-        List rules =
+        List<MatchRulePair> rules =
                 ImmutableList.of(
                         new MatchRulePair(contextMatches, options
                                 .getContextMismatchAction()),
@@ -299,7 +299,7 @@ class CopyTransWork extends Work<Integer> {
      */
     private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
             boolean requireTranslationReview) {
-        // TODO pahuang getTargets will fill up ehcache for large textflows and locales. Check which one is more efficient
+        // TODO getTargets will fill up ehcache for large textflows and locales. Check which one is more efficient
         HTextFlowTarget targetForLocale =
                 textFlow.getTargets().get(locale.getId());
 //        HTextFlowTarget targetForLocale = textFlowTargetDAO.getTextFlowTarget(

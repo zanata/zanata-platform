@@ -255,10 +255,9 @@
       <h2 class="panel__heading--small">#{messages['jsf.CopyTrans']}</h2>
     </s:div>
 
-    <!-- TODO pahuang this polling is too frequent (1 sec) and cause heavy server load -->
     <div class="l--pad-all-half l--push-top-quarter">
       <zanata:progressBar id="copy-trans-progress-bar"
-        actionBean="#{copyTransAction}"
+        actionBean="#{copyTransAction}" interval="5000"
         render="copy-trans-progress-messages"
         onCompleteRender="copy-trans-buttons, copy-trans"/>
 

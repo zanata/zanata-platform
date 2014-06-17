@@ -22,13 +22,10 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
-import javax.transaction.SystemException;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.transaction.Transaction;
 import org.zanata.async.AsyncUtils;
 import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -40,7 +37,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
@@ -88,14 +84,17 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         // need to reload HDocument because of different hibernate session
         document = documentDAO.findById(document.getId());
+        boolean requireTranslationReview =
+                document.getProjectIteration().getRequireTranslationReview();
         Stopwatch stopwatch = new Stopwatch().start();
         while (start < document.getTextFlows().size()) {
             numCopied +=
                     copyTransForBatch(document, start, COPY_TRANS_BATCH_SIZE,
-                            targetLocale, options, taskHandleOpt);
+                            targetLocale, options, taskHandleOpt,
+                            requireTranslationReview);
             start += COPY_TRANS_BATCH_SIZE;
+            documentDAO.clear();
         }
-        documentDAO.clear();
         // Advance the task handler if there is one
         Optional<CopyTransTaskHandle> taskHandle =
                 AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
@@ -113,6 +112,8 @@ public class CopyTransServiceImpl implements CopyTransService {
     /**
      * Perform copy trans on a batch of text flows for a document.
      *
+     * @param requireTranslationReview
+     *            whether the project iteration requires translation review
      * @param batchStart
      *            USE_HIBERNATE_SEARCH The text flow position to start copying.
      * @param batchLength
@@ -123,12 +124,10 @@ public class CopyTransServiceImpl implements CopyTransService {
     private int copyTransForBatch(HDocument document, final int batchStart,
             final int batchLength, final HLocale targetLocale,
             final HCopyTransOptions options,
-            Optional<CopyTransTaskHandle> taskHandleOpt) {
+            Optional<CopyTransTaskHandle> taskHandleOpt,
+            boolean requireTranslationReview) {
 
         try {
-            boolean requireTranslationReview =
-                    document.getProjectIteration()
-                            .getRequireTranslationReview();
             HDocument hDocument = documentDAO.findById(document.getId());
             List<HTextFlow> docTextFlows = hDocument.getTextFlows();
             int batchEnd =

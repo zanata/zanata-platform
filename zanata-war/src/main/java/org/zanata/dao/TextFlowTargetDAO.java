@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -195,66 +195,53 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
      *         text flow.
      */
     @Override
+    @NativeQuery
     public Optional<HTextFlowTarget> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
             boolean checkDocument, boolean checkProject) {
-
-        StringBuilder queryStr =
-                new StringBuilder(
-                        "select match\n"
-                                + "from HTextFlowTarget match\n"
-                                + "where match.textFlow.contentHash = :contentHash\n"
-                                + "and match.locale.localeId = :targetLocaleId\n"
-                                +
-                                // It's fine to reuse translation in Translated
-                                // state even if it came from a reviewable
-                                // project
-                                "and match.state in (:approvedState, :translatedState)\n"
-                                +
-                                // Do not reuse its own translation
-                                "and match.textFlow.id != :textFlowId\n"
-                                +
-                                // Do not reuse matches from obsolete entities
-                                // (iteration, project)
-                                // Obsolete document translations ARE reused
-                                "and match.textFlow.document.projectIteration.status != :obsoleteEntityStatus\n"
-                                + "and match.textFlow.document.projectIteration.project.status != :obsoleteEntityStatus\n");
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder
+                .append("SELECT tft.* FROM HTextFlowTarget tft ")
+                .append("JOIN HTextFlow tf ON tf.id = tft.tf_id ")
+                .append("JOIN HLocale locale ON locale.id = tft.locale ")
+                .append("JOIN HDocument hDoc ON hDoc.id = tf.document_id ")
+                .append("JOIN HProjectIteration iter ON iter.id = hDoc.project_iteration_id ")
+                .append("JOIN HProject project ON project.id = iter.project_id ")
+                .append("WHERE tf.contentHash = :contentHash AND locale.localeId = :localeId ")
+                .append("AND tft.tf_id = tf.id ")
+                .append("AND tft.locale = locale.id ")
+                .append("AND tf.document_id = hDoc.id ")
+                .append("AND hDoc.project_iteration_id = iter.id ")
+                .append("AND iter.project_id = project.id ")
+                .append("AND tft.state in (2, 3) AND tft.tf_id <> :textFlowId AND iter.status <> 'O' AND project.status <> 'O' ");
         if (checkContext) {
-            queryStr.append("and match.textFlow.resId = :resId\n");
+            queryBuilder.append("AND tf.resId = :resId ");
         }
         if (checkDocument) {
-            queryStr.append("and match.textFlow.document.docId = :docId\n");
+            queryBuilder.append("AND hDoc.docId = :docId ");
         }
         if (checkProject) {
-            queryStr.append("and match.textFlow.document.projectIteration.project.id = :projectId\n");
+            queryBuilder.append("AND project.id = :projectId ");
         }
-        queryStr.append("order by\n"
-                + "  (case when match.textFlow.resId = :resId then 0 else 1 end),\n"
-                + "  (case when match.textFlow.document.docId\n"
-                + "    = :docId then 0 else 1 end),\n"
-                + "  (case when match.textFlow.document.projectIteration.project.id\n"
-                + "    = :projectId then 0 else 1 end),\n"
-                + "  match.lastChanged desc\n");
+        queryBuilder
+                .append("ORDER BY ")
+                .append(" CASE WHEN tf.resId = :resId THEN 0 ELSE 1 END, ")
+                .append(" CASE WHEN hDoc.docId = :docId THEN 0 ELSE 1 END, ")
+                .append(" CASE WHEN iter.project_id = :projectId THEN 0 ELSE 1 END, ")
+                .append(" tft.lastChanged DESC ")
+                .append("LIMIT 1");
 
-        Query q = getSession().createQuery(queryStr.toString());
-
-        q.setParameter("textFlowId", textFlow.getId());
-        q.setParameter("contentHash", textFlow.getContentHash());
-        q.setParameter("resId", textFlow.getResId());
-        q.setParameter("docId", textFlow.getDocument().getDocId());
-        q.setParameter("projectId", textFlow.getDocument()
+        SQLQuery sqlQuery = getSession().createSQLQuery(queryBuilder.toString());
+        sqlQuery.setParameter("textFlowId", textFlow.getId());
+        sqlQuery.setParameter("contentHash", textFlow.getContentHash());
+        sqlQuery.setParameter("resId", textFlow.getResId());
+        sqlQuery.setParameter("docId", textFlow.getDocument().getDocId());
+        sqlQuery.setParameter("projectId", textFlow.getDocument()
                 .getProjectIteration().getProject().getId());
-        q.setParameter("targetLocaleId", targetLocaleId);
-        q.setParameter("approvedState", ContentState.Approved);
-        q.setParameter("translatedState", ContentState.Translated);
-        q.setParameter("obsoleteEntityStatus", EntityStatus.OBSOLETE);
-        q.setCacheable(false);
-        // don't try to cache scrollable results
-        q.setComment("TextFlowTargetDAO.findMatchingTranslations");
-        q.setMaxResults(1); // Get the first one (should be the best match
-                            // because of the order by clause)
-        return Optional.fromNullable((HTextFlowTarget) q.uniqueResult());
+        sqlQuery.setParameter("localeId", targetLocaleId.getId());
+        sqlQuery.addEntity(HTextFlowTarget.class);
+        return Optional.fromNullable((HTextFlowTarget) sqlQuery.uniqueResult());
     }
 
     /**
@@ -274,7 +261,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
             hTextFlowTarget.setVersionNum(0); // this will be incremented when
                                               // content is set (below)
-            // TODO pahuang getTargets just to make sure hTextFlowTarget is persisted in the end
+            // TODO getTargets just to make sure hTextFlowTarget is persisted in the end
             hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
 //            getSession().persist(hTextFlowTarget);
         }
