@@ -86,7 +86,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
                                                     WebElement input) {
                                                 return input
                                                         .findElement(
-                                                                By.tagName("a"))
+                                                                By.className("list__title"))
                                                         .getText()
                                                         .contains(versionId);
                                             }
