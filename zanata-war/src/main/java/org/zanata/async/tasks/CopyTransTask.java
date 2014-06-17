@@ -27,6 +27,9 @@ import org.zanata.async.TimedAsyncHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.security.ZanataIdentity;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
+
 /**
  * Asynchronous Task that runs copy trans. Subclasses should allow for running
  * copy trans against different targets.
@@ -46,6 +49,7 @@ public abstract class CopyTransTask implements
         this.handle = new CopyTransTaskHandle(taskName);
     }
 
+    @Nonnull
     @Override
     public CopyTransTaskHandle getHandle() {
         return handle;

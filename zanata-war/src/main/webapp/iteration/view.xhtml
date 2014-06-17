@@ -127,13 +127,17 @@
   }
 </script>
 
-<a4j:jsFunction name="reloadLocale"
-  render="languages-document_list, language-label">
+<a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
+  onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
+  oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
+  render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
   <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="reloadDocument"
-  render="documents-language_list, document-label"
+<a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
+  onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
+  oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
+  render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
   action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
   <a4j:param name="val1" assignTo="#{projSlug}"/>
   <a4j:param name="val2" assignTo="#{verSlug}"/>

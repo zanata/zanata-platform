@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -131,6 +132,41 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         query.setParameter("username", userName);
         query.setComment("AccountDAO.searchQuery/username");
         return query.list();
+    }
+
+    public List<String> getUserNames(String filter, int offset, int maxResults) {
+        StringBuilder queryBuilder =
+                new StringBuilder("select username from HAccount ");
+        if (!StringUtils.isEmpty(filter)) {
+            queryBuilder.append("where lower(username) like :filter");
+        }
+        Query query = getSession().createQuery(queryBuilder.toString());
+        if (!StringUtils.isEmpty(filter)) {
+            query.setParameter("filter", "%" + filter + "%");
+        }
+        query.setMaxResults(maxResults);
+        query.setFirstResult(offset);
+        query.setCacheable(true);
+        query.setComment("accountDAO.getUserNames");
+        return (List<String>) query.list();
+    }
+
+    public int getUserCount(String filter) {
+        StringBuilder queryBuilder = new StringBuilder("select count(*) from HAccount ");
+        if (!StringUtils.isEmpty(filter)) {
+            queryBuilder.append("where lower(username) like :filter");
+        }
+        Query query = getSession().createQuery(queryBuilder.toString());
+        if (!StringUtils.isEmpty(filter)) {
+            query.setParameter("filter", "%" + filter + "%");
+        }
+        query.setCacheable(true);
+        query.setComment("accountDAO.getUserCount");
+        Long totalCount = (Long) query.uniqueResult();
+        if (totalCount == null) {
+            return 0;
+        }
+        return totalCount.intValue();
     }
 
     public HAccount getByCredentialsId(String credentialsId) {

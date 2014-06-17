@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.administration;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -28,21 +27,19 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.administration.ManageUserAccountPage;
-import org.zanata.page.administration.ManageUserPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class ManageUsersFullTest extends ZanataTestCase {
+public class ManageUsersTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
@@ -57,18 +54,20 @@ public class ManageUsersFullTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeAUsersUsername() {
-        String username = "administratornamechange";
-        ManageUserPage manageUserPage =
-                dashboardPage.goToAdministration().goToManageUserPage();
+    public void changeAUsersPassword() {
+        dashboardPage.goToAdministration()
+                .goToManageUserPage()
+                .editUserAccount("translator")
+                .enterPassword("newpassword")
+                .enterConfirmPassword("newpassword")
+                .saveUser()
+                .logout();
 
-        ManageUserAccountPage manageUserAccountPage =
-                manageUserPage.editUserAccount("admin");
-        manageUserPage =
-                manageUserAccountPage.clearFields().enterUsername(username)
-                        .saveUser();
-        assertThat("Administrator is displayed", manageUserPage.getUserList(),
-                Matchers.hasItem(username));
+        dashboardPage = new LoginWorkFlow().signIn("translator", "newpassword");
+
+        assertThat(dashboardPage.loggedInAs())
+                .isEqualTo("translator")
+                .as("User logged in with new password");
     }
 
 }

@@ -22,10 +22,7 @@
         <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
           enclose="true">
           <ui:define name="label">#{messages['jsf.Username']}</ui:define>
-          <h:inputText id="username" value="#{userAction.username}"
-            readonly="#{not s:hasRole('admin')}" required="true">
-            <a4j:ajax event="blur" render="usernameField"/>
-          </h:inputText>
+          <s:label value="#{userAction.username}" styleClass="readOnlyLabel"/>
         </s:decorate>
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
           <ui:define name="label">#{messages['jsf.Email']}</ui:define>

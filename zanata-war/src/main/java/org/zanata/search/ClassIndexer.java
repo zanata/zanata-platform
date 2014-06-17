@@ -38,13 +38,11 @@ import org.zanata.async.AsyncTaskHandle;
 public class ClassIndexer<T> {
 
     private final AbstractIndexingStrategy<T> indexingStrategy;
-    private FullTextSession session;
     private AsyncTaskHandle handle;
     private Class<?> entityType;
 
-    public ClassIndexer(FullTextSession session, AsyncTaskHandle handle,
+    public ClassIndexer(AsyncTaskHandle handle,
             Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy) {
-        this.session = session;
         this.handle = handle;
         this.entityType = entityType;
         this.indexingStrategy = indexingStrategy;
@@ -54,18 +52,18 @@ public class ClassIndexer<T> {
         return indexingStrategy;
     }
 
-    public int getEntityCount() {
+    public int getEntityCount(FullTextSession session) {
         Long result =
                 (Long) session.createCriteria(entityType)
                         .setProjection(Projections.rowCount()).list().get(0);
         return result.intValue();
     }
 
-    public void index() throws Exception {
+    public void index(FullTextSession session) throws Exception {
         log.info("Setting manual-flush and ignore-cache for {}", entityType);
         session.setFlushMode(FlushMode.MANUAL);
         session.setCacheMode(CacheMode.IGNORE);
-        indexingStrategy.invoke(handle);
+        indexingStrategy.invoke(handle, session);
         session.flushToIndexes(); // apply changes to indexes
         session.clear(); // clear since the queue is processed
     }

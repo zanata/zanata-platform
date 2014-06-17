@@ -22,6 +22,8 @@ package org.zanata.async;
 
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+
 /**
  * Simple default partial implementation of an async task that produces a bare
  * bones {@link AsyncTaskHandle} that tracks progress.
@@ -32,10 +34,10 @@ import lombok.Getter;
 public abstract class SimpleAsyncTask<V> implements
         AsyncTask<V, AsyncTaskHandle<V>> {
     @Getter
+    @Nonnull
     private final AsyncTaskHandle<V> handle;
 
     public SimpleAsyncTask(String taskName) {
         handle = new AsyncTaskHandle<V>(taskName);
     }
-
 }
