@@ -94,7 +94,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
                         Preconditions.checkState(found.isPresent(), versionId
                                 + " not found");
-                        found.get().findElement(By.tagName("a")).click();
+                        found.get().click();
                         return new VersionLanguagesPage(getDriver());
                     };
                 });
