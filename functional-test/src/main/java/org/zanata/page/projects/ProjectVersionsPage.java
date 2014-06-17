@@ -20,11 +20,7 @@
  */
 package org.zanata.page.projects;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -63,41 +59,29 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
-        return refreshPageUntil(this,
-                new Function<WebDriver, VersionLanguagesPage>() {
-                    @Override
-                    public VersionLanguagesPage apply(WebDriver input) {
-                        WebElement versionForm =
-                                getDriver().findElement(By.id("versions_form"));
-
-                        List<WebElement> versionLinks =
-                                versionForm.findElement(
-                                        By.className("list--stats"))
-                                        .findElements(By.tagName("li"));
-
-                        log.info("found {} active versions",
-                                versionLinks.size());
-
-                        Optional<WebElement> found =
-                                Iterables.tryFind(versionLinks,
-                                        new Predicate<WebElement>() {
-                                            @Override
-                                            public boolean apply(
-                                                    WebElement input) {
-                                                return input
-                                                        .findElement(
-                                                                By.tagName("a"))
-                                                        .getText()
-                                                        .contains(versionId);
-                                            }
-                                        });
-
-                        Preconditions.checkState(found.isPresent(), versionId
-                                + " not found");
-                        found.get().findElement(By.tagName("a")).click();
-                        return new VersionLanguagesPage(getDriver());
-                    };
-                });
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                List<WebElement> versionLinks = getDriver()
+                        .findElement(By.id("versions_form"))
+                        .findElement(By.className("list--stats"))
+                        .findElements(By.tagName("li"));
+                boolean clicked = false;
+                for (WebElement links : versionLinks) {
+                    // The Translate Options menu can get picked up here
+                    for (WebElement link : links.findElements(By.tagName("a"))) {
+                        if (link.getText().contains(versionId)) {
+                            link.click();
+                            clicked = true;
+                            break;
+                        }
+                    }
+                    if (clicked) break;
+                }
+                return clicked;
+            }
+        });
+        return new VersionLanguagesPage(getDriver());
     }
 
     public List<String> getVersions() {
