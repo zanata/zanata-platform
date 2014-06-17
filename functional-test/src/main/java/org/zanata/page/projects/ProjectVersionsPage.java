@@ -20,8 +20,10 @@
  */
 package org.zanata.page.projects;
 
-import com.google.common.base.Predicate;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -31,7 +33,7 @@ import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
 
-import java.util.List;
+import com.google.common.base.Predicate;
 
 /**
  * @author Damian Jansen

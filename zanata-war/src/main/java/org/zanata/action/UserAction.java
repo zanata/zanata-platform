@@ -20,12 +20,16 @@
  */
 package org.zanata.action;
 
+import java.util.List;
 import java.util.Map;
+import javax.faces.model.DataModel;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.seam.Component;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
@@ -35,8 +39,12 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.service.UserAccountService;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -75,9 +83,9 @@ public class UserAction extends
 
     private boolean newUserFlag;
 
-    private String originalUsername;
+    private UserPagedListDataModel userPagedListDataModel = new UserPagedListDataModel();
 
-    private String usernameFilter;
+    private String originalUsername;
 
     public void deleteUser(String userName) {
         try {
@@ -95,6 +103,10 @@ public class UserAction extends
         }
     }
 
+    public DataModel getUserPagedListDataModel() {
+        return userPagedListDataModel;
+    }
+
     public String getEmail(String username) {
         return personDAO.findEmail(username);
     }
@@ -105,14 +117,6 @@ public class UserAction extends
 
     public String getName(String username) {
         return personDAO.findByUsername(username).getName();
-    }
-
-    public String getUsernameFilter() {
-        return usernameFilter;
-    }
-
-    public void setUsernameFilter(String usernameFilter) {
-        this.usernameFilter = usernameFilter;
     }
 
     @Override
@@ -169,6 +173,26 @@ public class UserAction extends
         } catch (NoResultException e) {
             // pass
             return true;
+        }
+    }
+
+    public class UserPagedListDataModel extends PagedListDataModel<String> {
+        @Getter
+        @Setter
+        private String filter;
+
+        @Override
+        public DataPage<String> fetchPage(int startRow, int pageSize) {
+            AccountDAO accountDAO =
+                    (AccountDAO) Component.getInstance(AccountDAO.class,
+                            ScopeType.STATELESS);
+
+            List<String> userList =
+                    accountDAO.getUserNames(filter, startRow, pageSize);
+
+            int listSize = accountDAO.getUserCount(filter);
+
+            return new DataPage<String>(listSize, startRow, userList);
         }
     }
 }

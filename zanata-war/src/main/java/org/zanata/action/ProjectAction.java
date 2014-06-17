@@ -45,8 +45,6 @@ public class ProjectAction implements Serializable {
             new ProjectPagedListDataModel(!showActive, !showReadOnly,
                     !showObsolete);
 
-    private int scrollerPage = 1;
-
     @In
     private ProjectDAO projectDAO;
 
@@ -55,18 +53,6 @@ public class ProjectAction implements Serializable {
 
     public boolean getEmpty() {
         return projectDAO.getFilterProjectSize(false, false, false) == 0;
-    }
-
-    public int getPageSize() {
-        return projectPagedListDataModel.getPageSize();
-    }
-
-    public int getScrollerPage() {
-        return scrollerPage;
-    }
-
-    public void setScrollerPage(int scrollerPage) {
-        this.scrollerPage = scrollerPage;
     }
 
     public DataModel getProjectPagedListDataModel() {
