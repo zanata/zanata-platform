@@ -32,7 +32,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Category(DetailedTest.class)
 public class ManageSearchTest extends ZanataTestCase {
@@ -54,20 +54,20 @@ public class ManageSearchTest extends ZanataTestCase {
                 .goToManageSeachPage()
                 .clickSelectAll();
 
-        assertThat("All actions are selected",
-                manageSearchPage.allActionsSelected());
-        assertThat("No operations are running",
-                manageSearchPage.noOperationsRunningIsDisplayed());
+        assertThat(manageSearchPage.allActionsSelected())
+                .as("All actions are selected");
+        assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
+                .as("No operations are running");
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .waitForActionsToFinish();
 
-        assertThat("Completed is displayed",
-                manageSearchPage.completedIsDisplayed());
+        assertThat(manageSearchPage.completedIsDisplayed())
+                .as("Completed is displayed");
 
-        assertThat("No operations are running",
-                manageSearchPage.noOperationsRunningIsDisplayed());
+        assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
+                .as("No operations are running");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -78,16 +78,16 @@ public class ManageSearchTest extends ZanataTestCase {
                 .goToManageSeachPage()
                 .clickSelectAll();
 
-        assertThat("All actions are selected",
-                manageSearchPage.allActionsSelected());
-        assertThat("No operations are running",
-                manageSearchPage.noOperationsRunningIsDisplayed());
+        assertThat(manageSearchPage.allActionsSelected())
+                .as("All actions are selected");
+        assertThat(manageSearchPage.noOperationsRunningIsDisplayed())
+                .as("No operations are running");
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
                 .abort();
 
-        assertThat("Aborted is displayed",
-                manageSearchPage.abortedIsDisplayed());
+        assertThat(manageSearchPage.abortedIsDisplayed())
+                .as("Aborted is displayed");
     }
 }
