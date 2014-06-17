@@ -40,12 +40,6 @@ import org.zanata.model.HPerson;
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
 
-//    @Observer(JpaIdentityStore.EVENT_USER_AUTHENTICATED)
-//    public void loginSuccessful(HAccount account) {
-//        log.debug("Account {} authenticated", account.getUsername());
-//        injectAuthenticatedPersonIntoWorkingMemory(account);
-//    }
-
     public void injectAuthenticatedPersonIntoWorkingMemory(HAccount account) {
         HPerson authenticatedPerson = account.getPerson();
         // insert authenticatedPerson for use in security.drl rules

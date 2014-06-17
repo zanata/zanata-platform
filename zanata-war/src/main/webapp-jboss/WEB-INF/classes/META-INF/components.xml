@@ -53,16 +53,6 @@
   <security:identity jaas-config-name="zanata" />
   <web:identity-filter disabled="true" />
 
-  <!--
-  NB startup="true" is a workaround for JBSEAM-3999.
-  See https://issues.jboss.org/browse/JBSEAM-3999?focusedCommentId=12474401#comment-12474401
-  -->
-  <!--<drools:rule-base name="securityRules" startup="true">
-    <drools:rule-files>
-      <value>/security.drl</value>
-    </drools:rule-files>
-  </drools:rule-base>-->
-
   <security:rule-based-permission-resolver security-rules="#{securityRules}" />
 
   <!-- Persistence stuff -->
