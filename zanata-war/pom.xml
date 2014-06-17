@@ -1893,6 +1893,15 @@
       <version>3.0.2.Final</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+
     <!-- openid4java -->
     <dependency>
       <groupId>org.htmlparser</groupId>
