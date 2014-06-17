@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>3.3.2-SNAPSHOT</version>
+    <version>3.3.3-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-cli</artifactId>
   <name>Zanata command-line client</name>
@@ -20,15 +20,30 @@
   <build>
     <plugins>
       <plugin>
-        <!-- See the script etc/zanataj -->
+        <!-- See the script etc/zanata-cli -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <executions>
           <execution>
+            <id>zanata-cli</id>
             <goals>
               <goal>java</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>generate-zanata-cli-completion</id>
+            <phase>test</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>org.zanata.client.BashCompletionGenerator</mainClass>
+              <arguments>
+                <argument>${project.build.directory}/zanata-cli-completion</argument>
+              </arguments>
+              <classpathScope>test</classpathScope>
+            </configuration>
           </execution>
         </executions>
         <configuration>
@@ -91,40 +106,6 @@
 
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>bash</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.2.1</version>
-            <executions>
-              <execution>
-                <phase>test</phase>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <mainClass>org.zanata.client.BashCompletionGenerator</mainClass>
-              <arguments>
-                <argument>${project.build.directory}/zanata-cli-completion</argument>
-              </arguments>
-              <classpathScope>test</classpathScope>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
 
   <dependencies>
     <dependency>
