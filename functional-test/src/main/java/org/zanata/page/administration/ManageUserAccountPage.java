@@ -68,21 +68,6 @@ public class ManageUserAccountPage extends BasePage {
         roleMap.put("user", "4");
     }
 
-    public ManageUserAccountPage enterUsername(final String username) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                WebElement usernameField = input.findElement(usernameBy);
-                usernameField.clear();
-                usernameField.sendKeys(username);
-                return input.findElement(usernameBy).getAttribute("value")
-                        .equals(username);
-            }
-        });
-
-        return new ManageUserAccountPage(getDriver());
-    }
-
     public ManageUserAccountPage enterPassword(String password) {
         passwordField.sendKeys(password);
         return new ManageUserAccountPage(getDriver());
@@ -123,17 +108,4 @@ public class ManageUserAccountPage extends BasePage {
         return new ManageUserPage(getDriver());
     }
 
-    public ManageUserAccountPage clearFields() {
-        waitForTenSec().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                input.findElement(usernameBy).clear();
-                return input.findElement(usernameBy).getAttribute("value")
-                        .isEmpty();
-            }
-        });
-        passwordField.clear();
-        passwordConfirmField.clear();
-        return new ManageUserAccountPage(getDriver());
-    }
 }

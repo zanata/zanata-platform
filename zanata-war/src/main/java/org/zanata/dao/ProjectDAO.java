@@ -2,17 +2,19 @@ package org.zanata.dao;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -247,14 +249,35 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return query.getResultSize();
     }
 
-    private FullTextQuery getTextQuery(@Nonnull String searchQuery,
-            boolean includeObsolete) {
-        searchQuery = QueryParser.escape(searchQuery.toLowerCase());
+    private org.apache.lucene.search.Query constructQuery(String field, String searchQuery)
+            throws ParseException {
+        QueryParser parser =
+                new QueryParser(Version.LUCENE_29, field,
+                        new StandardAnalyzer(Version.LUCENE_29));
+        return parser.parse(searchQuery);
+    }
 
-        PrefixQuery slugQuery = new PrefixQuery(new Term("slug", searchQuery));
-        PrefixQuery nameQuery = new PrefixQuery(new Term("name", searchQuery));
-        PrefixQuery descQuery =
-                new PrefixQuery(new Term("description", searchQuery));
+    /**
+     * Lucene index for project name and slug replaces hyphen with
+     * space. This method is to replace hyphen with space when performing search
+     *
+     * @param query
+     * @return
+     */
+    private String parseSlugAndName(String query) {
+        return query.replace("-", " ");
+    }
+
+    private FullTextQuery getTextQuery(@Nonnull String searchQuery,
+            boolean includeObsolete) throws ParseException {
+        org.apache.lucene.search.Query nameQuery =
+                constructQuery("name", parseSlugAndName(searchQuery) + "*");
+        org.apache.lucene.search.Query slugQuery =
+                constructQuery("slug", parseSlugAndName(searchQuery) + "*");
+
+        searchQuery = QueryParser.escape(searchQuery);
+        org.apache.lucene.search.Query descQuery =
+                constructQuery("description", searchQuery);
 
         BooleanQuery booleanQuery = new BooleanQuery();
         booleanQuery.add(slugQuery, BooleanClause.Occur.SHOULD);

@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.zanata.ArquillianTest;
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nonnull;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -102,6 +104,7 @@ public class AsyncTaskITCase extends ArquillianTest {
         AsyncTaskHandle<Void> handle =
                 taskExecutor
                         .startTask(new AsyncTask<Void, AsyncTaskHandle<Void>>() {
+                            @Nonnull
                             @Override
                             public AsyncTaskHandle<Void> getHandle() {
                                 return taskHandle;

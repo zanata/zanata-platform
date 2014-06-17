@@ -114,7 +114,7 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
             public Void call() throws Exception {
                 TranslationMemoryResourceService tmResource =
                         ServiceLocator.instance().getInstance(
-                                "translationMemoryService",
+                                "translationMemoryResource",
                                 TranslationMemoryResourceService.class);
                 String msg =
                         tmResource.deleteTranslationUnitsUnguarded(

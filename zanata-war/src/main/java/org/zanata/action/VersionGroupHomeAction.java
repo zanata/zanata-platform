@@ -94,11 +94,9 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     private boolean pageRendered = false;
 
     @Getter
-    @Setter
     private HLocale selectedLocale;
 
     @Getter
-    @Setter
     private HProjectIteration selectedVersion;
 
     @Getter

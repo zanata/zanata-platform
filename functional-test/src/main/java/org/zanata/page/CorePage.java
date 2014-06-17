@@ -38,6 +38,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nullable;
+
 /**
  * Contains the physical elements, such as page title and home link, that must
  * exist on all Zanata pages.

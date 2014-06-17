@@ -36,21 +36,20 @@ import org.zanata.model.HTextFlowTarget;
  */
 public class HTextFlowTargetIndexingStrategy extends
         AbstractIndexingStrategy<HTextFlowTarget> {
-    public HTextFlowTargetIndexingStrategy(FullTextSession session) {
-        super(HTextFlowTarget.class, session);
+    public HTextFlowTargetIndexingStrategy() {
+        super(HTextFlowTarget.class);
     }
 
     @Override
-    protected void onEntityIndexed(int n) {
+    protected void onEntityIndexed(int n, FullTextSession session) {
         // Nothing to do
     }
 
     @Override
-    protected ScrollableResults queryResults(int ignoredOffset) {
+    protected ScrollableResults queryResults(int ignoredOffset, FullTextSession session) {
         // TODO move this query into something like HTextFlowTargetStreamingDAO
         Query query =
-                getSession()
-                        .createQuery(
+                session.createQuery(
                                 "from HTextFlowTarget tft "
                                         + "join fetch tft.locale "
                                         + "join fetch tft.textFlow "

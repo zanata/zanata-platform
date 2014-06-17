@@ -20,10 +20,7 @@
  */
 package org.zanata.feature.administration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.io.File;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +36,8 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.TranslationMemoryWorkFlow;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -53,9 +52,9 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
 
     @Before
     public void before() {
-        assertThat("Admin is logged in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                Matchers.equalTo("admin"));
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -67,17 +66,18 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 new TranslationMemoryWorkFlow().createTranslationMemory(
                         newTMId, tmDescription);
 
-        assertThat("The success message is displayed",
-                translationMemoryPage.getNotificationMessage(),
-                Matchers.equalTo("Successfully created"));
+        assertThat(translationMemoryPage
+                .expectNotification("Successfully created"))
+                .isTrue()
+                .as("The success message is displayed");
 
-        assertThat("The new Translation Memory is listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.hasItem(newTMId));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .contains(newTMId)
+                .as("The new Translation Memory is listed");
 
-        assertThat("The description is displayed correctly",
-                translationMemoryPage.getDescription(newTMId),
-                Matchers.equalTo(tmDescription));
+        assertThat(translationMemoryPage.getDescription(newTMId))
+                .isEqualTo(tmDescription)
+                .as("The description is displayed correctly");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -85,15 +85,18 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         String abortName = "aborttmtest";
         String abortDescription = "abort tm description";
 
-        TranslationMemoryPage translationMemoryPage =
-                new BasicWorkFlow().goToHome().goToAdministration()
-                        .goToTranslationMemoryPage().clickCreateNew()
-                        .enterMemoryID(abortName)
-                        .enterMemoryDescription(abortDescription).cancelTM();
+        TranslationMemoryPage translationMemoryPage = new BasicWorkFlow()
+                .goToHome()
+                .goToAdministration()
+                .goToTranslationMemoryPage()
+                .clickCreateNew()
+                .enterMemoryID(abortName)
+                .enterMemoryDescription(abortDescription)
+                .cancelTM();
 
-        assertThat("The Translation Memory was not created",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.not(Matchers.hasItem(abortName)));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .doesNotContain(abortName)
+                .as("The Translation Memory was not created");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -105,44 +108,42 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 new TranslationMemoryWorkFlow()
                         .createTranslationMemory(nonUniqueTMId);
 
-        assertThat("The new Translation Memory is listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.hasItem(nonUniqueTMId));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .contains(nonUniqueTMId)
+                .as("The new Translation Memory is listed");
 
         TranslationMemoryEditPage translationMemoryEditPage =
                 translationMemoryPage.clickCreateNew()
                         .enterMemoryID(nonUniqueTMId)
                         .enterMemoryDescription("Meh");
 
-        assertThat("The Id Is Not Available error is displayed",
-                translationMemoryEditPage.waitForErrors(),
-                Matchers.hasItem(nameError));
+        assertThat(translationMemoryEditPage.waitForErrors())
+                .contains(nameError)
+                .as("The Id Is Not Available error is displayed");
 
         translationMemoryEditPage =
                 translationMemoryEditPage.clickSaveAndExpectFailure();
 
         translationMemoryEditPage.assertNoCriticalErrors(); // RHBZ-1010771
 
-        assertThat("The Id Is Not Available error is displayed",
-                translationMemoryEditPage.waitForErrors(),
-                Matchers.hasItem(nameError));
+        assertThat(translationMemoryEditPage.waitForErrors())
+                .contains(nameError)
+                .as("The Id Is Not Available error is displayed");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void importTranslationMemory() {
         String importTMId = "importmtest";
-        File importFile =
-                testFileGenerator
-                        .generateTestFileWithContent(
-                                "importtmtest",
-                                ".tmx",
-                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                        + "<tmx version=\"1.4\">\n"
-                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                        + "  <body>\n"
-                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                        + "  </body>\n" + "</tmx>");
+        File importFile = testFileGenerator.generateTestFileWithContent(
+                "importtmtest",
+                ".tmx",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                        + "<tmx version=\"1.4\">\n"
+                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                        + "  <body>\n"
+                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                        + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -151,9 +152,9 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                         .enterImportFileName(importFile.getAbsolutePath())
                         .clickUploadButtonAndAcknowledge();
 
-        assertThat("The Translation Memory has one entry",
-                translationMemoryPage.getNumberOfEntries(importTMId),
-                Matchers.equalTo("1"));
+        assertThat(translationMemoryPage.getNumberOfEntries(importTMId))
+                .isEqualTo("1")
+                .as("The Translation Memory has one entry");
 
     }
 
@@ -166,14 +167,15 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                         rejectTMId).clickImport(rejectTMId);
         Alert uploadError = translationMemoryPage.expectFailedUpload();
 
-        assertThat("Error is displayed", uploadError.getText(),
-                Matchers.startsWith("There was an error uploading the file"));
+        assertThat(uploadError.getText())
+                .startsWith("There was an error uploading the file")
+                .as("Error is displayed");
 
         translationMemoryPage = translationMemoryPage.dismissError();
 
-        assertThat("No change is recorded",
-                translationMemoryPage.getNumberOfEntries(rejectTMId),
-                Matchers.equalTo("0"));
+        assertThat(translationMemoryPage.getNumberOfEntries(rejectTMId))
+                .isEqualTo("0")
+                .as("No change is recorded");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -184,16 +186,16 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 new TranslationMemoryWorkFlow()
                         .createTranslationMemory(deleteTMId);
 
-        assertThat("The new Translation Memory is listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.hasItem(deleteTMId));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .contains(deleteTMId)
+                .as("The new Translation Memory is listed");
 
         translationMemoryPage =
                 translationMemoryPage.clickDeleteTmAndAccept(deleteTMId);
 
-        assertThat("The new Translation Memory is no longer listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.not(Matchers.hasItem(deleteTMId)));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .doesNotContain(deleteTMId)
+                .as("The new Translation Memory is no longer listed");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -204,33 +206,31 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 new TranslationMemoryWorkFlow()
                         .createTranslationMemory(dontDeleteTMId);
 
-        assertThat("The new Translation Memory is listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.hasItem(dontDeleteTMId));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .contains(dontDeleteTMId)
+                .as("The new Translation Memory is listed");
 
         translationMemoryPage =
                 translationMemoryPage.clickDeleteTmAndCancel(dontDeleteTMId);
 
-        assertThat("The new Translation Memory is still listed",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.hasItem(dontDeleteTMId));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .contains(dontDeleteTMId)
+                .as("The new Translation Memory is still listed");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void clearTranslationMemory() {
         String clearTMId = "cleartmtest";
-        File importFile =
-                testFileGenerator
-                        .generateTestFileWithContent(
-                                "cleartmtest",
-                                ".tmx",
-                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                        + "<tmx version=\"1.4\">\n"
-                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                        + "  <body>\n"
-                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                        + "  </body>\n" + "</tmx>");
+        File importFile = testFileGenerator.generateTestFileWithContent(
+                "cleartmtest",
+                ".tmx",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                + "<tmx version=\"1.4\">\n"
+                + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                + "  <body>\n"
+                + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -239,33 +239,32 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                         .enterImportFileName(importFile.getAbsolutePath())
                         .clickUploadButtonAndAcknowledge();
 
-        assertThat("The TM has one item",
-                translationMemoryPage.getNumberOfEntries(clearTMId),
-                Matchers.equalTo("1"));
+        assertThat(translationMemoryPage.getNumberOfEntries(clearTMId))
+                .isEqualTo("1")
+                .as("The TM has one item");
 
         translationMemoryPage =
                 translationMemoryPage.clickClearTMAndAccept(clearTMId);
 
-        assertThat("The translation memory entries is empty",
-                translationMemoryPage.waitForExpectedNumberOfEntries(clearTMId,
-                        "0"), Matchers.equalTo("0"));
+        assertThat(translationMemoryPage
+                .waitForExpectedNumberOfEntries(clearTMId, "0"))
+                .isEqualTo("0")
+                .as("The translation memory entries is empty");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontClearTranslationMemory() {
         String clearTMId = "dontcleartmtest";
-        File importFile =
-                testFileGenerator
-                        .generateTestFileWithContent(
-                                "cleartmtest",
-                                ".tmx",
-                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                        + "<tmx version=\"1.4\">\n"
-                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                        + "  <body>\n"
-                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                        + "  </body>\n" + "</tmx>");
+        File importFile = testFileGenerator.generateTestFileWithContent(
+                "cleartmtest",
+                ".tmx",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                + "<tmx version=\"1.4\">\n"
+                + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                + "  <body>\n"
+                + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -274,33 +273,31 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                         .enterImportFileName(importFile.getAbsolutePath())
                         .clickUploadButtonAndAcknowledge();
 
-        assertThat("The TM has one item",
-                translationMemoryPage.getNumberOfEntries(clearTMId),
-                Matchers.equalTo("1"));
+        assertThat(translationMemoryPage.getNumberOfEntries(clearTMId))
+                .isEqualTo("1")
+                .as("The TM has one item");
 
         translationMemoryPage =
                 translationMemoryPage.clickClearTMAndCancel(clearTMId);
 
-        assertThat("The translation memory entries count is the same",
-                translationMemoryPage.getNumberOfEntries(clearTMId),
-                Matchers.equalTo("1"));
+        assertThat(translationMemoryPage.getNumberOfEntries(clearTMId))
+                .isEqualTo("1")
+                .as("The translation memory entries count is the same");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void mustClearBeforeDelete() {
         String forceClear = "forcecleartodelete";
-        File importFile =
-                testFileGenerator
-                        .generateTestFileWithContent(
-                                "cleartmtest",
-                                ".tmx",
-                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                        + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
-                                        + "<tmx version=\"1.4\">\n"
-                                        + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
-                                        + "  <body>\n"
-                                        + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
-                                        + "  </body>\n" + "</tmx>");
+        File importFile = testFileGenerator.generateTestFileWithContent(
+                "cleartmtest",
+                ".tmx",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<!DOCTYPE tmx SYSTEM \"http://www.lisa.org/tmx/tmx14.dtd\">\n"
+                + "<tmx version=\"1.4\">\n"
+                + "  <header creationtool=\"Zanata TranslationsTMXExportStrategy\" creationtoolversion=\"unknown\" segtype=\"block\" o-tmf=\"unknown\" adminlang=\"en\" srclang=\"*all*\" datatype=\"unknown\"/>\n"
+                + "  <body>\n"
+                + "<tu srclang=\"en-US\" tuid=\"about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c\"><tuv xml:lang=\"en-US\"><seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg></tuv><tuv xml:lang=\"pl\"><seg>This is a TM Import Test</seg></tuv></tu>\n"
+                + "  </body>\n" + "</tmx>");
 
         TranslationMemoryPage translationMemoryPage =
                 new TranslationMemoryWorkFlow()
@@ -309,26 +306,28 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                         .enterImportFileName(importFile.getAbsolutePath())
                         .clickUploadButtonAndAcknowledge();
 
-        assertThat("The TM has one item",
-                translationMemoryPage.getNumberOfEntries(forceClear),
-                Matchers.equalTo("1"));
+        assertThat(translationMemoryPage.getNumberOfEntries(forceClear))
+                .isEqualTo("1")
+                .as("The TM has one item");
 
-        assertThat("The item cannot yet be deleted",
-                !translationMemoryPage.canDelete(forceClear));
+        assertThat(translationMemoryPage.canDelete(forceClear))
+                .isFalse()
+                .as("The item cannot yet be deleted");
 
         translationMemoryPage =
                 translationMemoryPage.clickClearTMAndAccept(forceClear);
         translationMemoryPage.waitForExpectedNumberOfEntries(forceClear, "0");
 
-        assertThat("The item can be deleted",
-                translationMemoryPage.canDelete(forceClear));
+        assertThat(translationMemoryPage.canDelete(forceClear))
+                .isTrue()
+                .as("The item can be deleted");
 
         translationMemoryPage =
                 translationMemoryPage.clickDeleteTmAndAccept(forceClear);
 
-        assertThat("The item is deleted",
-                translationMemoryPage.getListedTranslationMemorys(),
-                Matchers.not(Matchers.hasItem(forceClear)));
+        assertThat(translationMemoryPage.getListedTranslationMemorys())
+                .doesNotContain(forceClear)
+                .as("The item is deleted");
     }
 
 }

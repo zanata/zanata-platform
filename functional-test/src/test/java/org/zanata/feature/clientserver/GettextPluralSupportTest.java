@@ -15,6 +15,7 @@ import org.junit.experimental.categories.Category;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
@@ -72,6 +73,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Feature(summary = "can push pull gettext plural project", tcmsTestCaseIds = {217601, 217905}, tcmsTestPlanIds = 5316)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
@@ -130,12 +132,15 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
                 Matchers.equalTo("%d files removed"));
         // nplural for Polish is 3
-        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetSingular),
+        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+                Plurals.TargetSingular),
                 Matchers.equalTo("1 aoeuaouaou"));
-        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralOne),
+        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+                Plurals.TargetPluralOne),
                 Matchers.equalTo("%d aoeuaouao"));
-        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0, Plurals.TargetPluralTwo),
-                Matchers.equalTo(""));
+        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+                Plurals.TargetPluralTwo),
+                Matchers.equalTo(" "));
 
         return editorPage;
     }

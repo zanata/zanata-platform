@@ -2,6 +2,8 @@
   xsi:noNamespaceSchemaLocation="ehcache.xsd"
   updateCheck="false">
 
+  <diskStore path="ehcache.disk.store.dir"/>
+
   <defaultCache
     maxElementsInMemory="10000"
     eternal="false"
@@ -83,10 +85,10 @@
   <cache
     name="org.zanata.service.impl.VersionStateCacheImpl.versionStatisticCache"
     maxElementsInMemory="10000"
-    eternal="false"
-    timeToIdleSeconds="86400"
-    timeToLiveSeconds="0"
-    overflowToDisk="false"
+    eternal="true"
+    overflowToDisk="true"
+    diskPersistent="true"
+    maxBytesLocalDisk="50000000"
     memoryStoreEvictionPolicy="LRU"
     statistics="true"
     />

@@ -22,6 +22,9 @@
   <composite:attribute name="render"
     shortDescription="Ids of component to render on pull request"/>
 
+  <composite:attribute name="oncomplete"
+    shortDescription="The client-side script method to be called after complete"/>
+
   <composite:attribute name="onCompleteRender"
     shortDescription="Ids of component to render on complete"/>
 
@@ -33,7 +36,7 @@
 <composite:implementation>
 
   <a4j:jsFunction name="onCompleteFunction"
-    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}"/>
+    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}" oncomplete="#{cc.attrs.oncomplete}"/>
 
   <a4j:poll id="poll-#{cc.attrs.id}" interval="#{cc.attrs.interval}"
     enabled="#{cc.attrs.actionBean.inProgress}"
@@ -55,7 +58,7 @@
       jQuery(uncompletedBar).css('margin-left', completedPercentage + "%");
 
       var inProgress = jQuery("[id='#{cc.attrs.id}-inProgress']").val();
-      if (inProgress == 'false' && completedPercentage == '100') {
+      if (inProgress == 'false' || completedPercentage == '100') {
         onCompleteFunction();
       }
     }
