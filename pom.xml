@@ -334,6 +334,16 @@
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
             <banDuplicateClasses>
+              <dependencies combine.children="append">
+                <dependency>
+                  <groupId>org.apache.httpcomponents</groupId>
+                  <artifactId>httpclient</artifactId>
+                  <ignoreClasses>
+                    <!-- also found in httpcore -->
+                    <ignoreClass>org.apache.http.annotation.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+              </dependencies>
               <findAllDuplicates>true</findAllDuplicates>
               <message xml:space="preserve">
 Warning: found duplicate classes on classpath.  Please remove unnecessary
@@ -400,7 +410,7 @@ package.
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.0-alpha-5</version>
+            <version>1.0-beta-2</version>
           </dependency>
         </dependencies>
       </plugin>
