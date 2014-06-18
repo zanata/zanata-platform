@@ -55,7 +55,7 @@
             rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
         <h:outputScript
-          rendered="#{(conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty facesContext.messageList))}">
+          rendered="#{conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty facesContext.messageList)}">
           startGlobalMessageTimer();
         </h:outputScript>
       </s:fragment>
