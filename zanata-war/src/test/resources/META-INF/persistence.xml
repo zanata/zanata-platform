@@ -64,7 +64,8 @@
       <!-- Use test version of hibernate cache -->
       <property name="hibernate.cache.region.factory_class"
         value="org.hibernate.testing.cache.CachingRegionFactory" />
-      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <!-- NB create/create-drop/update are only safe for testing! -->
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
 
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDriverManagerConnectionProvider" />
@@ -79,7 +80,7 @@
       <property name="hibernate.connection.password" value="" />
       <!--hibernate3-maven-plugin:hbm2ddl needs this  -->
       <property name="hibernate.dialect"
-        value="org.hibernate.dialect.H2Dialect" />
+        value="org.zanata.database.CustomH2Dialect" />
 
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
