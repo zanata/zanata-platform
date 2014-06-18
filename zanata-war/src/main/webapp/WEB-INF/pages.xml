@@ -638,51 +638,6 @@
     </navigation>
   </page>
 
-  <page view-id="/iteration/request_to_join_group.xhtml">
-    <param name="emailType" value="#{sendEmail.emailType}" />
-    <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-    <param name="iterationSlug"
-      value="#{versionGroupJoinAction.iterationSlug}" />
-    <param name="projectSlug" value="#{versionGroupJoinAction.projectSlug}" />
-
-    <action execute="#{versionGroupJoinAction.searchProjectVersion()}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/home.xhtml', messages['jsf.Projects'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/project/project.xhtml', versionGroupJoinAction.projectSlug).param('slug', versionGroupJoinAction.projectSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/iteration/view.xhtml', versionGroupJoinAction.iterationSlug).param('projectSlug', versionGroupJoinAction.projectSlug).param('iterationSlug', versionGroupJoinAction.iterationSlug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestJoinGroup'])}" />
-
-
-    <navigation from-action="#{versionGroupJoinAction.send}">
-      <rule if-outcome="success">
-        <redirect view-id="/iteration/view.xhtml">
-          <param name="projectSlug"
-            value="#{versionGroupJoinAction.projectSlug}" />
-          <param name="iterationSlug"
-            value="#{versionGroupJoinAction.iterationSlug}" />
-        </redirect>
-      </rule>
-      <rule if-outcome="failure">
-        <redirect view-id="/iteration/request_to_join_group.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{versionGroupJoinAction.cancel}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionGroupJoinAction.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionGroupJoinAction.iterationSlug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-
   <!-- Language -->
   <page view-id="/language/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />
