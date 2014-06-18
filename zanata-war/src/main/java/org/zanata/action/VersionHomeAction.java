@@ -188,12 +188,18 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Getter
     private SortingType documentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.HOURS,
+                    SortingType.SortOption.PERCENTAGE,
+                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE,
                     SortingType.SortOption.LAST_TRANSLATED));
 
     @Getter
     private SortingType sourceDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.HOURS,
+                    SortingType.SortOption.PERCENTAGE,
+                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
 
     @Getter
