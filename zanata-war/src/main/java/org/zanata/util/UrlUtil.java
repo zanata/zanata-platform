@@ -134,7 +134,7 @@ public class UrlUtil implements Serializable {
      * UrlEncoder replace whitespace with '+'. Need manual replacement of '+' to
      * '%20'
      *
-     * @param url
+     * @param var
      */
     public static String encodeString(String var) {
         try {
