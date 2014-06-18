@@ -14,48 +14,20 @@ var globalMessageTimer;
 
 // automatically clear global message after 5 seconds
 function startGlobalMessageTimer() {
-  if (zanata) {
-    zanata.messages.activate('#messages .message--global');
-  } else {
+  if (typeof zanata == 'undefined') {
     jQuery('#messages .message--global').addClass('is-active');
+  } else {
+    zanata.messages.activate('#messages .message--global');
   }
 
   //stop previous timeout counter
   clearTimeout(globalMessageTimer);
 
   globalMessageTimer = setTimeout(function() {
-    if (zanata) {
-      zanata.messages.deactivate('#messages .message--global');
-    } else {
+    if (typeof zanata == 'undefined') {
       jQuery('#messages .message--global').removeClass('is-active');
-    }
-  }, 5000);
-}
-
-function refreshTooltip(wrapperId) {
-  jQuery('#' + wrapperId).find('[title]').each(function() {
-    zanata.tooltip.init(this);
-  });
-}
-
-var globalMessageTimer;
-
-// automatically clear global message after 5 seconds
-function startGlobalMessageTimer() {
-  if (zanata) {
-    zanata.messages.activate('#messages .message--global');
-  } else {
-    jQuery('#messages .message--global').addClass('is-active');
-  }
-
-  //stop previous timeout counter
-  clearTimeout(globalMessageTimer);
-
-  globalMessageTimer = setTimeout(function() {
-    if (zanata) {
-      zanata.messages.deactivate('#messages .message--global');
     } else {
-      jQuery('#messages .message--global').removeClass('is-active');
+      zanata.messages.deactivate('#messages .message--global');
     }
   }, 5000);
 }

@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -80,6 +81,7 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
@@ -691,6 +693,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     public void setSelectedDocumentId(String projectSlug, String versionSlug, String docId) {
+        docId = UrlUtil.decodeString(docId);
         this.selectedDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
     }
 
@@ -796,6 +799,14 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         translationFileServiceImpl.removeTempFile(tempFile);
+    }
+
+    public String encodeDocId(String docId) {
+        return UrlUtil.encodeString(docId);
+    }
+
+    public String decodeDocId(String docId) {
+        return UrlUtil.decodeString(docId);
     }
 
     public void uploadTranslationFile(HLocale hLocale) {
