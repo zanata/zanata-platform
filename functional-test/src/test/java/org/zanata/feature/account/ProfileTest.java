@@ -23,8 +23,10 @@ package org.zanata.feature.account;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.account.RegisterPage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
@@ -49,8 +51,10 @@ public class ProfileTest extends ZanataTestCase {
     private static final String serverUrl = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value());
 
+    @Feature(summary = "The user can view their account details",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86819)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void verifyProfileData() {
+    public void verifyProfileData() throws Exception {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToSettingsTab()
@@ -72,8 +76,10 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key is correct");
     }
 
+    @Feature(summary = "The user can change their API key",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeUsersApiKey() {
+    public void changeUsersApiKey() throws Exception {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -95,8 +101,10 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key matches the label");
     }
 
+    @Feature(summary = "The user can change their display name",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86822)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeUsersName() {
+    public void changeUsersName() throws Exception {
         DashboardProfileTab dashboardProfileTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -110,8 +118,10 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The user's name has been changed");
     }
 
+    @Feature(summary = "The user's email address change is validated",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86822)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void emailValidationIsUsedOnProfileEdit() {
+    public void emailValidationIsUsedOnProfileEdit() throws Exception {
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
@@ -120,7 +130,7 @@ public class ProfileTest extends ZanataTestCase {
                 .clickUpdateEmailButton();
 
         assertThat(dashboardAccountTab.waitForFieldErrors())
-                .contains("This email address is already taken")
+                .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
                 .as("The email is rejected, being already taken");
 
         dashboardAccountTab = dashboardAccountTab
@@ -131,7 +141,7 @@ public class ProfileTest extends ZanataTestCase {
                 .clickUpdateEmailButton();
 
         assertThat(dashboardAccountTab.waitForFieldErrors())
-                .contains("not a well-formed email address")
+                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email is rejected, being of invalid format");
     }
 }

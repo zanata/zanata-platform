@@ -29,6 +29,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
@@ -102,18 +103,21 @@ public class ValidEmailAddressTest extends ZanataTestCase {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
+    @Feature(summary = "The system will allow all acceptable forms of " +
+            "email address for registration",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Theory
-    public void validEmailAcceptance(ValidEmailAddressRFC2822 emailAddress) {
+    public void validEmailAcceptance(ValidEmailAddressRFC2822 emailAddress)
+            throws Exception {
         log.info(testName.getMethodName() + " : " + emailAddress);
-        String errorMsg = "not a well-formed email address";
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
                 .goToRegistration()
                 .enterEmail(emailAddress.toString())
                 .registerFailure();
-        registerPage.defocus();
 
-        assertThat(errorMsg).isNotIn(registerPage.getFieldErrors())
+        assertThat(RegisterPage.MALFORMED_EMAIL_ERROR)
+                .isNotIn(registerPage.getFieldErrors())
                 .as("Email validation errors are not shown");
     }
 
