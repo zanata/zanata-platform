@@ -110,10 +110,10 @@
           <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
           <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
             <h:commandButton value="#{messages['jsf.Edit']}"
-              action="#{userAction.editUser(userSearch.selectedUser)}"/>
+              action="#{userAction.editUser(user)}"/>
           </s:fragment>
           <h:commandButton value="#{messages['jsf.Delete']}"
-            action="#{userAction.deleteUser(userSearch.selectedUser)}"
+            action="#{userAction.deleteUser(user)}"
             rendered="#{s:hasPermission('seam.user', 'delete')}"
             onclick="return confirmDelete()"/>
         </h:column>
