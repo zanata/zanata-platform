@@ -88,28 +88,27 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      * @return new language settings, anticipating the language has been added.
      */
     public ProjectLanguagesTab addLanguage(final String localeId) {
-        waitForTenSec().until(new Function<WebDriver, List<WebElement>>() {
+        waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
-            public List<WebElement> apply(WebDriver driver) {
-                return WebElementUtil.getSearchAutocompleteResults(driver,
-                        "settings-languages-form", "languageAutocomplete");
+            public boolean apply(WebDriver driver) {
+                List<WebElement> searchResults =
+                        WebElementUtil.getSearchAutocompleteResults(
+                                getDriver(),
+                                "settings-languages-form",
+                                "languageAutocomplete");
+
+                boolean clickedLocale = false;
+                for (WebElement searchResult : searchResults) {
+                    if (searchResult.getText().contains(localeId)) {
+                        searchResult.click();
+                        clickedLocale = true;
+                        break;
+                    }
+                }
+                return clickedLocale;
             }
         });
 
-        List<WebElement> searchResults =
-                WebElementUtil.getSearchAutocompleteResults(getDriver(),
-                        "settings-languages-form", "languageAutocomplete");
-
-        boolean clickedLocale = false;
-        for (WebElement searchResult : searchResults) {
-            if (searchResult.getText().contains(localeId)) {
-                searchResult.click();
-                clickedLocale = true;
-                break;
-            }
-        }
-        Preconditions.checkState(clickedLocale, "can not find locale - %s",
-                localeId);
 
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
