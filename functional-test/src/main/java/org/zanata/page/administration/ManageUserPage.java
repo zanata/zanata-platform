@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class ManageUserPage extends BasePage {
     public static final int USERNAME_COLUMN = 0;
-    @FindBy(id = "usermanagerForm:threads")
+    @FindBy(id = "usermanagerForm:userList")
     private WebElement userTable;
 
     private By userTableBy = By.id("usermanagerForm:threads");
