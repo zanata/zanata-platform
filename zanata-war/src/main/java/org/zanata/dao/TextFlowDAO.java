@@ -238,7 +238,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                                 "select count(*) from HTextFlow tf " +
                                         "where tf.obsolete = 0 and " +
                                         "tf.document.obsolete = 0 and " +
-                                        "tf.document.iteration.id=:projIterId");
+                                        "tf.document.projectIteration.id=:projIterId");
         q.setParameter("projIterId", projIterId);
         q.setCacheable(true).setComment(
                 "TextFlowDAO.countTextFlowsInProjectIteration");
