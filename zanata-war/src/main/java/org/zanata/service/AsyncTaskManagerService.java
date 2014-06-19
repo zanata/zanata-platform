@@ -83,10 +83,4 @@ public interface AsyncTaskManagerService {
      */
     Collection<AsyncTaskHandle> getAllHandles();
 
-    /**
-     * Clears all the inactive handles managed by this service. Inactive handles
-     * all all those handles that reference a task that is either finished, has
-     * encountered an error, or has been cancelled.
-     */
-    void clearInactive();
 }

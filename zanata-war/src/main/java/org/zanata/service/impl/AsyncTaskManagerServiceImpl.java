@@ -22,7 +22,9 @@ package org.zanata.service.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
@@ -36,7 +38,6 @@ import org.zanata.service.AsyncTaskManagerService;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,71 +51,108 @@ import java.util.concurrent.TimeUnit;
 @Name("asyncTaskManagerServiceImpl")
 @Scope(ScopeType.APPLICATION)
 @Startup
+@Slf4j
 public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService {
 
-    // Collection of all managed task Handles. It's self pruned, and it is
-    // indexed by
-    // long valued keys
-    private Cache<Long, AsyncTaskHandle> handlesById = CacheBuilder
-            .newBuilder().softValues().expireAfterWrite(1, TimeUnit.HOURS)
-            .build();
+    // Map of all active task handles
+    private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps.newConcurrentMap();
 
-    private ConcurrentMap<Serializable, AsyncTaskHandle> handlesByKey = Maps
-            .newConcurrentMap();
+    // Cache of recently completed tasks
+    private Cache<Serializable, AsyncTaskHandle> finishedTasks = CacheBuilder
+            .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
+            .build();
 
     private long lastAssignedKey = 1;
 
+    /**
+     * Starts a task, using a generated task key
+     * @param task
+     *            The asynchronous task to run.
+     * @param <V>
+     * @param <H>
+     * @return
+     */
     @Override
     public <V, H extends AsyncTaskHandle<V>> String startTask(
             AsyncTask<V, H> task) {
-        TaskExecutor taskExecutor =
-                (TaskExecutor) Component.getInstance(TaskExecutor.class);
-        AsyncTaskHandle<V> handle = taskExecutor.startTask(task);
-        Long taskKey;
-        taskKey = generateNextAvailableKey();
-        handlesById.put(taskKey, handle);
+        Long taskKey = generateNextAvailableKey();
+        startTask(task, taskKey);
         return taskKey.toString();
     }
 
+    /**
+     * Starts a task, using the specified task key
+     * @param task
+     *            The asynchronous task to run.
+     * @param key
+     * @param <V>
+     * @param <H>
+     */
     @Override
     public <V, H extends AsyncTaskHandle<V>> void startTask(
-            AsyncTask<V, H> task, Serializable key) {
-        String taskId = startTask(task);
-        handlesByKey.put(key, getHandle(taskId));
+            AsyncTask<V, H> task, final Serializable key) {
+        TaskExecutor taskExecutor =
+                (TaskExecutor) Component.getInstance(TaskExecutor.class);
+        AsyncTaskHandle<V> handle = taskExecutor.startTask(task,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        taskFinished(key);
+                    }
+                });
+        AsyncTaskHandle oldHandle = handlesByKey.put(key, handle);
+        if (oldHandle != null) {
+            log.error("Key {} has a duplicate: old handle is {}; new handle is {}",
+                    key, oldHandle, handle);
+        }
     }
 
+    private void taskFinished(Serializable key) {
+        AsyncTaskHandle handle = handlesByKey.remove(key);
+        if (handle != null) {
+            finishedTasks.put(key, handle);
+        } else {
+            log.error("unknown task key: {}", key);
+        }
+    }
+
+    /**
+     * Gets the handle for a generated task key
+     * @param taskId
+     *            The task Id (as returned by
+     *            {@link AsyncTaskManagerService#startTask(org.zanata.async.AsyncTask)}
+     *            )
+     * @return
+     */
     @Override
     public AsyncTaskHandle getHandle(String taskId) {
         try {
             Long taskKey = Long.parseLong(taskId);
-            AsyncTaskHandle handle = handlesById.getIfPresent(taskKey);
-            return handle;
+            return getHandleByKey(taskKey);
         } catch (NumberFormatException e) {
             return null; // Non-number keys are not allowed in this
                          // implementation
         }
     }
 
+    /**
+     * Gets the handle for a task which was started with a specified key
+     * @param key
+     *            The task id as provided to
+     *            {@link AsyncTaskManagerService#startTask(org.zanata.async.AsyncTask, java.io.Serializable)}
+     * @return
+     */
     @Override
     public AsyncTaskHandle getHandleByKey(Serializable key) {
         return handlesByKey.get(key);
     }
 
     @Override
-    public void clearInactive() {
-        synchronized (handlesById) {
-            for (Map.Entry<Long, AsyncTaskHandle> entry : handlesById.asMap()
-                    .entrySet()) {
-                if (entry.getValue().isDone()) {
-                    handlesById.invalidate(entry.getKey());
-                }
-            }
-        }
-    }
-
-    @Override
     public Collection<AsyncTaskHandle> getAllHandles() {
-        return handlesById.asMap().values();
+        Collection<AsyncTaskHandle> handles = Lists.newArrayList();
+        handles.addAll(handlesByKey.values());
+        handles.addAll(finishedTasks.asMap().values());
+        return handles;
     }
 
     private synchronized long generateNextAvailableKey() {

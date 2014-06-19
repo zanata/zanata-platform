@@ -43,6 +43,13 @@ public class AsyncTaskITCase extends ArquillianTest {
     @In
     private TaskExecutor taskExecutor;
 
+    private Runnable onComplete = new Runnable() {
+        @Override
+        public void run() {
+            // nothing
+        }
+    };
+
     @Override
     protected void prepareDBUnitOperations() {
     }
@@ -59,7 +66,7 @@ public class AsyncTaskITCase extends ArquillianTest {
                     public String call() throws Exception {
                         return expectedRetVal;
                     }
-                });
+                }, onComplete);
 
         // Wait for it to finish and get the result
         String comp = handle.get();
@@ -78,7 +85,7 @@ public class AsyncTaskITCase extends ArquillianTest {
                     public String call() throws Exception {
                         throw new RuntimeException("Expected Exception");
                     }
-                });
+                }, onComplete);
 
         // Wait for it to finish and get the result
         waitUntilTaskIsDone(handle);
@@ -115,7 +122,7 @@ public class AsyncTaskITCase extends ArquillianTest {
                                 getHandle().setCurrentProgress(100);
                                 return null;
                             }
-                        });
+                        }, onComplete);
 
         // Wait for it to finish and get the result
         waitUntilTaskIsDone(handle);

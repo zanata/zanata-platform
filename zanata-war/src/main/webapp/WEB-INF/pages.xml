@@ -377,10 +377,6 @@
       execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
     <action
       execute="#{breadcrumbs.addLocation('/admin/processmanager.xhtml', messages['jsf.ProcessManager'])}" />
-
-    <navigation from-action="#{processManagerAction.clearAllFinished}">
-      <redirect view-id="/admin/processmanager.xhtml" />
-    </navigation>
   </page>
 
   <!-- Version Group -->
