@@ -11,9 +11,12 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationFinder;
@@ -353,5 +356,66 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
         q.setComment("TextFlowTargetDAO.getLastTranslated");
 
         return (HTextFlowTarget) q.uniqueResult();
+    }
+
+    /**
+     * @param document
+     *            copyTrans copy target document
+     * @param targetLocale
+     *            target locale
+     * @return number of translation candidates in given locale and is from
+     *         given docId (exclude translations from target document's
+     *         iteration)
+     */
+    public long getTranslationCandidateCountWithDocIdAndLocale(
+            HDocument document,
+            HLocale targetLocale) {
+        String queryString =
+                "select count(*) from HTextFlowTarget tft "
+                        +
+                        "where tft.textFlow.document.docId = :docId and tft.locale = :locale "
+                        +
+                        "and tft.textFlow.obsolete = false and tft.textFlow.document.obsolete = false "
+                        +
+                        "and tft.textFlow.document.projectIteration <> :self";
+        Query query =
+                getSession()
+                        .createQuery(queryString)
+                        .setParameter("docId", document.getDocId())
+                        .setParameter("locale", targetLocale)
+                        .setParameter("self", document.getProjectIteration())
+                        .setCacheable(true)
+                        .setComment(
+                                "TextFlowTargetDAO.getTranslationCandidateCountWithDocIdAndLocale");
+        return (Long) query.uniqueResult();
+    }
+
+    /**
+     * @param document
+     *            copyTrans copy target document
+     * @param targetLocale
+     *            target locale
+     * @return number of translation candidates in given locale and is from
+     *         given project (exclude translations from target document's
+     *         iteration)
+     */
+    public long getTranslationCandidateCountWithProjectAndLocale(
+            HDocument document, HLocale targetLocale) {
+        HProjectIteration projectIteration = document.getProjectIteration();
+        HProject project = projectIteration.getProject();
+        String queryString = "select count(*) from HTextFlowTarget tft " +
+                "where tft.textFlow.document.projectIteration.project = :project and tft.locale = :locale " +
+                "and tft.textFlow.obsolete = false and tft.textFlow.document.obsolete = false " +
+                "and tft.textFlow.document.projectIteration.status <> :obsoleteStatus " +
+                "and tft.textFlow.document.projectIteration <> :self";
+        Query query = getSession().createQuery(queryString)
+                .setParameter("project", project)
+                .setParameter("locale", targetLocale)
+                .setParameter("self", projectIteration)
+                .setParameter("obsoleteStatus", EntityStatus.OBSOLETE)
+                .setCacheable(true)
+                .setComment(
+                        "TextFlowTargetDAO.getTranslationCandidateCountWithProjectAndLocale");
+        return (Long) query.uniqueResult();
     }
 }

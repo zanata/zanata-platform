@@ -25,6 +25,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
@@ -93,7 +94,7 @@ public class CopyTransServiceUnitTest {
 
     private void shouldUseProjectOptions(boolean useProjectOpts) throws Exception {
         CopyTransServiceImpl ctService = new CopyTransServiceImpl(
-                localeServiceImpl, projectDAO, documentDAO, copyTransWorkFactory);
+                localeServiceImpl, projectDAO, documentDAO, copyTransWorkFactory, textFlowTargetDAO);
 
         HCopyTransOptions projOptions = new HCopyTransOptions(IGNORE, IGNORE, IGNORE);
 
@@ -128,7 +129,7 @@ public class CopyTransServiceUnitTest {
             optionsIn = null;
             optionsOut = projOptions;
         } else {
-            optionsIn = new HCopyTransOptions(REJECT, REJECT, REJECT);
+            optionsIn = new HCopyTransOptions(DOWNGRADE_TO_FUZZY, DOWNGRADE_TO_FUZZY, DOWNGRADE_TO_FUZZY);
             optionsOut = optionsIn;
         }
 
