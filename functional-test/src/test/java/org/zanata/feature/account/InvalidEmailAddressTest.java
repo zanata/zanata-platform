@@ -23,6 +23,7 @@ package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -34,6 +35,7 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
@@ -172,10 +174,12 @@ public class InvalidEmailAddressTest extends ZanataTestCase {
     // TEST_TRAILING_DASH_DOMAIN = TRAILING_DASH_DOMAIN;
     // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822
     // TEST_MULTIPLE_DASHES_DOMAIN = MULTIPLE_DASHES_DOMAIN;
-
-    @Before
-    public void setUp() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    @BeforeClass
+    public static void logout() {
+        HomePage homePage = new BasicWorkFlow().goToHome();
+        if (homePage.hasLoggedIn()) {
+            homePage.logout();
+        }
     }
 
     @Feature(summary = "The user must enter a valid email address to " +

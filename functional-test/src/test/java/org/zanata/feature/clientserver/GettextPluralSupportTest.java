@@ -132,15 +132,15 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
                 Matchers.equalTo("%d files removed"));
         // nplural for Polish is 3
-        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
                 Plurals.TargetSingular),
                 Matchers.equalTo("1 aoeuaouaou"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
                 Plurals.TargetPluralOne),
                 Matchers.equalTo("%d aoeuaouao"));
-        assertThat(editorPage.getMessageTargetAtRowIndex(0,
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
                 Plurals.TargetPluralTwo),
-                Matchers.equalTo(" "));
+                Matchers.equalTo(""));
 
         return editorPage;
     }

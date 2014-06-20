@@ -51,29 +51,27 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         return new ProjectPermissionsTab(getDriver());
     }
 
-    public ProjectPermissionsTab selectSearchMaintainer(String maintainer) {
-        List<WebElement> searchResults = waitForTenSec()
-                .until(new Function<WebDriver, List<WebElement>>() {
+    public ProjectPermissionsTab selectSearchMaintainer(final String maintainer) {
+        waitForTenSec()
+                .until(new Predicate<WebDriver>() {
                     @Override
-                    public List<WebElement> apply(WebDriver driver) {
-                        return WebElementUtil.getSearchAutocompleteResults(
-                                driver,
-                                "settings-permissions-form",
-                                "maintainerAutocomplete");
+                    public boolean apply(WebDriver driver) {
+                        List<WebElement> searchResults =
+                                WebElementUtil.getSearchAutocompleteResults(
+                                        driver,
+                                        "settings-permissions-form",
+                                        "maintainerAutocomplete");
+                        boolean clickedUser = false;
+                        for (WebElement searchResult : searchResults) {
+                            if (searchResult.getText().contains(maintainer)) {
+                                searchResult.click();
+                                clickedUser = true;
+                                break;
+                            }
+                        }
+                        return clickedUser;
                     }
                 });
-
-        boolean clickedUser = false;
-        for (WebElement searchResult : searchResults) {
-            if (searchResult.getText().contains(maintainer)) {
-                searchResult.click();
-                clickedUser = true;
-                break;
-            }
-        }
-        Preconditions.checkState(clickedUser, "Can not find username - %s",
-                maintainer);
-
         return new ProjectPermissionsTab(getDriver());
     }
 
