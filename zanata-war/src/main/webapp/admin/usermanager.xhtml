@@ -31,6 +31,13 @@
         focus();
       }
     </script>
+    <a4j:jsFunction name="editUser" action="#{userAction.editUser(username)}">
+      <a4j:param name="val1" assignTo="#{username}"/>
+    </a4j:jsFunction>
+    <a4j:jsFunction name="deleteUser" action="#{userAction.deleteUser(username)}" render="usermanagerForm">
+      <a4j:param name="val1" assignTo="#{username}"/>
+    </a4j:jsFunction>
+
     <h:form id="usermanagerForm">
       <s:token allowMultiplePosts="true"/>
 
@@ -109,13 +116,15 @@
         <h:column width="100px">
           <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
           <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-            <h:commandButton value="#{messages['jsf.Edit']}"
-              action="#{userAction.editUser(userSearch.selectedUser)}"/>
+            <button onclick="editUser('#{user}');return false">
+              #{messages['jsf.Edit']}
+            </button>
           </s:fragment>
-          <h:commandButton value="#{messages['jsf.Delete']}"
-            action="#{userAction.deleteUser(userSearch.selectedUser)}"
-            rendered="#{s:hasPermission('seam.user', 'delete')}"
-            onclick="return confirmDelete()"/>
+          <s:fragment rendered="#{s:hasPermission('seam.user', 'delete')}">
+            <button onclick="if(confirmDelete()){deleteUser('#{user}')};return false;">
+              #{messages['jsf.Delete']}
+            </button>
+          </s:fragment>
         </h:column>
       </rich:dataTable>
 
