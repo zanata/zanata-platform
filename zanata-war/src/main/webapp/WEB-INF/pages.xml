@@ -302,7 +302,7 @@
     <navigation from-action="#{userAction.createUser}">
       <redirect view-id="/admin/userdetail.xhtml" />
     </navigation>
-    <navigation from-action="#{userAction.editUser(user)}">
+    <navigation from-action="#{userAction.editUser(username)}">
       <redirect view-id="/admin/userdetail.xhtml" />
     </navigation>
   </page>
