@@ -21,11 +21,15 @@
 package org.zanata.async;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.seam.annotations.In;
+import org.junit.Assert;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
+
 import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,10 +47,11 @@ public class AsyncTaskITCase extends ArquillianTest {
     @In
     private TaskExecutor taskExecutor;
 
+    private CountDownLatch completed = new CountDownLatch(1);
     private Runnable onComplete = new Runnable() {
         @Override
         public void run() {
-            // nothing
+            completed.countDown();
         }
     };
 
@@ -70,13 +75,19 @@ public class AsyncTaskITCase extends ArquillianTest {
 
         // Wait for it to finish and get the result
         String comp = handle.get();
+        awaitComplete();
 
         // Must be the same as the component that was inserted outside of the
         // task
         assertThat(comp, equalTo(expectedRetVal));
     }
 
-    @Test(expected = ExecutionException.class)
+    private void awaitComplete() throws InterruptedException {
+        boolean done = completed.await(10, TimeUnit.SECONDS);
+        assertThat(done, is(true));
+    }
+
+    @Test
     public void executionError() throws Exception {
         // Start an asynchronous process that throws an exception
         AsyncTaskHandle<String> handle =
@@ -90,7 +101,13 @@ public class AsyncTaskITCase extends ArquillianTest {
         // Wait for it to finish and get the result
         waitUntilTaskIsDone(handle);
         assertThat(handle.isDone(), is(true));
-        handle.get(); // Should throw an exception
+        awaitComplete();
+        try {
+            handle.get(); // Should throw an exception
+            Assert.fail();
+        } catch (ExecutionException e) {
+            // expected
+        }
     }
 
     @Test
@@ -126,6 +143,7 @@ public class AsyncTaskITCase extends ArquillianTest {
 
         // Wait for it to finish and get the result
         waitUntilTaskIsDone(handle);
+        awaitComplete();
 
         // Progress update calls should match the task's internal updates
         assertThat(handle.getCurrentProgress(), is(100));

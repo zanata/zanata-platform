@@ -102,7 +102,8 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService {
                 });
         AsyncTaskHandle oldHandle = handlesByKey.put(key, handle);
         if (oldHandle != null) {
-            log.error("Key {} has a duplicate: old handle is {}; new handle is {}",
+            log.error(
+                    "Key {} has a duplicate: old handle is {}; new handle is {}",
                     key, oldHandle, handle);
         }
     }
@@ -144,7 +145,13 @@ public class AsyncTaskManagerServiceImpl implements AsyncTaskManagerService {
      */
     @Override
     public AsyncTaskHandle getHandleByKey(Serializable key) {
-        return handlesByKey.get(key);
+        // NB: check the active tasks before finished tasks, in
+        // case the task finishes in between
+        AsyncTaskHandle handle = handlesByKey.get(key);
+        if (handle == null) {
+            handle = finishedTasks.getIfPresent(key);
+        }
+        return handle;
     }
 
     @Override

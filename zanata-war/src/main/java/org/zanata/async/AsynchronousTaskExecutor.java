@@ -82,6 +82,7 @@ public class AsynchronousTaskExecutor {
                     log.error(
                         "Exception when executing an asynchronous task.", t);
                 }
+                onComplete.run();
             }
 
             @Override
@@ -94,8 +95,6 @@ public class AsynchronousTaskExecutor {
                 return runAsSubject;
             }
         };
-        task.getHandle().addListener(onComplete,
-                MoreExecutors.sameThreadExecutor());
         runAsOp.run();
     }
 
