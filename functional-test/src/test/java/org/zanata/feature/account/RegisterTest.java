@@ -20,18 +20,16 @@
  */
 package org.zanata.feature.account;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -41,6 +39,8 @@ import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -72,63 +72,73 @@ public class RegisterTest extends ZanataTestCase {
         homePage.deleteCookiesAndRefresh();
     }
 
+    @Feature(summary = "The user can register an account with Zanata",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86816)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
-    public void registerSuccessful() {
-        String successMessage = "You will soon receive an email with a link "+
-                "to activate your account.";
+    public void registerSuccessful() throws Exception {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .setFields(fields);
 
-        assertThat("No errors are shown", registerPage.getFieldErrors().size(),
-                Matchers.equalTo(0));
+        assertThat(registerPage.getFieldErrors().size()).isEqualTo(0)
+                .as("No errors are shown");
 
         homePage = registerPage.register();
 
-        assertThat("Signup is successful", homePage.getNotificationMessage(),
-                Matchers.equalTo(successMessage));
+        assertThat(homePage.getNotificationMessage())
+                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
+                .as("Sign up is successful");
     }
 
+    @Feature(summary = "The user must enter a username of between 3 and " +
+            "20 (inclusive) characters to register",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void usernameLengthValidation() {
+    public void usernameLengthValidation() throws Exception {
         fields.put("email", "length.test@test.com");
         RegisterPage registerPage = homePage.goToRegistration();
 
         fields.put("username", "bo");
         registerPage = registerPage.setFields(fields);
-        registerPage.defocus();
-        assertThat("Size errors are shown for string too short",
-                containsUsernameError(registerPage.getFieldErrors()));
+
+        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+                .isTrue()
+                .as("Size errors are shown for string too short");
 
         fields.put("username", "testusername");
         registerPage = registerPage.setFields(fields);
-        registerPage.defocus();
-        assertThat("Size errors are not shown",
-                !containsUsernameError(registerPage.getFieldErrors()));
+
+        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+                .isFalse()
+                .as("Size errors are not shown");
 
         fields.put("username", "12345678901234567890a");
         registerPage = registerPage.setFields(fields);
-        registerPage.defocus();
-        assertThat("Size errors are shown for string too long",
-                containsUsernameError(registerPage.getFieldErrors()));
+
+        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+                .isTrue()
+                .as("Size errors are shown for string too long");
     }
 
+    @Feature(summary = "The user must enter a unique username to register",
+        tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void usernamePreExisting() {
-        String errorMsg = "This username is not available";
+    public void usernamePreExisting() throws Exception {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .enterUserName("admin");
         registerPage.defocus();
 
-        assertThat("Username not available message is shown",
-                registerPage.waitForFieldErrors(), Matchers.hasItem(errorMsg));
+        assertThat(registerPage.waitForFieldErrors())
+                .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
+                .as("Username not available message is shown");
     }
 
+    @Feature(summary = "The user must enter a valid email address to register",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void emailValidation() {
-        String errorMsg = "not a well-formed email address";
+    public void emailValidation() throws Exception {
         fields.put("email",
                 InvalidEmailAddressRFC2822.PLAIN_ADDRESS.toString());
         fields.put("username", "emailvalidation");
@@ -137,33 +147,35 @@ public class RegisterTest extends ZanataTestCase {
                 .setFields(fields);
         registerPage.defocus();
 
-        assertThat("Email validation errors are shown",
-                registerPage.getFieldErrors(), Matchers.hasItem(errorMsg));
+        assertThat(registerPage.getFieldErrors())
+                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
+                .as("Email validation errors are shown");
     }
 
+    @Feature(summary = "The user must enter all necessary fields to register",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-1024150")
-    public void requiredFields() {
-        String errorMsg = "value is required";
+    public void requiredFields() throws Exception {
         fields.put("name", "");
         fields.put("username", "");
         fields.put("email", "");
         fields.put("password", "");
-
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
         registerPage.defocus();
 
-        assertThat("Value is required shows for all fields",
-                registerPage.waitForFieldErrors(),
-                Matchers.contains(errorMsg,
-                        registerPage.USERNAMEVALIDATIONERROR,
-                        errorMsg, errorMsg));
+        assertThat(registerPage.waitForFieldErrors()).containsExactly(
+                RegisterPage.REQUIRED_FIELD_ERROR,
+                RegisterPage.USERNAME_VALIDATION_ERROR,
+                RegisterPage.REQUIRED_FIELD_ERROR,
+                RegisterPage.REQUIRED_FIELD_ERROR)
+                .as("Value is required shows for all fields");
     }
 
-    /*
-     * Bugs
-     */
+    @Feature(summary = "The user must enter at least one alphanumeric " +
+            "character in their username",
+            bugzilla = 981498)
     @Test(expected = AssertionError.class)
     public void bug981498_underscoreRules() {
         fields.put("email", "bug981498test@example.com");
@@ -171,9 +183,10 @@ public class RegisterTest extends ZanataTestCase {
         RegisterPage registerPage =
                 homePage.goToRegistration().setFields(fields);
         registerPage.defocus();
-        assertThat("A username of all underscores is not valid",
-                registerPage.getFieldErrors(),
-                Matchers.hasItem(registerPage.USERNAMEVALIDATIONERROR));
+
+        assertThat(registerPage.getFieldErrors())
+                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
+                .as("A username of all underscores is not valid");
     }
 
     /*
@@ -181,8 +194,7 @@ public class RegisterTest extends ZanataTestCase {
      * the given input.
      */
     private boolean containsUsernameError(List<String> errors) {
-        return errors.contains("Between 3 and 20 lowercase "+
-                "letters, numbers and underscores only") ||
-                errors.contains("size must be between 3 and 20");
+        return errors.contains(RegisterPage.USERNAME_VALIDATION_ERROR) ||
+                errors.contains(RegisterPage.USERNAME_LENGTH_ERROR);
     }
 }

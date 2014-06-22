@@ -68,7 +68,7 @@ public class ProjectsPage extends BasePage {
                                 PROJECT_NAME_COLUMN));
                 WebElement link = table.findElement(By.linkText(projectName));
                 link.click();
-                return new ProjectVersionsPage(input);
+                return new ProjectVersionsPage(getDriver());
             }
         });
     }

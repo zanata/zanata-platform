@@ -628,9 +628,12 @@
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.FeatureInventoryRecorder</value>
                 </property>
               </properties>
+              <systemPropertyVariables>
+                <featureInventoryLocation>${project.build.directory}/feature-inventory</featureInventoryLocation>
+              </systemPropertyVariables>
             </configuration>
           </plugin>
         </plugins>

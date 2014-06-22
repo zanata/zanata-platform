@@ -33,8 +33,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -80,18 +87,14 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.DocumentStatus;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Name("versionHomeAction")
 @Scope(ScopeType.PAGE)
@@ -185,12 +188,18 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Getter
     private SortingType documentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.HOURS,
+                    SortingType.SortOption.PERCENTAGE,
+                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE,
                     SortingType.SortOption.LAST_TRANSLATED));
 
     @Getter
     private SortingType sourceDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.HOURS,
+                    SortingType.SortOption.PERCENTAGE,
+                    SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
 
     @Getter
@@ -691,6 +700,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     public void setSelectedDocumentId(String projectSlug, String versionSlug, String docId) {
+        docId = UrlUtil.decodeString(docId);
         this.selectedDocument = documentDAO.getByProjectIterationAndDocId(projectSlug, versionSlug, docId);
     }
 
@@ -796,6 +806,14 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         translationFileServiceImpl.removeTempFile(tempFile);
+    }
+
+    public String encodeDocId(String docId) {
+        return UrlUtil.encodeString(docId);
+    }
+
+    public String decodeDocId(String docId) {
+        return UrlUtil.decodeString(docId);
     }
 
     public void uploadTranslationFile(HLocale hLocale) {

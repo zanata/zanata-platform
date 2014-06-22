@@ -84,6 +84,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+// single threaded because of ehcache (perhaps other reasons too)
 @Test(singleThreaded = true)
 public class TranslationResourceRestTest extends ZanataRestTest {
     private static final Logger log = LoggerFactory

@@ -38,6 +38,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
@@ -51,8 +52,6 @@ import org.jboss.seam.core.Events;
 import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
-
-import com.beust.jcommander.internal.Lists;
 
 /**
  * Doesn't do much useful stuff except printing a log message and firing the

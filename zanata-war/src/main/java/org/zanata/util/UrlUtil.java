@@ -22,6 +22,7 @@ package org.zanata.util;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -129,4 +130,25 @@ public class UrlUtil implements Serializable {
                 sourceLocaleId, docId) + ";textflow:" + tuId;
     }
 
+    /**
+     * UrlEncoder replace whitespace with '+'. Need manual replacement of '+' to
+     * '%20'
+     *
+     * @param var
+     */
+    public static String encodeString(String var) {
+        try {
+            return URLEncoder.encode(var, ENCODING).replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String decodeString(String var) {
+        try {
+            return URLDecoder.decode(var, ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

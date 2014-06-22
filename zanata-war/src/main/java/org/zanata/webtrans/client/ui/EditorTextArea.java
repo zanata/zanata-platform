@@ -26,13 +26,27 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.TextArea;
 
 public class EditorTextArea extends TextArea implements TextAreaWrapper {
     private static final int INITIAL_LINE_NUMBER = 2;
+    private static final int CHECK_INTERVAL = 1000;
     private String oldValue;
 
     private boolean editing;
+
+    // this timer is used to fire validation and change editing state in a
+    // 1second interval
+    // @see setEditing(boolean)
+    private final Timer typingTimer = new Timer() {
+        @Override
+        public void run() {
+            ValueChangeEvent.fireIfNotEqual(EditorTextArea.this, oldValue,
+                    getText());
+            oldValue = getText();
+        }
+    };
 
     public EditorTextArea(String displayString) {
         super();
@@ -81,9 +95,10 @@ public class EditorTextArea extends TextArea implements TextAreaWrapper {
     public void setEditing(boolean isEditing) {
         editing = isEditing;
         if (isEditing) {
-            ValueChangeEvent.fireIfNotEqual(EditorTextArea.this, oldValue,
-                    getText());
+            typingTimer.scheduleRepeating(CHECK_INTERVAL);
             setFocus(true);
+        } else {
+            typingTimer.cancel();
         }
     }
 

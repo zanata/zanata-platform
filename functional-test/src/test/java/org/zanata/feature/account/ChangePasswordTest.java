@@ -20,24 +20,21 @@
  */
 package org.zanata.feature.account;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
-import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -54,85 +51,88 @@ public class ChangePasswordTest extends ZanataTestCase {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
+    @Feature(summary = "The user can change their password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
-    public void changePasswordSuccessful() {
-        DashboardBasePage dashboard =
-                new LoginWorkFlow().signIn("translator", "translator");
-        dashboard.goToSettingsTab()
+    public void changePasswordSuccessful() throws Exception {
+        DashboardBasePage dashboard = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .typeOldPassword("translator")
                 .typeNewPassword("newpassword")
                 .clickUpdatePasswordButton();
 
-        HomePage homePage = dashboard.logout();
-        assertThat("User is logged out", !homePage.hasLoggedIn());
-        DashboardBasePage dashboardPage =
-                new LoginWorkFlow().signIn("translator", "newpassword");
-        assertThat("User has logged in with the new password",
-                dashboardPage.hasLoggedIn());
+        assertThat(dashboard.logout().hasLoggedIn()).isFalse()
+                .as("User is logged out");
+
+        DashboardBasePage dashboardPage = new LoginWorkFlow()
+                .signIn("translator", "newpassword");
+
+        assertThat(dashboardPage.hasLoggedIn()).isTrue()
+                .as("User has logged in with the new password");
     }
 
+    @Feature(summary = "The user must enter their current password correctly " +
+            "to change it",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changePasswordCurrentPasswordFailure() {
-        String incorrectPassword =
-                "Old password is incorrect, please check and try again.";
-        List<String> fieldErrors =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToSettingsTab()
-                        .gotoSettingsAccountTab()
-                        .typeOldPassword("nottherightpassword")
-                        .typeNewPassword("somenewpassword")
-                        .clickUpdatePasswordButton()
-                        .getFieldErrors();
+    public void changePasswordCurrentPasswordFailure() throws Exception {
+        DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeOldPassword("nottherightpassword")
+                .typeNewPassword("somenewpassword")
+                .clickUpdatePasswordButton();
 
-        assertThat("Incorrect password message displayed",
-                fieldErrors,
-                Matchers.contains(incorrectPassword));
+        assertThat(dashboardAccountTab.getFieldErrors())
+                .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
+                .as("The old password incorrect error is shown");
     }
 
+    @Feature(summary = "The user must enter a non-empty new password " +
+            "to change it",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changePasswordRequiredFieldsAreNotEmpty() {
-        String mayNotBeEmpty = "may not be empty";
-        List<String> fieldErrors =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToSettingsTab()
-                        .gotoSettingsAccountTab()
-                        .clickUpdatePasswordButton()
-                        .getFieldErrors();
+    public void changePasswordRequiredFieldsAreNotEmpty() throws Exception {
+        DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .clickUpdatePasswordButton();
 
-        assertThat("Incorrect password message displayed",
-                fieldErrors,
-                Matchers.contains(mayNotBeEmpty, mayNotBeEmpty));
+        assertThat(dashboardAccountTab.getFieldErrors())
+                .contains(DashboardAccountTab.FIELD_EMPTY_ERROR)
+                .as("Empty password message displayed");
     }
 
+    @Feature(summary = "The user must enter a new password of between 6 and " +
+            "20 characters in length to change it",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changePasswordAreOfRequiredLength() {
-        String passwordSizeError = "size must be between 6 and 20";
+    public void changePasswordAreOfRequiredLength() throws Exception {
         String tooShort = "test5";
         String tooLong = "t12345678901234567890";
-        DashboardAccountTab dashboardAccountTab =
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToSettingsTab()
-                        .gotoSettingsAccountTab()
-                        .typeOldPassword("translator");
+        DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToSettingsTab()
+                .gotoSettingsAccountTab()
+                .typeOldPassword("translator")
+                .typeNewPassword(tooShort)
+                .clickUpdatePasswordButton();
 
-        List<String> fieldErrors =
-            dashboardAccountTab
-                        .typeNewPassword(tooShort)
-                        .clickUpdatePasswordButton()
-                        .waitForFieldErrors();
-        assertThat("Incorrect password message displayed",
-                fieldErrors,
-                Matchers.hasItem(passwordSizeError));
+        assertThat(dashboardAccountTab.getFieldErrors())
+                .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
+                .as("Incorrect password length message displayed");
 
-        fieldErrors =
-                dashboardAccountTab
-                        .typeNewPassword(tooLong)
-                        .clickUpdatePasswordButton()
-                        .waitForFieldErrors();
-        assertThat("Incorrect password message displayed",
-                fieldErrors,
-                Matchers.hasItem(passwordSizeError));
+        dashboardAccountTab = dashboardAccountTab
+                .typeNewPassword(tooLong)
+                .clickUpdatePasswordButton();
+
+        assertThat(dashboardAccountTab.getFieldErrors())
+                .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
+                .as("Incorrect password length message displayed");
     }
 }

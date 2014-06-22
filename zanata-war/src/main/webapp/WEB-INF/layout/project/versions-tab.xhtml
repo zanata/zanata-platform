@@ -88,8 +88,7 @@
           <ui:repeat
             value="#{projectHomeAction.versionFilter.currentPage}"
             var="version">
-            <ui:param name="hasActions"
-              value="#{identity.loggedIn and not empty projectHomeAction.getUserJoinedLocales(version)}"/>
+            <ui:param name="hasActions" value="#{identity.loggedIn}"/>
             <li
               class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
               <s:div styleClass="list__item__action" rendered="#{hasActions}">

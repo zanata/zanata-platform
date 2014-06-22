@@ -32,6 +32,9 @@ import org.zanata.page.googleaccount.GoogleAccountPage;
 
 @Slf4j
 public class SignInPage extends CorePage {
+
+    public static final String LOGIN_FAILED_ERROR = "Login failed";
+
     @FindBy(id = "loginForm:username")
     private WebElement usernameField;
 

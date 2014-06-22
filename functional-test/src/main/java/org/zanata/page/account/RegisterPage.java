@@ -38,8 +38,19 @@ import java.util.Map;
  */
 public class RegisterPage extends CorePage {
 
-    public final String USERNAMEVALIDATIONERROR = "Between 3 and 20 lowercase "+
-            "letters, numbers and underscores only";
+    public static final String USERNAME_VALIDATION_ERROR =
+            "Between 3 and 20 lowercase letters, numbers and underscores only";
+
+    public static final String USERNAME_UNAVAILABLE_ERROR =
+            "This username is not available";
+
+    public static final String MALFORMED_EMAIL_ERROR =
+            "not a well-formed email address";
+
+    public static final String REQUIRED_FIELD_ERROR = "value is required";
+
+    public static final String USERNAME_LENGTH_ERROR =
+            "size must be between 3 and 20";
 
     @FindBy(id = "loginForm:name")
     private WebElement nameField;

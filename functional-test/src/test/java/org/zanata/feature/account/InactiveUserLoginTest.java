@@ -20,17 +20,17 @@
  */
 package org.zanata.feature.account;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.SignInPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a
@@ -42,15 +42,20 @@ public class InactiveUserLoginTest extends ZanataTestCase {
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
+    @Feature(summary = "The user needs to verify their account before they may " +
+            "log in",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181714)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void loginWithInactiveUser() {
+    public void loginWithInactiveUser() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
                 .goToManageUserPage().editUserAccount("translator")
                 .clickEnabled().saveUser().logout();
 
-        SignInPage signInPage =
-                new LoginWorkFlow().signInFailure("translator", "translator");
-        assertThat(signInPage.getNotificationMessage(), is("Login failed"));
+        SignInPage signInPage = new LoginWorkFlow()
+                .signInFailure("translator", "translator");
+        assertThat(signInPage.getNotificationMessage())
+                .isEqualTo(SignInPage.LOGIN_FAILED_ERROR)
+                .as("The inactive user cannot log in");
     }
 
 }
