@@ -22,8 +22,10 @@ package org.zanata.security.permission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
@@ -31,13 +33,16 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.SecurityFunctions;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Test(groups = "unit-tests")
 public class PermissionEvaluatorTest {
 
+    private final SoftAssertions softly = new SoftAssertions();
     private PermissionEvaluator simplePermissionEvaluator;
     private PermissionEvaluator complexPermissionEvaluator;
 
@@ -45,210 +50,221 @@ public class PermissionEvaluatorTest {
     public void initialize() {
         simplePermissionEvaluator = new PermissionEvaluator();
         complexPermissionEvaluator = new PermissionEvaluator();
-        simplePermissionEvaluator.analyze(SimpleTestEvaluators.class);
-        complexPermissionEvaluator.analyze(ComplexTestEvaluators.class);
+        simplePermissionEvaluator.registerPermissionGranters(
+                SimpleTestEvaluators.class);
+        complexPermissionEvaluator.registerPermissionGranters(
+                ComplexTestEvaluators.class);
+    }
+
+    @Test
+    public void testGranterRegistration() throws Exception {
+        new PermissionEvaluator().registerPermissionGranters(
+                SecurityFunctions.class);
     }
 
     @Test
     public void alwaysEvaluates() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesToTrueAlways");
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        null)).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        PermissionGranter granter =
+                new PermissionGranter(getStaticMethod(
+                        SimpleTestEvaluators.class,
+                        "evaluatesToTrueAlways"));
+
+        softly.assertThat(
+                granter.shouldInvokeGranter(null)).isTrue();
+        softly.assertThat(
+                granter.shouldInvokeGranter(
                         null,
                         new HProject())).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        softly.assertThat(
+                granter.shouldInvokeGranter(
                         "my-action")).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        softly.assertThat(
+                granter.shouldInvokeGranter(
                         "my-action", new HProject())).isTrue();
+        softly.assertAll();
     }
 
     @Test
     public void evaluatesForClass() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesForHProject");
+        PermissionGranter granter =
+                new PermissionGranter(
+                        getStaticMethod(SimpleTestEvaluators.class,
+                                "evaluatesForHProject"));
 
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        softly.assertThat(
+                granter.shouldInvokeGranter(
                         null, new HProject())).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        softly.assertThat(
+                granter.shouldInvokeGranter(
                         "my-action", new HProject())).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        null, new HProjectIteration())).isTrue();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        "my-action", new HProjectIteration())).isTrue();
-    }
-
-    @Test
-    public void evaluatesForAction() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesForAction");
-
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        null, new HProject())).isFalse();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        "my-action", new HProject())).isFalse();
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        "specific-action", new HProject())).isTrue();
-        // The evaluator method expects a target, so null won't be
-        // evaluated
-        assertThat(
-                simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
-                        null, "specific-action")).isFalse();
+        softly.assertThat(
+                granter.shouldInvokeGranter(
+                        null, new HProjectIteration())).isFalse();
+        softly.assertThat(
+                granter.shouldInvokeGranter(
+                        "my-action", new HProjectIteration())).isFalse();
+        softly.assertAll();
     }
 
     @Test
     public void evaluatesForMultiTargets() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesForMultiTarget");
+        PermissionGranter granter =
+                new PermissionGranter(getStaticMethod(
+                        SimpleTestEvaluators.class,
+                        "evaluatesForMultiTarget"));
 
-        assertThat(simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        assertThat(granter.shouldInvokeGranter(
                 "multi-target-action", new HProject(), new HLocale()
-                )).isTrue();
+        )).isTrue();
     }
 
     @Test
     public void evaluatesForMultiTargetsInDifferentOrder() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesForMultiTarget");
+        PermissionGranter granter =
+                new PermissionGranter(getStaticMethod(
+                        SimpleTestEvaluators.class,
+                        "evaluatesForMultiTarget"));
 
-        assertThat(simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        assertThat(granter.shouldInvokeGranter(
                 "multi-target-action", new HLocale(), new HProject()
-                )).isTrue();
+        )).isTrue();
     }
 
     @Test
-    public void evaluatesForMultiTargetsWithLessTargets() throws Exception {
-        Method evaluator =
-                getStaticMethod(SimpleTestEvaluators.class,
-                        "evaluatesForMultiTarget");
+    public void doesNotEvaluateForLessTargetsThanExpected() throws Exception {
+        PermissionGranter granter =
+                new PermissionGranter(
+                        getStaticMethod(SimpleTestEvaluators.class,
+                                "evaluatesForMultiTarget"));
 
-        assertThat(simplePermissionEvaluator.evaluatorMethodApplies(evaluator,
+        assertThat(granter.shouldInvokeGranter(
                 "multi-target-action", new HLocale()
-                )).isTrue();
+        )).isFalse();
+    }
+
+    @Test
+    public void evaluatesForMoreTargetsThanExpected() throws Exception {
+        PermissionGranter granter =
+                new PermissionGranter(
+                        getStaticMethod(SimpleTestEvaluators.class,
+                                "evaluatesForMultiTarget"));
+
+        assertThat(
+                granter.shouldInvokeGranter(
+                        "multi-target-action", new HLocale(), new HProject(),
+                        new HProjectIteration(), new StringBuilder()
+                        )).isTrue();
     }
 
     @Test
     public void alwaysGrant() throws Exception {
         assertThat(
-                complexPermissionEvaluator.evaluatePermission("always-grant"))
+                complexPermissionEvaluator.checkPermission("always-grant"))
                 .isTrue();
     }
 
     @Test
     public void alwaysGrantWithSingleArgument() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("always-grant", new HProject())).isTrue();
+                .checkPermission("always-grant", new HProject())).isTrue();
     }
 
     @Test
     public void alwaysGrantWithMultipleArguments() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("always-grant", new HProject(), "A string",
+                .checkPermission("always-grant", new HProject(), "A string",
                         new HProjectIteration())).isTrue();
     }
 
     @Test
     public void alwaysDenyForStringBuilder() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("any-action", new StringBuilder()))
+                .checkPermission("any-action", new StringBuilder()))
                 .isFalse();
     }
 
     @Test
     public void allowSpecificActionAndType() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("action-1", new HProject())).isTrue();
+                .checkPermission("action-1", new HProject())).isTrue();
     }
 
     @Test
-    public void allowCorrectActionButDifferentType() throws Exception {
+    public void denyCorrectActionButDifferentType() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("action-1", new HProjectIteration()))
-                .isTrue();
+                .checkPermission("action-1", new HProjectIteration()))
+                .isFalse();
     }
 
     @Test
     public void allowMatchingActionWithMultipleTargets() throws Exception {
+        // As long as all the granter parameters are supplied, the rest of
+        // arguments can be ignored
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("action-1", new HProjectIteration(),
+                .checkPermission("action-1", new HProject(),
                         "A string")).isTrue();
     }
 
     @Test
     public void allowAnyMultiAction() throws Exception {
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-1", new HProjectIteration()))
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-1", new HProjectIteration()))
                 .isTrue();
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-2", new HProjectIteration()))
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-2", new HProjectIteration()))
                 .isTrue();
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-3", new HProjectIteration()))
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-3", new HProjectIteration()))
                 .isTrue();
+        softly.assertAll();
     }
 
     @Test
-    public void allowCorrectMultiActionWithDifferentType() throws Exception {
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-1", new HProject()))
-                .isTrue();
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-2", new HProject()))
-                .isTrue();
-        assertThat(complexPermissionEvaluator
-                .evaluatePermission("multi-action-3", new HProject()))
-                .isTrue();
+    public void denyCorrectMultiActionWithDifferentType() throws Exception {
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-1", new HProject()))
+                .isFalse();
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-2", new HProject()))
+                .isFalse();
+        softly.assertThat(complexPermissionEvaluator
+                .checkPermission("multi-action-3", new HProject()))
+                .isFalse();
+        softly.assertAll();
     }
 
     @Test
     public void injectActionAndAllow() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("action-should-grant", new HAccount()))
+                .checkPermission("action-should-grant", new HAccount()))
                 .isTrue();
     }
 
     @Test
     public void injectActionAndDeny() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("action-should-deny", new HAccount()))
+                .checkPermission("action-should-deny", new HAccount()))
                 .isFalse();
     }
 
     @Test
     public void multiTargetAllow() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("please-allow", new LocaleId("de-DE"),
+                .checkPermission("please-allow", new LocaleId("de-DE"),
                         new HProject())).isTrue();
     }
 
     @Test
     public void multiTargetDenyWithWrongAction() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("please-deny", new LocaleId("de-DE"),
+                .checkPermission("please-deny", new LocaleId("de-DE"),
                         new HProject())).isFalse();
     }
 
     @Test
     public void multiTargetDenyWithDifferentTargetTypes() throws Exception {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("please-allow", new LocaleId("de-DE"),
+                .checkPermission("please-allow", new LocaleId("de-DE"),
                         new HProjectIteration())).isFalse();
     }
 
@@ -256,14 +272,14 @@ public class PermissionEvaluatorTest {
     public void multiTargetDenyCheckFailed() throws Exception {
         // Only allows German
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("please-allow", new LocaleId("es-ES"),
+                .checkPermission("please-allow", new LocaleId("es-ES"),
                         new HProject())).isFalse();
     }
 
     @Test
     public void multiTargetAllowWithTargetsInDifferentOrder() {
         assertThat(complexPermissionEvaluator
-                .evaluatePermission("please-allow", new HProject(),
+                .checkPermission("please-allow", new HProject(),
                         new LocaleId("de-DE"))).isTrue();
     }
 
@@ -271,7 +287,7 @@ public class PermissionEvaluatorTest {
     public void allowWhenAllArgsPresentInOrder() {
         assertThat(
                 complexPermissionEvaluator
-                        .evaluatePermission("only-when-all-args-present",
+                        .checkPermission("only-when-all-args-present",
                                 new HProject(),
                                 new HProjectIteration(), new HLocale()))
                 .isTrue();
@@ -281,7 +297,7 @@ public class PermissionEvaluatorTest {
     public void allowWhenAllArgsPresentInDisorder() {
         assertThat(
                 complexPermissionEvaluator
-                        .evaluatePermission("only-when-all-args-present",
+                        .checkPermission("only-when-all-args-present",
                                 new HLocale(),
                                 new HProjectIteration(), new HProject()))
                 .isTrue();
@@ -291,23 +307,24 @@ public class PermissionEvaluatorTest {
     public void denyWhenSomeArgsNorPresentAndAreRequired() {
         assertThat(
                 complexPermissionEvaluator
-                        .evaluatePermission("only-when-all-args-present",
+                        .checkPermission("only-when-all-args-present",
                                 new HProjectIteration()))
                 .isFalse();
     }
 
     @Test
-    public void denyWhenException() {
-        Method evaluator =
-                getStaticMethod(ComplexTestEvaluators.class,
-                        "deniesWithException");
-        assertThat(complexPermissionEvaluator.evaluatorMethodApplies(evaluator,
-                "throws-exception", new HProjectIteration()));
-        assertThat(
-                complexPermissionEvaluator
-                        .evaluatePermission("throws-exception",
-                                new HProjectIteration()))
-                .isFalse();
+    public void exceptionInGranterIsPropagated() {
+        try {
+            assertThat(
+                    complexPermissionEvaluator
+                            .checkPermission("throws-exception",
+                                    new HProjectIteration()))
+                    .isFalse();
+        }
+        catch (Exception e) {
+            assertThat(e).isExactlyInstanceOf(RuntimeException.class);
+            assertThat(e).hasCauseInstanceOf(InvocationTargetException.class);
+        }
     }
 
     private Method getStaticMethod(Class<?> clazz, String methodName) {
@@ -321,23 +338,23 @@ public class PermissionEvaluatorTest {
 
     public static class SimpleTestEvaluators {
 
-        @ResolvesPermissions
+        @GrantsPermission
         public static boolean evaluatesToTrueAlways() {
             return true;
         }
 
-        @ResolvesPermissions
+        @GrantsPermission
         public static boolean evaluatesForHProject(HProject project) {
             return true;
         }
 
-        @ResolvesPermissions(action = "specific-action")
+        @GrantsPermission(actions = "specific-action")
         public static boolean evaluatesForAction(Object target,
                 @Action String action) {
             return true;
         }
 
-        @ResolvesPermissions(action = "multi-target-action")
+        @GrantsPermission(actions = "multi-target-action")
         public static boolean evaluatesForMultiTarget(HProject project,
                 HLocale locale, @Action String action) {
             return project != null && locale != null;
@@ -346,23 +363,23 @@ public class PermissionEvaluatorTest {
 
     public static class ComplexTestEvaluators {
 
-        @ResolvesPermissions(action = "always-grant")
+        @GrantsPermission(actions = "always-grant")
         public static boolean alwaysGrant() {
             return true;
         }
 
         // Do not define any other methods that take a StringBuilder
-        @ResolvesPermissions
+        @GrantsPermission
         public static boolean alwaysDenyForStringBuilders(StringBuilder target) {
             return false;
         }
 
-        @ResolvesPermissions(action = "action-1")
+        @GrantsPermission(actions = "action-1")
         public static boolean allowAction1ForProjects(HProject project) {
             return true;
         }
 
-        @ResolvesPermissions(action = { "multi-action-1", "multi-action-2",
+        @GrantsPermission(actions = { "multi-action-1", "multi-action-2",
                 "multi-action-3" })
         public static boolean allowMultipleActionsForProjectIterations(
                 HProjectIteration iteration) {
@@ -370,28 +387,28 @@ public class PermissionEvaluatorTest {
         }
 
         // Do not define any other methods that take an HAccount
-        @ResolvesPermissions
+        @GrantsPermission
         public static boolean programaticallyAllowForAction(HAccount account,
                 @Action String action) {
             return action.endsWith("should-grant");
         }
 
         // Multi target method
-        @ResolvesPermissions(action = "please-allow")
+        @GrantsPermission(actions = "please-allow")
         public static boolean allowForGermanAndAnyProject(LocaleId locale,
                 HProject project, @Action String action) {
             return locale.getId().startsWith("de")
                     && action.equals("please-allow") && project != null;
         }
 
-        @ResolvesPermissions(action = "only-when-all-args-present")
+        @GrantsPermission(actions = "only-when-all-args-present")
         public static boolean allowsWhenAllArgsPresent(HProject project,
                 HProjectIteration iteration, HLocale locale) {
             return project != null && iteration != null && locale != null;
         }
 
         // Exception method
-        @ResolvesPermissions(action = "throws-exception")
+        @GrantsPermission(actions = "throws-exception")
         public static boolean deniesWithException() {
             throw new RuntimeException("permission denied");
         }

@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a permission method's (one which is annotated with
- * {@link org.zanata.security.permission.ResolvesPermissions}) parameter as the
+ * {@link GrantsPermission}) parameter as the
  * injection point for the action string into the method invocation.
  *
  * @author Carlos Munoz <a

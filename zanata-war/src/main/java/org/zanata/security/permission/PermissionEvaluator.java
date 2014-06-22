@@ -21,14 +21,14 @@
 package org.zanata.security.permission;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.apache.commons.lang.ArrayUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -53,143 +53,71 @@ import com.google.common.collect.Lists;
 @Startup
 public class PermissionEvaluator {
 
-    private final List<Method> permissionFunctions = Lists.newArrayList();
+    private static final String ALL_ACTION_GRANTER = "__**__";
+
+    private final Multimap<String, PermissionGranter> permissionGrantMethods =
+            ArrayListMultimap.create();
 
     @Create
     public void buildIndex() {
-        analyze(PermissionEvaluator.class);
-        analyze(SecurityFunctions.class);
+        registerPermissionGranters(SecurityFunctions.class);
     }
 
-    public void analyze(Class<?> clazz) {
+    /**
+     * Registers all permission granter methods found in clazz to be used to
+     * check permissions.
+     *
+     * @param clazz
+     */
+    public void registerPermissionGranters(Class<?> clazz) {
         for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(ResolvesPermissions.class)) {
-                if (!Modifier.isStatic(m.getModifiers())) {
-                    throw new RuntimeException("Permission method "
-                            + m.getName() + " must be static");
-                } else if (m.getReturnType() != Boolean.class &&
-                        m.getReturnType() != boolean.class) {
-                    throw new RuntimeException("Permission method "
-                            + m.getName() + " must return a Boolean type");
+            if (m.isAnnotationPresent(GrantsPermission.class)) {
+                PermissionGranter granter = new PermissionGranter(m);
+                granter.validate();
+
+                if(granter.getEvaluatedActions().size() == 0) {
+                    // This granter is to apply to every action
+                    permissionGrantMethods.put(ALL_ACTION_GRANTER, granter);
                 }
-
-                permissionFunctions.add(m);
-            }
-        }
-    }
-
-    public boolean evaluatePermission(String action, Object ... targets) {
-        // Get the permissions to evaluate
-        for (Method evaluatorMethod : permissionFunctions) {
-            if( evaluatorMethodApplies(evaluatorMethod, action, targets) ) {
-                try {
-                    Object[] args =
-                        prepareEvaluatorArgs(evaluatorMethod, action, targets);
-
-                    Object result = evaluatorMethod.invoke(null, args);
-                    if((Boolean)result) {
-                        return true;
+                else {
+                    for( String action : granter.getEvaluatedActions() ) {
+                        permissionGrantMethods.put(action, granter);
                     }
                 }
-                catch (IllegalArgumentException e) {
-                    // Permission denied if the expected arguments are not
-                    // passed
-                }
-                catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                catch (InvocationTargetException e) {
-                    // Permission denied if there's an exception thrown by the
-                    // evaluator method
-                }
             }
         }
-        return false;
     }
 
     /**
-     * Prepares the arguments to be passed to an evaluator method.
+     * Checks a permission for a given action on a set of targets.
+     *
+     * @param action
+     *            The action to perform.
+     * @param targets
+     *            The target object instances to perform the action on.
+     * @return True, if the permission has been granted. False otherwise.
      */
-    private Object[] prepareEvaluatorArgs(Method evaluatorMethod, String action,
-        Object ... targets) {
-        Class<?>[] argTypes = evaluatorMethod.getParameterTypes();
-        Annotation[][] argAnnotations =
-            evaluatorMethod.getParameterAnnotations();
-        Object[] args = new Object[argTypes.length];
-        for(int i=0, j=0; i < args.length; i++) {
-            if(argTypes[i] == String.class && containsActionAnnotation(argAnnotations[i])) {
-                // inject the action
-                args[i] = action;
-            }
-            else {
-                args[i] = findSuitableTarget(argTypes[i], targets);
+    public boolean checkPermission(String action, Object... targets) {
+        boolean permissionGranted = false;
+        // Get granters for all actions (those with no declared action)
+        Collection<PermissionGranter> allActionGranters =
+                permissionGrantMethods.get(ALL_ACTION_GRANTER);
+        for( PermissionGranter granter : allActionGranters ) {
+            if( granter.shouldInvokeGranter(targets) ) {
+                if(granter.invoke(action, targets)) {
+                    return true;
+                }
             }
         }
-        return args;
-    }
 
-    /**
-     * Tries to find a suitable target expected for an evaluator.
-     * Currently this implementation will return the first target that matches
-     * the expected type. This will present problems if there are multiple
-     * targets of the same type.
-     * @param type The type of target expected.
-     * @param targets The array of targets to choose from.
-     * @return A target that is suitable to be passed as argument to the
-     * evaluator method. The object return will be of class type. If a
-     * suitable target is not found, null will be returned.
-     */
-    private Object findSuitableTarget(Class<?> type, Object ... targets) {
-        for( Object t : targets ) {
-            if( t.getClass() == type ) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    @VisibleForTesting
-    boolean evaluatorMethodApplies(Method evaluator, String action, Object ... targets) {
-        ResolvesPermissions permAnn =
-                evaluator.getAnnotation(ResolvesPermissions.class);
-        Class[] evaluatorTypes = getActualParamTypes(evaluator);
-        Class[] targetTypes = new Class[targets.length];
-        for( int i=0; i < targets.length; i++ ) {
-            targetTypes[i] = targets[i].getClass();
-        }
-
-        boolean evaluates = true;
-        // If The evaluator specifies an action, then it must match exactly
-        if( permAnn.action().length > 0 ) {
-            evaluates = evaluates && ArrayUtils.contains(permAnn.action(), action);
-            if( !evaluates ) { // Quick return
-                return false;
-            }
-        }
-        // otherwise, it will evaluate it always
-
-        return evaluates;
-    }
-
-    private Class[] getActualParamTypes(Method evaluator) {
-        List<Class> actualParamTypes = Lists.newArrayList();
-        Class[] evaluatorParamTypes = evaluator.getParameterTypes();
-        Annotation[][] evaluatorParamAnnots =
-            evaluator.getParameterAnnotations();
-
-        for( int i=0; i < evaluatorParamTypes.length; i++ ) {
-            if( evaluatorParamTypes[i] != String.class ||
-                !containsActionAnnotation(evaluatorParamAnnots[i]) ) {
-                actualParamTypes.add(evaluatorParamTypes[i]);
-            }
-        }
-        return actualParamTypes.toArray(new Class[]{});
-    }
-
-    private boolean containsActionAnnotation(Annotation[] annotations) {
-        for( Annotation a : annotations ) {
-            if( a instanceof Action ) {
-                return true;
+        // Get granters for specific actions
+        Collection<PermissionGranter> actionGranters =
+                permissionGrantMethods.get(action);
+        for( PermissionGranter granter : actionGranters ) {
+            if( granter.shouldInvokeGranter(targets) ) {
+                if( granter.invoke(action, targets) ) {
+                    return true;
+                }
             }
         }
         return false;

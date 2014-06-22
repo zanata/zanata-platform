@@ -39,7 +39,7 @@ import org.zanata.util.ServiceLocator;
  * This permission resolver will use the
  * {@link org.zanata.security.permission.PermissionEvaluator} component to
  * resolve permissions using java methods annotated with
- * {@link org.zanata.security.permission.ResolvesPermissions}.
+ * {@link GrantsPermission}.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -69,7 +69,7 @@ public class CustomPermissionResolver implements PermissionResolver,
         PermissionEvaluator evaluator =
                 ServiceLocator.instance()
                         .getInstance(PermissionEvaluator.class);
-        return evaluator.evaluatePermission(action, targets);
+        return evaluator.checkPermission(action, targets);
     }
 
     @Override

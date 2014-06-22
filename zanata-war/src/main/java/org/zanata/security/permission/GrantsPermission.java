@@ -34,6 +34,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ResolvesPermissions {
-    String[] action() default {};
+public @interface GrantsPermission {
+    String[] actions() default {};
 }

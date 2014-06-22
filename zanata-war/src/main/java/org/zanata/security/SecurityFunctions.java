@@ -20,8 +20,6 @@
  */
 package org.zanata.security;
 
-import java.lang.reflect.Array;
-
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
@@ -33,7 +31,7 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.permission.ResolvesPermissions;
+import org.zanata.security.permission.GrantsPermission;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -47,7 +45,7 @@ public class SecurityFunctions {
     }
 
     /* admin can do anything */
-    @ResolvesPermissions
+    @GrantsPermission
     public static boolean isAdmin() {
         return getIdentity().hasRole("admin");
     }
@@ -56,17 +54,17 @@ public class SecurityFunctions {
      * The Following Rules are for Identity Management
      **************************************************************************/
 
-    @ResolvesPermissions(action = "create")
+    @GrantsPermission(actions = "create")
     public static boolean canCreateAccount(String target) {
         return target.equals("seam.account") && isAdmin();
     }
 
-    @ResolvesPermissions
+    @GrantsPermission
     public static boolean canManageUsers(String target) {
         return target.equals("seam.user") && isAdmin();
     }
 
-    @ResolvesPermissions
+    @GrantsPermission
     public static boolean canManageRoles(String target) {
         return target.equals("seam.role") && isAdmin();
     }
@@ -76,19 +74,19 @@ public class SecurityFunctions {
      **************************************************************************/
 
     /* Any authenticated user can create a project */
-    @ResolvesPermissions(action = "insert")
+    @GrantsPermission(actions = "insert")
     public static boolean canCreateProject(HProject target) {
         return getIdentity().isLoggedIn();
     }
 
     /* anyone can read a project */
-    @ResolvesPermissions(action = "read")
+    @GrantsPermission(actions = "read")
     public static boolean canReadProject(HProject target) {
         return true;
     }
 
     /* anyone can read a project iteration */
-    @ResolvesPermissions(action = "read")
+    @GrantsPermission(actions = "read")
     public static boolean canReadProjectIteration(HProjectIteration target) {
         return true;
     }
@@ -102,7 +100,7 @@ public class SecurityFunctions {
      * requiring the construction of HProjectIteration just to do a permission
      * check.)
      */
-    @ResolvesPermissions(action = { "update",
+    @GrantsPermission(actions = { "update",
             "add-iteration" })
     public static boolean canUpdateProjectOrAddIteration(HProject project) {
         if (!getIdentity().isLoggedIn()) {
@@ -116,7 +114,7 @@ public class SecurityFunctions {
      * Project maintainers may create or edit (but not delete) a project
      * iteration
      */
-    @ResolvesPermissions(action = {
+    @GrantsPermission(actions = {
             "insert", "update", "import-template" })
     public static boolean canInsertOrUpdateProjectIteration(
             HProjectIteration iteration) {
@@ -128,7 +126,7 @@ public class SecurityFunctions {
      **************************************************************************/
 
     /* Language Team members can add a translation for their language teams */
-    @ResolvesPermissions(action = { "add-translation", "modify-translation" })
+    @GrantsPermission(actions = { "add-translation", "modify-translation" })
     public static boolean canTranslate(HProject project, HLocale lang) {
         return isUserAllowedAccess(project) && isUserTranslatorOfLanguage(lang);
     }
@@ -170,8 +168,8 @@ public class SecurityFunctions {
      **************************************************************************/
     /* Language Team reviewer can approve/reject translation */
     // TODO Unify these two permission actions into a single one
-    @ResolvesPermissions(
-            action = { "review-translation", "translation-review" })
+    @GrantsPermission(
+            actions = { "review-translation", "translation-review" })
     public static boolean
             canReviewTranslation(HProject project, HLocale locale) {
         return isUserAllowedAccess(project) && isUserReviewerOfLanguage(locale);
@@ -194,7 +192,7 @@ public class SecurityFunctions {
      * Project Maintainers can add, modify or review a translation for their
      * projects
      */
-    @ResolvesPermissions(action = { "add-translation", "modify-translation",
+    @GrantsPermission(actions = { "add-translation", "modify-translation",
             "review-translation" })
     public static boolean canAddOrReviewTranslation(
             HProject project, HLocale locale) {
@@ -204,7 +202,7 @@ public class SecurityFunctions {
     }
 
     /* Project Maintainer can import translation (merge type is IMPORT) */
-    @ResolvesPermissions(action = "import-translation")
+    @GrantsPermission(actions = "import-translation")
     public static boolean canImportTranslation(
             HProjectIteration projectIteration) {
         HPerson authenticatedPerson = getAuthenticatedAccount().getPerson();
@@ -229,13 +227,13 @@ public class SecurityFunctions {
      **************************************************************************/
 
     /* 'glossarist' can push and update glossaries */
-    @ResolvesPermissions(action = { "glossary-insert", "glossary-update" })
+    @GrantsPermission(actions = { "glossary-insert", "glossary-update" })
     public static boolean canPushGlossary() {
         return getIdentity().hasRole("glossarist");
     }
 
     /* 'glossarist-admin' can also delete */
-    @ResolvesPermissions(action = { "glossary-insert", "glossary-update",
+    @GrantsPermission(actions = { "glossary-insert", "glossary-update",
             "glossary-delete" })
     public static boolean canAdminGlossary() {
         return getIdentity().hasRole("glossary-admin");
@@ -246,13 +244,13 @@ public class SecurityFunctions {
      **************************************************************************/
 
     /* Anyone can read Locale members */
-    @ResolvesPermissions(action = "read")
+    @GrantsPermission(actions = "read")
     public static boolean canSeeLocaleMembers(HLocaleMember localeMember) {
         return true;
     }
 
     /* 'team coordinator' can manage language teams */
-    @ResolvesPermissions(action = "manage-language-team")
+    @GrantsPermission(actions = "manage-language-team")
     public static boolean isUserCoordinatorOfLanguage(HLocale lang) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
@@ -267,7 +265,7 @@ public class SecurityFunctions {
     }
 
     /* 'team coordinator' can insert/update/delete language team members */
-    @ResolvesPermissions(action = { "insert", "update", "delete" })
+    @GrantsPermission(actions = { "insert", "update", "delete" })
     public static boolean canModifyLanguageTeamMembers(
             HLocaleMember localeMember) {
         return isUserCoordinatorOfLanguage(localeMember.getSupportedLanguage());
@@ -278,13 +276,13 @@ public class SecurityFunctions {
      **************************************************************************/
 
     // Only admin can view obsolete projects
-    @ResolvesPermissions(action = "view-obsolete")
+    @GrantsPermission(actions = "view-obsolete")
     public static boolean canViewObsoleteProject(HProject project) {
         return getIdentity().hasRole("admin");
     }
 
     // Only admin can view obsolete project iterations
-    @ResolvesPermissions(action = "view-obsolete")
+    @GrantsPermission(actions = "view-obsolete")
     public static boolean canViewObsoleteProjectIteration(
             HProjectIteration projectIteration) {
         return getIdentity().hasRole("admin");
@@ -295,13 +293,13 @@ public class SecurityFunctions {
      **************************************************************************/
 
     // Only admin can archive projects
-    @ResolvesPermissions(action = "mark-obsolete")
+    @GrantsPermission(actions = "mark-obsolete")
     public static boolean canArchiveProject(HProject project) {
         return getIdentity().hasRole("admin");
     }
 
     // Only admin can archive project iterations
-    @ResolvesPermissions(action = "mark-obsolete")
+    @GrantsPermission(actions = "mark-obsolete")
     public static boolean canArchiveProjectIteration(
             HProjectIteration projectIteration) {
         return getIdentity().hasRole("admin");
@@ -315,7 +313,7 @@ public class SecurityFunctions {
      * Permissions to download files. NOTE: Currently any authenticated user can
      * download files
      */
-    @ResolvesPermissions(action = { "download-single", "download-all" })
+    @GrantsPermission(actions = { "download-single", "download-all" })
     public static boolean canDownloadFiles(HProjectIteration projectIteration) {
         return getIdentity().isLoggedIn();
     }
@@ -323,12 +321,12 @@ public class SecurityFunctions {
     /***************************************************************************
      * Version Group rules
      **************************************************************************/
-    @ResolvesPermissions(action = { "update", "insert" })
+    @GrantsPermission(actions = { "update", "insert" })
     public static boolean canInsertAndUpdateVersionGroup(HIterationGroup group) {
         return getAuthenticatedAccount().getPerson().isMaintainer(group);
     }
 
-    @ResolvesPermissions(action = "view-obsolete")
+    @GrantsPermission(actions = "view-obsolete")
     public static boolean canViewObsoleteVersionGroup(HIterationGroup group) {
         return getAuthenticatedAccount().getPerson()
                 .isMaintainerOfVersionGroups();
@@ -339,7 +337,7 @@ public class SecurityFunctions {
      **************************************************************************/
 
     /** Admins and Project maintainers can perform copy-trans */
-    @ResolvesPermissions(action = "copy-trans")
+    @GrantsPermission(actions = "copy-trans")
     public static boolean canRunCopyTrans(HProjectIteration iteration) {
         return getAuthenticatedAccount().getPerson().isMaintainer(
                 iteration.getProject());
@@ -349,12 +347,12 @@ public class SecurityFunctions {
      * Review comment rules
      ******************************************************************************************/
 
-    @ResolvesPermissions(action = "review-comment")
+    @GrantsPermission(actions = "review-comment")
     public static boolean canCommentOnReview(HLocale locale, HProject project) {
         return isUserAllowedAccess(project) && isLanguageTeamMember(locale);
     }
 
-    @ResolvesPermissions(action = "review-comment")
+    @GrantsPermission(actions = "review-comment")
     public static boolean canMaintainerCommentOnReview(HLocale locale,
             HProject project) {
         return getAuthenticatedAccount().getPerson().isMaintainer(project);
