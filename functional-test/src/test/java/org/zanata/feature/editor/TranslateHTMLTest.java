@@ -23,7 +23,6 @@ package org.zanata.feature.editor;
 import java.io.File;
 import java.util.HashMap;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
@@ -32,6 +31,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
@@ -42,7 +42,7 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 
 /**
@@ -81,12 +81,13 @@ public class TranslateHTMLTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The user can translate HyperText Markup Language files",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Theory
     public void translateBasicHTMLFile(String extension) {
-        File testfile =
-                testFileGenerator.generateTestFileWithContent("basichtml", "."
-                        + extension, "<html><body>Line One<p>Line Two<p>"
-                        + "Line Three</body></html>");
+        File testfile = testFileGenerator.generateTestFileWithContent(
+                "basichtml", "." + extension,
+                "<html><body>Line One<p>Line Two<p>Line Three</body></html>");
 
         HashMap<String, String> projectSettings =
                 ProjectWorkFlow.projectDefaults();
@@ -105,47 +106,43 @@ public class TranslateHTMLTest extends ZanataTestCase {
                 .submitUpload()
                 .translate("fr", testfile.getName());
 
-        assertThat("Item 1 shows Line One",
-                editorPage.getMessageSourceAtRowIndex(0),
-                Matchers.equalTo("Line One"));
-        assertThat("Item 2 shows Line Two",
-                editorPage.getMessageSourceAtRowIndex(1),
-                Matchers.equalTo("Line Two"));
-        assertThat("Item 3 shows Line Three",
-                editorPage.getMessageSourceAtRowIndex(2),
-                Matchers.equalTo("Line Three"));
+        assertThat(editorPage.getMessageSourceAtRowIndex(0))
+                .isEqualTo("Line One")
+                .as("Item 1 shows Line One");
 
-        editorPage =
-                editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                        .approveTranslationAtRow(0);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                        .approveTranslationAtRow(1);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                        .approveTranslationAtRow(2);
+        assertThat(editorPage.getMessageSourceAtRowIndex(1))
+                .isEqualTo("Line Two")
+                .as("Item 2 shows Line Two");
+        assertThat(editorPage.getMessageSourceAtRowIndex(2))
+                .isEqualTo("Line Three")
+                .as("Item 3 shows Line Three");
 
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                Matchers.equalTo("Une Ligne"));
-        assertThat("Item 2 shows a translation of Line Two",
-                editorPage.getBasicTranslationTargetAtRowIndex(1),
-                Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 3 shows a translation of Line Three",
-                editorPage.getBasicTranslationTargetAtRowIndex(2),
-                Matchers.equalTo("Ligne Trois"));
+        editorPage = editorPage
+                .translateTargetAtRowIndex(0, "Une Ligne")
+                .approveTranslationAtRow(0)
+                .translateTargetAtRowIndex(1, "Deux Ligne")
+                .approveTranslationAtRow(1)
+                .translateTargetAtRowIndex(2, "Ligne Trois")
+                .approveTranslationAtRow(2);
 
-        // Close and reopen the editor to test save, switches to CodeMirror
+        assertTranslations(editorPage);
+
+        // Close and reopen the editor to test save
         editorPage.reload();
 
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                Matchers.equalTo("Une Ligne"));
-        assertThat("Item 2 shows a translation of Line Two",
-                editorPage.getBasicTranslationTargetAtRowIndex(1),
-                Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 3 shows a translation of Line Three",
-                editorPage.getBasicTranslationTargetAtRowIndex(2),
-                Matchers.equalTo("Ligne Trois"));
+        assertTranslations(editorPage);
+
+    }
+
+    private void assertTranslations(EditorPage editorPage) {
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
+                .isEqualTo("Une Ligne")
+                .as("Item 1 shows a translation of Line One");
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(1))
+                .isEqualTo("Deux Ligne")
+                .as("Item 2 shows a translation of Line Two");
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(2))
+                .isEqualTo("Ligne Trois")
+                .as("Item 3 shows a translation of Line Three");
     }
 }
