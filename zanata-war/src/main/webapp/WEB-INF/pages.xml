@@ -508,15 +508,10 @@
   </page>
 
   <page view-id="/profile/merge_account.xhtml" login-required="true">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.profile.MergeAccount'])}" />
     <action execute="#{accountMergeAction.validateAccounts}" />
 
     <navigation from-action="#{accountMergeAction.cancel}">
-      <redirect view-id="/profile/view.xhtml" />
+      <redirect view-id="/dashboard/home.xhtml" />
     </navigation>
   </page>
 
