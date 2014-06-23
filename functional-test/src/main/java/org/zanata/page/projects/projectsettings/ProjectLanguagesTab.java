@@ -66,7 +66,21 @@ public class ProjectLanguagesTab extends ProjectBasePage {
 
     private List<WebElement> getEnabledLocaleListElement() {
         return getDriver().findElement(By.id("settings-languages-form"))
-                .findElements(By.xpath(".//ul/li[@class='reveal--list-item']"));
+                .findElement(By.className("list--slat"))
+                .findElements(By.className("reveal--list-item"));
+    }
+
+    public ProjectLanguagesTab waitForLocaleListVisible() {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                return getDriver()
+                        .findElement(By.id("settings-languages-form"))
+                        .findElement(By.className("list--slat"))
+                        .isDisplayed();
+            }
+        });
+        return new ProjectLanguagesTab(getDriver());
     }
 
     /**
