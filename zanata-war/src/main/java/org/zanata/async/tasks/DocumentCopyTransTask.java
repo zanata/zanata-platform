@@ -22,7 +22,7 @@ package org.zanata.async.tasks;
 
 import java.util.List;
 
-import org.jboss.seam.Component;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -30,6 +30,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Copy Trans task that runs copy trans on a single document and all languages
@@ -50,20 +51,26 @@ public class DocumentCopyTransTask extends CopyTransTask {
     @Override
     protected int getMaxProgress() {
         LocaleService localeService =
-                (LocaleService) Component.getInstance(LocaleServiceImpl.class);
+                ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
+
         List<HLocale> localeList =
                 localeService.getSupportedLanguageByProjectIteration(document
                         .getProjectIteration().getProject().getSlug(), document
                         .getProjectIteration().getSlug());
+        int localeCount = localeList.size();
 
-        return localeList.size();
+        int textFlowCount = ServiceLocator.instance().getInstance(
+                TextFlowDAO.class)
+                .countActiveTextFlowsInDocument(
+                        document.getId());
+        return localeCount * textFlowCount;
     }
 
     @Override
     protected void callCopyTrans() {
         CopyTransService copyTransServiceImpl =
-                (CopyTransService) Component
-                        .getInstance(CopyTransServiceImpl.class);
+                ServiceLocator.instance().getInstance(
+                        CopyTransServiceImpl.class);
         copyTransServiceImpl.copyTransForDocument(document, copyTransOptions);
     }
 }

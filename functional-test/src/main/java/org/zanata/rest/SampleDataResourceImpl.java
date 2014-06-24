@@ -3,7 +3,6 @@ package org.zanata.rest;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,12 +16,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.util.SampleProjectProfile;
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Uninterruptibles;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/test/data/sample")
 @Name("sampleProjectResourceImpl")
 @Slf4j
-public class SampleProjectResourceImpl implements SampleProjectResource {
+public class SampleDataResourceImpl implements SampleDataResource {
 
     @In(create = true)
     private SampleProjectProfile sampleProjectProfile;
@@ -47,6 +41,18 @@ public class SampleProjectResourceImpl implements SampleProjectResource {
             @Override
             public void execute() {
                 sampleProjectProfile.makeSampleLanguages();
+            }
+        }.addRole("admin").run();
+        return Response.ok().build();
+    }
+
+    @Override
+    @Transactional
+    public Response addLanguage(final String localeId) {
+        new RunAsOperation() {
+            @Override
+            public void execute() {
+                sampleProjectProfile.makeLanguage(new LocaleId(localeId));
             }
         }.addRole("admin").run();
         return Response.ok().build();

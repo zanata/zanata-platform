@@ -30,6 +30,7 @@ import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 
 import org.jboss.seam.transaction.UserTransaction;
+import lombok.Getter;
 
 /**
  * Simulates a seam transaction for use with {@link SeamAutowire}. Since
@@ -46,19 +47,16 @@ public class AutowireTransaction implements UserTransaction {
 
     private static final AutowireTransaction instance =
             new AutowireTransaction();
+    @Getter
+    private boolean active;
 
     public static UserTransaction instance() {
         return instance;
     }
 
     @Override
-    public boolean isActive() throws SystemException {
-        return true;
-    }
-
-    @Override
     public boolean isActiveOrMarkedRollback() throws SystemException {
-        return true;
+        return isActive();
     }
 
     @Override
@@ -101,17 +99,29 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public void begin() throws NotSupportedException, SystemException {
+        active = true;
+    }
+
+    private EntityManager getEntityManager() {
+        return (EntityManager) SeamAutowire.instance().getComponent(
+                "entityManager");
     }
 
     @Override
     public void commit() throws RollbackException, HeuristicMixedException,
             HeuristicRollbackException, SecurityException,
             IllegalStateException, SystemException {
+        EntityManager entityManager = getEntityManager();
+        if (entityManager != null) {
+            entityManager.flush();
+        }
+        active = false;
     }
 
     @Override
     public void rollback() throws IllegalStateException, SecurityException,
             SystemException {
+        active = false;
     }
 
     @Override
@@ -120,7 +130,11 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public int getStatus() throws SystemException {
-        return Status.STATUS_ACTIVE;
+        if (active) {
+            return Status.STATUS_ACTIVE;
+        } else {
+            return Status.STATUS_NO_TRANSACTION;
+        }
     }
 
     @Override

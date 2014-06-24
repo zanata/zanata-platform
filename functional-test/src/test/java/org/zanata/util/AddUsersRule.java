@@ -6,10 +6,10 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.zanata.util.SampleProjectClient.deleteExceptEssentialData;
-import static org.zanata.util.SampleProjectClient.makeSampleLanguages;
-import static org.zanata.util.SampleProjectClient.makeSampleUsers;
-import static org.zanata.util.SampleProjectClient.userJoinsLanguageTeam;
+import static org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData;
+import static org.zanata.util.SampleDataResourceClient.makeSampleLanguages;
+import static org.zanata.util.SampleDataResourceClient.makeSampleUsers;
+import static org.zanata.util.SampleDataResourceClient.userJoinsLanguageTeam;
 
 /**
  * @author Patrick Huang <a

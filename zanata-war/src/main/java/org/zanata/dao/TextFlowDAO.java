@@ -132,13 +132,13 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return totalCount == null ? 0 : totalCount.intValue();
     }
 
-    public int getCountByDocument(Long documentId) {
+    public int countActiveTextFlowsInDocument(Long documentId) {
         Query q =
                 getSession()
                         .createQuery(
                                 "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
         q.setParameter("id", documentId);
-        q.setCacheable(true).setComment("TextFlowDAO.getCountByDocument");
+        q.setCacheable(true).setComment("TextFlowDAO.countActiveTextFlowsInDocument");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
     }
@@ -230,4 +230,19 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 hLocale.getLocaleId(), constraints);
         return result;
     }
+
+    public long countActiveTextFlowsInProjectIteration(Long projIterId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HTextFlow tf " +
+                                        "where tf.obsolete = 0 and " +
+                                        "tf.document.obsolete = 0 and " +
+                                        "tf.document.projectIteration.id=:projIterId");
+        q.setParameter("projIterId", projIterId);
+        q.setCacheable(true).setComment(
+                "TextFlowDAO.countTextFlowsInProjectIteration");
+        return (Long) q.uniqueResult();
+    }
+
 }

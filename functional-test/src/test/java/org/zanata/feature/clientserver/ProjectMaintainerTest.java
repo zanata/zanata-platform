@@ -165,7 +165,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
                 buildTranslationResource(buildTextFlowTarget("hello",
                         "translated"));
         restCaller.postTargetDocResource(projectSlug, iterationSlug, "prop1",
-                new LocaleId("pl"), translationsResource);
+                new LocaleId("pl"), translationsResource, "auto");
 
         // dryRun creates nothing
         File transDir = Files.createTempDir();

@@ -261,7 +261,7 @@
 
     <div class="l--pad-all-half l--push-top-quarter">
       <zanata:progressBar id="copy-trans-progress-bar"
-        actionBean="#{copyTransAction}"
+        actionBean="#{copyTransAction}" interval="5000"
         render="copy-trans-progress-messages"
         onCompleteRender="copy-trans-buttons, copy-trans"/>
 
@@ -271,7 +271,7 @@
           rendered="#{copyTransAction.inProgress}"/>
         <span>
           <h:outputText
-            value="#{messages['jsf.iteration.CopyTrans.processedDocuments']}"/>
+            value="#{messages['jsf.iteration.CopyTrans.processedItems']}"/>
           ,
           <h:outputText
             value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
