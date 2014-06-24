@@ -31,7 +31,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.rules.Timeout;
+import org.zanata.page.utility.HomePage;
 import org.zanata.util.RetryRule;
+import org.zanata.workflow.BasicWorkFlow;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -80,5 +82,9 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
+        HomePage homePage = new BasicWorkFlow().goToHome();
+        if (homePage.hasLoggedIn()) {
+            homePage.logout();
+        }
     }
 }

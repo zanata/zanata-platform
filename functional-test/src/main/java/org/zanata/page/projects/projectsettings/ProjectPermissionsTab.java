@@ -130,7 +130,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         return getDriver()
                 .findElement(By.id("settings-permissions-form"))
                 .findElement(By.id("maintainers-list"))
-                .findElements(By.tagName("li"));
+                .findElements(By.className("reveal--list-item"));
     }
 
     public List<String> getSettingsMaintainersList() {

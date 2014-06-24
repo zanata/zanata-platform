@@ -174,13 +174,6 @@ public class InvalidEmailAddressTest extends ZanataTestCase {
     // TEST_TRAILING_DASH_DOMAIN = TRAILING_DASH_DOMAIN;
     // BUG982048 @DataPoint public static InvalidEmailAddressRFC2822
     // TEST_MULTIPLE_DASHES_DOMAIN = MULTIPLE_DASHES_DOMAIN;
-    @BeforeClass
-    public static void logout() {
-        HomePage homePage = new BasicWorkFlow().goToHome();
-        if (homePage.hasLoggedIn()) {
-            homePage.logout();
-        }
-    }
 
     @Feature(summary = "The user must enter a valid email address to " +
             "register with Zanata",
