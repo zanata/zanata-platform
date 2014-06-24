@@ -48,12 +48,13 @@ public class TaskExecutor {
      *
      * @param task
      *            The task to execute.
+     * @param onComplete
      * @return The task handle to keep track of the executed task.
      * @throws RuntimeException
      *             If the provided task value is null.
      */
     public <V, H extends AsyncTaskHandle<V>> AsyncTaskHandle<V> startTask(
-            AsyncTask<V, H> task) {
+            AsyncTask<V, H> task, Runnable onComplete) {
         H handle = task.getHandle();
         if (handle == null) {
             throw new RuntimeException(
@@ -61,7 +62,7 @@ public class TaskExecutor {
         }
 
         Identity identity = Identity.instance();
-        asynchronousTaskExecutor.runAsynchronously(task, identity
+        asynchronousTaskExecutor.runAsynchronously(task, onComplete, identity
                 .getPrincipal(), identity.getSubject(),
                 identity.getCredentials().getUsername());
         return handle;

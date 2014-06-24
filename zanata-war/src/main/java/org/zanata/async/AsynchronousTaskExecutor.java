@@ -24,6 +24,7 @@ import java.security.Principal;
 
 import javax.security.auth.Subject;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -64,7 +65,8 @@ public class AsynchronousTaskExecutor {
      */
     @Asynchronous
     public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(
-            final AsyncTask<V, H> task, final Principal runAsPpal,
+            final AsyncTask<V, H> task, final Runnable onComplete,
+            final Principal runAsPpal,
             final Subject runAsSubject, final String username) {
         AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
 
@@ -75,11 +77,12 @@ public class AsynchronousTaskExecutor {
                     prepareSecurityContext(username);
                     V returnValue = task.call();
                     task.getHandle().set(returnValue);
-                } catch (Exception t) {
+                } catch (Throwable t) {
                     task.getHandle().setException(t);
                     log.error(
                         "Exception when executing an asynchronous task.", t);
                 }
+                onComplete.run();
             }
 
             @Override
@@ -92,7 +95,6 @@ public class AsynchronousTaskExecutor {
                 return runAsSubject;
             }
         };
-
         runAsOp.run();
     }
 
