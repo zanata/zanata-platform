@@ -31,4 +31,10 @@ public interface IProjectIterationResource extends ProjectIterationResource {
             MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public ClientResponse put(ProjectIteration project);
+
+    @GET
+    @Path("/config")
+    @Produces({ MediaType.APPLICATION_XML })
+    @Override
+    ClientResponse sampleConfiguration();
 }
