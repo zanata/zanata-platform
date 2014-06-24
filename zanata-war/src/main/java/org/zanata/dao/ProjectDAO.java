@@ -158,6 +158,21 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         return q.list();
     }
 
+    /**
+     * @param projectId
+     *            project id
+     * @return number of non-obsolete (active and read only) iterations under given project
+     */
+    public int getTranslationCandidateCount(Long projectId) {
+        Query q = getSession()
+                .createQuery(
+                        "select count(*) from HProjectIteration it where it.project.id = :projectId and it.status <> :status")
+                .setParameter("projectId", projectId)
+                .setParameter("status", EntityStatus.OBSOLETE).setCacheable(true)
+                .setComment("ProjectDAO.getTranslationCandidateCount");
+        return ((Long) q.uniqueResult()).intValue();
+    }
+
     @SuppressWarnings("unchecked")
     public List<HProjectIteration> getReadOnlyIterations(String slug) {
         Query q =

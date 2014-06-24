@@ -21,7 +21,6 @@
 package org.zanata.service.impl;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -49,9 +49,11 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.SearchIndexManager;
+import org.zanata.service.VersionStateCache;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -104,9 +106,11 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(TranslationMemoryServiceImpl.class)
                 .useImpl(AsyncTaskManagerServiceImpl.class)
+                .useImpl(VersionStateCacheImpl.class)
                 .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
 
         seam.autowire(SearchIndexManager.class).reindex(true, true, false);
+        AutowireTransaction.instance().rollback();
     }
 
     /**
@@ -201,6 +205,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         CopyTransService copyTransService =
                 seam.autowire(CopyTransServiceImpl.class);
         copyTransService.copyTransForIteration(projectIteration, options);
+        getEm().flush();
 
         // Validate execution
         HTextFlow targetTextFlow =

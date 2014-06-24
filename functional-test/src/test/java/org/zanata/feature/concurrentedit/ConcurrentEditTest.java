@@ -79,7 +79,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
                 buildTranslationResource(
                         buildTextFlowTarget("res1", "hello world translated"));
         restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
-                new LocaleId("pl"), translationsResource);
+                new LocaleId("pl"), translationsResource, "auto");
 
         // REST push broadcast event to editor
         editorPage.waitFor(new Callable<String>() {
@@ -111,7 +111,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
                 buildTranslationResource(
                         buildTextFlowTarget("res1", "hello world translated"));
         restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
-                new LocaleId("pl"), translationsResource);
+                new LocaleId("pl"), translationsResource, "auto");
 
         // create and push source but disable copyTrans
         restCaller.createProjectAndVersion(projectSlug, "beta", projectType);

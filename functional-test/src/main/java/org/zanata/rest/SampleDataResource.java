@@ -13,12 +13,16 @@ import javax.ws.rs.core.Response;
 import org.zanata.common.LocaleId;
 
 @Path("/test/data/sample")
-public interface SampleProjectResource {
+public interface SampleDataResource {
 
 
     @PUT
     @Path("/languages")
     Response makeSampleLanguages();
+
+    @PUT
+    @Path("/languages/l/{locale}")
+    Response addLanguage(@PathParam("locale") String localeId);
 
     @PUT
     @Path("/accounts/u/{username}/languages")

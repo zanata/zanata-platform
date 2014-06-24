@@ -28,7 +28,7 @@ import org.zanata.common.LocaleId;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.zanata.util.SampleProjectClient.*;
+import static org.zanata.util.SampleDataResourceClient.*;
 
 /**
  * @author Patrick Huang <a
