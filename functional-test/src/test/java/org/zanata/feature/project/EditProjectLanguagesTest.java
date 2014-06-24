@@ -21,10 +21,7 @@
 
 package org.zanata.feature.project;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -32,6 +29,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
@@ -48,8 +46,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The administrator can edit the project languages",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void editProjectLanguages() {
+    public void editProjectLanguages() throws Exception {
         ProjectLanguagesTab projectLanguagesTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -62,14 +62,14 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         List<String> enabledLocaleList = projectLanguagesTab
                 .getEnabledLocaleList();
 
-        assertThat("The enabled list contains three languages",
-                enabledLocaleList,
-                contains("French[fr]", "Hindi[hi]", "Polish[pl]"));
+        assertThat(enabledLocaleList)
+                .contains("French[fr]", "Hindi[hi]", "Polish[pl]")
+                .as("The enabled list contains three languages");
 
-        assertThat("The enabled list does not contain " +
-                "'English (United States)[en-US]'",
-                enabledLocaleList,
-                not(hasItem("English (United States)[en-US]")));
+        assertThat(enabledLocaleList)
+                .doesNotContain("English (United States)[en-US]")
+                .as("The enabled list does not contain " +
+                        "'English (United States)[en-US]'");
 
         projectLanguagesTab = projectLanguagesTab
                 .gotoSettingsTab()
@@ -81,13 +81,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .gotoSettingsLanguagesTab()
                 .getEnabledLocaleList();
 
-        assertThat("The enabled list does not contain 'US English'",
-                enabledLocaleList,
-                not(hasItem("English (United States)[en-US]")));
-
-        assertThat("The enabled list does not contain 'Polish'",
-                enabledLocaleList,
-                not(hasItem("Polish[pl]")));
+        assertThat(enabledLocaleList)
+                .doesNotContain("English (United States)[en-US]")
+                .doesNotContain("Polish[pl]")
+                .as("The enabled list does not contain 'US English' or Polish");
 
         enabledLocaleList = projectLanguagesTab
                 .gotoSettingsTab()
@@ -96,10 +93,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .addLanguage("English (United States)[en-US]")
                 .getEnabledLocaleList();
 
-        Assertions.assertThat(
-                enabledLocaleList).
-                contains("English (United States)[en-US]",
+        Assertions.assertThat(enabledLocaleList)
+                .contains("English (United States)[en-US]",
                         "French[fr]",
-                        "Hindi[hi]");
+                        "Hindi[hi]")
+                .as("The enabled language list contains en-US, fr and hi");
     }
 }

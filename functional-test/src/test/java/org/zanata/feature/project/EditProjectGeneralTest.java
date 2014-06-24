@@ -20,10 +20,10 @@
  */
 package org.zanata.feature.project;
 
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
@@ -33,10 +33,7 @@ import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -48,8 +45,10 @@ public class EditProjectGeneralTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The administrator can set a project to read-only",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135848)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAProjectToReadOnly() {
+    public void setAProjectToReadOnly() throws Exception {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -63,23 +62,26 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .setObsoleteFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", false);
 
-        assertThat("The project is not displayed",
-                projectsPage.getProjectNamesOnCurrentPage(),
-                not(hasItem("about fedora")));
+        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+                .doesNotContain("about fedora")
+                .as("The project is not displayed");
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(true)
                 .setObsoleteFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true);
 
-        assertThat("The project is now displayed",
-                projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem("about fedora"));
+        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+                .contains("about fedora")
+                .as("The project is now displayed");
     }
 
+    @Feature(summary = "The administrator can set a read-only project " +
+            "to writable",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAProjectToWritable() {
-        assertThat("The project is locked", new LoginWorkFlow()
+    public void setAProjectToWritable() throws Exception {
+        assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
@@ -91,8 +93,9 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .setReadOnlyFilterEnabled(true)
                 .setObsoleteFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true)
-                .getProjectNamesOnCurrentPage(),
-                hasItem("about fedora"));
+                .getProjectNamesOnCurrentPage())
+                .contains("about fedora")
+                .as("The project is locked");
 
         ProjectsPage projectsPage = new BasicWorkFlow()
                 .goToHome()
@@ -107,13 +110,15 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .setObsoleteFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true);
 
-        assertThat("The project is now displayed",
-                projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem("about fedora"));
+        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+                .contains("about fedora")
+                .as("The project is now displayed");
     }
 
+    @Feature(summary = "The administrator can set a project to obsolete",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135846)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAProjectObsolete() {
+    public void setAProjectObsolete() throws Exception {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -123,9 +128,9 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .archiveProject()
                 .goToProjects();
 
-        assertThat("The project is not displayed",
-                projectsPage.getProjectNamesOnCurrentPage(),
-                not(hasItem("about fedora")));
+        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+                .doesNotContain("about fedora")
+                .as("The project is not displayed");
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(false)
@@ -133,21 +138,25 @@ public class EditProjectGeneralTest extends ZanataTestCase {
 
         projectsPage.waitForProjectVisibility("about fedora", true);
 
-        assertThat("The project is now displayed",
-                projectsPage.getProjectNamesOnCurrentPage(),
-                hasItem("about fedora"));
+        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+                .contains("about fedora")
+                .as("The project is now displayed");
 
         projectsPage.logout();
 
-        assertThat("User cannot navigate to a project", new LoginWorkFlow()
+        assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToProjects()
-                .getProjectNamesOnCurrentPage(),
-                not(hasItem("about fedora")));
+                .getProjectNamesOnCurrentPage())
+                .doesNotContain("about fedora")
+                .as("User cannot navigate to the obsolete project");
     }
 
+    @Feature(summary = "The administrator can set an obsolete project " +
+            "to active",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAnObsoleteProjectAsActive() {
+    public void setAnObsoleteProjectAsActive() throws Exception {
         ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -162,22 +171,25 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsGeneral()
                 .unarchiveProject();
 
-        assertThat("The archive button is now available",
-                projectGeneralTab.isArchiveButtonAvailable());
+        assertThat(projectGeneralTab.isArchiveButtonAvailable())
+                .isTrue()
+                .as("The archive button is now available");
 
         projectGeneralTab.logout();
 
-        assertThat("Translator can view the project", new LoginWorkFlow()
+        assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToProjects()
                 .goToProject("about fedora")
-                .getProjectName(),
-                equalTo("about fedora"));
-
+                .getProjectName())
+                .isEqualTo("about fedora")
+                .as("Translator can view the project");
     }
 
+    @Feature(summary = "The administrator can change a project's name",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 198431)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeProjectName() {
+    public void changeProjectName() throws Exception {
         String replacementText = "a new name";
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -190,22 +202,24 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject(replacementText);
 
-        assertThat("The name has changed",
-                projectVersionsPage.getProjectName(),
-                Matchers.equalTo(replacementText));
+        assertThat(projectVersionsPage.getProjectName())
+                .isEqualTo(replacementText)
+                .as("The project name has changed");
     }
 
+    @Feature(summary = "The administrator can change a project's description",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 198431)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeProjectDescription() {
+    public void changeProjectDescription() throws Exception {
         String replacementText = "a new description";
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora");
 
-        assertThat("The description is default",
-                projectVersionsPage.getContentAreaParagraphs(),
-                not(hasItem(replacementText)));
+        assertThat(projectVersionsPage.getContentAreaParagraphs())
+                .doesNotContain(replacementText)
+                .as("The description is default");
 
         ProjectGeneralTab projectGeneralTab = projectVersionsPage
                 .gotoSettingsTab()
@@ -213,13 +227,15 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .enterDescription(replacementText)
                 .updateProject();
 
-        assertThat("The text has changed",
-                projectGeneralTab.getContentAreaParagraphs(),
-                Matchers.hasItem(replacementText));
+        assertThat(projectGeneralTab.getContentAreaParagraphs())
+                .contains(replacementText)
+                .as("The text has changed");
     }
 
+    @Feature(summary = "The administrator can change a project's type",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 198431)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeProjectType() {
+    public void changeProjectType() throws Exception {
         ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -227,19 +243,22 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .selectProjectType("Properties")
-                .updateProject()
-                .goToProjects()
-                .goToProject("about fedora")
+                .updateProject();
+
+        projectGeneralTab.reload();
+        projectGeneralTab = projectGeneralTab
                 .gotoSettingsTab()
                 .gotoSettingsGeneral();
 
-        assertThat("The type is correct",
-                projectGeneralTab.getSelectedProjectType(),
-                Matchers.equalTo("Properties"));
+        assertThat(projectGeneralTab.getSelectedProjectType())
+                .isEqualTo("Properties")
+                .as("The project type is correct");
     }
 
+    @Feature(summary = "The administrator can change a project's source urls",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 198431)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeSourceLinks() {
+    public void changeSourceLinks() throws Exception {
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -252,12 +271,12 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject("about fedora");
 
-        assertThat("The homepage is correct",
-                projectVersionsPage.getHomepage(),
-                Matchers.equalTo("http://www.example.com"));
+        assertThat(projectVersionsPage.getHomepage())
+                .isEqualTo("http://www.example.com")
+                .as("The homepage is correct");
 
-        assertThat("The git url is correct",
-                projectVersionsPage.getGitUrl(),
-                Matchers.equalTo("http://www.test.com"));
+        assertThat(projectVersionsPage.getGitUrl())
+                .isEqualTo("http://www.test.com")
+                .as("The git url is correct");
     }
 }

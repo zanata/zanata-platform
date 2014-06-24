@@ -21,17 +21,16 @@
 
 package org.zanata.feature.project;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectMaintainersPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.ProjectVersionsPage;
@@ -49,73 +48,78 @@ public class EditPermissionsTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The user can view maintainers for a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void maintainerDetailsAreDisplayed() {
-        ProjectPermissionsTab projectPermissionsTab =
-                new LoginWorkFlow()
-                        .signIn("admin", "admin")
-                        .goToProjects()
-                        .goToProject("about fedora")
-                        .gotoSettingsTab()
-                        .gotoSettingsPermissionsTab();
+    public void maintainerDetailsAreDisplayed() throws Exception {
+        ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsPermissionsTab();
 
-        assertThat("The admin user is shown in the list",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                hasItem("admin"));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .contains("admin")
+                .as("The admin user is shown in the list");
 
         ProjectMaintainersPage projectMaintainersPage = projectPermissionsTab
                 .gotoMaintainersTab();
 
-        assertThat("The admin user is shown in the list",
-                projectMaintainersPage.getMaintainers(),
-                hasItem("Administrator @admin"));
+        assertThat(projectMaintainersPage.getMaintainers())
+                .contains("Administrator @admin")
+                .as("The admin user is shown in the list");
     }
 
+    @Feature(summary = "The administrator can add a maintainer to a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("rhbz1097030")
-    public void addMaintainerAsAdmin() {
-        ProjectPermissionsTab projectPermissionsTab =
-                new LoginWorkFlow()
-                        .signIn("admin", "admin")
-                        .goToProjects()
-                        .goToProject("about fedora")
-                        .gotoSettingsTab()
-                        .gotoSettingsPermissionsTab();
+    public void addMaintainerAsAdmin() throws Exception {
+        ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsPermissionsTab();
 
-        assertThat("The translator user is not a maintainer",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                not(hasItem("translator")));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .doesNotContain("translator")
+                .as("The translator user is not a maintainer");
 
         projectPermissionsTab = new ProjectWorkFlow()
                 .addMaintainer("about fedora", "translator");
 
-        assertThat("The translator user is a maintainer",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                hasItem("translator"));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .contains("translator")
+                .as("The translator user is a maintainer");
 
         ProjectMaintainersPage projectMaintainersPage = projectPermissionsTab
                 .gotoMaintainersTab();
 
-        assertThat("The translator user is shown in the list",
-                projectMaintainersPage.getMaintainers(),
-                hasItem("translator @translator"));
+        assertThat(projectMaintainersPage.getMaintainers())
+                .contains("translator @translator")
+                .as("The translator user is shown in the list");
 
         projectMaintainersPage.logout();
 
-        assertThat("The settings tab is now available to the user",
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .goToProjects()
-                        .goToProject("about fedora")
-                        .settingsTabIsDisplayed());
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .goToProjects()
+                .goToProject("about fedora")
+                .settingsTabIsDisplayed())
+                .isTrue()
+                .as("The settings tab is now available to the user");
     }
 
+    @Feature(summary = "The maintainer can add a maintainer to a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 199006)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("rhbz1097030")
-    public void addMaintainerAsMaintainer() {
-
-        assertThat("Translator has signed in",
-                new LoginWorkFlow().signIn("translator", "translator").loggedInAs(),
-                equalTo("translator"));
+    public void addMaintainerAsMaintainer() throws Exception {
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Translator has signed in");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .createNewSimpleProject("addmaintainer", "addmaintainer")
@@ -126,16 +130,16 @@ public class EditPermissionsTest extends ZanataTestCase {
 
         projectPermissionsTab.waitForMaintainersContains("glossarist");
 
-        assertThat("The glossarist user was added as a maintainer",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                hasItem("glossarist"));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .contains("glossarist")
+                .as("The glossarist user was added as a maintainer");
 
         ProjectMaintainersPage projectMaintainersPage = projectPermissionsTab
                 .gotoMaintainersTab();
 
-        assertThat("The glossarist user is shown in the list",
-                projectMaintainersPage.getMaintainers(),
-                hasItem("glossarist @glossarist"));
+        assertThat(projectMaintainersPage.getMaintainers())
+                .contains("glossarist @glossarist")
+                .as("The glossarist user is shown in the list");
 
         projectMaintainersPage.logout();
 
@@ -144,78 +148,85 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject("addmaintainer");
 
-        assertThat("The settings tab is now available to the glossarist",
-                projectVersionsPage.settingsTabIsDisplayed());
+        assertThat(projectVersionsPage.settingsTabIsDisplayed())
+                .isTrue()
+                .as("The settings tab is now available to the glossarist");
     }
 
+    @Feature(summary = "The maintainer can remove a maintainer from a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 321234)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("rhbz1097030")
-    public void removeMaintainer() {
+    public void removeMaintainer() throws Exception {
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Translator has signed in");
 
-        assertThat("Translator has signed in",
-                new LoginWorkFlow().signIn("translator", "translator").loggedInAs(),
-                equalTo("translator"));
+        assertThat(new ProjectWorkFlow()
+                .createNewSimpleProject("removemaintainer", "removemaintainer")
+                .getProjectName())
+                .isEqualTo("removemaintainer")
+                .as("The project is created");
 
-        assertThat("The project is created",
-                new ProjectWorkFlow()
-                        .createNewSimpleProject("removemaintainer",
-                                "removemaintainer")
-                        .getProjectName(),
-                equalTo("removemaintainer"));
-
-        assertThat("Glossarist maintainer is added",
-                new ProjectWorkFlow()
-                        .addMaintainer("removemaintainer", "glossarist")
-                        .getSettingsMaintainersList(),
-                hasItem("glossarist"));
-
+        assertThat(new ProjectWorkFlow()
+                .addMaintainer("removemaintainer", "glossarist")
+                .getSettingsMaintainersList())
+                .contains("glossarist")
+                .as("Glossarist maintainer is added");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .removeMaintainer("removemaintainer", "glossarist");
 
-        assertThat("Glossarist maintainer is removed",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                not(hasItem("glossarist")));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .doesNotContain("glossarist")
+                .as("Glossarist maintainer is removed");
 
         ProjectMaintainersPage projectMaintainersPage = projectPermissionsTab
                 .gotoMaintainersTab();
 
-        assertThat("The glossarist user is not in the list",
-                projectMaintainersPage.getMaintainers(),
-                not(hasItem("Glossarist @glossarist")));
+        assertThat(projectMaintainersPage.getMaintainers())
+                .doesNotContain("Glossarist @glossarist")
+                .as("The glossarist user is not in the list");
     }
 
-
+    @Feature(summary = "The maintainer can remove themselves as maintainer " +
+            "from a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Ignore("Exception thrown on removing self")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("Exception on self removal")
-    public void removeSelfAsMaintainer() {
+    public void removeSelfAsMaintainer() throws Exception {
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Translator has signed in");
 
-        assertThat("Translator has signed in",
-                new LoginWorkFlow().signIn("translator", "translator").loggedInAs(),
-                equalTo("translator"));
-
-        assertThat("The project is created",
-                new ProjectWorkFlow()
-                        .createNewSimpleProject("removemaintainer",
-                                "removemaintainer")
-                        .getProjectName(),
-                equalTo("removemaintainer"));
+        assertThat(new ProjectWorkFlow()
+                .createNewSimpleProject("removemaintainer", "removemaintainer")
+                .getProjectName())
+                .isEqualTo("removemaintainer")
+                .as("The project is created");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .addMaintainer("removemaintainer", "admin");
 
-        assertThat("admin maintainer is added",
-                projectPermissionsTab.getSettingsMaintainersList(),
-                hasItem("admin"));
+        assertThat(projectPermissionsTab.getSettingsMaintainersList())
+                .contains("admin")
+                .as("admin maintainer is added");
 
-        ProjectVersionsPage projectVersionsPage = projectPermissionsTab
-                .clickRemoveOnSelf("translator")
-                .goToHomePage().goToProjects()
+        projectPermissionsTab.slightPause();
+        ProjectBasePage projectBasePage = projectPermissionsTab
+                .clickRemoveOnSelf("translator");
+        projectBasePage.slightPause();
+        ProjectVersionsPage projectVersionsPage = projectBasePage
+                .goToHomePage()
+                .goToProjects()
                 .goToProject("removemaintainer");
 
-        assertThat("The translator user is no longer a maintainer",
-                projectVersionsPage.settingsTabIsDisplayed(),
-                not(true));
+        assertThat(projectVersionsPage.settingsTabIsDisplayed())
+                .isFalse()
+                .as("The translator user is no longer a maintainer");
     }
 
 }

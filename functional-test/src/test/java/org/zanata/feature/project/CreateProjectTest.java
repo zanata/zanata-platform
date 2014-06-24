@@ -22,11 +22,11 @@
 package org.zanata.feature.project;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -36,9 +36,7 @@ import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.workflow.ProjectWorkFlow.projectDefaults;
 
 /**
@@ -51,47 +49,46 @@ public class CreateProjectTest extends ZanataTestCase {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
+    @Feature(summary = "The user can create a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 144262)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
-    public void createABasicProject() {
-
-        assertThat("User logs in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                equalTo("admin"));
+    public void createABasicProject() throws Exception {
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("User logs in");
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .createNewSimpleProject("basicproject", "basicproject");
 
-        assertThat("The project name is correct",
-                projectVersionsPage.getProjectName().trim(),
-                equalTo("basicproject"));
+        assertThat(projectVersionsPage.getProjectName().trim())
+                .isEqualTo("basicproject")
+                .as("The project name is correct");
     }
 
+    @Feature(summary = "The user can create a project with description",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 144262)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void createABasicProjectWithHomepageContent() {
-
+    public void createABasicProjectWithDescription() throws Exception {
         HashMap<String, String> projectSettings = projectDefaults();
-        projectSettings.put("Project ID", "homepageproject");
-        projectSettings.put("Name", "Project With Homepage Test");
+        projectSettings.put("Project ID", "descriptionproject");
+        projectSettings.put("Name", "Project With Description Test");
         projectSettings.put("Description", "Project Description!");
 
-        assertThat("Admin can log in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                equalTo("admin"));
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin can log in");
 
         ProjectBasePage projectPage =
                 new ProjectWorkFlow().createNewProject(projectSettings);
 
-        assertThat("The project name is correct",
-                projectPage.getProjectName().trim(),
-                equalTo(projectSettings.get("Name")));
+        assertThat(projectPage.getProjectName().trim())
+                .isEqualTo(projectSettings.get("Name"))
+                .as("The project name is correct");
 
-        List<String> paragraphs = projectPage.getContentAreaParagraphs();
-
-        assertThat("The project content area shows the description",
-                paragraphs,
-                hasItem(projectSettings.get("Description")));
-
+        assertThat(projectPage.getContentAreaParagraphs())
+                .contains(projectSettings.get("Description"))
+                .as("The project content area shows the description");
     }
 
 }

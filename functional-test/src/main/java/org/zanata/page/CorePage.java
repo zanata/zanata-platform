@@ -27,6 +27,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -37,8 +38,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-
-import javax.annotation.Nullable;
 
 /**
  * Contains the physical elements, such as page title and home link, that must
@@ -62,6 +61,7 @@ public class CorePage extends AbstractPage {
     }
 
     public HomePage goToHomePage() {
+        scrollToTop();
         homeLink.click();
         return new HomePage(getDriver());
     }
@@ -210,5 +210,14 @@ public class CorePage extends AbstractPage {
         } catch (InterruptedException ie) {
             log.warn("Pause was interrupted");
         }
+    }
+
+    public void scrollIntoView(WebElement targetElement) {
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].scrollIntoView(true);", targetElement);
+    }
+
+    public void scrollToTop() {
+        ((JavascriptExecutor) getDriver()).executeScript("scroll(0, 0);");
     }
 }
