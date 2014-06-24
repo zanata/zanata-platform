@@ -31,8 +31,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
-import org.zanata.annotation.CachedMethods;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.Activity;
@@ -58,7 +56,6 @@ import static org.zanata.common.ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 @Name("activityAction")
 @Scope(ScopeType.PAGE)
 @Restrict("#{identity.loggedIn}")
-@CachedMethods
 public class ActivityAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -396,7 +393,6 @@ public class ActivityAction implements Serializable {
         return false;
     }
 
-    @CachedMethodResult
     private Object getEntity(EntityType contextType, long id) {
         return activityServiceImpl.getEntity(contextType, id);
     }

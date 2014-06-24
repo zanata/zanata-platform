@@ -30,7 +30,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.model.HAccount;
@@ -136,7 +135,6 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
         return false;
     }
 
-    @CachedMethodResult
     private HLocaleMember getLocaleMember() {
         return localeMemberDAO.findByPersonAndLocale(authenticatedAccount
                 .getPerson().getId(), new LocaleId(language));

@@ -37,7 +37,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
@@ -139,11 +138,13 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private final VersionComparator versionComparator = new VersionComparator(
             getVersionSortingList());
 
+    @Getter(lazy = true)
+    private final List<Activity> projectLastActivity = fetchProjectLastActivity();
+
     // for storing last activity date for the version
     private Map<Long, Date> versionLatestActivityDate = Maps.newHashMap();
 
-    @CachedMethodResult
-    public List<Activity> getProjectLastActivity() {
+    private List<Activity> fetchProjectLastActivity() {
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
             return Lists.newArrayList();
         }
@@ -163,7 +164,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 Lists.newArrayList(versionIds), 0, 1);
     }
 
-    @CachedMethodResult
     public DisplayUnit getStatisticFigureForVersion(
             SortingType.SortOption sortOption, HProjectIteration version) {
         WordStatistic statistic = getStatisticForVersion(version.getSlug());
@@ -171,7 +171,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
         return getDisplayUnit(sortOption, statistic, version.getLastChanged());
     }
 
-    @CachedMethodResult
     public WordStatistic getStatisticForVersion(String versionSlug) {
         WordStatistic statistic = statisticMap.get(versionSlug);
         statistic
