@@ -82,9 +82,5 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
-        HomePage homePage = new BasicWorkFlow().goToHome();
-        if (homePage.hasLoggedIn()) {
-            homePage.logout();
-        }
     }
 }
