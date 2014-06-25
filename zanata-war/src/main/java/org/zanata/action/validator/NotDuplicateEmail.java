@@ -36,7 +36,7 @@ import javax.validation.Payload;
 public @interface NotDuplicateEmail {
     Class<?>[] groups() default {};
 
-    String message() default "{javax.validation.constraints.NotDuplicateEmail.messag}";
+    String message() default "{javax.validation.constraints.NotDuplicateEmail.message}";
 
     Class<? extends Payload>[] payload() default {};
 }
