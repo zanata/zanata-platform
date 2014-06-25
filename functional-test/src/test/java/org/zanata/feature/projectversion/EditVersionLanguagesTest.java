@@ -24,6 +24,7 @@ package org.zanata.feature.projectversion;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
@@ -33,11 +34,7 @@ import org.zanata.workflow.ProjectWorkFlow;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -49,12 +46,16 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The maintainer can override the available languages " +
+            "for a project version",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeVersionLanguages() {
-
-        assertThat("Admin user has logged in",
-                new LoginWorkFlow().signIn("admin", "admin").loggedInAs(),
-                equalTo("admin"));
+    public void changeVersionLanguages() throws Exception {
+        assertThat(new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin user has logged in");
 
         VersionLanguagesTab versionLanguagesTab = new ProjectWorkFlow()
                 .createNewSimpleProject("langoverride", "langoverride")
@@ -69,14 +70,14 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         List<String> enabledLocaleList = versionLanguagesTab
                 .getEnabledLocaleList();
 
-        assertThat("The enabled list contains three languages",
-                enabledLocaleList,
-                contains("French[fr]", "Hindi[hi]", "Polish[pl]"));
+        assertThat(enabledLocaleList)
+                .contains("French[fr]", "Hindi[hi]", "Polish[pl]")
+                .as("The enabled list contains three languages");
 
-        assertThat("The enabled list does not contain " +
-                "'English (United States)[en-US]'",
-                enabledLocaleList,
-                not(hasItem("English (United States)[en-US]")));
+        assertThat(enabledLocaleList)
+                .doesNotContain("English (United States)[en-US]")
+                .as("The enabled list does not contain " +
+                        "'English (United States)[en-US]'");
 
         versionLanguagesTab = versionLanguagesTab.removeLocale("pl");
         versionLanguagesTab.waitForLanguagesNotContains(
@@ -84,13 +85,10 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         versionLanguagesTab.waitForLanguagesNotContains("Polish[pl]");
         enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
 
-        assertThat("The enabled list does not contain 'US English'",
-                enabledLocaleList,
-                not(hasItem("English (United States)[en-US]")));
-
-        assertThat("The enabled list does not contain 'Polish'",
-                enabledLocaleList,
-                not(hasItem("Polish[pl]")));
+        assertThat(enabledLocaleList)
+                .doesNotContain("English (United States)[en-US]")
+                .doesNotContain("Polish[pl]")
+                .as("The enabled list does not contain 'US English' or Polish");
 
         versionLanguagesTab = versionLanguagesTab
                 .gotoSettingsTab()
@@ -102,10 +100,10 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
                 "English (United States)[en-US]");
         enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
 
-        assertThat("Three languages are available to translate",
-                enabledLocaleList,
-                contains("English (United States)[en-US]",
+        assertThat(enabledLocaleList)
+                .contains("English (United States)[en-US]",
                         "French[fr]",
-                        "Hindi[hi]"));
+                        "Hindi[hi]")
+                .as("Three languages are available to translate");
     }
 }
