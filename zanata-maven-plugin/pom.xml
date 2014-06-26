@@ -145,6 +145,25 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <banDuplicateClasses>
+              <dependencies combine.children="append">
+                <dependency>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-utils</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.codehaus.plexus.util.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+              </dependencies>
+            </banDuplicateClasses>
+          </rules>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
 
