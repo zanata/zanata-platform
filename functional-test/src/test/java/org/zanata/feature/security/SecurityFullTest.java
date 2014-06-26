@@ -20,24 +20,24 @@
  */
 package org.zanata.feature.security;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.subethamail.wiser.WiserMessage;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
-import org.zanata.page.account.SignInPage;
-import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.EnsureLogoutRule;
+import org.zanata.util.HasEmailRule;
+import org.zanata.util.RetryRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -47,100 +47,133 @@ import org.zanata.workflow.LoginWorkFlow;
 public class SecurityFullTest extends ZanataTestCase {
 
     @Rule
+    public HasEmailRule hasEmailRule = new HasEmailRule();
+
+    @Rule
+    public EnsureLogoutRule ensureLogoutRule = new EnsureLogoutRule();
+
+    @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
 
-    @Before
-    public void before() {
-        // Remove all cookies, no previous login is allowed
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-    }
-
+    @Feature(summary = "The user can log in",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void signInSuccessful() {
-        DashboardBasePage dashboardPage =
-                new LoginWorkFlow().signIn("admin", "admin");
-        assertThat("User is logged in", dashboardPage.loggedInAs(),
-                equalTo("admin"));
+        assertThat(new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .loggedInAs())
+                .isEqualTo("admin")
+                .as("User can log in");
     }
 
+    @Feature(summary = "The user must enter a correct username and " +
+            "password to log in",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void signInFailure() {
-        SignInPage signInPage = new LoginWorkFlow()
-                .signInFailure("nosuchuser", "password");
-
-        assertThat("Error message is shown",
-                signInPage.waitForFieldErrors(),
-                Matchers.hasItem("Login failed"));
+        assertThat(new LoginWorkFlow()
+                .signInFailure("nosuchuser", "password")
+                .waitForFieldErrors())
+                .contains("Login failed")
+                .as("Log in error message is shown");
     }
 
+    @Feature(summary = "The user may reset their password via email",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ-987707 | Cannot intercept email yet")
+    @Ignore("Rhbz-1114421")
     public void resetPasswordSuccessful() {
-        SignInPage signInPage =
-                new BasicWorkFlow().goToHome().clickSignInLink();
-        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-        resetPasswordPage =
-                resetPasswordPage.enterUserName("nosuchuser").enterEmail(
-                        "nosuchuser@nosuchdomain.com");
-        resetPasswordPage = resetPasswordPage.resetPassword();
-        // TODO: Reset Success page
+        ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .goToResetPassword()
+                .enterUserName("admin")
+                .enterEmail("admin@example.com")
+                .resetPassword();
+
+        assertThat(resetPasswordPage.getNotificationMessage())
+                .isEqualTo("You will soon receive an email with a link to " +
+                        "reset your password.");
+
+        WiserMessage message = hasEmailRule.getMessages().get(0);
+        String emailContent = HasEmailRule.getEmailContent(message);
+
+        assertThat(message.getEnvelopeReceiver())
+                .isEqualTo("admin@example.com")
+                .as("Zanata has sent an email to the user");
+        assertThat(emailContent)
+                .contains("Please follow the link below to reset the " +
+                        "password for your account.")
+                .as("The system has sent a reset password email to the user");
     }
 
+    @Feature(summary = "The user must enter a known account and email pair " +
+            "to reset their password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void resetPasswordFailureForInvalidAccount() {
-        SignInPage signInPage =
-                new BasicWorkFlow().goToHome().clickSignInLink();
-        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-        resetPasswordPage =
-                resetPasswordPage.enterUserName("nosuchuser").enterEmail(
-                        "nosuchuser@nosuchdomain.com");
-        resetPasswordPage = resetPasswordPage.resetFailure();
-        assertThat("A no such account message is displayed",
-                resetPasswordPage.getNotificationMessage(),
-                equalTo("No such account found"));
+        ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .goToResetPassword()
+                .enterUserName("nosuchuser")
+                .enterEmail("nosuchuser@nosuchdomain.com")
+                .resetFailure();
+
+        assertThat(resetPasswordPage.getNotificationMessage())
+                .isEqualTo("No such account found")
+                .as("A no such account message is displayed");
     }
 
+    @Feature(summary = "The user must enter a valid account and email pair " +
+            "to reset their password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void invalidResetPasswordFieldEntries() {
-        SignInPage signInPage =
-                new BasicWorkFlow().goToHome().clickSignInLink();
-        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-        resetPasswordPage =
-                resetPasswordPage.enterUserName("b").enterEmail("b");
-        resetPasswordPage = resetPasswordPage.resetFailure();
+        ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .goToResetPassword()
+                .enterUserName("b")
+                .enterEmail("b")
+                .resetFailure();
 
-        assertThat("Invalid email error is displayed",
-                resetPasswordPage.waitForErrors(),
-                hasItem("not a well-formed email address"));
+        assertThat(resetPasswordPage.waitForErrors())
+                .contains("not a well-formed email address")
+                .as("Invalid email error is displayed");
 
+        String error = resetPasswordPage.getErrors().get(0);
         // Both are valid, but show seemingly at random
-        assertThat(
-                resetPasswordPage.getErrors().get(0),
-                either(equalTo("size must be between 3 and 20")).or(
-                        equalTo("must match ^[a-z\\d_]{3,20}$")));
-
+        assertThat(error.equals("size must be between 3 and 20") ||
+                error.equals("must match ^[a-z\\d_]{3,20}$"))
+                .isTrue()
+                .as("Invalid email error is displayed");
     }
 
+    @Feature(summary = "The user must enter both an account name and email " +
+            "address to reset their password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyResetPasswordFieldEntries() {
-        SignInPage signInPage =
-                new BasicWorkFlow().goToHome().clickSignInLink();
-        ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
-        resetPasswordPage = resetPasswordPage.clearFields();
-        resetPasswordPage = resetPasswordPage.resetFailure();
+        ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .goToResetPassword()
+                .clearFields()
+                .resetFailure();
 
-        assertThat("Empty email error is displayed",
-                resetPasswordPage.waitForErrors(), hasItem("may not be empty"));
+        assertThat(resetPasswordPage.waitForErrors())
+                .contains("may not be empty")
+                .as("Empty email error is displayed");
 
         // All are valid, but may show at random
-        assertThat(
-                resetPasswordPage.getErrors().get(0),
-                either(equalTo("size must be between 3 and 20")).or(
-                        equalTo("may not be empty")).or(
-                        equalTo("must match ^[a-z\\d_]{3,20}$")));
-
+        String error = resetPasswordPage.getErrors().get(0);
+        assertThat(error.equals("size must be between 3 and 20") ||
+                error.equals("may not be empty") ||
+                error.equals("must match ^[a-z\\d_]{3,20}$"))
+                .as("The regex match for the reset password field has failed");
     }
 
 }
