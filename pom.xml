@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>19</version>
+    <version>20-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -698,6 +698,54 @@
           <rules>
             <banDuplicateClasses>
               <dependencies combine.children="append">
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>com.beust</groupId>
+                  <artifactId>jcommander</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>com.beust.jcommander.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <dependency>
+                  <groupId>com.google.gwt</groupId>
+                  <artifactId>gwt-dev</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>commons-fileupload</groupId>
+                  <artifactId>commons-fileupload</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.commons.fileupload.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>org.apache.maven</groupId>
+                  <artifactId>maven*</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.maven.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>org.picketbox</groupId>
+                  <artifactId>picketbox</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.picketbox.*</ignoreClass>
+                    <ignoreClass>org.jboss.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>net.sf.ehcache</groupId>
+                  <artifactId>ehcache-core</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>net.sf.ehcache.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
                 <!-- lombok is "provided", so these duplicate classes don't get deployed -->
                 <dependency>
                   <groupId>org.projectlombok</groupId>
