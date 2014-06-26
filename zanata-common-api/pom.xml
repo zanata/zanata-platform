@@ -84,8 +84,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <usedDependency>com.google.code.findbugs:annotations</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -247,10 +246,6 @@
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
