@@ -30,10 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.junit.rules.Timeout;
-import org.zanata.page.utility.HomePage;
 import org.zanata.util.RetryRule;
-import org.zanata.workflow.BasicWorkFlow;
 
 /**
  * Global application of rules to Zanata functional tests

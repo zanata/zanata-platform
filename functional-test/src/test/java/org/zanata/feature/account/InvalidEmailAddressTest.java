@@ -187,8 +187,8 @@ public class InvalidEmailAddressTest extends ZanataTestCase {
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
                 .goToRegistration()
-                .enterEmail(emailAddress.toString());
-        registerPage.defocus();
+                .enterEmail(emailAddress.toString())
+                .registerFailure();
 
         assertThat(registerPage.waitForFieldErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
