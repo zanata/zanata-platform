@@ -20,8 +20,7 @@
  */
 package org.zanata.client.commands.push;
 
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
 import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.rest.dto.resource.Resource;
@@ -38,9 +37,9 @@ public interface PushOptions extends PushPullOptions {
 
     public String getMergeType();
 
-    public List<String> getIncludes();
+    public ImmutableList<String> getIncludes();
 
-    public List<String> getExcludes();
+    public ImmutableList<String> getExcludes();
 
     public boolean getCaseSensitive();
 
@@ -55,7 +54,7 @@ public interface PushOptions extends PushPullOptions {
     // raw file push
     public int getChunkSize();
 
-    public List<String> getFileTypes();
+    public ImmutableList<String> getFileTypes();
 
     public String getValidate();
 

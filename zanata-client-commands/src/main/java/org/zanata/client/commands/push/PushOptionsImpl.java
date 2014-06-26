@@ -21,9 +21,7 @@
 
 package org.zanata.client.commands.push;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
@@ -47,9 +45,9 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private static final String DEF_MERGE_TYPE = "AUTO";
     private static final String DEF_PUSH_TYPE = "source";
 
-    private List<String> includes = new ArrayList<String>();
-    private List<String> excludes = new ArrayList<String>();
-    private List<String> fileTypes;
+    private ImmutableList<String> includes = ImmutableList.of();
+    private ImmutableList<String> excludes = ImmutableList.of();
+    private ImmutableList<String> fileTypes = ImmutableList.of();
     private boolean defaultExcludes = DEF_EXCLUDES;
     private String mergeType = DEF_MERGE_TYPE;
     private boolean caseSensitive = DEF_CASE_SENSITIVE;
@@ -148,7 +146,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     }
 
     @Override
-    public List<String> getIncludes() {
+    public ImmutableList<String> getIncludes() {
         return includes;
     }
 
@@ -160,11 +158,11 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
                     + "--includes=\"src/myfile*.xml,**/*.xlf\"")
     public
             void setIncludes(String includes) {
-        this.includes = StringUtil.split(includes, ",");
+        this.includes = ImmutableList.copyOf(StringUtil.split(includes, ","));
     }
 
     @Override
-    public List<String> getExcludes() {
+    public ImmutableList<String> getExcludes() {
         return excludes;
     }
 
@@ -175,7 +173,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
                     + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
     public
             void setExcludes(String excludes) {
-        this.excludes = StringUtil.split(excludes, ",");
+        this.excludes = ImmutableList.copyOf(StringUtil.split(excludes, ","));
     }
 
     @Override
@@ -216,14 +214,14 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     }
 
     @Override
-    public List<String> getFileTypes() {
+    public ImmutableList<String> getFileTypes() {
         return fileTypes;
     }
 
     @Option(name = "--file-types", metaVar = "TYPES",
             usage = "File types to locate and transmit to the server.")
     public void setFileTypes(String fileTypes) {
-        this.fileTypes = StringUtil.split(fileTypes, ",");
+        this.fileTypes = ImmutableList.copyOf(StringUtil.split(fileTypes, ","));
     }
 
     @Override

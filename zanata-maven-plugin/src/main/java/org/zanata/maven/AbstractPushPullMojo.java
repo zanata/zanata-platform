@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.maven.project.MavenProject;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullOptions;
@@ -70,14 +71,14 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
         return "^([^/]+/[^" + MODULE_SUFFIX + "]+)" + MODULE_SUFFIX + "(.+)";
     }
 
-    // @Override
-    public Set<String> getAllModules() {
-        Set<String> localModules = new LinkedHashSet<String>();
+    @Override
+    public ImmutableSet<String> getAllModules() {
+        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         for (MavenProject module : reactorProjects) {
             String modID = toModuleID(module);
-            localModules.add(modID);
+            builder.add(modID);
         }
-        return localModules;
+        return builder.build();
     }
 
     private String toModuleID(MavenProject module) {

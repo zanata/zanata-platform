@@ -21,11 +21,7 @@
 
 package org.zanata.maven;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
@@ -192,23 +188,21 @@ public abstract class AbstractPushMojo extends
     }
 
     @Override
-    public List<String> getIncludes() {
-        String[] includeList = StringUtils.split(includes, ",");
-        List<String> list = new ArrayList<String>();
-        if (includeList != null && includeList.length > 0) {
-            Collections.addAll(list, includeList);
+    public ImmutableList<String> getIncludes() {
+        if (includes != null) {
+            String[] includeList = StringUtils.split(includes, ",");
+            return ImmutableList.copyOf(includeList);
         }
-        return list;
+        return ImmutableList.of();
     }
 
     @Override
-    public List<String> getExcludes() {
-        String[] excludeList = StringUtils.split(excludes, ",");
-        List<String> list = new ArrayList<String>();
-        if (excludeList != null && excludeList.length > 0) {
-            Collections.addAll(list, excludeList);
+    public ImmutableList<String> getExcludes() {
+        if (excludes != null) {
+            String[] excludeList = StringUtils.split(excludes, ",");
+            return ImmutableList.copyOf(excludeList);
         }
-        return list;
+        return ImmutableList.of();
     }
 
     @Override
@@ -222,8 +216,8 @@ public abstract class AbstractPushMojo extends
     }
 
     @Override
-    public List<String> getFileTypes() {
-        return Arrays.asList(fileTypes);
+    public ImmutableList<String> getFileTypes() {
+        return ImmutableList.copyOf(fileTypes);
     }
 
     @Override

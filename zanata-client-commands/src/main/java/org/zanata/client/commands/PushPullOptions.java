@@ -21,8 +21,9 @@
 
 package org.zanata.client.commands;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.io.File;
-import java.util.Set;
 
 /**
  * @author Sean Flanigan <a
@@ -78,5 +79,5 @@ public interface PushPullOptions extends ConfigurableProjectOptions {
      */
     String getCurrentModule(boolean canonicalName);
 
-    Set<String> getAllModules();
+    ImmutableSet<String> getAllModules();
 }

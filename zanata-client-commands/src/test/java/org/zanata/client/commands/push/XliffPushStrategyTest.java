@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +31,8 @@ public class XliffPushStrategyTest {
     private LocaleList locales = new LocaleList();
 
     private XliffStrategy xliffStrategy;
-    private List<String> include;
-    private List<String> exclude;
+    private ImmutableList<String> include;
+    private ImmutableList<String> exclude;
 
     private final File sourceDir = new File("src/test/resources/xliffDir");
     private final File sourceDir2 = new File("src/test/resources/xliffDir2");
@@ -48,13 +49,13 @@ public class XliffPushStrategyTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         xliffStrategy = new XliffStrategy();
-        include = new ArrayList<String>();
-        exclude = new ArrayList<String>();
+        include = ImmutableList.of();
+        exclude = ImmutableList.of();
     }
 
     @Test
     public void findDocNamesTest() throws IOException {
-        include.add("**/**StringResource_en_US*");
+        include = ImmutableList.of("**/**StringResource_en_US*");
 
         when(mockPushOption.getLocaleMapList()).thenReturn(locales);
         when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
@@ -75,7 +76,7 @@ public class XliffPushStrategyTest {
 
     @Test
     public void loadSrcDocTest() throws IOException {
-        include.add("**/**StringResource_en_US*");
+        include = ImmutableList.of("**/**StringResource_en_US*");
 
         when(mockPushOption.getTransDir()).thenReturn(sourceDir);
         when(mockPushOption.getLocaleMapList()).thenReturn(locales);
@@ -115,13 +116,13 @@ public class XliffPushStrategyTest {
 
     @Test
     public void loadSrcDocTestWithCaseSensitiveMatch() throws IOException {
-        include.add("StringResource_en*");
+        include = ImmutableList.of("StringResource_en*");
         checkForCaseSensitiveMatches(5);
     }
 
     @Test
     public void loadSrcDocTestWithCaseSensitiveMismatch() throws IOException {
-        include.add("stringresource_en*");
+        include = ImmutableList.of("stringresource_en*");
         checkForCaseSensitiveMatches(0);
     }
 
@@ -144,7 +145,7 @@ public class XliffPushStrategyTest {
 
     @Test
     public void loadSrcDocTestWithoutCaseSensitive() throws IOException {
-        include.add("STRINGRESOURCE_en*");
+        include = ImmutableList.of("STRINGRESOURCE_en*");
 
         when(mockPushOption.getSourceLang()).thenReturn(sourceLocale);
         when(mockPushOption.getLocaleMapList()).thenReturn(locales);
@@ -164,8 +165,8 @@ public class XliffPushStrategyTest {
 
     @Test
     public void loadSrcDocTestWithExcludeFileOption() throws IOException {
-        include.add("**/**StringResource_en_US*");
-        exclude.add("**/*StringResource*");
+        include = ImmutableList.of("**/**StringResource_en_US*");
+        exclude = ImmutableList.of("**/*StringResource*");
 
         when(mockPushOption.getTransDir()).thenReturn(sourceDir);
         when(mockPushOption.getLocaleMapList()).thenReturn(locales);
@@ -204,8 +205,8 @@ public class XliffPushStrategyTest {
 
     @Test
     public void loadSrcDocTestWithExcludeOption() throws IOException {
-        include.add("**/**StringResource_en_US*");
-        exclude.add("**/dir2/*");
+        include = ImmutableList.of("**/**StringResource_en_US*");
+        exclude = ImmutableList.of("**/dir2/*");
 
         when(mockPushOption.getTransDir()).thenReturn(sourceDir);
         when(mockPushOption.getLocaleMapList()).thenReturn(locales);

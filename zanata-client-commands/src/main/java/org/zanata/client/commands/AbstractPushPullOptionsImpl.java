@@ -22,9 +22,8 @@
 package org.zanata.client.commands;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;
 
@@ -175,8 +174,8 @@ public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions>
     }
 
     @Override
-    public Set<String> getAllModules() {
-        return Collections.emptySet();
+    public ImmutableSet<String> getAllModules() {
+        return ImmutableSet.of();
     }
 
 }

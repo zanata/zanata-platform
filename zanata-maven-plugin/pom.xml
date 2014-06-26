@@ -37,6 +37,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-client-commands</artifactId>
       <!-- Ensure we never pick up logback-classic -->

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.rest.client.ClientUtility;
@@ -67,8 +68,8 @@ public class OfflinePoStrategy extends GettextDirStrategy {
      * parameters are ignored as there is no disk scanning.
      */
     @Override
-    public Set<String> findDocNames(File srcDir, List<String> includes,
-            List<String> excludes, boolean useDefaultExclude,
+    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         ClientResponse<List<ResourceMeta>> getResponse =
@@ -83,16 +84,16 @@ public class OfflinePoStrategy extends GettextDirStrategy {
     }
 
     @Override
-    public String[] getSrcFiles(File srcDir, List<String> includes,
-            List<String> excludes, boolean excludeLocaleFilenames,
+    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, boolean excludeLocaleFilenames,
             boolean useDefaultExclude, boolean isCaseSensitive) {
         throw new RuntimeException(
                 "Source files should never be accessed in a trans-only strategy");
     }
 
     @Override
-    public String[] getSrcFiles(File srcDir, List<String> includes,
-            List<String> excludes, List<String> fileExtensions,
+    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
+            ImmutableList<String> excludes, ImmutableList<String> fileExtensions,
             boolean useDefaultExcludes, boolean isCaseSensitive) {
         throw new RuntimeException(
                 "Source files should never be accessed in a trans-only strategy");
