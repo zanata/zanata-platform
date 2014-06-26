@@ -98,8 +98,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <!--<usedDependency>com.google.code.findbugs:annotations</usedDependency>-->
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <usedDependency>com.google.code.findbugs:annotations</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -138,15 +137,16 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-client-commands</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>net.jcip</groupId>
+          <artifactId>jcip-annotations</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
