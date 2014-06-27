@@ -134,8 +134,6 @@
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
             <!-- used indirectly by drools -->
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
-            <!-- used for annotations -->
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
             <!-- Used by javamelody for email/pdf support -->
             <usedDependency>com.lowagie:itext</usedDependency>
             <!-- used for arquillian tests -->
@@ -1493,10 +1491,6 @@
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
     </dependency>
 
     <dependency>
