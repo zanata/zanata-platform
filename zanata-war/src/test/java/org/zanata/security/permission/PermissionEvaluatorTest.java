@@ -186,13 +186,13 @@ public class PermissionEvaluatorTest {
     @Test
     public void allowSpecificActionAndType() throws Exception {
         assertThat(complexPermissionEvaluator
-                .checkPermission("action-1", new HProject())).isTrue();
+                .checkPermission("project-action", new HProject())).isTrue();
     }
 
     @Test
     public void denyCorrectActionButDifferentType() throws Exception {
         assertThat(complexPermissionEvaluator
-                .checkPermission("action-1", new HProjectIteration()))
+                .checkPermission("project-action", new HProjectIteration()))
                 .isFalse();
     }
 
@@ -201,7 +201,7 @@ public class PermissionEvaluatorTest {
         // As long as all the granter parameters are supplied, the rest of
         // arguments can be ignored
         assertThat(complexPermissionEvaluator
-                .checkPermission("action-1", new HProject(),
+                .checkPermission("project-action", new HProject(),
                         "A string")).isTrue();
     }
 
@@ -304,7 +304,7 @@ public class PermissionEvaluatorTest {
     }
 
     @Test
-    public void denyWhenSomeArgsNorPresentAndAreRequired() {
+    public void denyWhenSomeRequiredArgsAbsent() {
         assertThat(
                 complexPermissionEvaluator
                         .checkPermission("only-when-all-args-present",
@@ -374,7 +374,7 @@ public class PermissionEvaluatorTest {
             return false;
         }
 
-        @GrantsPermission(actions = "action-1")
+        @GrantsPermission(actions = "project-action")
         public static boolean allowAction1ForProjects(HProject project) {
             return true;
         }

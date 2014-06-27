@@ -50,6 +50,10 @@ public class SecurityFunctions {
         return getIdentity().hasRole("admin");
     }
 
+    public static boolean isProjectMaintainer(HProject project) {
+        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+    }
+
     /***************************************************************************
      * The Following Rules are for Identity Management
      **************************************************************************/
@@ -107,7 +111,7 @@ public class SecurityFunctions {
             return false;
         }
 
-        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+        return isProjectMaintainer(project);
     }
 
     /*
@@ -118,7 +122,7 @@ public class SecurityFunctions {
             "insert", "update", "import-template" })
     public static boolean canInsertOrUpdateProjectIteration(
             HProjectIteration iteration) {
-        return canUpdateProjectOrAddIteration(iteration.getProject());
+        return isProjectMaintainer(iteration.getProject());
     }
 
     /***************************************************************************
@@ -193,12 +197,11 @@ public class SecurityFunctions {
      * projects
      */
     @GrantsPermission(actions = { "add-translation", "modify-translation",
-            "review-translation" })
+            "review-translation", "translation-review" })
     public static boolean canAddOrReviewTranslation(
             HProject project, HLocale locale) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
-        return authenticatedAccount != null &&
-                authenticatedAccount.getPerson().isMaintainer(project);
+        return authenticatedAccount != null && isProjectMaintainer(project);
     }
 
     /* Project Maintainer can import translation (merge type is IMPORT) */
@@ -328,8 +331,7 @@ public class SecurityFunctions {
 
     @GrantsPermission(actions = "view-obsolete")
     public static boolean canViewObsoleteVersionGroup(HIterationGroup group) {
-        return getAuthenticatedAccount().getPerson()
-                .isMaintainerOfVersionGroups();
+        return isAdmin();
     }
 
     /***************************************************************************

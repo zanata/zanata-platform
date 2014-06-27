@@ -75,12 +75,11 @@ public class PermissionEvaluator {
                 PermissionGranter granter = new PermissionGranter(m);
                 granter.validate();
 
-                if(granter.getEvaluatedActions().size() == 0) {
+                if (granter.getEvaluatedActions().size() == 0) {
                     // This granter is to apply to every action
                     permissionGrantMethods.put(ALL_ACTION_GRANTER, granter);
-                }
-                else {
-                    for( String action : granter.getEvaluatedActions() ) {
+                } else {
+                    for (String action : granter.getEvaluatedActions()) {
                         permissionGrantMethods.put(action, granter);
                     }
                 }
@@ -102,9 +101,9 @@ public class PermissionEvaluator {
         // Get granters for all actions (those with no declared action)
         Collection<PermissionGranter> allActionGranters =
                 permissionGrantMethods.get(ALL_ACTION_GRANTER);
-        for( PermissionGranter granter : allActionGranters ) {
-            if( granter.shouldInvokeGranter(targets) ) {
-                if(granter.invoke(action, targets)) {
+        for (PermissionGranter granter : allActionGranters) {
+            if (granter.shouldInvokeGranter(targets)) {
+                if (granter.invoke(action, targets)) {
                     return true;
                 }
             }
@@ -113,9 +112,9 @@ public class PermissionEvaluator {
         // Get granters for specific actions
         Collection<PermissionGranter> actionGranters =
                 permissionGrantMethods.get(action);
-        for( PermissionGranter granter : actionGranters ) {
-            if( granter.shouldInvokeGranter(targets) ) {
-                if( granter.invoke(action, targets) ) {
+        for (PermissionGranter granter : actionGranters) {
+            if (granter.shouldInvokeGranter(targets)) {
+                if (granter.invoke(action, targets)) {
                     return true;
                 }
             }

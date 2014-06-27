@@ -71,7 +71,8 @@ public class PermissionGranter {
         GrantsPermission grantAnn =
                 granterMethod.getAnnotation(GrantsPermission.class);
         evaluatedActions = Lists.newArrayList(grantAnn.actions());
-        acceptedParameterTypes = Lists.newArrayList( granterMethod.getParameterTypes() );
+        acceptedParameterTypes =
+                Lists.newArrayList(granterMethod.getParameterTypes());
 
         Annotation[][] granterParamAnns =
                 granterMethod.getParameterAnnotations();
@@ -85,8 +86,8 @@ public class PermissionGranter {
     }
 
     private boolean containsActionAnnotation(Annotation[] annotations) {
-        for( Annotation a : annotations ) {
-            if( a instanceof Action ) {
+        for (Annotation a : annotations) {
+            if (a instanceof Action) {
                 return true;
             }
         }
@@ -104,22 +105,23 @@ public class PermissionGranter {
     public boolean shouldInvokeGranter(Object ... targets) {
         // Only invoke the granter if all its parameters can be provided
         int paramIdx = 0;
-        for( Class<?> paramType : acceptedParameterTypes ) {
+        for (Class<?> paramType : acceptedParameterTypes) {
             boolean foundParameter = false;
-            if( paramIdx == actionParameterIndex && paramType == String.class ) {
-                foundParameter = true; // Action parameter can always be injected
-            }
-            else {
-                for( Object t : targets ) {
-                    if( t != null && paramType.isAssignableFrom(t.getClass()) ) {
+            if (paramIdx == actionParameterIndex && paramType == String.class) {
+                foundParameter = true; // Action parameter can always be
+                                       // injected
+            } else {
+                for (Object t : targets) {
+                    if (t != null && paramType.isAssignableFrom(t.getClass())) {
                         foundParameter = true;
                         break;
                     }
                 }
             }
-            // If a matching parameter cannot be found, then the granter will not
+            // If a matching parameter cannot be found, then the granter will
+            // not
             // be executed
-            if(!foundParameter) {
+            if (!foundParameter) {
                 return false;
             }
             paramIdx++;
@@ -140,12 +142,11 @@ public class PermissionGranter {
     public boolean invoke(String action, Object ... targets) {
         Object[] granterParams = new Object[acceptedParameterTypes.size()];
         int paramIdx = 0;
-        for( Class<?> paramType : acceptedParameterTypes ) {
-            if( paramIdx == actionParameterIndex ) {
+        for (Class<?> paramType : acceptedParameterTypes) {
+            if (paramIdx == actionParameterIndex) {
                 // Inject the action
                 granterParams[paramIdx] = action;
-            }
-            else {
+            } else {
                 granterParams[paramIdx] =
                         findParameterForClass(targets, paramType);
             }
@@ -153,16 +154,17 @@ public class PermissionGranter {
         }
 
         try {
-            return (Boolean)granterMethod.invoke(null, granterParams);
-        }
-        catch (Exception e) {
+            return (Boolean) granterMethod.invoke(null, granterParams);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
 
     private Object findParameterForClass(Object[] params, Class<?> paramType) {
-        for( Object p : params ) {
-            if( p.getClass() == paramType )
+        for (Object p : params) {
+            if (p.getClass() == paramType)
                 return p;
         }
         return null;
