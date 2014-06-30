@@ -31,6 +31,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -72,6 +73,8 @@ public class DashboardTest extends ZanataTestCase {
         dashboard = new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The user can traverse Dashboard activity lists",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void dashboardBasicTests() throws Exception {
@@ -100,29 +103,32 @@ public class DashboardTest extends ZanataTestCase {
         return projectsTab.getMaintainedProjectList().size() > 0;
     }
 
+    @Feature(summary = "The user can change their email address",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void accountEmailModification() throws Exception {
-        final String successMessage =
-                "You will soon receive an email with a link to activate your email account change.";
         dashboard.goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .typeNewAccountEmailAddress("new@fakeemail.com")
                 .clickUpdateEmailButton();
-        assertThat(dashboard.expectNotification(successMessage));
+        assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT));
     }
 
+    @Feature(summary = "The user can change their password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passwordChange() throws Exception {
-        final String passwordChanged =
-                "Your password has been successfully changed.";
         dashboard.goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .typeOldPassword("admin")
                 .typeNewPassword("admin2")
                 .clickUpdatePasswordButton();
-        assertThat(dashboard.expectNotification(passwordChanged));
+        assertThat(dashboard.expectNotification(
+                DashboardBasePage.PASSWORD_UPDATE_SUCCESS));
     }
 
+    @Feature(summary = "The user can begin creating a project from the Dashboard",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createProject() throws Exception {
         CreateProjectPage createProjectPage =
