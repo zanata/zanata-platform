@@ -37,7 +37,7 @@ import org.zanata.feature.misc.*;
 import org.zanata.feature.project.*;
 import org.zanata.feature.projectversion.*;
 import org.zanata.feature.search.ProjectSearchTest;
-import org.zanata.feature.security.SecurityFullTest;
+import org.zanata.feature.security.SecurityTest;
 import org.zanata.feature.versionGroup.*;
 
 /**
@@ -166,7 +166,7 @@ import org.zanata.feature.versionGroup.*;
          * Security
          * Login/logout and access rights
          */
-        SecurityFullTest.class,
+        SecurityTest.class,
 
         /*
          * Version Groups

@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-public class SecurityFullTest extends ZanataTestCase {
+public class SecurityTest extends ZanataTestCase {
 
     @Rule
     public HasEmailRule hasEmailRule = new HasEmailRule();
@@ -83,7 +83,6 @@ public class SecurityFullTest extends ZanataTestCase {
     @Feature(summary = "The user may reset their password via email",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("Rhbz-1114421")
     public void resetPasswordSuccessful() {
         ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
                 .goToHome()
