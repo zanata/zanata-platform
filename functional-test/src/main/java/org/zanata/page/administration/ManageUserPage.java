@@ -54,7 +54,8 @@ public class ManageUserPage extends BasePage {
         List<WebElement> cells = userRow.getCells();
         WebElement editCell = cells.get(cells.size() - 1);
         WebElement editButton =
-                editCell.findElement(By.xpath(".//input[@value='Edit']"));
+                editCell.findElement(By
+                        .xpath(".//button[contains(text(), 'Edit')]"));
         editButton.click();
         return new ManageUserAccountPage(getDriver());
     }
