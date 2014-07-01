@@ -660,7 +660,9 @@
     <action
       execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.contactLanguageTeamCoordinatorForLocale'])}" />
+      execute="#{breadcrumbs.addLocation('', messages.format(
+        'jsf.contactLanguageTeamCoordinatorForLocale',
+        sendEmail.locale.localeId.id, sendEmail.locale.retrieveNativeName()))}" />
 
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">

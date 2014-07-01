@@ -136,10 +136,12 @@
                 value="#{messages['jsf.ManageSearch.NoOperationsRunning']}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
-            <p id="completed"><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
+            <p id="completed"><h:outputText value="#{messages.format(
+              'jsf.ManageSearch.Completed', reindexAction.elapsedTime)}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.canceled}">
-            <p id="aborted"><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
+            <p id="aborted"><h:outputText escape="false" value="#{messages.format(
+              'jsf.ManageSearch.Aborted', reindexAction.elapsedTime)}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.error}">
             <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.ErrorMessage']}" /></p>
@@ -153,7 +155,8 @@
             <rich:progressBar id="reindexProgressBar"
               value="#{reindexAction.reindexProgress}"
               interval="1000"
-              label="#{messages['jsf.manageSearch.ProgressMessage']}"
+              label="#{messages.format('jsf.manageSearch.ProgressMessage',
+                reindexAction.reindexProgress, reindexAction.reindexCount)}"
               minValue="0"
               maxValue="#{reindexAction.reindexCount}"
               render="timeEstimate"
@@ -167,11 +170,14 @@
 
           <a4j:outputPanel id="timeEstimate">
             <s:fragment rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
-              <p><h:outputText value="#{messages['jsf.manageSearch.CurrentTable']}" /></p>
+              <p><h:outputText value="#{messages.format(
+                'jsf.manageSearch.CurrentTable', reindexAction.currentClass)}" /></p>
             </s:fragment>
             <s:fragment rendered="#{reindexAction.inProgress}">
-                <p><h:outputText value="#{messages['jsf.ManageSearch.ElapsedTime']}" /></p>
-                <p><h:outputText value="#{messages['jsf.ManageSearch.RemainingTime']}" /></p>
+                <p><h:outputText value="#{messages.format(
+                  'jsf.ManageSearch.ElapsedTime', reindexAction.elapsedTime)}" /></p>
+                <p><h:outputText value="#{messages.format(
+                  'jsf.ManageSearch.RemainingTime', reindexAction.estimatedTimeRemaining)}" /></p>
             </s:fragment>
           </a4j:outputPanel>
 

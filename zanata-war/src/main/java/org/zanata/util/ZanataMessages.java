@@ -22,24 +22,19 @@ package org.zanata.util;
 
 import java.text.MessageFormat;
 import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.NoArgsConstructor;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Interpolator;
-import org.jboss.seam.core.SeamResourceBundle;
 
 import static org.jboss.seam.ScopeType.EVENT;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -61,18 +56,29 @@ public class ZanataMessages extends AbstractMap<String, String> {
     @Install(precedence = APPLICATION)
     @Scope(ScopeType.EVENT)
     public static class Factory {
-        // Seam ResourceBundle with built-in interpolation
-        @In
-        private ResourceBundle resourceBundle;
-
         // components.xml adds an alias 'zanataMessages' but 'messages' is preferred
         @org.jboss.seam.annotations.Factory(
                 value = "org.jboss.seam.international.messages",
                 autoCreate = true, scope = EVENT)
-        public Map<String, String> getMessages() {
+        public ZanataMessages getMessages() {
             // Generic ResourceBundle without built-in interpolation:
-//            ResourceBundle resourceBundle = ResourceBundle.getBundle(
-//                    "messages", org.jboss.seam.core.Locale.instance());
+            ResourceBundle resourceBundle = null;
+            try {
+                resourceBundle = ResourceBundle.getBundle(
+                        "messages", org.jboss.seam.core.Locale.instance());
+            } catch (Exception e) {
+                resourceBundle = new ResourceBundle() {
+                    @Override
+                    protected Object handleGetObject(String key) {
+                        return key;
+                    }
+
+                    @Override
+                    public Enumeration<String> getKeys() {
+                        return Collections.emptyEnumeration();
+                    }
+                };
+            }
             return new ZanataMessages(resourceBundle);
         }
     }
@@ -85,11 +91,9 @@ public class ZanataMessages extends AbstractMap<String, String> {
 
     @VisibleForTesting
     public ZanataMessages() {
-        // Seam ResourceBundle with built-in interpolation:
-        this(SeamResourceBundle.getBundle());
         // Generic ResourceBundle without built-in interpolation:
-//        this(ResourceBundle.getBundle("messages",
-//                org.jboss.seam.core.Locale.instance()));
+        this(ResourceBundle.getBundle("messages",
+                org.jboss.seam.core.Locale.instance()));
     }
 
     // the default toString includes the entire list of properties,
@@ -97,7 +101,6 @@ public class ZanataMessages extends AbstractMap<String, String> {
     @Override
     public String toString() {
         return getClass().getName();
-//        return getClass().getName()+"@"+Integer.toHexString(System.identityHashCode(this));
     }
 
     /**
@@ -121,7 +124,13 @@ public class ZanataMessages extends AbstractMap<String, String> {
         }
     }
 
-    // use messages.get() or messages.format(), not zanataMessages.getMessage()
+    // use messages.get()
+    @Deprecated
+    public String getMessage(String key) {
+        return get(key);
+    }
+
+    // use messages.format(), not zanataMessages.getMessage()
     @Deprecated
     public String getMessage(String key, Object... args) {
         return format(key, args);

@@ -71,7 +71,9 @@
   <div style="clear: both; display: block;"/>
   <div class="copyright_block">
     <h:outputText
-      value="#{messages['jsf.RunningVersionInfo']} #{messages['jsf.CopyrightNotice']}"
+      value="#{messages.format('jsf.RunningVersionInfo', messages['jsf.Zanata'],
+      applicationConfiguration.version, applicationConfiguration.scmDescribe)}
+      #{messages['jsf.CopyrightNotice']}"
       escape="false"/>
   </div>
 </div>

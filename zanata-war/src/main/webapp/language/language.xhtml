@@ -9,7 +9,8 @@
   xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.LanguageTeamTitle']}</ui:define>
+  <ui:define name="page_title">#{messages.format('jsf.LanguageTeamTitle',
+    languageTeamAction.locale.retrieveDisplayName())}</ui:define>
 
   <ui:define name="head">
     <script type="text/javascript">
@@ -29,7 +30,7 @@
     <h:form id="memberPanel">
       <h1>#{languageTeamAction.locale.retrieveNativeName()}</h1>
 
-      <p>#{messages['jsf.SizeMembers']}</p>
+      <p>#{messages.format('jsf.SizeMembers', languageTeamAction.locale.members.size)}</p>
       <rich:dataTable id="threads" value="#{languageTeamAction.localeMembers}"
         var="member" rendered="#{not empty languageTeamAction.locale.members}"
         sortMode="single">

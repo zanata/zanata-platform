@@ -13,9 +13,10 @@
     value="#{messages['jsf.email.accountchange.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.accountchange.DearName']}</p>
+    <p>#{messages.format('jsf.email.accountchange.DearName',
+      profileAction.name)}</p>
 
-    <p>#{messages['jsf.email.accountchange.Message']}
+    <p>#{messages.format('jsf.email.accountchange.Message', profileAction.email)}
       <br/> #{messages['jsf.email.accountchange.Message2']}</p>
 
     <p>

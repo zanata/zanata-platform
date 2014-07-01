@@ -12,7 +12,8 @@
   <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.activation.profile.DearName']}</p>
+    <p>#{messages.format('jsf.email.activation.profile.DearName',
+      newProfileAction.name)}</p>
 
     <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
 

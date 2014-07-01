@@ -12,13 +12,16 @@
   <ui:param name="replyToName" value="#{sendEmail.fromName}"/>
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}"/>
   <ui:param name="subject"
-    value="#{messages['jsf.email.joinrequest.Subject']}"/>
+    value="#{messages.format('jsf.email.joinrequest.Subject',
+      sendEmail.fromLoginName, sendEmail.locale.localeId.id)}']}"/>
 
   <ui:define name="body">
     <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
 
     <p>
-      #{messages['jsf.email.joinrequest.UserRequestingToJoin']}
+      #{messages.format('jsf.email.joinrequest.UserRequestingToJoin',
+        sendEmail.fromName, sendEmail.fromLoginName,
+        sendEmail.locale.localeId.id, sendEmail.locale.retrieveNativeName())}
       <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
         <br/><h:outputText
         value="#{messages['jsf.email.joinrequest.RoleRequested']}"/>
@@ -48,15 +51,17 @@
     </p>
 
     <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
-      <p>#{messages['jsf.email.UserMessageIntro']}</p>
+      <p>#{messages.format('jsf.email.UserMessageIntro', sendEmail.fromName)}</p>
       <hr/>
       <h:outputText value="#{sendEmail.htmlMessage}" escape="false"/>
       <hr/>
     </s:fragment>
 
-    <p>#{messages['jsf.email.joinrequest.AddUserInstructions']}</p>
+    <p>#{messages.format('jsf.email.joinrequest.AddUserInstructions',
+      sendEmail.fromName, sendEmail.locale.localeId.id, sendEmail.fromLoginName)}</p>
 
-    <p>#{messages['jsf.email.coordinator.ResponseInstructions']}</p>
+    <p>#{messages.format('jsf.email.coordinator.ResponseInstructions',
+      sendEmail.locale.localeId.id, sendEmail.fromName, sendEmail.replyEmail)}</p>
 
     <p>
       <a

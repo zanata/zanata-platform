@@ -14,11 +14,13 @@
     value="#{messages['jsf.email.usernamechange.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.usernamechange.DearName']}</p>
+    <p>#{messages.format('jsf.email.usernamechange.DearName',
+      userAction.getName(userAction.username))}</p>
 
     <p>#{messages['jsf.email.usernamechange.Content']}</p>
 
-    <p>#{messages['jsf.email.usernamechange.YourNewUsername']}</p>
+    <p>#{messages.format('jsf.email.usernamechange.YourNewUsername',
+      userAction.username)}</p>
     <s:div rendered="#{applicationConfiguration.internalAuth}">
       <p>#{messages['jsf.email.usernamechange.ResetPassword']}</p>
 

@@ -12,13 +12,16 @@
   <ui:param name="replyToName" value="#{sendEmail.fromName}"/>
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}"/>
   <ui:param name="subject"
-    value="#{messages['jsf.email.rolerequest.Subject']}"/>
+    value="#{messages.format('jsf.email.rolerequest.Subject',
+      sendEmail.fromLoginName, sendEmail.locale.localeId.id)}"/>
 
   <ui:define name="body">
     <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
 
     <p>
-      #{messages['jsf.email.rolerequest.UserRequestingRole']}
+      #{messages.format('jsf.email.rolerequest.UserRequestingRole',
+        sendEmail.fromName, sendEmail.fromLoginName,
+        sendEmail.locale.localeId.id, sendEmail.locale.retrieveNativeName())}
       <ul>
         <s:fragment
           rendered="#{languageJoinUpdateRoleAction.requestAsTranslator and !languageJoinUpdateRoleAction.isTranslator()}">
@@ -44,15 +47,17 @@
     </p>
 
     <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
-      <p>#{messages['jsf.email.UserMessageIntro']}</p>
+      <p>#{messages.format('jsf.email.UserMessageIntro', sendEmail.fromName)}</p>
       <hr/>
       <h:outputText value="#{sendEmail.htmlMessage}" escape="false"/>
       <hr/>
     </s:fragment>
 
-    <p>#{messages['jsf.email.rolerequest.AddUserInstructions']}</p>
+    <p>#{messages.format('jsf.email.rolerequest.AddUserInstructions',
+      sendEmail.fromName, sendEmail.locale.localeId.id)}</p>
 
-    <p>#{messages['jsf.email.coordinator.ResponseInstructions']}</p>
+    <p>#{messages.format('jsf.email.coordinator.ResponseInstructions',
+      sendEmail.locale.localeId.id, sendEmail.fromName, sendEmail.replyEmail)}</p>
 
     <p>
       <a

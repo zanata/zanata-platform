@@ -271,10 +271,13 @@
           rendered="#{copyTransAction.inProgress}"/>
         <span>
           <h:outputText
-            value="#{messages['jsf.iteration.CopyTrans.processedItems']}"/>
+            value="#{messages.format('jsf.iteration.CopyTrans.processedItems',
+              copyTransAction.currentProgress, copyTransAction.maxProgress)}"/>
           ,
           <h:outputText
-            value="#{messages['jsf.iteration.CopyTrans.estimatedTimeRemaining']}"/>
+            value="#{messages.format(
+              'jsf.iteration.CopyTrans.estimatedTimeRemaining',
+              copyTransAction.copyTransEstimatedTimeLeft)}"/>
         </span>
       </s:div>
     </div>

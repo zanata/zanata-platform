@@ -17,7 +17,7 @@
       <s:token allowMultiplePosts="true"/>
       <rich:panel>
         <div class="roleMsg">
-          #{messages['jsf.RequestRoleAs']}
+          #{messages.format('jsf.RequestRoleAs', sendEmail.locale.localeId.id)}
 
           <s:fragment
             rendered="#{!languageJoinUpdateRoleAction.isTranslator()}">

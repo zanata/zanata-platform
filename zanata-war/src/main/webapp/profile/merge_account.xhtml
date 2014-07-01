@@ -68,7 +68,10 @@
           rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
           <p>
             <h:outputText escape="false"
-              value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
+              value="#{messages.format('jsf.profile.MergeAccount.confirmationMessage',
+                accountMergeAction.obsoleteAccount.username,
+                accountMergeAction.obsoleteAccount.person.name,
+                accountMergeAction.obsoleteAccount.person.email)}"/>
           </p>
           <h:commandButton styleClass="button--primary l--push-right-quarter"
             value="#{messages['jsf.profile.MergeAccount.confirm']}"

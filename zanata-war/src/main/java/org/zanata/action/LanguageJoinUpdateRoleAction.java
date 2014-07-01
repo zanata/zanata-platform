@@ -51,6 +51,8 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
             "request_role_language";
 
     @In
+    private SendEmailAction sendEmail;
+    @In
     private ZanataMessages zanataMessages;
 
     @In
@@ -90,10 +92,14 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
     public String getSubject() {
         if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
             subject =
-                    zanataMessages.getMessage("jsf.email.joinrequest.Subject");
+                    zanataMessages.format("jsf.email.joinrequest.Subject",
+                            sendEmail.getFromLoginName(),
+                            sendEmail.getLocale().getLocaleId().getId());
         } else {
             subject =
-                    zanataMessages.getMessage("jsf.email.rolerequest.Subject");
+                    zanataMessages.format("jsf.email.rolerequest.Subject",
+                            sendEmail.getFromLoginName(),
+                            sendEmail.getLocale().getLocaleId().getId());
         }
         return subject;
     }
@@ -102,11 +108,13 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
         if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
             title =
                     zanataMessages
-                            .getMessage("jsf.RequestToJoinLanguageTeamTitle");
+                            .format("jsf.RequestToJoinLanguageTeamTitle",
+                                    sendEmail.getLocale().getLocaleId().getId());
         } else {
             title =
                     zanataMessages
-                            .getMessage("jsf.RequestRoleLanguageTeamTitle");
+                            .format("jsf.RequestRoleLanguageTeamTitle",
+                                    sendEmail.getLocale().getLocaleId().getId());
         }
         return title;
     }

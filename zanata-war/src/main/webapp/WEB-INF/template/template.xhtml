@@ -101,7 +101,10 @@
             <div class="g__item w--1-2 txt--align-right">
               <p class="txt--meta">
                 <h:outputText
-                  value="#{messages['jsf.RunningVersionInfo']} | #{messages['jsf.CopyrightNotice']}"
+                  value="#{messages.format('jsf.RunningVersionInfo',
+                  messages['jsf.Zanata'], applicationConfiguration.version,
+                  applicationConfiguration.scmDescribe)}
+                  | #{messages['jsf.CopyrightNotice']}"
                   escape="false"/>
               </p>
             </div>

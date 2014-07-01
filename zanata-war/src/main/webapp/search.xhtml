@@ -9,9 +9,11 @@
   template="./WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.SearchResultsForProjectSearch']}</ui:define>
+    name="page_title">#{messages.format('jsf.SearchResultsForProjectSearch',
+      projectSearch.projectAutocomplete.query)}</ui:define>
   <ui:define name="center_content">
-    <h1>#{messages['jsf.projectSearch.searchQuery.title']}</h1>
+    <h1>#{messages.format('jsf.projectSearch.searchQuery.title',
+      projectSearch.projectAutocomplete.query)}</h1>
     <h:form>
       <div style="text-align: center">
         <rich:dataScroller renderIfSinglePage="false" for="searchResults"

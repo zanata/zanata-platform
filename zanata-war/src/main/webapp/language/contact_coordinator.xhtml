@@ -10,7 +10,8 @@
   template="/WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.email.ContactCoordinatorTitle']}</ui:define>
+    name="page_title">#{messages.format('jsf.email.ContactCoordinatorTitle',
+    sendEmail.locale.retrieveDisplayName())}</ui:define>
   <ui:param name="showGlobalMessages" value="true"/>
 
   <ui:define name="center_content">

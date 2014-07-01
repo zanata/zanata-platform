@@ -36,6 +36,8 @@ import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.SendEmailAction;
+import org.zanata.action.VersionGroupJoinAction;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
@@ -60,6 +62,12 @@ public class EmailServiceImpl implements EmailService {
 
     @In
     private ApplicationConfiguration applicationConfiguration;
+
+    @In
+    private SendEmailAction sendEmail;
+
+    @In
+    private VersionGroupJoinAction versionGroupJoinAction;
 
     @In
     private ZanataMessages zanataMessages;
@@ -89,7 +97,9 @@ public class EmailServiceImpl implements EmailService {
             String replyEmail, String subject, String message, String language) {
         if (!coordinators.isEmpty()) {
             receivedReason =
-                    zanataMessages.getMessage("jsf.email.coordinator.ReceivedReason");
+                    zanataMessages.format(
+                            "jsf.email.coordinator.ReceivedReason",
+                            sendEmail.getLocale().retrieveNativeName());
             for (HPerson coord : coordinators) {
                 toName = coord.getName();
                 toEmailAddr = coord.getEmail();
@@ -99,7 +109,9 @@ public class EmailServiceImpl implements EmailService {
                     "Sent language team coordinator email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}', language '{}'",
                     fromName, fromLoginName, replyEmail, subject, message,
                     language);
-            return zanataMessages.getMessage("jsf.email.coordinator.SentNotification");
+            return zanataMessages.format(
+                    "jsf.email.coordinator.SentNotification",
+                    sendEmail.getLocale().retrieveNativeName());
         } else {
             return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
                     replyEmail, subject, message);
@@ -111,7 +123,9 @@ public class EmailServiceImpl implements EmailService {
             List<HPerson> maintainers, String fromName, String fromLoginName,
             String replyEmail, String subject, String message) {
         if (!maintainers.isEmpty()) {
-            receivedReason = zanataMessages.getMessage("jsf.email.group.maintainer.ReceivedReason");
+            receivedReason = zanataMessages.format(
+                    "jsf.email.group.maintainer.ReceivedReason",
+                    versionGroupJoinAction.getGroupName());
             for (HPerson maintainer : maintainers) {
                 toName = maintainer.getName();
                 toEmailAddr = maintainer.getEmail();
@@ -120,7 +134,9 @@ public class EmailServiceImpl implements EmailService {
             log.info(
                     "Sent version group maintainer email: fromName '{}', fromLoginName '1}', replyEmail '{}', subject '{}', message '{}'",
                     fromName, fromLoginName, replyEmail, subject, message);
-            return zanataMessages.getMessage("jsf.email.group.maintainer.SentNotification");
+            return zanataMessages.format(
+                    "jsf.email.group.maintainer.SentNotification",
+                    versionGroupJoinAction.getGroupName());
         } else {
             return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
                     replyEmail, subject, message);

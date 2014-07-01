@@ -28,6 +28,7 @@ import javax.faces.application.FacesMessage;
 
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -57,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author damason@redhat.com
  *
  */
+@AutoCreate
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
 @Slf4j

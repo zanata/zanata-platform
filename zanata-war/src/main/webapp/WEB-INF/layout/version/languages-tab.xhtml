@@ -477,7 +477,9 @@
     <rich:progressBar id="downloadProgressBar"
       value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
       interval="500"
-      label="#{messages['jsf.generatezip.ProgressLabel']}"
+      label="#{messages.format('jsf.generatezip.ProgressLabel',
+        projectIterationZipFileAction.zipFilePrepHandle.currentProgress,
+        projectIterationZipFileAction.zipFilePrepHandle.maxProgress)}"
       minValue="-1"
       maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
       enabled="#{not projectIterationZipFileAction.zipFilePrepHandle.done}"

@@ -9,12 +9,14 @@
   <ui:param name="replyToName" value="#{sendEmail.fromName}"/>
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}"/>
   <ui:param name="subject"
-    value="#{messages['jsf.email.JoinGroupRequest.Subject']}"/>
+    value="#{messages.format('jsf.email.JoinGroupRequest.Subject',
+              versionGroupJoinAction.groupName)}"/>
 
   <ui:define name="body">
     <p>#{messages['jsf.email.maintainer.DearMaintainer']}</p>
 
-    <p>#{messages['jsf.email.joingrouprequest.RequestingToJoinGroup']}</p>
+    <p>#{messages.format('jsf.email.joingrouprequest.RequestingToJoinGroup',
+      sendEmail.fromName, sendEmail.fromLoginName, versionGroupJoinAction.groupName)}</p>
     <ul class="list--slat">
       <ui:repeat value="#{versionGroupJoinAction.projectVersions}"
         var="version">
@@ -26,13 +28,14 @@
       </ui:repeat>
     </ul>
     <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
-      <p>#{messages['jsf.email.UserMessageIntro']}</p>
+      <p>#{messages.format('jsf.email.UserMessageIntro', sendEmail.fromName)}</p>
       <hr/>
       <h:outputText value="#{sendEmail.htmlMessage}" escape="false"/>
       <hr/>
     </s:fragment>
 
-    <p>#{messages['jsf.email.JoinGroupRequest.ResponseInstructions']}</p>
+    <p>#{messages.format('jsf.email.JoinGroupRequest.ResponseInstructions',
+      sendEmail.fromName, sendEmail.replyEmail)}</p>
 
     <p>
       <a

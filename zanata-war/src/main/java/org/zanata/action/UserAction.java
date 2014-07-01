@@ -45,6 +45,7 @@ import org.zanata.service.UserAccountService;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.util.ZanataMessages;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -70,7 +71,7 @@ public class UserAction extends
     private EntityManager entityManager;
 
     @In
-    private Map<String, String> messages;
+    private ZanataMessages messages;
 
     @In
     private PersonDAO personDAO;
@@ -146,7 +147,7 @@ public class UserAction extends
                 usernameChanged = true;
             } else {
                 FacesMessages.instance().addToControl("username",
-                        messages.get("jsf.UsernameNotAvailable"));
+                        messages.format("jsf.UsernameNotAvailable", getUsername()));
                 setUsername(originalUsername); // reset the username field
                 return "failure";
             }
