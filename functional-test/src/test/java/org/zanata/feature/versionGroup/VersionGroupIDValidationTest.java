@@ -20,9 +20,8 @@
  */
 package org.zanata.feature.versionGroup;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
@@ -123,7 +122,8 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
                 .inputGroupName(inputText)
                 .saveGroupFailure();
 
-        assertThat("Validation error is displayed for input:" + inputText,
-                groupPage.getFieldErrors(), Matchers.hasItem(errorMsg));
+        assertThat(groupPage.getFieldErrors())
+                .contains(errorMsg)
+                .as("Validation error is displayed for input:" + inputText);
     }
 }

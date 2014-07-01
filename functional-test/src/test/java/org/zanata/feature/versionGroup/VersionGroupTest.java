@@ -20,11 +20,11 @@
  */
 package org.zanata.feature.versionGroup;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -34,8 +34,9 @@ import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -53,86 +54,107 @@ public class VersionGroupTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The administrator can create a basic group",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
-    public void createABasicGroup() {
+    public void createABasicGroup() throws Exception {
         String groupID = "basic-group";
         String groupName = "A Basic Group";
-
-        CreateVersionGroupPage createVersionGroupPage =
-                dashboardPage.goToGroups().createNewGroup();
-        createVersionGroupPage.inputGroupId(groupID);
-        createVersionGroupPage.inputGroupName(groupName);
-        createVersionGroupPage
-                .inputGroupDescription("A basic group can be saved");
-        VersionGroupsPage versionGroupsPage =
-                createVersionGroupPage.saveGroup();
-        assertThat("Group was created", versionGroupsPage.getGroupNames()
-                .contains(groupName));
+        VersionGroupsPage versionGroupsPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .inputGroupDescription("A basic group can be saved")
+                .saveGroup();
+        assertThat(versionGroupsPage.getGroupNames())
+                .contains(groupName)
+                .as("The version group was created");
         VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
-        assertThat("The group is displayed", groupView.getTitle(),
-                Matchers.equalTo("Groups - ".concat(groupName)));
+        assertThat(groupView.getTitle())
+                .isEqualTo("Groups - ".concat(groupName))
+                .as("The group is displayed");
     }
 
+    @Feature(summary = "The administrator must fill in the required fields " +
+            "to create a group",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void requiredFields() {
+    public void requiredFields() throws Exception {
         String errorMsg = "value is required";
         String groupID = "verifyRequiredFieldsGroupID";
         String groupName = "verifyRequiredFieldsGroupName";
 
-        CreateVersionGroupPage groupPage =
-                dashboardPage.goToGroups().createNewGroup().saveGroupFailure();
-        assertThat("The two errors are value is required",
-                groupPage.getFieldValidationErrors(), Matchers.contains(errorMsg, errorMsg));
+        CreateVersionGroupPage groupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .saveGroupFailure();
 
-        groupPage =
-                groupPage.clearFields().inputGroupName(groupName)
-                        .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
-                Matchers.contains(errorMsg));
+        assertThat(groupPage.getFieldValidationErrors())
+                .contains(errorMsg, errorMsg)
+                .as("The two errors are value is required");
 
-        groupPage =
-                groupPage.clearFields().inputGroupId(groupID)
-                        .saveGroupFailure();
-        assertThat("The value required error shown", groupPage.getFieldValidationErrors(),
-                Matchers.contains(errorMsg));
+        groupPage = groupPage.clearFields()
+                .inputGroupName(groupName)
+                .saveGroupFailure();
+
+        assertThat(groupPage.getFieldValidationErrors())
+                .contains(errorMsg)
+                .as("The value required error shown");
+
+        groupPage = groupPage.clearFields()
+                .inputGroupId(groupID)
+                .saveGroupFailure();
+
+        assertThat(groupPage.getFieldValidationErrors())
+                .contains(errorMsg)
+                .as("The value required error shown");
     }
 
+    @Feature(summary = "The administrator must enter valid data into the " +
+            "required fields to create a group",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void groupDescriptionFieldSize() {
-        String errorMsg = "value must be shorter than or equal to 100 characters";
+    public void groupDescriptionFieldSize() throws Exception {
         String groupID = "verifyDescriptionFieldSizeID";
         String groupName = "verifyDescriptionFieldSizeName";
-        String groupDescription =
-                "This text is to test that the description field takes no more than exactly 100 characters - actually.";
+        String groupDescription ="This text is to test that the description " +
+                "field takes no more than exactly 100 characters - actually.";
 
-        assertThat("Description length is greater than 100 characters",
-                groupDescription.length(), Matchers.equalTo(101));
-        CreateVersionGroupPage groupPage =
-                dashboardPage.goToGroups().createNewGroup();
-        groupPage.inputGroupId(groupID).inputGroupName(groupName)
-                .inputGroupDescription(groupDescription);
-        groupPage.saveGroupFailure();
-        assertThat("Invalid length error is shown",
-                groupPage.getFieldValidationErrors(),
-                Matchers.contains(errorMsg));
+        assumeTrue("Description length is greater than 100 characters",
+                groupDescription.length() == 101);
 
-        groupPage.clearFields();
+        CreateVersionGroupPage groupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .inputGroupDescription(groupDescription)
+                .saveGroupFailure();
+
+        assertThat(groupPage.getFieldValidationErrors())
+                .contains(CreateVersionGroupPage.LENGTH_ERROR)
+                .as("Invalid length error is shown");
+
         groupDescription = groupDescription.substring(0, 100);
-        assertThat("Description length is now 100 characters",
-                groupDescription.length(), Matchers.equalTo(100));
-        groupPage.inputGroupId("verifyDescriptionFieldSizeID").inputGroupName(
-                groupName);
-        VersionGroupsPage verGroupsPage =
-                groupPage.inputGroupDescription(groupDescription).saveGroup();
-        assertThat("A group description of 100 chars is valid",
-                verGroupsPage.getGroupNames(), Matchers.hasItem(groupName));
+        VersionGroupsPage verGroupsPage = groupPage
+                .clearFields()
+                .inputGroupId("verifyDescriptionFieldSizeID")
+                .inputGroupName(groupName)
+                .inputGroupDescription(groupDescription)
+                .saveGroup();
 
+        assertThat(verGroupsPage.getGroupNames())
+                .contains(groupName)
+                .as("A group description of 100 chars is valid");
     }
 
+    @Feature(summary = "The administrator can add a project version to " +
+            "a newly created group",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void addANewProjectVersionToAnEmptyGroup()
-        throws InterruptedException {
+    public void addANewProjectVersionToAnEmptyGroup() throws Exception {
         String groupID = "add-version-to-empty-group";
         String groupName = "AddVersionToEmptyGroup";
         VersionGroupPage versionGroupPage = dashboardPage
@@ -143,17 +165,13 @@ public class VersionGroupTest extends ZanataTestCase {
                 .saveGroup()
                 .goToGroup(groupName)
                 .clickProjectsTab()
-                .clickAddProjectVersionsButton();
-
-        versionGroupPage = versionGroupPage
+                .clickAddProjectVersionsButton()
                 .enterProjectVersion("about-fedora")
                 .selectProjectVersion("about-fedora master")
                 .clickProjectsTab();
 
-        assertThat("The version group shows in the list",
-                versionGroupPage.getProjectVersionsInGroup(),
-                Matchers.hasItem("about fedora\nmaster"));
-
+        assertThat(versionGroupPage.getProjectVersionsInGroup())
+                .contains("about fedora\nmaster")
+                .as("The version group shows in the list");
     }
-
 }
