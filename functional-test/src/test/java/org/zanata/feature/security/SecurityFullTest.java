@@ -23,12 +23,14 @@ package org.zanata.feature.security;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -36,6 +38,7 @@ import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -48,6 +51,8 @@ public class SecurityFullTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
+    @ClassRule
+    public static HasEmailRule emailRule = new HasEmailRule();
 
     @Before
     public void before() {
@@ -76,15 +81,23 @@ public class SecurityFullTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ-987707 | Cannot intercept email yet")
     public void resetPasswordSuccessful() {
         SignInPage signInPage =
                 new BasicWorkFlow().goToHome().clickSignInLink();
         ResetPasswordPage resetPasswordPage = signInPage.goToResetPassword();
         resetPasswordPage =
-                resetPasswordPage.enterUserName("nosuchuser").enterEmail(
-                        "nosuchuser@nosuchdomain.com");
+                resetPasswordPage.enterUserName("translator").enterEmail(
+                        "translator@example.com");
         resetPasswordPage = resetPasswordPage.resetPassword();
+        WiserMessage wiserMessage = emailRule.getMessages().get(0);
+        String emailContent = new String(wiserMessage.getData());
+        Assertions.assertThat(
+                resetPasswordPage.getNotificationMessage()).contains(
+                "You will soon receive an email with a link to reset your password.1");
+        Assertions
+                .assertThat(emailContent)
+                .contains(
+                        "Please follow the link below to reset the password for your account.");
         // TODO: Reset Success page
     }
 
