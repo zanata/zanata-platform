@@ -21,6 +21,9 @@ import com.google.common.collect.ImmutableList;
 @Slf4j
 public class CreateVersionGroupPage extends BasePage {
 
+    public final static String LENGTH_ERROR =
+            "value must be shorter than or equal to 100 characters";
+
     @FindBy(id = "group-form:descriptionField:description")
     private WebElement groupDescriptionField;
 

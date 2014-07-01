@@ -172,7 +172,7 @@ import org.zanata.feature.versionGroup.*;
          * Version Groups
          * Creation and management of Version Groups
          */
-        VersionGroupFullTest.class,
+        VersionGroupTest.class,
         VersionGroupIDValidationTest.class,
         VersionGroupUrlTest.class
 })
