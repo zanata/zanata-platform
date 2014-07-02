@@ -87,7 +87,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     private String getUsername(WebElement maintainersLi) {
         return maintainersLi
-                .findElement(By.xpath(".//span[@class='txt--meta']")).getText()
+                .findElement(By.className("txt--meta")).getText()
                 .replace("@", "");
     }
 
@@ -135,7 +135,6 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     public List<String> getSettingsMaintainersList() {
         List<WebElement> items = getSettingsMaintainersElement();
-
         List<String> rows =
                 Lists.transform(items, new Function<WebElement, String>() {
                     @Override

@@ -21,10 +21,10 @@
 
 package org.zanata.feature.project;
 
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectAboutPage;
@@ -33,9 +33,7 @@ import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -47,33 +45,36 @@ public class EditProjectAboutTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The administrator can change a project about content",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void addAboutPageDetails() {
-
+    public void addAboutPageDetails() throws Exception {
         String aboutText = "This is my about text for AF";
-        assertThat("Admin is logged in", new LoginWorkFlow()
+        assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
-                .loggedInAs(),
-                equalTo("admin"));
+                .loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
 
         ProjectAboutTab projectAboutTab = new ProjectWorkFlow()
                 .createNewSimpleProject("aboutpagetest", "aboutpagetest")
                 .gotoSettingsTab()
                 .gotoSettingsAboutTab();
 
-        assertThat("The text is empty",
-                projectAboutTab.getAboutText(),
-                isEmptyOrNullString());
+        assertThat(projectAboutTab.getAboutText())
+                .as("The text is empty")
+                .isNullOrEmpty();
 
-        projectAboutTab = projectAboutTab.clearAboutText()
+        projectAboutTab = projectAboutTab
+                .clearAboutText()
                 .enterAboutText(aboutText)
                 .pressSave();
 
         projectAboutTab.expectNotification("Successfully updated");
         ProjectAboutPage projectAboutPage = projectAboutTab.gotoAboutTab();
 
-        assertThat("The text in the About tab is correct",
-                projectAboutPage.getAboutText(),
-                equalTo(aboutText));
+        assertThat(projectAboutPage.getAboutText())
+                .isEqualTo(aboutText)
+                .as("The text in the About tab is correct");
     }
 }
