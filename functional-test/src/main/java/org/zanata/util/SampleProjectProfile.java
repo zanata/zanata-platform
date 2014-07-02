@@ -19,6 +19,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HDocument;
@@ -93,7 +94,8 @@ public class SampleProjectProfile {
                 HProjectIteration.class, HProject.class,
                 // account
                 HAccountActivationKey.class, HPersonEmailValidationKey.class,
-                HCredentials.class, HPerson.class, HAccount.class));
+                HAccountResetPasswordKey.class, HCredentials.class,
+                HPerson.class, HAccount.class));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);
