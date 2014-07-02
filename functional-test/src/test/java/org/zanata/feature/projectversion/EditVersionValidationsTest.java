@@ -20,10 +20,10 @@
  */
 package org.zanata.feature.projectversion;
 
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
@@ -32,8 +32,7 @@ import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -46,8 +45,11 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The administrator can set validation options for " +
+            "a project version",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setValidationOptions() {
+    public void setValidationOptions() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -56,8 +58,10 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab();
 
-        assertThat("The level is currently Warning", versionTranslationTab
-                .isValidationLevel("Tab characters (\\t)", "Warning"));
+        assertThat(versionTranslationTab
+                .isValidationLevel("Tab characters (\\t)", "Warning"))
+                .isTrue()
+                .as("The level is currently Warning");
 
         versionTranslationTab = versionTranslationTab
                 .setValidationLevel("Tab characters (\\t)", "Error");
@@ -72,13 +76,16 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab();
 
-        assertThat("The changes were saved", versionTranslationTab
-                .isValidationLevel("Tab characters (\\t)", "Error"));
+        assertThat(versionTranslationTab
+                .isValidationLevel("Tab characters (\\t)", "Error"))
+                .as("The changes were saved");
     }
 
-
+    @Feature(summary = "The system recognises validation errors options in " +
+            "translation targets and displays them to the user",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void verifyValidationsAreErrors() {
+    public void verifyValidationsAreErrors() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -95,27 +102,29 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoVersion("master")
                 .translate("fr", "About_Fedora");
 
-        assertThat("The text in the translation target is blank",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                equalTo(""));
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
+                .isEqualTo("")
+                .as("The text in the translation target is blank");
 
         editorPage.pasteIntoRowAtIndex(0, "\t").saveAsFuzzyAtRow(0);
         editorPage.waitForValidationErrorsVisible();
 
-        assertThat("The notification area shows there's an error",
-                editorPage.getValidationMessageCurrentTarget(),
-                equalTo("Warning: none, Errors: 1"));
+        assertThat(editorPage.getValidationMessageCurrentTarget())
+                .isEqualTo("Warning: none, Errors: 1")
+                .as("The notification area shows there's an error");
 
         editorPage = editorPage.openValidationBox();
 
-        assertThat("The correct error is shown for the validation",
-                editorPage.getValidationMessageCurrentTarget(),
-                Matchers.containsString("Target has more tabs (\\t) than source "
-                        + "(source: 0, target: 1)"));
+        assertThat(editorPage.getValidationMessageCurrentTarget())
+                .contains("Target has more tabs (\\t) than source "
+                        + "(source: 0, target: 1)")
+                .as("The correct error is shown for the validation");
     }
 
+    @Feature(summary = "The user cannot disable enforced validations",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void userCannotTurnOffEnforcedValidations() {
+    public void userCannotTurnOffEnforcedValidations() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -133,17 +142,22 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .translate("fr", "About_Fedora")
                 .openValidationOptions();
 
-        assertThat("The option is selected",
-                editorPage.isValidationOptionSelected(
-                        EditorPage.Validations.TABS));
+        assertThat(editorPage.isValidationOptionSelected(
+                        EditorPage.Validations.TABS))
+                .isTrue()
+                .as("The option is selected");
 
-        assertThat("The option is unavailable",
-                !editorPage.isValidationOptionAvailable(
-                        EditorPage.Validations.TABS));
+        assertThat(editorPage.isValidationOptionAvailable(
+                        EditorPage.Validations.TABS))
+                .isFalse()
+                .as("The option is unavailable");
     }
 
+    @Feature(summary = "The user cannot select both printf formats for " +
+            "validation options",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void printfAndPositionalPrintfAreExclusive() {
+    public void printfAndPositionalPrintfAreExclusive() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -156,25 +170,33 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         versionTranslationTab.expectNotification(
                 "Updated validation Positional printf (XSI extension) to Error.");
 
-        assertThat("The Positional printf level is Error",
-                versionTranslationTab.isValidationLevel(
-                        "Positional printf (XSI extension)", "Error"));
-        assertThat("The Printf level is Off",
-                versionTranslationTab.isValidationLevel("Printf variables", "Off"));
+        assertThat(versionTranslationTab
+                .isValidationLevel("Positional printf (XSI extension)", "Error"))
+                .isTrue()
+                .as("The Positional printf level is Error");
+        assertThat(versionTranslationTab
+                .isValidationLevel("Printf variables", "Off"))
+                .isTrue()
+                .as("The Printf level is Off");
 
         versionTranslationTab.setValidationLevel("Printf variables", "Error");
         versionTranslationTab.expectNotification(
                 "Updated validation Printf variables to Error.");
 
-        assertThat("The Printf level is Error",
-                versionTranslationTab.isValidationLevel("Printf variables", "Error"));
-        assertThat("The Positional printf level is Off",
-                versionTranslationTab.isValidationLevel(
-                        "Positional printf (XSI extension)", "Off"));
+        assertThat(versionTranslationTab
+                .isValidationLevel("Printf variables", "Error"))
+                .isTrue()
+                .as("The Printf level is Error");
+        assertThat(versionTranslationTab
+                .isValidationLevel("Positional printf (XSI extension)", "Off"))
+                .isTrue()
+                .as("The Positional printf level is Off");
     }
 
+    @Feature(summary = "The user can turn on a disabled validation option",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void userCanEnableADisabledValidation() {
+    public void userCanEnableADisabledValidation() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -193,17 +215,18 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .pasteIntoRowAtIndex(0, "\t")
                 .saveAsFuzzyAtRow(0);
 
-        assertThat("The validation errors are not shown",
-                !editorPage.isValidationMessageCurrentTargetVisible());
+        assertThat(editorPage.isValidationMessageCurrentTargetVisible())
+                .isFalse()
+                .as("The validation errors are not shown");
 
         editorPage = editorPage
                 .openValidationOptions()
                 .clickValidationCheckbox(EditorPage.Validations.TABS);
-
         editorPage.waitForValidationErrorsVisible();
 
-        assertThat("The validation errors are shown",
-                editorPage.isValidationMessageCurrentTargetVisible());
+        assertThat(editorPage.isValidationMessageCurrentTargetVisible())
+                .isTrue()
+                .as("The validation errors are shown");
     }
 
 }
