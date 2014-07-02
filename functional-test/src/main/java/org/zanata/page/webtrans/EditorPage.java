@@ -20,13 +20,16 @@
  */
 package org.zanata.page.webtrans;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.Collections;
 import java.util.List;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
@@ -210,6 +213,16 @@ public class EditorPage extends BasePage {
 
     public String getBasicTranslationTargetAtRowIndex(int rowIndex, Plurals plurals) {
         return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, plurals);
+    }
+
+    public boolean expectBasicTranslationAtRowIndex(final int rowIndex,
+                                                    final String expected) {
+        return waitForTenSec().until(new  Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver input) {
+                return getBasicTranslationTargetAtRowIndex(rowIndex).equals(expected);
+            }
+        });
     }
 
     private String getContentAtRowIndex(final long rowIndex,

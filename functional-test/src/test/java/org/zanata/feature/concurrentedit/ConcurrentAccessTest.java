@@ -9,10 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.rest.dto.resource.Resource;
@@ -22,7 +22,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
@@ -36,6 +36,9 @@ public class ConcurrentAccessTest extends ZanataTestCase {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
+    @Feature(summary = "The system will handle concurrent document " +
+            "creation gracefully",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void concurrentDocumentCreationWillNotCauseHibernateException()
             throws InterruptedException {
@@ -66,7 +69,7 @@ public class ConcurrentAccessTest extends ZanataTestCase {
 
         List<Integer> expectedReturnCode =
                 Collections.nCopies(threadCount, 201);
-        assertThat(result, Matchers.equalTo(expectedReturnCode));
+        assertThat(result).isEqualTo(expectedReturnCode);
     }
 
     private static Resource buildResource(int suffix) {
