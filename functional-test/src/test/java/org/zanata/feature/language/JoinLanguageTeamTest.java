@@ -22,6 +22,7 @@ package org.zanata.feature.language;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.ManageLanguageTeamMemberPage;
@@ -36,8 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
+    @Feature(summary = "The administrator can add a member to a language team",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void translatorJoinsLanguageTeam() {
+    public void translatorJoinsLanguageTeam() throws Exception {
         ManageLanguageTeamMemberPage manageTeamMemberPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToAdministration()
