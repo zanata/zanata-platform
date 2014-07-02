@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,7 +27,7 @@ import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.io.Files;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This covers TCMS case <a
@@ -72,8 +70,9 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
+    @Feature(summary = "The user can push and pull gettext plural projects",
+            tcmsTestCaseIds = {217601, 217905}, tcmsTestPlanIds = 5316)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Feature(summary = "can push pull gettext plural project", tcmsTestCaseIds = {217601, 217905}, tcmsTestPlanIds = 5316)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
@@ -81,7 +80,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
                         "mvn -B zanata:push -Dzanata.pushType=both -Dzanata.userConfig="
                                 + userConfigPath);
 
-        assertThat(client.isPushSuccessful(output), Matchers.is(true));
+        assertThat(client.isPushSuccessful(output)).isTrue();
 
         EditorPage editorPage = verifyPluralPushedToEditor();
 
@@ -92,21 +91,21 @@ public class GettextPluralSupportTest extends ZanataTestCase {
                         + pullDirPath + " -Dzanata.transDir=" + pullDirPath
                         + " -Dzanata.userConfig=" + userConfigPath;
         output = client.callWithTimeout(tempDir, command);
-        assertThat(client.isPushSuccessful(output), Matchers.is(true));
+        assertThat(client.isPushSuccessful(output)).isTrue();
 
         // source round trip
         List<TextFlow> originalTextFlows =
                 getTextFlows(new File(projectRootPath + "/pot/test.pot"));
         List<TextFlow> pulledTextFlows =
                 getTextFlows(new File(pullDir, "test.pot"));
-        assertThat(pulledTextFlows, Matchers.equalTo(originalTextFlows));
+        assertThat(pulledTextFlows).isEqualTo(originalTextFlows);
 
         // translation round trip
         List<TextFlowTarget> originalTargets =
                 getTextFlowTargets(new File(projectRootPath + "/pl/test.po"));
         List<TextFlowTarget> pulledTargets =
                 getTextFlowTargets(new File(pullDir + "/pl/test.po"));
-        assertThat(pulledTargets, Matchers.equalTo(originalTargets));
+        assertThat(pulledTargets).isEqualTo(originalTargets);
 
         // translate on web UI and pull again
         editorPage.translateTargetAtRowIndex(0, "one aoeuaouaou")
@@ -117,7 +116,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         List<String> newContents =
                 getTextFlowTargets(new File(pullDir + "/pl/test.po")).get(0)
                         .getContents();
-        assertThat(newContents, Matchers.hasItem("one aoeuaouaou"));
+        assertThat(newContents).contains("one aoeuaouaou");
 
     }
 
@@ -127,20 +126,21 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         EditorPage editorPage = new BasicWorkFlow()
                 .goToEditor("plurals", "master", "pl", "test");
 
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular),
-                Matchers.equalTo("One file removed"));
-        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural),
-                Matchers.equalTo("%d files removed"));
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourceSingular))
+                .isEqualTo("One file removed");
+        assertThat(editorPage.getMessageSourceAtRowIndex(0, Plurals.SourcePlural))
+                .isEqualTo("%d files removed");
         // nplural for Polish is 3
+
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetSingular),
-                Matchers.equalTo("1 aoeuaouaou"));
+                Plurals.TargetSingular))
+                .isEqualTo("1 aoeuaouaou");
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetPluralOne),
-                Matchers.equalTo("%d aoeuaouao"));
+                Plurals.TargetPluralOne))
+                .isEqualTo("%d aoeuaouao");
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0,
-                Plurals.TargetPluralTwo),
-                Matchers.equalTo(""));
+                Plurals.TargetPluralTwo))
+                .isEqualTo("");
 
         return editorPage;
     }
