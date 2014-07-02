@@ -21,14 +21,12 @@
 
 package org.zanata.feature.search;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.BasePage;
@@ -48,52 +46,63 @@ public class ProjectSearchTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The user can search for a project",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void successfulProjectSearchAndDisplay() {
+    public void successfulProjectSearchAndDisplay() throws Exception {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("about")
                 .waitForSearchListContains("about fedora");
 
-        assertThat("Normal user can see the project",
-                basePage.getProjectSearchAutocompleteItems(),
-                hasItem("about fedora"));
+        assertThat(basePage.getProjectSearchAutocompleteItems())
+                .contains("about fedora")
+                .as("Normal user can see the project");
 
         ProjectBasePage projectPage =
                 basePage.clickSearchEntry("about fedora");
 
-        assertThat("The project page is the correct one", projectPage
-                .getProjectName().trim(), // UI adds a space
-                equalTo("about fedora"));
+        assertThat(projectPage.getProjectName().trim())
+                .isEqualTo("about fedora")
+                .as("The project page is the correct one");
     }
 
+    @Feature(summary = "The system will provide no results on an " +
+            "unsuccessful search",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void unsuccessfulProjectSearch() {
+    public void unsuccessfulProjectSearch() throws Exception {
         ProjectsPage projectsPage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("arodef")
                 .waitForSearchListContains("Search Zanata for 'arodef'")
                 .submitSearch();
 
-        assertThat("No projects are displayed", projectsPage
-                .getProjectNamesOnCurrentPage().isEmpty());
+        assertThat(projectsPage.getProjectNamesOnCurrentPage().isEmpty())
+                .isTrue()
+                .as("No projects are displayed");
     }
 
+    @Feature(summary = "The user cannot search for Obsolete projects",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void normalUserCannotSearchObsolete() {
-        new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                .goToProject("about fedora").gotoSettingsTab()
-                .gotoSettingsGeneral().archiveProject().logout();
+    public void normalUserCannotSearchObsolete() throws Exception {
+        new LoginWorkFlow().signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsGeneral()
+                .archiveProject()
+                .logout();
 
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("about")
                 .waitForSearchListContains("Search Zanata for 'about'");
 
-        assertThat("User cannot see the obsolete project",
-                basePage.getProjectSearchAutocompleteItems(),
-                not(hasItem("About Fedora")));
-
+        assertThat(basePage.getProjectSearchAutocompleteItems())
+                .doesNotContain("About Fedora")
+                .as("User cannot see the obsolete project");
     }
 
 }
