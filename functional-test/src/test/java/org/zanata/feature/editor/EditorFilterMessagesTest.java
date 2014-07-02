@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
@@ -44,6 +45,9 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The user can filter translation entries using more " +
+            "than one search term",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canFilterByMultipleFields() {
         EditorPage editorPage =
@@ -61,6 +65,8 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         }, Matchers.contains("greetings"));
     }
 
+    @Feature(summary = "The user may save the filter url for later use",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorFilterIsBookmarkable() {
         String urlForEditor =
