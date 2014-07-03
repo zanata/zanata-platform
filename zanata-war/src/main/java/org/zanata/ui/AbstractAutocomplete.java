@@ -37,7 +37,8 @@ import lombok.Setter;
 public abstract class AbstractAutocomplete<T> {
 
     protected ZanataMessages zanataMessages =
-            ServiceLocator.instance().getInstance("messages", ZanataMessages.class);
+            ServiceLocator.instance().getInstance(
+                    "zanataMessages", ZanataMessages.class);
 
     protected ConversationScopeMessages conversationScopeMessages =
             ConversationScopeMessages.instance();

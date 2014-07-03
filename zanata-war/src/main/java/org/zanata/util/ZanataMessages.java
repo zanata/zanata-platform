@@ -32,9 +32,11 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import static org.jboss.seam.ScopeType.EVENT;
 import static org.jboss.seam.annotations.Install.APPLICATION;
@@ -52,48 +54,53 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 public class ZanataMessages extends AbstractMap<String, String> {
 
+    @AutoCreate
+    @BypassInterceptors
     @Name("org.jboss.seam.international.messagesFactory")
     @Install(precedence = APPLICATION)
-    @Scope(ScopeType.EVENT)
+    @Scope(ScopeType.STATELESS)
     public static class Factory {
-        // components.xml adds an alias 'zanataMessages' but 'messages' is preferred
         @org.jboss.seam.annotations.Factory(
                 value = "org.jboss.seam.international.messages",
                 autoCreate = true, scope = EVENT)
         public ZanataMessages getMessages() {
-            // Generic ResourceBundle without built-in interpolation:
-            ResourceBundle resourceBundle = null;
-            try {
-                resourceBundle = ResourceBundle.getBundle(
-                        "messages", org.jboss.seam.core.Locale.instance());
-            } catch (Exception e) {
-                resourceBundle = new ResourceBundle() {
-                    @Override
-                    protected Object handleGetObject(String key) {
-                        return key;
-                    }
-
-                    @Override
-                    public Enumeration<String> getKeys() {
-                        return Collections.emptyEnumeration();
-                    }
-                };
-            }
-            return new ZanataMessages(resourceBundle);
+            return new ZanataMessages();
+        }
+        // TODO remove alias zanataMessages (messages is preferred)
+        @org.jboss.seam.annotations.Factory(
+                value = "zanataMessages",
+                autoCreate = true, scope = EVENT)
+        public ZanataMessages getZanataMessages() {
+            return getMessages();
         }
     }
 
-    private ResourceBundle resourceBundle;
+    private static ResourceBundle getResourceBundle() {
+        // Generic ResourceBundle without built-in interpolation:
+        ResourceBundle resourceBundle = null;
+        try {
+            resourceBundle = ResourceBundle.getBundle(
+                    "messages", org.jboss.seam.core.Locale.instance());
+        } catch (MissingResourceException e) {
+            resourceBundle = new ResourceBundle() {
+                @Override
+                protected Object handleGetObject(String key) {
+                    return key;
+                }
 
-    ZanataMessages(ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
+                @Override
+                public Enumeration<String> getKeys() {
+                    return Collections.emptyEnumeration();
+                }
+            };
+        }
+        return resourceBundle;
     }
 
-    @VisibleForTesting
+    private final ResourceBundle resourceBundle;
+
     public ZanataMessages() {
-        // Generic ResourceBundle without built-in interpolation:
-        this(ResourceBundle.getBundle("messages",
-                org.jboss.seam.core.Locale.instance()));
+        this.resourceBundle = getResourceBundle();
     }
 
     // the default toString includes the entire list of properties,

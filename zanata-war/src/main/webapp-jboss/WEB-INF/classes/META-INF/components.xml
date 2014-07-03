@@ -115,11 +115,6 @@
   <factory name="session" value="#{entityManager.delegate}" scope="STATELESS"
     auto-create="true" />
 
-  <!-- TODO remove zanataMessages -->
-  <factory name="zanataMessages"
-    value="#{org.jboss.seam.international.messages}" scope="STATELESS"
-    auto-create="true"/>
-
   <component class="org.zanata.ApplicationConfiguration"
     name="applicationConfiguration" precedence="30">
     <property name="debug">@env.debug@</property>
