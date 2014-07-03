@@ -41,11 +41,13 @@ import static org.jboss.seam.ScopeType.EVENT;
  * bundle.
  *
  * Unlike the {@link org.jboss.seam.international.Messages} component, this
- * component can also format messages which use position arguments like {0} and
- * {1}.
+ * component formats messages using positional arguments like {0} and
+ * {1}, not by interpolating EL expressions.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @AutoCreate
 @Name("msgs")
@@ -88,8 +90,8 @@ public class Messages extends AbstractMap<String, String> {
     }
 
     /**
-     * Gets a resource string.  In future, this method will return a string
-     * without any interpolation or message formatting.
+     * Gets a resource string, without any message formatting.  (So an
+     * apostrophe just represents an apostrophe (single quote).)
      * @param key
      * @return
      */
@@ -109,11 +111,14 @@ public class Messages extends AbstractMap<String, String> {
     }
 
     /**
-     * Gets a resource string, and interpolates both Seam context variables
-     * and positional parameters.  In future, positional parameters only.
+     * Gets a resource string, and formats it using MessageFormat and the
+     * positional parameters.  Due to the use of {@link java.util.MessageFormat}
+     * any literal apostrophes (single quotes) will need to be doubled,
+     * otherwise they will be interpreted as quoting format patterns.
      * @param key
      * @param args
      * @return
+     * @see java.util.MessageFormat
      */
     public String format(String key, Object... args) {
         String template = get(key);
