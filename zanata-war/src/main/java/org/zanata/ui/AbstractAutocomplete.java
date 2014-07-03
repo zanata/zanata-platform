@@ -24,9 +24,9 @@ package org.zanata.ui;
 
 import java.util.List;
 
+import org.zanata.i18n.Messages;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.util.ServiceLocator;
-import org.zanata.util.ZanataMessages;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +36,8 @@ import lombok.Setter;
  */
 public abstract class AbstractAutocomplete<T> {
 
-    protected ZanataMessages zanataMessages =
-            ServiceLocator.instance().getInstance(
-                    "zanataMessages", ZanataMessages.class);
+    protected Messages msgs =
+            ServiceLocator.instance().getInstance(Messages.class);
 
     protected ConversationScopeMessages conversationScopeMessages =
             ConversationScopeMessages.instance();

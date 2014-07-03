@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.i18n;
 
 import java.text.MessageFormat;
 import java.util.AbstractMap;
@@ -30,16 +30,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Utility component to help with programmatic access to the message resource
@@ -52,28 +47,10 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ZanataMessages extends AbstractMap<String, String> {
-
-    @AutoCreate
-    @BypassInterceptors
-    @Name("org.jboss.seam.international.messagesFactory")
-    @Install(precedence = APPLICATION)
-    @Scope(ScopeType.STATELESS)
-    public static class Factory {
-        @org.jboss.seam.annotations.Factory(
-                value = "org.jboss.seam.international.messages",
-                autoCreate = true, scope = EVENT)
-        public ZanataMessages getMessages() {
-            return new ZanataMessages();
-        }
-        // TODO remove alias zanataMessages (messages is preferred)
-        @org.jboss.seam.annotations.Factory(
-                value = "zanataMessages",
-                autoCreate = true, scope = EVENT)
-        public ZanataMessages getZanataMessages() {
-            return getMessages();
-        }
-    }
+@AutoCreate
+@Name("msgs")
+@Scope(EVENT)
+public class Messages extends AbstractMap<String, String> {
 
     private static ResourceBundle getResourceBundle() {
         // Generic ResourceBundle without built-in interpolation:
@@ -99,7 +76,7 @@ public class ZanataMessages extends AbstractMap<String, String> {
 
     private final ResourceBundle resourceBundle;
 
-    public ZanataMessages() {
+    public Messages() {
         this.resourceBundle = getResourceBundle();
     }
 
@@ -129,18 +106,6 @@ public class ZanataMessages extends AbstractMap<String, String> {
         } else {
             return null;
         }
-    }
-
-    // use messages.get()
-    @Deprecated
-    public String getMessage(String key) {
-        return get(key);
-    }
-
-    // use messages.format(), not zanataMessages.getMessage()
-    @Deprecated
-    public String getMessage(String key, Object... args) {
-        return format(key, args);
     }
 
     /**

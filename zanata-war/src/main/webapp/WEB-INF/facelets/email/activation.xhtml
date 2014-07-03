@@ -9,22 +9,22 @@
 
   <ui:param name="toName" value="#{emailServiceImpl.toName}"/>
   <ui:param name="toEmailAddr" value="#{emailServiceImpl.toEmailAddr}"/>
-  <ui:param name="subject" value="#{messages['jsf.email.activation.Subject']}"/>
+  <ui:param name="subject" value="#{msgs['jsf.email.activation.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages.format('jsf.email.activation.register.DearName', emailServiceImpl.toName)}</p>
+    <p>#{msgs.format('jsf.email.activation.register.DearName', emailServiceImpl.toName)}</p>
 
-    <p>#{messages['jsf.email.activation.ClickLinkToActivateAccount']}</p>
+    <p>#{msgs['jsf.email.activation.ClickLinkToActivateAccount']}</p>
 
     <p>
       <a
         href="#{applicationConfiguration.serverPath}/account/activate/#{emailServiceImpl.activationKey}">
-        #{messages['jsf.email.activation.Link']}
+        #{msgs['jsf.email.activation.Link']}
       </a>
     </p>
 
     <p>
-      #{messages['jsf.email.alternate.copyPasteMessage']}
+      #{msgs['jsf.email.alternate.copyPasteMessage']}
     </p>
 
     <p>
@@ -35,7 +35,7 @@
     </p>
 
     <p>
-      #{messages['jsf.UrlExpireMessage']}
+      #{msgs['jsf.UrlExpireMessage']}
     </p>
   </ui:define>
 

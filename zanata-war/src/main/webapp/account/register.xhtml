@@ -7,7 +7,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template_nobanner.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Register']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>
   <ui:define name="center_content">
 
     <div class="header__logo-only">
@@ -35,18 +35,18 @@
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
               <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
-                  class="gamma heading--sub">#{messages['jsf.register.WithZanata']}</h2>
+                  class="gamma heading--sub">#{msgs['jsf.register.WithZanata']}</h2>
               </s:fragment>
 
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
                 <h:outputLabel
-                  for="name">#{messages['jsf.register.FullName.label']}</h:outputLabel>
+                  for="name">#{msgs['jsf.register.FullName.label']}</h:outputLabel>
                 <h:inputText id="name" value="#{register.person.name}"
                   tabindex="2"/>
 
                 <h:outputLabel
-                  for="username">#{messages['jsf.Username']}</h:outputLabel>
+                  for="username">#{msgs['jsf.Username']}</h:outputLabel>
                 <s:decorate id="usernameField"
                   template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="username" value="#{register.username}"
@@ -57,7 +57,7 @@
                 </s:decorate>
 
                 <h:outputLabel
-                  for="email">#{messages['jsf.Email']}</h:outputLabel>
+                  for="email">#{msgs['jsf.Email']}</h:outputLabel>
                 <s:decorate id="emailField"
                   template="../WEB-INF/layout/field.xhtml">
                   <h:inputText id="email" value="#{register.email}"
@@ -67,7 +67,7 @@
                 </s:decorate>
 
                 <h:outputLabel
-                  for="password">#{messages['jsf.Password']}</h:outputLabel>
+                  for="password">#{msgs['jsf.Password']}</h:outputLabel>
                 <s:decorate id="passwordField"
                   template="../WEB-INF/layout/field.xhtml">
                   <div class="form__password js-form-password">
@@ -88,7 +88,7 @@
 
                 <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
                   <p class="txt--meta l--push-top-half">
-                    <h:outputText value="#{messages.format('jsf.register.agreeToTOS',
+                    <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                       applicationConfiguration.termsOfUseUrl)}" escape="false"/>
                   </p>
                 </s:fragment>
@@ -99,9 +99,9 @@
 
                   <div
                     class="l--push-top-half txt--align-center txt--align-center-s">
-                    #{messages['jsf.register.AlreadyHaveAccount.label']} <s:link
+                    #{msgs['jsf.register.AlreadyHaveAccount.label']} <s:link
                     view="/account/login.xhtml"
-                    value="#{messages['jsf.register.LogIn.label']}"/>
+                    value="#{msgs['jsf.register.LogIn.label']}"/>
                   </div>
                 </div>
               </h:form>
@@ -112,7 +112,7 @@
               <h:form>
                 <s:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2
-                    class="gamma heading--sub">#{messages['jsf.register.WithOther.label']}</h2>
+                    class="gamma heading--sub">#{msgs['jsf.register.WithOther.label']}</h2>
                 </s:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">

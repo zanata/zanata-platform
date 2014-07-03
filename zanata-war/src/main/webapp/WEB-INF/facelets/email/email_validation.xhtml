@@ -10,28 +10,28 @@
   <ui:param name="toName" value="#{profileAction.name}"/>
   <ui:param name="toEmailAddr" value="#{profileAction.email}"/>
   <ui:param name="subject"
-    value="#{messages['jsf.email.accountchange.Subject']}"/>
+    value="#{msgs['jsf.email.accountchange.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages.format('jsf.email.accountchange.DearName',
+    <p>#{msgs.format('jsf.email.accountchange.DearName',
       profileAction.name)}</p>
 
-    <p>#{messages.format('jsf.email.accountchange.Message', profileAction.email)}
-      <br/> #{messages['jsf.email.accountchange.Message2']}</p>
+    <p>#{msgs.format('jsf.email.accountchange.Message', profileAction.email)}
+      <br/> #{msgs['jsf.email.accountchange.Message2']}</p>
 
     <p>
       <a
         href="#{applicationConfiguration.serverPath}/account/validate_email/#{profileAction.activationKey}">
-        #{messages['jsf.email.accountchange.ConfirmationLink']}
+        #{msgs['jsf.email.accountchange.ConfirmationLink']}
       </a>
     </p>
 
     <p>
-      #{messages['jsf.email.alternate.copyPasteMessage']}
+      #{msgs['jsf.email.alternate.copyPasteMessage']}
     </p>
 
     <p>
-      #{messages['jsf.UrlExpireMessage']}
+      #{msgs['jsf.UrlExpireMessage']}
     </p>
 
     <p>

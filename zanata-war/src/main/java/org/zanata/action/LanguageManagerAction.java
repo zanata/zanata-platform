@@ -61,7 +61,7 @@ public class LanguageManagerAction implements Serializable {
     private ResourceUtils resourceUtils;
 
     @In
-    private Map<String, String> messages;
+    private Map<String, String> msgs;
 
     private String language;
 
@@ -176,7 +176,7 @@ public class LanguageManagerAction implements Serializable {
         if (language.length() > LENGTH_LIMIT) {
             this.uLocale = null;
             this.languageNameValidationMessage =
-                    messages.get("jsf.language.validation.Invalid");
+                    msgs.get("jsf.language.validation.Invalid");
             return false;
         }
 
@@ -190,28 +190,28 @@ public class LanguageManagerAction implements Serializable {
             localeId = new LocaleId(language);
         } catch (IllegalArgumentException iaex) {
             this.languageNameValidationMessage =
-                    messages.get("jsf.language.validation.Invalid");
+                    msgs.get("jsf.language.validation.Invalid");
             return false;
         }
 
         // check for already registered languages
         if (localeServiceImpl.localeExists(localeId)) {
             this.languageNameValidationMessage =
-                    messages.get("jsf.language.validation.Existing");
+                    msgs.get("jsf.language.validation.Existing");
             return false;
         }
 
         // Check for plural forms
         if (resourceUtils.getPluralForms(localeId, false) == null) {
             this.languageNameWarningMessage =
-                    messages.get("jsf.language.validation.UnknownPluralForm");
+                    msgs.get("jsf.language.validation.UnknownPluralForm");
         }
 
         // Check for similar already registered languages (warning)
         List<HLocale> similarLangs = localeDAO.findBySimilarLocaleId(localeId);
         if (similarLangs.size() > 0) {
             this.languageNameWarningMessage =
-                    messages.get("jsf.language.validation.SimilarLocaleFound")
+                    msgs.get("jsf.language.validation.SimilarLocaleFound")
                             + similarLangs.get(0).getLocaleId().getId();
         }
 

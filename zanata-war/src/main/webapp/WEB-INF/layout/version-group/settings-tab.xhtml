@@ -7,7 +7,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
-<h1>#{messages['jsf.Settings']}</h1>
+<h1>#{msgs['jsf.Settings']}</h1>
 
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
@@ -17,7 +17,7 @@
       id="settings-general_tab" class="js-url-mod is-active"
       data-content="#settings-general">
       <i class="i i--settings"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.General']}</span>
     </a>
   </li>
   <li>
@@ -26,7 +26,7 @@
       id="settings-languages_tab" class="js-url-mod"
       data-content="#settings-languages">
       <i class="i i--language"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Languages']}</span>
     </a>
   </li>
   <li>
@@ -35,7 +35,7 @@
       id="settings-projects_tab" class="js-url-mod"
       data-content="#settings-projects">
       <i class="i i--project"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Projects']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Projects']}</span>
     </a>
   </li>
   <li>
@@ -44,19 +44,19 @@
       id="settings-maintainers_tab" class="js-url-mod"
       data-content="#settings-maintainers">
       <i class="i i--users"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Maintainers']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Maintainers']}</span>
     </a>
   </li>
 </ul>
 <ul class="tabs__content js-tabs-content">
   <li class="is-active" id="settings-general">
-    <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
+    <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
     <h:form styleClass="l--constrain-large">
       <div>
         <ui:include src="edit_form.xhtml"/>
 
         <div class="l--push-top-1">
-          <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
+          <a4j:commandLink value="#{msgs['jsf.UpdateGeneralSettings']}"
             action="#{versionGroupHome.update}"
             rendered="#{versionGroupHome.managed}"
             render="group-info"
@@ -69,11 +69,11 @@
             <p>
               <a4j:commandLink styleClass="button--danger"
                 action="#{versionGroupHome.setStatus('O')}" render="status">
-                #{messages['jsf.ArchiveThisGroup']}
+                #{msgs['jsf.ArchiveThisGroup']}
               </a4j:commandLink>
             </p>
 
-            <p class="txt--meta">#{messages['jsf.ArchiveGroupMessage']}</p>
+            <p class="txt--meta">#{msgs['jsf.ArchiveGroupMessage']}</p>
           </s:fragment>
 
           <s:fragment
@@ -82,13 +82,13 @@
               <a4j:commandLink styleClass="button--success"
                 action="#{versionGroupHome.setStatus('A')}" render="status">
                 <i
-                  class="i--left i--archive"></i> #{messages['jsf.UnArchiveThisGroup']}
+                  class="i--left i--archive"></i> #{msgs['jsf.UnArchiveThisGroup']}
               </a4j:commandLink>
             </p>
 
             <p class="txt--meta">
               <i
-                class="i--left i--archive"></i> #{messages['jsf.ActivateGroupMessage']}
+                class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
             </p>
           </s:fragment>
         </s:span>
@@ -97,7 +97,7 @@
   </li>
   <li id="settings-languages">
     <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-      #{messages['jsf.Languages']}
+      #{msgs['jsf.Languages']}
     </h2>
     <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
       <ul class="list--slat list--highlight l--push-top-half">
@@ -116,7 +116,7 @@
         <li class="list--highlight__item--none">
           <label
             for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
-            #{messages['jsf.AddALanguage']}
+            #{msgs['jsf.AddALanguage']}
           </label>
 
           <zanata:autocomplete
@@ -125,7 +125,7 @@
             id="languageAutocomplete"
             fetchValue="#{result.localeId}" render="settings-languages-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput()"
-            placeholder="#{messages['jsf.language.search.placeholder']}">
+            placeholder="#{msgs['jsf.language.search.placeholder']}">
 
             #{result.retrieveDisplayName()}<span
             class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
@@ -137,7 +137,7 @@
   </li>
   <li id="settings-projects">
     <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-      #{messages['jsf.Projects']}
+      #{msgs['jsf.Projects']}
     </h2>
     <h:form id="settings-projects-form" styleClass="l--push-bottom-0">
       <ul class="list--slat list--highlight l--push-top-half">
@@ -163,7 +163,7 @@
         <li class="list--highlight__item--none">
           <label
             for="#{rich:clientId('versionAutocomplete')}-autocomplete__input">
-            #{messages['jsf.AddAProject']}
+            #{msgs['jsf.AddAProject']}
           </label>
 
           <zanata:autocomplete
@@ -172,7 +172,7 @@
             fetchValue="#{result.id}"
             render="settings-projects-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput();"
-            placeholder="#{messages['jsf.SearchProjects']}">
+            placeholder="#{msgs['jsf.SearchProjects']}">
 
             #{result.project.slug} <i class="i i--version"></i> #{result.slug}
           </zanata:autocomplete>
@@ -182,7 +182,7 @@
   </li>
   <li id="settings-maintainers">
     <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-      #{messages['jsf.Maintainers']}
+      #{msgs['jsf.Maintainers']}
     </h2>
     <h:form id="settings-maintainers-form" styleClass="l--push-bottom-0">
       <ul class="list--slat list--highlight l--push-top-half">
@@ -207,7 +207,7 @@
         <li class="list--highlight__item--none">
           <label
             for="#{rich:clientId('maintainerAutocomplete')}-autocomplete__input">
-            #{messages['jsf.AddAMaintainer']}
+            #{msgs['jsf.AddAMaintainer']}
           </label>
 
           <zanata:autocomplete
@@ -216,7 +216,7 @@
             fetchValue="#{result.account.username}"
             render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
             oncomplete="focusCurrentActiveInput()"
-            placeholder="#{messages['jsf.SearchUsers']}">
+            placeholder="#{msgs['jsf.SearchUsers']}">
 
           <span class="w--r-1 bx--round l--push-right-quarter">
             <img

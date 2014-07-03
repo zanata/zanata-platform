@@ -9,14 +9,14 @@
     role="dialog" aria-hidden="true">
     <div class="modal__dialog l--constrain-medium">
       <header class="modal__header">
-        <h2 class="modal__title">#{messages['jsf.CopyTrans']}</h2>
+        <h2 class="modal__title">#{msgs['jsf.CopyTrans']}</h2>
         <button class="modal__close button--link" data-dismiss="modal"><i
           class="i i--huge i--cancel"></i></button>
       </header>
 
       <div class="modal__content">
         <div class="message message--highlight l--pad-h-1">
-          #{messages['jsf.Copytrans.message2']}
+          #{msgs['jsf.Copytrans.message2']}
         </div>
         <h:form class="l--push-h-1 l--push-v-half">
           <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
@@ -29,11 +29,11 @@
             id="copy-trans-buttons">
             <button styleClass="button--primary" jsfc="a4j:commandButton"
               rendered="#{!copyTransAction.inProgress}"
-              onclick="runCopyTrans();zanata.modal.hide('#copy-trans-modal')" value="#{messages['jsf.CopyTrans.run']}"></button>
+              onclick="runCopyTrans();zanata.modal.hide('#copy-trans-modal')" value="#{msgs['jsf.CopyTrans.run']}"></button>
 
             <button styleClass="button--danger" jsfc="a4j:commandButton"
               rendered="#{copyTransAction.inProgress}"
-              onclick="cancelCopyTrans()" value="#{messages['jsf.Cancel']}"></button>
+              onclick="cancelCopyTrans()" value="#{msgs['jsf.Cancel']}"></button>
           </s:div>
         </div>
       </footer>

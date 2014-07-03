@@ -12,7 +12,7 @@
   <rich:panel>
     <s:decorate id="slugField" template="edit.xhtml" enclose="true">
       <ui:define
-        name="label">#{messages['jsf.transmemory.TransMemoryId']}</ui:define>
+        name="label">#{msgs['jsf.transmemory.TransMemoryId']}</ui:define>
       <h:inputText id="slug" required="true"
         value="#{translationMemoryAction.instance.slug}"
         valueChangeListener="#{translationMemoryAction.verifySlugAvailable}">
@@ -21,13 +21,13 @@
 
       <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
         <rich:tooltip>
-          <em><code>#{messages['jsf.transmemory.TransMemoryIdExample']}</code></em>
+          <em><code>#{msgs['jsf.transmemory.TransMemoryIdExample']}</code></em>
         </rich:tooltip>
       </s:span>
     </s:decorate>
 
     <s:decorate id="descriptionField" template="edit.xhtml">
-      <ui:define name="label">#{messages['jsf.Description']}</ui:define>
+      <ui:define name="label">#{msgs['jsf.Description']}</ui:define>
       <h:inputTextarea id="description" required="false"
         value="#{translationMemoryAction.instance.description}"
         style="width: 260px;"/>
@@ -39,15 +39,15 @@
 
   <div class="actionButtons">
     <h:commandButton id="save"
-      value="#{messages['jsf.Save']}"
+      value="#{msgs['jsf.Save']}"
       action="#{translationMemoryAction.persist}"
       rendered="#{!translationMemoryAction.managed}"/>
     <h:commandButton id="update"
-      value="#{messages['jsf.Update']}"
+      value="#{msgs['jsf.Update']}"
       action="#{translationMemoryAction.update}"
       rendered="#{translationMemoryAction.managed}"/>
     <s:button id="cancel"
-      value="#{messages['jsf.Cancel']}"
+      value="#{msgs['jsf.Cancel']}"
       propagation="none"
       action="#{translationMemoryAction.cancel}"/>
   </div>

@@ -7,7 +7,7 @@
   xmlns:rich="http://richfaces.org/rich"
   template="/WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Help']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Help']}</ui:define>
   <ui:define name="center_content">
     <ui:remove>
       <!-- should this be project-help-content? -->
@@ -18,12 +18,12 @@
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-        value="#{messages['jsf.EditHelpPageContent']}"
+        value="#{msgs['jsf.EditHelpPageContent']}"
         view="/help/edit_help_content.xhtml" propagation="none"
         rendered="#{s:hasRole('admin')}"></s:link>
-      <s:link styleClass="action_link" value="#{messages['jsf.ContactAdmin']}"
+      <s:link styleClass="action_link" value="#{msgs['jsf.ContactAdmin']}"
         view="/help/contact_admin.xhtml" propagation="none"/>
     </rich:panel>
 

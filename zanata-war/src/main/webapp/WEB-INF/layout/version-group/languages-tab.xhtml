@@ -23,14 +23,14 @@
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
           <a class="dropdown__toggle js-dropdown__toggle" href="#"
-            title="#{messages['jsf.tooltip.MoreActions']}"><i
+            title="#{msgs['jsf.tooltip.MoreActions']}"><i
             class="i i--ellipsis"></i></a>
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
               <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
                 onclick="changeBrowserUrl(this.href, true);return false;">
-                #{messages['jsf.ManageLanguage']} <i
+                #{msgs['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
             </li>
@@ -39,13 +39,13 @@
       </s:fragment>
     </div>
 
-    <h2 class="panel__heading">#{messages['jsf.Languages']}</h2>
+    <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
   </div>
 
   <div class="panel__sub-header js-reveal">
     <zanata:list-filter status="languageTab-languagesLoader"
       listId="languages-language_form"
-      placeholder="#{messages['jsf.language.search.placeholder']}"
+      placeholder="#{msgs['jsf.language.search.placeholder']}"
       iconClass="i--language"
       render="languages-language_form, languageTabLanguageFilterBottom-pager, languageTabLanguageFilterBottom-page-info"
       id="languageTabLanguageFilter"
@@ -61,13 +61,13 @@
   <h:form id="languages-language_form" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionGroupHomeAction.activeLocales}">
-      <p class="txt--meta">#{messages['jsf.NoActiveLanguages']}</p>
+      <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
           <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
             onclick="changeBrowserUrl(this.href, true);return false;">
-            #{messages['jsf.AddLanguages']}
+            #{msgs['jsf.AddLanguages']}
           </a>
         </p>
       </s:fragment>
@@ -75,7 +75,7 @@
 
     <s:div styleClass="l--pad-all-half"
       rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
-      <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+      <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
     </s:div>
 
     <s:fragment
@@ -131,7 +131,7 @@
 
   <zanata:list-filter status="languageTab-languagesLoader"
     listId="languages-language_form"
-    placeholder="#{messages['jsf.language.search.placeholder']}"
+    placeholder="#{msgs['jsf.language.search.placeholder']}"
     iconClass="i--language" bottomPanel="true"
     render="languages-language_form, languageTabLanguageFilter-pager, languageTabLanguageFilter-page-info"
     id="languageTabLanguageFilterBottom"
@@ -151,7 +151,7 @@
     </div>
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('languages-language_list');toggleColumn('languages')"
-      title="#{messages['Languages']}">
+      title="#{msgs['Languages']}">
       <i class="i--huge i--arrow-left" aria-hidden="true"></i>
     </a>
 
@@ -161,14 +161,14 @@
       <s:span id="language-label">
         #{versionGroupHomeAction.selectedLocale.retrieveDisplayName()}
       </s:span>
-      #{messages['jsf.Projects']}
+      #{msgs['jsf.Projects']}
     </h2>
   </div>
 
   <div class="panel__sub-header js-reveal">
     <zanata:list-filter status="languageTab-projectsLoader"
       listId="languages-project_list"
-      placeholder="#{messages['jsf.project.search.placeholder']}"
+      placeholder="#{msgs['jsf.project.search.placeholder']}"
       iconClass="i--project"
       render="languages-project_list, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info"
       id="languageTabVersionFilter"
@@ -184,19 +184,19 @@
   <h:form id="languages-project_list" styleClass="l--push-bottom-1">
     <s:div styleClass="l--pad-all-half"
       rendered="#{versionGroupHomeAction.selectedLocale == null}">
-      <p class="txt--meta">#{messages['jsf.SelectALanguageFromList']}</p>
+      <p class="txt--meta">#{msgs['jsf.SelectALanguageFromList']}</p>
     </s:div>
 
     <s:fragment rendered="#{versionGroupHomeAction.selectedLocale != null}">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionGroupHomeAction.projectIterations}">
-        <p class="txt--meta">#{messages['jsf.NoProjectsInGroup']}</p>
+        <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
             <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
               onclick="changeBrowserUrl(this.href, true);return false;">
-              #{messages['jsf.AddProjectVersions']}
+              #{msgs['jsf.AddProjectVersions']}
             </a>
           </p>
         </s:fragment>
@@ -204,7 +204,7 @@
 
       <s:div styleClass="l--pad-all-half"
         rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
-        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
@@ -228,7 +228,7 @@
                         <s:fragment
                           rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
                           <span
-                            class="label--danger l--push-left-quarter">#{messages['jsf.Missing']}</span>
+                            class="label--danger l--push-left-quarter">#{msgs['jsf.Missing']}</span>
                         </s:fragment>
                       </span>
                   </div>
@@ -257,7 +257,7 @@
 
   <zanata:list-filter status="languageTab-projectsLoader"
     listId="languages-project_list"
-    placeholder="#{messages['jsf.project.search.placeholder']}"
+    placeholder="#{msgs['jsf.project.search.placeholder']}"
     bottomPanel="true"
     iconClass="i--project"
     render="languages-project_list, languageTabVersionFilter-pager, languageTabVersionFilter-page-info"

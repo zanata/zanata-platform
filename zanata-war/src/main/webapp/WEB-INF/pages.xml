@@ -17,7 +17,7 @@
     <param name="query" value="#{projectSearch.projectAutocomplete.query}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.SearchProjects'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}" />
   </page>
 
 
@@ -28,14 +28,14 @@
   <page view-id="/edit_home_content.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.server.EditHomePage.label'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePage.label'])}" />
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
 
   <page view-id="/edit_home_content_code.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.server.EditHomePageCode.label'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePageCode.label'])}" />
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
 
@@ -151,16 +151,16 @@
     <action execute="#{passwordReset.validateActivationKey}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ResetPassword'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ResetPassword'])}" />
   </page>
 
   <page view-id="/account/changepassword.xhtml" login-required="true">
     <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}" />
+      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ChangePassword'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ChangePassword'])}" />
   </page>
 
   <page view-id="/account/register.xhtml">
@@ -176,7 +176,7 @@
     <restrict>#{authenticationManager.isAuthenticatedAccountWaitingForActivation()}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.InactiveAccount'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.InactiveAccount'])}" />
     <action execute="#{inactiveAccountAction.init}" />
     <navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
       <end-conversation />
@@ -197,7 +197,7 @@
 
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Glossary'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.Glossary'])}" />
 
     <action execute="#{glossaryAction.initialize()}" />
   </page>
@@ -211,33 +211,33 @@
   <page view-id="/admin/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.Administration'])}" />
   </page>
 
   <page view-id="/admin/search.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageSearch'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ManageSearch'])}" />
   </page>
 
   <page view-id="/admin/stats.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.OverallStatistics'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.OverallStatistics'])}" />
   </page>
 
   <page view-id="/admin/roledetail.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/rolemanager.xhtml', messages['jsf.ManageRoles'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/rolemanager.xhtml', msgs['jsf.ManageRoles'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RoleDetails'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.RoleDetails'])}" />
 
     <navigation from-action="#{roleAction.save}">
       <rule if-outcome="success">
@@ -249,11 +249,11 @@
   <page view-id="/admin/supportedlanguagedetail.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', messages['jsf.ManageLanguage'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', msgs['jsf.ManageLanguage'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.CreateSupportedLanguage'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.CreateSupportedLanguage'])}" />
     <navigation from-action="#{languageManagerAction.save}">
       <rule if-outcome="success">
         <redirect view-id="/admin/languagemanager.xhtml" />
@@ -265,9 +265,9 @@
     <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageRoles'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ManageRoles'])}" />
     <navigation from-action="#{roleAction.createRole}">
       <redirect view-id="/admin/roledetail.xhtml" />
     </navigation>
@@ -279,11 +279,11 @@
   <page view-id="/admin/userdetail.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/usermanager.xhtml', messages['jsf.ManageUsers'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/usermanager.xhtml', msgs['jsf.ManageUsers'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.AccountDetails'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.AccountDetails'])}" />
 
     <navigation from-action="#{userAction.save}">
       <rule if-outcome="success">
@@ -296,9 +296,9 @@
     <restrict>#{s:hasPermission('seam.user', 'read')}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageUsers'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ManageUsers'])}" />
     <navigation from-action="#{userAction.createUser}">
       <redirect view-id="/admin/userdetail.xhtml" />
     </navigation>
@@ -310,9 +310,9 @@
   <page view-id="/admin/server_configuration.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ServerConfiguration'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ServerConfiguration'])}" />
     <navigation from-action="#{serverConfigurationBean.update}">
       <rule if-outcome="success">
         <redirect view-id="/admin/home.xhtml" />
@@ -324,9 +324,9 @@
     <action execute="#{languageSearchAction.loadSupportedLanguage}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ManageLanguage'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ManageLanguage'])}" />
 
     <navigation
       from-action="#{languageSearchAction.manageMembers(language.localeId.id)}">
@@ -340,9 +340,9 @@
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', messages['jsf.ManageLanguage'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/languagemanager.xhtml', msgs['jsf.ManageLanguage'])}" />
     <action
       execute="#{breadcrumbs.addLocation('', languageTeamAction.language)}" />
   </page>
@@ -352,9 +352,9 @@
   <page view-id="/admin/rolerules.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RoleAssignmentRules'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.RoleAssignmentRules'])}" />
 
     <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
       <redirect view-id="/admin/roleruledetails.xhtml" />
@@ -364,13 +364,13 @@
   <page view-id="/admin/roleruledetails.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/rolerules.xhtml', messages['jsf.RoleAssignmentRules'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/rolerules.xhtml', msgs['jsf.RoleAssignmentRules'])}" />
     <action if="#{!roleAssignmentRuleAction.managed}"
-      execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.CreateRoleAssignmentRule'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.rolerules.CreateRoleAssignmentRule'])}" />
     <action if="#{roleAssignmentRuleAction.managed}"
-      execute="#{breadcrumbs.addLocation('', messages['jsf.rolerules.EditRoleAssignmentRule'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.rolerules.EditRoleAssignmentRule'])}" />
 
     <navigation from-action="#{roleAssignmentRuleAction.update}">
       <rule if-outcome="persisted">
@@ -387,9 +387,9 @@
   <page view-id="/admin/processmanager.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', messages['jsf.Administration'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/admin/processmanager.xhtml', messages['jsf.ProcessManager'])}" />
+      execute="#{breadcrumbs.addLocation('/admin/processmanager.xhtml', msgs['jsf.ProcessManager'])}" />
 
     <navigation from-action="#{processManagerAction.clearAllFinished}">
       <redirect view-id="/admin/processmanager.xhtml" />
@@ -401,7 +401,7 @@
   <page view-id="/version-group/home.xhtml">
     <action execute="#{versionGroupAction.loadAllActiveGroupsOrIsMaintainer}" />
     <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Groups'])}" />
+    <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}" />
   </page>
 
   <page view-id="/version-group/create_version_group.xhtml">
@@ -428,11 +428,11 @@
 
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', messages['jsf.Groups'])}" />
+      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', msgs['jsf.Groups'])}" />
     <action
       execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.RequestJoinGroup'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.RequestJoinGroup'])}" />
 
     <navigation from-action="#{versionGroupJoinAction.send}">
       <rule if-outcome="success">
@@ -457,9 +457,9 @@
     <restrict>#{identity.preAuthenticated}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}" />
+      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.EditProfile'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.EditProfile'])}" />
     <navigation from-action="#{profileAction.edit}">
       <redirect view-id="/profile/view.xhtml" />
     </navigation>
@@ -481,26 +481,26 @@
   <page view-id="/profile/view.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.MyProfile'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.MyProfile'])}" />
   </page>
 
   <page view-id="/profile/identities.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}" />
+      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.identities.Title'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.identities.Title'])}" />
     <action execute="#{credentialsAction.loadUserCredentials}" />
   </page>
 
   <page view-id="/profile/add_identity.xhtml" login-required="true">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', messages['jsf.MyProfile'])}" />
+      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('/profile/identities.xhtml', messages['jsf.identities.Title'])}" />
+      execute="#{breadcrumbs.addLocation('/profile/identities.xhtml', msgs['jsf.identities.Title'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.identities.AddIdentity'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.identities.AddIdentity'])}" />
 
     <navigation from-action="#{credentialsAction.cancel}">
       <redirect view-id="/profile/identities.xhtml" />
@@ -518,15 +518,15 @@
   <!-- Help -->
   <page view-id="/help/view.xhtml">
     <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', messages['jsf.Help'])}" />
+    <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Help'])}" />
   </page>
 
   <page view-id="/help/edit_help_content.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}" />
+      execute="#{breadcrumbs.addLocation('/help/view.xhtml', msgs['jsf.Help'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.EditHelpPageContent'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.EditHelpPageContent'])}" />
   </page>
 
   <page view-id="/help/contact_admin.xhtml">
@@ -538,9 +538,9 @@
     <param name="emailType" value="#{sendEmail.emailType}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/help/view.xhtml', messages['jsf.Help'])}" />
+      execute="#{breadcrumbs.addLocation('/help/view.xhtml', msgs['jsf.Help'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.ContactAdmin'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.ContactAdmin'])}" />
     <navigation from-action="#{sendEmail.send}">
       <rule if-outcome="success">
         <redirect view-id="/help/view.xhtml" />
@@ -556,7 +556,7 @@
   <page view-id="/project/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Projects'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.Projects'])}" />
   </page>
 
   <page view-id="/project/project.xhtml">
@@ -637,14 +637,14 @@
   <page view-id="/language/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.Languages'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.Languages'])}" />
   </page>
 
   <page view-id="/language/language.xhtml">
     <param name="id" value="#{languageTeamAction.language}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}" />
+      execute="#{breadcrumbs.addLocation('/language/home.xhtml', msgs['jsf.Languages'])}" />
     <action
       execute="#{breadcrumbs.addLocation('', languageTeamAction.language)}" />
 
@@ -656,11 +656,11 @@
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}" />
+      execute="#{breadcrumbs.addLocation('/language/home.xhtml', msgs['jsf.Languages'])}" />
     <action
       execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages.format(
+      execute="#{breadcrumbs.addLocation('', msgs.format(
         'jsf.contactLanguageTeamCoordinatorForLocale',
         sendEmail.locale.localeId.id, sendEmail.locale.retrieveNativeName()))}" />
 
@@ -688,7 +688,7 @@
     <param name="id" value="#{sendEmail.language}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/language/home.xhtml', messages['jsf.Languages'])}" />
+      execute="#{breadcrumbs.addLocation('/language/home.xhtml', msgs['jsf.Languages'])}" />
     <action
       execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}" />
     <action
@@ -716,16 +716,16 @@
     <restrict>#{s:hasRole('admin')}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.transmemory.Title'])}" />
+      execute="#{breadcrumbs.addLocation('/tm/home.xhtml', msgs['jsf.transmemory.Title'])}" />
   </page>
 
   <page view-id="/tm/create.xhtml">
     <restrict>#{s:hasRole('admin')}</restrict>
     <action execute="#{breadcrumbs.clear}" />
     <action
-      execute="#{breadcrumbs.addLocation('/tm/home.xhtml', messages['jsf.transmemory.Title'])}" />
+      execute="#{breadcrumbs.addLocation('/tm/home.xhtml', msgs['jsf.transmemory.Title'])}" />
     <action
-      execute="#{breadcrumbs.addLocation('', messages['jsf.transmemory.title.New'])}" />
+      execute="#{breadcrumbs.addLocation('', msgs['jsf.transmemory.title.New'])}" />
     <navigation from-action="#{translationMemoryAction.persist}">
       <rule if="#{translationMemoryAction.managed}">
         <redirect view-id="/tm/home.xhtml" />
@@ -751,7 +751,7 @@
   <exception class="org.zanata.exception.KeyNotFoundException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.InvalidActivationKey']}
+      <message severity="error">#{msgs['jsf.InvalidActivationKey']}
       </message>
     </redirect>
   </exception>
@@ -759,7 +759,7 @@
   <exception class="org.zanata.exception.ActivationLinkExpiredException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.ActivationLinkExpired']}
+      <message severity="error">#{msgs['jsf.ActivationLinkExpired']}
       </message>
     </redirect>
   </exception>
@@ -767,20 +767,20 @@
   <exception class="org.jboss.seam.framework.EntityNotFoundException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
-      <message severity="warn">#{messages['jsf.RecordNotFound']}</message>
+      <message severity="warn">#{msgs['jsf.RecordNotFound']}</message>
     </redirect>
   </exception>
 
   <exception class="javax.persistence.EntityNotFoundException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
-      <message severity="warn">#{messages['jsf.RecordNotFound']}</message>
+      <message severity="warn">#{msgs['jsf.RecordNotFound']}</message>
     </redirect>
   </exception>
 
   <exception class="javax.persistence.EntityExistsException">
     <redirect view-id="/error.xhtml">
-      <message severity="warn">#{messages['jsf.DuplicatedRecord']}</message>
+      <message severity="warn">#{msgs['jsf.DuplicatedRecord']}</message>
     </redirect>
   </exception>
 
@@ -788,7 +788,7 @@
     <end-conversation />
     <redirect view-id="/error.xhtml">
       <message
-        severity="warn">#{messages['jsf.AnotherUserChangedTheSameDataPleaseTryAgain']}
+        severity="warn">#{msgs['jsf.AnotherUserChangedTheSameDataPleaseTryAgain']}
       </message>
     </redirect>
   </exception>
@@ -797,7 +797,7 @@
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message
-        severity="error">#{messages['jsf.YouDoNotHavePermissionToAccessThisResource']}
+        severity="error">#{msgs['jsf.YouDoNotHavePermissionToAccessThisResource']}
       </message>
     </redirect>
   </exception>
@@ -805,7 +805,7 @@
   <exception class="org.jboss.seam.security.NotLoggedInException"
     log-level="debug">
     <redirect view-id="/account/login.xhtml">
-      <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}
+      <message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}
       </message>
     </redirect>
   </exception>
@@ -813,7 +813,7 @@
   <exception class="javax.security.auth.login.LoginException"
     log-level="debug">
     <redirect view-id="/account/login.xhtml">
-      <message severity="warn">#{messages['org.jboss.seam.NotLoggedIn']}
+      <message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}
       </message>
     </redirect>
   </exception>
@@ -822,7 +822,7 @@
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message
-        severity="warn">#{messages['jsf.YourSessionHasTimedOutPleaseTryAgain']}
+        severity="warn">#{msgs['jsf.YourSessionHasTimedOutPleaseTryAgain']}
       </message>
     </redirect>
   </exception>
@@ -836,7 +836,7 @@
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message
-        severity="warn">#{messages['jsf.Error']} #{org.jboss.seam.handledException.message}
+        severity="warn">#{msgs['jsf.Error']} #{org.jboss.seam.handledException.message}
       </message>
     </redirect>
   </exception>
@@ -844,14 +844,14 @@
   <exception class="org.jboss.seam.web.FileUploadException" log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="error">
-        #{messages['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}
+        #{msgs['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}
       </message>
     </redirect>
   </exception>
 
   <exception>
     <redirect view-id="/error.xhtml">
-      <message severity="error">#{messages['jsf.UnexpectedError']}</message>
+      <message severity="error">#{msgs['jsf.UnexpectedError']}</message>
     </redirect>
   </exception>
 

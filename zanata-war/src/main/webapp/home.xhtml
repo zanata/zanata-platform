@@ -8,7 +8,7 @@
   xmlns:rich="http://richfaces.org/rich"
   template="./WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Home']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Home']}</ui:define>
   <ui:define name="center_content">
     <s:formattedText id="project-home-content"
       value="#{applicationConfiguration.homeContent}"></s:formattedText>
@@ -17,15 +17,15 @@
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{s:hasRole('admin')}">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-        value="#{messages['jsf.server.EditHomePage.label']}"
+        value="#{msgs['jsf.server.EditHomePage.label']}"
         view="/edit_home_content.xhtml" propagation="none">
       </s:link>
       <s:link styleClass="action_link"
-        value="#{messages['jsf.server.EditHomePageCode.label']}"
+        value="#{msgs['jsf.server.EditHomePageCode.label']}"
         view="/edit_home_content_code.xhtml"
-        title="#{messages['jsf.server.EditHomePageCode.tooltip']}"
+        title="#{msgs['jsf.server.EditHomePageCode.tooltip']}"
         propagation="none">
       </s:link>
     </rich:panel>

@@ -12,18 +12,18 @@
   <ui:param name="replyToName" value="#{sendEmail.fromName}"/>
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}"/>
   <ui:param name="subject"
-    value="#{messages.format('jsf.email.admin.SubjectPrefix',
+    value="#{msgs.format('jsf.email.admin.SubjectPrefix',
       sendEmail.fromLoginName)} #{sendEmail.subject}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.admin.DearAdmin']}</p>
+    <p>#{msgs['jsf.email.admin.DearAdmin']}</p>
 
-    <p>#{messages.format('jsf.email.admin.UserMessageIntro',
+    <p>#{msgs.format('jsf.email.admin.UserMessageIntro',
       sendEmail.fromName, sendEmail.fromLoginName)}</p>
     <hr/>
     <h:outputText value="#{sendEmail.htmlMessage}" escape="false"/>
     <hr/>
-    <p>#{messages.format('jsf.email.ReplyInstructions',
+    <p>#{msgs.format('jsf.email.ReplyInstructions',
       sendEmail.fromName, sendEmail.replyEmail)}</p>
   </ui:define>
 

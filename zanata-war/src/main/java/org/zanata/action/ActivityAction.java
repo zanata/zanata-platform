@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
@@ -43,7 +44,6 @@ import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
-import org.zanata.util.ZanataMessages;
 
 import static org.zanata.common.ActivityType.REVIEWED_TRANSLATION;
 import static org.zanata.common.ActivityType.UPDATE_TRANSLATION;
@@ -69,7 +69,7 @@ public class ActivityAction implements Serializable {
     private ActivityService activityServiceImpl;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -100,42 +100,48 @@ public class ActivityAction implements Serializable {
     }
 
     public String getActivityTitle(Activity activity) {
-        return activity.getActivityType() == UPDATE_TRANSLATION ? zanataMessages.getMessage("jsf.Translation") :
-               activity.getActivityType() == REVIEWED_TRANSLATION ? zanataMessages.getMessage("jsf.Reviewed") :
-               activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT ? zanataMessages.getMessage("jsf.UploadedSource") :
-               activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT ? zanataMessages.getMessage("jsf.UploadedTranslations") :
+        return activity.getActivityType() == UPDATE_TRANSLATION ?
+                msgs.get("jsf.Translation") :
+               activity.getActivityType() == REVIEWED_TRANSLATION ?
+                       msgs.get("jsf.Reviewed") :
+               activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT ?
+                       msgs.get("jsf.UploadedSource") :
+               activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT ?
+                       msgs.get("jsf.UploadedTranslations") :
                "";
     }
 
     public String getActivityMessage(Activity activity) {
         switch (activity.getActivityType()) {
         case UPDATE_TRANSLATION:
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.translate.message",
+            return msgs.format("jsf.dashboard.activity.translate.message",
                     activity.getWordCount(), getProjectUrl(activity),
                     getProjectName(activity), getEditorUrl(activity),
-                    StringEscapeUtils.escapeHtml(getLastTextFlowContent(activity)));
+                    StringEscapeUtils
+                            .escapeHtml(getLastTextFlowContent(activity)));
 
-        case REVIEWED_TRANSLATION:
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.review.message",
-                    activity.getWordCount(), getProjectUrl(activity),
-                    getProjectName(activity), getEditorUrl(activity),
-                    StringEscapeUtils.escapeHtml(getLastTextFlowContent(activity)));
+            case REVIEWED_TRANSLATION:
+                return msgs.format("jsf.dashboard.activity.review.message",
+                        activity.getWordCount(), getProjectUrl(activity),
+                        getProjectName(activity), getEditorUrl(activity),
+                        StringEscapeUtils
+                                .escapeHtml(getLastTextFlowContent(activity)));
 
-        case UPLOAD_SOURCE_DOCUMENT:
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.uploadSource.message",
-                    activity.getWordCount(), getProjectUrl(activity),
-                    getProjectName(activity));
+            case UPLOAD_SOURCE_DOCUMENT:
+                return msgs
+                        .format("jsf.dashboard.activity.uploadSource.message",
+                                activity.getWordCount(),
+                                getProjectUrl(activity),
+                                getProjectName(activity));
 
-        case UPLOAD_TRANSLATION_DOCUMENT:
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.uploadTranslation.message",
-                    activity.getWordCount(), getProjectUrl(activity),
-                    getProjectName(activity));
+            case UPLOAD_TRANSLATION_DOCUMENT:
+                return msgs
+                        .format("jsf.dashboard.activity.uploadTranslation.message",
+                                activity.getWordCount(),
+                                getProjectUrl(activity),
+                                getProjectName(activity));
 
-        default:
+            default:
             return "";
         }
     }

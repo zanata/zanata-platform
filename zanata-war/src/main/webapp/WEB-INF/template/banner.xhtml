@@ -19,27 +19,27 @@
     <s:link view="/home.xhtml" propagation="none" id="home">
       <img class="header__site-logo"
         src="#{applicationConfiguration.webAssetsUrl}/logo.svg"/>
-      #{messages['jsf.Zanata']}
+      #{msgs['jsf.Zanata']}
     </s:link>
   </h1>
 
   <nav id="nav-main" class="header__main-nav js-dropdown">
     <a href="#nav-main" class="header__main-nav__toggle js-dropdown__toggle">
       <i class="i i--huge i--list"></i>
-      <span class="is-invisible">#{messages['jsf.Menu']}</span>
+      <span class="is-invisible">#{msgs['jsf.Menu']}</span>
     </a>
 
     <div class="header__main-nav__group js-dropdown__content">
       <h:form styleClass="form--search header__search js-form--search" id="general-search-form">
         <label class="form--search__label"
           for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
-          #{messages['jsf.SearchProjects']}
+          #{msgs['jsf.SearchProjects']}
         </label>
 
         <zanata:autocomplete actionBean="#{projectSearch.projectAutocomplete}"
           maxlength="100" minlength="1" id="projectAutocomplete"
           fetchValue="#{result.project.slug}"
-          placeholder="#{messages['jsf.SearchProjects']}"
+          placeholder="#{msgs['jsf.SearchProjects']}"
           onSelectItem="selectItem"
           inputClass="form--search__input js-form--search__input">
 
@@ -61,26 +61,26 @@
       <ul class="header__main-nav__menu">
         <li>
           <s:link id="projects_link" view="/project/home.xhtml"
-            propagation="none">#{messages['jsf.Projects']}
+            propagation="none">#{msgs['jsf.Projects']}
             <i class="is-hidden--m-up l--float-right i--inline i--project"></i>
           </s:link>
         </li>
         <li>
           <s:link id="version-groups_link" view="/version-group/home.xhtml"
-            propagation="none">#{messages['jsf.Groups']}
+            propagation="none">#{msgs['jsf.Groups']}
             <i class="is-hidden--m-up l--float-right i--inline i--group"></i>
           </s:link>
         </li>
         <li>
           <s:link id="languages_link" view="/language/home.xhtml"
-            propagation="none">#{messages['jsf.Languages']}
+            propagation="none">#{msgs['jsf.Languages']}
             <i class="is-hidden--m-up l--float-right i--inline i--language"></i>
           </s:link>
         </li>
         <s:fragment rendered="#{identity.loggedIn}">
           <li>
             <s:link id="glossary_link" view="/glossary/view.xhtml"
-              propagation="none">#{messages['jsf.Glossary']}
+              propagation="none">#{msgs['jsf.Glossary']}
               <i
                 class="is-hidden--m-up l--float-right i--inline i--glossary"></i>
             </s:link>
@@ -89,7 +89,7 @@
 
         <li>
           <s:link id="help_link" view="/help/view.xhtml"
-            propagation="none">#{messages['jsf.Help']}
+            propagation="none">#{msgs['jsf.Help']}
             <i class="is-hidden--m-up l--float-right i--inline i--help"></i>
           </s:link>
         </li>
@@ -114,7 +114,7 @@
         <li>
           <s:link id="dashboard" view="/dashboard/home.xhtml"
             propagation="none">
-            #{messages['jsf.Dashboard']} <i
+            #{msgs['jsf.Dashboard']} <i
             class="l--float-right i--inline i--dashboard"></i>
           </s:link>
         </li>
@@ -122,7 +122,7 @@
           <li>
             <s:link id="administration" view="/admin/home.xhtml"
               propagation="none">
-              #{messages['jsf.Administration']} <i
+              #{msgs['jsf.Administration']} <i
               class="l--float-right i--inline i--admin"></i>
             </s:link>
           </li>
@@ -130,7 +130,7 @@
         <li>
           <s:link id="right_menu_sign_out_link" view="/account/logout.seam"
             propagation="none">
-            #{messages['jsf.Logout']} <i
+            #{msgs['jsf.Logout']} <i
             class="l--float-right i--inline i--logout"></i>
           </s:link>
         </li>
@@ -141,28 +141,28 @@
   <s:fragment rendered="#{not identity.loggedIn}">
     <s:div styleClass="header__login l--float-right">
       <s:link id="register_link_internal_auth" view="/account/register.xhtml"
-        value="#{messages['jsf.Signup']}"
+        value="#{msgs['jsf.Signup']}"
         propagation="none" styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
       <s:fragment
         rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
-          class="is-hidden--s button">#{messages['jsf.Signup']}</a>
+          class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
       </s:fragment>
 
       <h:outputLink id="signin_link"
         value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{not applicationConfiguration.kerberosAuth}">
-        #{messages['jsf.Login']}
+        #{msgs['jsf.Login']}
       </h:outputLink>
 
       <h:outputLink id="ksignin_link"
         value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{applicationConfiguration.kerberosAuth}">
-        #{messages['jsf.Login']}
+        #{msgs['jsf.Login']}
       </h:outputLink>
     </s:div>
   </s:fragment>

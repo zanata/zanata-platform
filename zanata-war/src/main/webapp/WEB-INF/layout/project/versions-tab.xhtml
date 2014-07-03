@@ -24,13 +24,13 @@
             class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
             id="versions-more-actions">
             <a class="dropdown__toggle js-dropdown__toggle" href="#"
-              title="#{messages['jsf.tooltip.MoreActions']}"><i
+              title="#{msgs['jsf.tooltip.MoreActions']}"><i
               class="i i--ellipsis"></i></a>
             <ul class="dropdown__content js-dropdown__content" role="content"
               aria-labelledby="dropdownContent">
               <li>
                 <s:link id="new-version-link"
-                  value="#{messages['jsf.project.NewVersion']}"
+                  value="#{msgs['jsf.project.NewVersion']}"
                   view="/project/add_iteration.xhtml"
                   propagation="none">
                   <f:param name="projectSlug"
@@ -42,7 +42,7 @@
           </div>
         </s:fragment>
       </div>
-      <h2 class="panel__heading">#{messages['jsf.Versions']}</h2>
+      <h2 class="panel__heading">#{msgs['jsf.Versions']}</h2>
     </div>
 
     <div class="panel__sub-header js-reveal">
@@ -50,7 +50,7 @@
         listId="versions_form"
         render="versions_form, versionSearchBottom-pager, versionSearchBottom-page-info"
         id="versionSearch" iconClass="i--version"
-        placeholder="#{messages['jsf.version.search.placeholder']}"
+        placeholder="#{msgs['jsf.version.search.placeholder']}"
         actionBean="#{projectHomeAction.versionFilter}"/>
     </div>
 
@@ -61,12 +61,12 @@
     <h:form id="versions_form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty projectHomeAction.projectVersions}">
-        <p class="txt--meta">#{messages['jsf.NoVersions']}</p>
+        <p class="txt--meta">#{msgs['jsf.NoVersions']}</p>
         <s:fragment
           rendered="#{s:hasPermission(projectHome.instance, 'update')}">
           <p>
             <s:link styleClass="button--primary"
-              value="#{messages['jsf.project.NewVersion']}"
+              value="#{msgs['jsf.project.NewVersion']}"
               view="/project/add_iteration.xhtml"
               propagation="none">
               <f:param name="projectSlug"
@@ -79,7 +79,7 @@
 
       <s:div styleClass="l--pad-all-half"
         rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.currentPage}">
-        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
@@ -96,9 +96,9 @@
                   class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
                   <a href="#"
                     class="dropdown__toggle js-dropdown__toggle txt--meta"
-                    title="#{messages['jsf.tooltip.TranslateOptions']}">
+                    title="#{msgs['jsf.tooltip.TranslateOptions']}">
                       <span class="is-invisible">
-                        #{messages['jsf.tooltip.TranslateOptions']}
+                        #{msgs['jsf.tooltip.TranslateOptions']}
                       </span>
                   </a>
                   <ul class="dropdown__content js-dropdown__content">
@@ -116,7 +116,7 @@
                           <f:param name="locale" value="#{locale.language}"/>
                             <span>
                               <h:outputFormat
-                                value="#{messages['jsf.project.TranslateIn']}">
+                                value="#{msgs['jsf.project.TranslateIn']}">
                                 <f:param
                                   value="#{hLocale.retrieveDisplayName()}"/>
                               </h:outputFormat>
@@ -127,10 +127,10 @@
                     </ui:repeat>
                     <li>
                       <h:outputLink id="exportTMXIterLink"
-                        onclick="return confirm('#{messages['jsf.ConfirmExportTMXIter']}')"
+                        onclick="return confirm('#{msgs['jsf.ConfirmExportTMXIter']}')"
                         styleClass="i__item--right"
                         value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{version.slug}">
-                        #{messages['jsf.iteration.ExportTMXIter']}<i
+                        #{msgs['jsf.iteration.ExportTMXIter']}<i
                         class="i i--export i__item__icon"></i>
                       </h:outputLink>
                     </li>
@@ -182,7 +182,7 @@
     <zanata:list-filter listId="versions_form"
       render="versions_form, versionSearch-pager, versionSearch-page-info"
       id="versionSearchBottom" iconClass="i--version" bottomPanel="true"
-      placeholder="#{messages['jsf.version.search.placeholder']}"
+      placeholder="#{msgs['jsf.version.search.placeholder']}"
       actionBean="#{projectHomeAction.versionFilter}"/>
 
   </div>

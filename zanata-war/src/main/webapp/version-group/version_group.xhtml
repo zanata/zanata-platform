@@ -11,7 +11,7 @@
   template="../WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">
-  #{messages['jsf.Groups']} - #{versionGroupHome.instance.name}
+  #{msgs['jsf.Groups']} - #{versionGroupHome.instance.name}
 </ui:define>
 
 <ui:define name="center_content">
@@ -92,7 +92,7 @@
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
     <p class="txt--meta l--push-all-0">
       <s:link view="/version-group/home.xhtml" propagation="none">
-        #{messages['jsf.Groups']}
+        #{msgs['jsf.Groups']}
       </s:link>
     </p>
 
@@ -110,7 +110,7 @@
     <s:div id="overall_statistic" styleClass="progress-bar__expander">
       <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
         <p class="d--top l--pad-top-half txt--mini">
-          #{messages['jsf.TotalSourceContains']}
+          #{msgs['jsf.TotalSourceContains']}
           <strong>#{versionGroupHomeAction.overallStatistic.total}
             words</strong>
         </p>
@@ -121,7 +121,7 @@
                 #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
               </span>
               <span class="stats__unit txt--lowercase">
-                #{messages['jsf.stats.Translated']}
+                #{msgs['jsf.stats.Translated']}
               </span>
             </span>
           </li>
@@ -131,7 +131,7 @@
                 #{statisticBar.formatHours(versionGroupHomeAction.overallStatistic.remainingHours)}
               </span>
               <span class="stats__unit">
-                #{messages['jsf.stats.TotalHoursRemaining']}
+                #{msgs['jsf.stats.TotalHoursRemaining']}
               </span>
             </span>
           </li>
@@ -161,7 +161,7 @@
             class="js-url-mod" data-content="#languages">
             <i class="i i--language"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.Languages']}
+                #{msgs['jsf.Languages']}
               </span>
             <s:span styleClass="txt--neutral" id="languages-size">
               #{versionGroupHomeAction.activeLocales.size}
@@ -174,7 +174,7 @@
             class="js-url-mod" data-content="#projects">
             <i class="i i--project"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.Projects']}
+                #{msgs['jsf.Projects']}
               </span>
             <s:span styleClass="txt--neutral" id="projects-size">
               #{versionGroupHomeAction.getProjectIterations().size}
@@ -187,7 +187,7 @@
             class="js-url-mod" data-content="#maintainers">
             <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.Maintainers']}
+                #{msgs['jsf.Maintainers']}
               </span>
             <s:span styleClass="txt--neutral" id="maintainers-size">
               #{versionGroupHome.instance.maintainers.size}
@@ -201,7 +201,7 @@
             <div
               class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
               <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                title="#{messages['jsf.tooltip.MoreActions']}"><i
+                title="#{msgs['jsf.tooltip.MoreActions']}"><i
                 class="i i--ellipsis"></i></a>
               <ul class="dropdown__content js-dropdown__content"
                 role="content"
@@ -215,7 +215,7 @@
                     <f:param name="versionGroupSlug"
                       value="#{versionGroupHomeAction.slug}"/>
                     <h:outputFormat
-                      value="#{messages['jsf.RequestAddProjectToGroup']}">
+                      value="#{msgs['jsf.RequestAddProjectToGroup']}">
                       <f:param value="#{versionGroupHome.instance.name}"/>
                     </h:outputFormat>
                     <i class="i i--project i__item__icon"></i>
@@ -233,7 +233,7 @@
               href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings"
               class="js-url-mod" data-content="#settings">
                 <span class="is-hidden--s i__text--left">
-                  #{messages['jsf.Settings']}
+                  #{msgs['jsf.Settings']}
                 </span>
               <i class="i i--settings"></i>
             </a>

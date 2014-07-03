@@ -38,7 +38,7 @@
     <script src="js/vendor/selectivizr-min.js"></script>
     <![endif]-->
 
-    <title>#{messages['jsf.Zanata']}: <ui:insert name="page_title"/></title>
+    <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
     <link type="text/css" rel="stylesheet"
       href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
     <ui:insert name="head"/>
@@ -76,14 +76,14 @@
                 <li><a href="http://zanata.org/terms"
                   target="_blank">Terms</a></li>
                 <li><a href="http://zanata.org/about"
-                  target="_blank">#{messages['jsf.About']}</a></li>
+                  target="_blank">#{msgs['jsf.About']}</a></li>
                 <li><a href="http://zanata.org/blog"
-                  target="_blank">#{messages['jsf.Blog']}</a></li>
+                  target="_blank">#{msgs['jsf.Blog']}</a></li>
                 <li><a href="http://zanata.org/help"
-                  target="_blank">#{messages['jsf.Help']}</a></li>
+                  target="_blank">#{msgs['jsf.Help']}</a></li>
                 <li><a
                   href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-                  target="_blank">#{messages['jsf.ReportAProblem']}</a>
+                  target="_blank">#{msgs['jsf.ReportAProblem']}</a>
                 </li>
                 <li>
                   <h:form id="localeSelector_form">
@@ -101,10 +101,10 @@
             <div class="g__item w--1-2 txt--align-right">
               <p class="txt--meta">
                 <h:outputText
-                  value="#{messages.format('jsf.RunningVersionInfo',
-                  messages['jsf.Zanata'], applicationConfiguration.version,
+                  value="#{msgs.format('jsf.RunningVersionInfo',
+                  msgs['jsf.Zanata'], applicationConfiguration.version,
                   applicationConfiguration.scmDescribe)}
-                  | #{messages['jsf.CopyrightNotice']}"
+                  | #{msgs['jsf.CopyrightNotice']}"
                   escape="false"/>
               </p>
             </div>

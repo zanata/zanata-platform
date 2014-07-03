@@ -39,6 +39,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -55,7 +56,6 @@ import org.zanata.util.ServiceLocator;
 import javax.annotation.Nullable;
 
 import lombok.Getter;
-import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
@@ -83,7 +83,7 @@ public class DashboardAction implements Serializable {
     private ZanataIdentity identity;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -204,9 +204,9 @@ public class DashboardAction implements Serializable {
             else {
                 username = lastTrans.getName();
             }
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.lastTranslatedBy.message",
-                    username);
+            return msgs
+                    .format("jsf.dashboard.activity.lastTranslatedBy.message",
+                            username);
         }
         return "";
     }

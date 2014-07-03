@@ -97,7 +97,7 @@
 </ui:define>
 
 
-<ui:define name="page_title">#{messages['jsf.Glossary']}</ui:define>
+<ui:define name="page_title">#{msgs['jsf.Glossary']}</ui:define>
 <ui:define name="center_content">
   <h:form id="glossary_form">
     <s:token allowMultiplePosts="true"/>
@@ -105,7 +105,7 @@
       value="#{glossaryAction.getStats()}" var="language"
       styleClass="iteration_inline_tribes">
       <rich:column sortBy="#{language.localeId}" styleClass="centered">
-        <f:facet name="header">#{messages['jsf.Language']}</f:facet>
+        <f:facet name="header">#{msgs['jsf.Language']}</f:facet>
         <s:link view="/language/language.xhtml" propagation="none"
           value="#{language.localeId}" styleClass="table_link">
           <f:param name="id" value="#{language.localeId}"/>
@@ -113,12 +113,12 @@
       </rich:column>
 
       <rich:column sortBy="#{language.name}" styleClass="centered">
-        <f:facet name="header">#{messages['jsf.Name']}</f:facet>
+        <f:facet name="header">#{msgs['jsf.Name']}</f:facet>
         #{language.name}
       </rich:column>
 
       <rich:column sortBy="#{language.entryCount}" styleClass="centered">
-        <f:facet name="header">#{messages['jsf.Entries']}</f:facet>
+        <f:facet name="header">#{msgs['jsf.Entries']}</f:facet>
         #{language.entryCount}
       </rich:column>
     </rich:dataTable>
@@ -127,11 +127,11 @@
   <rich:popupPanel id="uploadPanel" moveable="#{true}"
     resizeable="#{false}" autosized="#{true}">
     <f:facet name="header">
-      <h:outputText value="#{messages['jsf.Upload']}"/>
+      <h:outputText value="#{msgs['jsf.Upload']}"/>
     </f:facet>
     <h:form id="uploadForm" enctype="multipart/form-data">
       <div>
-        <h:outputLabel value="#{messages['jsf.Glossary.supportedFileFormat']}"
+        <h:outputLabel value="#{msgs['jsf.Glossary.supportedFileFormat']}"
           class="glossarySupportedFileLabel"/>
       </div>
 
@@ -141,9 +141,9 @@
         onchange="updateForm(this.value)">
       </s:fileUpload>
 
-      <div title="#{messages['jsf.Glossary.SourceLocale.Title']}"
+      <div title="#{msgs['jsf.Glossary.SourceLocale.Title']}"
         class="glosaryFileUploadDialog" id="sourceLangDiv" style="display:none">
-        <h:outputLabel value="#{messages['jsf.SourceLanguage']}"/>
+        <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
         <h:selectOneMenu
           value="#{glossaryAction.glossaryFileUpload.sourceLang}">
           <s:selectItems value="#{glossaryAction.availableLocales}"
@@ -153,9 +153,9 @@
 
         </h:selectOneMenu>
       </div>
-      <div title="#{messages['jsf.Glossary.TargetLocale.Title']}"
+      <div title="#{msgs['jsf.Glossary.TargetLocale.Title']}"
         class="glosaryFileUploadDialog" id="targetLangDiv" style="display:none">
-        <h:outputLabel value="#{messages['jsf.TargetLanguage']}"/>
+        <h:outputLabel value="#{msgs['jsf.TargetLanguage']}"/>
         <h:selectOneMenu
           value="#{glossaryAction.glossaryFileUpload.transLang}">
           <s:selectItems value="#{glossaryAction.availableLocales}"
@@ -169,30 +169,30 @@
       <div class="glosaryFileUploadDialog" id="treatCommentSameDiv"
         style="display:none">
         <h:outputText
-          value="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget']}"
-          title="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
+          value="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget']}"
+          title="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
         <h:selectBooleanCheckbox
           value="#{glossaryAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
-          title="#{messages['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
+          title="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
       </div>
 
       <div class="glosaryFileUploadDialog" id="commentColsDiv"
         style="display:none">
-        <h:outputText value="#{messages['jsf.Glossary.CommentColumnNames']}"
-          title="#{messages['jsf.Glossary.CommentColumnNames.Title']}"/>
+        <h:outputText value="#{msgs['jsf.Glossary.CommentColumnNames']}"
+          title="#{msgs['jsf.Glossary.CommentColumnNames.Title']}"/>
         <h:inputText
           value="#{glossaryAction.glossaryFileUpload.commentCols}"
-          title="#{messages['jsf.Glossary.CommentColumnNames.Title']}"/>
+          title="#{msgs['jsf.Glossary.CommentColumnNames.Title']}"/>
       </div>
 
 
       <div align="right" class="glosaryFileUploadDialog">
         <h:graphicImage value="/images/loading.gif" id="fileUploading"
           style="display:none"/>
-        <h:commandButton value="#{messages['jsf.Upload']}"
+        <h:commandButton value="#{msgs['jsf.Upload']}"
           action="#{glossaryAction.uploadFile}" id="uploadButton"
           onclick="showLoading(true)"/>
-        <h:commandButton value="#{messages['jsf.Cancel']}"
+        <h:commandButton value="#{msgs['jsf.Cancel']}"
           onclick="showLoading(false);hideUploadPanel();return false;"/>
       </div>
     </h:form>
@@ -201,18 +201,18 @@
   <rich:popupPanel id="deletePanel" moveable="#{true}"
     resizeable="#{false}" autosized="#{true}">
     <f:facet name="header">
-      <h:outputText value="#{messages['jsf.Delete']}"/>
+      <h:outputText value="#{msgs['jsf.Delete']}"/>
     </f:facet>
 
     <div class="glosaryDeleteWarn">
       <span class="icon-attention warn"><h:outputText
-        value="#{messages['jsf.ThisActionCannotBeUndone']}"/></span>
+        value="#{msgs['jsf.ThisActionCannotBeUndone']}"/></span>
 
     </div>
 
     <h:form id="deleteForm">
       <div class="glosaryDeleteDialog">
-        <h:outputLabel value="#{messages['jsf.SelectLocaleToDelete']}:"/>
+        <h:outputLabel value="#{msgs['jsf.SelectLocaleToDelete']}:"/>
         <h:selectOneMenu
           value="#{glossaryAction.localeToDelete}">
           <s:selectItems value="#{glossaryAction.availableLocales}"
@@ -225,10 +225,10 @@
       <div align="right" class="glosaryDeleteDialog">
         <h:graphicImage value="/images/loading.gif" id="deleting"
           style="display:none"/>
-        <h:commandButton value="#{messages['jsf.Delete']}"
+        <h:commandButton value="#{msgs['jsf.Delete']}"
           action="#{glossaryAction.delete}" id="deleteButton"
           onclick="showDeleting(true)"/>
-        <h:commandButton value="#{messages['jsf.Cancel']}"
+        <h:commandButton value="#{msgs['jsf.Cancel']}"
           onclick="showDeleting(false);hideDeletePanel();return false;"/>
       </div>
     </h:form>
@@ -239,14 +239,14 @@
 <ui:define name="right_content">
   <rich:panel id="loggedIn"
     rendered="#{s:hasPermission('', 'glossary-delete') or s:hasPermission('', 'glossary-insert')}">
-    <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+    <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
     <s:fragment rendered="#{s:hasPermission('', 'glossary-insert')}">
       <a href="#" onclick="openUploadPanel(); return false;"
-        class="action_link">#{messages['jsf.Upload']}</a>
+        class="action_link">#{msgs['jsf.Upload']}</a>
     </s:fragment>
     <s:fragment rendered="#{s:hasPermission('', 'glossary-delete')}">
       <a href="#" onclick="openDeletePanel(); return false;"
-        class="action_link">#{messages['jsf.Delete']}</a>
+        class="action_link">#{msgs['jsf.Delete']}</a>
     </s:fragment>
   </rich:panel>
 </ui:define>

@@ -7,7 +7,7 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.InactiveAccount']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.InactiveAccount']}</ui:define>
 
   <ui:define name="head">
     <script type="text/javascript">
@@ -37,41 +37,41 @@
 
   <ui:define name="center_content">
     <h:form styleClass="inactiveAccountForm">
-      <h:outputText value="#{messages['jsf.inactiveaccount.PleaseSelectOne']}"
+      <h:outputText value="#{msgs['jsf.inactiveaccount.PleaseSelectOne']}"
         styleClass="inactive_message"/>
 
       <s:div styleClass="contentDiv">
         <h:commandButton id="resendEmail"
-          value="#{messages['jsf.ResendActivationEmail']}"
+          value="#{msgs['jsf.ResendActivationEmail']}"
           action="#{inactiveAccountAction.sendActivationEmail}"
           onclick="showSendEmailLoading(true)"/>
         <h:graphicImage value="/images/loading.gif" id="sendActivationEmail"
           style="display:none"/>
       </s:div>
 
-      <h:outputText value="#{messages['jsf.or']}"
+      <h:outputText value="#{msgs['jsf.or']}"
         styleClass="inactive_message_bold"/>
 
       <s:div styleClass="contentDiv">
-        <h:outputText value="#{messages['jsf.inactiveaccount.UpdateAndResend']}"
+        <h:outputText value="#{msgs['jsf.inactiveaccount.UpdateAndResend']}"
           styleClass="inactive_message"/>
 
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml"
           enclose="true">
-          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.Email']}</ui:define>
           <h:inputText id="email" value="#{inactiveAccountAction.email}">
             <a4j:ajax event="blur" render="emailField"/>
           </h:inputText>
           <s:span styleClass="icon-info-circle-2 input_help" id="emailHelp">
             <rich:tooltip>
-              #{messages['jsf.EmailToolTip']}
+              #{msgs['jsf.EmailToolTip']}
             </rich:tooltip>
           </s:span>
         </s:decorate>
 
         <div style="clear:both;"/>
 
-        <h:commandButton id="updateEmail" value="#{messages['jsf.UpdateEmail']}"
+        <h:commandButton id="updateEmail" value="#{msgs['jsf.UpdateEmail']}"
           action="#{inactiveAccountAction.changeEmail}"
           onclick="showUpdateEmailLoading(true)"/>
         <h:graphicImage value="/images/loading.gif" id="updateEmailLoading"

@@ -12,7 +12,7 @@
 
     <s:decorate id="policyNameField" template="/WEB-INF/layout/edit.xhtml">
       <ui:define
-        name="label">#{messages['jsf.rolerules.PolicyName']}</ui:define>
+        name="label">#{msgs['jsf.rolerules.PolicyName']}</ui:define>
       <h:selectOneMenu id="policyName"
         value="#{roleAssignmentRuleAction.instance.policyName}">
         <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
@@ -22,25 +22,25 @@
 
       <s:span styleClass="icon-info-circle-2 input_help" id="policyNameHelp">
         <rich:tooltip>
-          <em>#{messages['jsf.rolerules.PolicyName.tooltip']}</em>
+          <em>#{msgs['jsf.rolerules.PolicyName.tooltip']}</em>
         </rich:tooltip>
       </s:span>
     </s:decorate>
     <s:decorate id="identityPatternField" template="/WEB-INF/layout/edit.xhtml">
       <ui:define
-        name="label">#{messages['jsf.rolerules.IdentityPattern']}</ui:define>
+        name="label">#{msgs['jsf.rolerules.IdentityPattern']}</ui:define>
       <h:inputText id="identityPattern"
         value="#{roleAssignmentRuleAction.instance.identityRegExp}"/>
       <s:span styleClass="icon-info-circle-2 input_help"
         id="identityPatternHelp">
         <rich:tooltip>
-          <em>#{messages['jsf.rolerules.IdentityPattern.tooltip']}</em>
+          <em>#{msgs['jsf.rolerules.IdentityPattern.tooltip']}</em>
         </rich:tooltip>
       </s:span>
     </s:decorate>
     <s:decorate id="roleField" template="/WEB-INF/layout/edit.xhtml">
       <ui:define
-        name="label">#{messages['jsf.rolerules.RoleToAssign']}</ui:define>
+        name="label">#{msgs['jsf.rolerules.RoleToAssign']}</ui:define>
       <h:selectOneMenu id="roles"
         value="#{roleAssignmentRuleAction.roleToAssign}">
         <s:selectItems value="#{identityManager.listGrantableRoles()}"
@@ -48,7 +48,7 @@
       </h:selectOneMenu>
       <s:span styleClass="icon-info-circle-2 input_help" id="roleToAssignHelp">
         <rich:tooltip>
-          <em>#{messages['jsf.rolerules.RoleToAssign.tooltip']}</em>
+          <em>#{msgs['jsf.rolerules.RoleToAssign.tooltip']}</em>
         </rich:tooltip>
       </s:span>
     </s:decorate>
@@ -57,15 +57,15 @@
 
     <div class="actionButtons">
       <h:commandButton id="save"
-        value="#{messages['jsf.Save']}"
+        value="#{msgs['jsf.Save']}"
         action="#{roleAssignmentRuleAction.persist}"
         rendered="#{!roleAssignmentRuleAction.managed}"/>
       <h:commandButton id="update"
-        value="#{messages['jsf.Update']}"
+        value="#{msgs['jsf.Update']}"
         action="#{roleAssignmentRuleAction.update}"
         rendered="#{roleAssignmentRuleAction.managed}"/>
       <s:button id="cancel"
-        value="#{messages['jsf.Cancel']}"
+        value="#{msgs['jsf.Cancel']}"
         propagation="none"
         view="/admin/rolerules.xhtml"/>
     </div>

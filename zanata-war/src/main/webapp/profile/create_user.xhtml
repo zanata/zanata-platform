@@ -8,7 +8,7 @@
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.Profile']}:#{messages['jsf.NewUser.Label']}</ui:define>
+    name="page_title">#{msgs['jsf.Profile']}:#{msgs['jsf.NewUser.Label']}</ui:define>
 
   <ui:define name="center_content">
     <div class="g--centered">
@@ -17,27 +17,27 @@
         <s:link view="/account/register.xhtml"
           propagation="none"
           rendered="#{applicationConfiguration.internalAuth}">
-          <p class="txt--meta l--push-all-0">#{messages['jsf.Signup']}</p>
+          <p class="txt--meta l--push-all-0">#{msgs['jsf.Signup']}</p>
         </s:link>
 
         <s:fragment
           rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
           <a href="#{applicationConfiguration.registerPath}">
-            <p class="txt--meta l--push-all-0">#{messages['jsf.Signup']}</p>
+            <p class="txt--meta l--push-all-0">#{msgs['jsf.Signup']}</p>
           </a>
         </s:fragment>
 
-        <h1 class="l--push-all-0">#{messages['jsf.NewUser.Label']}</h1>
+        <h1 class="l--push-all-0">#{msgs['jsf.NewUser.Label']}</h1>
 
         <div class="txt--meta">
-          <h:outputText value="#{messages['jsf.FirstExternalLoginMessage']}"
+          <h:outputText value="#{msgs['jsf.FirstExternalLoginMessage']}"
             rendered="#{authenticationManager.newUser}"/>
         </div>
 
 
         <h:form id="profile-form">
           <div class="l--push-top-half form__item">
-            <h:outputLabel for="name">#{messages['jsf.Name']}
+            <h:outputLabel for="name">#{msgs['jsf.Name']}
               <s:span styleClass="txt--required">*</s:span>
             </h:outputLabel>
             <s:decorate id="nameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
@@ -52,7 +52,7 @@
             <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
           </ui:remove>
           <s:div styleClass="l--push-top-half form__item">
-          <h:outputLabel for="username">#{messages['jsf.Username']}
+          <h:outputLabel for="username">#{msgs['jsf.Username']}
               <s:span styleClass="txt--required">*</s:span>
             </h:outputLabel>
             <s:decorate id="usernameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
@@ -65,7 +65,7 @@
 
           <div class="l--push-top-half form__item">
             <h:outputLabel for="email">
-              #{messages['jsf.Email']}
+              #{msgs['jsf.Email']}
             </h:outputLabel>
             <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
               <h:inputText id="email" required="false"
@@ -77,18 +77,18 @@
 
           <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
             <p class="txt--meta l--push-top-half">
-              <h:outputText value="#{messages.format('jsf.register.agreeToTOS',
+              <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                 applicationConfiguration.termsOfUseUrl)}" escape="false"/>
             </p>
           </s:fragment>
 
           <div class="l--push-top-1">
             <h:commandButton id="user-create-new"
-              value="#{messages['jsf.Save']}"
+              value="#{msgs['jsf.Save']}"
               action="#{newProfileAction.createUser}"
               styleClass="l--push-right-half button--primary"/>
             <s:button id="user-create-cancel" styleClass="button button-link"
-              value="#{messages['jsf.Cancel']}"
+              value="#{msgs['jsf.Cancel']}"
               action="#{newProfileAction.cancel}"/>
           </div>
         </h:form>

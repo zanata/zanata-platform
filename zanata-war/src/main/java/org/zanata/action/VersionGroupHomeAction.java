@@ -37,6 +37,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -50,7 +51,6 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.StatisticsUtil;
-import org.zanata.util.ZanataMessages;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -71,7 +71,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     private VersionGroupService versionGroupServiceImpl;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -466,10 +466,9 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public String getMissingLocaleTitle(HProjectIteration version) {
         int size = getMissingLocale(version).size();
         if (size > 1) {
-            return zanataMessages.getMessage("jsf.LanguagesMissingProject",
-                    size);
+            return msgs.format("jsf.LanguagesMissingProject", size);
         }
-        return zanataMessages.getMessage("jsf.LanguageMissingProject", size);
+        return msgs.format("jsf.LanguageMissingProject", size);
     }
 
     /**
@@ -487,10 +486,9 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public String getMissingVersionTitle(LocaleId localeId) {
         int size = getMissingVersion(localeId).size();
         if (size > 1) {
-            return zanataMessages.getMessage("jsf.ProjectsMissingLanguage",
-                    size);
+            return msgs.format("jsf.ProjectsMissingLanguage", size);
         }
-        return zanataMessages.getMessage("jsf.ProjectMissingLanguage", size);
+        return msgs.format("jsf.ProjectMissingLanguage", size);
     }
 
     public boolean isLocaleActivatedInVersion(HProjectIteration version,
@@ -550,7 +548,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return zanataMessages.getMessage(key, args);
+        return msgs.format(key, args);
     }
 
     public void setSelectedLocaleId(String localeId) {

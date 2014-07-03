@@ -29,9 +29,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
-import org.zanata.util.ZanataMessages;
 import com.google.common.collect.Lists;
 
 import lombok.AllArgsConstructor;
@@ -60,7 +60,7 @@ public class CopyTransOptionsModel implements Serializable {
     private HCopyTransOptions instance;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @Getter(lazy = true)
     private final List<RuleAction> ruleActions = getRuleActionsList();
@@ -118,18 +118,18 @@ public class CopyTransOptionsModel implements Serializable {
                         new RuleAction(
                                 HCopyTransOptions.ConditionRuleAction.IGNORE,
                                 "button--success",
-                                zanataMessages
-                                        .getMessage("jsf.iteration.CopyTrans.Action.continue")),
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.continue")),
                         new RuleAction(
                                 HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
                                 "button--unsure",
-                                zanataMessages
-                                        .getMessage("jsf.iteration.CopyTrans.Action.downgradeToFuzzy")),
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.downgradeToFuzzy")),
                         new RuleAction(
                                 HCopyTransOptions.ConditionRuleAction.REJECT,
                                 "button--danger",
-                                zanataMessages
-                                        .getMessage("jsf.iteration.CopyTrans.Action.reject"))
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.reject"))
                 );
     }
 

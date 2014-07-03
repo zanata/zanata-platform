@@ -141,7 +141,7 @@ public class VersionGroupJoinAction implements Serializable {
             return sendEmail.sendToVersionGroupMaintainer(maintainers);
         } else {
             FacesMessages.instance().add(
-                    "#{messages['jsf.NoProjectVersionSelected']}");
+                    "#{msgs['jsf.NoProjectVersionSelected']}");
             return "failure";
         }
     }

@@ -103,7 +103,7 @@ public class InactiveAccountAction implements Serializable {
     private boolean validateEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             FacesMessages.instance().addToControl("email",
-                    "#{messages['javax.faces.component.UIInput.REQUIRED']}");
+                    "#{msgs['javax.faces.component.UIInput.REQUIRED']}");
             return false;
         }
 

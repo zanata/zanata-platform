@@ -12,38 +12,38 @@
   <ui:param name="replyToName" value="#{sendEmail.fromName}"/>
   <ui:param name="replyToEmail" value="#{sendEmail.replyEmail}"/>
   <ui:param name="subject"
-    value="#{messages.format('jsf.email.joinrequest.Subject',
+    value="#{msgs.format('jsf.email.joinrequest.Subject',
       sendEmail.fromLoginName, sendEmail.locale.localeId.id)}']}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.coordinator.DearCoordinator']}</p>
+    <p>#{msgs['jsf.email.coordinator.DearCoordinator']}</p>
 
     <p>
-      #{messages.format('jsf.email.joinrequest.UserRequestingToJoin',
+      #{msgs.format('jsf.email.joinrequest.UserRequestingToJoin',
         sendEmail.fromName, sendEmail.fromLoginName,
         sendEmail.locale.localeId.id, sendEmail.locale.retrieveNativeName())}
       <s:fragment rendered="#{languageJoinUpdateRoleAction.hasRoleRequest()}">
         <br/><h:outputText
-        value="#{messages['jsf.email.joinrequest.RoleRequested']}"/>
+        value="#{msgs['jsf.email.joinrequest.RoleRequested']}"/>
         <ul>
           <s:fragment
             rendered="#{languageJoinUpdateRoleAction.requestAsTranslator}">
             <li>
-              #{messages['jsf.Translator']}
+              #{msgs['jsf.Translator']}
             </li>
           </s:fragment>
 
           <s:fragment
             rendered="#{languageJoinUpdateRoleAction.requestAsReviewer}">
             <li>
-              #{messages['jsf.Reviewer']}
+              #{msgs['jsf.Reviewer']}
             </li>
           </s:fragment>
 
           <s:fragment
             rendered="#{languageJoinUpdateRoleAction.requestAsCoordinator}">
             <li>
-              #{messages['jsf.Coordinator']}
+              #{msgs['jsf.Coordinator']}
             </li>
           </s:fragment>
         </ul>
@@ -51,16 +51,16 @@
     </p>
 
     <s:fragment rendered="#{not empty sendEmail.htmlMessage}">
-      <p>#{messages.format('jsf.email.UserMessageIntro', sendEmail.fromName)}</p>
+      <p>#{msgs.format('jsf.email.UserMessageIntro', sendEmail.fromName)}</p>
       <hr/>
       <h:outputText value="#{sendEmail.htmlMessage}" escape="false"/>
       <hr/>
     </s:fragment>
 
-    <p>#{messages.format('jsf.email.joinrequest.AddUserInstructions',
+    <p>#{msgs.format('jsf.email.joinrequest.AddUserInstructions',
       sendEmail.fromName, sendEmail.locale.localeId.id, sendEmail.fromLoginName)}</p>
 
-    <p>#{messages.format('jsf.email.coordinator.ResponseInstructions',
+    <p>#{msgs.format('jsf.email.coordinator.ResponseInstructions',
       sendEmail.locale.localeId.id, sendEmail.fromName, sendEmail.replyEmail)}</p>
 
     <p>
