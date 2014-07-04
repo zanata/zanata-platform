@@ -87,7 +87,7 @@
             <h:panelGroup>
               <h:outputText value="#{msgs['jsf.Username']}"/>
               <br/>
-              <h:inputText id="username_filter_input"
+              <h:inputText id="username_filter_input" onkeydown="if(event.keyCode == 13) {return false}"
                 value="#{userAction.userPagedListDataModel.filter}"
                 styleClass="filter_input">
                 <a4j:ajax event="keyup" render="userList"
