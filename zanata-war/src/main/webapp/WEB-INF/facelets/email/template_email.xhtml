@@ -6,7 +6,7 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   charset="UTF-8" importance="normal">
   <m:from
-    name="#{messages['jsf.Zanata']}">#{applicationConfiguration.fromEmailAddr}</m:from>
+    name="#{msgs['jsf.Zanata']}">#{applicationConfiguration.fromEmailAddr}</m:from>
   <m:to name="#{toName}">#{toEmailAddr}</m:to>
   <!-- use this if replyTo is still rendered.
   Add a message about requiring both
@@ -23,13 +23,13 @@
     <hr/>
     <p>
       <s:span rendered="#{not empty emailServiceImpl.receivedReason}">
-        #{messages['jsf.email.YouAreReceivingThisMailBecause']} <br/>
+        #{msgs['jsf.email.YouAreReceivingThisMailBecause']} <br/>
         #{emailServiceImpl.receivedReason} <br/>
       </s:span>
     </p>
 
     <p>
-      #{messages['jsf.email.GeneratedFromZanataServerAt']}
+      #{msgs['jsf.email.GeneratedFromZanataServerAt']}
       <a href="#{applicationConfiguration.serverPath}">
         #{applicationConfiguration.serverPath}
       </a>

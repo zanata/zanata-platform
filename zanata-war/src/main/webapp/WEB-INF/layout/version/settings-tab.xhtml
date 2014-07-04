@@ -46,7 +46,7 @@
   <a4j:param name="val2" assignTo="#{value}"/>
 </a4j:jsFunction>
 
-<h1>#{messages['jsf.iteration.VersionSettings']}</h1>
+<h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
 <div class="tabs--vertical js-tabs">
 <ul class="tabs__nav js-tabs-nav">
@@ -55,7 +55,7 @@
       href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/general"
       class="js-url-mod is-active" data-content="#settings-general">
       <i class="i i--settings"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.General']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.General']}</span>
     </a>
   </li>
   <li>
@@ -63,7 +63,7 @@
       href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/documents"
       class="js-url-mod" data-content="#settings-documents">
       <i class="i i--document"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Documents']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Documents']}</span>
     </a>
   </li>
   <li>
@@ -71,7 +71,7 @@
       href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/languages"
       class="js-url-mod" data-content="#settings-languages">
       <i class="i i--language"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Languages']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Languages']}</span>
     </a>
   </li>
   <li>
@@ -79,20 +79,20 @@
       href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/translation"
       class="js-url-mod" data-content="#settings-translation">
       <i class="i i--translate"></i>
-      <span class="is-hidden--m-l-down">#{messages['jsf.Translation']}</span>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Translation']}</span>
     </a>
   </li>
 </ul>
 
 <ul class="tabs__content js-tabs-content">
 <li class="is-active" id="settings-general">
-  <h2 class="l--push-all-0 gamma d--bottom">#{messages['jsf.General']}</h2>
+  <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
 
   <h:form id="settings-general_form" styleClass="l--constrain-large">
     <ui:include src="edit_form.xhtml"/>
 
     <div class="l--push-top-1">
-      <a4j:commandLink value="#{messages['jsf.UpdateGeneralSettings']}"
+      <a4j:commandLink value="#{msgs['jsf.UpdateGeneralSettings']}"
         action="#{versionHome.update}"
         rendered="#{versionHome.managed}"
         render="version-info, copy-project-type"
@@ -107,11 +107,11 @@
           action="#{versionHome.updateStatus('R')}"
           render="status, version-info">
           <i
-            class="i--left i--lock"></i> #{messages['jsf.iteration.readonly']}
+            class="i--left i--lock"></i> #{msgs['jsf.iteration.readonly']}
         </a4j:commandLink>
 
         <p
-          class="txt--meta">#{messages['jsf.iteration.readonly.Message']}</p>
+          class="txt--meta">#{msgs['jsf.iteration.readonly.Message']}</p>
       </s:div>
       <s:div styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{versionHome.instance.status ne 'ACTIVE'}">
@@ -119,7 +119,7 @@
           rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
           <button class="button--success l--push-bottom-half" disabled="true">
             <i class="i--left i--lock"></i>
-            #{messages['jsf.iteration.writable']}
+            #{msgs['jsf.iteration.writable']}
           </button>
         </s:fragment>
         <a4j:commandLink
@@ -127,10 +127,10 @@
           rendered="#{versionHome.instance.status eq 'READONLY'}"
           action="#{versionHome.updateStatus('A')}"
           render="status, version-info">
-          <i class="i--left i--lock"></i> #{messages['jsf.iteration.writable']}
+          <i class="i--left i--lock"></i> #{msgs['jsf.iteration.writable']}
         </a4j:commandLink>
 
-        <p class="txt--meta">#{messages['jsf.iteration.writable.Message']}</p>
+        <p class="txt--meta">#{msgs['jsf.iteration.writable.Message']}</p>
       </s:div>
 
       <s:fragment
@@ -142,11 +142,11 @@
             action="#{versionHome.updateStatus('A')}"
             render="status, version-info">
             <i class="i--left i--archive"></i>
-            #{messages['jsf.iteration.UnArchiveThisVersion']}
+            #{msgs['jsf.iteration.UnArchiveThisVersion']}
           </a4j:commandLink>
 
           <p
-            class="txt--meta">#{messages['jsf.iteration.unarchive.Message']}</p>
+            class="txt--meta">#{msgs['jsf.iteration.unarchive.Message']}</p>
         </s:div>
         <s:div styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
@@ -154,11 +154,11 @@
             action="#{versionHome.updateStatus('O')}"
             render="status, version-info">
             <i class="i--left i--archive"></i>
-            #{messages['jsf.iteration.ArchiveThisVersion']}
+            #{msgs['jsf.iteration.ArchiveThisVersion']}
           </a4j:commandLink>
 
           <p
-            class="txt--meta">#{messages['jsf.iteration.archive.Message']}</p>
+            class="txt--meta">#{msgs['jsf.iteration.archive.Message']}</p>
         </s:div>
       </s:fragment>
     </s:div>
@@ -171,7 +171,7 @@
         <a href="#" class="button button--snug l--push-top-half"
           data-toggle="modal"
           data-target="#modal-1" onclick="openUploadSourceDocPanel()"
-          title="#{messages['jsf.iteration.files.UploadNewSourceDocument']}">
+          title="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}">
           <i class="i i--plus"></i>
         </a>
         <zanata:sortlist id="settings-document_sorting"
@@ -182,7 +182,7 @@
           status="settingsTab-documentsLoader"/>
       </div>
 
-      <h2 class="panel__heading">#{messages['jsf.SourceDocuments']}</h2>
+      <h2 class="panel__heading">#{msgs['jsf.SourceDocuments']}</h2>
     </div>
 
     <div class="panel__sub-header js-reveal">
@@ -191,7 +191,7 @@
         listId="settings-document_form"
         render="settings-document_form, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
         id="settingsTabDocumentSearch"
-        placeholder="#{messages['jsf.document.search.placeholder']}"
+        placeholder="#{msgs['jsf.document.search.placeholder']}"
         actionBean="#{versionHomeAction.settingsTabDocumentFilter}"/>
     </div>
 
@@ -224,17 +224,17 @@
                   <li>
                     <a href="#"
                       onclick="openUploadSourcePanel('#{document.docId}'); return false;"
-                      title="#{messages['jsf.iteration.files.UpdateDocument']}">
+                      title="#{msgs['jsf.iteration.files.UpdateDocument']}">
                       <i class="i i--import"></i>
                     </a>
                   </li>
                   <li>
                     <a4j:commandLink styleClass="txt--danger"
                       action="#{versionHomeAction.deleteDocument(document.id)}"
-                      onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')"
+                      onclick="return confirm('#{msgs['jsf.iteration.files.ConfirmDocDeletion']}')"
                       render="settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
                       oncomplete="refreshStatistics()"
-                      title="#{messages['jsf.iteration.files.DeleteDocument']}">
+                      title="#{msgs['jsf.iteration.files.DeleteDocument']}">
                       <i class="i i--remove"></i>
                     </a4j:commandLink>
                   </li>
@@ -248,13 +248,13 @@
     <zanata:list-filter iconClass="i--document" listId="settings-document_form"
       render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info"
       id="settingsTabDocumentSearchBottom" bottomPanel="true"
-      placeholder="#{messages['jsf.document.search.placeholder']}"
+      placeholder="#{msgs['jsf.document.search.placeholder']}"
       actionBean="#{versionHomeAction.settingsTabDocumentFilter}"/>
   </div>
 </li>
 <li id="settings-languages">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-    #{messages['jsf.Languages']}
+    #{msgs['jsf.Languages']}
   </h2>
 
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
@@ -262,7 +262,7 @@
     <zanata:checkbox onValueChanged="bindCustomizedLocales"
       checked="#{!versionHome.instance.overrideLocales}"
       value="inheritesLanguage"
-      label="#{messages['jsf.iteration.inheriteLanguage.label']}"
+      label="#{msgs['jsf.iteration.inheriteLanguage.label']}"
       styleClass="l--push-bottom-half" labelStyle="l--push-bottom-0"/>
 
     <s:fragment rendered="#{versionHome.instance.overrideLocales}">
@@ -283,7 +283,7 @@
         <li class="list--highlight__item--none">
           <label
             for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
-            #{messages['jsf.AddALanguage']}
+            #{msgs['jsf.AddALanguage']}
           </label>
 
           <zanata:autocomplete
@@ -292,7 +292,7 @@
             id="languageAutocomplete"
             fetchValue="#{result.localeId}" render="settings-languages-form"
             oncomplete="refreshStatistics();focusCurrentActiveInput();zanata.form.appendCheckboxes('#settings-languages-form')"
-            placeholder="#{messages['jsf.language.search.placeholder']}">
+            placeholder="#{msgs['jsf.language.search.placeholder']}">
             #{result.retrieveDisplayName()}<span
             class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
           </zanata:autocomplete>
@@ -303,22 +303,22 @@
 </li>
 <li id="settings-translation">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-    #{messages['jsf.Translation']}
+    #{msgs['jsf.Translation']}
   </h2>
   <h:form id="settings-translation-review-form" styleClass="l--push-bottom-0">
-    <h3 class="heading--secondary">#{messages['jsf.label.review']}</h3>
+    <h3 class="heading--secondary">#{msgs['jsf.label.review']}</h3>
 
     <div class="is-active" id="translation-review-form">
       <zanata:checkbox
-        label="#{messages['jsf.iteration.requireTranslationReview']}"
+        label="#{msgs['jsf.iteration.requireTranslationReview']}"
         onValueChanged="bindRequireReviewValue"
         checked="#{versionHome.instance.requireTranslationReview}"
         value="requireTranslationReview"/>
 
-      <p class="txt--meta">#{messages['jsf.iteration.requireReview.message']}
+      <p class="txt--meta">#{msgs['jsf.iteration.requireReview.message']}
         <a href="http://zanata.org/help/review/review-activating/"
           target="_blank"
-          title="#{messages['jsf.iteration.requireReview.help']}"><i
+          title="#{msgs['jsf.iteration.requireReview.help']}"><i
           class="i i--help"></i>
         </a>
       </p>
@@ -328,14 +328,14 @@
   <hr/>
 
   <h:form id="settings-translation-validation-form">
-    <h3 class="heading--secondary">#{messages['jsf.Validation']}</h3>
+    <h3 class="heading--secondary">#{msgs['jsf.Validation']}</h3>
 
-    <p>#{messages['jsf.Validation.messages']}</p>
+    <p>#{msgs['jsf.Validation.messages']}</p>
 
     <a4j:commandButton styleClass="button--small l--push-bottom-half"
       id="copy-project-validations"
       action="#{versionHome.copyValidationFromProject()}"
-      value="#{messages['jsf.iteration.CopyProjectValidation.label']}"
+      value="#{msgs['jsf.iteration.CopyProjectValidation.label']}"
       render="settings-translation-validation-form"
       disabled="#{versionHome.isValidationsSameAsProject()}"/>
 
@@ -352,11 +352,11 @@
                 #{validationAction.description}
                 <a href="#" class="button--link js-reveal__toggle"
                   data-target="##{validationAction.id.name()}-example"
-                  data-toggle-title="#{messages['jsf.tooltip.HideExample']}"
-                  title="#{messages['jsf.tooltip.ShowExample']}">
+                  data-toggle-title="#{msgs['jsf.tooltip.HideExample']}"
+                  title="#{msgs['jsf.tooltip.ShowExample']}">
                   <span class="js-reveal__toggle__text"
                     data-toggle-value="Less">
-                    #{messages['jsf.tooltip.More']}
+                    #{msgs['jsf.tooltip.More']}
                   </span>…
                 </a>
               </p>
@@ -389,7 +389,7 @@
             id="#{validationAction.id.name()}-example">
             <div class="g__item w--1-2 l--push-top-quarter">
               <h4 class="zeta heading--secondary txt--uppercase">
-                #{messages['jsf.validation.source']}
+                #{msgs['jsf.validation.source']}
               </h4>
               <pre class="l--push-all-0"><code class="txt--mini">
                 <h:outputText value="#{validationAction.sourceExample}"
@@ -398,7 +398,7 @@
             </div>
             <div class="g__item w--1-2 l--push-top-quarter">
               <h4 class="zeta heading--secondary txt--uppercase">
-                #{messages['jsf.validation.target']}
+                #{msgs['jsf.validation.target']}
               </h4>
               <pre class="l--push-all-0"><code class="txt--mini">
                 <h:outputText value="#{validationAction.targetExample}"

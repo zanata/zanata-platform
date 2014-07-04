@@ -40,6 +40,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -56,7 +57,6 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
-import org.zanata.util.ZanataMessages;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -98,7 +98,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private ZanataIdentity identity;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @Setter
     @Getter
@@ -358,7 +358,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return zanataMessages.getMessage(key, args);
+        return msgs.format(key, args);
     }
 
     public String getCreateVersionUrl(String projectSlug) {

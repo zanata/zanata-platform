@@ -9,7 +9,7 @@
   <div class="panel">
     <div class="panel__header">
       <h2 class="panel__heading">
-        <i class="i--left i--group"></i>#{messages['jsf.Groups']}
+        <i class="i--left i--group"></i>#{msgs['jsf.Groups']}
       </h2>
     </div>
 
@@ -17,7 +17,7 @@
       <zanata:list-filter status="groupTab-groupsLoader" listId="groups-form"
         render="groups-form, groupSearchBottom-pager, groupSearchBottom-page-info"
         id="groupSearch" iconClass="i--group"
-        placeholder="#{messages['jsf.group.search.placeholder']}"
+        placeholder="#{msgs['jsf.group.search.placeholder']}"
         actionBean="#{versionHomeAction.groupFilter}"/>
     </div>
 
@@ -28,12 +28,12 @@
     <h:form id="groups-form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.groups}">
-        <p class="txt--meta">#{messages['jsf.NoGroups']}</p>
+        <p class="txt--meta">#{msgs['jsf.NoGroups']}</p>
         <s:fragment
           rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
           <p>
             <s:link styleClass="button--primary"
-              value="#{messages['jsf.group.FindGroup']}"
+              value="#{msgs['jsf.group.FindGroup']}"
               view="/version-group/home.xhtml"
               propagation="none">
               <i class="i i--plus i__item__icon"></i>
@@ -44,7 +44,7 @@
 
       <s:div styleClass="l--pad-all-half"
         rendered="#{not empty versionHomeAction.groups and empty versionHomeAction.groupFilter.currentPage}">
-        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
       <ul class="list--slat">
@@ -63,7 +63,7 @@
     <zanata:list-filter status="groupTab-groupsLoader" listId="groups-form"
       render="groups-form, groupSearch-pager, groupSearch-page-info"
       id="groupSearchBottom" iconClass="i--group" bottomPanel="true"
-      placeholder="#{messages['jsf.group.search.placeholder']}"
+      placeholder="#{msgs['jsf.group.search.placeholder']}"
       actionBean="#{versionHomeAction.groupFilter}"/>
 
   </div>

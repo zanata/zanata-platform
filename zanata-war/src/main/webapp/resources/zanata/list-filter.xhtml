@@ -66,7 +66,7 @@
         class="form--search__input js-reveal__target__input"/>
       <button class="button--link panel__search__cancel js-reveal__cancel"
         onclick="#{cc.attrs.id}FilterList('')"
-        data-target="##{cc.attrs.id}">#{messages['jsf.Cancel']}
+        data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
       </button>
     </div>
   </s:fragment>
@@ -82,7 +82,7 @@
         rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize}">
         <ul class="panel__pager">
           <li>
-            <button title="#{messages['jsf.pager.PreviousPage']}"
+            <button title="#{msgs['jsf.pager.PreviousPage']}"
               class="panel__pager__button"
               disabled="#{cc.attrs.actionBean.allowsPreviousPage() ? '' : 'disabled'}"
               onclick="#{cc.attrs.id}PreviousPage()">
@@ -90,7 +90,7 @@
             </button>
           </li>
           <li>
-            <button title="#{messages['jsf.pager.NextPage']}"
+            <button title="#{msgs['jsf.pager.NextPage']}"
               class="panel__pager__button"
               disabled="#{cc.attrs.actionBean.allowsNextPage() ? '' : 'disabled'}"
               onclick="#{cc.attrs.id}NextPage()">
@@ -122,12 +122,12 @@
           class="button--link panel__search__reset js-reveal__reset is-hidden"
           data-target="##{cc.attrs.id}"
           onclick="#{cc.attrs.id}FilterList('')"
-          title="#{messages['jsf.ClearSearch']}">
+          title="#{msgs['jsf.ClearSearch']}">
           <i class="i--right i--cancel"></i>
         </button>
         <button class="button--link panel__search__button js-reveal__show"
           data-target="##{cc.attrs.id}">
-          #{messages['jsf.Search']}<i class="i--right i--search"></i>
+          #{msgs['jsf.Search']}<i class="i--right i--search"></i>
         </button>
       </s:fragment>
     </span>

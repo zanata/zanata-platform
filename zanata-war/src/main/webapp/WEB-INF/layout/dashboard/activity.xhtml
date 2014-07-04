@@ -12,15 +12,15 @@
 
   <div class="panel">
     <div class="panel__header">
-      <h2 class="panel__heading">#{messages['jsf.YourActivity']}</h2>
+      <h2 class="panel__heading">#{msgs['jsf.YourActivity']}</h2>
     </div>
     <ui:param name="activities" value="#{activityAction.getActivities()}"/>
     <h:form id="activity-list-form" styleClass="l--push-bottom-0">
       <s:fragment rendered="#{activities.isEmpty()}">
         <div class="l--pad-all-half bg--high">
-          <p><em>#{messages['jsf.YouHaveNoActivity']}</em></p>
+          <p><em>#{msgs['jsf.YouHaveNoActivity']}</em></p>
 
-          <p class="txt--meta">#{messages['jsf.NoActivityMessage']}</p>
+          <p class="txt--meta">#{msgs['jsf.NoActivityMessage']}</p>
         </div>
       </s:fragment>
       <s:fragment rendered="#{not activities.isEmpty()}">
@@ -41,7 +41,7 @@
               <ul class="list--horizontal txt--meta">
                 <li><i aria-hidden="true" class="i i--clock txt--neutral"
                   title="Time"></i>
-                  <span class="is-invisible">#{messages['jsf.Time']}</span>
+                  <span class="is-invisible">#{msgs['jsf.Time']}</span>
                   #{activityAction.getHowLongAgoDescription(activity)}
                 </li>
 
@@ -52,9 +52,9 @@
                   rendered="#{docName != null and !docName.isEmpty()}">
                   <li class="reveal__target">
                     <i aria-hidden="true" class="i i--document txt--neutral"
-                      title="#{messages['jsf.Document']}"></i>
+                      title="#{msgs['jsf.Document']}"></i>
                     <span
-                      class="is-invisible">#{messages['jsf.Document']}</span>
+                      class="is-invisible">#{msgs['jsf.Document']}</span>
                     <a href="#{activityAction.getDocumentUrl(activity)}">#{docName}</a>
                   </li>
                 </s:fragment>
@@ -66,9 +66,9 @@
                   rendered="#{languageName != null and !languageName.isEmpty()}">
                   <li class="reveal__target">
                     <i aria-hidden="true" class="i i--language txt--neutral"
-                      title="#{messages['jsf.Language']}"></i>
+                      title="#{msgs['jsf.Language']}"></i>
                     <span
-                      class="is-invisible">#{messages['jsf.Language']}</span>
+                      class="is-invisible">#{msgs['jsf.Language']}</span>
                     <a href="#{activityAction.getDocumentListUrl(activity)}">#{languageName}</a>
                   </li>
                 </s:fragment>
@@ -79,8 +79,8 @@
                   rendered="#{versionName != null and !versionName.isEmpty()}">
                   <li class="reveal__target">
                     <i aria-hidden="true" class="i i--version txt--neutral"
-                      title="#{messages['jsf.Version']}"><span
-                      class="is-invisible">#{messages['jsf.Version']}</span></i>
+                      title="#{msgs['jsf.Version']}"><span
+                      class="is-invisible">#{msgs['jsf.Version']}</span></i>
                     <a href="#{activityAction.getVersionUrl(activity)}">#{versionName}</a>
                   </li>
                 </s:fragment>
@@ -91,7 +91,7 @@
           <s:fragment rendered="#{activityAction.hasMoreActivities()}">
             <a id="moreActivity" href="javascript:void(0)"
               class="d--top loader" onclick="loadNextActivity()">
-              <span class="loader__label">#{messages['jsf.moreActivity']}</span>
+              <span class="loader__label">#{msgs['jsf.moreActivity']}</span>
             </a>
           </s:fragment>
         </ul>

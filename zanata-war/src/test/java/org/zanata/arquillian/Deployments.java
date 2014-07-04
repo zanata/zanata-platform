@@ -107,6 +107,7 @@ public class Deployments {
         archive.addAsResource(new ClassLoaderAsset(
                 "arquillian/components.properties"), "components.properties");
         archive.addAsResource("import.sql");
+        archive.addAsResource("messages.properties");
         archive.addAsResource("security.drl");
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));

@@ -11,41 +11,41 @@
 <ui:composition template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{userAction.username} - #{messages['jsf.AccountDetails']}</ui:define>
+    name="page_title">#{userAction.username} - #{msgs['jsf.AccountDetails']}</ui:define>
   <ui:define name="center_content">
     <h:form id="userdetailForm"
       rendered="#{identityManager.userExists(userAction.username)}">
       <s:token allowMultiplePosts="true"/>
       <rich:panel>
-        <f:facet name="header">#{messages['jsf.AccountDetails']}</f:facet>
+        <f:facet name="header">#{msgs['jsf.AccountDetails']}</f:facet>
 
         <s:decorate id="usernameField" template="../WEB-INF/layout/edit.xhtml"
           enclose="true">
-          <ui:define name="label">#{messages['jsf.Username']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.Username']}</ui:define>
           <s:label value="#{userAction.username}" styleClass="readOnlyLabel"/>
         </s:decorate>
         <s:decorate id="emailField" template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{messages['jsf.Email']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.Email']}</ui:define>
           <s:label value="#{userAction.getEmail(userAction.username)}"
             styleClass="readOnlyLabel"/>
         </s:decorate>
         <s:fragment rendered="#{applicationConfiguration.internalAuth}">
           <s:decorate id="passwordField"
             template="../WEB-INF/layout/edit.xhtml">
-            <ui:define name="label">#{messages['jsf.Password']}</ui:define>
+            <ui:define name="label">#{msgs['jsf.Password']}</ui:define>
             <h:inputSecret id="password" value="#{userAction.password}"/>
           </s:decorate>
 
           <s:decorate id="passwordConfirmField"
             template="../WEB-INF/layout/edit.xhtml">
             <ui:define
-              name="label">#{messages['jsf.ConfirmPassword']}</ui:define>
+              name="label">#{msgs['jsf.ConfirmPassword']}</ui:define>
             <h:inputSecret id="confirm" value="#{userAction.confirm}"/>
           </s:decorate>
         </s:fragment>
 
         <s:decorate id="rolesField" template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{messages['jsf.MemberOf']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.MemberOf']}</ui:define>
 
           <div class="selectMany">
             <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
@@ -57,17 +57,17 @@
         </s:decorate>
 
         <s:decorate id="enabledField" template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{messages['jsf.AccountEnabled']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.AccountEnabled']}</ui:define>
           <h:selectBooleanCheckbox id="enabled" value="#{userAction.enabled}"/>
         </s:decorate>
 
         <div style="clear:both"/>
 
         <div class="actionButtons">
-          <h:commandButton id="userdetailSave" value="#{messages['jsf.Save']}"
+          <h:commandButton id="userdetailSave" value="#{msgs['jsf.Save']}"
             action="#{userAction.save}"/>
           <s:button id="userdetailCancel" view="/admin/usermanager.xhtml"
-            value="#{messages['jsf.Cancel']}" propagation="end"/>
+            value="#{msgs['jsf.Cancel']}" propagation="end"/>
         </div>
 
       </rich:panel>

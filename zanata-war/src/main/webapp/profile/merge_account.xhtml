@@ -4,7 +4,7 @@
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.profile.MergeAccount']}
+    name="page_title">#{msgs['jsf.profile.MergeAccount']}
   </ui:define>
 
   <ui:define name="center_content">
@@ -13,18 +13,18 @@
         <p class="txt--meta l--push-all-0">
           <a href="#{request.contextPath}/dashboard/settings/account"
             onclick="changeBrowserUrl(this.href, true);">
-            #{messages['jsf.Dashboard']}
+            #{msgs['jsf.Dashboard']}
           </a>
         </p>
 
-        <h1 class="l--push-all-0">#{messages['jsf.profile.MergeAccount']}</h1>
+        <h1 class="l--push-all-0">#{msgs['jsf.profile.MergeAccount']}</h1>
 
         <h:form styleClass="l--push-v-half"
           rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
           <div class="g">
             <div class="l--push-top-half g__item">
               <h2 class="gamma heading--sub">
-                #{messages['jsf.profile.MergeAccount.info']}
+                #{msgs['jsf.profile.MergeAccount.info']}
               </h2>
               <ul class="list--no-bullets">
                 <li class="l--push-top-half">
@@ -45,7 +45,7 @@
                 <li
                   class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
                   <h:outputLabel
-                    for="openid">#{messages['jsf.login.openid']}</h:outputLabel>
+                    for="openid">#{msgs['jsf.login.openid']}</h:outputLabel>
 
                   <div class="g--tighter">
                     <div class="g__item w--3-4 w--3-4-s">
@@ -68,12 +68,15 @@
           rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
           <p>
             <h:outputText escape="false"
-              value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
+              value="#{msgs.format('jsf.profile.MergeAccount.confirmationMessage',
+                accountMergeAction.obsoleteAccount.username,
+                accountMergeAction.obsoleteAccount.person.name,
+                accountMergeAction.obsoleteAccount.person.email)}"/>
           </p>
           <h:commandButton styleClass="button--primary l--push-right-quarter"
-            value="#{messages['jsf.profile.MergeAccount.confirm']}"
+            value="#{msgs['jsf.profile.MergeAccount.confirm']}"
             action="#{accountMergeAction.mergeAccounts}"/>
-          <h:commandButton value="#{messages['jsf.Cancel']}"
+          <h:commandButton value="#{msgs['jsf.Cancel']}"
             action="#{accountMergeAction.cancel}"/>
         </h:form>
       </div>

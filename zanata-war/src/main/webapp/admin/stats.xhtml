@@ -8,131 +8,131 @@
   xmlns:rich="http://richfaces.org/rich"
   template="../WEB-INF/template/template.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Statistics']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Statistics']}</ui:define>
   <ui:define name="center_content">
     <div class="g--centered">
       <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
         <s:link view="/admin/home.xhtml" propagation="none">
           <p class="txt--meta l--push-all-0">
-            #{messages['jsf.Administration']}</p>
+            #{msgs['jsf.Administration']}</p>
         </s:link>
 
-        <h1 class="l--push-all-0">#{messages['jsf.Statistics']}</h1>
+        <h1 class="l--push-all-0">#{msgs['jsf.Statistics']}</h1>
         <ul class="list--slat l--push-top-half">
           <li>
             <ul class="list--horizontal">
               <li>
-                <label>#{messages['jsf.TotalTranslators']} - #{adminStatsAction.totalTranslator}</label>
+                <label>#{msgs['jsf.TotalTranslators']} - #{adminStatsAction.totalTranslator}</label>
               </li>
               <li>
-                <label>#{messages['jsf.TotalReviewers']} - #{adminStatsAction.totalReviewer}</label>
-              </li>
-            </ul>
-          </li>
-
-          <li>
-            <div class="txt--lead">
-              <label>#{messages['jsf.TotalProjects']}</label>
-            </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{messages['jsf.Total']} - #{adminStatsAction.totalProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{messages['jsf.Active']} - #{adminStatsAction.totalActiveProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--warning">#{messages['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--danger">#{messages['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectCount}</label>
-              </li>
-            </ul>
-          </li>
-
-
-          <li>
-            <div class="txt--lead">
-              <label>#{messages['jsf.TotalProjectVersion']}</label>
-            </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{messages['jsf.Total']} - #{adminStatsAction.totalProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{messages['jsf.Active']} - #{adminStatsAction.totalActiveProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--warning">#{messages['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--danger">#{messages['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectIterCount}</label>
+                <label>#{msgs['jsf.TotalReviewers']} - #{adminStatsAction.totalReviewer}</label>
               </li>
             </ul>
           </li>
 
           <li>
             <div class="txt--lead">
-              <label>#{messages['jsf.TotalDocuments']}</label>
+              <label>#{msgs['jsf.TotalProjects']}</label>
             </div>
             <ul class="list--horizontal">
               <li>
-                <label class="txt--highlight">#{messages['jsf.Total']} - #{adminStatsAction.totalDocuments}</label>
+                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalProjectCount}</label>
               </li>
               <li>
-                <label class="txt--success">#{messages['jsf.Active']} - #{adminStatsAction.totalActiveDocuments}</label>
+                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveProjectCount}</label>
+              </li>
+              <li>
+                <label class="txt--warning">#{msgs['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectCount}</label>
+              </li>
+              <li>
+                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectCount}</label>
+              </li>
+            </ul>
+          </li>
+
+
+          <li>
+            <div class="txt--lead">
+              <label>#{msgs['jsf.TotalProjectVersion']}</label>
+            </div>
+            <ul class="list--horizontal">
+              <li>
+                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalProjectIterCount}</label>
+              </li>
+              <li>
+                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveProjectIterCount}</label>
+              </li>
+              <li>
+                <label class="txt--warning">#{msgs['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectIterCount}</label>
+              </li>
+              <li>
+                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectIterCount}</label>
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <div class="txt--lead">
+              <label>#{msgs['jsf.TotalDocuments']}</label>
+            </div>
+            <ul class="list--horizontal">
+              <li>
+                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalDocuments}</label>
+              </li>
+              <li>
+                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveDocuments}</label>
                 <span class="txt--success"></span>
               </li>
               <li>
-                <label class="txt--danger">#{messages['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteDocuments}</label>
+                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteDocuments}</label>
               </li>
             </ul>
           </li>
 
           <li>
             <div class="txt--lead">
-              <label>#{messages['jsf.TotalTextFlows']}</label>
+              <label>#{msgs['jsf.TotalTextFlows']}</label>
             </div>
             <ul class="list--horizontal">
               <li>
-                <label class="txt--highlight">#{messages['jsf.Total']} - #{adminStatsAction.totalTextFlows}</label>
+                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalTextFlows}</label>
               </li>
               <li>
-                <label class="txt--success">#{messages['jsf.Active']} - #{adminStatsAction.totalActiveTextFlows}</label>
+                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveTextFlows}</label>
                 <span class="txt--success"></span>
               </li>
               <li>
-                <label class="txt--danger">#{messages['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlows}</label>
+                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlows}</label>
               </li>
             </ul>
           </li>
 
           <li>
             <div class="txt--lead">
-              <label>#{messages['jsf.TotalTextFlowTargets']}</label>
+              <label>#{msgs['jsf.TotalTextFlowTargets']}</label>
             </div>
             <ul class="list--horizontal">
               <li>
-                <label class="txt--highlight">#{messages['jsf.Total']} - #{adminStatsAction.totalTextFlowTargets}</label>
+                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalTextFlowTargets}</label>
               </li>
               <li>
-                <label class="txt--success">#{messages['jsf.Active']} - #{adminStatsAction.totalActiveTextFlowTargets}</label>
+                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveTextFlowTargets}</label>
               </li>
               <li>
-                <label class="txt--danger">#{messages['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlowTargets}</label>
+                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlowTargets}</label>
               </li>
             </ul>
             <ul class="list--no-bullet l--push-all-0">
               <li>
-                <label>#{messages['jsf.ApprovedOrTranslated']} - #{adminStatsAction.totalApprovedOrTranslatedTextFlowTargets}</label>
+                <label>#{msgs['jsf.ApprovedOrTranslated']} - #{adminStatsAction.totalApprovedOrTranslatedTextFlowTargets}</label>
               </li>
 
               <li>
-                <label>#{messages['jsf.RejectedOrFuzzy']} - #{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</label>
+                <label>#{msgs['jsf.RejectedOrFuzzy']} - #{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</label>
               </li>
 
               <li>
-                <label>#{messages['jsf.Untranslated']} - #{adminStatsAction.totalUntranslatedTextFlowTargets}</label>
+                <label>#{msgs['jsf.Untranslated']} - #{adminStatsAction.totalUntranslatedTextFlowTargets}</label>
               </li>
             </ul>
           </li>

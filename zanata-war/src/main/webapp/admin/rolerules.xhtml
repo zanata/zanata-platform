@@ -11,12 +11,12 @@
 <ui:composition template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.RoleAssignmentRules']}</ui:define>
+    name="page_title">#{msgs['jsf.RoleAssignmentRules']}</ui:define>
   <ui:define name="right_content">
     <rich:panel>
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
-        value="#{messages['jsf.rolerules.CreateRule']}"
+        value="#{msgs['jsf.rolerules.CreateRule']}"
         view="/admin/roleruledetails.xhtml"
         />
     </rich:panel>
@@ -25,13 +25,13 @@
   <ui:define name="center_content">
     <script type="text/javascript">
       function confirmDelete() {
-        return confirm("#{messages['jsf.rolerules.ConfirmDelete']}");
+        return confirm("#{msgs['jsf.rolerules.ConfirmDelete']}");
       }
     </script>
 
     <s:div styleClass="content_box">
       <p><h:outputText escape="false"
-        value="#{messages['jsf.rolerules.Description']}"/></p>
+        value="#{msgs['jsf.rolerules.Description']}"/></p>
     </s:div>
 
     <h:form>
@@ -45,24 +45,24 @@
 
         <h:column>
           <f:facet
-            name="header">#{messages['jsf.rolerules.PolicyName']}</f:facet>
+            name="header">#{msgs['jsf.rolerules.PolicyName']}</f:facet>
           #{rule.policyName}
         </h:column>
         <h:column>
           <f:facet
-            name="header">#{messages['jsf.rolerules.IdentityPattern']}</f:facet>
+            name="header">#{msgs['jsf.rolerules.IdentityPattern']}</f:facet>
           #{rule.identityRegExp}
         </h:column>
         <h:column>
           <f:facet
-            name="header">#{messages['jsf.rolerules.RoleToAssign']}</f:facet>
+            name="header">#{msgs['jsf.rolerules.RoleToAssign']}</f:facet>
           #{rule.roleToAssign.name}
         </h:column>
         <h:column>
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-          <h:commandButton value="#{messages['jsf.Edit']}"
+          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
+          <h:commandButton value="#{msgs['jsf.Edit']}"
             action="#{roleAssignmentRuleAction.edit(rule)}"/>
-          <h:commandButton value="#{messages['jsf.Delete']}"
+          <h:commandButton value="#{msgs['jsf.Delete']}"
             action="#{roleAssignmentRuleAction.remove(rule)}"
             onclick="return confirmDelete()"/>
         </h:column>

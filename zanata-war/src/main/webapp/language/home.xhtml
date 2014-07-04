@@ -9,13 +9,13 @@
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Languages']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Languages']}</ui:define>
   <ui:define name="right_content">
     <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
         view="/admin/supportedlanguagedetail.xhtml"
-        value="#{messages['jsf.CreateSupportedLanguage']}"/>
+        value="#{msgs['jsf.CreateSupportedLanguage']}"/>
     </rich:panel>
   </ui:define>
 
@@ -24,7 +24,7 @@
       <rich:dataTable id="latestTribes"
         value="#{supportedLanguageAction.supportedLanguages}" var="language">
         <rich:column sortBy="#{language.localeId.id}">
-          <f:facet name="header">#{messages['jsf.Language']}
+          <f:facet name="header">#{msgs['jsf.Language']}
             <richext:columnSorter/></f:facet>
           <s:link view="/language/language.xhtml" propagation="none"
             value="#{language.localeId.id}" styleClass="table_link">
@@ -32,15 +32,15 @@
           </s:link>
         </rich:column>
         <rich:column sortBy="#{language.retrieveDisplayName()}">
-          <f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Name']}<richext:columnSorter/></f:facet>
           #{language.retrieveDisplayName()}
         </rich:column>
         <rich:column>
-          <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.NativeName']}</f:facet>
           #{language.retrieveNativeName()}
         </rich:column>
         <rich:column sortBy="#{language.members.size}" styleClass="centered">
-          <f:facet name="header">#{messages['jsf.Members']}
+          <f:facet name="header">#{msgs['jsf.Members']}
             <richext:columnSorter/></f:facet>
           #{language.members.size}
         </rich:column>

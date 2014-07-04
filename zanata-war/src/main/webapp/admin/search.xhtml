@@ -10,7 +10,7 @@
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.ManageSearch']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.ManageSearch']}</ui:define>
   <ui:define name="center_content">
     <h:form id="form">
       <s:token allowMultiplePosts="true"/>
@@ -24,33 +24,33 @@
               render="actions">
               <rich:column width="auto" styleClass="centered" id="col">
                 <f:facet
-                  name="header">#{messages['jsf.manageSearch.AllActions']}</f:facet>
+                  name="header">#{msgs['jsf.manageSearch.AllActions']}</f:facet>
                 <h:selectBooleanCheckbox value="#{clazz.selectAll}">
                   <a4j:ajax event="click" render="actions" execute="@this"/>
                 </h:selectBooleanCheckbox>
               </rich:column>
               <rich:column width="270px">
                 <f:facet
-                  name="header">#{messages['jsf.manageSearch.Table']}</f:facet>
+                  name="header">#{msgs['jsf.manageSearch.Table']}</f:facet>
                 <f:facet
-                  name="footer">#{messages['jsf.manageSearch.AllTables']}</f:facet>
+                  name="footer">#{msgs['jsf.manageSearch.AllTables']}</f:facet>
                 <h:outputText value="#{clazz.className}"/>
               </rich:column>
               <rich:column width="auto" styleClass="centered"
                 footerClass="centered">
                 <f:facet
-                  name="header">#{messages['jsf.manageSearch.purge']}</f:facet>
+                  name="header">#{msgs['jsf.manageSearch.purge']}</f:facet>
                 <f:facet name="footer">
                   <h:selectBooleanCheckbox value="#{reindexAction.purgeAll}">
                     <a4j:ajax event="click" render="actions" execute="@this"/>
                   </h:selectBooleanCheckbox>
                 </f:facet>
                 <rich:tooltip showDelay="800" styleClass="leftalign">
-                  <p>#{messages['jsf.manageSearch.purge.Description']}</p>
+                  <p>#{msgs['jsf.manageSearch.purge.Description']}</p>
 
-                  <p>#{messages['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
+                  <p>#{msgs['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
 
-                  <p>#{messages['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
+                  <p>#{msgs['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
                 </rich:tooltip>
                 <h:selectBooleanCheckbox value="#{clazz.purge}" execute="@this">
                   <a4j:ajax event="click" render="actions" execute="@this"/>
@@ -59,27 +59,27 @@
               <rich:column width="auto" styleClass="centered"
                 footerClass="centered">
                 <f:facet
-                  name="header">#{messages['jsf.manageSearch.reindex']}</f:facet>
+                  name="header">#{msgs['jsf.manageSearch.reindex']}</f:facet>
                 <f:facet name="footer">
                   <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}" id="reindexAllChk">
                     <a4j:ajax event="click" render="actions" execute="@this"/>
                   </h:selectBooleanCheckbox>
                 </f:facet>
                 <rich:tooltip showDelay="800" styleClass="leftalign">
-                  <p>#{messages['jsf.manageSearch.reindex.Description']}</p>
+                  <p>#{msgs['jsf.manageSearch.reindex.Description']}</p>
 
-                  <p>#{messages['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
+                  <p>#{msgs['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
 
-                  <p>#{messages['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
+                  <p>#{msgs['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
 
-                  <p>#{messages['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
+                  <p>#{msgs['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
 
                   <p>
-                    <em>#{messages['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em>
+                    <em>#{msgs['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em>
                   </p>
 
                   <p>
-                    <em>#{messages['jsf.manageSearch.reindex.RunDuringOffPeak']}</em>
+                    <em>#{msgs['jsf.manageSearch.reindex.RunDuringOffPeak']}</em>
                   </p>
                 </rich:tooltip>
                 <h:selectBooleanCheckbox value="#{clazz.reindex}">
@@ -89,21 +89,21 @@
               <rich:column width="auto" styleClass="centered"
                 footerClass="centered">
                 <f:facet
-                  name="header">#{messages['jsf.manageSearch.optimize']}</f:facet>
+                  name="header">#{msgs['jsf.manageSearch.optimize']}</f:facet>
                 <f:facet name="footer">
                   <h:selectBooleanCheckbox value="#{reindexAction.optimizeAll}">
                     <a4j:ajax event="click" render="actions" execute="@this"/>
                   </h:selectBooleanCheckbox>
                 </f:facet>
                 <rich:tooltip showDelay="800" styleClass="leftalign">
-                  <p>#{messages['jsf.manageSearch.optimize.Description']}</p>
+                  <p>#{msgs['jsf.manageSearch.optimize.Description']}</p>
 
-                  <p>#{messages['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
+                  <p>#{msgs['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
 
-                  <p>#{messages['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
+                  <p>#{msgs['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
 
                   <p>
-                    <em>#{messages['jsf.manageSearch.optimize.TempFileWarning']}</em>
+                    <em>#{msgs['jsf.manageSearch.optimize.TempFileWarning']}</em>
                   </p>
                 </rich:tooltip>
                 <h:selectBooleanCheckbox value="#{clazz.optimize}">
@@ -115,35 +115,37 @@
             <br/>
 
             <a4j:commandButton id="selectNone"
-              value="#{messages['jsf.ManageSearch.SelectNone']}"
+              value="#{msgs['jsf.ManageSearch.SelectNone']}"
               action="#{reindexAction.selectAll(false)}"
               render="actions"/>
             <a4j:commandButton id="selectAll"
-              value="#{messages['jsf.ManageSearch.SelectAll']}"
+              value="#{msgs['jsf.ManageSearch.SelectAll']}"
               action="#{reindexAction.selectAll(true)}"
               render="actions"/>
             <a4j:commandButton id="reindex"
-              value="#{messages['jsf.ManageSearch.PerformSelectedActions']}"
+              value="#{msgs['jsf.ManageSearch.PerformSelectedActions']}"
               action="#{reindexAction.reindexDatabase}"
               render="actions,progress"/>
           </a4j:outputPanel>
         </a4j:outputPanel>
 
         <a4j:outputPanel id="progress">
-          <h2>#{messages['jsf.ManageSearch.CurrentProgress']}</h2>
+          <h2>#{msgs['jsf.ManageSearch.CurrentProgress']}</h2>
           <s:fragment rendered="#{!reindexAction.inProgress}">
             <p id="noOperationsRunning"><h:outputText escape="false"
-                value="#{messages['jsf.ManageSearch.NoOperationsRunning']}" /></p>
+                value="#{msgs['jsf.ManageSearch.NoOperationsRunning']}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
-            <p id="completed"><h:outputText value="#{messages['jsf.ManageSearch.Completed']}" /></p>
+            <p id="completed"><h:outputText value="#{msgs.format(
+              'jsf.ManageSearch.Completed', reindexAction.elapsedTime)}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.canceled}">
-            <p id="aborted"><h:outputText escape="false" value="#{messages['jsf.ManageSearch.Aborted']}" /></p>
+            <p id="aborted"><h:outputText escape="false" value="#{msgs.format(
+              'jsf.ManageSearch.Aborted', reindexAction.elapsedTime)}" /></p>
           </s:fragment>
           <s:fragment rendered="#{reindexAction.error}">
-            <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.ErrorMessage']}" /></p>
-            <p><h:outputText escape="false" value="#{messages['jsf.manageSearch.PleaseReindex']}" /></p>
+            <p><h:outputText escape="false" value="#{msgs['jsf.manageSearch.ErrorMessage']}" /></p>
+            <p><h:outputText escape="false" value="#{msgs['jsf.manageSearch.PleaseReindex']}" /></p>
           </s:fragment>
 
           <a4j:outputPanel>
@@ -153,7 +155,8 @@
             <rich:progressBar id="reindexProgressBar"
               value="#{reindexAction.reindexProgress}"
               interval="1000"
-              label="#{messages['jsf.manageSearch.ProgressMessage']}"
+              label="#{msgs.format('jsf.manageSearch.ProgressMessage',
+                reindexAction.reindexProgress, reindexAction.reindexCount)}"
               minValue="0"
               maxValue="#{reindexAction.reindexCount}"
               render="timeEstimate"
@@ -167,16 +170,19 @@
 
           <a4j:outputPanel id="timeEstimate">
             <s:fragment rendered="#{reindexAction.inProgress || reindexAction.canceled || reindexAction.error}">
-              <p><h:outputText value="#{messages['jsf.manageSearch.CurrentTable']}" /></p>
+              <p><h:outputText value="#{msgs.format(
+                'jsf.manageSearch.CurrentTable', reindexAction.currentClass)}" /></p>
             </s:fragment>
             <s:fragment rendered="#{reindexAction.inProgress}">
-                <p><h:outputText value="#{messages['jsf.ManageSearch.ElapsedTime']}" /></p>
-                <p><h:outputText value="#{messages['jsf.ManageSearch.RemainingTime']}" /></p>
+                <p><h:outputText value="#{msgs.format(
+                  'jsf.ManageSearch.ElapsedTime', reindexAction.elapsedTime)}" /></p>
+                <p><h:outputText value="#{msgs.format(
+                  'jsf.ManageSearch.RemainingTime', reindexAction.estimatedTimeRemaining)}" /></p>
             </s:fragment>
           </a4j:outputPanel>
 
           <a4j:commandButton id="cancel"
-            value="#{messages['jsf.ManageSearch.Abort']}"
+            value="#{msgs['jsf.ManageSearch.Abort']}"
             action="#{reindexAction.cancel}"
             rendered="#{reindexAction.inProgress and !reindexAction.canceled}"
             render="actions,progress"/>

@@ -10,25 +10,25 @@
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.ManageLanguage']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.ManageLanguage']}</ui:define>
   <ui:define name="right_content">
     <rich:panel>
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
         view="/admin/supportedlanguagedetail.xhtml"
-        value="#{messages['jsf.CreateSupportedLanguage']}"/>
+        value="#{msgs['jsf.CreateSupportedLanguage']}"/>
     </rich:panel>
   </ui:define>
 
   <ui:define name="center_content">
     <script type="text/javascript">
       function confirmDelete() {
-        return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
+        return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
       }
       function confirmEnabledChange(checkbox) {
-        var mssg = "#{messages['jsf.AreYouSureYouWishToDisableThisLanguage']}"
+        var mssg = "#{msgs['jsf.AreYouSureYouWishToDisableThisLanguage']}"
         if (checkbox.checked) {
-          mssg = "#{messages['jsf.AreYouSureYouWishToEnableThisLanguage']}"
+          mssg = "#{msgs['jsf.AreYouSureYouWishToEnableThisLanguage']}"
         }
 
         confirmed = confirm(mssg)
@@ -38,10 +38,10 @@
         return confirmed
       }
       function confirmEnabledByDefaultChange(checkbox) {
-        var mssg = "#{messages['jsf.language.manager.DisableByDefaultConfirmation']}"
+        var mssg = "#{msgs['jsf.language.manager.DisableByDefaultConfirmation']}"
         if (checkbox.checked) {
           mssg =
-            "#{messages['jsf.language.manager.EnableByDefaultConfirmation']}"
+            "#{msgs['jsf.language.manager.EnableByDefaultConfirmation']}"
         }
 
         confirmed = confirm(mssg)
@@ -58,23 +58,23 @@
 
         <rich:column sortBy="#{language.localeId.id}"
           styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.Language']}
+          <f:facet name="header">#{msgs['jsf.Language']}
             <richext:columnSorter/></f:facet>
           #{language.localeId.id}
         </rich:column>
         <rich:column sortBy="#{language.retrieveDisplayName()}"
           styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.Name']}<richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Name']}<richext:columnSorter/></f:facet>
           #{language.retrieveDisplayName()}
         </rich:column>
         <rich:column
           styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.NativeName']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.NativeName']}</f:facet>
           #{language.retrieveNativeName()}
         </rich:column>
         <rich:column width="50"
           styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.EnabledByDefault']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.EnabledByDefault']}</f:facet>
           <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
             <a4j:ajax event="click"
               onbeforesubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
@@ -84,7 +84,7 @@
         </rich:column>
         <rich:column
           styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.Active']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Active']}</f:facet>
           <h:selectBooleanCheckbox value="#{language.active}">
             <a4j:ajax event="click"
               onbeforesubmit="if(!confirmEnabledChange(this)){ return false; }"
@@ -94,8 +94,8 @@
         </rich:column>
         <rich:column
           styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
-          <h:commandButton value="#{messages['jsf.TeamMembers']}"
+          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
+          <h:commandButton value="#{msgs['jsf.TeamMembers']}"
             action="#{languageSearchAction.manageMembers(language.localeId.id)}">
             <f:param name="id" value="#{language.localeId.id}"/>
           </h:commandButton>

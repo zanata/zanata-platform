@@ -62,6 +62,7 @@ import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HDocument;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
@@ -88,7 +89,6 @@ import org.zanata.util.DateUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
-import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 
 import com.google.common.base.Optional;
@@ -119,7 +119,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     private TranslationStateCache translationStateCacheImpl;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In
     private DocumentService documentServiceImpl;
@@ -360,7 +360,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return zanataMessages.getMessage(key, args);
+        return msgs.format(key, args);
     }
 
     public List<HLocale> getSupportedLocale() {
@@ -569,18 +569,17 @@ public class VersionHomeAction extends AbstractSortAction implements
         if (!isZipFileDownloadAllowed()) {
             if (getVersion().getProjectType() == null) {
                 message =
-                        zanataMessages
-                                .getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotSet");
+                        msgs.get(
+                                "jsf.iteration.files.DownloadAllFiles.ProjectTypeNotSet");
             } else if (getVersion().getProjectType() != ProjectType.Gettext
                     && getVersion().getProjectType() != ProjectType.Podir) {
                 message =
-                        zanataMessages
-                                .getMessage("jsf.iteration.files.DownloadAllFiles.ProjectTypeNotAllowed");
+                        msgs.get(
+                                "jsf.iteration.files.DownloadAllFiles.ProjectTypeNotAllowed");
             }
         } else {
             message =
-                    zanataMessages
-                            .getMessage("jsf.iteration.files.DownloadAll");
+                    msgs.get("jsf.iteration.files.DownloadAll");
         }
         return message;
     }

@@ -28,6 +28,7 @@ import javax.faces.application.FacesMessage;
 
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -36,6 +37,7 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
@@ -43,7 +45,6 @@ import org.zanata.model.HPerson;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
-import org.zanata.util.ZanataMessages;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author damason@redhat.com
  *
  */
+@AutoCreate
 @Name("sendEmail")
 @Scope(ScopeType.PAGE)
 @Slf4j
@@ -122,7 +124,7 @@ public class SendEmailAction implements Serializable {
     private List<HPerson> groupMaintainers;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     public static final String SUCCESS = "success";
     public static final String FAILED = "failure";

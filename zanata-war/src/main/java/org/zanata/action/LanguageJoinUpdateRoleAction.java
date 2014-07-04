@@ -32,9 +32,9 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocaleMember;
-import org.zanata.util.ZanataMessages;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -51,7 +51,9 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
             "request_role_language";
 
     @In
-    private ZanataMessages zanataMessages;
+    private SendEmailAction sendEmail;
+    @In
+    private Messages msgs;
 
     @In
     private LocaleMemberDAO localeMemberDAO;
@@ -90,10 +92,14 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
     public String getSubject() {
         if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
             subject =
-                    zanataMessages.getMessage("jsf.email.joinrequest.Subject");
+                    msgs.format("jsf.email.joinrequest.Subject",
+                            sendEmail.getFromLoginName(),
+                            sendEmail.getLocale().getLocaleId().getId());
         } else {
             subject =
-                    zanataMessages.getMessage("jsf.email.rolerequest.Subject");
+                    msgs.format("jsf.email.rolerequest.Subject",
+                            sendEmail.getFromLoginName(),
+                            sendEmail.getLocale().getLocaleId().getId());
         }
         return subject;
     }
@@ -101,12 +107,14 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
     public String getTitle() {
         if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
             title =
-                    zanataMessages
-                            .getMessage("jsf.RequestToJoinLanguageTeamTitle");
+                    msgs
+                            .format("jsf.RequestToJoinLanguageTeamTitle",
+                                    sendEmail.getLocale().getLocaleId().getId());
         } else {
             title =
-                    zanataMessages
-                            .getMessage("jsf.RequestRoleLanguageTeamTitle");
+                    msgs
+                            .format("jsf.RequestRoleLanguageTeamTitle",
+                                    sendEmail.getLocale().getLocaleId().getId());
         }
         return title;
     }

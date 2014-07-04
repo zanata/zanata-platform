@@ -24,9 +24,9 @@
 
   <div class="form__item l--push-top-1">
     <h:outputLabel
-      for="slug">#{messages['jsf.ProjectVersionId']}
+      for="slug">#{msgs['jsf.ProjectVersionId']}
       <span class="txt--meta"><i class="i i--info"
-        title="#{messages['jsf.SlugExample']}"></i></span>
+        title="#{msgs['jsf.SlugExample']}"></i></span>
     </h:outputLabel>
     <s:decorate id="slugField" template="../field.xhtml" enclose="true">
       <h:inputText rendered="#{versionHome.managed}" disabled="true"
@@ -44,11 +44,11 @@
   </div>
 
   <h3
-    class="heading--secondary l--push-all-0">#{messages['jsf.projectType']}</h3>
+    class="heading--secondary l--push-all-0">#{msgs['jsf.projectType']}</h3>
 
-  <p>#{messages['jsf.ProjectType.title']} <a target="_blank"
+  <p>#{msgs['jsf.ProjectType.title']} <a target="_blank"
     href="http://zanata.org/help/projects/create-version/"
-    title="#{messages['jsf.iteration.projectType.Description']}">
+    title="#{msgs['jsf.iteration.projectType.Description']}">
     <i class="i i--help"></i>
   </a>
   </p>
@@ -56,7 +56,7 @@
   <a4j:commandButton styleClass="button--small l--push-bottom-half"
     id="copy-project-type" rendered="#{!versionHome.isNewInstance()}"
     action="#{versionHome.copyProjectTypeFromProject()}"
-    value="#{messages['jsf.iteration.CopyProjectType.label']}"
+    value="#{msgs['jsf.iteration.CopyProjectType.label']}"
     render="copy-project-type, project-type"
     oncomplete="zanata.form.appendRadios(getProjectTypeId())"
     disabled="#{versionHome.instance.projectType.name() eq versionHome.instance.project.defaultProjectType.name()}"/>
@@ -89,7 +89,7 @@
 
             <label for="#{status.index}:project-type"
               class="form__radio__label">#{projectType.name()} <span
-              class="txt--meta">#{messages['jsf.projectType.detail.'.concat(projectType)]}</span>
+              class="txt--meta">#{msgs['jsf.projectType.detail.'.concat(projectType)]}</span>
             </label>
           </div>
         </li>
@@ -102,10 +102,10 @@
             <input type="radio" name="project-type" id="project-type-null"
               checked="true" class="form__radio__input js-form__radio__input"/>
             <label for="project-type-null"
-              class="form__radio__label">#{messages['jsf.projectType.NoSelection']} <span
-              class="txt--meta">#{messages['jsf.projectType.detail.noSelection']}
+              class="form__radio__label">#{msgs['jsf.projectType.NoSelection']} <span
+              class="txt--meta">#{msgs['jsf.projectType.detail.noSelection']}
               <i class="i i--info"
-                title="#{messages['jsf.projectType.detail.noSelection.message']}"></i></span>
+                title="#{msgs['jsf.projectType.detail.noSelection.message']}"></i></span>
             </label>
           </div>
         </li>

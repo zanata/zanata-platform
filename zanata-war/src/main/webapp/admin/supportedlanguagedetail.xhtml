@@ -10,7 +10,7 @@
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.CreateSupportedLanguage']}</ui:define>
+    name="page_title">#{msgs['jsf.CreateSupportedLanguage']}</ui:define>
   <ui:define name="center_content">
     <h:form>
       <s:token allowMultiplePosts="true"/>
@@ -20,10 +20,10 @@
         <div style="clear: both"/>
 
         <div class="actionButtons"><h:commandButton
-          value="#{messages['jsf.Save']}"
+          value="#{msgs['jsf.Save']}"
           action="#{languageManagerAction.save}"/> <s:button
           view="/admin/languagemanager.xhtml"
-          value="#{messages['jsf.Cancel']}" propagation="end"/></div>
+          value="#{msgs['jsf.Cancel']}" propagation="end"/></div>
 
       </rich:panel>
     </h:form>

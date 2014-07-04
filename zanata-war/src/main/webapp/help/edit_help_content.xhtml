@@ -10,9 +10,9 @@
   template="/WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.EditHelpPageContent']}</ui:define>
+    name="page_title">#{msgs['jsf.EditHelpPageContent']}</ui:define>
   <ui:define name="center_content">
-    <h1>#{messages['jsf.Help']}</h1>
+    <h1>#{msgs['jsf.Help']}</h1>
 
     <h:form>
       <s:token allowMultiplePosts="true"/>
@@ -33,10 +33,10 @@
 
       <div class="actionButtons">
         <h:commandButton id="update"
-          value="#{messages['jsf.Update']}"
+          value="#{msgs['jsf.Update']}"
           action="#{serverConfigurationBean.updateHelpContent}"/>
         <s:button id="cancel" view="/help/view.xhtml"
-          value="#{messages['jsf.Cancel']}"
+          value="#{msgs['jsf.Cancel']}"
           propagation="none"
           action="#{serverConfigurationBean.cancel}"/>
       </div>

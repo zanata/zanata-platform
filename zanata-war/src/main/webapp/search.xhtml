@@ -9,9 +9,11 @@
   template="./WEB-INF/template/template_2x.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.SearchResultsForProjectSearch']}</ui:define>
+    name="page_title">#{msgs.format('jsf.SearchResultsForProjectSearch',
+      projectSearch.projectAutocomplete.query)}</ui:define>
   <ui:define name="center_content">
-    <h1>#{messages['jsf.projectSearch.searchQuery.title']}</h1>
+    <h1>#{msgs.format('jsf.projectSearch.searchQuery.title',
+      projectSearch.projectAutocomplete.query)}</h1>
     <h:form>
       <div style="text-align: center">
         <rich:dataScroller renderIfSinglePage="false" for="searchResults"
@@ -55,7 +57,7 @@
         rows="#{projectSearch.projectPagedListDataModel.pageSize}"
         value="#{projectSearch.getProjectPagedListDataModel()}" var="project">
         <rich:column>
-          <f:facet name="header">#{messages['jsf.ProjectName']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.ProjectName']}</f:facet>
           <s:link id="project" value="#{project.name}" propagation="none"
             styleClass="table_link #{project.status eq 'READONLY' ? 'readonly_link' : (project.status eq 'OBSOLETE' ? 'obsolete_link' : '')}"
             view="/project/project.xhtml">
@@ -63,11 +65,11 @@
           </s:link>
         </rich:column>
         <rich:column>
-          <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
           <h:outputText value="#{project.description}"/>
         </rich:column>
         <rich:column>
-          <f:facet name="header">#{messages['jsf.CreationDate']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.CreationDate']}</f:facet>
           <h:outputText value="#{project.creationDate}">
             <f:convertDateTime type="date" dateStyle="default"/>
           </h:outputText>

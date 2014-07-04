@@ -10,7 +10,7 @@
   template="../WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">
-  #{messages['jsf.Projects']} - #{projectHome.instance.name}
+  #{msgs['jsf.Projects']} - #{projectHome.instance.name}
 </ui:define>
 
 <ui:define name="center_content">
@@ -53,7 +53,7 @@
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
     <p class="txt--meta l--push-all-0">
       <s:link view="/project/home.xhtml" propagation="none"
-        value="#{messages['jsf.Projects']}"/>
+        value="#{msgs['jsf.Projects']}"/>
     </p>
 
     <s:div styleClass="media l--push-bottom-half" id="project-info">
@@ -73,7 +73,7 @@
         <div class="d--top l--push-top-half l--pad-top-half">
           <h2 class="delta headding--secondary l--push-top-0">
             <i
-              class="i--left i--source"></i> #{messages['jsf.project.SourceCode']}
+              class="i--left i--source"></i> #{msgs['jsf.project.SourceCode']}
           </h2>
 
           <ul class="list--no-bullets txt--meta l--push-top-quarter">
@@ -81,7 +81,7 @@
               rendered="#{not empty projectHome.instance.sourceViewURL}">
               <li>
                 <span class="list__title">
-                  #{messages['jsf.project.HomePage']}:
+                  #{msgs['jsf.project.HomePage']}:
                 </span>
                 <a href="#{projectHome.instance.sourceViewURL}" target="_blank">
                   #{projectHome.instance.sourceViewURL}<i
@@ -95,7 +95,7 @@
                 <div class="bx--table">
                   <div class="bx--table__cell txt--nowrap">
                         <span class="list__title">
-                          #{messages['jsf.project.Repository']}:
+                          #{msgs['jsf.project.Repository']}:
                         </span>
                   </div>
                   <div
@@ -120,7 +120,7 @@
       <s:div styleClass="panel l--push-top-half" rendered="#{not empty activities}">
         <div class="panel__header">
           <h2 class="panel__heading--small">
-            #{messages['jsf.YourLastActivity']}
+            #{msgs['jsf.YourLastActivity']}
           </h2>
         </div>
         <div class="l--pad-all-half">
@@ -143,7 +143,7 @@
           class="js-url-mod" data-content="#versions">
           <i class="i i--version"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.Versions']}
+                #{msgs['jsf.Versions']}
                 <s:span styleClass="txt--neutral" id="versions-size">
                   #{projectHomeAction.getProjectVersions().size}
                 </s:span>
@@ -156,7 +156,7 @@
           class="js-url-mod" data-content="#maintainers">
           <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.Maintainers']}
+                #{msgs['jsf.Maintainers']}
                 <s:span styleClass="txt--neutral" id="maintainers-size">
                   #{projectHome.instance.maintainers.size}
                 </s:span>
@@ -169,7 +169,7 @@
           class="js-url-mod" data-content="#about">
           <i class="i i--info"></i>
               <span class="is-hidden--s i__text--right">
-                #{messages['jsf.project.About']}
+                #{msgs['jsf.project.About']}
               </span>
         </a>
       </li>
@@ -179,7 +179,7 @@
           <div
             class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
             <a class="dropdown__toggle js-dropdown__toggle" href="#"
-              title="#{messages['jsf.tooltip.MoreActions']}">
+              title="#{msgs['jsf.tooltip.MoreActions']}">
               <i class="i i--ellipsis"></i>
             </a>
             <ul class="dropdown__content js-dropdown__content"
@@ -187,9 +187,9 @@
               <li>
                 <h:outputLink id="exportTMXProjectLink"
                   styleClass="i__item--right"
-                  onclick="return confirm('#{messages['jsf.ConfirmExportTMXProject']}')"
+                  onclick="return confirm('#{msgs['jsf.ConfirmExportTMXProject']}')"
                   value="#{request.contextPath}/rest/tm/projects/#{projectHome.slug}">
-                  #{messages['jsf.ExportTMXProject']}<i
+                  #{msgs['jsf.ExportTMXProject']}<i
                   class="i i--export i__item__icon"></i>
                 </h:outputLink>
               </li>
@@ -200,9 +200,9 @@
           <a id="settings_tab"
             href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings"
             class="js-url-mod" data-content="#settings"
-            title="#{messages['jsf.project.ProjectSettings']}">
+            title="#{msgs['jsf.project.ProjectSettings']}">
                     <span class="is-hidden--s i__text--left">
-                      #{messages['jsf.Settings']}
+                      #{msgs['jsf.Settings']}
                     </span>
             <i class="i i--settings"></i>
           </a>
@@ -229,7 +229,7 @@
           <s:formattedText value="#{projectHome.instance.homeContent}"
             rendered="#{not empty projectHome.instance.homeContent}"/>
           <s:fragment rendered="#{empty projectHome.instance.homeContent}">
-            #{messages['jsf.project.NoHomeContent']}
+            #{msgs['jsf.project.NoHomeContent']}
           </s:fragment>
         </s:div>
       </li>
