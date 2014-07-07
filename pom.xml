@@ -315,9 +315,11 @@
 
                 <!-- use com.google.code.findbugs:annotations -->
                 <exclude>net.jcip:jcip-annotations</exclude>
+                <exclude>com.google.code.findbugs:jsr305</exclude>
 
                 <exclude>net.sf.okapi.logbind:build-log4j</exclude>
-                <!--                         <exclude>javassist:javassist</exclude> -->
+                <!-- use org.javassist:javassist  -->
+                <exclude>javassist:javassist</exclude>
                 <!-- use org.apache.httpcomponents -->
                 <exclude>commons-httpclient:commons-httpclient</exclude>
                 <!-- use commons-beanutils:commons-beanutils -->
@@ -1043,13 +1045,6 @@ package.
       </dependency>
 
       <dependency>
-        <groupId>com.google.code.findbugs</groupId>
-        <artifactId>jsr305</artifactId>
-        <version>${findbugs.version}</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-core-asl</artifactId>
         <version>${jackson.version}</version>
@@ -1169,6 +1164,10 @@ package.
           <exclusion>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
