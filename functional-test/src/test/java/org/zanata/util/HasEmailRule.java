@@ -32,6 +32,7 @@ public class HasEmailRule implements TestRule {
                 try {
                     base.evaluate();
                 } finally {
+                    wiser.getMessages().clear();
                     wiser.stop();
                 }
             }

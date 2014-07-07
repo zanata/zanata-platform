@@ -30,8 +30,8 @@ public class ContactAdminTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
-    @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    @Rule
+    public HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact the site administrator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)
@@ -67,8 +67,10 @@ public class ContactAdminTest extends ZanataTestCase {
         String content = HasEmailRule.getEmailContent(wiserMessage);
 
         assertThat(content)
-                .contains("Zanata user 'translator' with id 'translator' " +
-                        "has sent the following message:")
+                .contains("Zanata user ")
+                .contains("translator")
+                .contains(" with id ")
+                .contains(" has sent the following message:")
                 .as("The email header is correct");
         assertThat(content)
                 .contains("I love Zanata")
