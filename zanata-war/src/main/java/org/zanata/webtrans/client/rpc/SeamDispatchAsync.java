@@ -7,6 +7,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.RpcMessages;
+import org.zanata.webtrans.client.util.JavascriptUtil;
 import org.zanata.webtrans.shared.DispatchService;
 import org.zanata.webtrans.shared.DispatchServiceAsync;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
@@ -65,7 +66,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                     .getWorkspaceId());
         }
 
-        String sessionId = Cookies.getCookie("JSESSIONID");
+        final String sessionId = JavascriptUtil.getJavascriptValue("zanataSessionId");
         realService.execute(new WrappedAction<R>(action, sessionId),
                 new AbstractAsyncCallback<Result>() {
 
@@ -81,6 +82,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                         }
                         if (caught instanceof AuthenticationError
                                 || caught instanceof InvalidTokenError) {
+                            Log.error("Invalid Token error ("+ sessionId + ")", caught);
                             Application.redirectToLogin();
                         } else if (caught instanceof AuthorizationError) {
                             Log.info("RCP Authorization Error calling "
@@ -131,12 +133,13 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                     .getWorkspaceId());
         }
 
-        String sessionId = Cookies.getCookie("JSESSIONID");
+        String sessionId = JavascriptUtil.getJavascriptValue("zanataSessionId");
         realService.rollback(new WrappedAction<R>(action, sessionId), result,
                 new AsyncCallback<Void>() {
 
                     public void onFailure(final Throwable caught) {
                         if (caught instanceof AuthenticationError) {
+                            Log.error("Authentication error.");
                             Application.redirectToLogin();
                         } else if (caught instanceof AuthorizationError) {
                             Log.info("RCP Authorization Error calling "

@@ -51,6 +51,9 @@
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
   <body class="new-zanata-body">
+  <script type="text/javascript">
+    var zanataSessionId = '#{request.session.id}';
+  </script>
   <div class="new-zanata-base">
     <div class="new-zanata">
       <ui:include src="../WEB-INF/template/banner.xhtml"/>
