@@ -72,7 +72,7 @@ public class Application implements EntryPoint {
                     @Override
                     public void onFailure(Throwable caught) {
                         if (caught instanceof AuthenticationError) {
-                            Log.error("Authentication error.");
+                            Log.error("Authentication error.", caught);
                             redirectToLogin();
                         } else if (caught instanceof NoSuchWorkspaceException) {
                             Log.error("Invalid workspace", caught);

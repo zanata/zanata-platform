@@ -66,7 +66,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                     .getWorkspaceId());
         }
 
-        final String sessionId = JavascriptUtil.getJavascriptValue("zanataSessionId");
+        final String sessionId = getSessionId();
         realService.execute(new WrappedAction<R>(action, sessionId),
                 new AbstractAsyncCallback<Result>() {
 
@@ -80,8 +80,10 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                                         messages.noResponseFromServer()));
                             }
                         }
-                        if (caught instanceof AuthenticationError
-                                || caught instanceof InvalidTokenError) {
+                        if (caught instanceof AuthenticationError) {
+                            Log.error("Authentication error.", caught);
+                            Application.redirectToLogin();
+                        } else if (caught instanceof InvalidTokenError) {
                             Log.error("Invalid Token error ("+ sessionId + ")", caught);
                             Application.redirectToLogin();
                         } else if (caught instanceof AuthorizationError) {
@@ -99,6 +101,10 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                         callback.onSuccess((R) result);
                     }
                 });
+    }
+
+    private String getSessionId() {
+        return JavascriptUtil.getJavascriptValue("zanataSessionId");
     }
 
     @Override
@@ -133,7 +139,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                     .getWorkspaceId());
         }
 
-        String sessionId = JavascriptUtil.getJavascriptValue("zanataSessionId");
+        String sessionId = getSessionId();
         realService.rollback(new WrappedAction<R>(action, sessionId), result,
                 new AsyncCallback<Void>() {
 
