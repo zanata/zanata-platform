@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.util;
 
 /**
  * Utilities for dealing with javascript native code.
- * 
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
