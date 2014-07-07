@@ -6,9 +6,7 @@ import javax.ws.rs.core.Response;
 import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.SampleProjectResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -16,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class SampleProjectClient {
+public class SampleDataResourceClient {
 
     private static void checkAndReleaseConnection(Response response1) {
         ClientResponse response = (ClientResponse) response1;
@@ -67,6 +65,11 @@ public class SampleProjectClient {
 
     public static void makeSampleLanguages() throws Exception {
         checkAndReleaseConnection(createRequest("/languages").put());
+    }
+
+    public static void addLanguage(String localeId) throws Exception {
+        checkAndReleaseConnection(createRequest("/languages/l/" + localeId)
+                .put());
     }
 
 }

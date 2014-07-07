@@ -23,11 +23,11 @@ package org.zanata.feature.editor;
 import java.io.File;
 import java.util.HashMap;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionLanguagesPage;
@@ -39,7 +39,7 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 
 /**
@@ -69,6 +69,8 @@ public class TranslateIdmlTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The user can translate an InDesign file",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicIdmlFile() {
         File testfile = testFileGenerator.openTestFile("test-idml.idml");
@@ -79,61 +81,53 @@ public class TranslateIdmlTest extends ZanataTestCase {
         projectSettings.put("Name", "idml-project");
         projectSettings.put("Project Type", "File");
 
-        VersionLanguagesPage projectVersionPage =
-                new ProjectWorkFlow().createNewProject(projectSettings)
-                        .clickCreateVersionLink().inputVersionId("idml")
-                        .saveVersion()
-                        .gotoSettingsTab()
-                        .gotoSettingsDocumentsTab()
-                        .pressUploadFileButton()
-                        .enterFilePath(testfile.getAbsolutePath())
-                        .submitUpload();
+        VersionLanguagesPage projectVersionPage = new ProjectWorkFlow()
+                .createNewProject(projectSettings)
+                .clickCreateVersionLink().inputVersionId("idml")
+                .saveVersion()
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(testfile.getAbsolutePath())
+                .submitUpload();
 
         EditorPage editorPage =
-                projectVersionPage.translate("fr",
-                        testfile.getName());
+                projectVersionPage.translate("fr", testfile.getName());
 
-        assertThat("Item 1 shows Line One",
-                editorPage.getMessageSourceAtRowIndex(0),
-                Matchers.equalTo("Line One"));
-        assertThat("Item 2 shows Line Two",
-                editorPage.getMessageSourceAtRowIndex(1),
-                Matchers.equalTo("Line Two"));
-        assertThat("Item 3 shows Line Three",
-                editorPage.getMessageSourceAtRowIndex(2),
-                Matchers.equalTo("Line Three"));
+        assertThat(editorPage.getMessageSourceAtRowIndex(0))
+                .isEqualTo("Line One")
+                .as("Item 1 shows Line One");
+        assertThat(editorPage.getMessageSourceAtRowIndex(1))
+                .isEqualTo("Line Two")
+                .as("Item 2 shows Line Two");
+        assertThat(editorPage.getMessageSourceAtRowIndex(2))
+                .isEqualTo("Line Three")
+                .as("Item 3 shows Line Three");
 
-        editorPage =
-                editorPage.translateTargetAtRowIndex(0, "Une Ligne")
-                        .approveTranslationAtRow(0);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(1, "Deux Ligne")
-                        .approveTranslationAtRow(1);
-        editorPage =
-                editorPage.translateTargetAtRowIndex(2, "Ligne Trois")
-                        .approveTranslationAtRow(2);
+        editorPage = editorPage.translateTargetAtRowIndex(0, "Une Ligne")
+                .approveTranslationAtRow(0)
+                .translateTargetAtRowIndex(1, "Deux Ligne")
+                .approveTranslationAtRow(1)
+                .translateTargetAtRowIndex(2, "Ligne Trois")
+                .approveTranslationAtRow(2);
 
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                Matchers.equalTo("Une Ligne"));
-        assertThat("Item 2 shows a translation of Line Two",
-                editorPage.getBasicTranslationTargetAtRowIndex(1),
-                Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 3 shows a translation of Line Three",
-                editorPage.getBasicTranslationTargetAtRowIndex(2),
-                Matchers.equalTo("Ligne Trois"));
+        assertTranslations(editorPage);
 
-        // Close and reopen the editor to test save, switches to CodeMirror
+        // Close and reopen the editor to test save
         editorPage.reload();
 
-        assertThat("Item 1 shows a translation of Line One",
-                editorPage.getBasicTranslationTargetAtRowIndex(0),
-                Matchers.equalTo("Une Ligne"));
-        assertThat("Item 2 shows a translation of Line Two",
-                editorPage.getBasicTranslationTargetAtRowIndex(1),
-                Matchers.equalTo("Deux Ligne"));
-        assertThat("Item 3 shows a translation of Line Three",
-                editorPage.getBasicTranslationTargetAtRowIndex(2),
-                Matchers.equalTo("Ligne Trois"));
+        assertTranslations(editorPage);
+    }
+
+    private void assertTranslations(EditorPage editorPage) {
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
+                .isEqualTo("Une Ligne")
+                .as("Item 1 shows a translation of Line One");
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(1))
+                .isEqualTo("Deux Ligne")
+                .as("Item 2 shows a translation of Line Two");
+        assertThat(editorPage.getBasicTranslationTargetAtRowIndex(2))
+                .isEqualTo("Ligne Trois")
+                .as("Item 3 shows a translation of Line Three");
     }
 }

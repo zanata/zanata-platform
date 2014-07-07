@@ -14,15 +14,15 @@
       <ui:define name="right_content">
           <s:link action="#{userAction.createUser}"
             rendered="#{s:hasPermission('seam.account', 'create')}"
-            value="#{messages['jsf.CreateNewUser']}"/>
+            value="#{msgs['jsf.CreateNewUser']}"/>
       </ui:define>
    -->
 
-  <ui:define name="page_title">#{messages['jsf.ManageUsers']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.ManageUsers']}</ui:define>
   <ui:define name="center_content">
     <script type="text/javascript">
       function confirmDelete() {
-        return confirm("#{messages['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
+        return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
       }
 
       function focusUserFilterInput() {
@@ -31,6 +31,13 @@
         focus();
       }
     </script>
+    <a4j:jsFunction name="editUser" action="#{userAction.editUser(username)}">
+      <a4j:param name="val1" assignTo="#{username}"/>
+    </a4j:jsFunction>
+    <a4j:jsFunction name="deleteUser" action="#{userAction.deleteUser(username)}" render="usermanagerForm">
+      <a4j:param name="val1" assignTo="#{username}"/>
+    </a4j:jsFunction>
+
     <h:form id="usermanagerForm">
       <s:token allowMultiplePosts="true"/>
 
@@ -78,9 +85,9 @@
         <rich:column width="auto">
           <f:facet name="header">
             <h:panelGroup>
-              <h:outputText value="#{messages['jsf.Username']}"/>
+              <h:outputText value="#{msgs['jsf.Username']}"/>
               <br/>
-              <h:inputText id="username_filter_input"
+              <h:inputText id="username_filter_input" onkeydown="if(event.keyCode == 13) {return false}"
                 value="#{userAction.userPagedListDataModel.filter}"
                 styleClass="filter_input">
                 <a4j:ajax event="keyup" render="userList"
@@ -94,28 +101,30 @@
           #{user}
         </rich:column>
         <h:column width="auto">
-          <f:facet name="header">#{messages['jsf.Email']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Email']}</f:facet>
           #{userAction.getEmail(user)}
         </h:column>
         <h:column width="auto">
-          <f:facet name="header">#{messages['jsf.MemberOf']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.MemberOf']}</f:facet>
           #{userSearch.getUserRoles(user)}
         </h:column>
         <h:column width="auto">
-          <f:facet name="header">#{messages['jsf.Enabled']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Enabled']}</f:facet>
           <span
             class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
         </h:column>
         <h:column width="100px">
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
           <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-            <h:commandButton value="#{messages['jsf.Edit']}"
-              action="#{userAction.editUser(userSearch.selectedUser)}"/>
+            <button onclick="editUser('#{user}');return false">
+              #{msgs['jsf.Edit']}
+            </button>
           </s:fragment>
-          <h:commandButton value="#{messages['jsf.Delete']}"
-            action="#{userAction.deleteUser(userSearch.selectedUser)}"
-            rendered="#{s:hasPermission('seam.user', 'delete')}"
-            onclick="return confirmDelete()"/>
+          <s:fragment rendered="#{s:hasPermission('seam.user', 'delete')}">
+            <button onclick="if(confirmDelete()){deleteUser('#{user}')};return false;">
+              #{msgs['jsf.Delete']}
+            </button>
+          </s:fragment>
         </h:column>
       </rich:dataTable>
 

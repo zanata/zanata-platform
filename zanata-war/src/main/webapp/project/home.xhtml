@@ -10,21 +10,21 @@
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.Projects']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.Projects']}</ui:define>
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link id="createProjectLink" styleClass="action_link"
         rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
-        value="#{messages['jsf.NewProject.Label']}"
+        value="#{msgs['jsf.NewProject.Label']}"
         view="/project/create_project.xhtml"
         propagation="none"/>
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"
         rendered="#{s:hasRole('admin')}"
-        onclick="return confirm('#{messages['jsf.ConfirmExportTMXAll']}')"
+        onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
         value="#{request.contextPath}/rest/tm/all">
-        <h:outputText value="#{messages['jsf.ExportTMXAll']}"/>
+        <h:outputText value="#{msgs['jsf.ExportTMXAll']}"/>
       </h:outputLink>
     </rich:panel>
   </ui:define>
@@ -32,7 +32,7 @@
   <ui:define name="center_content">
     <s:decorate id="main_content">
       <s:fragment rendered="#{projectAction.getEmpty()}">
-        <h:outputText value="#{messages['jsf.NoProjectExists']}"/>
+        <h:outputText value="#{msgs['jsf.NoProjectExists']}"/>
       </s:fragment>
       <s:fragment rendered="#{!projectAction.getEmpty()}">
         <h:form id="form">
@@ -79,29 +79,29 @@
           <s:div styleClass="float-right">
             <a4j:region>
               <h:selectBooleanCheckbox
-                title="#{messages['jsf.FilterActiveProjects']}"
+                title="#{msgs['jsf.FilterActiveProjects']}"
                 value="#{projectAction.showActive}">
                 <a4j:ajax event="change" render="projectList"/>
               </h:selectBooleanCheckbox>
-              <h:outputText value="#{messages['jsf.Active']}"/>
+              <h:outputText value="#{msgs['jsf.Active']}"/>
 
-              <richext:spacer width="5"/>
+              <h:outputText value="&#160;"/>
               <h:selectBooleanCheckbox
-                title="#{messages['jsf.FilterReadOnlyProjects']}"
+                title="#{msgs['jsf.FilterReadOnlyProjects']}"
                 value="#{projectAction.showReadOnly}">
                 <a4j:ajax event="change" render="projectList"/>
               </h:selectBooleanCheckbox>
-              <h:outputText value="#{messages['jsf.ReadOnly']}"/>
+              <h:outputText value="#{msgs['jsf.ReadOnly']}"/>
 
-              <richext:spacer width="5"/>
+              <h:outputText value="&#160;"/>
               <s:fragment
                 rendered="#{s:hasPermission('HProject','view-obsolete')}">
                 <h:selectBooleanCheckbox
-                  title="#{messages['jsf.FilterObsoleteProjects']}"
+                  title="#{msgs['jsf.FilterObsoleteProjects']}"
                   value="#{projectAction.showObsolete}">
                   <a4j:ajax event="change" render="projectList"/>
                 </h:selectBooleanCheckbox>
-                <h:outputText value="#{messages['jsf.Obsolete']}"/>
+                <h:outputText value="#{msgs['jsf.Obsolete']}"/>
               </s:fragment>
             </a4j:region>
           </s:div>
@@ -110,7 +110,7 @@
             rows="#{projectAction.projectPagedListDataModel.pageSize}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
             <rich:column width="270px" sortBy="#{project.name}">
-              <f:facet name="header">#{messages['jsf.ProjectName']}
+              <f:facet name="header">#{msgs['jsf.ProjectName']}
                 <richext:columnSorter/>
               </f:facet>
 
@@ -134,11 +134,11 @@
               </s:link>
             </rich:column>
             <rich:column width="270px">
-              <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+              <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
               <h:outputText value="#{project.description}"/>
             </rich:column>
             <rich:column sortBy="#{project.creationDate}" width="auto">
-              <f:facet name="header">#{messages['jsf.CreationDate']}
+              <f:facet name="header">#{msgs['jsf.CreationDate']}
                 <richext:columnSorter/></f:facet>
               <h:outputText value="#{project.creationDate}">
                 <f:convertDateTime type="date" dateStyle="default"/>
@@ -147,9 +147,9 @@
 
             <rich:column styleClass="centered" width="60px"
               sortBy="#{project.status}">
-              <f:facet name="header">#{messages['jsf.Status']}
+              <f:facet name="header">#{msgs['jsf.Status']}
                 <richext:columnSorter/></f:facet>
-              <h:outputText value="#{messages[project.status.messageKey]}"/>
+              <h:outputText value="#{msgs[project.status.messageKey]}"/>
             </rich:column>
           </rich:dataTable>
 

@@ -1,65 +1,85 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template.xhtml">
 
   <ui:define
-    name="page_title">#{messages['jsf.profile.MergeAccount']}</ui:define>
-
-  <ui:define name="head">
-    <!-- Load jQuery -->
-    <rich:jQuery query="jquery"/>
-
-    <script type="text/javascript">
-      function showLoginButton() {
-        jQuery("[id='#{rich:clientId('verifyButton')}']").show();
-      }
-    </script>
+    name="page_title">#{msgs['jsf.profile.MergeAccount']}
   </ui:define>
 
   <ui:define name="center_content">
-    <h:form
-      rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
-
-      <div class="content_box">
-        <p><h:outputText value="#{messages['jsf.profile.MergeAccount.info']}"/>
+    <div class="g--centered">
+      <div class="g__item l--constrain-small">
+        <p class="txt--meta l--push-all-0">
+          <a href="#{request.contextPath}/dashboard/settings/account"
+            onclick="changeBrowserUrl(this.href, true);">
+            #{msgs['jsf.Dashboard']}
+          </a>
         </p>
+
+        <h1 class="l--push-all-0">#{msgs['jsf.profile.MergeAccount']}</h1>
+
+        <h:form styleClass="l--push-v-half"
+          rendered="#{not accountMergeAction.accountSelected or not accountMergeAction.accountsValid}">
+          <div class="g">
+            <div class="l--push-top-half g__item">
+              <h2 class="gamma heading--sub">
+                #{msgs['jsf.profile.MergeAccount.info']}
+              </h2>
+              <ul class="list--no-bullets">
+                <li class="l--push-top-half">
+                  <h:commandLink
+                    action="#{accountMergeAction.loginToMergingAccount('Fedora')}"
+                    styleClass="button--full button--fedora" value="Fedora"/>
+                </li>
+                <li class="l--push-top-half">
+                  <h:commandLink
+                    action="#{accountMergeAction.loginToMergingAccount('Google')}"
+                    styleClass="button--full button--google" value="Google"/>
+                </li>
+                <li class="l--push-top-half">
+                  <h:commandLink
+                    action="#{accountMergeAction.loginToMergingAccount('Yahoo')}"
+                    styleClass="button--full button--yahoo" value="Yahoo"/>
+                </li>
+                <li
+                  class="l--push-top-half l--pad-top-half l--pad-h-half bg--pop-higher">
+                  <h:outputLabel
+                    for="openid">#{msgs['jsf.login.openid']}</h:outputLabel>
+
+                  <div class="g--tighter">
+                    <div class="g__item w--3-4 w--3-4-s">
+                      <h:inputText id="openid"
+                        value="#{accountMergeAction.openId}"/>
+                    </div>
+                    <div class="g__item w--1-4 w--1-4-s">
+                      <h:commandButton
+                        action="#{accountMergeAction.loginToMergingAccount('Generic')}"
+                        styleClass="button--full" value="Go"/>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </h:form>
+
+        <h:form styleClass="l--push-v-half"
+          rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
+          <p>
+            <h:outputText escape="false"
+              value="#{msgs.format('jsf.profile.MergeAccount.confirmationMessage',
+                accountMergeAction.obsoleteAccount.username,
+                accountMergeAction.obsoleteAccount.person.name,
+                accountMergeAction.obsoleteAccount.person.email)}"/>
+          </p>
+          <h:commandButton styleClass="button--primary l--push-right-quarter"
+            value="#{msgs['jsf.profile.MergeAccount.confirm']}"
+            action="#{accountMergeAction.mergeAccounts}"/>
+          <h:commandButton value="#{msgs['jsf.Cancel']}"
+            action="#{accountMergeAction.cancel}"/>
+        </h:form>
       </div>
-      <rich:panel>
-        <ui:include src="../WEB-INF/layout/login_provider.xhtml">
-          <ui:param name="providerField"
-            value="#{accountMergeAction.providerType}"/>
-          <ui:param name="usernameField"
-            value="#{accountMergeAction.username}"/>
-          <ui:param name="onProviderChange" value="showLoginButton();"/>
-        </ui:include>
-
-        <div style="clear: both">
-          <h:commandButton id="verifyButton"
-            value="#{messages['jsf.identities.Verify']}"
-            action="#{accountMergeAction.loginToMergingAccount}"
-            style="display:none"/>
-        </div>
-      </rich:panel>
-
-    </h:form>
-
-    <h:form
-      rendered="#{accountMergeAction.accountSelected and accountMergeAction.accountsValid}">
-      <div class="content_box">
-        <p><h:outputText escape="false"
-          value="#{messages['jsf.profile.MergeAccount.confirmationMessage']}"/>
-        </p>
-      </div>
-      <h:commandButton value="#{messages['jsf.profile.MergeAccount.confirm']}"
-        action="#{accountMergeAction.mergeAccounts}"/>
-      <h:commandButton value="#{messages['jsf.Cancel']}"
-        action="#{accountMergeAction.cancel}"/>
-    </h:form>
+    </div>
   </ui:define>
-
 </ui:composition>

@@ -22,6 +22,7 @@ package org.zanata.async.tasks;
 
 import java.util.List;
 
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -51,12 +52,18 @@ public class DocumentCopyTransTask extends CopyTransTask {
     protected int getMaxProgress() {
         LocaleService localeService =
                 ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
+
         List<HLocale> localeList =
                 localeService.getSupportedLanguageByProjectIteration(document
                         .getProjectIteration().getProject().getSlug(), document
                         .getProjectIteration().getSlug());
+        int localeCount = localeList.size();
 
-        return localeList.size();
+        int textFlowCount = ServiceLocator.instance().getInstance(
+                TextFlowDAO.class)
+                .countActiveTextFlowsInDocument(
+                        document.getId());
+        return localeCount * textFlowCount;
     }
 
     @Override

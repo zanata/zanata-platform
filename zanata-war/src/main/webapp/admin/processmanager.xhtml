@@ -9,25 +9,25 @@
   xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.ProcessManager']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.ProcessManager']}</ui:define>
   <ui:define name="right_content">
     <rich:panel>
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
         action="#{processManagerAction.clearAllFinished}"
-        value="#{messages['jsf.processmanager.ClearAllFinished.label']}"/>
+        value="#{msgs['jsf.processmanager.ClearAllFinished.label']}"/>
     </rich:panel>
     <rich:panel id="statsPanel">
-      <f:facet name="header">#{messages['jsf.Statistics']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Statistics']}</f:facet>
 
       <p>
         <h:outputText
-          value="#{messages['jsf.processmanager.TotalRunning']}: #{processManagerAction.runningCount}"/>
+          value="#{msgs['jsf.processmanager.TotalRunning']}: #{processManagerAction.runningCount}"/>
       </p>
 
       <p>
         <h:outputText
-          value="#{messages['jsf.processmanager.TotalFinished']}: #{processManagerAction.stoppedCount}"/>
+          value="#{msgs['jsf.processmanager.TotalFinished']}: #{processManagerAction.stoppedCount}"/>
       </p>
     </rich:panel>
   </ui:define>
@@ -43,21 +43,21 @@
         value="#{processManagerAction.runningProcesses}" var="handle">
         <rich:column>
           <f:facet
-            name="header">#{messages['jsf.processmanager.Type']}</f:facet>
+            name="header">#{msgs['jsf.processmanager.Type']}</f:facet>
           #{handle.getTaskName()}
         </rich:column>
         <rich:column>
-          <f:facet name="header">#{messages['jsf.Status']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Status']}</f:facet>
           <s:span styleClass="icon-stop" style="font-size:20px; color:red;"
             rendered="#{handle.done}"
-            title="#{messages['jsf.processmanager.status.Stopped']}"></s:span>
+            title="#{msgs['jsf.processmanager.status.Stopped']}"></s:span>
           <s:span styleClass="icon-play" style="font-size:20px; color:green;"
             rendered="#{not handle.done}"
-            title="#{messages['jsf.processmanager.status.Running']}"></s:span>
+            title="#{msgs['jsf.processmanager.status.Running']}"></s:span>
         </rich:column>
         <rich:column>
           <f:facet
-            name="header">#{messages['jsf.processmanager.Progress']}</f:facet>
+            name="header">#{msgs['jsf.processmanager.Progress']}</f:facet>
           <rich:progressBar style="width:100px;"
             value="#{handle.currentProgress}" minValue="#{handle.minProgress}"
             maxValue="#{handle.maxProgress}"
@@ -65,9 +65,9 @@
           <h:outputText value="Stopped" rendered="#{handle.done}"/>
         </rich:column>
         <rich:column>
-          <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
           <a4j:commandButton action="#{processManagerAction.cancel(handle)}"
-            value="#{messages['jsf.Cancel']}"
+            value="#{msgs['jsf.Cancel']}"
             rendered="#{not handle.done}"/>
         </rich:column>
       </rich:dataTable>

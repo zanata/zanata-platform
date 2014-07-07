@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import java.util.List;
-import java.util.Map;
 import javax.faces.model.DataModel;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -41,6 +40,7 @@ import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.service.UserAccountService;
 
 import lombok.Getter;
@@ -70,7 +70,7 @@ public class UserAction extends
     private EntityManager entityManager;
 
     @In
-    private Map<String, String> messages;
+    private Messages msgs;
 
     @In
     private PersonDAO personDAO;
@@ -98,7 +98,8 @@ public class UserAction extends
                 FacesMessages
                         .instance()
                         .add(StatusMessage.Severity.ERROR,
-                                messages.get("jsf.UserManager.delete.constraintViolation.error"));
+                                msgs.get(
+                                        "jsf.UserManager.delete.constraintViolation.error"));
             }
         }
     }
@@ -146,7 +147,8 @@ public class UserAction extends
                 usernameChanged = true;
             } else {
                 FacesMessages.instance().addToControl("username",
-                        messages.get("jsf.UsernameNotAvailable"));
+                        msgs.format("jsf.UsernameNotAvailable",
+                                getUsername()));
                 setUsername(originalUsername); // reset the username field
                 return "failure";
             }

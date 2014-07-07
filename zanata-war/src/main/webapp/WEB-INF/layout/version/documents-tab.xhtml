@@ -24,7 +24,7 @@
       <div
         class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
         <a class="dropdown__toggle js-dropdown__toggle" href="#"
-          title="#{messages['jsf.tooltip.MoreActions']}"><i
+          title="#{msgs['jsf.tooltip.MoreActions']}"><i
           class="i i--ellipsis"></i></a>
         <ul class="dropdown__content js-dropdown__content" role="content"
           aria-labelledby="dropdownContent">
@@ -32,9 +32,9 @@
             <li>
               <a href="#" class="i__item--right"
                 id="button--upload-new-document"
-                title="#{messages['jsf.SupportedUploadFormats']}"
+                title="#{msgs['jsf.SupportedUploadFormats']}"
                 onclick="openUploadSourceDocPanel()">
-                #{messages['jsf.iteration.files.UploadNewSourceDocument']}
+                #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
                 <i class="i i--import i__item__icon"></i>
               </a>
             </li>
@@ -45,7 +45,7 @@
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
                 onclick="changeBrowserUrl(this.href, true);return false;">
-                #{messages['jsf.ManageDocuments']} <i
+                #{msgs['jsf.ManageDocuments']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
             </li>
@@ -54,7 +54,7 @@
       </div>
     </s:fragment>
   </div>
-  <h2 class="panel__heading">#{messages['jsf.Documents']}</h2>
+  <h2 class="panel__heading">#{msgs['jsf.Documents']}</h2>
 </div>
 
 <div class="panel__sub-header js-reveal">
@@ -62,7 +62,7 @@
     listId="documents-document_form"
     render="documents-document_form, documentsTabDocumentSearchBottom-pager, documentsTabDocumentSearchBottom-page-info"
     id="documentsTabDocumentSearch" iconClass="i--document"
-    placeholder="#{messages['jsf.document.search.placeholder']}"
+    placeholder="#{msgs['jsf.document.search.placeholder']}"
     actionBean="#{versionHomeAction.documentsTabDocumentFilter}"/>
 </div>
 
@@ -74,14 +74,14 @@
   <s:div styleClass="l--pad-all-half"
     rendered="#{empty versionHomeAction.documents}">
     <p
-      class="txt--meta">#{messages['jsf.iteration.NoDocumentInVersion']}</p>
+      class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
     <s:fragment
       rendered="#{versionHomeAction.documentUploadAllowed}">
       <p>
         <a href="#" class="button--primary"
-          title="#{messages['jsf.SupportedUploadFormats']}"
+          title="#{msgs['jsf.SupportedUploadFormats']}"
           onclick="openUploadSourceDocPanel()">
-          #{messages['jsf.iteration.files.UploadNewSourceDocument']}
+          #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
         </a>
       </p>
     </s:fragment>
@@ -89,7 +89,7 @@
 
   <s:div styleClass="l--pad-all-half"
     rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
-    <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+    <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
   </s:div>
 
   <s:fragment
@@ -100,16 +100,16 @@
         var="document">
         <ui:param name="hasActions"
           value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
-        <li id="#{document.docId}"
+        <li id="#{versionHomeAction.encodeDocId(document.docId)}"
           class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}" >
           <s:div styleClass="list__item__action" rendered="#{hasActions}">
             <div
               class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
               <a class="dropdown__toggle js-dropdown__toggle txt--meta"
                 name="link-document-options"
-                title="#{messages['jsf.tooltip.DocumentOptions']}" href="#">
+                title="#{msgs['jsf.tooltip.DocumentOptions']}" href="#">
                   <span class="is-invisible">
-                    #{messages['jsf.tooltip.DocumentOptions']}
+                    #{msgs['jsf.tooltip.DocumentOptions']}
                   </span>
               </a>
               <ul class="dropdown__content js-dropdown__content">
@@ -120,9 +120,9 @@
                       value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/pot">
                       <f:param name="docId" value="#{document.docId}"/>
                       <h:outputFormat
-                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        value="#{msgs['jsf.iteration.files.DownloadDocument']}">
                         <f:param
-                          value="#{messages['jsf.iteration.files.dotpot']}"/>
+                          value="#{msgs['jsf.iteration.files.dotpot']}"/>
                       </h:outputFormat>
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
@@ -133,12 +133,12 @@
                   <li>
                     <h:outputLink styleClass="i__item--right"
                       value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/offlinepot"
-                      title="#{messages['jsf.iteration.files.dotofflinepot.description']} #{messages['jsf.iteration.files.dotofflinepot.purpose']}">
+                      title="#{msgs['jsf.iteration.files.dotofflinepot.description']} #{msgs['jsf.iteration.files.dotofflinepot.purpose']}">
                       <f:param name="docId" value="#{document.docId}"/>
                       <h:outputFormat
-                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        value="#{msgs['jsf.iteration.files.DownloadDocument']}">
                         <f:param
-                          value="#{messages['jsf.iteration.files.dotofflinepot']}"/>
+                          value="#{msgs['jsf.iteration.files.dotofflinepot']}"/>
                       </h:outputFormat>
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
@@ -153,7 +153,7 @@
                       value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/raw">
                       <f:param name="docId" value="#{document.docId}"/>
                       <h:outputFormat
-                        value="#{messages['jsf.iteration.files.DownloadDocument']}">
+                        value="#{msgs['jsf.iteration.files.DownloadDocument']}">
                         <f:param
                           value="#{versionHomeAction.extensionOf(document.path, document.name)}"/>
                       </h:outputFormat>
@@ -167,7 +167,7 @@
                   <li>
                     <a href="#" class="i__item--right"
                       onclick="openUploadSourcePanel('#{document.docId}'); return false;">
-                      #{messages['jsf.iteration.files.UpdateDocument']}
+                      #{msgs['jsf.iteration.files.UpdateDocument']}
                       <i class="i i--import i__item__icon"></i>
                     </a>
                   </li>
@@ -179,8 +179,8 @@
                       render="documentsDocumentSearchRange, documentsDocumentSearchTotal"
                       action="#{versionHomeAction.deleteDocument(document.id)}"
                       oncomplete="refreshStatistics()"
-                      onclick="return confirm('#{messages['jsf.iteration.files.ConfirmDocDeletion']}')">
-                      #{messages['jsf.iteration.files.DeleteDocument']}
+                      onclick="return confirm('#{msgs['jsf.iteration.files.ConfirmDocDeletion']}')">
+                      #{msgs['jsf.iteration.files.DeleteDocument']}
                       <i class="i i--remove i__item__icon"></i>
                     </a4j:commandLink>
                   </li>
@@ -225,7 +225,7 @@
 </h:form>
 
 <zanata:list-filter listId="documents-document_form"
-  placeholder="#{messages['jsf.document.search.placeholder']}"
+  placeholder="#{msgs['jsf.document.search.placeholder']}"
   iconClass="i--document" status="documentsTab-documentsLoader"
   render="documents-document_form, documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info"
   id="documentsTabDocumentSearchBottom" bottomPanel="true"
@@ -249,14 +249,14 @@
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
           <a class="dropdown__toggle js-dropdown__toggle" href="#"
-            title="#{messages['jsf.tooltip.MoreActions']}"><i
+            title="#{msgs['jsf.tooltip.MoreActions']}"><i
             class="i i--ellipsis"></i></a>
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
                 onclick="changeBrowserUrl(this.href, true);return false;">
-                #{messages['jsf.ManageLanguage']} <i
+                #{msgs['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
             </li>
@@ -267,7 +267,7 @@
 
     <a href="#" class="panel__header__back"
       onclick="removeActiveRows('documents-document_list');toggleColumn('documents')"
-      title="#{messages['jsf.Documents']}">
+      title="#{msgs['jsf.Documents']}">
       <i class="i--huge i--arrow-left" aria-hidden="true"></i>
     </a>
 
@@ -277,14 +277,14 @@
       <s:span id="document-label">
         #{versionHomeAction.selectedDocument.name}
       </s:span>
-      #{messages['jsf.Languages']}
+      #{msgs['jsf.Languages']}
     </h2>
   </div>
 
   <div class="panel__sub-header js-reveal">
     <zanata:list-filter status="documentsTab-languagesLoader"
       listId="documents-language_list"
-      placeholder="#{messages['jsf.language.search.placeholder']}"
+      placeholder="#{msgs['jsf.language.search.placeholder']}"
       render="documents-language_list, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
       id="documentsTabLanguageSearch" iconClass="i--language"
       actionBean="#{versionHomeAction.documentsTabLanguageFilter}"/>
@@ -297,7 +297,7 @@
   <h:form id="documents-language_list" styleClass="l--push-bottom-1">
     <s:fragment rendered="#{versionHomeAction.selectedDocument == null}">
       <div class="l--pad-all-half">
-        <p class="txt--meta">#{messages['jsf.SelectADocumentFromList']}</p>
+        <p class="txt--meta">#{msgs['jsf.SelectADocumentFromList']}</p>
       </div>
     </s:fragment>
 
@@ -305,13 +305,13 @@
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.supportedLocale}">
         <p
-          class="txt--meta">#{messages['jsf.iteration.NoLanguagesInVersion']}</p>
+          class="txt--meta">#{msgs['jsf.iteration.NoLanguagesInVersion']}</p>
         <s:fragment
           rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
           <p>
             <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
               onclick="changeBrowserUrl(this.href, true);return false;">
-              #{messages['jsf.AddLanguages']} <i
+              #{msgs['jsf.AddLanguages']} <i
               class="i i--settings i__item__icon"></i>
             </a>
           </p>
@@ -320,7 +320,7 @@
 
       <s:div styleClass="l--pad-all-half"
         rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
-        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment
@@ -344,8 +344,8 @@
                         </s:fragment>
                         <s:span rendered="#{not hLocale.active}"
                           styleClass="label"
-                          title="#{messages['jsf.Language.Disabled']}">
-                          #{messages['jsf.Disabled']}
+                          title="#{msgs['jsf.Language.Disabled']}">
+                          #{msgs['jsf.Disabled']}
                         </s:span>
                       </h3>
                       <span class="list__item__meta">#{hLocale.localeId}</span>
@@ -379,8 +379,8 @@
                       </s:fragment>
                       <s:span rendered="#{not hLocale.active}"
                         styleClass="label--danger"
-                        title="#{messages['jsf.Language.Disabled']}">
-                        #{messages['jsf.Disabled']}
+                        title="#{msgs['jsf.Language.Disabled']}">
+                        #{msgs['jsf.Disabled']}
                       </s:span>
                     </h3>
                     <span class="list__item__meta">#{hLocale.localeId}</span>
@@ -410,7 +410,7 @@
 
   <zanata:list-filter status="documentsTab-languagesLoader"
     listId="documents-language_list"
-    placeholder="#{messages['jsf.language.search.placeholder']}"
+    placeholder="#{msgs['jsf.language.search.placeholder']}"
     bottomPanel="true"
     render="documents-language_list, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info"
     id="documentsTabLanguageSearchBottom" iconClass="i--language"

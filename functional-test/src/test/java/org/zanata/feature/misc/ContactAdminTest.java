@@ -2,12 +2,12 @@ package org.zanata.feature.misc;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
@@ -19,12 +19,9 @@ import org.zanata.util.HasEmailRule;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * TCMS test case <a
- * href="https://tcms.engineering.redhat.com/case/181717">181717</a>
- *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -36,6 +33,8 @@ public class ContactAdminTest extends ZanataTestCase {
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
+    @Feature(summary = "The user can contact the site administrator",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testContactAdmin() {
         DashboardBasePage dashboard =
@@ -43,31 +42,49 @@ public class ContactAdminTest extends ZanataTestCase {
         ContactAdminFormPage contactAdminFormPage =
                 dashboard.goToHelp().clickContactAdmin();
 
-        HelpPage helpPage =
-                contactAdminFormPage.inputSubject("hello admin")
-                        .inputMessage("I love Zanata").send();
+        HelpPage helpPage = contactAdminFormPage
+                .inputSubject("hello admin")
+                .inputMessage("I love Zanata")
+                .send();
 
-        assertThat(
-                helpPage.getNotificationMessage(),
-                Matchers.equalTo("Your message has been sent to the administrator"));
+        assertThat(helpPage.expectNotification("Your message has been sent " +
+                "to the administrator"))
+                .isTrue()
+                .as("An email sent notification shows");
+
         List<WiserMessage> messages = emailRule.getMessages();
-        assertThat(messages, Matchers.hasSize(1));
+
+        assertThat(messages.size())
+                .isEqualTo(1)
+                .as("One email was sent");
+
         WiserMessage wiserMessage = messages.get(0);
-        assertThat(wiserMessage.getEnvelopeReceiver(),
-                Matchers.equalTo("admin@example.com"));
+
+        assertThat(wiserMessage.getEnvelopeReceiver())
+                .isEqualTo("admin@example.com")
+                .as("The email recipient is the administrator");
 
         String content = HasEmailRule.getEmailContent(wiserMessage);
-        assertThat(
-                content,
-                Matchers.containsString("Zanata user 'translator' with id 'translator' has sent the following message:"));
-        assertThat(content, Matchers.containsString("I love Zanata"));
-        assertThat(
-                content,
-                Matchers.containsString("You can reply to translator at translator@example.com"));
+
+        assertThat(content)
+                .contains("Zanata user 'translator' with id 'translator' " +
+                        "has sent the following message:")
+                .as("The email header is correct");
+        assertThat(content)
+                .contains("I love Zanata")
+                .as("The message content is correct");
+        assertThat(content)
+                .contains("You can reply to translator at " +
+                        "translator@example.com")
+                .as("The email instructions are correct");
+
         // contains instance url (without last slash)
-        String instanceUrl = PropertiesHolder
-                .getProperty(Constants.zanataInstance.value()).replaceAll("/$", "");
-        assertThat(content, Matchers.containsString(instanceUrl));
+        String instanceUrl = PropertiesHolder.getProperty(
+                Constants.zanataInstance.value()).replaceAll("/$", "");
+
+        assertThat(content)
+                .contains(instanceUrl)
+                .as("The email origin (server) is correct");
     }
 
 }

@@ -23,6 +23,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -106,6 +107,13 @@ public class ZanataRestCaller {
         return status;
     }
 
+    public ContainerTranslationStatistics getStatistics(String projectSlug, String iterationSlug,
+            String[] locales) {
+        return zanataProxyFactory.getStatisticsResource()
+                .getStatistics(projectSlug, iterationSlug, false, false,
+                        locales);
+    }
+
     public void putSourceDocResource(String projectSlug, String iterationSlug,
             String idNoSlash, Resource resource, boolean copytrans) {
         ClientResponse<String> response =
@@ -148,13 +156,13 @@ public class ZanataRestCaller {
 
     public void postTargetDocResource(String projectSlug, String iterationSlug,
             String idNoSlash, LocaleId localeId,
-            TranslationsResource translationsResource) {
+            TranslationsResource translationsResource, String mergeType) {
 
         ClientResponse<String> response = zanataProxyFactory
                 .getTranslatedDocResource(projectSlug, iterationSlug)
                 .putTranslations(idNoSlash, localeId,
                         translationsResource,
-                        Collections.<String>emptySet(), "auto");
+                        Collections.<String>emptySet(), mergeType);
         checkStatusAndReleaseConnection(response);
     }
 

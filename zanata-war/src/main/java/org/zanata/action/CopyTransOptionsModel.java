@@ -29,10 +29,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.annotation.CachedMethodResult;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
-import org.zanata.util.ZanataMessages;
 import com.google.common.collect.Lists;
 
 import lombok.AllArgsConstructor;
@@ -61,7 +60,10 @@ public class CopyTransOptionsModel implements Serializable {
     private HCopyTransOptions instance;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
+
+    @Getter(lazy = true)
+    private final List<RuleAction> ruleActions = getRuleActionsList();
 
     public HCopyTransOptions getInstance() {
         if (instance == null) {
@@ -110,23 +112,25 @@ public class CopyTransOptionsModel implements Serializable {
         }
     }
 
-    @CachedMethodResult
-    public List<RuleAction> getRuleActions() {
-        List<RuleAction> list = Lists.newArrayList();
-        list.add(new RuleAction(HCopyTransOptions.ConditionRuleAction.IGNORE,
-                "button--success", zanataMessages
-                        .getMessage("jsf.iteration.CopyTrans.Action.continue")));
-
-        list.add(new RuleAction(
-                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
-                "button--unsure",
-                zanataMessages
-                        .getMessage("jsf.iteration.CopyTrans.Action.downgradeToFuzzy")));
-
-        list.add(new RuleAction(HCopyTransOptions.ConditionRuleAction.REJECT,
-                "button--danger", zanataMessages
-                        .getMessage("jsf.iteration.CopyTrans.Action.reject")));
-        return list;
+    private List<RuleAction> getRuleActionsList() {
+        return Lists
+                .newArrayList(
+                        new RuleAction(
+                                HCopyTransOptions.ConditionRuleAction.IGNORE,
+                                "button--success",
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.continue")),
+                        new RuleAction(
+                                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
+                                "button--unsure",
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.downgradeToFuzzy")),
+                        new RuleAction(
+                                HCopyTransOptions.ConditionRuleAction.REJECT,
+                                "button--danger",
+                                msgs.get(
+                                        "jsf.iteration.CopyTrans.Action.reject"))
+                );
     }
 
     public void save() {

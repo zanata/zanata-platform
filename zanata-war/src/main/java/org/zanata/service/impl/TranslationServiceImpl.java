@@ -59,6 +59,7 @@ import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.i18n.Messages;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
@@ -80,7 +81,6 @@ import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
 import org.zanata.util.ShortString;
-import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -138,7 +138,7 @@ public class TranslationServiceImpl implements TranslationService {
     private TranslationMergeServiceFactory translationMergeServiceFactory;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In
     private ActivityService activityServiceImpl;
@@ -543,8 +543,7 @@ public class TranslationServiceImpl implements TranslationService {
                     sb.append(validationMessage).append("\n");
                 }
                 message =
-                        zanataMessages.getMessage(
-                                "jsf.TranslationContainsError",
+                        msgs.format("jsf.TranslationContainsError",
                                 ShortString.shorten(translations.get(0)),
                                 sb.toString());
             }

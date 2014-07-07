@@ -10,12 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.hamcrest.Matchers;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AdministrationPage;
@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.model.HApplicationConfiguration.KEY_ADMIN_EMAIL;
 import static org.zanata.model.HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY;
 import static org.zanata.model.HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
@@ -43,6 +43,8 @@ import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Feature(summary = "The system can be set to rate consecutive REST access calls",
+    tcmsTestPlanIds = 5315, tcmsTestCaseIds = 0)
 @Category(DetailedTest.class)
 @Slf4j
 public class RateLimitRestAndUITest extends ZanataTestCase {
@@ -65,24 +67,24 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
 
-        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(),
-                Matchers.equalTo("default is 6"));
-        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(),
-                Matchers.equalTo("default is 2"));
+        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey())
+                .isEqualTo("default is 6");
+        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey())
+                .isEqualTo("default is 2");
 
         AdministrationPage administrationPage =
                 serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
 
-        assertThat(administrationPage.getNotificationMessage(),
-                Matchers.equalTo("Configuration was successfully updated."));
+        assertThat(administrationPage.getNotificationMessage())
+                .isEqualTo("Configuration was successfully updated.");
 
         serverConfigPage =
                 basicWorkFlow.goToPage("admin/server_configuration",
                         ServerConfigurationPage.class);
-        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey(),
-                Matchers.equalTo("3"));
-        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey(),
-                Matchers.equalTo("5"));
+        assertThat(serverConfigPage.getMaxActiveRequestsPerApiKey())
+                .isEqualTo("3");
+        assertThat(serverConfigPage.getMaxConcurrentRequestsPerApiKey())
+                .isEqualTo("5");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -94,20 +96,20 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         // can put
         Response putResponse = clientRequest.put();
 
-        assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(201));
+        assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(201);
 
         // can get single configuration
         Response getResponse =
                 clientRequestAsAdmin(
                         "rest/configurations/" + maxConcurrentPathParam).get();
 
-        assertThat(getResponse.getStatus(), Matchers.is(200));
+        assertThat(getResponse.getStatus()).isEqualTo(200);
         String rateLimitConfig =
                 ((BaseClientResponse<String>) getResponse)
                         .getEntity(String.class);
-        assertThat(rateLimitConfig,
-                Matchers.containsString(KEY_MAX_CONCURRENT_REQ_PER_API_KEY));
-        assertThat(rateLimitConfig, Matchers.containsString("<value>1</value>"));
+        assertThat(rateLimitConfig)
+                .contains(KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
+        assertThat(rateLimitConfig).contains("<value>1</value>");
 
         // can get all configurations
         Response getAllResponse =
@@ -118,9 +120,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         String configurations = baseClientResponse.getEntity(String.class);
         log.info("result {}", configurations);
 
-        assertThat(getStatusAndReleaseConnection(getAllResponse),
-                Matchers.is(200));
-        assertThat(configurations, Matchers.notNullValue());
+        assertThat(getStatusAndReleaseConnection(getAllResponse))
+                .isEqualTo(200);
+        assertThat(configurations).isNotNull();
     }
 
     private static ClientRequest clientRequestAsAdmin(String path) {
@@ -141,19 +143,19 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         // all request should be rejected
         Response response =
                 clientRequestAsTranslator("rest/configurations/").get();
-        assertThat(getStatusAndReleaseConnection(response), Matchers.is(401));
+        assertThat(getStatusAndReleaseConnection(response)).isEqualTo(401);
 
         Response response1 =
                 clientRequestAsTranslator(
                         "rest/configurations/c/" + KEY_ADMIN_EMAIL).get();
-        assertThat(getStatusAndReleaseConnection(response1), Matchers.is(401));
+        assertThat(getStatusAndReleaseConnection(response1)).isEqualTo(401);
 
         ClientRequest request =
                 clientRequestAsTranslator("rest/configurations/c/"
                         + KEY_ADMIN_EMAIL);
         request.body("text/plain", "admin@email.com");
         Response response2 = request.put();
-        assertThat(getStatusAndReleaseConnection(response2), Matchers.is(401));
+        assertThat(getStatusAndReleaseConnection(response2)).isEqualTo(401);
     }
 
     private static ClientRequest clientRequestAsTranslator(String path) {
@@ -173,11 +175,11 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 clientRequestAsAdmin("rest/configurations/c/abc");
 
         Response putResponse = clientRequest.put();
-        assertThat(getStatusAndReleaseConnection(putResponse), Matchers.is(400));
+        assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(400);
 
         Response getResponse =
                 clientRequestAsAdmin("rest/configurations/c/abc").get();
-        assertThat(getStatusAndReleaseConnection(getResponse), Matchers.is(404));
+        assertThat(getStatusAndReleaseConnection(getResponse)).isEqualTo(404);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -238,7 +240,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
         // 1 request from translator should get 403 and fail
         log.info("result: {}", result);
-        assertThat(result, Matchers.containsInAnyOrder(201, 201, 201, 201, 429));
+        assertThat(result).contains(201, 201, 201, 201, 429);
     }
 
     @Test(timeout = 5000)
@@ -260,7 +262,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
-        assertThat(1, Matchers.is(1));
+        assertThat(1).isEqualTo(1);
     }
 
     @Test(timeout = 5000)
@@ -282,7 +284,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
-        assertThat(1, Matchers.is(1));
+        assertThat(1).isEqualTo(1);
     }
 
     private static Integer invokeRestService(ZanataRestCaller restCaller,

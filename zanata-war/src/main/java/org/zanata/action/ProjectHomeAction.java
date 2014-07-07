@@ -37,10 +37,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -57,7 +57,6 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
-import org.zanata.util.ZanataMessages;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -99,7 +98,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private ZanataIdentity identity;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @Setter
     @Getter
@@ -139,11 +138,13 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private final VersionComparator versionComparator = new VersionComparator(
             getVersionSortingList());
 
+    @Getter(lazy = true)
+    private final List<Activity> projectLastActivity = fetchProjectLastActivity();
+
     // for storing last activity date for the version
     private Map<Long, Date> versionLatestActivityDate = Maps.newHashMap();
 
-    @CachedMethodResult
-    public List<Activity> getProjectLastActivity() {
+    private List<Activity> fetchProjectLastActivity() {
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
             return Lists.newArrayList();
         }
@@ -163,7 +164,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 Lists.newArrayList(versionIds), 0, 1);
     }
 
-    @CachedMethodResult
     public DisplayUnit getStatisticFigureForVersion(
             SortingType.SortOption sortOption, HProjectIteration version) {
         WordStatistic statistic = getStatisticForVersion(version.getSlug());
@@ -171,7 +171,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
         return getDisplayUnit(sortOption, statistic, version.getLastChanged());
     }
 
-    @CachedMethodResult
     public WordStatistic getStatisticForVersion(String versionSlug) {
         WordStatistic statistic = statisticMap.get(versionSlug);
         statistic
@@ -359,7 +358,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return zanataMessages.getMessage(key, args);
+        return msgs.format(key, args);
     }
 
     public String getCreateVersionUrl(String projectSlug) {

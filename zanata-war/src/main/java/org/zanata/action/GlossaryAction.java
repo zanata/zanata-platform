@@ -20,7 +20,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage.Severity;
-import org.zanata.annotation.CachedMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
@@ -31,7 +30,6 @@ import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryAction")
 @Scope(ScopeType.PAGE)
-@CachedMethods
 @Slf4j
 public class GlossaryAction implements Serializable {
     private static final long serialVersionUID = 1L;

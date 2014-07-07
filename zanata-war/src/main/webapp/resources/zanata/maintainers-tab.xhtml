@@ -28,7 +28,7 @@
 <composite:implementation>
   <div class="panel">
     <div class="panel__header">
-      <h2 class="panel__heading">#{messages['jsf.Maintainers']}</h2>
+      <h2 class="panel__heading">#{msgs['jsf.Maintainers']}</h2>
     </div>
 
     <div class="panel__sub-header js-reveal">
@@ -36,7 +36,7 @@
         listId="maintainers-form"
         render="maintainers-form, maintainerSearchBottom-pager, maintainerSearchBottom-page-info"
         id="maintainerSearch" iconClass="i--maintain"
-        placeholder="#{messages['jsf.maintainer.search.placeholder']}"
+        placeholder="#{msgs['jsf.maintainer.search.placeholder']}"
         actionBean="#{cc.attrs.filterActionBean}"/>
     </div>
 
@@ -48,12 +48,12 @@
 
     <h:form id="maintainers-form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
-        <p class="txt--meta">#{messages['jsf.NoMaintainers']}</p>
+        <p class="txt--meta">#{msgs['jsf.NoMaintainers']}</p>
         <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
             <a class="button--primary" href="#{cc.attrs.settingsUrl}"
               onclick="changeBrowserUrl(this.href, true);return false;">
-              #{messages['jsf.AddAMaintainer']}
+              #{msgs['jsf.AddAMaintainer']}
               <i class="i i--plus i__item__icon"></i>
             </a>
           </p>
@@ -62,7 +62,7 @@
 
       <s:div styleClass="l--pad-all-half"
         rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.currentPage}">
-        <p class="txt--meta">#{messages['jsf.search.NoResult']}</p>
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
       <s:fragment

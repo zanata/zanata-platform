@@ -54,6 +54,7 @@ public class AddLanguagePage extends BasePage {
     public AddLanguagePage inputLanguage(String language) {
         languageInput.sendKeys(language);
         defocus();
+        waitForPageSilence();
         return this;
     }
 

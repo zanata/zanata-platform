@@ -23,15 +23,14 @@ package org.zanata.feature.projectversion;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -42,106 +41,84 @@ public class VersionFilteringTest extends ZanataTestCase {
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The user can filter project versions by name",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void versionSearchFiltering() {
-
+    public void versionSearchFiltering() throws Exception {
         String projectName = "versionsearchnums";
 
-        assertThat("Login as translator",
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .loggedInAs(),
-                equalTo("translator"));
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Login as translator");
 
-        assertThat("The project is created",
-                new ProjectWorkFlow()
-                        .createNewSimpleProject("version-search", projectName)
-                        .getProjectName(),
-                equalTo(projectName));
+        assertThat(new ProjectWorkFlow()
+                .createNewSimpleProject("version-search", projectName)
+                .getProjectName())
+                .isEqualTo(projectName)
+                .as("The project is created");
 
-        assertThat("The version alpha is created",
-                new ProjectWorkFlow()
-                        .createNewProjectVersion(projectName, "alpha")
-                        .getProjectVersionName(),
-                equalTo("alpha"));
+        assertThat(new ProjectWorkFlow()
+                .createNewProjectVersion(projectName, "alpha")
+                .getProjectVersionName())
+                .isEqualTo("alpha")
+                .as("The version alpha is created");
 
-        assertThat("The version bravo is created",
-                new ProjectWorkFlow()
-                        .createNewProjectVersion(projectName, "bravo")
-                        .getProjectVersionName(),
-                equalTo("bravo"));
+        assertThat(new ProjectWorkFlow()
+                .createNewProjectVersion(projectName, "bravo")
+                .getProjectVersionName())
+                .isEqualTo("bravo")
+                .as("The version bravo is created");
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .goToProjectByName(projectName)
                 .waitForDisplayedVersions(2);
 
-        assertThat("The version count is 2",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(2));
-
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions(),
-                contains("bravo", "alpha"));
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clickSearchIcon()
                 .enterVersionSearch("alpha")
                 .waitForDisplayedVersions(1);
 
-        assertThat("The version count is 1",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(1));
-
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions(),
-                contains("alpha"));
+        assertVersions(projectVersionsPage, 1, new String[]{"alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .waitForDisplayedVersions(2);
 
-        assertThat("The version count is 2 again",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(2));
-
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions(),
-                contains("bravo", "alpha"));
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .enterVersionSearch("bravo")
                 .waitForDisplayedVersions(1);
 
-        assertThat("The version count is 1",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(1));
-
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions(),
-                contains("bravo"));
+        assertVersions(projectVersionsPage, 1, new String[]{"bravo"});
 
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .enterVersionSearch("charlie")
                 .waitForDisplayedVersions(0);
 
-        assertThat("The version count is 0",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(0));
-
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions().size(),
-                equalTo(0));
+        assertVersions(projectVersionsPage, 0, new String[]{});
 
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .waitForDisplayedVersions(2);
 
-        assertThat("The version count is 2 again",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(2));
+        assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
+    }
 
-        assertThat("The versions are correct",
-                projectVersionsPage.getVersions(),
-                contains("bravo", "alpha"));
+    private void assertVersions(ProjectVersionsPage page,
+                                int versionsCount,
+                                String[] versionNames) {
+        assertThat(page.getNumberOfDisplayedVersions())
+                .isEqualTo(versionsCount)
+                .as("The version count is " + versionsCount);
+
+        assertThat(page.getVersions())
+                .contains(versionNames)
+                .as("The versions are correct");
     }
 }

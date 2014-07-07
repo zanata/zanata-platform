@@ -11,21 +11,23 @@
   <ui:param name="toEmailAddr"
     value="#{userAction.getEmail(userAction.username)}"/>
   <ui:param name="subject"
-    value="#{messages['jsf.email.usernamechange.Subject']}"/>
+    value="#{msgs['jsf.email.usernamechange.Subject']}"/>
 
   <ui:define name="body">
-    <p>#{messages['jsf.email.usernamechange.DearName']}</p>
+    <p>#{msgs.format('jsf.email.usernamechange.DearName',
+      userAction.getName(userAction.username))}</p>
 
-    <p>#{messages['jsf.email.usernamechange.Content']}</p>
+    <p>#{msgs['jsf.email.usernamechange.Content']}</p>
 
-    <p>#{messages['jsf.email.usernamechange.YourNewUsername']}</p>
+    <p>#{msgs.format('jsf.email.usernamechange.YourNewUsername',
+      userAction.username)}</p>
     <s:div rendered="#{applicationConfiguration.internalAuth}">
-      <p>#{messages['jsf.email.usernamechange.ResetPassword']}</p>
+      <p>#{msgs['jsf.email.usernamechange.ResetPassword']}</p>
 
       <p>
         <a
           href="#{applicationConfiguration.serverPath}/account/password_reset_request">
-          #{messages['jsf.email.usernamechange.ClickLinkForPasswordReset']}
+          #{msgs['jsf.email.usernamechange.ClickLinkForPasswordReset']}
         </a>
       </p>
     </s:div>

@@ -47,6 +47,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClientWorkFlow {
 
+    private final int timeoutDuration;
+
+    /**
+     * @param timeoutDuration
+     *            in seconds.
+     */
+    public ClientWorkFlow(int timeoutDuration) {
+        this.timeoutDuration = timeoutDuration;
+    }
+
+    /**
+     * With default timeout 120 seconds.
+     */
+    public ClientWorkFlow() {
+        timeoutDuration = 120;
+    }
+
     public File getProjectRootPath(String sampleProject) {
         String baseDir =
                 PropertiesHolder.getProperty(Constants.sampleProjects.value());
@@ -71,6 +88,7 @@ public class ClientWorkFlow {
 
     public List<String> callWithTimeout(final File workingDirectory,
             String command) {
+        log.info("=== about to call ===\n{}", command);
         final List<String> commands =
                 Lists.newArrayList(Splitter.on(" ").split(command));
 
@@ -89,7 +107,7 @@ public class ClientWorkFlow {
         };
         try {
             return timeLimiter
-                    .callWithTimeout(work, 60, TimeUnit.SECONDS, true);
+                    .callWithTimeout(work, timeoutDuration, TimeUnit.SECONDS, true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

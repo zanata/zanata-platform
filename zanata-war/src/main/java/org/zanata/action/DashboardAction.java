@@ -36,16 +36,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
@@ -54,19 +52,17 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ServiceLocator;
-import org.zanata.util.StringUtil;
-import org.zanata.util.UrlUtil;
 
 import javax.annotation.Nullable;
 
 import lombok.Getter;
-import org.zanata.util.ZanataMessages;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
 @Restrict("#{identity.loggedIn}")
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final int USER_IMAGE_SIZE = 115;
 
     @In
     private GravatarService gravatarServiceImpl;
@@ -87,7 +83,7 @@ public class DashboardAction implements Serializable {
     private ZanataIdentity identity;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -95,7 +91,13 @@ public class DashboardAction implements Serializable {
     @Getter
     private ProjectFilter projectList = new ProjectFilter();
 
-    private static final int USER_IMAGE_SIZE = 115;
+    @Getter(lazy = true)
+    private final int userMaintainedProjectsCount =
+            countUserMaintainedProjects();
+
+    @Getter(lazy = true)
+    private final List<HProject> userMaintainedProjects =
+            fetchUserMaintainedProjects();
 
     public String getUserImageUrl() {
         return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
@@ -124,13 +126,11 @@ public class DashboardAction implements Serializable {
             ", ");
     }
 
-    @CachedMethodResult
-    public int getUserMaintainedProjectsCount() {
+    private int countUserMaintainedProjects() {
         return authenticatedAccount.getPerson().getMaintainerProjects().size();
     }
 
-    @CachedMethodResult
-    public List<HProject> getUserMaintainedProjects() {
+    private List<HProject> fetchUserMaintainedProjects() {
         List<HProject> sortedList = new ArrayList<HProject>();
 
         if (canViewObsolete()) {
@@ -161,7 +161,6 @@ public class DashboardAction implements Serializable {
         return DateUtil.formatShortDate(project.getLastChanged());
     }
 
-    @CachedMethodResult
     public boolean canViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
@@ -205,9 +204,9 @@ public class DashboardAction implements Serializable {
             else {
                 username = lastTrans.getName();
             }
-            return zanataMessages.getMessage(
-                    "jsf.dashboard.activity.lastTranslatedBy.message",
-                    username);
+            return msgs
+                    .format("jsf.dashboard.activity.lastTranslatedBy.message",
+                            username);
         }
         return "";
     }

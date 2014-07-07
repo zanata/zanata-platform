@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>19</version>
+    <version>20-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -111,19 +111,20 @@
         <type>pom</type>
       </dependency>
 
-
-      <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>bom</artifactId>
-        <version>${seam.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.jboss.as</groupId>
         <artifactId>jboss-as-parent</artifactId>
         <version>${jboss.as.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Seam bom goes last because it uses outdated dependencies,
+           and isn't being updated -->
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>bom</artifactId>
+        <version>${seam.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -209,6 +210,7 @@
         <groupId>com.google.gwt.inject</groupId>
         <artifactId>gin</artifactId>
         <version>1.5.0</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
@@ -250,6 +252,7 @@
         <groupId>de.novanic.gwteventservice</groupId>
         <artifactId>gwteventservice</artifactId>
         <version>${gwteventservice.version}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>de.novanic.gwteventservice</groupId>
@@ -524,7 +527,7 @@
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>
         <version>1.1.1</version>
-        <scope>compile</scope>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -695,6 +698,54 @@
           <rules>
             <banDuplicateClasses>
               <dependencies combine.children="append">
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>com.beust</groupId>
+                  <artifactId>jcommander</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>com.beust.jcommander.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <dependency>
+                  <groupId>com.google.gwt</groupId>
+                  <artifactId>gwt-dev</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>commons-fileupload</groupId>
+                  <artifactId>commons-fileupload</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.commons.fileupload.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>org.apache.maven</groupId>
+                  <artifactId>maven*</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.maven.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>org.picketbox</groupId>
+                  <artifactId>picketbox</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.picketbox.*</ignoreClass>
+                    <ignoreClass>org.jboss.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>net.sf.ehcache</groupId>
+                  <artifactId>ehcache-core</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>net.sf.ehcache.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
                 <!-- lombok is "provided", so these duplicate classes don't get deployed -->
                 <dependency>
                   <groupId>org.projectlombok</groupId>
@@ -739,7 +790,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>2.6</version>
           <configuration>
             <formats>
               <format>xml</format>
@@ -797,9 +848,6 @@
     <profile>
       <!-- Profile to use more recent versions of hibernate etc. for jboss 7 -->
       <id>jboss7</id>
-      <properties>
-        <war_bundles_jsf_impl>true</war_bundles_jsf_impl>
-      </properties>
       <dependencies>
         <dependency>
           <groupId>org.slf4j</groupId>

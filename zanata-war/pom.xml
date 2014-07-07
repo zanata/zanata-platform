@@ -134,47 +134,61 @@
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
             <!-- used indirectly by drools -->
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
-            <!-- used for annotations -->
-            <usedDependency>com.google.code.findbugs:jsr305</usedDependency>
+            <!-- Used by javamelody for email/pdf support -->
+            <usedDependency>com.lowagie:itext</usedDependency>
             <!-- used for arquillian tests -->
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!-- used for gwt super devmode -->
             <usedDependency>org.json:json</usedDependency>
              <!--used to log sql and parameters when debugging Hibernate -->
             <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
-
-            <!-- Grandfathered entries: -->
-            <!-- TODO validate or remove each of these -->
+            <!-- used for org.hibernate:hibernate-core and  org.drools:drools-compiler -->
             <usedDependency>antlr:antlr</usedDependency>
+            <!-- required for guava in gwt -->
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
+            <!-- used for org.hibernate:hibernate-validator -->
             <usedDependency>com.ibm.icu:icu4j</usedDependency>
-            <usedDependency>com.sun.faces:jsf-impl</usedDependency>
+            <!-- Used by org.zanata.util.HashUtil.md5Hex -->
             <usedDependency>commons-codec:commons-codec</usedDependency>
+            <!-- used by jboss-as-parent-7.2.0.Final.pom -->
             <usedDependency>commons-collections:commons-collections</usedDependency>
+            <!-- Used for StringUtils lib -->
             <usedDependency>commons-lang:commons-lang</usedDependency>
+            <!-- Needed by ui rendering on runtime -->
             <usedDependency>javax.el:el-api</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <usedDependency>mysql:mysql-connector-java</usedDependency>
+            <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
+            <usedDependency>com.sun.faces:jsf-impl</usedDependency>
+            <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
+            <!-- Used for security.drl -->
             <usedDependency>org.drools:drools-compiler</usedDependency>
+            <usedDependency>org.antlr:antlr</usedDependency>
+            <!-- Used by lucene search -->
+            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
+            <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <usedDependency>org.hibernate:hibernate-search</usedDependency>
+            <!-- used for arquillian deployment (org.zanata.Deployments) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
-            <usedDependency>org.htmlparser:htmlparser</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
             <usedDependency>org.jboss.as:jboss-as-arquillian-container-managed</usedDependency>
+            <!-- Used by JSON (RestEasy) -->
             <usedDependency>org.jboss.resteasy:resteasy-jackson-provider</usedDependency>
+            <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
+            <!-- Used in arquillian test - zanata-war/arquillian/components.properties -->
             <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
+            <!-- runtime dependency for email implementations -->
             <usedDependency>org.jboss.seam:jboss-seam-mail</usedDependency>
-            <usedDependency>org.openxri:openxri-client</usedDependency>
-            <usedDependency>org.openxri:openxri-syntax</usedDependency>
-            <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
+            <!-- Needed for urlrewrite.xml impl -->
             <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
-            <usedDependency>org.zanata:zanata-rest-client</usedDependency>
+            <!-- Need for test scope -->
+            <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
+            <!-- Required for jboss startup at org.jboss.seam.init.Initialization.initComponentsFromXmlDocuments(Initialization.java:205) -->
+            <usedDependency>dom4j:dom4j</usedDependency>
             <!-- NB: Don't add anything without a comment explaining how the
                  dependency is used -->
           </usedDependencies>
@@ -440,7 +454,6 @@
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <junitArtifactName>none:none</junitArtifactName>
@@ -1119,12 +1132,6 @@
       <artifactId>zanata-rest-client</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-rest-client</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
 
     <!-- Compatibility Dependencies -->
 
@@ -1181,9 +1188,9 @@
     </dependency>
 
     <dependency>
-      <!-- TODO this should be excluded in production -->
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-debug</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -1200,6 +1207,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>javassist</groupId>
@@ -1214,15 +1222,18 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <artifactId>
@@ -1250,10 +1261,12 @@
     <dependency>
       <groupId>org.jboss.spec.javax.faces</groupId>
       <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
@@ -1279,7 +1292,34 @@
           <artifactId>ecj</artifactId>
           <groupId>org.eclipse.jdt.core.compiler</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>org.antlr</artifactId>
+          <groupId>antlr</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>antlr</artifactId>
+          <groupId>antlr</groupId>
+        </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>3.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Richfaces -->
@@ -1302,6 +1342,7 @@
     <dependency>
       <groupId>com.sun.faces</groupId>
       <artifactId>jsf-impl</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Hibernate / JPA -->
@@ -1450,15 +1491,24 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>net.bull.javamelody</groupId>
       <artifactId>javamelody-core</artifactId>
       <version>1.48.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.lowagie</groupId>
+      <artifactId>itext</artifactId>
+      <version>2.1.7</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bctsp-jdk14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -1516,7 +1566,11 @@
         </exclusion>
       </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-analyzers</artifactId>
@@ -1619,6 +1673,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- This must appear before arquillian dependencies -->
@@ -1644,15 +1699,6 @@
       <artifactId>shrinkwrap-resolver-api</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!-- Arquillian 1.0.4 should eliminate the need for this dependency.
-     See https://bugzilla.redhat.com/show_bug.cgi?id=871413 -->
-    <!--<dependency>
-        <groupId>org.jboss.remoting3</groupId>
-        <artifactId>jboss-remoting</artifactId>
-        <version>3.2.14.GA</version>
-        <scope>provided</scope>
-    </dependency>-->
 
     <dependency>
       <groupId>org.jboss.arquillian.config</groupId>
@@ -1904,19 +1950,6 @@
 
     <!-- openid4java -->
     <dependency>
-      <groupId>org.htmlparser</groupId>
-      <artifactId>htmlparser</artifactId>
-      <version>1.6</version>
-      <exclusions>
-        <!--  htmlparser tries to bring in java.home/lib/tools.jar -->
-        <exclusion>
-          <artifactId>tools</artifactId>
-          <groupId>com.sun</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>org.openid4java</groupId>
       <artifactId>openid4java</artifactId>
       <version>0.9.8</version>
@@ -1933,59 +1966,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.openxri</groupId>
-      <artifactId>openxri-client</artifactId>
-      <version>1.2.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>xalan</groupId>
-          <artifactId>xalan</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xerces</groupId>
-          <artifactId>xercesImpl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jcl</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openxri</groupId>
-      <artifactId>openxri-syntax</artifactId>
-      <version>1.2.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jcl</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
       <version>4.0.14.Final</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -2015,6 +2004,7 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.12</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

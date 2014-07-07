@@ -10,7 +10,7 @@
   xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
-  <ui:define name="page_title">#{messages['jsf.transmemory.Title']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.transmemory.Title']}</ui:define>
 
   <ui:define name="head">
     <a4j:jsFunction name="refreshDataTable" render="tmList"/>
@@ -32,15 +32,15 @@
       }
 
       function confirmClearTm() {
-        return confirm("#{messages['jsf.transmemory.ConfirmClearTM']}");
+        return confirm("#{msgs['jsf.transmemory.ConfirmClearTM']}");
       }
 
       function confirmDeleteTm() {
-        return confirm("#{messages['jsf.transmemory.ConfirmDeleteTM']}");
+        return confirm("#{msgs['jsf.transmemory.ConfirmDeleteTM']}");
       }
 
       function confirmExport() {
-        return confirm("#{messages['jsf.transmemory.ConfirmExport']}");
+        return confirm("#{msgs['jsf.transmemory.ConfirmExport']}");
       }
 
       function submitUpload() {
@@ -98,9 +98,9 @@
 
   <ui:define name="right_content">
     <rich:panel id="loggedIn">
-      <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link id="createTmLink" styleClass="action_link"
-        value="#{messages['jsf.transmemory.CreateNew']}"
+        value="#{msgs['jsf.transmemory.CreateNew']}"
         view="/tm/create.xhtml"
         propagation="none"/>
     </rich:panel>
@@ -113,7 +113,7 @@
     <s:decorate id="main_content">
       <s:fragment
         rendered="#{translationMemoryAction.allTranslationMemories.size() eq 0}">
-        <h:outputText value="#{messages['jsf.transmemory.NoTransMemories']}"/>
+        <h:outputText value="#{msgs['jsf.transmemory.NoTransMemories']}"/>
       </s:fragment>
 
       <s:fragment
@@ -127,23 +127,23 @@
               value="#{translationMemoryAction.allTranslationMemories}"
               var="tm">
               <rich:column>
-                <f:facet name="header">#{messages['jsf.transmemory.Id']}
+                <f:facet name="header">#{msgs['jsf.transmemory.Id']}
                   <richext:columnSorter/>
                 </f:facet>
                 <h:outputText value="#{tm.slug}"/>
               </rich:column>
               <rich:column>
-                <f:facet name="header">#{messages['jsf.Description']}</f:facet>
+                <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
                 <h:outputText value="#{tm.description}"/>
               </rich:column>
               <rich:column>
                 <f:facet
-                  name="header">#{messages['jsf.transmemory.NoOfEntries']}</f:facet>
+                  name="header">#{msgs['jsf.transmemory.NoOfEntries']}</f:facet>
                 <h:outputText
                   value="#{translationMemoryAction.getTranslationMemorySize(tm.slug)}"/>
               </rich:column>
               <rich:column>
-                <f:facet name="header">#{messages['jsf.CreationDate']}
+                <f:facet name="header">#{msgs['jsf.CreationDate']}
                   <richext:columnSorter/>
                 </f:facet>
                 <h:outputText value="#{tm.creationDate}">
@@ -152,38 +152,38 @@
               </rich:column>
               <rich:column style="text-align: center">
                 <f:facet
-                  name="header">#{messages['jsf.transmemory.Import']}</f:facet>
+                  name="header">#{msgs['jsf.transmemory.Import']}</f:facet>
                 <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
                   <span class="icon-upload icon"
-                    title="#{messages['jsf.transmemory.Import.Title']}"/>
+                    title="#{msgs['jsf.transmemory.Import.Title']}"/>
                 </a>
               </rich:column>
               <rich:column style="text-align: center">
                 <f:facet
-                  name="header">#{messages['jsf.transmemory.Export']}</f:facet>
+                  name="header">#{msgs['jsf.transmemory.Export']}</f:facet>
                 <a href="#{request.contextPath}/rest/tm/#{tm.slug}"
                   onclick="return confirmExport()">
                   <span class="icon-download icon"
-                    title="#{messages['jsf.transmemory.Export.Title']}"/>
+                    title="#{msgs['jsf.transmemory.Export.Title']}"/>
                 </a>
               </rich:column>
               <rich:column style="text-align: center">
-                <f:facet name="header">#{messages['jsf.Actions']}</f:facet>
+                <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
                 <s:fragment
                   rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
-                  <a4j:commandButton value="#{messages['jsf.Clear']}"
+                  <a4j:commandButton value="#{msgs['jsf.Clear']}"
                     action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
                     render="tmListPoll,tmList,processResult,processResultPoll"
                     onclick="return confirmClearTm()"/>
-                  <h:commandButton value="#{messages['jsf.Delete']}"
+                  <h:commandButton value="#{msgs['jsf.Delete']}"
                     action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
                     onclick="return confirmDeleteTm()"
                     disabled="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
-                    title="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug) ? messages['jsf.transmemory.Delete.Title'] : ''}"/>
+                    title="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug) ? msgs['jsf.transmemory.Delete.Title'] : ''}"/>
                 </s:fragment>
                 <s:fragment
                   rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
-                  #{messages['jsf.transmemory.Clearing.Message']}
+                  #{msgs['jsf.transmemory.Clearing.Message']}
                 </s:fragment>
               </rich:column>
             </rich:dataTable>
@@ -208,10 +208,10 @@
 
         <div>
           <input type="button" name="uploadBtn"
-            value="#{messages['jsf.transmemory.Import']}"
+            value="#{msgs['jsf.transmemory.Import']}"
             onclick="submitUpload()"/>
           <input type="button" name="cancelBtn"
-            value="#{messages['jsf.Cancel']}" onclick="hideUploadPanel()"/>
+            value="#{msgs['jsf.Cancel']}" onclick="hideUploadPanel()"/>
         </div>
       </form>
       <div id="uploadProgress"></div>

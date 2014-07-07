@@ -40,45 +40,45 @@
           value="#{statisticBar.formatPercentage(cc.attrs.value.percentUntranslated)}"/>
 
         <span class="progress-bar__approved"
-          title="#{approved_percentage}% #{messages['jsf.stats.Approved']}, #{approved} words"
+          title="#{approved_percentage}% #{msgs['jsf.stats.Approved']}, #{approved} words"
           style="width: #{approved_percentage}%;">
-          <span class="is-invisible">#{messages['jsf.stats.Approved']}</span>
+          <span class="is-invisible">#{msgs['jsf.stats.Approved']}</span>
         </span>
         <span class="progress-bar__translated"
-          title="#{translated_percentage}% #{messages['jsf.stats.Translated']}, #{translated} words"
+          title="#{translated_percentage}% #{msgs['jsf.stats.Translated']}, #{translated} words"
           style="width: #{translated_percentage}%; margin-left: #{approved_percentage}%">
-          <span class="is-invisible">#{messages['jsf.stats.Translated']}</span>
+          <span class="is-invisible">#{msgs['jsf.stats.Translated']}</span>
         </span>
         <span class="progress-bar__rejected"
-          title="#{rejected_percentage}% #{messages['jsf.stats.Rejected']}, #{rejected} words"
+          title="#{rejected_percentage}% #{msgs['jsf.stats.Rejected']}, #{rejected} words"
           style="width: #{rejected_percentage}%; margin-left: #{approved_percentage + translated_percentage}%;">
-          <span class="is-invisible">#{messages['jsf.stats.Rejected']}</span>
+          <span class="is-invisible">#{msgs['jsf.stats.Rejected']}</span>
         </span>
         <span class="progress-bar__fuzzy"
-          title="#{fuzzy_percentage}% #{messages['jsf.stats.Fuzzy']}, #{fuzzy} words"
+          title="#{fuzzy_percentage}% #{msgs['jsf.stats.Fuzzy']}, #{fuzzy} words"
           style="width: #{fuzzy_percentage}%; margin-left: #{approved_percentage + translated_percentage + rejected_percentage}%;">
-          <span class="is-invisible">#{messages['jsf.stats.Fuzzy']}</span>
+          <span class="is-invisible">#{msgs['jsf.stats.Fuzzy']}</span>
         </span>
         <span class="progress-bar__untranslated progress-bar__item"
-          title="#{untranslated_percentage}% #{messages['jsf.stats.Untranslated']}, #{untranslated} words"
+          title="#{untranslated_percentage}% #{msgs['jsf.stats.Untranslated']}, #{untranslated} words"
           style="width: #{untranslated_percentage}%; margin-left: #{approved_percentage + translated_percentage + fuzzy_percentage + rejected_percentage}%">
           <span
-            class="is-invisible">#{messages['jsf.stats.Untranslated']}</span>
+            class="is-invisible">#{msgs['jsf.stats.Untranslated']}</span>
         </span>
       </s:fragment>
 
       <s:fragment rendered="#{total le 0}">
         <span class="progress-bar__item"
-          title="#{messages['jsf.NoContent']}" style="width: 100%;">
-          <span class="is-invisible">#{messages['jsf.NoContent']}</span>
+          title="#{msgs['jsf.NoContent']}" style="width: 100%;">
+          <span class="is-invisible">#{msgs['jsf.NoContent']}</span>
         </span>
       </s:fragment>
     </s:fragment>
 
     <s:fragment rendered="#{cc.attrs.value == null}">
       <span class="progress-bar__item"
-        title="#{messages['jsf.NoContent']}" style="width: 100%;">
-          <span class="is-invisible">#{messages['jsf.NoContent']}</span>
+        title="#{msgs['jsf.NoContent']}" style="width: 100%;">
+          <span class="is-invisible">#{msgs['jsf.NoContent']}</span>
         </span>
     </s:fragment>
   </div>

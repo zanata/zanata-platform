@@ -48,11 +48,11 @@ import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.annotation.CachedMethodResult;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
@@ -65,12 +65,10 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.ui.AbstractListFilter;
-import org.zanata.ui.FilterUtil;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.ZanataMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -107,7 +105,7 @@ public class ProjectHome extends SlugHome<HProject> {
     private EntityManager entityManager;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In
     private AccountRoleDAO accountRoleDAO;
@@ -122,6 +120,9 @@ public class ProjectHome extends SlugHome<HProject> {
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
+
+    @Getter(lazy = true)
+    private final List<HProjectIteration> versions = fetchVersions();
 
     @Getter
     @Setter
@@ -200,7 +201,7 @@ public class ProjectHome extends SlugHome<HProject> {
         update();
         conversationScopeMessages.setMessage(
                 FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.project.LanguageRemoved",
+                msgs.format("jsf.project.LanguageRemoved",
                         locale.retrieveDisplayName()));
     }
 
@@ -209,8 +210,7 @@ public class ProjectHome extends SlugHome<HProject> {
         getInstance().setOverrideLocales(false);
         update();
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages
-                        .getMessage("jsf.project.LanguageUpdateFromGlobal"));
+                msgs.get("jsf.project.LanguageUpdateFromGlobal"));
     }
 
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
@@ -250,7 +250,7 @@ public class ProjectHome extends SlugHome<HProject> {
         update();
 
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.project.CopyTransOpts.updated"));
+                msgs.get("jsf.project.CopyTransOpts.updated"));
     }
 
     public void initialize() {
@@ -338,15 +338,15 @@ public class ProjectHome extends SlugHome<HProject> {
     public String removeMaintainer(HPerson person) {
         if (getInstanceMaintainers().size() <= 1) {
             conversationScopeMessages
-                    .setMessage(FacesMessage.SEVERITY_INFO, zanataMessages
-                            .getMessage("jsf.project.NeedAtLeastOneMaintainer"));
+                    .setMessage(FacesMessage.SEVERITY_INFO,
+                            msgs.get("jsf.project.NeedAtLeastOneMaintainer"));
         } else {
             getInstance().getMaintainers().remove(person);
             maintainerFilter.reset();
             update();
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.project.MaintainerRemoved",
+                    msgs.format("jsf.project.MaintainerRemoved",
                             person.getName()));
 
             // force page to do url redirect to project page. See pages.xml
@@ -373,7 +373,7 @@ public class ProjectHome extends SlugHome<HProject> {
         }
         update();
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.RolesUpdated"));
+                msgs.get("jsf.RolesUpdated"));
     }
 
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
@@ -403,7 +403,7 @@ public class ProjectHome extends SlugHome<HProject> {
         update();
 
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.project.status.updated",
+                msgs.format("jsf.project.status.updated",
                         EntityStatus.valueOf(initial)));
     }
 
@@ -431,8 +431,7 @@ public class ProjectHome extends SlugHome<HProject> {
         return allRoles;
     }
 
-    @CachedMethodResult
-    public List<HProjectIteration> getVersions() {
+    private List<HProjectIteration> fetchVersions() {
         List<HProjectIteration> results = new ArrayList<HProjectIteration>();
 
         for (HProjectIteration iteration : getInstance().getProjectIterations()) {
@@ -522,7 +521,7 @@ public class ProjectHome extends SlugHome<HProject> {
         update();
 
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.validation.updated",
+                msgs.format("jsf.validation.updated",
                         validatationId.getDisplayName(), state));
     }
 
@@ -600,7 +599,7 @@ public class ProjectHome extends SlugHome<HProject> {
             reset();
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.project.MaintainerAdded",
+                    msgs.format("jsf.project.MaintainerAdded",
                             maintainer.getName()));
         }
     }
@@ -633,7 +632,7 @@ public class ProjectHome extends SlugHome<HProject> {
             update(conversationScopeMessages);
             reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages.getMessage("jsf.project.LanguageAdded",
+                    msgs.format("jsf.project.LanguageAdded",
                             locale.retrieveDisplayName()));
         }
     }

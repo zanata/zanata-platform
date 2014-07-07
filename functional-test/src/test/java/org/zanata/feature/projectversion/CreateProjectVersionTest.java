@@ -24,6 +24,7 @@ package org.zanata.feature.projectversion;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -34,10 +35,7 @@ import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a
@@ -49,9 +47,11 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
+    @Feature(summary = "The administrator can create a project version",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136517)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
-    public void createASimpleProjectVersion() {
+    public void createASimpleProjectVersion() throws Exception {
         VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -60,26 +60,33 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .inputVersionId("my-aboutfedora-version")
                 .saveVersion();
 
-        assertThat("The version is created with correct ID",
-                versionLanguagesPage.getProjectVersionName(),
-                equalTo("my-aboutfedora-version"));
+        assertThat(versionLanguagesPage.getProjectVersionName())
+                .isEqualTo("my-aboutfedora-version")
+                .as("The version is created with correct ID");
     }
 
+    @Feature(summary = "The user must enter an id to create a project version",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void idFieldMustNotBeEmpty() {
-        CreateVersionPage createVersionPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToProjects()
-                        .goToProject("about fedora").clickCreateVersionLink()
-                        .inputVersionId("");
+    public void idFieldMustNotBeEmpty() throws Exception {
+        CreateVersionPage createVersionPage = new LoginWorkFlow()
+                .signIn("admin", "admin")
+                .goToProjects()
+                .goToProject("about fedora")
+                .clickCreateVersionLink()
+                .inputVersionId("");
         createVersionPage.defocus();
 
-        assertThat("The empty value is rejected",
-                createVersionPage.getErrors(),
-                hasItem("value is required"));
+        assertThat(createVersionPage.getErrors())
+                .contains("value is required")
+                .as("The empty value is rejected");
     }
 
+    @Feature(summary = "The user must enter an id that starts and ends with " +
+            "alphanumeric character to create a project version",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void idStartsAndEndsWithAlphanumeric() {
+    public void idStartsAndEndsWithAlphanumeric() throws Exception {
         CreateVersionPage createVersionPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -88,63 +95,70 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .inputVersionId("-A");
         createVersionPage.defocus();
 
-        assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(CreateVersionPage.VALIDATION_ERROR));
+        assertThat(createVersionPage.getErrors())
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("B-");
         createVersionPage.defocus();
         createVersionPage = createVersionPage.waitForNumErrors(1);
 
-        assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(CreateVersionPage.VALIDATION_ERROR));
+        assertThat(createVersionPage.getErrors())
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("_C_");
         createVersionPage.defocus();
         createVersionPage = createVersionPage.waitForNumErrors(1);
 
-        assertThat("The input is rejected", createVersionPage.getErrors(),
-                hasItem(CreateVersionPage.VALIDATION_ERROR));
+        assertThat(createVersionPage.getErrors())
+                .contains(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("A-B_C");
         createVersionPage.defocus();
         createVersionPage = createVersionPage.waitForNumErrors(0);
 
-        assertThat("The input is acceptable", createVersionPage.getErrors(),
-                not(hasItem(CreateVersionPage.VALIDATION_ERROR)));
+        assertThat(createVersionPage.getErrors())
+                .doesNotContain(CreateVersionPage.VALIDATION_ERROR)
+                .as("The input is acceptable");
     }
 
+    @Feature(summary = "The system updates the project version counter " +
+            "when a project version is created",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void versionCounterIsUpdated() {
-
+    public void versionCounterIsUpdated() throws Exception {
         String projectName = "version nums";
 
-        assertThat("Login as translator",
-                new LoginWorkFlow().signIn("translator", "translator")
-                        .loggedInAs(),
-                equalTo("translator"));
+        assertThat(new LoginWorkFlow()
+                .signIn("translator", "translator")
+                .loggedInAs())
+                .isEqualTo("translator")
+                .as("Login as translator");
 
-        assertThat("The project is created",
-                new ProjectWorkFlow()
-                        .createNewSimpleProject("version-nums", projectName)
-                        .getProjectName(),
-                equalTo(projectName));
+        assertThat(new ProjectWorkFlow()
+                .createNewSimpleProject("version-nums", projectName)
+                .getProjectName())
+                .isEqualTo(projectName)
+                .as("The project is created");
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .createNewProjectVersion(projectName, "alpha")
                 .clickProjectLink(projectName);
         projectVersionsPage.waitForDisplayedVersions(1);
 
-        assertThat("The version count is 1",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(1));
+        assertThat(projectVersionsPage.getNumberOfDisplayedVersions())
+                .isEqualTo(1)
+                .as("The version count is 1");
 
         projectVersionsPage = new ProjectWorkFlow()
                 .createNewProjectVersion("version nums", "bravo")
                 .clickProjectLink(projectName);
         projectVersionsPage.waitForDisplayedVersions(2);
 
-        assertThat("The version count is 2",
-                projectVersionsPage.getNumberOfDisplayedVersions(),
-                equalTo(2));
+        assertThat(projectVersionsPage.getNumberOfDisplayedVersions())
+                .isEqualTo(2)
+                .as("The version count is 2");
     }
 }

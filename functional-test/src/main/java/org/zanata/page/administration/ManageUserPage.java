@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class ManageUserPage extends BasePage {
     public static final int USERNAME_COLUMN = 0;
-    @FindBy(id = "usermanagerForm:threads")
+    @FindBy(id = "usermanagerForm:userList")
     private WebElement userTable;
 
     private By userTableBy = By.id("usermanagerForm:threads");
@@ -54,7 +54,8 @@ public class ManageUserPage extends BasePage {
         List<WebElement> cells = userRow.getCells();
         WebElement editCell = cells.get(cells.size() - 1);
         WebElement editButton =
-                editCell.findElement(By.xpath(".//input[@value='Edit']"));
+                editCell.findElement(By
+                        .xpath(".//button[contains(text(), 'Edit')]"));
         editButton.click();
         return new ManageUserAccountPage(getDriver());
     }

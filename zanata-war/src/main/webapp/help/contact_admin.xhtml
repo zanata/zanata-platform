@@ -11,32 +11,32 @@
 
   <ui:param name="showGlobalMessages" value="true"/>
 
-  <ui:define name="page_title">#{messages['jsf.ContactAdmin']}</ui:define>
+  <ui:define name="page_title">#{msgs['jsf.ContactAdmin']}</ui:define>
   <ui:define name="center_content">
     <h:form id="contactAdminForm">
       <s:token allowMultiplePosts="true"/>
 
-      <h1>#{messages['jsf.ContactAdmin']}</h1>
+      <h1>#{msgs['jsf.ContactAdmin']}</h1>
 
       <rich:panel>
 
         <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
-          <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.From']}</ui:define>
           <h:outputText id="senderName" value="#{sendEmail.fromName}"
             required="true"/>
         </s:decorate>
 
         <s:decorate id="replyEmailField"
           template="../WEB-INF/layout/display.xhtml">
-          <ui:define name="label">#{messages['jsf.email.ReplyAddress']}
-            <br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.ReplyAddress']}
+            <br/>#{msgs['jsf.email.ReplyAddress.description']}</ui:define>
           <h:outputText id="email" value="#{sendEmail.replyEmail}"
             required="true"/>
         </s:decorate>
 
         <s:decorate id="subjectField"
           template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.Subject']}</ui:define>
           <h:inputText id="subject" value="#{sendEmail.subject}"
             required="true"/>
         </s:decorate>
@@ -44,7 +44,7 @@
         <s:decorate id="messageField"
           template="../WEB-INF/layout/edit.xhtml">
           <ui:define
-            name="label">#{messages['jsf.email.MessageBody']}</ui:define>
+            name="label">#{msgs['jsf.email.MessageBody']}</ui:define>
           <rich:editor id="message" width="400" height="300"
             style="width:400px;" required="true"
             value="#{sendEmail.htmlMessage}" viewMode="visual"
@@ -54,11 +54,11 @@
 
         <div style="clear: both"></div>
         <div class="actionButtons">
-          <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
+          <h:commandButton id="send" value="#{msgs['jsf.email.Send']}"
             action="#{sendEmail.send}"/>
 
           <s:button view="/help/view.xhtml" action="#{sendEmail.cancel}"
-            value="#{messages['jsf.Cancel']}" id="cancel"/>
+            value="#{msgs['jsf.Cancel']}" id="cancel"/>
         </div>
 
       </rich:panel>

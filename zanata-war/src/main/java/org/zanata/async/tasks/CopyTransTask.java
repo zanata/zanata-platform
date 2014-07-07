@@ -56,7 +56,8 @@ public abstract class CopyTransTask implements
     }
 
     /**
-     * @return The maximum progress for the copy trans task.
+     * @return The maximum progress for the copy trans task
+     * (ie the number of textflows times the number of locales).
      */
     protected abstract int getMaxProgress();
 
@@ -78,10 +79,6 @@ public abstract class CopyTransTask implements
     public static class CopyTransTaskHandle extends TimedAsyncHandle<Void> {
         @Getter
         @Setter
-        private int documentsProcessed;
-
-        @Getter
-        @Setter
         private String cancelledBy;
 
         @Getter
@@ -94,13 +91,6 @@ public abstract class CopyTransTask implements
 
         public CopyTransTaskHandle(String taskName) {
             super(taskName);
-        }
-
-        /**
-         * Increments the processed documents by 1
-         */
-        public void incrementDocumentsProcessed() {
-            documentsProcessed++;
         }
 
     }

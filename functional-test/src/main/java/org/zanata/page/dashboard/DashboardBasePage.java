@@ -62,6 +62,13 @@ public class DashboardBasePage extends BasePage {
     @FindBy(id = "activity-month_tab")
     private WebElement thisMonthsActivityTab;
 
+    public final static String EMAIL_SENT =
+            "You will soon receive an email with a link to activate your " +
+            "email account change.";
+
+    public final static String PASSWORD_UPDATE_SUCCESS =
+            "Your password has been successfully changed.";
+
     public DashboardBasePage(final WebDriver driver) {
         super(driver);
     }

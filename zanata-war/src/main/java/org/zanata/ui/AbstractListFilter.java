@@ -36,7 +36,7 @@ public abstract class AbstractListFilter<T> {
 
     @Getter
     @Setter
-    private int pageSize = 10;
+    private int pageSize = 100;
 
     @Getter
     @Setter

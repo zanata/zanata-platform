@@ -29,18 +29,16 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.async.tasks.CopyTransTask;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.ProgressBar;
 import org.zanata.util.DateUtil;
-import org.zanata.util.ZanataMessages;
 import com.google.common.base.Optional;
 
 import lombok.Getter;
@@ -67,7 +65,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     private ConversationScopeMessages conversationScopeMessages;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In
     private CopyTransOptionsModel copyTransOptionsModel;
@@ -110,8 +108,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
                 conversationScopeMessages
                         .setMessage(
                                 FacesMessage.SEVERITY_INFO,
-                                zanataMessages
-                                        .getMessage("jsf.iteration.CopyTrans.Completed"));
+                                msgs.get("jsf.iteration.CopyTrans.Completed"));
             }
             return completedPercent;
         } else {
@@ -134,8 +131,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    zanataMessages
-                            .getMessage("jsf.iteration.CopyTrans.NoDocuments"));
+                    msgs.get("jsf.iteration.CopyTrans.NoDocuments"));
             return;
         }
 
@@ -143,21 +139,31 @@ public class CopyTransAction implements Serializable, ProgressBar {
 
         copyTransManager.startCopyTrans(getProjectIteration(), options);
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.CopyTrans.Started"));
+                msgs.get("jsf.iteration.CopyTrans.Started"));
     }
 
     public void cancel() {
         copyTransManager.cancelCopyTrans(getProjectIteration());
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                zanataMessages.getMessage("jsf.iteration.CopyTrans.Cancelled"));
+                msgs.get("jsf.iteration.CopyTrans.Cancelled"));
     }
 
-    public String getDocumentsProcessed() {
+    public String getCurrentProgress() {
         CopyTransTask.CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {
-            return String.valueOf(handle.getDocumentsProcessed());
+            return String.valueOf(handle.getCurrentProgress());
+        }
+        return "";
+    }
+
+    public String getMaxProgress() {
+        CopyTransTask.CopyTransTaskHandle handle =
+                copyTransManager
+                        .getCopyTransProcessHandle(getProjectIteration());
+        if (handle != null) {
+            return String.valueOf(handle.getMaxProgress());
         }
         return "";
     }

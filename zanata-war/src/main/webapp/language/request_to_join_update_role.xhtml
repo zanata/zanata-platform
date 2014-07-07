@@ -17,56 +17,56 @@
       <s:token allowMultiplePosts="true"/>
       <rich:panel>
         <div class="roleMsg">
-          #{messages['jsf.RequestRoleAs']}
+          #{msgs.format('jsf.RequestRoleAs', sendEmail.locale.localeId.id)}
 
           <s:fragment
             rendered="#{!languageJoinUpdateRoleAction.isTranslator()}">
             <h:selectBooleanCheckbox id="translatorChk"
               value="#{languageJoinUpdateRoleAction.requestAsTranslator}"/>
-            <label for="translatorChk">#{messages['jsf.Translator']}</label>
+            <label for="translatorChk">#{msgs['jsf.Translator']}</label>
           </s:fragment>
 
           <s:fragment rendered="#{!languageJoinUpdateRoleAction.isReviewer()}">
             <h:selectBooleanCheckbox id="reviewerChk"
               value="#{languageJoinUpdateRoleAction.requestAsReviewer}"/>
-            <label for="translatorChk">#{messages['jsf.Reviewer']}</label>
+            <label for="translatorChk">#{msgs['jsf.Reviewer']}</label>
           </s:fragment>
 
           <s:fragment
             rendered="#{!languageJoinUpdateRoleAction.isCoordinator()}">
             <h:selectBooleanCheckbox id="coordinatorChk"
               value="#{languageJoinUpdateRoleAction.requestAsCoordinator}"/>
-            <label for="translatorChk">#{messages['jsf.Coordinator']}</label>
+            <label for="translatorChk">#{msgs['jsf.Coordinator']}</label>
           </s:fragment>
         </div>
 
         <s:decorate id="nameField" template="../WEB-INF/layout/display.xhtml">
-          <ui:define name="label">#{messages['jsf.email.From']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.From']}</ui:define>
           <h:outputText id="senderName" value="#{sendEmail.fromName}"
             required="true"/>
         </s:decorate>
 
         <s:decorate id="replyEmailField"
           template="../WEB-INF/layout/display.xhtml">
-          <ui:define name="label">#{messages['jsf.email.ReplyAddress']}
-            <br/>#{messages['jsf.email.ReplyAddress.description']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.ReplyAddress']}
+            <br/>#{msgs['jsf.email.ReplyAddress.description']}</ui:define>
           <h:outputText id="email" value="#{sendEmail.replyEmail}"
             required="true"/>
         </s:decorate>
 
         <s:decorate id="subjectField"
           template="../WEB-INF/layout/display.xhtml">
-          <ui:define name="label">#{messages['jsf.email.Subject']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.email.Subject']}</ui:define>
           <h:outputText id="subject"
             value="#{languageJoinUpdateRoleAction.subject}" required="true"/>
         </s:decorate>
 
         <s:decorate id="messageField" template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{messages['jsf.AdditionalInfo']}</ui:define>
+          <ui:define name="label">#{msgs['jsf.AdditionalInfo']}</ui:define>
 
           <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
             <rich:tooltip>
-              #{messages['jsf.email.AdditionalInfoMessage']}
+              #{msgs['jsf.email.AdditionalInfoMessage']}
             </rich:tooltip>
           </s:span>
           <br/><br/>
@@ -79,10 +79,10 @@
 
         <div style="clear: both"></div>
         <div class="actionButtons">
-          <h:commandButton id="send" value="#{messages['jsf.email.Send']}"
+          <h:commandButton id="send" value="#{msgs['jsf.email.Send']}"
             action="#{sendEmail.send}"/>
 
-          <s:button id="cancel" value="#{messages['jsf.Cancel']}"
+          <s:button id="cancel" value="#{msgs['jsf.Cancel']}"
             propagation="none" action="#{sendEmail.cancel}"/>
         </div>
 

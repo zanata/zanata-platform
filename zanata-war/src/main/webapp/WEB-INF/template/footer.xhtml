@@ -11,52 +11,52 @@
     <div class="content">
       <ul>
         <li><a href="http://zanata.org/"
-          target="_blank">#{messages['jsf.AboutZanata']}</a>
+          target="_blank">#{msgs['jsf.AboutZanata']}</a>
         </li>
         <li><a href="http://zanata.org/help"
-          target="_blank">#{messages['jsf.Documentation']}</a></li>
+          target="_blank">#{msgs['jsf.Documentation']}</a></li>
         <li><a href="https://github.com/zanata/zanata/wiki"
-          target="_blank">#{messages['jsf.Wiki']}</a></li>
+          target="_blank">#{msgs['jsf.Wiki']}</a></li>
         <li><a href="http://blog-zanatatm.rhcloud.com/"
-          target="_blank">#{messages['jsf.Blog']}</a>
+          target="_blank">#{msgs['jsf.Blog']}</a>
         </li>
       </ul>
     </div>
   </div>
 
   <div class="section_block">
-    <h4>#{messages['jsf.Support']}</h4>
+    <h4>#{msgs['jsf.Support']}</h4>
 
     <div class="content">
       <ul>
         <li><s:link view="/help/view.xhtml"
-          propagation="none">#{messages['jsf.Help']}</s:link></li>
+          propagation="none">#{msgs['jsf.Help']}</s:link></li>
         <li><a href="http://webchat.freenode.net/?channels=zanata"
-          target="_blank">#{messages['jsf.IrcHelp']}</a></li>
+          target="_blank">#{msgs['jsf.IrcHelp']}</a></li>
         <li><a
           href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-          target="_blank">#{messages['jsf.ReportAProblem']}</a></li>
+          target="_blank">#{msgs['jsf.ReportAProblem']}</a></li>
         <li><a
           href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__"
-          target="_blank">#{messages['jsf.KnownIssues']}</a></li>
+          target="_blank">#{msgs['jsf.KnownIssues']}</a></li>
       </ul>
     </div>
   </div>
 
   <div class="section_block">
-    <h4>#{messages['jsf.SiteMap']}</h4>
+    <h4>#{msgs['jsf.SiteMap']}</h4>
 
     <div class="content" id="nav-footer">
       <ul>
         <li><s:link id="Projects_sitemap" view="/project/home.xhtml"
-          propagation="none" value="#{messages['jsf.Projects']}"/></li>
+          propagation="none" value="#{msgs['jsf.Projects']}"/></li>
         <li><s:link id="Groups_sitemap"
           view="/version-group/home.xhtml" propagation="none"
-          value="#{messages['jsf.Groups']}"/></li>
+          value="#{msgs['jsf.Groups']}"/></li>
         <li><s:link id="Languages_sitemap" view="/language/home.xhtml"
-          propagation="none" value="#{messages['jsf.Languages']}"/></li>
+          propagation="none" value="#{msgs['jsf.Languages']}"/></li>
         <li><s:link id="Help_sitemap" view="/help/view.xhtml"
-          propagation="none" value="#{messages['jsf.Help']}"/></li>
+          propagation="none" value="#{msgs['jsf.Help']}"/></li>
       </ul>
     </div>
   </div>
@@ -71,7 +71,9 @@
   <div style="clear: both; display: block;"/>
   <div class="copyright_block">
     <h:outputText
-      value="#{messages['jsf.RunningVersionInfo']} #{messages['jsf.CopyrightNotice']}"
+      value="#{msgs.format('jsf.RunningVersionInfo', msgs['jsf.Zanata'],
+      applicationConfiguration.version, applicationConfiguration.scmDescribe)}
+      #{msgs['jsf.CopyrightNotice']}"
       escape="false"/>
   </div>
 </div>

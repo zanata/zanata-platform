@@ -25,7 +25,6 @@ import static org.jboss.seam.international.StatusMessage.Severity.INFO;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
@@ -46,7 +45,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.security.RunAsOperation;
@@ -55,6 +53,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -73,7 +72,6 @@ import org.zanata.service.impl.EmailChangeService;
 import com.google.common.collect.Lists;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ServiceLocator;
-import org.zanata.util.ZanataMessages;
 
 /**
  * This is an action class that should eventually replace the
@@ -114,7 +112,7 @@ public class UserSettingsAction {
     private LanguageTeamService languageTeamServiceImpl;
 
     @In
-    private ZanataMessages zanataMessages;
+    private Messages msgs;
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
@@ -335,8 +333,7 @@ public class UserSettingsAction {
         authenticatedAccount.getPerson().setName( accountName );
         personDAO.makePersistent(person);
         FacesMessages.instance().add(
-                zanataMessages.getMessage(
-                        "jsf.dashboard.settings.profileUpdated.message"));
+                msgs.get("jsf.dashboard.settings.profileUpdated.message"));
     }
 
     // TODO Cache this
@@ -353,8 +350,7 @@ public class UserSettingsAction {
         languageTeamServiceImpl.leaveLanguageTeam(localeId,
                 authenticatedAccount.getPerson().getId());
         FacesMessages.instance().add(
-                zanataMessages.getMessage(
-                        "jsf.dashboard.settings.leaveLangTeam.message",
+                msgs.format("jsf.dashboard.settings.leaveLangTeam.message",
                         localeId));
     }
 

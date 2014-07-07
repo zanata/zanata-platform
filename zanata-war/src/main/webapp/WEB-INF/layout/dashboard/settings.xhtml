@@ -10,7 +10,7 @@
     action="#{userSettingsAction.regenerateApiKey}"
     render="apiKeyForm" status="client-loader"/>
 
-  <h1>#{messages['jsf.dashboard.settings.title']}</h1>
+  <h1>#{msgs['jsf.dashboard.settings.title']}</h1>
   <div class="tabs--vertical js-tabs">
     <ul class="tabs__nav js-tabs-nav">
       <li>
@@ -19,7 +19,7 @@
           data-content="#account">
           <i class="i i--left i--settings"></i>
           <span class="is-hidden--m-l-down">
-            #{messages['jsf.dashboard.settings.account.tab.label']}
+            #{msgs['jsf.dashboard.settings.account.tab.label']}
           </span>
         </a>
       </li>
@@ -29,7 +29,7 @@
           data-content="#profile-content">
           <i class="i i--left i--user"></i>
           <span class="is-hidden--m-l-down">
-            #{messages['jsf.dashboard.settings.profile.tab.label']}
+            #{msgs['jsf.dashboard.settings.profile.tab.label']}
           </span>
         </a>
       </li>
@@ -39,7 +39,7 @@
           data-content="#languages">
           <i class="i i--left i--language"></i>
           <span class="is-hidden--m-l-down">
-            #{messages['jsf.dashboard.settings.languages.tab.label']}
+            #{msgs['jsf.dashboard.settings.languages.tab.label']}
           </span>
         </a>
       </li>
@@ -49,7 +49,7 @@
           data-content="#client">
           <i class="i i--left i--code"></i>
           <span class="is-hidden--m-l-down">
-            #{messages['jsf.dashboard.settings.client.tab.label']}
+            #{msgs['jsf.dashboard.settings.client.tab.label']}
           </span>
         </a>
       </li>
@@ -57,11 +57,11 @@
     <ul class="tabs__content js-tabs-content">
       <li class="is-active" id="account">
         <h2 class="l--push-top-0 gamma d--bottom">
-          #{messages['jsf.dashboard.settings.accountSettings.label']}
+          #{msgs['jsf.dashboard.settings.accountSettings.label']}
         </h2>
         <h:form id="email-update-form" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item l--push-bottom-1">
-              <h:outputLabel for="email">#{messages['jsf.Email']}</h:outputLabel>
+              <h:outputLabel for="email">#{msgs['jsf.Email']}</h:outputLabel>
               <s:decorate id="emailField" template=" ../field.xhtml" enclose="true">
                 <h:inputText id="email" value="#{userSettingsAction.emailAddress}"
                   maxlength="255">
@@ -82,14 +82,14 @@
         <s:fragment rendered="#{applicationConfiguration.internalAuth}">
           <h3 class="heading--secondary">
             <h:outputText rendered="#{not userSettingsAction.passwordSet}"
-              value="#{messages['jsf.dashboard.settings.setPassword.label']}"/>
+              value="#{msgs['jsf.dashboard.settings.setPassword.label']}"/>
             <h:outputText rendered="#{userSettingsAction.passwordSet}"
-              value="#{messages['jsf.dashboard.settings.changePassword.label']}"/>
+              value="#{msgs['jsf.dashboard.settings.changePassword.label']}"/>
           </h3>
           <h:form id="passwordChangeForm" styleClass="l--constrain-large js-form-password-parent">
             <s:fragment rendered="#{userSettingsAction.passwordSet}">
               <div class="form__item">
-                <h:outputLabel for="oldPassword">#{messages['jsf.OldPassword']}</h:outputLabel>
+                <h:outputLabel for="oldPassword">#{msgs['jsf.OldPassword']}</h:outputLabel>
                 <s:decorate id="oldPasswordField" template=" ../field.xhtml" enclose="false">
                   <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
                     maxlength="255"/>
@@ -97,7 +97,7 @@
               </div>
             </s:fragment>
             <div class="form__item l--push-bottom-1">
-              <h:outputLabel for="newPassword">#{messages['jsf.NewPassword']}</h:outputLabel>
+              <h:outputLabel for="newPassword">#{msgs['jsf.NewPassword']}</h:outputLabel>
               <s:decorate id="newPasswordField" template=" ../field.xhtml"
                 enclose="false">
                 <div class="form__password js-form-password">
@@ -124,7 +124,7 @@
         <hr/>
         <s:fragment rendered="#{applicationConfiguration.multiAuth}">
           <h3 class="heading--secondary">
-            #{messages['jsf.dashboard.settings.connectedAccounts.label']}
+            #{msgs['jsf.dashboard.settings.connectedAccounts.label']}
           </h3>
           <h:form class="l--constrain-large">
             <a4j:outputPanel id="credentialsList">
@@ -142,12 +142,12 @@
                       styleClass="l--float-right txt--danger reveal__target"
                       action="#{userSettingsAction.remove(cred)}"
                       render="credentialsList"
-                      onclick="return confirm('#{messages['jsf.dashboard.settings.removeIdentity.confirm.message']}')"
+                      onclick="return confirm('#{msgs['jsf.dashboard.settings.removeIdentity.confirm.message']}')"
                       title="">
                       <i class="i--large i--remove"></i>
                     </a4j:commandLink>
                     <a href="#" class="l--float-right txt--danger reveal__target"
-                      title="#{messages['jsf.dashboard.settings.removeAccount.label']}">
+                      title="#{msgs['jsf.dashboard.settings.removeAccount.label']}">
                     </a>
                   </li>
                 </ui:repeat>
@@ -155,7 +155,7 @@
             </a4j:outputPanel>
           </h:form>
           <h:form>
-            <h4>#{messages['jsf.dashboard.settings.addAccount.label']}</h4>
+            <h4>#{msgs['jsf.dashboard.settings.addAccount.label']}</h4>
             <ul class="g--tight l--push-top-half">
               <li class="g__item w--1-3 w--1-2-l l--push-bottom-half">
                 <h:commandButton styleClass="button button--google button--full"
@@ -174,7 +174,7 @@
               </li>
               <li class="g__item">
                 <div class="l--pad-top-half l--pad-h-half bg--pop-higher">
-                  <label for="openid">#{messages['jsf.login.openid']}</label>
+                  <label for="openid">#{msgs['jsf.login.openid']}</label>
                   <div class="g--tighter">
                     <div class="g__item w--2-3">
                       <h:inputText id="openid" value="#{userSettingsAction.openId}"/>
@@ -192,13 +192,13 @@
           <h:form>
             <p>
               <s:link styleClass="button button--warning" view="/profile/merge_account.xhtml">
-                #{messages['jsf.dashboard.settings.mergeAccounts.label']}
+                #{msgs['jsf.dashboard.settings.mergeAccounts.label']}
               </s:link>
             </p>
             <small class="txt--meta">
-              #{messages['jsf.dashboard.settings.mergeAccount.info.label'] }
+              #{msgs['jsf.dashboard.settings.mergeAccount.info.label'] }
               <span class="txt--warning">
-                #{messages['jsf.dashboard.settings.mergeAccount.warning.label'] }
+                #{msgs['jsf.dashboard.settings.mergeAccount.warning.label'] }
               </span>
             </small>
           </h:form>
@@ -206,7 +206,7 @@
       </li>
       <li id="profile-content">
         <h2 class="l--push-top-0 gamma d--bottom">
-          #{messages['jsf.dashboard.settings.profileSettings.label']}
+          #{msgs['jsf.dashboard.settings.profileSettings.label']}
         </h2>
         <h:form id="profileForm" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item">
@@ -215,11 +215,11 @@
             </label>
             <p class="l--push-bottom-0">#{userSettingsAction.accountUsername}</p>
             <small class="txt--meta">
-              #{messages['jsf.dashboard.settings.usernameCannotBeChanged.message']}
+              #{msgs['jsf.dashboard.settings.usernameCannotBeChanged.message']}
             </small>
           </div>
           <div class="form__item">
-            <h:outputLabel for="nameField">#{messages['jsf.Name']}</h:outputLabel>
+            <h:outputLabel for="nameField">#{msgs['jsf.Name']}</h:outputLabel>
             <s:decorate id="nameField" template=" ../field.xhtml" enclose="true">
               <h:inputText id="accountName" value="#{userSettingsAction.accountName}"
                 maxlength="80">
@@ -231,7 +231,7 @@
             render="profileForm,profile-overview" status="profile-loader"
             execute="@form"/>
           <input id="updateProfileButton"
-            type="submit" value="#{messages['jsf.dashboard.settings.updateProfile.label']}"
+            type="submit" value="#{msgs['jsf.dashboard.settings.updateProfile.label']}"
             class="button button--primary l--push-top-1"
             onclick="updateProfile(); return false;"/>
           <a4j:status name="profile-loader">
@@ -243,7 +243,7 @@
       </li>
       <li id="languages">
         <h2 class="l--push-all-0 gamma d--bottom">
-          #{messages['jsf.dashboard.settings.languageTeams.label']}
+          #{msgs['jsf.dashboard.settings.languageTeams.label']}
         </h2>
         <h:form id="languageListForm">
           <ul class="list--slat list--highlight l--push-v-half" id="version-languages">
@@ -257,44 +257,44 @@
                   styleClass="l--float-right txt--danger reveal__target"
                   action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
                   render="languageListForm"
-                  onclick="return confirm('#{interpolator.interpolate(messages['jsf.dashboard.settings.leaveLanguageTeam.confirm.message'], locale.retrieveDisplayName())}')">
+                  onclick="return confirm('#{interpolator.interpolate(msgs['jsf.dashboard.settings.leaveLanguageTeam.confirm.message'], locale.retrieveDisplayName())}')">
                   <i class="i--large i--remove"></i>
                 </a4j:commandLink>
               </li>
             </ui:repeat>
           </ul>
           <s:link styleClass="button"
-            value="#{messages['jsf.dashboard.settings.joinLangTeam.message']}"
+            value="#{msgs['jsf.dashboard.settings.joinLangTeam.message']}"
             view="/language/home.xhtml"/>
         </h:form>
       </li>
       <li id="client">
         <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-          #{messages['jsf.dashboard.settings.clientSettings.label']}
+          #{msgs['jsf.dashboard.settings.clientSettings.label']}
         </h2>
         <h:form id="apiKeyForm">
           <p class="txt--meta">
-            <h:outputText value="#{messages['jsf.dashboard.settings.apiKeyNeeded.message']}"/>
+            <h:outputText value="#{msgs['jsf.dashboard.settings.apiKeyNeeded.message']}"/>
             <a href="http://zanata.org/help/cli/cli-configuration/"
-              title="#{messages['jsf.dashboard.settings.clientConfigHelp.message']}">
+              title="#{msgs['jsf.dashboard.settings.clientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a> and Maven plugin
             <a href="http://zanata.org/help/maven-plugin/maven-plugin-install/"
-              title="#{messages['jsf.dashboard.settings.mavenClientConfigHelp.message']}">
+              title="#{msgs['jsf.dashboard.settings.mavenClientConfigHelp.message']}">
               <i class="i i--help"></i>
             </a>.
           </p>
           <div class="form__item">
             <label for="apiKey">
-              #{messages['jsf.dashboard.settings.apiKey.label']}
+              #{msgs['jsf.dashboard.settings.apiKey.label']}
             </label>
             <s:fragment id="no_api_key"
               rendered="#{not userSettingsAction.apiKeyGenerated}">
-                <p>#{messages['jsf.NotGenerated']}</p>
+                <p>#{msgs['jsf.NotGenerated']}</p>
             </s:fragment>
             <s:fragment id="api_key"
               rendered="#{userSettingsAction.apiKeyGenerated}">
-              <p>#{messages['jsf.YourCurrentApiKeyIs']}
+              <p>#{msgs['jsf.YourCurrentApiKeyIs']}
                 <input id="apiKey" type="text" class="js-form__input--copyable"
                   value="#{userSettingsAction.accountApiKey}" readonly=""
                   size="30"/>
@@ -302,8 +302,8 @@
             </s:fragment>
           </div>
           <button id="generateKeyButton" class="button"
-            onclick="if (confirm('#{messages['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
-            #{messages['jsf.dashboard.settings.generateNewApiKey.label']}
+            onclick="if (confirm('#{msgs['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
+            #{msgs['jsf.dashboard.settings.generateNewApiKey.label']}
           </button>
           <div class="form__item l--push-top-1">
             <label for="config">Configuration (zanata.ini)</label>

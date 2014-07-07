@@ -30,6 +30,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
@@ -88,12 +89,13 @@ public class BasePage extends CorePage {
     }
 
     public ProjectsPage goToProjects() {
-        clickNavMenuItem(projectsLink);
+        clickNavMenuItem(getDriver().findElement(By.id("projects_link")));
         return new ProjectsPage(getDriver());
     }
 
     private void clickNavMenuItem(final WebElement menuItem) {
-        scrollIntoView(menuItem);
+        scrollToTop();
+        slightPause();
         if (!menuItem.isDisplayed()) {
             // screen is too small the menu become dropdown
             getDriver().findElement(By.id("nav-main"))
@@ -105,6 +107,8 @@ public class BasePage extends CorePage {
                 return menuItem.isDisplayed();
             }
         });
+        // The notifications can sometimes get in the way
+        waitForTenSec().until(ExpectedConditions.elementToBeClickable(menuItem));
         menuItem.click();
     }
 
@@ -281,12 +285,13 @@ public class BasePage extends CorePage {
                 waitForPageSilence();
                 boolean clicked = false;
                 try {
+                    scrollIntoView(tab);
                     if (tab.isDisplayed() && tab.isEnabled()) {
                         tab.click();
                         clicked = true;
                     }
                 } catch(WebDriverException wde) {
-                    return clicked;
+                    return false;
                 }
                 return clicked;
             }
@@ -296,11 +301,6 @@ public class BasePage extends CorePage {
     public String getHtmlSource(WebElement webElement) {
         return (String) ((JavascriptExecutor) getDriver()).executeScript(
                 "return arguments[0].innerHTML;", webElement);
-    }
-
-    public void scrollIntoView(WebElement targetElement) {
-        ((JavascriptExecutor) getDriver()).executeScript(
-                "arguments[0].scrollIntoView(true);", targetElement);
     }
 
     public void clickElement(By findby) {

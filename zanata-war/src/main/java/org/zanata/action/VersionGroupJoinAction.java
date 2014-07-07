@@ -31,6 +31,7 @@ import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -47,6 +48,7 @@ import org.zanata.service.VersionGroupService;
 
 import com.google.common.collect.Lists;
 
+@AutoCreate
 @Name("versionGroupJoinAction")
 @Scope(ScopeType.PAGE)
 public class VersionGroupJoinAction implements Serializable {
@@ -139,7 +141,7 @@ public class VersionGroupJoinAction implements Serializable {
             return sendEmail.sendToVersionGroupMaintainer(maintainers);
         } else {
             FacesMessages.instance().add(
-                    "#{messages['jsf.NoProjectVersionSelected']}");
+                    "#{msgs['jsf.NoProjectVersionSelected']}");
             return "failure";
         }
     }

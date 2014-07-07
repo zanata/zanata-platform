@@ -117,6 +117,10 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -160,12 +164,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>${hibernate.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.javassist</groupId>
-          <artifactId>javassist</artifactId>
-        </exclusion>
-      </exclusions>
       <scope>${hibernate.scope}</scope>
     </dependency>
 
@@ -213,6 +211,12 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.zanata</groupId>
@@ -303,7 +307,6 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -314,6 +317,10 @@
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
       <exclusions>
+        <exclusion>
+          <artifactId>jakarta-regexp</artifactId>
+          <groupId>jakarta-regexp</groupId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-io</artifactId>
@@ -348,7 +355,7 @@
 
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
+      <artifactId>annotations</artifactId>
     </dependency>
 
     <!-- the war itself. See zanata-war pom.xml dependency:copy -->
@@ -732,6 +739,38 @@
             <usedDependency>org.projectlombok:lombok</usedDependency>
             <usedDependency>org.zanata:zanata-war</usedDependency>
           </usedDependencies>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <bannedDependencies>
+              <excludes combine.children="append">
+                <!-- use xalan:xalan -->
+                <exclude>jakarta-regexp:jakarta-regexp</exclude>
+              </excludes>
+              <searchTransitive>true</searchTransitive>
+            </bannedDependencies>
+            <banDuplicateClasses>
+              <dependencies combine.children="append">
+                <!-- multiple versions in the dependency tree -->
+                <dependency>
+                  <groupId>org.jboss</groupId>
+                  <artifactId>jboss-remote-naming</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.jboss.naming.remote.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+              </dependencies>
+              <ignoreClasses combine.children="append">
+                <!-- multiple versions of selenium artifacts in the dependency tree -->
+                <ignoreClass>com.thoughtworks.selenium.*</ignoreClass>
+                <ignoreClass>org.openqa.selenium.*</ignoreClass>
+              </ignoreClasses>
+            </banDuplicateClasses>
+          </rules>
         </configuration>
       </plugin>
 

@@ -26,7 +26,7 @@
   <h:panelGrid>
     <s:decorate id="localeField"
       template="edit.xhtml">
-      <ui:define name="label">#{messages['jsf.Language']}</ui:define>
+      <ui:define name="label">#{msgs['jsf.Language']}</ui:define>
       <h:form>
         <rich:autocomplete id="localeNameSuggestion" mode="client" var="result"
           autocompleteMethod="#{languageManagerAction.suggestLocales}"
@@ -50,9 +50,9 @@
             style="color:#ff0000"/>
           <h:panelGroup
             rendered="#{languageManagerAction.language.contains('_')}">
-            #{messages['jsf.language.validation.Underscores']}
+            #{msgs['jsf.language.validation.Underscores']}
             <a href="#"
-              onclick="replaceUnderscores();">#{messages['jsf.language.validation.ReplaceUnderscores']}</a>
+              onclick="replaceUnderscores();">#{msgs['jsf.language.validation.ReplaceUnderscores']}</a>
           </h:panelGroup>
           <h:outputText
             value="#{languageManagerAction.languageNameWarningMessage}"
@@ -62,7 +62,7 @@
       </h:form>
     </s:decorate>
     <s:decorate id="enabledByDefaultField" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.EnabledByDefault']}</ui:define>
+      <ui:define name="label">#{msgs['jsf.EnabledByDefault']}</ui:define>
       <h:selectBooleanCheckbox
         value="#{languageManagerAction.enabledByDefault}"/>
     </s:decorate>
@@ -70,23 +70,23 @@
 
   <div><h:panelGrid id="output">
     <s:decorate id="output1" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.CountryCode']} </ui:define>
+      <ui:define name="label">#{msgs['jsf.CountryCode']} </ui:define>
       <h:outputText value="#{languageManagerAction.uLocale.country}"/>
     </s:decorate>
     <s:decorate id="output2" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.Name']} </ui:define>
+      <ui:define name="label">#{msgs['jsf.Name']} </ui:define>
       <h:outputText value="#{languageManagerAction.uLocale.displayName}"/>
     </s:decorate>
     <s:decorate id="output3" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.LanguageCode']} </ui:define>
+      <ui:define name="label">#{msgs['jsf.LanguageCode']} </ui:define>
       <h:outputText value="#{languageManagerAction.uLocale.language}"/>
     </s:decorate>
     <s:decorate id="output4" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.Variant']} </ui:define>
+      <ui:define name="label">#{msgs['jsf.Variant']} </ui:define>
       <h:outputText value="#{languageManagerAction.uLocale.variant}"/>
     </s:decorate>
     <s:decorate id="output5" template="display.xhtml">
-      <ui:define name="label">#{messages['jsf.NativeName']} </ui:define>
+      <ui:define name="label">#{msgs['jsf.NativeName']} </ui:define>
       <h:outputText
         value="#{languageManagerAction.uLocale.getDisplayName(languageManagerAction.uLocale)}"/>
     </s:decorate>

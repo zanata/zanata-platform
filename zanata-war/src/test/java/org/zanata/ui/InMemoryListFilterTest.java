@@ -52,6 +52,7 @@ public class InMemoryListFilterTest {
                 return elem.toString().contains(filter);
             }
         };
+        listFilter.setPageSize(10);
     }
 
     @Test
