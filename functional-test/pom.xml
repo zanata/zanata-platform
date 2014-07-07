@@ -202,6 +202,12 @@
       <version>0.3</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+
+
     <!-- to use rest client in test -->
     <dependency>
       <groupId>org.zanata</groupId>
@@ -690,6 +696,11 @@
           <exclude>**/zanata.xml</exclude>
           <exclude>**/pom.xml</exclude>
         </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources/feature-inventory</directory>
+        <filtering>false</filtering>
+        <targetPath>${project.build.directory}/feature-inventory</targetPath>
       </testResource>
     </testResources>
     <plugins>
