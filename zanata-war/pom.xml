@@ -454,7 +454,6 @@
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <junitArtifactName>none:none</junitArtifactName>
