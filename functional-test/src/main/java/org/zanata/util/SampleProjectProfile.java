@@ -33,6 +33,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -95,7 +96,10 @@ public class SampleProjectProfile {
                 // account
                 HAccountActivationKey.class, HPersonEmailValidationKey.class,
                 HAccountResetPasswordKey.class, HCredentials.class,
-                HPerson.class, HAccount.class));
+                HPerson.class, HAccount.class,
+                // account role
+                HRoleAssignmentRule.class
+        ));
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);
