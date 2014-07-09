@@ -22,7 +22,6 @@ package org.zanata.i18n;
 
 import java.text.MessageFormat;
 import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +32,9 @@ import java.util.Set;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.util.EmptyEnumeration;
+
+import javax.annotation.Nonnull;
 
 import static org.jboss.seam.ScopeType.EVENT;
 
@@ -63,13 +65,14 @@ public class Messages extends AbstractMap<String, String> {
         } catch (MissingResourceException e) {
             resourceBundle = new ResourceBundle() {
                 @Override
-                protected Object handleGetObject(String key) {
+                protected Object handleGetObject(@Nonnull String key) {
                     return key;
                 }
 
                 @Override
+                @Nonnull
                 public Enumeration<String> getKeys() {
-                    return Collections.emptyEnumeration();
+                    return EmptyEnumeration.instance();
                 }
             };
         }
