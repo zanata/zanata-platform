@@ -11,7 +11,7 @@ featureApp.config(['$routeProvider',
         templateUrl: 'partials/list.html',
         controller: 'FeatureListCtrl'
       }).
-      when('/features/:featureId', {
+      when('/features/:testName', {
         templateUrl: 'partials/detail.html',
         controller: 'FeatureDetailCtrl'
       }).
