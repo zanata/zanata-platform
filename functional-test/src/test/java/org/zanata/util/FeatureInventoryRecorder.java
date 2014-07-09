@@ -35,7 +35,7 @@ public class FeatureInventoryRecorder extends RunListener {
         File location = new File(locationPath);
         report = new File(location, "features.json");
         location.mkdirs();
-        fileReport = report.canWrite();
+        fileReport = report.createNewFile();
     }
 
     @Override
