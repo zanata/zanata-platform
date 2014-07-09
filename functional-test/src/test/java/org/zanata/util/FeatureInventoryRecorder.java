@@ -1,16 +1,18 @@
 package org.zanata.util;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.zanata.feature.Feature;
+
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang <a
@@ -18,12 +20,11 @@ import com.google.common.base.Optional;
  */
 public class FeatureInventoryRecorder extends RunListener {
 
-    public static final String PLAIN_FORMAT =
-            "************** rhbz%d - %s -> [%s][%s]";
     private boolean fileReport;
     private ThreadLocal<Feature> currentFeature = new ThreadLocal<Feature>();
-    private PrintWriter printWriter;
-    private HTMLFeatureReporter htmlFeatureReporter = new HTMLFeatureReporter();
+    private File report;
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private List<FeatureEntry> entries = Lists.newArrayList();
 
     @Override
     public void testRunStarted(Description description) throws Exception {
@@ -32,33 +33,16 @@ public class FeatureInventoryRecorder extends RunListener {
                 System.getProperty("featureInventoryLocation",
                         "./target/feature-inventory");
         File location = new File(locationPath);
-        File report = new File(location, "zanata-features.html");
-        if (location.mkdirs()) {
-            try {
-                // may just output csv file and let another script to do the
-                // transformation
-                printWriter = new PrintWriter(new FileWriter(report, true));
-                printWriter.append("<html>");
-                printWriter
-                        .append("<head><title>Zanata Features</title></head>");
-                printWriter.append("<body><h3>Zanata Features</h3>");
-                printWriter.append("<hr>");
-                printWriter.append("<ul>");
-                fileReport = true;
-            } catch (IOException e) {
-                System.out
-                        .println("can not create feature report at " + report);
-            }
-        }
+        report = new File(location, "features.json");
+        location.mkdirs();
+        fileReport = report.createNewFile();
     }
 
     @Override
     public void testRunFinished(Result result) throws Exception {
         super.testRunFinished(result);
-        if (fileReport) {
-            printWriter.append("</body></html>");
-        }
-        printWriter.close();
+        objectMapper.writerWithDefaultPrettyPrinter()
+                .writeValue(report, entries);
     }
 
     @Override
@@ -86,14 +70,14 @@ public class FeatureInventoryRecorder extends RunListener {
     @Override
     public void testFinished(Description description) throws Exception {
         super.testFinished(description);
-        reportFeature(FeatureReporter.TestResult.Passed,
+        reportFeature(FeatureEntry.TestResult.Passed,
                 description.getDisplayName());
     }
 
     @Override
     public void testFailure(Failure failure) throws Exception {
         super.testFailure(failure);
-        reportFeature(FeatureReporter.TestResult.Failed, failure
+        reportFeature(FeatureEntry.TestResult.Failed, failure
                 .getDescription()
                 .getDisplayName());
     }
@@ -105,24 +89,35 @@ public class FeatureInventoryRecorder extends RunListener {
         if (featureOptional.isPresent()) {
             currentFeature.set(featureOptional.get());
         }
-        reportFeature(FeatureReporter.TestResult.Ignored,
+        reportFeature(FeatureEntry.TestResult.Ignored,
                 description.getDisplayName());
     }
 
-    private void reportFeature(FeatureReporter.TestResult result,
+    private void reportFeature(FeatureEntry.TestResult result,
             String displayName) {
         if (currentFeature.get() == null) {
             return;
         }
         Feature feature = currentFeature.get();
+        FeatureEntry entry = new FeatureEntry(feature, displayName, result);
         if (fileReport) {
-            printWriter.append(htmlFeatureReporter.toReportEntry(feature,
-                    displayName, result));
+            entries.add(entry);
+
         } else {
-            String msg =
-                    String.format(PLAIN_FORMAT, feature.bugzilla(),
-                            feature.summary(), displayName, result);
-            System.out.println(msg);
+            // display to console
+            try {
+                Object json =
+                        objectMapper.readValue(
+                                objectMapper.writeValueAsString(entry),
+                                FeatureEntry.class);
+                System.out.println(objectMapper
+                        .writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(json));
+            } catch (IOException e) {
+                System.out.println("Error writing as JSON");
+                e.printStackTrace();
+            }
+
         }
         currentFeature.remove();
     }

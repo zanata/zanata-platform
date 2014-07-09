@@ -1,0 +1,18 @@
+<div class="l--push-all-half">
+  <a href="#">&lt; Back to features list</a>
+  <h3>{{feature.summary}}</h3>
+  <span class="l--pad-all-quarter {{feature.testResult | resultStyle}}">{{feature.testResult}}</span>
+  <h4 class="heading--sub">{{feature.testName}}</h4>
+  <ul class="list--slat-horizontal list--highlight l--push-all-half bg--neutral">
+    <li class="reveal--list-item list__title">
+      <a ng-href="https://bugzilla.redhat.com/show_bug.cgi?id={{feature.bugzilla}}">RHBZ{{feature.bugzilla}}</a>
+    </li>
+    <li class="reveal--list-item list__title" ng-repeat="testId in feature.testIds">
+      <a ng-href="https://tcms.engineering.redhat.com/case/{{testId}}">TCMS Test {{testId}}</a>
+    </li>
+    <li class="reveal--list-item list__title" ng-repeat="planId in feature.planIds">
+      <a ng-href="https://tcms.engineering.redhat.com/plan/{{planId}}">TCMS Test Plan {{planId}}</a>
+    </li>
+  </ul>
+
+</div>

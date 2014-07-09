@@ -1,0 +1,41 @@
+<div class="g l--push-all-half">
+  <div class="w--1-6 g__item">
+    <input id="query" type="text" ng-model="query.$"
+      placeholder="Search anywhere ...">
+  </div>
+  <div class="w--1-6 g__item">
+    <input id="category" type="text" ng-model="query.category"
+      placeholder="Search by category ...">
+  </div>
+  <div class="w--1-6 g__item">
+    <select ng-model="query.testResult">
+      <option value="">Filter by test result</option>
+      <option value="Passed">Passed</option>
+      <option value="Ignored">Ignored</option>
+      <option value="Failed">Failed</option>
+    </select>
+  </div>
+  <div class="w--1-6 g__item">
+    <select id="orderProp" ng-model="orderProp">
+      <option value="testName">Sort by Test Name</option>
+      <option value="category">Sort by Test Category</option>
+      <option value="testResult">Sort by Test Result</option>
+    </select>
+  </div>
+
+</div>
+
+<hr>
+<ul class="list--slat list--highlight l--push-all-half">
+  <li ng-repeat="feature in features | filter:query | orderBy:orderProp"
+    class="reveal--list-item">
+    <span
+      class="label--highlight l--pad-all-quarter">{{feature.category}}</span>
+    <span class="l--constrain-medium">{{feature.summary}} </span>
+    <span ng-click="featureDetail($index)" class="txt--meta l--push-h-quarter">
+      {{feature.testName}}
+    </span>
+    <span
+      class="{{feature.testResult | resultStyle}} l--pad-all-quarter">{{feature.testResult}}</span>
+  </li>
+</ul>

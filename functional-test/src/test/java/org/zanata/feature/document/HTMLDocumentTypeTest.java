@@ -69,9 +69,9 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
                 .enterSearchMaintainer("translator")
                 .selectSearchMaintainer("translator");
         projectPermissionsTab.expectNotification(
-                "Maintainer 'translator' has been added to project.");
+                "Maintainer \"translator\" has been added to project.");
         projectPermissionsTab = projectPermissionsTab.clickRemoveOn("admin");
-        projectPermissionsTab.expectNotification("Maintainer 'Administrator' " +
+        projectPermissionsTab.expectNotification("Maintainer \"Administrator\" " +
                 "has been removed from project.");
         projectPermissionsTab.logout();
     }

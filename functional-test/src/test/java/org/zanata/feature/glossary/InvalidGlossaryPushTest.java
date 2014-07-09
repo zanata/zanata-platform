@@ -27,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestRule;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.util.SampleProjectRule;
@@ -63,6 +64,7 @@ public class InvalidGlossaryPushTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Feature(summary = "Invalid glossary file will be rejected by the server")
     public void successfulGlossaryPush() throws Exception {
         List<String> result = push(pushCommand, userConfigPath);
         log.info(resultByLines(result));

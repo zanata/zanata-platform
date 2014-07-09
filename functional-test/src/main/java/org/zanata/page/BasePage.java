@@ -224,7 +224,8 @@ public class BasePage extends CorePage {
     }
 
     public HelpPage goToHelp() {
-        getDriver().findElement(By.id("help_link")).click();
+        WebElement help_link = getDriver().findElement(By.id("help_link"));
+        clickNavMenuItem(help_link);
         return new HelpPage(getDriver());
     }
 
