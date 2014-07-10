@@ -740,6 +740,44 @@ package.
 
 
   <profiles>
+    <!-- This automatically activated profile should ensure that we
+         don't use any Java 1.7 classes or methods (as long as
+         JAVA6_HOME is pointing at a 1.6 JDK).
+
+         Note that the automatic activation may be removed in future,
+         because it may make it impossible to compile the server with
+         Java 1.7.
+
+         Adapted from http://stackoverflow.com/a/22398998/14379
+    -->
+    <profile>
+      <id>compileWithJava6</id>
+      <activation>
+        <property>
+          <name>env.JAVA6_HOME</name>
+        </property>
+      </activation>
+      <properties>
+        <java.6.home>${env.JAVA6_HOME}</java.6.home>
+        <java.6.libs>${java.6.home}/jre/lib</java.6.libs>
+        <java.6.bootclasspath>${java.6.libs}/rt.jar${path.separator}${java.6.libs}/jce.jar</java.6.bootclasspath>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>1.6</source>
+              <target>1.6</target>
+              <compilerArguments>
+                <bootclasspath>${java.6.bootclasspath}</bootclasspath>
+              </compilerArguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jdk18</id>
       <activation>
