@@ -34,6 +34,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
@@ -171,6 +172,57 @@ public class RegisterTest extends ZanataTestCase {
                 RegisterPage.REQUIRED_FIELD_ERROR,
                 RegisterPage.REQUIRED_FIELD_ERROR)
                 .as("Value is required shows for all fields");
+    }
+
+    @Feature(summary = "The user can access the login page from the register " +
+            "page, and vice versa",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void signUpToLoginAndBack() {
+        RegisterPage registerPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .goToRegister();
+
+        assertThat(registerPage.getPageTitle())
+                .isEqualTo("Sign up with Zanata")
+                .as("The user is sent to the register page");
+
+        SignInPage signInPage = registerPage.goToSignIn();
+
+        assertThat(signInPage.getPageTitle())
+                .isEqualTo("Log in with your username")
+                .as("The user is sent to the log in page");
+    }
+
+    @Feature(summary = "The user can toggle the entered password visible and " +
+            "masked",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void togglePasswordVisible() {
+        RegisterPage registerPage = new BasicWorkFlow()
+                .goToHome()
+                .goToRegistration()
+                .enterPassword("mypassword");
+
+        assertThat(registerPage.getPasswordFieldType())
+                .isEqualTo("password")
+                .as("The password field starts as masked");
+
+        registerPage = registerPage.clickPasswordShowToggle();
+
+        assertThat(registerPage.getPasswordFieldType())
+                .isEqualTo("text")
+                .as("The password field is now not masked");
+
+        registerPage = registerPage.clickPasswordShowToggle();
+
+        assertThat(registerPage.getPasswordFieldType())
+                .isEqualTo("password")
+                .as("The password field is again masked");
+        assertThat(registerPage.getPassword())
+                .isEqualTo("mypassword")
+                .as("The password field did not lose the entered text");
     }
 
     @Feature(summary = "The user must enter at least one alphanumeric " +

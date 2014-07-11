@@ -119,7 +119,7 @@ public class RegisterPage extends CorePage {
 
     /*
      * Pass in a map of strings, to be entered into the registration fields.
-     * Fields: name, email, username, password, confirmpassword, captcha
+     * Fields: name, email, username, password, confirmpassword
      */
     public RegisterPage setFields(Map<String, String> fields) {
         return clearFields()
@@ -140,4 +140,26 @@ public class RegisterPage extends CorePage {
         return getErrors();
     }
 
+    public String getPageTitle() {
+        return getDriver().findElement(By.className("heading--sub"))
+                .getText();
+    }
+
+    public SignInPage goToSignIn() {
+        getDriver().findElement(By.linkText("Log In")).click();
+        return new SignInPage(getDriver());
+    }
+
+    public RegisterPage clickPasswordShowToggle() {
+        getDriver().findElement(By.className("js-form-password-toggle")).click();
+        return new RegisterPage(getDriver());
+    }
+
+    public String getPassword() {
+        return passwordField.getAttribute("value");
+    }
+
+    public String getPasswordFieldType() {
+        return passwordField.getAttribute("type");
+    }
 }

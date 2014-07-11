@@ -81,4 +81,13 @@ public class SignInPage extends CorePage {
         return new ResetPasswordPage(getDriver());
     }
 
+    public RegisterPage goToRegister() {
+        getDriver().findElement(By.linkText("Sign Up")).click();
+        return new RegisterPage(getDriver());
+    }
+
+    public String getPageTitle() {
+        return getDriver().findElement(By.className("heading--sub"))
+                .getText();
+    }
 }
