@@ -32,9 +32,9 @@
     <span
       class="label--highlight l--pad-all-quarter">{{feature.category}}</span>
     <span class="l--constrain-medium">{{feature.summary}} </span>
-    <span ng-click="featureDetail($index)" class="txt--meta l--push-h-quarter">
+    <a ng-href="#features/{{feature.testName}}" class="txt--meta l--push-h-quarter">
       {{feature.testName}}
-    </span>
+    </a>
     <span
       class="{{feature.testResult | resultStyle}} l--pad-all-quarter">{{feature.testResult}}</span>
   </li>
