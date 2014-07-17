@@ -54,7 +54,7 @@ public class CustomPermissionResolver implements PermissionResolver,
 
     @Override
     public boolean hasPermission(Object target, String action) {
-        Object targetArray;
+        Object[] targetArray;
         if (target instanceof MultiTargetList) {
             targetArray = ((MultiTargetList) target).toArray();
         }

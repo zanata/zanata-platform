@@ -324,9 +324,14 @@ public class SecurityFunctions {
     /***************************************************************************
      * Version Group rules
      **************************************************************************/
-    @GrantsPermission(actions = { "update", "insert" })
-    public static boolean canInsertAndUpdateVersionGroup(HIterationGroup group) {
+    @GrantsPermission(actions = "update")
+    public static boolean canUpdateVersionGroup(HIterationGroup group) {
         return getAuthenticatedAccount().getPerson().isMaintainer(group);
+    }
+
+    @GrantsPermission(actions = "insert")
+    public static boolean canInsertVersionGroup(HIterationGroup group) {
+        return isAdmin();
     }
 
     @GrantsPermission(actions = "view-obsolete")
