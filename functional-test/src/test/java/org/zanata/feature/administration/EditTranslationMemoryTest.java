@@ -123,7 +123,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         TranslationMemoryEditPage translationMemoryEditPage = tmMemoryPage
                 .clickCreateNew()
                 .enterMemoryID(nonUniqueTMId)
-                .enterMemoryDescription("Meh");
+                .enterMemoryDescription("Meh")
+                .clickSaveAndExpectFailure();
 
         assertThat(translationMemoryEditPage.waitForErrors())
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
@@ -145,8 +146,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void importTranslationMemory() throws Exception {
         String importTMId = "importmtest";
-        File importFile = testFileGenerator .generateTestFileWithContent(
-                "importtmtest", ".tmx", testFileGenerator.tmxData());
+        File importFile = testFileGenerator.openTestFile("test-tmx.xml");
 
         TranslationMemoryPage tmMemoryPage = new TranslationMemoryWorkFlow()
                 .createTranslationMemory(importTMId)
@@ -226,8 +226,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void clearTranslationMemory() throws Exception {
         String clearTMId = "cleartmtest";
-        File importFile = testFileGenerator.generateTestFileWithContent(
-                "cleartmtest", ".tmx", testFileGenerator.tmxData());
+        File importFile = testFileGenerator.openTestFile("test-tmx.xml");
 
         TranslationMemoryPage tmMemoryPage = new TranslationMemoryWorkFlow()
                 .createTranslationMemory(clearTMId)
@@ -251,8 +250,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontClearTranslationMemory() throws Exception {
         String clearTMId = "dontcleartmtest";
-        File importFile = testFileGenerator.generateTestFileWithContent(
-                "cleartmtest", ".tmx", testFileGenerator.tmxData());
+        File importFile = testFileGenerator.openTestFile("test-tmx.xml");
 
         TranslationMemoryPage tmMemoryPage = new TranslationMemoryWorkFlow()
                 .createTranslationMemory(clearTMId)
@@ -275,8 +273,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void mustClearBeforeDelete() throws Exception {
         String forceClear = "forcecleartodelete";
-        File importFile = testFileGenerator.generateTestFileWithContent(
-                "cleartmtest", ".tmx", testFileGenerator.tmxData());
+        File importFile = testFileGenerator.openTestFile("test-tmx.xml");
 
         TranslationMemoryPage tmMemoryPage = new TranslationMemoryWorkFlow()
                 .createTranslationMemory(forceClear)

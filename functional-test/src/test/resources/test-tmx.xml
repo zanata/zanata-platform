@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
+<tmx version="1.4">
+  <header creationtool="Zanata TranslationsTMXExportStrategy" 
+    creationtoolversion="unknown" segtype="block"
+    o-tmf="unknown" adminlang="en" srclang="*all*"
+    datatype="unknown"/>
+  <body>
+    <tu srclang="en-US" tuid="about-fedora:master:About_Fedora:d033787962c24b1dc3e00316c86e578c">
+      <tuv xml:lang="en-US">
+        <seg>Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc.</seg>
+      </tuv>
+      <tuv xml:lang="pl">
+        <seg>This is a TM Import Test</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>
