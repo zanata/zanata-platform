@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -29,6 +30,7 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.ClientExecutor;
@@ -137,6 +139,8 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
 
             sslContext.init(null, trustAllCerts, new SecureRandom());
 
+            // NB: This factory is a workaround to enable SNI with
+            // httpcomponents-client 4.2; not needed for 4.3
             SSLSocketFactory factory;
             if (sslCertDisabled) {
                 // avoid triggering the problem described here:
@@ -145,24 +149,23 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
             } else {
                 factory = new SSLSocketFactory(sslContext) {
                     @Override
-                    public Socket connectSocket(
-                            int connectTimeout,
-                            Socket socket,
-                            HttpHost host,
+                    public Socket connectSocket(Socket socket,
                             InetSocketAddress remoteAddress,
                             InetSocketAddress localAddress,
-                            HttpContext context) throws IOException {
+                            HttpParams params)
+                            throws IOException, UnknownHostException,
+                            ConnectTimeoutException {
                         if (socket instanceof SSLSocket) {
                             try {
                                 PropertyUtils.setProperty(socket, "host",
-                                        host.getHostName());
+                                        remoteAddress.getHostName());
                             } catch (Exception ex) {
                                 log.warn(
                                         "Unable to enable SNI; you may have trouble connecting to some secure hosts. Please ensure that you are running Java 1.7 or later.");
                             }
                         }
-                        return super.connectSocket(connectTimeout, socket, host,
-                                remoteAddress, localAddress, context);
+                        return super.connectSocket(socket, remoteAddress,
+                                localAddress, params);
                     }
                 };
             }
