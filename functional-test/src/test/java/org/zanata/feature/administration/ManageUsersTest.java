@@ -25,11 +25,15 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.page.account.SignInPage;
+import org.zanata.page.administration.ManageUserAccountPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +47,7 @@ public class ManageUsersTest extends ZanataTestCase {
 
     @Rule
     public AddUsersRule addUsersRule = new AddUsersRule();
+
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
@@ -53,8 +58,10 @@ public class ManageUsersTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The administrator can change a user's password",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void changeAUsersPassword() {
+    public void changeAUsersPassword() throws Exception {
         dashboardPage.goToAdministration()
                 .goToManageUserPage()
                 .editUserAccount("translator")
@@ -70,4 +77,61 @@ public class ManageUsersTest extends ZanataTestCase {
                 .as("User logged in with new password");
     }
 
+    @Feature(summary = "The administrator must enter the new user password " +
+            "into password and confirm password in order to change it",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void changeAUsersPasswordRequiredFields() throws Exception {
+        ManageUserAccountPage manageUserAccountPage = dashboardPage
+                .goToAdministration()
+                .goToManageUserPage()
+                .editUserAccount("translator")
+                .enterPassword("newpassword")
+                .saveUserExpectFailure();
+
+        assertThat(manageUserAccountPage.getErrors())
+                .contains(ManageUserAccountPage.PASSWORD_ERROR)
+                .as("The password failure error is displayed");
+    }
+
+    @Feature(summary = "The administrator can disable an account",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void disableAUsersAccount() throws Exception {
+        dashboardPage.goToAdministration()
+                .goToManageUserPage()
+                .editUserAccount("translator")
+                .clickEnabled()
+                .saveUser()
+                .logout();
+
+        SignInPage signInPage = new BasicWorkFlow()
+                .goToHome()
+                .clickSignInLink()
+                .enterUsername("translator")
+                .enterPassword("translator")
+                .clickSignInExpectError();
+        assertThat(signInPage.getFieldErrors())
+                .contains(SignInPage.LOGIN_FAILED_ERROR)
+                .as("The user's account cannot be logged in");
+    }
+
+    @Feature(summary = "The administrator can change a user account's roles",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void changeUserRoles() throws Exception {
+        dashboardPage.goToAdministration()
+                .goToManageUserPage()
+                .editUserAccount("translator")
+                .clickRole("admin")
+                .saveUser()
+                .logout();
+
+        DashboardBasePage dashboardBasePage = new LoginWorkFlow()
+                .signIn("translator", "translator");
+
+        assertThat(dashboardBasePage.goToAdministration().getTitle())
+                .isEqualTo("Zanata: Administration")
+                .as("The user can access the administration panel");
+    }
 }

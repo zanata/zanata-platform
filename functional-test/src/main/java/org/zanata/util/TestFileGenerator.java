@@ -53,10 +53,12 @@ import lombok.Setter;
 public class TestFileGenerator {
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
-    private static String longFileName =
-            "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA1CAtGcaZq6xydHdOghbsy"
-                    + "Pu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHHYgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGS"
-                    + "P25eqzU1lDjejCsd26wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMUn9nFW";
+    private static String longFileName = "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA" +
+            "1CAtGcaZq6xydHdOghbsyPu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHH" +
+            "YgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGSP25eqzU1lDjejCsd26" +
+            "wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMU" +
+            "n9nFW";
+
 
     public TestFileGenerator() {
     }

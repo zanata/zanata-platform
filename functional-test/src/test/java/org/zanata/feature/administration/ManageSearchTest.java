@@ -25,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.ManageSearchPage;
@@ -47,8 +48,11 @@ public class ManageSearchTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
+    @Feature(summary = "The administrator can clear and regenerate all of the " +
+            "search indexes",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void regenerateSearchIndexes() {
+    public void regenerateSearchIndexes() throws Exception {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()
                 .goToManageSeachPage()
@@ -70,9 +74,12 @@ public class ManageSearchTest extends ZanataTestCase {
                 .as("No operations are running");
     }
 
+    @Feature(summary = "The administrator can abort the regeneration of the " +
+            "search indexes",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Data set not large enough to achieve stable test")
-    public void abortReindexes() {
+    public void abortReindexes() throws Exception {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()
                 .goToManageSeachPage()

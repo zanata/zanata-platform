@@ -38,6 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ManageUserAccountPage extends BasePage {
+
+    public static String PASSWORD_ERROR = "Passwords do not match";
+
     @FindBy(id = "userdetailForm:passwordField:password")
     private WebElement passwordField;
 
@@ -101,6 +104,11 @@ public class ManageUserAccountPage extends BasePage {
     public ManageUserPage saveUser() {
         saveButton.click();
         return new ManageUserPage(getDriver());
+    }
+
+    public ManageUserAccountPage saveUserExpectFailure() {
+        saveButton.click();
+        return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserPage cancelEditUser() {

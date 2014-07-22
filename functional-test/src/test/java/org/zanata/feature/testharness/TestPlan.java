@@ -72,6 +72,7 @@ import org.zanata.feature.versionGroup.*;
          * The actions of an administrator, such as editing users and
          * translation memory sets
          */
+        AutoRoleAssignmentTest.class,
         EditHomePageTest.class,
         EditTranslationMemoryTest.class,
         EditTranslationMemoryTest.class,
