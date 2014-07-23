@@ -70,10 +70,6 @@ public class ProcessManagerAction {
         return new Date(value);
     }
 
-    public void clearAllFinished() {
-        asyncTaskManagerServiceImpl.clearInactive();
-    }
-
     public void cancel(AsyncTaskHandle handle) {
         handle.cancel();
     }

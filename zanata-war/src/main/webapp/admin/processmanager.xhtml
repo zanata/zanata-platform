@@ -11,12 +11,6 @@
 
   <ui:define name="page_title">#{msgs['jsf.ProcessManager']}</ui:define>
   <ui:define name="right_content">
-    <rich:panel>
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
-        action="#{processManagerAction.clearAllFinished}"
-        value="#{msgs['jsf.processmanager.ClearAllFinished.label']}"/>
-    </rich:panel>
     <rich:panel id="statsPanel">
       <f:facet name="header">#{msgs['jsf.Statistics']}</f:facet>
 

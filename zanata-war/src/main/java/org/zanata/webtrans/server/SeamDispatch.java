@@ -127,6 +127,8 @@ public class SeamDispatch implements Dispatch {
         HttpSession session =
                 ServletContexts.instance().getRequest().getSession();
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
+            log.warn("Token mismatch. Client token: {}, Expected token: {}",
+                    a.getCsrfToken(), session.getId());
             throw new InvalidTokenError(
                     "The csrf token sent with this request is not valid. It may be from an expired session, or may have been forged");
         }
