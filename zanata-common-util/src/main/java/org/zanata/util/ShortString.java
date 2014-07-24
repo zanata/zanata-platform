@@ -34,10 +34,21 @@ public class ShortString {
      * @return a new String if shortening was required, otherwise s
      */
     public static String shorten(String s) {
-        if (s.length() <= MAX_LENGTH) {
+        return shorten(s, MAX_LENGTH);
+    }
+
+    /**
+     * Truncate a string to be no longer than maxLength, using an ellipsis at
+     * the end. If the string is already short enough, return the same string.
+     * @param s String to shorten if required
+     * @param maxLength length to shorten string to
+     * @return a new String if shortening was required, otherwise s
+     */
+    public static String shorten(String s, int maxLength) {
+        if (s.length() <= maxLength) {
             return s;
         }
-        return s.substring(0, MAX_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
+        return s.substring(0, maxLength - ELLIPSIS.length()) + ELLIPSIS;
     }
 
     /**
