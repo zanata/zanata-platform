@@ -25,8 +25,13 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.security.permission.GrantsPermission;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -37,6 +42,110 @@ import org.zanata.util.ServiceLocator;
  */
 public class SecurityFunctions {
     protected SecurityFunctions() {
+    }
+
+    /* admin can do anything */
+    @GrantsPermission
+    public static boolean isAdmin() {
+        return getIdentity().hasRole("admin");
+    }
+
+    public static boolean isProjectMaintainer(HProject project) {
+        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+    }
+
+    /***************************************************************************
+     * The Following Rules are for Identity Management
+     **************************************************************************/
+
+    @GrantsPermission(actions = "create")
+    public static boolean canCreateAccount(String target) {
+        return target.equals("seam.account") && isAdmin();
+    }
+
+    @GrantsPermission
+    public static boolean canManageUsers(String target) {
+        return target.equals("seam.user") && isAdmin();
+    }
+
+    @GrantsPermission
+    public static boolean canManageRoles(String target) {
+        return target.equals("seam.role") && isAdmin();
+    }
+
+    /***************************************************************************
+     * Project ownership rules
+     **************************************************************************/
+
+    /* Any authenticated user can create a project */
+    @GrantsPermission(actions = "insert")
+    public static boolean canCreateProject(HProject target) {
+        return getIdentity().isLoggedIn();
+    }
+
+    /* anyone can read a project */
+    @GrantsPermission(actions = "read")
+    public static boolean canReadProject(HProject target) {
+        return true;
+    }
+
+    /* anyone can read a project iteration */
+    @GrantsPermission(actions = "read")
+    public static boolean canReadProjectIteration(HProjectIteration target) {
+        return true;
+    }
+
+    /*
+     * Project maintainers may edit (but not delete) a project, or add an
+     * iteration. Note that 'add-iteration' (on a project) should be granted in
+     * the same circumstances that 'insert' is granted (on an iteration). In
+     * other words, make sure the rules agree with each other. (NB:
+     * 'add-iteration' is used in the UI to enable buttons etc, without
+     * requiring the construction of HProjectIteration just to do a permission
+     * check.)
+     */
+    @GrantsPermission(actions = { "update",
+            "add-iteration" })
+    public static boolean canUpdateProjectOrAddIteration(HProject project) {
+        if (!getIdentity().isLoggedIn()) {
+            return false;
+        }
+
+        return isProjectMaintainer(project);
+    }
+
+    /*
+     * Project maintainers may create or edit (but not delete) a project
+     * iteration
+     */
+    @GrantsPermission(actions = {
+            "insert", "update", "import-template" })
+    public static boolean canInsertOrUpdateProjectIteration(
+            HProjectIteration iteration) {
+        return isProjectMaintainer(iteration.getProject());
+    }
+
+    /***************************************************************************
+     * Translation rules
+     **************************************************************************/
+
+    /* Language Team members can add a translation for their language teams */
+    @GrantsPermission(actions = { "add-translation", "modify-translation" })
+    public static boolean canTranslate(HProject project, HLocale lang) {
+        return isUserAllowedAccess(project) && isUserTranslatorOfLanguage(lang);
+    }
+
+    public static boolean isUserTranslatorOfLanguage(HLocale lang) {
+        HAccount authenticatedAccount = getAuthenticatedAccount();
+        PersonDAO personDAO =
+                ServiceLocator.instance().getInstance(PersonDAO.class);
+
+        if (authenticatedAccount != null) {
+            return personDAO.isUserInLanguageTeamWithRoles(
+                    authenticatedAccount.getPerson(), lang, true, null, null);
+        }
+
+        return false; // No authenticated user
     }
 
     public static boolean isUserAllowedAccess(HProject project) {
@@ -58,17 +167,16 @@ public class SecurityFunctions {
         }
     }
 
-    public static boolean isUserTranslatorOfLanguage(HLocale lang) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
-
-        if (authenticatedAccount != null) {
-            return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, true, null, null);
-        }
-
-        return false; // No authenticated user
+    /***************************************************************************
+     * Review translation rules
+     **************************************************************************/
+    /* Language Team reviewer can approve/reject translation */
+    // TODO Unify these two permission actions into a single one
+    @GrantsPermission(
+            actions = { "review-translation", "translation-review" })
+    public static boolean
+            canReviewTranslation(HProject project, HLocale locale) {
+        return isUserAllowedAccess(project) && isUserReviewerOfLanguage(locale);
     }
 
     public static boolean isUserReviewerOfLanguage(HLocale lang) {
@@ -84,17 +192,24 @@ public class SecurityFunctions {
         return false; // No authenticated user
     }
 
-    public static boolean isUserCoordinatorOfLanguage(HLocale lang) {
+    /*
+     * Project Maintainers can add, modify or review a translation for their
+     * projects
+     */
+    @GrantsPermission(actions = { "add-translation", "modify-translation",
+            "review-translation", "translation-review" })
+    public static boolean canAddOrReviewTranslation(
+            HProject project, HLocale locale) {
         HAccount authenticatedAccount = getAuthenticatedAccount();
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
+        return authenticatedAccount != null && isProjectMaintainer(project);
+    }
 
-        if (authenticatedAccount != null) {
-            return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, null, null, true);
-        }
-
-        return false; // No authenticated user
+    /* Project Maintainer can import translation (merge type is IMPORT) */
+    @GrantsPermission(actions = "import-translation")
+    public static boolean canImportTranslation(
+            HProjectIteration projectIteration) {
+        HPerson authenticatedPerson = getAuthenticatedAccount().getPerson();
+        return authenticatedPerson.isMaintainer(projectIteration.getProject());
     }
 
     public static boolean isLanguageTeamMember(HLocale lang) {
@@ -110,6 +225,146 @@ public class SecurityFunctions {
         return false; // No authenticated user
     }
 
+    /***************************************************************************
+     * Glossary rules
+     **************************************************************************/
+
+    /* 'glossarist' can push and update glossaries */
+    @GrantsPermission(actions = { "glossary-insert", "glossary-update" })
+    public static boolean canPushGlossary() {
+        return getIdentity().hasRole("glossarist");
+    }
+
+    /* 'glossarist-admin' can also delete */
+    @GrantsPermission(actions = { "glossary-insert", "glossary-update",
+            "glossary-delete" })
+    public static boolean canAdminGlossary() {
+        return getIdentity().hasRole("glossary-admin");
+    }
+
+    /***************************************************************************
+     * Language Team Coordinator rules
+     **************************************************************************/
+
+    /* Anyone can read Locale members */
+    @GrantsPermission(actions = "read")
+    public static boolean canSeeLocaleMembers(HLocaleMember localeMember) {
+        return true;
+    }
+
+    /* 'team coordinator' can manage language teams */
+    @GrantsPermission(actions = "manage-language-team")
+    public static boolean isUserCoordinatorOfLanguage(HLocale lang) {
+        HAccount authenticatedAccount = getAuthenticatedAccount();
+        PersonDAO personDAO =
+                ServiceLocator.instance().getInstance(PersonDAO.class);
+
+        if (authenticatedAccount != null) {
+            return personDAO.isUserInLanguageTeamWithRoles(
+                    authenticatedAccount.getPerson(), lang, null, null, true);
+        }
+
+        return false; // No authenticated user
+    }
+
+    /* 'team coordinator' can insert/update/delete language team members */
+    @GrantsPermission(actions = { "insert", "update", "delete" })
+    public static boolean canModifyLanguageTeamMembers(
+            HLocaleMember localeMember) {
+        return isUserCoordinatorOfLanguage(localeMember.getSupportedLanguage());
+    }
+
+    /***************************************************************************
+     * View Obsolete Project and Project Iteration rules
+     **************************************************************************/
+
+    // Only admin can view obsolete projects
+    @GrantsPermission(actions = "view-obsolete")
+    public static boolean canViewObsoleteProject(HProject project) {
+        return getIdentity().hasRole("admin");
+    }
+
+    // Only admin can view obsolete project iterations
+    @GrantsPermission(actions = "view-obsolete")
+    public static boolean canViewObsoleteProjectIteration(
+            HProjectIteration projectIteration) {
+        return getIdentity().hasRole("admin");
+    }
+
+    /***************************************************************************
+     * Mark Project and Project Iteration obsolete rules
+     **************************************************************************/
+
+    // Only admin can archive projects
+    @GrantsPermission(actions = "mark-obsolete")
+    public static boolean canArchiveProject(HProject project) {
+        return getIdentity().hasRole("admin");
+    }
+
+    // Only admin can archive project iterations
+    @GrantsPermission(actions = "mark-obsolete")
+    public static boolean canArchiveProjectIteration(
+            HProjectIteration projectIteration) {
+        return getIdentity().hasRole("admin");
+    }
+
+    /***************************************************************************
+     * File Download rules
+     **************************************************************************/
+
+    /*
+     * Permissions to download files. NOTE: Currently any authenticated user can
+     * download files
+     */
+    @GrantsPermission(actions = { "download-single", "download-all" })
+    public static boolean canDownloadFiles(HProjectIteration projectIteration) {
+        return getIdentity().isLoggedIn();
+    }
+
+    /***************************************************************************
+     * Version Group rules
+     **************************************************************************/
+    @GrantsPermission(actions = "update")
+    public static boolean canUpdateVersionGroup(HIterationGroup group) {
+        return getAuthenticatedAccount().getPerson().isMaintainer(group);
+    }
+
+    @GrantsPermission(actions = "insert")
+    public static boolean canInsertVersionGroup(HIterationGroup group) {
+        return isAdmin();
+    }
+
+    @GrantsPermission(actions = "view-obsolete")
+    public static boolean canViewObsoleteVersionGroup(HIterationGroup group) {
+        return isAdmin();
+    }
+
+    /***************************************************************************
+     * Copy Trans rules
+     **************************************************************************/
+
+    /** Admins and Project maintainers can perform copy-trans */
+    @GrantsPermission(actions = "copy-trans")
+    public static boolean canRunCopyTrans(HProjectIteration iteration) {
+        return getAuthenticatedAccount().getPerson().isMaintainer(
+                iteration.getProject());
+    }
+
+    /*****************************************************************************************
+     * Review comment rules
+     ******************************************************************************************/
+
+    @GrantsPermission(actions = "review-comment")
+    public static boolean canCommentOnReview(HLocale locale, HProject project) {
+        return isUserAllowedAccess(project) && isLanguageTeamMember(locale);
+    }
+
+    @GrantsPermission(actions = "review-comment")
+    public static boolean canMaintainerCommentOnReview(HLocale locale,
+            HProject project) {
+        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+    }
+
     private static final ZanataIdentity getIdentity() {
         return ServiceLocator.instance().getInstance(ZanataIdentity.class);
     }
@@ -118,5 +373,15 @@ public class SecurityFunctions {
         return ServiceLocator.instance().getInstance(
                 JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION,
                 HAccount.class);
+    }
+
+    private static final <T> T extractTarget(Object[] array, Class<T> type) {
+        for (int i = 0; i < array.length; i++) {
+            Object arrayElement = array[i];
+            if (type.isAssignableFrom(arrayElement.getClass())) {
+                return (T) arrayElement;
+            }
+        }
+        return null;
     }
 }

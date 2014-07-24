@@ -227,7 +227,7 @@ public class TranslationDocumentUpload {
     }
 
     private boolean isTranslationUploadAllowed(GlobalDocumentId id,
-            HLocale localeId) {
+            HLocale locale) {
         HProjectIteration projectIteration =
                 projectIterationDAO.getBySlug(id.getProjectSlug(),
                         id.getVersionSlug());
@@ -237,7 +237,7 @@ public class TranslationDocumentUpload {
                 && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
                 && identity != null
                 && identity.hasPermission("add-translation",
-                        projectIteration.getProject(), localeId);
+                        projectIteration.getProject(), locale);
     }
 
     private static Set<String> newExtensions(boolean gettextExtensions) {
