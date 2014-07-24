@@ -1,0 +1,23 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+#parse($body)
+<hr/>
+    #if ($receivedReason)
+    <p>
+        <span>
+            $msgs.get("jsf.email.YouAreReceivingThisMailBecause") <br/>
+            $receivedReason <br/>
+        </span>
+    </p>
+    #end
+<p>
+  $msgs.get("jsf.email.GeneratedFromZanataServerAt")
+  <a href="$serverPath">
+    $serverPath
+  </a>
+</p>
+</body>
+</html>

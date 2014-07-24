@@ -1,0 +1,50 @@
+<p>$msgs.get("jsf.email.coordinator.DearCoordinator")</p>
+
+<p>
+  $msgs.format("jsf.email.joinrequest.UserRequestingToJoin",
+    $fromName, $fromLoginName, $localeId, $localeNativeName)
+  #if ($requestAsTranslator || $requestAsReviewer || $requestAsCoordinator)
+    <br/>
+    $msgs.format("jsf.email.joinrequest.RoleRequested")
+    <ul>
+    ## NB comparing against true allows us to detect missing context variables
+    #if ($requestAsTranslator == true)
+      <li>
+          $msgs.get("jsf.Translator")
+      </li>
+    #end
+
+    #if ($requestAsReviewer == true)
+      <li>
+          $msgs.get("jsf.Reviewer")
+      </li>
+    #end
+
+    #if ($requestAsCoordinator == true)
+      <li>
+          $msgs.get("jsf.Coordinator")
+      </li>
+    #end
+    </ul>
+  #end
+</p>
+
+#if ($htmlMessage)
+  <p>$msgs.format("jsf.email.UserMessageIntro", $fromName)</p>
+  <hr/>
+  $htmlMessage
+  <hr/>
+#end
+
+<p>$msgs.format("jsf.email.joinrequest.AddUserInstructions",
+    $fromName, $localeId, $msgs.get("jsf.AddTeamMember"), $fromLoginName)</p>
+
+<p>$msgs.format("jsf.email.coordinator.ResponseInstructions",
+    $localeId, $fromName, $replyEmail)</p>
+
+<p>
+  <a
+    href="$serverPath/language/view/$localeId">
+    $serverPath/language/view/$localeId
+  </a>
+</p>

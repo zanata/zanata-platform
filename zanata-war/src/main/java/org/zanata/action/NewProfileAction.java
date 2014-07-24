@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -30,8 +31,10 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataOpenId;
+import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 
 /**
@@ -46,6 +49,11 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @In
     private ZanataOpenId zanataOpenId;
+
+    @In
+    private EmailService emailServiceImpl;
+    @In
+    Messages msgs;
 
     @In
     RegisterService registerServiceImpl;
@@ -92,12 +100,10 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
                             .getAuthResult().getAuthenticatedId(),
                             AuthenticationType.OPENID, this.name, this.email);
         }
-        setActivationKey(key);
-        renderer.render("/WEB-INF/facelets/email/email_activation.xhtml");
+        String message =
+                emailServiceImpl.sendActivationEmail(this.name, this.email, key);
         identity.unAuthenticate();
-        FacesMessages
-                .instance()
-                .add("You will soon receive an email with a link to activate your account.");
+        FacesMessages.instance().add(message);
     }
 
     public void cancel() {

@@ -21,11 +21,13 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.faces.application.FacesMessage;
 
+import com.google.common.collect.Lists;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -37,11 +39,11 @@ import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
-import org.zanata.i18n.Messages;
+import org.zanata.email.EmailStrategy;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
@@ -49,6 +51,15 @@ import org.zanata.service.LocaleService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+
+import org.zanata.email.ContactAdminEmailStrategy;
+import org.zanata.email.ContactLanguageCoordinatorEmailStrategy;
+
+import org.zanata.email.RequestRoleLanguageEmailStrategy;
+
+import org.zanata.email.RequestToJoinLanguageEmailStrategy;
+import org.zanata.email.RequestToJoinVersionGroupEmailStrategy;
 
 /**
  * Sends an email to a specified role.
@@ -60,6 +71,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @AutoCreate
 @Name("sendEmail")
+@NoArgsConstructor
 @Scope(ScopeType.PAGE)
 @Slf4j
 public class SendEmailAction implements Serializable {
@@ -74,6 +86,12 @@ public class SendEmailAction implements Serializable {
             "request_role_language";
     private static final String EMAIL_TYPE_REQUEST_TO_JOIN_GROUP =
             "request_to_join_group";
+
+    @In
+    private LanguageJoinUpdateRoleAction languageJoinUpdateRoleAction;
+
+    @In
+    private VersionGroupJoinAction versionGroupJoinAction;
 
     @In
     private EmailService emailServiceImpl;
@@ -123,9 +141,6 @@ public class SendEmailAction implements Serializable {
 
     private List<HPerson> groupMaintainers;
 
-    @In
-    private Messages msgs;
-
     public static final String SUCCESS = "success";
     public static final String FAILED = "failure";
 
@@ -148,17 +163,6 @@ public class SendEmailAction implements Serializable {
         locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
     }
 
-    private List<HPerson> getCoordinators() {
-        List<HPerson> coordinators = new ArrayList<HPerson>();
-
-        for (HLocaleMember member : locale.getMembers()) {
-            if (member.isCoordinator()) {
-                coordinators.add(member.getPerson());
-            }
-        }
-        return coordinators;
-    }
-
     /**
      * Sends the email by rendering an appropriate email template with the
      * values in this bean.
@@ -172,54 +176,86 @@ public class SendEmailAction implements Serializable {
 
         try {
             if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN)) {
-                String msg =
-                        emailServiceImpl
-                                .sendToAdminEmails(
-                                        EmailService.ADMIN_EMAIL_TEMPLATE,
-                                        fromName, fromLoginName, replyEmail,
-                                        subject, htmlMessage);
+                EmailStrategy strategy = new ContactAdminEmailStrategy(
+                        fromLoginName, fromName, replyEmail,
+                        subject, htmlMessage);
+
+                String msg = emailServiceImpl.sendToAdmins(strategy);
+
                 FacesMessages.instance().add(msg);
                 conversationScopeMessages.setMessage(
                     FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
-                String msg =
-                        emailServiceImpl.sendToLanguageCoordinators(
-                                EmailService.COORDINATOR_EMAIL_TEMPLATE,
-                                getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, htmlMessage, language);
+                String localeNativeName = locale.retrieveNativeName();
+
+                EmailStrategy strategy = new ContactLanguageCoordinatorEmailStrategy(
+                        fromLoginName, fromName, replyEmail, subject,
+                        locale.getLocaleId().getId(),
+                        localeNativeName, htmlMessage);
+                String msg = emailServiceImpl.sendToLanguageCoordinators(
+                        locale, strategy);
+
                 FacesMessages.instance().add(msg);
                 conversationScopeMessages.setMessage(
                     FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
-                String msg =
-                        emailServiceImpl.sendToLanguageCoordinators(
-                                EmailService.REQUEST_TO_JOIN_EMAIL_TEMPLATE,
-                                getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, htmlMessage, language);
+                String localeNativeName = locale.retrieveNativeName();
+
+                EmailStrategy strategy = new RequestToJoinLanguageEmailStrategy(
+                        fromLoginName, fromName, replyEmail,
+                        locale.getLocaleId().getId(),
+                        localeNativeName, htmlMessage,
+                        languageJoinUpdateRoleAction.getRequestAsTranslator(),
+                        languageJoinUpdateRoleAction.getRequestAsReviewer(),
+                        languageJoinUpdateRoleAction.getRequestAsCoordinator());
+                String msg = emailServiceImpl.sendToLanguageCoordinators(
+                        locale, strategy);
                 FacesMessages.instance().add(msg);
                 conversationScopeMessages.setMessage(
                     FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
-                String msg =
-                        emailServiceImpl.sendToLanguageCoordinators(
-                                EmailService.REQUEST_ROLE_EMAIL_TEMPLATE,
-                                getCoordinators(), fromName, fromLoginName,
-                                replyEmail, subject, htmlMessage, language);
+                String localeNativeName = locale.retrieveNativeName();
+
+                EmailStrategy strategy = new RequestRoleLanguageEmailStrategy(
+                        fromLoginName, fromName, replyEmail,
+                        locale.getLocaleId().getId(),
+                        localeNativeName, htmlMessage,
+                        languageJoinUpdateRoleAction.requestingTranslator(),
+                        languageJoinUpdateRoleAction.requestingReviewer(),
+                        languageJoinUpdateRoleAction.requestingCoordinator());
+                String msg = emailServiceImpl.sendToLanguageCoordinators(
+                        locale, strategy);
                 FacesMessages.instance().add(msg);
                 conversationScopeMessages.setMessage(
                     FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;
             } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
+                String groupSlug = versionGroupJoinAction.getSlug();
+                String groupName = versionGroupJoinAction.getGroupName();
+                Collection<ProjectIterationId> projectIterIds = Lists.newArrayList();
+
+                for (VersionGroupJoinAction.SelectableProject version : versionGroupJoinAction.getProjectVersions()) {
+                    if (version.isSelected()) {
+                        HProjectIteration projIter =
+                                version.getProjectIteration();
+                        projectIterIds.add(new ProjectIterationId(
+                                projIter.getProject().getSlug(),
+                                projIter.getSlug(),
+                                projIter.getProjectType()));
+                    }
+                }
+
+                EmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
+                        fromLoginName, fromName, replyEmail,
+                        groupName, groupSlug,
+                        projectIterIds, htmlMessage);
                 String msg =
                         emailServiceImpl
-                                .sendToVersionGroupMaintainer(
-                                        EmailService.REQUEST_TO_JOIN_GROUP_EMAIL_TEMPLATE,
-                                        groupMaintainers, fromName,
-                                        fromLoginName, replyEmail, subject,
-                                        htmlMessage);
+                                .sendToVersionGroupMaintainers(
+                                        groupMaintainers, strategy);
                 conversationScopeMessages.setMessage(
                     FacesMessage.SEVERITY_INFO, msg);
                 return SUCCESS;

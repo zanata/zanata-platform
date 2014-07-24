@@ -49,17 +49,17 @@ public class Deployments {
 
     public static void main(String[] args) {
         System.out.println("resolving dependencies:");
-        List<File> depList = Arrays.asList(runtimeDependenciesFromPom());
+        List<File> depList = Arrays.asList(runtimeAndTestDependenciesFromPom());
         Collections.sort(depList);
         System.out.println(depList);
         System.out.println("dependency count: " + depList.size());
     }
 
-    private static File[] runtimeDependenciesFromPom() {
+    private static File[] runtimeAndTestDependenciesFromPom() {
         return Maven
                 .resolver()
                 .loadPomFromFile("pom.xml")
-                .importRuntimeDependencies()
+                .importRuntimeAndTestDependencies()
                 .resolve()
                 .using(
                 // JavaMelody's ServletFilter/Listener interfere with test
@@ -72,14 +72,7 @@ public class Deployments {
     public static Archive<?> createDeployment() {
         WebArchive archive =
                 ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
-        archive.addAsLibraries(runtimeDependenciesFromPom());
-
-        // Test dependencies
-        archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.hibernate:hibernate-testing")
-                .withoutTransitivity().asFile());
-        archive.addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.dbunit:dbunit").withoutTransitivity().asFile());
+        archive.addAsLibraries(runtimeAndTestDependenciesFromPom());
 
         // Local packages
         archive.addPackages(true, new Filter<ArchivePath>() {

@@ -1,0 +1,25 @@
+<p>$msgs.format("jsf.email.activation.register.DearName", $toName)</p>
+
+<p>$msgs.get("jsf.email.activation.ClickLinkToActivateAccount")</p>
+
+<p>
+  <a
+    href="$serverPath/account/activate/$activationKey">
+    $msgs.get("jsf.email.activation.Link")
+  </a>
+</p>
+
+<p>
+  $msgs.get("jsf.email.alternate.copyPasteMessage")
+</p>
+
+<p>
+  <a
+    href="$serverPath/account/activate/$activationKey">
+    $serverPath/account/activate/$activationKey
+  </a>
+</p>
+
+<p>
+  $msgs.get("jsf.UrlExpireMessage")
+</p>

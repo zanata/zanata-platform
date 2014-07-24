@@ -1,0 +1,7 @@
+<p>$msgs.get("jsf.email.admin.DearAdmin")</p>
+
+<p>$msgs.format("jsf.email.admin.UserMessageIntro", $fromName, $fromLoginName)</p>
+<hr/>
+$htmlMessage
+<hr/>
+<p>$msgs.format("jsf.email.ReplyInstructions", $fromName, $replyEmail)</p>

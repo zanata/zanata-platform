@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -40,6 +41,7 @@ import org.zanata.model.HLocaleMember;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 
+@AutoCreate
 @Name("languageJoinUpdateRoleAction")
 @Scope(ScopeType.PAGE)
 public class LanguageJoinUpdateRoleAction implements Serializable {
@@ -119,6 +121,10 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
         return title;
     }
 
+    public boolean requestingTranslator() {
+        return requestAsTranslator != null && requestAsTranslator && !isTranslator();
+    }
+
     public boolean isTranslator() {
         HLocaleMember member = getLocaleMember();
         if (member != null) {
@@ -127,12 +133,20 @@ public class LanguageJoinUpdateRoleAction implements Serializable {
         return false;
     }
 
+    public boolean requestingReviewer() {
+        return requestAsReviewer != null && requestAsReviewer && !isReviewer();
+    }
+
     public boolean isReviewer() {
         HLocaleMember member = getLocaleMember();
         if (member != null) {
             return getLocaleMember().isReviewer();
         }
         return false;
+    }
+
+    public boolean requestingCoordinator() {
+        return requestAsCoordinator != null && requestAsCoordinator && !isCoordinator();
     }
 
     public boolean isCoordinator() {

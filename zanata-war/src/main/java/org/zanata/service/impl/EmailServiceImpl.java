@@ -27,31 +27,43 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.ResourceBundle;
-import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.action.SendEmailAction;
 import org.zanata.action.VersionGroupJoinAction;
 import org.zanata.dao.PersonDAO;
+import org.zanata.email.ActivationEmailStrategy;
+import org.zanata.email.Addresses;
+import org.zanata.email.EmailBuilder;
+import org.zanata.email.EmailStrategy;
+import org.zanata.email.EmailValidationEmailStrategy;
+import org.zanata.email.PasswordResetEmailStrategy;
+import org.zanata.email.UsernameChangedEmailStrategy;
 import org.zanata.i18n.Messages;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
+
+import javax.mail.internet.InternetAddress;
+
+import static org.zanata.email.Addresses.getAddresses;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@AutoCreate
 @Name("emailServiceImpl")
 @Scope(ScopeType.STATELESS)
 @Slf4j
-// TODO refactor class to minimise duplicate code
 public class EmailServiceImpl implements EmailService {
-    @In(create = true)
-    private Renderer renderer;
+
+    @In
+    private EmailBuilder emailBuilder;
 
     @In
     private IdentityManager identityManager;
@@ -63,133 +75,14 @@ public class EmailServiceImpl implements EmailService {
     private ApplicationConfiguration applicationConfiguration;
 
     @In
-    private SendEmailAction sendEmail;
-
-    @In
     private VersionGroupJoinAction versionGroupJoinAction;
 
     @In
     private Messages msgs;
 
-    private String toName;
-    private String toEmailAddr;
-    private String receivedReason;
-    private String activationKey;
-
-    @Override
-    public String sendActivationEmail(String emailTemplate, String toName,
-            String toEmailAddr, String activationKey) {
-        this.toName = toName;
-        this.toEmailAddr = toEmailAddr;
-        this.activationKey = activationKey;
-        renderer.render(emailTemplate);
-
-        log.info(
-                "Sent activation account email: toName '{}', toEmailAddress '{}'",
-                toName, toEmailAddr);
-        return msgs.get("jsf.Account.ActivationMessage");
-    }
-
-    @Override
-    public String sendToLanguageCoordinators(String emailTemplate,
-            List<HPerson> coordinators, String fromName, String fromLoginName,
-            String replyEmail, String subject, String message, String language) {
-        if (!coordinators.isEmpty()) {
-            receivedReason =
-                    msgs.format(
-                            "jsf.email.coordinator.ReceivedReason",
-                            sendEmail.getLocale().retrieveNativeName());
-            for (HPerson coord : coordinators) {
-                toName = coord.getName();
-                toEmailAddr = coord.getEmail();
-                renderer.render(emailTemplate);
-            }
-            log.info(
-                    "Sent language team coordinator email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}', language '{}'",
-                    fromName, fromLoginName, replyEmail, subject, message,
-                    language);
-            return msgs.format(
-                    "jsf.email.coordinator.SentNotification",
-                    sendEmail.getLocale().retrieveNativeName());
-        } else {
-            return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
-                    replyEmail, subject, message);
-        }
-    }
-
-    @Override
-    public String sendToVersionGroupMaintainer(String emailTemplate,
-            List<HPerson> maintainers, String fromName, String fromLoginName,
-            String replyEmail, String subject, String message) {
-        if (!maintainers.isEmpty()) {
-            receivedReason = msgs.format(
-                    "jsf.email.group.maintainer.ReceivedReason",
-                    versionGroupJoinAction.getGroupName());
-            for (HPerson maintainer : maintainers) {
-                toName = maintainer.getName();
-                toEmailAddr = maintainer.getEmail();
-                renderer.render(emailTemplate);
-            }
-            log.info(
-                    "Sent version group maintainer email: fromName '{}', fromLoginName '1}', replyEmail '{}', subject '{}', message '{}'",
-                    fromName, fromLoginName, replyEmail, subject, message);
-            return msgs.format(
-                    "jsf.email.group.maintainer.SentNotification",
-                    versionGroupJoinAction.getGroupName());
-        } else {
-            return sendToAdminEmails(emailTemplate, fromName, fromLoginName,
-                    replyEmail, subject, message);
-        }
-    }
-
-    @Override
-    public String sendToAdminEmails(String emailTemplate, String fromName,
-            String fromLoginName, String replyEmail, String subject,
-            String message) {
-        List<String> adminEmails = applicationConfiguration.getAdminEmail();
-        if (!adminEmails.isEmpty()) {
-            receivedReason = msgs.get("jsf.email.admin.ReceivedReason");
-            toName =
-                    ResourceBundle.instance().getString(
-                            "jsf.ZanataAdministrator");
-            for (String email : adminEmails) {
-                toEmailAddr = email;
-                renderer.render(emailTemplate);
-            }
-            log.info(
-                    "Sent server admin email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                    fromName, fromLoginName, replyEmail, subject, message);
-            return msgs.get("jsf.email.admin.SentNotification");
-        } else {
-            return sendToAdminUsers(emailTemplate, fromName, fromLoginName,
-                    replyEmail, subject, message);
-        }
-    }
-
-    /**
-     * Emails admin users with given template
-     *
-     * @param emailTemplate
-     */
-    private String sendToAdminUsers(String emailTemplate, String fromName,
-            String fromLoginName, String replyEmail, String subject,
-            String message) {
-        receivedReason = msgs.get("jsf.email.admin.user.ReceivedReason");
-        for (HPerson admin : getAdmins()) {
-            toName = admin.getName();
-            toEmailAddr = admin.getEmail();
-            renderer.render(emailTemplate);
-        }
-
-        log.info(
-                "Sent admin users email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                fromName, fromLoginName, replyEmail, subject, message);
-        return msgs.get("jsf.email.admin.SentNotification");
-    }
-
     /**
      *
-     * @return a list of admin users
+     * @return the list of users with the admin role
      */
     private List<HPerson> getAdmins() {
         // required to read admin users for a non-admin session
@@ -206,19 +99,109 @@ public class EmailServiceImpl implements EmailService {
         return admins;
     }
 
-    public String getToName() {
-        return toName;
+    private List<HPerson> getCoordinators(HLocale locale) {
+        List<HPerson> coordinators = new ArrayList<HPerson>();
+
+        for (HLocaleMember member : locale.getMembers()) {
+            if (member.isCoordinator()) {
+                coordinators.add(member.getPerson());
+            }
+        }
+        return coordinators;
     }
 
-    public String getToEmailAddr() {
-        return toEmailAddr;
+    @Override
+    public String sendActivationEmail(String toName,
+            String toEmailAddr, String activationKey) {
+        InternetAddress to = Addresses.getAddress(toEmailAddr, toName);
+        emailBuilder.sendMessage(new ActivationEmailStrategy(activationKey),
+                null, to);
+        return msgs.get("jsf.Account.ActivationMessage");
     }
 
-    public String getReceivedReason() {
-        return receivedReason;
+    @Override
+    public String sendEmailValidationEmail(String toName,
+            String toEmailAddr, String activationKey) {
+        InternetAddress to = Addresses.getAddress(toEmailAddr, toName);
+        emailBuilder.sendMessage(new EmailValidationEmailStrategy(activationKey),
+                null, to);
+        return msgs.get("jsf.email.accountchange.SentNotification");
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    @Override
+    public String sendPasswordResetEmail(HPerson person, String key) {
+        InternetAddress to = Addresses.getAddress(person);
+        emailBuilder.sendMessage(new PasswordResetEmailStrategy(key), null, to);
+        return msgs.get("jsf.email.passwordreset.SentNotification");
     }
+
+    @Override
+    public String sendToAdmins(EmailStrategy strategy) {
+        List<String> adminEmails = applicationConfiguration.getAdminEmail();
+        if (!adminEmails.isEmpty()) {
+            String receivedReason = msgs.get("jsf.email.admin.ReceivedReason");
+            String toName = msgs.get("jsf.ZanataAdministrator");
+            emailBuilder.sendMessage(strategy, receivedReason,
+                    getAddresses(adminEmails, toName));
+            return msgs.get("jsf.email.admin.SentNotification");
+        } else {
+            return sendToAdminUsers(strategy);
+        }
+    }
+
+    /**
+     * Emails admin users with given template
+     *
+     */
+    private String sendToAdminUsers(EmailStrategy strategy) {
+        String receivedReason = msgs.get(
+                "jsf.email.admin.user.ReceivedReason");
+        emailBuilder.sendMessage(strategy, receivedReason,
+                getAddresses(getAdmins()));
+        return msgs.get("jsf.email.admin.SentNotification");
+    }
+
+    @Override
+    public String sendToLanguageCoordinators(HLocale locale,
+            EmailStrategy strategy) {
+        List<HPerson> coordinators = getCoordinators(locale);
+        if (!coordinators.isEmpty()) {
+            String receivedReason = msgs.format(
+                    "jsf.email.coordinator.ReceivedReason",
+                    locale.retrieveNativeName());
+
+            emailBuilder.sendMessage(strategy, receivedReason,
+                    getAddresses(coordinators));
+            return msgs.format("jsf.email.coordinator.SentNotification",
+                    locale.retrieveNativeName());
+        } else {
+            return sendToAdmins(strategy);
+        }
+    }
+
+    @Override
+    public String sendToVersionGroupMaintainers(List<HPerson> maintainers,
+            EmailStrategy strategy) {
+        if (!maintainers.isEmpty()) {
+            String receivedReason = msgs.format(
+                    "jsf.email.group.maintainer.ReceivedReason",
+                    versionGroupJoinAction.getGroupName());
+            emailBuilder.sendMessage(strategy, receivedReason,
+                    getAddresses(maintainers));
+            return msgs.format("jsf.email.group.maintainer.SentNotification",
+                    versionGroupJoinAction.getGroupName());
+        } else {
+            return sendToAdmins(strategy);
+        }
+    }
+
+    @Override
+    public String sendUsernameChangedEmail(String email, String newUsername) {
+        InternetAddress to = Addresses.getAddress(email, newUsername);
+        boolean resetPassword = applicationConfiguration.isInternalAuth();
+        emailBuilder.sendMessage(new UsernameChangedEmailStrategy(
+                newUsername, resetPassword), null, to);
+        return msgs.get("jsf.email.usernamechange.SentNotification");
+    }
+
 }

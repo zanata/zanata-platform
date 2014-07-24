@@ -114,6 +114,16 @@ public class Messages extends AbstractMap<String, String> {
     }
 
     /**
+     * @deprecated use get(key) or format(key, args...)
+     * @param key
+     * @return
+     */
+    @Deprecated
+    public String format(String key) {
+        return format(key, new Object[0]);
+    }
+
+    /**
      * Gets a resource string, and formats it using MessageFormat and the
      * positional parameters.  Due to the use of {@link java.util.MessageFormat}
      * any literal apostrophes (single quotes) will need to be doubled,
@@ -126,6 +136,31 @@ public class Messages extends AbstractMap<String, String> {
     public String format(String key, Object... args) {
         String template = get(key);
         return MessageFormat.format(template, args);
+    }
+
+    // JSF can't handle varargs, hence the need for these overloaded methods:
+    public String format(String key, Object arg1) {
+        return format(key, new Object[] {arg1});
+    }
+
+    public String format(String key, Object arg1, Object arg2) {
+        return format(key, new Object[] {arg1, arg2});
+    }
+
+    public String format(String key, Object arg1, Object arg2, Object arg3) {
+        return format(key, new Object[] {arg1, arg2, arg3});
+    }
+
+    public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4) {
+        return format(key, new Object[] {arg1, arg2, arg3, arg4});
+    }
+
+    public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5) {
+        return format(key, new Object[] {arg1, arg2, arg3, arg4, arg5});
+    }
+
+    public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5, Object arg6) {
+        return format(key, new Object[] {arg1, arg2, arg3, arg4, arg5, arg6});
     }
 
     @Override

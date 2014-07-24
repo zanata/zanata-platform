@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
@@ -15,13 +15,14 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 
 @Name("passwordResetRequest")
+@NoArgsConstructor
 @Scope(ScopeType.EVENT)
 @Slf4j
 public class PasswordResetRequestAction implements Serializable {
@@ -29,12 +30,10 @@ public class PasswordResetRequestAction implements Serializable {
 
     @In
     private AccountDAO accountDAO;
-
+    @In
+    private EmailService emailServiceImpl;
     @In
     private UserAccountService userAccountServiceImpl;
-
-    @In(create = true)
-    private Renderer renderer;
 
     private String username;
     private String email;
@@ -61,7 +60,7 @@ public class PasswordResetRequestAction implements Serializable {
         this.email = email;
     }
 
-    @Email
+    @org.hibernate.validator.constraints.Email
     @NotEmpty
     public String getEmail() {
         return email;
@@ -77,13 +76,10 @@ public class PasswordResetRequestAction implements Serializable {
             FacesMessages.instance().add("No such account found");
             return null;
         } else {
-            setActivationKey(key.getKeyHash());
-            renderer.render("/WEB-INF/facelets/email/password_reset.xhtml");
-            log.info("Sent password reset key to {} ({})", account
-                    .getPerson().getName(), account.getUsername());
-            FacesMessages
-                    .instance()
-                    .add("You will soon receive an email with a link to reset your password.");
+            String message =
+                    emailServiceImpl.sendPasswordResetEmail(account.getPerson(),
+                            key.getKeyHash());
+            FacesMessages.instance().add(message);
             return "/home.xhtml";
         }
 

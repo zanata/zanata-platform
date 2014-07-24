@@ -75,10 +75,9 @@ public class InactiveAccountAction implements Serializable {
 
         String message =
                 emailServiceImpl.sendActivationEmail(
-                        EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, account
-                                .getPerson().getName(), account.getPerson()
-                                .getEmail(), account.getAccountActivationKey()
-                                .getKeyHash());
+                        account.getPerson().getName(),
+                        account.getPerson().getEmail(),
+                        account.getAccountActivationKey().getKeyHash());
         FacesMessages.instance().add(message);
     }
 

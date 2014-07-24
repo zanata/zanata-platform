@@ -167,9 +167,7 @@ public class RegisterAction implements Serializable {
         log.info("get register key:" + key);
 
         String message =
-                emailServiceImpl.sendActivationEmail(
-                        EmailService.ACTIVATION_ACCOUNT_EMAIL_TEMPLATE, user,
-                        email, key);
+                emailServiceImpl.sendActivationEmail(user, email, key);
         FacesMessages.instance().add(message);
 
         return "/home.xhtml";

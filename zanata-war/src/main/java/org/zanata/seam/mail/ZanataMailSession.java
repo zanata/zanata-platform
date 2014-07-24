@@ -24,10 +24,14 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.mail.MailSession;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.util.ServiceLocator;
+
+import javax.mail.Session;
+import javax.naming.NamingException;
 
 /**
  * Overrides Seam's default MailSession component to dynamically define
@@ -49,6 +53,12 @@ public class ZanataMailSession extends MailSession {
     public ZanataMailSession(String transport) {
         super(transport);
         setup();
+    }
+
+    @Override
+    @Unwrap
+    public Session getSession() throws NamingException {
+        return super.getSession();
     }
 
     protected void setup() {

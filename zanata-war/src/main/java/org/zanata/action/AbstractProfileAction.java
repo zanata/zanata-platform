@@ -6,14 +6,12 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
-import com.google.common.base.Strings;
 
 /**
  * @author Patrick Huang
@@ -25,9 +23,6 @@ public abstract class AbstractProfileAction {
     protected String username;
     protected boolean valid;
     private String activationKey;
-
-    @In(create = true)
-    protected Renderer renderer;
 
     @In
     ZanataIdentity identity;

@@ -1,0 +1,26 @@
+<p>$msgs.format("jsf.email.accountchange.DearName", $toName)</p>
+
+<p>$msgs.format("jsf.email.accountchange.Message", $newEmail)
+  <br/> $msgs.get("jsf.email.accountchange.Message2")</p>
+
+<p>
+  <a
+    href="$serverPath/account/validate_email/$activationKey">
+    $msgs.get("jsf.email.accountchange.ConfirmationLink")
+  </a>
+</p>
+
+<p>
+  $msgs.get("jsf.email.alternate.copyPasteMessage")
+</p>
+
+<p>
+  $msgs.get("jsf.UrlExpireMessage")
+</p>
+
+<p>
+  <a
+    href="$serverPath/account/validate_email/$activationKey">
+    $serverPath/account/validate_email/$activationKey
+  </a>
+</p>

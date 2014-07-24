@@ -1,0 +1,46 @@
+<p>$msgs.get("jsf.email.coordinator.DearCoordinator")</p>
+
+<p>
+  $msgs.format("jsf.email.rolerequest.UserRequestingRole",
+      $fromName, $fromLoginName, $localeId, $localeNativeName)
+  <ul>
+
+  ## NB comparing against true allows us to detect missing context variables
+  #if ($requestAsTranslator == true)
+    <li>
+        $msgs.get("jsf.Translator")
+    </li>
+  #end
+
+  #if ($requestAsReviewer == true)
+    <li>
+        $msgs.get("jsf.Reviewer")
+    </li>
+  #end
+
+  #if ($requestAsCoordinator == true)
+    <li>
+        $msgs.get("jsf.Coordinator")
+    </li>
+  #end
+  </ul>
+</p>
+
+#if ($htmlMessage)
+<p>$msgs.format("jsf.email.UserMessageIntro", $fromName)</p>
+<hr/>
+    $htmlMessage
+<hr/>
+#end
+
+<p>$msgs.format("jsf.email.rolerequest.AddUserInstructions", $fromName, $localeId)</p>
+
+<p>$msgs.format("jsf.email.coordinator.ResponseInstructions",
+    $localeId, $fromName, $replyEmail)</p>
+
+<p>
+  <a
+    href="$serverPath/language/view/$localeId">
+    $serverPath/language/view/$localeId
+  </a>
+</p>

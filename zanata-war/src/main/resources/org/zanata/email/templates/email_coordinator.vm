@@ -1,0 +1,14 @@
+<p>$msgs.get("jsf.email.coordinator.DearCoordinator")</p>
+<p>$msgs.format("jsf.email.coordinator.UserMessageIntro",
+    $fromName, $fromLoginName, $localeId, $localeNativeName)</p>
+<hr/>
+$htmlMessage
+<hr/>
+<p>$msgs.format("jsf.email.coordinator.ResponseInstructions",
+    $localeId, $fromName, $replyEmail)</p>
+<p>
+  <a
+    href="$serverPath/language/view/$localeId">
+    $serverPath/language/view/$localeId
+  </a>
+</p>

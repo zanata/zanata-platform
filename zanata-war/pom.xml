@@ -183,6 +183,8 @@
             <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
             <!-- runtime dependency for email implementations -->
             <usedDependency>org.jboss.seam:jboss-seam-mail</usedDependency>
+            <!-- Used for email unit tests -->
+            <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Needed for urlrewrite.xml impl -->
             <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <!-- Need for test scope -->
@@ -1084,11 +1086,22 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.googlecode.totallylazy</groupId>
+      <artifactId>totallylazy</artifactId>
+      <version>1.10</version>
+    </dependency>
 
     <!-- Zanata-specific dependencies -->
 
@@ -1322,6 +1335,25 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+      <artifactId>owasp-java-html-sanitizer</artifactId>
+      <version>r239</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jvnet.mock-javamail</groupId>
+      <artifactId>mock-javamail</artifactId>
+      <version>1.9</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Richfaces -->
 
     <dependency>
@@ -1400,6 +1432,12 @@
       <artifactId>log4jdbc</artifactId>
       <version>1.2</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.htmlparser.jericho</groupId>
+      <artifactId>jericho-html</artifactId>
+      <version>3.3</version>
     </dependency>
 
     <dependency>
@@ -1630,6 +1668,12 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

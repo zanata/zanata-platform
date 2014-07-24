@@ -35,12 +35,13 @@ import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.faces.Renderer;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
+import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 
 import lombok.Getter;
@@ -70,6 +71,9 @@ public class UserAction extends
     private EntityManager entityManager;
 
     @In
+    private ApplicationConfiguration applicationConfiguration;
+
+    @In
     private Messages msgs;
 
     @In
@@ -78,8 +82,8 @@ public class UserAction extends
     @In
     private UserAccountService userAccountServiceImpl;
 
-    @In(create = true)
-    private Renderer renderer;
+    @In
+    private EmailService emailServiceImpl;
 
     private boolean newUserFlag;
 
@@ -138,12 +142,13 @@ public class UserAction extends
     @Override
     public String save() {
         boolean usernameChanged = false;
+        String newUsername = getUsername();
 
         // Allow user name changes when editing
-        if (!newUserFlag && !originalUsername.equals(getUsername())) {
-            if (isNewUsernameValid(getUsername())) {
+        if (!newUserFlag && !originalUsername.equals(newUsername)) {
+            if (isNewUsernameValid(newUsername)) {
                 userAccountServiceImpl.editUsername(originalUsername,
-                        getUsername());
+                        newUsername);
                 usernameChanged = true;
             } else {
                 FacesMessages.instance().addToControl("username",
@@ -157,7 +162,10 @@ public class UserAction extends
         String saveResult = super.save();
 
         if (usernameChanged) {
-            renderer.render("/WEB-INF/facelets/email/username_changed.xhtml");
+            String email = getEmail(newUsername);
+            String message = emailServiceImpl.sendUsernameChangedEmail(
+                    email, newUsername);
+            FacesMessages.instance().add(message);
         }
         return saveResult;
     }
@@ -197,4 +205,5 @@ public class UserAction extends
             return new DataPage<String>(listSize, startRow, userList);
         }
     }
+
 }

@@ -1,0 +1,29 @@
+<p>$msgs.get("jsf.email.maintainer.DearMaintainer")</p>
+
+<p>$msgs.format("jsf.email.joingrouprequest.RequestingToJoinGroup",
+    $fromName, $fromLoginName, $groupName)</p>
+
+<ul class="list--slat">
+  #foreach($projIterId in $projectIterationIds)
+    <li>
+        $msgs.get("jsf.Project"):$projIterId.projectSlug - $msgs.get("jsf.Version"):$projIterId.iterationSlug
+    </li>
+  #end
+</ul>
+
+#if ($htmlMessage)
+<p>$msgs.format("jsf.email.UserMessageIntro", $fromName)</p>
+<hr/>
+$htmlMessage
+<hr/>
+#end
+
+<p>$msgs.format("jsf.email.JoinGroupRequest.ResponseInstructions",
+    $fromName, $replyEmail)</p>
+
+<p>
+  <a
+    href="$serverPath/version-group/view/$versionGroupSlug#settings-projects">
+    $serverPath/version-group/view/$versionGroupSlug#settings-projects
+  </a>
+</p>

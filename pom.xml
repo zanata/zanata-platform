@@ -647,6 +647,17 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <!-- Needed for totallylazy -->
+    <repository>
+      <id>repo.bodar.com</id>
+      <url>http://repo.bodar.com</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -760,6 +771,7 @@
               <allowedRepositories combine.children="append">
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
+                <allowedRepository>repo.bodar.com</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>

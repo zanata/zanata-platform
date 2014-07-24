@@ -1,0 +1,16 @@
+<p>$msgs.format("jsf.email.usernamechange.DearName", $toName)</p>
+
+<p>$msgs.get("jsf.email.usernamechange.Content")</p>
+
+<p>$msgs.format("jsf.email.usernamechange.YourNewUsername", $newUsername)</p>
+
+#if ($shouldResetPassword)
+  <p>$msgs.get("jsf.email.usernamechange.ResetPassword")</p>
+
+  <p>
+    <a
+      href="$serverPath/account/password_reset_request">
+      $msgs.get("jsf.email.usernamechange.ClickLinkForPasswordReset")
+    </a>
+  </p>
+#end
