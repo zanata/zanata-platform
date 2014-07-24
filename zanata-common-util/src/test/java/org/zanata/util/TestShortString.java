@@ -26,4 +26,15 @@ public class TestShortString {
         assertSame(s2, s3);
     }
 
+    @Test
+    @SuppressFBWarnings("ES_COMPARING_STRINGS_WITH_EQ")
+    public void testConfigurableShortenLongString() {
+        int maximumLength = 15;
+        String s1 =
+                "string which is really quite long. string which is really quite long. string which is really quite long. string which is really quite long. string which is really quite long. ";
+        String s2 = ShortString.shorten(s1, maximumLength);
+        assertTrue(s2.length() <= maximumLength);
+        String s3 = ShortString.shorten(s2, maximumLength);
+        assertSame(s2, s3);
+    }
 }
