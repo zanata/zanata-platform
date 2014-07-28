@@ -30,7 +30,7 @@ import javax.validation.Payload;
 
 /**
  * A slug is a short label for something, containing only letters, numbers,
- * underscores or hyphens. It is typically used in urls
+ * periods, underscores or hyphens. It is typically used in urls
  *
  * @author asgeirf
  *

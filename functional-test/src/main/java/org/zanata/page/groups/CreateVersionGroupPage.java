@@ -24,6 +24,10 @@ public class CreateVersionGroupPage extends BasePage {
     public final static String LENGTH_ERROR =
             "value must be shorter than or equal to 100 characters";
 
+    public final static String VALIDATION_ERROR =
+            "must start and end with letter or number, and contain only " +
+            "letters, numbers, periods, underscores and hyphens.";
+
     @FindBy(id = "group-form:descriptionField:description")
     private WebElement groupDescriptionField;
 
