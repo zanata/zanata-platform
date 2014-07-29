@@ -207,6 +207,7 @@
         </executions>
       </plugin>
 
+
       <plugin>
         <groupId>com.ning.maven.plugins</groupId>
         <artifactId>maven-duplicate-finder-plugin</artifactId>
@@ -1718,7 +1719,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <scope>provided</scope>
+      <scope>${hibernate.scope}</scope>
     </dependency>
 
     <!-- This must appear before arquillian dependencies -->
@@ -1842,6 +1843,7 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
+      <version>3.1.3.GA</version>
       <scope>test</scope>
     </dependency>
 
@@ -2013,7 +2015,7 @@
     <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
-      <version>4.0.14.Final</version>
+      <version>4.0.15.Final</version>
       <scope>provided</scope>
     </dependency>
 
@@ -2052,7 +2054,7 @@
     <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
-      <version>1.12</version>
+      <version>1.27</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
