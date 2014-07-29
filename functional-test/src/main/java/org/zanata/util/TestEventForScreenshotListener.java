@@ -100,7 +100,11 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     @Override
     public void onException(Throwable throwable, WebDriver driver) {
-        createScreenshot("_exc");
+        try {
+            createScreenshot("_exc");
+        } catch (Throwable all) {
+            log.error("error creating screenshot on exception");
+        }
     }
 
 }
