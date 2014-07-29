@@ -20,14 +20,10 @@
  */
 package org.zanata.security;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.drools.FactHandle;
-import org.drools.StatefulSession;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -40,7 +36,6 @@ import org.jboss.seam.security.Configuration;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;

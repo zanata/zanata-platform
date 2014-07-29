@@ -30,22 +30,13 @@ import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.jboss.seam.security.permission.RuleBasedPermissionResolver;
 import org.zanata.model.HAccount;
-import org.zanata.model.HPerson;
 
 @Name("authenticationEvents")
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    public void injectAuthenticatedPersonIntoWorkingMemory(HAccount account) {
-        HPerson authenticatedPerson = account.getPerson();
-        // insert authenticatedPerson for use in security.drl rules
-        RuleBasedPermissionResolver.instance().getSecurityContext()
-                .insert(authenticatedPerson);
-    }
 
     @Observer(JpaIdentityStore.EVENT_USER_CREATED)
     public void createSuccessful(HAccount account) {
