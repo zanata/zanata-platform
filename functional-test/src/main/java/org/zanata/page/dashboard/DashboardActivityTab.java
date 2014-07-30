@@ -23,9 +23,10 @@ package org.zanata.page.dashboard;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.zanata.util.WebElementUtil;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +49,26 @@ public class DashboardActivityTab extends DashboardBasePage {
         return new ArrayList<WebElement>();
     }
 
-    public void clickMoreActivity() {
+    /**
+     * Click on the activity list's "More Activity element".
+     * @return true, if there is more activity available. False otherwise.
+     */
+    public boolean clickMoreActivity() {
         WebElement moreActivity = getMoreActivityElement();
+        final int activityListOrigSize = getMyActivityList().size();
         if (moreActivity != null) {
             moreActivity.click();
             WebElementUtil.waitForTenSeconds(getDriver()).until(
-                    ExpectedConditions.invisibilityOfElementLocated(By
-                            .className("loader__spinner")));
+                    new ExpectedCondition<Object>() {
+                        @Nullable
+                        @Override
+                        public Object apply(@Nullable WebDriver input) {
+                            return getMyActivityList().size() > activityListOrigSize;
+                        }
+                    });
+            return true;
+        } else {
+            return false;
         }
     }
 

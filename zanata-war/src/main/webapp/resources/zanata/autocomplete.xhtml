@@ -3,9 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <composite:interface>
   <composite:attribute name="maxlength" type="java.lang.Integer" default="100"
@@ -44,22 +46,58 @@
   <composite:attribute name="inputClass"
     shortDescription="CSS class for input field"/>
 
+  <composite:attribute name="onSelectStatus"
+    shortDescription="Name of the a4j:status component to activate when selecting an item from the suggestion list"/>
+
 </composite:interface>
 
 <composite:implementation>
 
+  <h:outputScript library="script" name="jquery.typing-0.2.0.min.js" target="body"/>
+
   <a4j:jsFunction name="#{cc.attrs.id}RenderResult"
     render="#{cc.attrs.id}-result"
     limitRender="true"
-    oncomplete="registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
+    onbegin="#{cc.attrs.id}ShowLoader()"
+    oncomplete="#{cc.attrs.id}HideLoader(); registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
     <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
+
+  <a4j:jsFunction name="#{cc.attrs.id}ClearResults"
+    render="#{cc.attrs.id}-result"
+    action="#{cc.attrs.actionBean.reset}"
+    limitRender="true"
+    onbegin="#{cc.attrs.id}ShowLoader()"
+    oncomplete="#{cc.attrs.id}HideLoader(); registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
+  </a4j:jsFunction>
+
+  <script type="text/javascript">
+    function #{cc.attrs.id}ShowLoader() {
+      var loaderId = '#' + '#{cc.attrs.id}-loader'
+      jQuery(loaderId).removeClass('is-hidden')
+    }
+
+    function #{cc.attrs.id}HideLoader() {
+      var loaderId = '#' + '#{cc.attrs.id}-loader'
+      jQuery(loaderId).addClass('is-hidden')
+    }
+
+    jQuery(function() {
+      jQuery('#' + '#{cc.attrs.id}-autocomplete__input').typing({
+        stop: function(event, elem) {
+          onValueChange(elem, event, #{cc.attrs.id}RenderResult, #{cc.attrs.id}ClearResults);
+        },
+        delay: 400
+      });
+    });
+  </script>
 
   <s:fragment rendered="#{cc.attrs.onSelectItem == 'null'}">
     <a4j:jsFunction name="#{cc.attrs.id}SubmitSelected"
       action="#{cc.attrs.actionBean.onSelectItemAction()}"
       render="#{cc.attrs.render}"
-      oncomplete="#{cc.attrs.oncomplete}">
+      oncomplete="#{cc.attrs.oncomplete}"
+      status="#{cc.attrs.onSelectStatus}">
       <a4j:param name="val" assignTo="#{cc.attrs.actionBean.selectedItem}"/>
     </a4j:jsFunction>
   </s:fragment>
@@ -75,7 +113,6 @@
 
     <input type="text" maxlength="#{cc.attrs.maxlength}" autocomplete="off"
       class="js-autocomplete__input autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
-      onkeyup="onValueChange(this, event, #{cc.attrs.id}RenderResult)"
       onfocus="onInputFocus(this, #{cc.attrs.id}RenderResult)"
       id="#{cc.attrs.id}-autocomplete__input"
       placeholder="#{cc.attrs.placeholder}"/>
@@ -84,6 +121,9 @@
     <input type="hidden" value="#{cc.attrs.searchWhenFocus}"/>
     <s:div id="#{cc.attrs.id}-result">
       <ui:param value="#{cc.attrs.actionBean.suggest()}" name="resultList"/>
+      <div id="#{cc.attrs.id}-loader" class="is-hidden autocomplete__results">
+        <zanata:loader/>
+      </div>
       <s:fragment rendered="#{not empty resultList}">
         <ul class="js-autocomplete__results autocomplete__results">
           <ui:repeat value="#{resultList}" var="result">

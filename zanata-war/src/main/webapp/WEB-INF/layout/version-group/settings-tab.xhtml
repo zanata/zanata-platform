@@ -102,14 +102,23 @@
     <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
       <ul class="list--slat list--highlight l--push-top-half">
         <ui:repeat value="#{versionGroupHome.getInstanceActiveLocales()}"
-          var="locale">
-          <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span
+          var="locale" varStatus="status">
+          <li class="reveal">#{locale.retrieveDisplayName()}<span
             class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
-            <a4j:commandLink oncomplete="refreshStatistics()" execute="@this"
+            <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeLanguage(locale)}"
-              styleClass="l--float-right txt--danger reveal__target"
-              render="settings-languages-form">
-              <i class="i--large i--remove"></i>
+              onbegin="jQuery('#remove-language-#{status.index}').addClass('is-hidden')"
+              oncomplete="refreshStatistics()" execute="@this"
+              render="settings-languages-form"
+              title="#{messages['jsf.group.RemoveLanguage.title']}">
+              <span class="is-sr-only">#{messages['jsf.group.RemoveLanguage.sr.label']}</span>
+              <i id="remove-language-#{status.index}" class="i--large i--remove txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
             </a4j:commandLink>
           </li>
         </ui:repeat>
@@ -143,8 +152,8 @@
       <ul class="list--slat list--highlight l--push-top-half">
         <ui:repeat
           value="#{versionGroupHome.getSortedInstanceProjectIterations()}"
-          var="version">
-          <li class="reveal--list-item">
+          var="version" varStatus="status">
+          <li class="reveal">
             <s:link view="/iteration/view.xhtml">
               <f:param name="projectSlug" value="#{version.project.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
@@ -152,11 +161,19 @@
               class="i i--version"></i> #{version.slug}
             </s:link>
             <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeVersion(version)}"
-              oncomplete="refreshStatistics()"
-              styleClass="l--float-right txt--danger reveal__target"
-              render="settings-projects-form">
-              <i class="i--large i--remove"></i>
+              onbegin="jQuery('#remove-version-#{status.index}').addClass('is-hidden')"
+              oncomplete="refreshStatistics()" execute="@this"
+              render="settings-projects-form"
+              title="#{messages['jsf.group.RemoveVersion.title']}">
+              <span class="is-sr-only">#{messages['jsf.group.RemoveVersion.sr.label']}</span>
+              <i id="remove-version-#{status.index}" class="i--large i--remove txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
             </a4j:commandLink>
           </li>
         </ui:repeat>
@@ -183,23 +200,38 @@
   <li id="settings-maintainers">
     <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
       #{msgs['jsf.Maintainers']}
+      <a4j:status name="maintainers-form-loader">
+        <f:facet name="start">
+          <zanata:loader layout="inline" type="loader--small"/>
+        </f:facet>
+      </a4j:status>
     </h2>
     <h:form id="settings-maintainers-form" styleClass="l--push-bottom-0">
       <ul class="list--slat list--highlight l--push-top-half">
         <ui:repeat value="#{versionGroupHome.getInstanceMaintainers()}"
           var="maintainer">
-          <li class="reveal--list-item">
-          <span class="w--r-1 bx--round l--push-right-quarter">
-            <img
-              src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
-              alt="#{maintainer.account.username}"/>
-          </span> #{maintainer.name}
+          <li class="reveal">
+            <span class="w--r-1 bx--round l--push-right-quarter">
+              <img
+                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
+                alt="#{maintainer.account.username}"/>
+            </span>
+            #{maintainer.name}
             <span class="txt--meta">@#{maintainer.account.username}</span>
             <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeMaintainer(maintainer)}"
-              styleClass="l--float-right txt--danger reveal__target"
-              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form">
-              <i class="i--large i--remove"></i>
+              onbegin="jQuery('#remove-maintainer-#{status.index}').addClass('is-hidden')"
+              execute="@this"
+              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
+              title="#{messages['jsf.group.RemoveMaintainer.title']}">
+              <span class="is-sr-only">#{messages['jsf.group.RemoveMaintainer.sr.label']}</span>
+              <i id="remove-maintainer-#{status.index}" class="i--large i--remove txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
             </a4j:commandLink>
           </li>
         </ui:repeat>
@@ -217,6 +249,7 @@
             render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
             oncomplete="focusCurrentActiveInput()"
             placeholder="#{msgs['jsf.SearchUsers']}">
+            onSelectStatus="maintainers-form-loader">
 
           <span class="w--r-1 bx--round l--push-right-quarter">
             <img

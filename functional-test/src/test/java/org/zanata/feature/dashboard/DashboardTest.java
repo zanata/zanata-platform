@@ -94,8 +94,7 @@ public class DashboardTest extends ZanataTestCase {
         DashboardActivityTab activityTab = dashboard.gotoActivityTab();
         assertThat(activityTab.getMyActivityList()).isNotEmpty();
         int initialActivitySize = activityTab.getMyActivityList().size();
-        activityTab.clickMoreActivity();
-        return activityTab.getMyActivityList().size() > initialActivitySize;
+        return activityTab.clickMoreActivity();
     }
 
     private boolean projectListIsNotEmpty() throws Exception {

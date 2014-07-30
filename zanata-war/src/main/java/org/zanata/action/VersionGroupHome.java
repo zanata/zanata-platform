@@ -133,6 +133,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     }
 
     @Override
+    protected void updatedMessage() {
+        // Disable the default message from Seam
+    }
+
+    @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String persist() {
         conversationScopeMessages.clearMessages();

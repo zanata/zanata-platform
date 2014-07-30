@@ -81,7 +81,7 @@ public class ProjectSearch implements Serializable {
             try {
                 List<HProject> searchResult =
                         projectDAO.searchProjects(
-                                getQuery(),
+                                getQuery().trim(),
                                 INITIAL_RESULT_COUNT,
                                 0,
                                 ZanataIdentity.instance().hasPermission(

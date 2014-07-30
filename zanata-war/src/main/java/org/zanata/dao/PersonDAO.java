@@ -113,8 +113,10 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
             Query query =
                     getSession()
                             .createQuery(
-                                    "from HPerson as p where p.account.username like :name or p.name like :name");
-            query.setParameter("name", "%" + name + "%");
+                                    "from HPerson as p " +
+                                    "where lower(p.account.username) like :name " +
+                                    "or lower(p.name) like :name");
+            query.setParameter("name", "%" + name.toLowerCase() + "%");
             query.setCacheable(false);
             query.setComment("PersonDAO.findAllContainingName");
             return query.list();
