@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE tmx SYSTEM "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
-  <header creationtool="Zanata TranslationsTMXExportStrategy" 
+  <header creationtool="Zanata TranslationsTMXExportStrategy"
     creationtoolversion="unknown" segtype="block"
     o-tmf="unknown" adminlang="en" srclang="*all*"
     datatype="unknown"/>

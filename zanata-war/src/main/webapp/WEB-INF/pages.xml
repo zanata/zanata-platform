@@ -194,12 +194,6 @@
   <!-- Glossary -->
   <page view-id="/glossary/view.xhtml">
     <restrict>#{identity.loggedIn}</restrict>
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.Glossary'])}" />
-
-    <action execute="#{glossaryAction.initialize()}" />
   </page>
 
   <!-- Admin -->

@@ -3,10 +3,10 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -36,7 +36,7 @@ public class SortingType implements Serializable {
         ALPHABETICAL("Alphabetical", true), LAST_ACTIVITY("Last activity",
                 false), LAST_SOURCE_UPDATE("Last source updated", false),
         LAST_TRANSLATED("Last translated", false), LAST_UPDATED_BY_YOU(
-                "Last updated by you", false);
+                "Last updated by you", false), Entry("Entry", false);
 
         @Getter
         String display;
