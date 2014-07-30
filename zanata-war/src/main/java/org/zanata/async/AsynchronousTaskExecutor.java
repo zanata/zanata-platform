@@ -120,7 +120,6 @@ public class AsynchronousTaskExecutor {
                     ServiceLocator.instance().getInstance(
                             AuthenticationEvents.class);
             HAccount authenticatedAccount = accountDAO.getByUsername(username);
-            authEvts.injectAuthenticatedPersonIntoWorkingMemory(authenticatedAccount);
             idStore.setAuthenticateUser(authenticatedAccount);
         }
     }
