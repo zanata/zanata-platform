@@ -43,7 +43,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
 
     private ClientRequestFactory clientRequestFactory;
-    private final SeamAutowire seamAutowire = SeamAutowire.instance();
+    private static final SeamAutowire seamAutowire = SeamAutowire.instance();
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
     protected final Set<Object> resources = new HashSet<Object>();

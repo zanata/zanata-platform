@@ -4,6 +4,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static javax.mail.Message.RecipientType.TO;
 
 import java.io.StringWriter;
+import java.net.ConnectException;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -14,6 +15,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.google.common.base.Throwables;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.AllArgsConstructor;
 
@@ -99,6 +101,10 @@ public class EmailBuilder {
             logMessage(email);
             Transport.send(email);
         } catch (MessagingException e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            if (rootCause.getClass().equals(ConnectException.class) && rootCause.getMessage().equals("Connection refused")) {
+                throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!");
+            }
             throw new RuntimeException(e);
         }
     }

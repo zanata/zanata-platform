@@ -40,7 +40,7 @@ public class GetTransMemoryHandlerTest {
     private LocaleId targetLocaleId = new LocaleId("ja");
     private LocaleId sourceLocaleId = LocaleId.EN_US;
 
-    private SeamAutowire seam = SeamAutowire.instance();
+    private static final SeamAutowire seam = SeamAutowire.instance();
 
     @BeforeMethod
     public void setUp() throws Exception {

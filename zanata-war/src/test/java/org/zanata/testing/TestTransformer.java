@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.ForceLoadClass;
 import org.jboss.seam.mock.AbstractSeamTest;
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;
 
 @SuppressWarnings("rawtypes")
 public class TestTransformer implements IAnnotationTransformer {
+    private static final ForceLoadClass forceLoadClass = new ForceLoadClass();
     private static final String UNIT_TESTS = "unit-tests";
     private static final boolean WARN_ABOUT_MISSING_GROUP = false;
 
