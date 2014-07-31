@@ -92,7 +92,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.thirdparty.guava.common.collect.Maps;
+import com.google.common.collect.Maps;
 import com.google.inject.Provider;
 
 @Test(groups = { "unit-tests" })

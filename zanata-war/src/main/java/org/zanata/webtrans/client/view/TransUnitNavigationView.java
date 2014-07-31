@@ -23,7 +23,7 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.resources.NavigationMessages;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;

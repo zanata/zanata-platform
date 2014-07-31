@@ -26,7 +26,7 @@ import org.zanata.webtrans.client.presenter.NotificationDetailListener;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.DateUtil;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;

@@ -1,7 +1,6 @@
 package org.zanata;
 
 import java.net.URI;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Validation;
@@ -29,13 +28,12 @@ import org.zanata.rest.HibernateValidationInterceptor;
 import org.zanata.rest.ConstraintViolationExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
-import org.zanata.limits.RateLimitManager;
 import org.zanata.rest.ZanataServiceExceptionMapper;
 import org.zanata.rest.client.TraceDebugInterceptor;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.AuthenticationType;
-import com.google.gwt.thirdparty.guava.common.collect.Sets;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.Mockito.when;
 
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
@@ -45,10 +43,10 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     private ClientRequestFactory clientRequestFactory;
     private static final SeamAutowire seamAutowire = SeamAutowire.instance();
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
-            new HashSet<Class<? extends ExceptionMapper<? extends Throwable>>>();
-    protected final Set<Object> resources = new HashSet<Object>();
-    protected final Set<Class<?>> providers = new HashSet<Class<?>>();
-    protected final Set<Object> providerInstances = new HashSet<Object>();
+            newHashSet();
+    protected final Set<Object> resources = newHashSet();
+    protected final Set<Class<?>> providers = newHashSet();
+    protected final Set<Object> providerInstances = newHashSet();
     @Mock
     private JndiBackedConfig jndiBackedConfig;
 
@@ -56,7 +54,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     public final void prepareRestEasyFramework() {
         MockitoAnnotations.initMocks(this);
         when(jndiBackedConfig.getEnabledAuthenticationPolicies()).thenReturn(
-                Sets.newHashSet(AuthenticationType.INTERNAL.name()));
+                newHashSet(AuthenticationType.INTERNAL.name()));
         Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
         prepareSeamAutowire();
         prepareAccount();

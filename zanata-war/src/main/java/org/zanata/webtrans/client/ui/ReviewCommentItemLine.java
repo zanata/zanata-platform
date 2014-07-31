@@ -23,7 +23,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.ReviewComment;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;

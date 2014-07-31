@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.mockito.ArgumentCaptor;
@@ -41,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -208,7 +211,7 @@ public class SearchResultsPresenterTest {
     ArgumentCaptor<SelectionChangeEvent.Handler> capturedSelectionChangeHandlerDoc1;
     @Captor
     ArgumentCaptor<SelectionChangeEvent.Handler> capturedSelectionChangeDeselectHandlerDoc1;
-    @Mock
+    @GwtMock
     private ClickEvent clickEvent;
     @Mock
     private HandlerRegistration handlerRegistration;
@@ -218,6 +221,7 @@ public class SearchResultsPresenterTest {
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
+        GwtMockito.initMocks(this);
 
         searchResultsPresenter =
                 new SearchResultsPresenter(mockDisplay, mockEventBus,
@@ -253,6 +257,11 @@ public class SearchResultsPresenterTest {
         when(mockDisplay.getSearchResponseLabel()).thenReturn(
                 mockSearchResponseLabel);
 
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        GwtMockito.tearDown();
     }
 
     @Test

@@ -9,7 +9,7 @@ import org.zanata.webtrans.client.ui.ListItemWidget;
 import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.client.util.DateUtil;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.uibinder.client.UiBinder;

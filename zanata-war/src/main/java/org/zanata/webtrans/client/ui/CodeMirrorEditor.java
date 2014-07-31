@@ -1,7 +1,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;

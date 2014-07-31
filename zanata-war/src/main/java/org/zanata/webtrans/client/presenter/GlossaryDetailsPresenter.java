@@ -19,7 +19,7 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 

@@ -5,7 +5,7 @@ import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

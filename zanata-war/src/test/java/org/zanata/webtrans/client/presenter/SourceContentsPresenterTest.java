@@ -3,11 +3,14 @@ package org.zanata.webtrans.client.presenter;
 import java.util.List;
 import javax.inject.Provider;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
 import org.hamcrest.Matchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
@@ -51,19 +54,26 @@ public class SourceContentsPresenterTest {
     private HasSelectableSource hasSelectableSource1;
     @Mock
     private HasSelectableSource hasSelectableSource2;
-    @Mock
+    @GwtMock
     private ClickEvent clickEvent;
+
     private UserConfigHolder configHolder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        GwtMockito.initMocks(this);
         configHolder = new UserConfigHolder();
         presenter =
                 new SourceContentsPresenter(eventBus, displayProvider,
                         dispatcher, configHolder);
 
         verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        GwtMockito.tearDown();
     }
 
     @Test

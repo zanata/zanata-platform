@@ -30,7 +30,7 @@ import org.zanata.webtrans.client.ui.LoadingPanel;
 import org.zanata.webtrans.client.ui.SearchResultsDocumentTable;
 
 import com.google.gwt.cell.client.ActionCell.Delegate;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;

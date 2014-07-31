@@ -757,14 +757,6 @@
                     <ignoreClass>net.sf.ehcache.*</ignoreClass>
                   </ignoreClasses>
                 </dependency>
-                <!-- lombok is "provided", so these duplicate classes don't get deployed -->
-                <dependency>
-                  <groupId>org.projectlombok</groupId>
-                  <artifactId>lombok</artifactId>
-                  <ignoreClasses>
-                    <ignoreClass>com.sun.jna.*</ignoreClass>
-                  </ignoreClasses>
-                </dependency>
               </dependencies>
             </banDuplicateClasses>
             <requireNoRepositories>

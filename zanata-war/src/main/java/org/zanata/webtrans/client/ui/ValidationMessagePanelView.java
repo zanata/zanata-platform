@@ -26,7 +26,7 @@ import org.zanata.webtrans.shared.model.ValidationDisplayRules;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.collect.Maps;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;

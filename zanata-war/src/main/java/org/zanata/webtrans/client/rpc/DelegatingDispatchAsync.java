@@ -7,7 +7,7 @@ import net.customware.gwt.presenter.client.EventBus;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DelegatingDispatchAsync implements CachingDispatchAsync {

@@ -4,7 +4,7 @@
 package org.zanata.webtrans.client.ui;
 
 import com.google.common.base.Strings;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;

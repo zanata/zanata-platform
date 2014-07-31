@@ -36,7 +36,7 @@ import org.zanata.webtrans.client.ui.TransUnitCountBar;
 import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.UListElement;

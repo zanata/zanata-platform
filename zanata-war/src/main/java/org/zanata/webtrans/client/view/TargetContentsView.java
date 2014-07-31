@@ -40,7 +40,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;

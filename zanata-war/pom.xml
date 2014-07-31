@@ -146,18 +146,10 @@
             <usedDependency>antlr:antlr</usedDependency>
             <!-- required for guava in gwt -->
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
-            <!-- used for org.hibernate:hibernate-validator -->
-            <usedDependency>com.ibm.icu:icu4j</usedDependency>
-            <!-- Used by org.zanata.util.HashUtil.md5Hex -->
-            <usedDependency>commons-codec:commons-codec</usedDependency>
-            <!-- used by jboss-as-parent-7.2.0.Final.pom -->
-            <usedDependency>commons-collections:commons-collections</usedDependency>
             <!-- Used for StringUtils lib -->
-            <usedDependency>commons-lang:commons-lang</usedDependency>
             <!-- Needed by ui rendering on runtime -->
             <usedDependency>javax.el:el-api</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <usedDependency>org.richfaces.core:richfaces-core-impl</usedDependency>
             <usedDependency>com.sun.faces:jsf-impl</usedDependency>
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
@@ -218,46 +210,37 @@
         <configuration>
           <rules>
             <banDuplicateClasses>
+              <dependencies>
+                <dependency>
+                  <groupId>commons-beanutils</groupId>
+                  <artifactId>commons-beanutils</artifactId>
+                  <ignoreClasses>
+                    <ignoreClass>org.apache.commons.beanutils.*</ignoreClass>
+                  </ignoreClasses>
+                </dependency>
+              </dependencies>
               <ignoreClasses combine.children="append">
-                <!-- TODO remove exclusions as offending jars are fixed or removed -->
+                <!-- Please remove exclusions as offending jars are fixed
+                     or removed -->
+
+                <ignoreClass>org.apache.maven.model.*</ignoreClass>
+                <ignoreClass>org.apache.maven.artifact.repository.metadata.*</ignoreClass>
+                <ignoreClass>javax.annotation.*</ignoreClass>
+                <ignoreClass>com.beust.jcommander.*</ignoreClass>
+                <ignoreClass>net.sf.ehcache.*</ignoreClass>
 
                 <!--  caused by gwt jars -->
-                <!-- https://code.google.com/p/google-web-toolkit/issues/detail?id=4484 -->
-                <ignoreClass>com.google.common.*</ignoreClass>
                 <ignoreClass>com.google.gwt.*</ignoreClass>
                 <ignoreClass>com.google.web.bindery.*</ignoreClass>
-                <ignoreClass>com.ibm.icu.*</ignoreClass>
-                <ignoreClass>com.steadystate.css.*</ignoreClass>
-                <ignoreClass>javax.annotation.*</ignoreClass>
                 <ignoreClass>javax.servlet.*</ignoreClass>
-                <ignoreClass>javax.servlet.jsp.*</ignoreClass>
                 <ignoreClass>javax.validation.ConstraintViolationException_CustomFieldSerializer</ignoreClass>
-                <ignoreClass>javax.xml.*</ignoreClass>
-                <ignoreClass>org.apache.commons.beanutils.*</ignoreClass>
-                <ignoreClass>org.apache.commons.codec.*</ignoreClass>
-                <ignoreClass>org.apache.commons.collections.*</ignoreClass>
-                <ignoreClass>org.apache.commons.io.*</ignoreClass>
-                <ignoreClass>org.apache.commons.lang.*</ignoreClass>
-                <ignoreClass>org.apache.commons.logging.*</ignoreClass>
-                <ignoreClass>org.apache.html.*</ignoreClass>
-                <ignoreClass>org.apache.http.*</ignoreClass>
-                <ignoreClass>org.apache.james.mime4j.*</ignoreClass>
-                <ignoreClass>org.apache.regexp.*</ignoreClass>
-                <ignoreClass>org.apache.wml.*</ignoreClass>
-                <ignoreClass>org.apache.xerces.*</ignoreClass>
-                <ignoreClass>org.apache.xml.*</ignoreClass>
-                <ignoreClass>org.apache.xmlcommons.Version</ignoreClass>
-                <ignoreClass>org.cyberneko.html.*</ignoreClass>
                 <ignoreClass>org.hibernate.validator.*</ignoreClass>
                 <ignoreClass>org.w3c.css.sac.*</ignoreClass>
-                <ignoreClass>org.w3c.dom.*</ignoreClass>
-                <ignoreClass>org.xml.sax.*</ignoreClass>
 
-                <!-- Caused by arquillian -->
-                <ignoreClass>org.osgi.util.*</ignoreClass>
-                <!-- Caused by differing IDs for JDK_HOME/tools.jar -->
-                <ignoreClass>com.sun.tools.*</ignoreClass>
-                <ignoreClass>sun.*</ignoreClass>
+                <!-- picketbox jar -->
+                <ignoreClass>org.jboss.crypto.*</ignoreClass>
+                <ignoreClass>org.jboss.security.*</ignoreClass>
+                <ignoreClass>org.picketbox.*</ignoreClass>
               </ignoreClasses>
             </banDuplicateClasses>
           </rules>
@@ -1158,12 +1141,6 @@
     <!-- GWT Dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -1172,6 +1149,22 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <version>1.1.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-dev</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -1364,7 +1357,6 @@
       <groupId>org.richfaces.ui</groupId>
       <artifactId>richfaces-components-ui</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.richfaces.core</groupId>
       <artifactId>richfaces-core-impl</artifactId>
@@ -1524,6 +1516,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-gwt</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>

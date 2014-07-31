@@ -2,7 +2,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.resources.WebTransMessages;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DialogBox;

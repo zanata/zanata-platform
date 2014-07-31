@@ -22,7 +22,7 @@ package org.zanata.webtrans.client.view;
 
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
