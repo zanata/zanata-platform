@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import com.google.common.base.Optional;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.PersonDAO;
@@ -51,7 +52,8 @@ public class SecurityFunctions {
     }
 
     public static boolean isProjectMaintainer(HProject project) {
-        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent() && account.get().getPerson().isMaintainer(project);
     }
 
     /***************************************************************************
@@ -136,13 +138,13 @@ public class SecurityFunctions {
     }
 
     public static boolean isUserTranslatorOfLanguage(HLocale lang) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
+        Optional<HAccount> authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
                 ServiceLocator.instance().getInstance(PersonDAO.class);
 
-        if (authenticatedAccount != null) {
+        if (authenticatedAccount.isPresent()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, true, null, null);
+                    authenticatedAccount.get().getPerson(), lang, true, null, null);
         }
 
         return false; // No authenticated user
@@ -152,11 +154,9 @@ public class SecurityFunctions {
         if (project.isRestrictedByRoles()) {
             ZanataIdentity identity = getIdentity();
 
-            if (identity != null) {
-                for (HAccountRole role : project.getAllowedRoles()) {
-                    if (identity.hasRole(role.getName())) {
-                        return true;
-                    }
+            for (HAccountRole role : project.getAllowedRoles()) {
+                if (identity.hasRole(role.getName())) {
+                    return true;
                 }
             }
 
@@ -180,16 +180,17 @@ public class SecurityFunctions {
     }
 
     public static boolean isUserReviewerOfLanguage(HLocale lang) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
+        Optional<HAccount> authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
                 ServiceLocator.instance().getInstance(PersonDAO.class);
 
-        if (authenticatedAccount != null) {
+        if (authenticatedAccount.isPresent()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, null, true, null);
+                    authenticatedAccount.get().getPerson(), lang, null, true, null);
+        } else {
+            return false;
         }
 
-        return false; // No authenticated user
     }
 
     /*
@@ -200,29 +201,30 @@ public class SecurityFunctions {
             "review-translation", "translation-review" })
     public static boolean canAddOrReviewTranslation(
             HProject project, HLocale locale) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
-        return authenticatedAccount != null && isProjectMaintainer(project);
+        Optional<HAccount> authenticatedAccount = getAuthenticatedAccount();
+        return authenticatedAccount.isPresent() && isProjectMaintainer(project);
     }
 
     /* Project Maintainer can import translation (merge type is IMPORT) */
     @GrantsPermission(actions = "import-translation")
     public static boolean canImportTranslation(
             HProjectIteration projectIteration) {
-        HPerson authenticatedPerson = getAuthenticatedAccount().getPerson();
-        return authenticatedPerson.isMaintainer(projectIteration.getProject());
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent() && account.get().getPerson().isMaintainer(projectIteration.getProject());
     }
 
     public static boolean isLanguageTeamMember(HLocale lang) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
+        Optional<HAccount> authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
                 ServiceLocator.instance().getInstance(PersonDAO.class);
 
-        if (authenticatedAccount != null) {
+        if (authenticatedAccount.isPresent()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, null, null, null);
+                    authenticatedAccount.get().getPerson(), lang, null, null, null);
+        } else {
+            return false;
         }
 
-        return false; // No authenticated user
     }
 
     /***************************************************************************
@@ -255,16 +257,17 @@ public class SecurityFunctions {
     /* 'team coordinator' can manage language teams */
     @GrantsPermission(actions = "manage-language-team")
     public static boolean isUserCoordinatorOfLanguage(HLocale lang) {
-        HAccount authenticatedAccount = getAuthenticatedAccount();
+        Optional<HAccount> authenticatedAccount = getAuthenticatedAccount();
         PersonDAO personDAO =
                 ServiceLocator.instance().getInstance(PersonDAO.class);
 
-        if (authenticatedAccount != null) {
+        if (authenticatedAccount.isPresent()) {
             return personDAO.isUserInLanguageTeamWithRoles(
-                    authenticatedAccount.getPerson(), lang, null, null, true);
+                    authenticatedAccount.get().getPerson(), lang, null, null, true);
+        } else {
+            return false;
         }
 
-        return false; // No authenticated user
     }
 
     /* 'team coordinator' can insert/update/delete language team members */
@@ -326,7 +329,8 @@ public class SecurityFunctions {
      **************************************************************************/
     @GrantsPermission(actions = "update")
     public static boolean canUpdateVersionGroup(HIterationGroup group) {
-        return getAuthenticatedAccount().getPerson().isMaintainer(group);
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent() && account.get().getPerson().isMaintainer(group);
     }
 
     @GrantsPermission(actions = "insert")
@@ -346,8 +350,8 @@ public class SecurityFunctions {
     /** Admins and Project maintainers can perform copy-trans */
     @GrantsPermission(actions = "copy-trans")
     public static boolean canRunCopyTrans(HProjectIteration iteration) {
-        return getAuthenticatedAccount().getPerson().isMaintainer(
-                iteration.getProject());
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent() && account.get().getPerson().isMaintainer(iteration.getProject());
     }
 
     /*****************************************************************************************
@@ -362,17 +366,18 @@ public class SecurityFunctions {
     @GrantsPermission(actions = "review-comment")
     public static boolean canMaintainerCommentOnReview(HLocale locale,
             HProject project) {
-        return getAuthenticatedAccount().getPerson().isMaintainer(project);
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent() && account.get().getPerson().isMaintainer(project);
     }
 
     private static final ZanataIdentity getIdentity() {
         return ServiceLocator.instance().getInstance(ZanataIdentity.class);
     }
 
-    private static final HAccount getAuthenticatedAccount() {
-        return ServiceLocator.instance().getInstance(
+    private static final Optional<HAccount> getAuthenticatedAccount() {
+        return Optional.fromNullable(ServiceLocator.instance().getInstance(
                 JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION,
-                HAccount.class);
+                HAccount.class));
     }
 
     private static final <T> T extractTarget(Object[] array, Class<T> type) {
