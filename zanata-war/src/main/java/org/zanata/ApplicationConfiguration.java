@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +47,7 @@ import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.Synchronized;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
+import org.zanata.config.JaasConfig;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
@@ -56,6 +58,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.zanata.security.OpenIdLoginModule;
 
 @Name("applicationConfiguration")
 @Scope(ScopeType.APPLICATION)
@@ -76,6 +79,8 @@ public class ApplicationConfiguration implements Serializable {
     private DatabaseBackedConfig databaseBackedConfig;
     @In
     private JndiBackedConfig jndiBackedConfig;
+    @In
+    private JaasConfig jaasConfig;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
@@ -112,12 +117,15 @@ public class ApplicationConfiguration implements Serializable {
     // set by component.xml
     private String webAssetsVersion = "";
 
+    private Optional<String> openIdProvider; // Cache the OpenId provider
+
     @Create
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
         this.validateConfiguration();
         this.applyLoggingConfiguration();
+        this.loadJaasConfig();
     }
 
     @Observer({ EVENT_CONFIGURATION_CHANGED })
@@ -202,6 +210,23 @@ public class ApplicationConfiguration implements Serializable {
         }
     }
 
+    /**
+     * Load configuration pertaining to JAAS.
+     */
+    private void loadJaasConfig() {
+        if (loginModuleNames.containsKey(AuthenticationType.OPENID)) {
+            openIdProvider =
+                    Optional.fromNullable(jaasConfig
+                            .getAppConfigurationProperty(
+                                    loginModuleNames
+                                            .get(AuthenticationType.OPENID),
+                                    OpenIdLoginModule.class,
+                                    OpenIdLoginModule.OPEN_ID_PROVIDER_KEY));
+        } else {
+            openIdProvider = Optional.absent();
+        }
+    }
+
     public String getRegisterPath() {
         return databaseBackedConfig.getRegistrationUrl();
     }
@@ -273,6 +298,14 @@ public class ApplicationConfiguration implements Serializable {
 
     public boolean isOpenIdAuth() {
         return this.loginModuleNames.containsKey(AuthenticationType.OPENID);
+    }
+
+    public boolean isSingleOpenIdProvider() {
+        return openIdProvider.isPresent();
+    }
+
+    public String getOpenIdProviderUrl() {
+        return openIdProvider.orNull();
     }
 
     public boolean isKerberosAuth() {

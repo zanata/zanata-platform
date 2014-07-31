@@ -34,6 +34,7 @@ import javax.security.auth.spi.LoginModule;
 import org.zanata.util.ServiceLocator;
 
 public class OpenIdLoginModule implements LoginModule {
+    public static final String OPEN_ID_PROVIDER_KEY = "providerURL";
     protected Set<String> roles = new HashSet<String>();
 
     protected Subject subject;
