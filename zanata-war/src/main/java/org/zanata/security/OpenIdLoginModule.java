@@ -35,6 +35,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 
 public class OpenIdLoginModule implements LoginModule {
+    public static final String OPEN_ID_PROVIDER_KEY = "providerURL";
     protected Set<String> roles = new HashSet<String>();
 
     protected Subject subject;

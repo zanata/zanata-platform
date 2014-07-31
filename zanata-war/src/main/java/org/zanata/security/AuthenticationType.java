@@ -26,5 +26,12 @@ package org.zanata.security;
  * @author camunoz@redhat.com
  */
 public enum AuthenticationType {
-    INTERNAL, KERBEROS, OPENID, JAAS
+    /* Internal authentication (username / password) */
+    INTERNAL,
+    /* Kerberos authentication. Ticket or form based. */
+    KERBEROS,
+    /* Open Id authentication */
+    OPENID,
+    /* Any other custom username & password-based jaas authentication mechanism */
+    JAAS,
 }

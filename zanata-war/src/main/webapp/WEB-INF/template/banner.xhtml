@@ -146,7 +146,7 @@
         rendered="#{applicationConfiguration.internalAuth}"/>
 
       <s:fragment
-        rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
+        rendered="#{applicationConfigurationAction.registrationLinkNeeded}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{messages['jsf.Signup']}</a>
       </s:fragment>
@@ -154,9 +154,17 @@
       <h:outputLink id="signin_link"
         value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
         propagation="none" styleClass="l--push-left-half button--primary"
-        rendered="#{not applicationConfiguration.kerberosAuth}">
+        rendered="#{applicationConfigurationAction.loginHandledByInternalPage}">
         #{messages['jsf.Login']}
       </h:outputLink>
+
+      <h:form rendered="#{applicationConfigurationAction.singleOpenId}">
+        <h:commandLink id="openid_single_signin_link"
+          action="#{loginAction.genericOpenIdLogin(applicationConfiguration.openIdProviderUrl)}"
+          propagation="none" styleClass="l--push-left-half button--primary">
+          #{messages['jsf.Login']}
+        </h:commandLink>
+      </h:form>
 
       <h:outputLink id="ksignin_link"
         value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"

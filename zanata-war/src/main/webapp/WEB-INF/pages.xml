@@ -50,16 +50,23 @@
         if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
         <redirect view-id="/account/inactive_account.xhtml" />
       </rule>
+      <rule if="#{!identity.loggedIn and applicationConfiguration.singleOpenIdProvider}">
+        <redirect view-id="/home.xhtml" />
+      </rule>
       <rule if="#{!identity.loggedIn}">
         <redirect view-id="/account/login.xhtml" />
       </rule>
       <rule
-        if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}}">
+        if="#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule
-        if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
+        if="#{identity.loggedIn and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
+      </rule>
+      <!-- Default redirection after a log in is to the dashboard -->
+      <rule if="#{identity.loggedIn}">
+        <redirect view-id="/dashboard/home.xhtml" />
       </rule>
     </navigation>
   </page>
