@@ -264,6 +264,8 @@
             <ignoredResource>META-INF/components.xml</ignoredResource>
             <!-- Seam and RichFaces -->
             <ignoredResource>META-INF/faces-config.xml</ignoredResource>
+            <!-- any mail provider will need this -->
+            <ignoredResource>META-INF/javamail.providers</ignoredResource>
             <!-- RichFaces 4.3 -->
             <ignoredResource>META-INF/richfaces/resource-mappings.properties</ignoredResource>
             <!-- Seam -->
