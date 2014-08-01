@@ -389,32 +389,11 @@
               </excludes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
+            <!-- TODO remove this once other modules are ready -->
             <banDuplicateClasses>
-              <dependencies combine.children="append">
-                <dependency>
-                  <groupId>org.apache.httpcomponents</groupId>
-                  <artifactId>httpclient</artifactId>
-                  <ignoreClasses>
-                    <!-- also found in httpcore -->
-                    <ignoreClass>org.apache.http.annotation.*</ignoreClass>
-                  </ignoreClasses>
-                </dependency>
-                <dependency>
-                  <groupId>commons-beanutils</groupId>
-                  <artifactId>commons-beanutils</artifactId>
-                  <ignoreClasses>
-                    <!-- caused by commons-beanutils less than 1.9 -->
-                    <ignoreClass>org.apache.commons.collections.*</ignoreClass>
-                  </ignoreClasses>
-                </dependency>
-              </dependencies>
-              <findAllDuplicates>true</findAllDuplicates>
-              <message xml:space="preserve">
-Warning: found duplicate classes on classpath.  Please remove unnecessary
-dependencies if possible, and consider adding them to bannedDependencies.
-If that is not possible, please add an ignoreClass for the class or entire
-package.
-                       </message>
+              <ignoreClasses combine.children="append">
+                <ignoreClass>*</ignoreClass>
+              </ignoreClasses>
             </banDuplicateClasses>
             <requireNoRepositories>
               <message xml:space="preserve">Repositories in pom.xml are not allowed by Maven Central</message>
