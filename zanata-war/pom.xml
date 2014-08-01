@@ -248,6 +248,43 @@
       </plugin>
 
       <plugin>
+        <groupId>com.ning.maven.plugins</groupId>
+        <artifactId>maven-duplicate-finder-plugin</artifactId>
+        <configuration>
+          <ignoredDependencies>
+            <dependency>
+              <groupId>com.google.gwt</groupId>
+              <artifactId>gwt-user</artifactId>
+            </dependency>
+          </ignoredDependencies>
+          <ignoredResources>
+            <!-- iText and JavaMelody -->
+            <ignoredResource>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResource>
+            <!-- Seam -->
+            <ignoredResource>META-INF/components.xml</ignoredResource>
+            <!-- Seam and RichFaces -->
+            <ignoredResource>META-INF/faces-config.xml</ignoredResource>
+            <!-- RichFaces 4.3 -->
+            <ignoredResource>META-INF/richfaces/resource-mappings.properties</ignoredResource>
+            <!-- Seam -->
+            <ignoredResource>META-INF/seam-deployment.properties</ignoredResource>
+            <!-- drools and quartz -->
+            <ignoredResource>build.properties</ignoredResource>
+            <!-- Seam -->
+            <ignoredResource>seam.properties</ignoredResource>
+          </ignoredResources>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
@@ -1220,6 +1257,10 @@
           <artifactId>javassist</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+        <exclusion>
           <artifactId>jcip-annotations</artifactId>
           <groupId>net.jcip</groupId>
         </exclusion>
@@ -1632,8 +1673,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -1675,8 +1716,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -2025,6 +2066,10 @@
       <artifactId>classloader-leak-prevention</artifactId>
       <version>1.9.3</version>
       <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.apache.cxf</groupId>
           <artifactId>cxf-rt-transports-http</artifactId>

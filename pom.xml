@@ -130,6 +130,18 @@
       </dependency>
 
       <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.9.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>1.6.0</version>
@@ -147,6 +159,16 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <version>${zanata.api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- zanata common -->
@@ -483,6 +505,10 @@
           <exclusion>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
           <exclusion>
             <groupId>org.apache.solr</groupId>
