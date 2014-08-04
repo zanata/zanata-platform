@@ -207,44 +207,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <rules>
-            <banDuplicateClasses>
-              <dependencies>
-                <dependency>
-                  <groupId>commons-beanutils</groupId>
-                  <artifactId>commons-beanutils</artifactId>
-                  <ignoreClasses>
-                    <ignoreClass>org.apache.commons.beanutils.*</ignoreClass>
-                  </ignoreClasses>
-                </dependency>
-              </dependencies>
-              <ignoreClasses combine.children="append">
-                <!-- Please remove exclusions as offending jars are fixed
-                     or removed -->
-
-                <ignoreClass>org.apache.maven.model.*</ignoreClass>
-                <ignoreClass>org.apache.maven.artifact.repository.metadata.*</ignoreClass>
-                <ignoreClass>javax.annotation.*</ignoreClass>
-                <ignoreClass>com.beust.jcommander.*</ignoreClass>
-                <ignoreClass>net.sf.ehcache.*</ignoreClass>
-
-                <!--  caused by gwt jars -->
-                <ignoreClass>com.google.gwt.*</ignoreClass>
-                <ignoreClass>com.google.web.bindery.*</ignoreClass>
-                <ignoreClass>javax.servlet.*</ignoreClass>
-                <ignoreClass>javax.validation.ConstraintViolationException_CustomFieldSerializer</ignoreClass>
-                <ignoreClass>org.hibernate.validator.*</ignoreClass>
-                <ignoreClass>org.w3c.css.sac.*</ignoreClass>
-
-                <!-- picketbox jar -->
-                <ignoreClass>org.jboss.crypto.*</ignoreClass>
-                <ignoreClass>org.jboss.security.*</ignoreClass>
-                <ignoreClass>org.picketbox.*</ignoreClass>
-              </ignoreClasses>
-            </banDuplicateClasses>
-          </rules>
-        </configuration>
       </plugin>
 
       <plugin>

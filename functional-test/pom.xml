@@ -768,23 +768,6 @@
               </excludes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
-            <banDuplicateClasses>
-              <dependencies combine.children="append">
-                <!-- multiple versions in the dependency tree -->
-                <dependency>
-                  <groupId>org.jboss</groupId>
-                  <artifactId>jboss-remote-naming</artifactId>
-                  <ignoreClasses>
-                    <ignoreClass>org.jboss.naming.remote.*</ignoreClass>
-                  </ignoreClasses>
-                </dependency>
-              </dependencies>
-              <ignoreClasses combine.children="append">
-                <!-- multiple versions of selenium artifacts in the dependency tree -->
-                <ignoreClass>com.thoughtworks.selenium.*</ignoreClass>
-                <ignoreClass>org.openqa.selenium.*</ignoreClass>
-              </ignoreClasses>
-            </banDuplicateClasses>
           </rules>
         </configuration>
       </plugin>
