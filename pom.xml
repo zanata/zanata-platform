@@ -389,12 +389,6 @@
               </excludes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
-            <!-- TODO remove this once other modules are ready -->
-            <banDuplicateClasses>
-              <ignoreClasses combine.children="append">
-                <ignoreClass>*</ignoreClass>
-              </ignoreClasses>
-            </banDuplicateClasses>
             <requireNoRepositories>
               <message xml:space="preserve">Repositories in pom.xml are not allowed by Maven Central</message>
               <banRepositories>true</banRepositories>
