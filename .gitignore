@@ -3,6 +3,7 @@
 *~
 /.settings
 /.project
+/.idea
 *.iml
 bin/
 test-output/
