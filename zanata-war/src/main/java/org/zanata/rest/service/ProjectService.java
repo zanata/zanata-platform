@@ -179,6 +179,7 @@ public class ProjectService implements ProjectResource {
         }
 
         projectDAO.makePersistent(hProject);
+        projectDAO.flush();
         etag = eTagUtils.generateTagForProject(projectSlug);
         return response.tag(etag).build();
 
