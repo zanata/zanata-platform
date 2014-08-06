@@ -169,9 +169,6 @@ public class ProjectService implements ProjectResource {
 
         transfer(project, hProject);
 
-        hProject = projectDAO.makePersistent(hProject);
-        projectDAO.flush();
-
         if (identity != null && hProject.getMaintainers().isEmpty()) {
             HAccount hAccount =
                     accountDAO.getByUsername(identity.getCredentials()
@@ -179,9 +176,9 @@ public class ProjectService implements ProjectResource {
             if (hAccount != null && hAccount.getPerson() != null) {
                 hProject.getMaintainers().add(hAccount.getPerson());
             }
-            projectDAO.flush();
         }
 
+        projectDAO.makePersistent(hProject);
         etag = eTagUtils.generateTagForProject(projectSlug);
         return response.tag(etag).build();
 
