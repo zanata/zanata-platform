@@ -70,7 +70,8 @@ public class CopyTransRestTest extends ZanataRestTest {
         seamAutowire.use("session", getSession()).use("identity", mockIdentity)
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(AsyncTaskManagerServiceImpl.class)
-                .useImpl(LocaleServiceImpl.class);
+                .useImpl(LocaleServiceImpl.class)
+                .simulateSessionContext(true);
 
         CopyTransResource copyTransResource =
                 seamAutowire.autowire(CopyTransResourceService.class);

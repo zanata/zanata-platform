@@ -480,6 +480,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
      *            Translated document's locale.
      * @return A Hash string (checksum) for a translated document.
      */
+    @NativeQuery
     public String
             getTranslatedDocumentStateHash(final String projectSlug,
                     final String iterationSlug, final String docId,
