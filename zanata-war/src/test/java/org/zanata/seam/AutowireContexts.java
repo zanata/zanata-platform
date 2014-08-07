@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public class AutowireContexts {
 
+    private static boolean simulateSessionContext = false;
+
     public enum ContextType {
         // TODO implement other contexts as required
         Request, Session;
@@ -103,6 +105,14 @@ public class AutowireContexts {
         // Clear out the request and session contexts
         newRequest();
         allContexts.put(ContextType.Session, new HashMap<String, Object>());
+    }
+
+    public static void simulateSessionContext(boolean simulate) {
+        simulateSessionContext = simulate;
+    }
+
+    public static boolean isSessionContextActive() {
+        return simulateSessionContext;
     }
 
 }

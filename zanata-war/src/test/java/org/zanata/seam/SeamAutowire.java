@@ -114,6 +114,16 @@ public class SeamAutowire {
         namedComponents.clear();
         componentImpls.clear();
         allowCycles = false;
+        AutowireContexts.simulateSessionContext(false);
+        return this;
+    }
+
+    /**
+     * Indicates if the prescence of a session context will be simulated.
+     * By default contexts are not simulated.
+     */
+    public SeamAutowire simulateSessionContext(boolean simulate) {
+        AutowireContexts.simulateSessionContext(simulate);
         return this;
     }
 
@@ -368,7 +378,8 @@ public class SeamAutowire {
             // AutowireComponent
             CtMethod methodToReplace =
                     contextsCls.getDeclaredMethod("isSessionContextActive");
-            methodToReplace.setBody("return true;");
+            methodToReplace
+                    .setBody("{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
 
             contextsCls.toClass();
         } catch (NotFoundException e) {
