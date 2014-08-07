@@ -50,6 +50,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.service.ConfigurationService;
 
 import com.google.common.base.Objects;
 
@@ -95,6 +96,9 @@ public class ProjectIterationService implements ProjectIterationResource {
     @In
     Identity identity;
 
+    @In
+    private ConfigurationService configurationServiceImpl;
+
     @SuppressWarnings("null")
     @Nonnull
     public String getProjectSlug() {
@@ -134,6 +138,9 @@ public class ProjectIterationService implements ProjectIterationResource {
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(getProjectSlug(),
                         getIterationSlug());
+        if (hProjectIteration == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
 
         ProjectIteration it = new ProjectIteration();
         transfer(hProjectIteration, it);
@@ -310,4 +317,15 @@ public class ProjectIterationService implements ProjectIterationResource {
         }
     }
 
+    @Override
+    public Response sampleConfiguration() {
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (iteration == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        String generalConfig = configurationServiceImpl
+                .getGeneralConfig(projectSlug, iterationSlug);
+        return Response.ok().entity(generalConfig).build();
+    }
 }
