@@ -168,12 +168,14 @@
   <div class="panel">
     <div class="panel__header">
       <div class="panel__header__actions">
-        <a href="#" class="button button--snug l--push-top-half"
-          data-toggle="modal"
-          data-target="#modal-1" onclick="openUploadSourceDocPanel()"
-          title="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}">
+        <zanata:multi-file-upload
+          id="file-upload-component"
+          title="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}"
+          accepted="#{versionHome.acceptedSourceFileTypes}"
+          url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
+          maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
           <i class="i i--plus"></i>
-        </a>
+        </zanata:multi-file-upload>
         <zanata:sortlist id="settings-document_sorting"
           sortAction="#{versionHomeAction.sortSettingsDocumentList()}"
           render="settings-document_form, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"

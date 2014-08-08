@@ -21,6 +21,8 @@
 package org.zanata.feature.document;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -31,11 +33,13 @@ import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
+import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import java.io.File;
 
@@ -49,12 +53,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Theories.class)
 public class DocTypeUploadTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @ClassRule
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Rule
-    public CleanDocumentStorageRule documentStorageRule =
+    @ClassRule
+    public static CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        new LoginWorkFlow().signIn("admin", "admin");
+        new ProjectWorkFlow().createNewProjectVersion(
+                "about fedora", "doctype-upload", "File")
+                .logout();
+    }
 
     private static String testString = "Test text 1";
 
@@ -91,27 +103,18 @@ public class DocTypeUploadTest extends ZanataTestCase {
     public void uploadFile(File testFile) throws Exception {
         String testFileName = testFile.getName();
         log.info("[uploadFile] "+testFileName);
-        String successfullyUploaded =
-                "Document " + testFileName + " uploaded.";
 
-        VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
+        VersionDocumentsPage versionDocumentsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
-                .gotoVersion("master")
+                .gotoVersion("doctype-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(testFile.getAbsolutePath())
-                .submitUpload();
-
-        versionLanguagesPage.expectNotification(successfullyUploaded);
-
-        assertThat(versionLanguagesPage.getNotificationMessage())
-                .isEqualTo(successfullyUploaded)
-                .as("Document uploaded notification shows");
-
-        VersionDocumentsPage versionDocumentsPage = versionLanguagesPage
+                .submitUpload()
+                .clickUploadDone()
                 .gotoDocumentTab();
 
         assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))

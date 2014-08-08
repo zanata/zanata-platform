@@ -90,6 +90,13 @@ public class DocumentUploadUtil {
         failIfVersionCannotAcceptUpload(id);
     }
 
+    public void failIfHashNotPresent(DocumentFileUploadForm uploadForm) {
+        if (isNullOrEmpty(uploadForm.getHash())) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                    "Required form parameter 'hash' was not found.");
+        }
+    }
+
     private void failIfNotLoggedIn() throws ChunkUploadException {
         if (!identity.isLoggedIn()) {
             throw new ChunkUploadException(
@@ -120,11 +127,6 @@ public class DocumentUploadUtil {
         if (isNullOrEmpty(uploadForm.getFileType())) {
             throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                     "Required form parameter 'type' was not found.");
-        }
-
-        if (isNullOrEmpty(uploadForm.getHash())) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
-                    "Required form parameter 'hash' was not found.");
         }
     }
 
@@ -239,7 +241,7 @@ public class DocumentUploadUtil {
     }
 
     public File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload,
-            InputStream finalPart) {
+            DocumentFileUploadForm finalPart) {
         File tempFile;
         try {
             tempFile = combineToTempFile(upload, finalPart);
@@ -261,13 +263,13 @@ public class DocumentUploadUtil {
     }
 
     private File
-            combineToTempFile(HDocumentUpload upload, InputStream finalPart)
+            combineToTempFile(HDocumentUpload upload, DocumentFileUploadForm finalPart)
                     throws SQLException {
         Vector<InputStream> partStreams = new Vector<InputStream>();
         for (HDocumentUploadPart part : upload.getParts()) {
             partStreams.add(part.getContent().getBinaryStream());
         }
-        partStreams.add(finalPart);
+        partStreams.add(finalPart.getFileStream());
 
         MessageDigest md;
         try {
@@ -281,11 +283,8 @@ public class DocumentUploadUtil {
         combinedParts = new DigestInputStream(combinedParts, md);
         File tempFile =
                 translationFileServiceImpl.persistToTempFile(combinedParts);
-        String md5hash = new String(Hex.encodeHex(md.digest()));
-        if (!md5hash.equals(upload.getContentHash())) {
-            throw new HashMismatchException("MD5 hashes do not match.\n",
-                    upload.getContentHash(), md5hash);
-        }
+
+        checkAndUpdateHash(finalPart, md, upload.getContentHash());
         return tempFile;
     }
 
@@ -313,18 +312,37 @@ public class DocumentUploadUtil {
                     new DigestInputStream(uploadForm.getFileStream(), md);
             tempFile =
                     translationFileServiceImpl.persistToTempFile(fileContents);
-            String md5hash = new String(Hex.encodeHex(md.digest()));
-            if (!md5hash.equals(uploadForm.getHash())) {
-                throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
-                        + uploadForm.getHash()
-                        + "\" sent with request does not match "
-                        + "server-generated hash. Aborted upload operation.");
-            }
+            String providedHash = uploadForm.getHash();
+            checkAndUpdateHash(uploadForm, md, providedHash);
         } catch (NoSuchAlgorithmException e) {
             throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
                     "MD5 hash algorithm not available", e);
         }
         return tempFile;
+    }
+
+    /**
+     * Makes sure any provided hash matches the calculated hash, and sets the
+     * calculated hash into the given upload form for use in subsequent steps.
+     *
+     * @param md an MD5 message digester that has had the contents of the file
+     *        streamed through it.
+     * @param providedHash provided by client, may be null or empty
+     * @throws ChunkUploadException if a hash is provided and it does not match
+     *         the hash of the file contents.
+     */
+    private void checkAndUpdateHash(DocumentFileUploadForm uploadForm,
+            MessageDigest md, String providedHash) {
+        String md5hash = new String(Hex.encodeHex(md.digest()));
+        if (isNullOrEmpty(providedHash)) {
+            // Web upload with no hash provided, use generated hash for metadata
+            uploadForm.setHash(md5hash);
+        } else if (!md5hash.equals(providedHash)) {
+            throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
+                    + providedHash
+                    + "\" sent with request does not match "
+                    + "server-generated hash. Aborted upload operation.");
+        }
     }
 
 }

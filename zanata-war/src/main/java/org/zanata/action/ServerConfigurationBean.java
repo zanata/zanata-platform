@@ -132,6 +132,11 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String maxActiveRequestsPerApiKey;
 
+    @Pattern(regexp = "\\d{0,5}")
+    @Getter
+    @Setter
+    private String maxFilesPerUpload;
+
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
             new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
             new PropertyWithKey<String>("serverUrl", KEY_HOST),
@@ -143,7 +148,8 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("piwikIdSite", KEY_PIWIK_IDSITE),
             new PropertyWithKey<String>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
             new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
-            new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY)
+            new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
+            new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD)
     );
 
     public String getHomeContent() {

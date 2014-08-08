@@ -31,6 +31,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 
+import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -356,6 +357,14 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         update();
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.get("jsf.iteration.CopyProjectType.message"));
+    }
+
+    /**
+     * @return comma-separated list of accepted file extensions. May be an empty string
+     */
+    public String getAcceptedSourceFileTypes() {
+        return Joiner.on(", ")
+            .join(ProjectType.getSupportedSourceFileTypes(getProjectType()));
     }
 
     private void updateProjectType() {

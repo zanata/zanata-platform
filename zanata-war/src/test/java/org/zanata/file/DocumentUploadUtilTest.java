@@ -51,6 +51,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
@@ -139,7 +140,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         conf = defaultUpload().hash(null).build();
         mockLoggedIn();
         try {
-            util.failIfUploadNotValid(conf.id, conf.uploadForm);
+            util.failIfHashNotPresent(conf.uploadForm);
             fail("Should throw exception if hash is not set.");
         } catch (ChunkUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
@@ -317,6 +318,9 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
                 new ByteArrayInputStream("ghi".getBytes());
         File persistedFile = new File("test");
 
+        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+        uploadForm.setFileStream(finalPartStream);
+
         when(
                 translationFileService
                         .persistToTempFile(persistedInputStreamCaptor.capture()))
@@ -324,7 +328,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
         File returnedFile =
                 util.combineToTempFileAndDeleteUploadRecord(upload,
-                        finalPartStream);
+                        uploadForm);
 
         assertThat(returnedFile, is(sameInstance(persistedFile)));
         String persistedContents =
@@ -338,17 +342,31 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         InputStream finalPartStream =
                 new ByteArrayInputStream("ghi".getBytes());
 
+        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+        uploadForm.setFileStream(finalPartStream);
+
         try {
-            util.combineToTempFileAndDeleteUploadRecord(upload, finalPartStream);
+            util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm);
         } catch (ChunkUploadException e) {
             assertThat(e.getStatusCode(), is(CONFLICT));
             assertThat(
                     e.getMessage(),
-                    is("MD5 hash \"incorrect hash\" sent with initial request"
-                            + " does not match server-generated hash of combined parts \""
-                            + HASH_OF_ABCDEFGHI
-                            + "\". Upload aborted. Retry upload from first part."));
+                    is("MD5 hash \"incorrect hash\" sent with request does " +
+                          "not match server-generated hash. Aborted upload " +
+                          "operation."));
         }
+    }
+
+    public void combineSetsHashWhenNoHashProvided() throws SQLException {
+        HDocumentUpload upload = mockTwoPartUploadUsingHash("");
+        InputStream finalPartStream =
+                new ByteArrayInputStream("ghi".getBytes());
+
+        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
+        uploadForm.setFileStream(finalPartStream);
+
+        util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm);
+        assertThat(uploadForm.getHash(), is(HASH_OF_ABCDEFGHI));
     }
 
     private HDocumentUpload mockTwoPartUploadUsingHash(String hash)

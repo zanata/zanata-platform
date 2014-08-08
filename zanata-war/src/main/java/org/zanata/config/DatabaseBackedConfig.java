@@ -164,4 +164,8 @@ public class DatabaseBackedConfig implements Serializable {
     public String getMaxActiveRequestsPerApiKey() {
         return getConfigValue(HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY);
     }
+
+    public String getMaxFilesPerUpload() {
+        return getConfigValue(HApplicationConfiguration.KEY_MAX_FILES_PER_UPLOAD);
+    }
 }

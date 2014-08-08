@@ -25,6 +25,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +57,15 @@ public class VersionDocumentsPage extends VersionBasePage {
             }
         }
         return false;
+    }
+
+    public List<String> getSourceDocumentNames() {
+        List<String> filenames = new ArrayList<String>();
+        for (WebElement element : getDocumentsTabDocumentList()) {
+            filenames.add(element.findElement(By.className("list__title"))
+                    .getText());
+        }
+        return filenames;
     }
 
     private List<WebElement> getDocumentsTabDocumentList() {

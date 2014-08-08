@@ -89,21 +89,16 @@ public class TranslateHTMLTest extends ZanataTestCase {
                 "basichtml", "." + extension,
                 "<html><body>Line One<p>Line Two<p>Line Three</body></html>");
 
-        HashMap<String, String> projectSettings =
-                ProjectWorkFlow.projectDefaults();
-        projectSettings.put("Project ID", extension + "-project");
-        projectSettings.put("Name", extension + "-project");
-        projectSettings.put("Project Type", "File");
-
         EditorPage editorPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings)
-                .clickCreateVersionLink().inputVersionId(extension)
-                .saveVersion()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(testfile.getAbsolutePath())
                 .submitUpload()
+                .clickUploadDone()
+                .gotoLanguageTab()
                 .translate("fr", testfile.getName());
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))

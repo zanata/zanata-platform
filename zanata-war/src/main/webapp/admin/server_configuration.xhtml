@@ -241,6 +241,24 @@
           </s:span>
         </s:decorate>
 
+        <s:decorate id="maxFilesPerUploadField"
+                    template="../WEB-INF/layout/edit.xhtml" enclose="true">
+            <ui:define
+                    name="label">#{msgs['jsf.config.MaxFilesPerUpload']}</ui:define>
+            <h:inputText id="maxFilesPerUploadFieldInput"
+                         value="#{serverConfigurationBean.maxFilesPerUpload}">
+                <a4j:ajax event="blur" render="maxConcurrentPerApiKeyField"/>
+                <rich:placeholder value="#{msgs['jsf.config.MaxFilesPerUploadDefault']}" styleClass="txt--neutral" />
+            </h:inputText>
+
+            <s:span styleClass="icon-info-circle-2 input_help"
+                    id="maxFilesPerUploadFieldHelp">
+                <rich:tooltip>
+                    #{msgs['jsf.config.MaxFilesPerUploadTooltip']}
+                </rich:tooltip>
+            </s:span>
+        </s:decorate>
+
         <div style="clear:both"/>
 
         <div class="actionButtons">

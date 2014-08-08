@@ -1,0 +1,406 @@
+<!--
+Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+@author tags. See the copyright.txt file in the distribution for a full
+listing of individual contributors.
+
+This is free software; you can redistribute it and/or modify it under the
+terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 2.1 of the License, or (at your option)
+any later version.
+
+This software is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this software; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+site: http://www.fsf.org.
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core">
+
+<composite:interface>
+  <composite:attribute name="url"
+    shortDescription="url to send upload xhr requests"
+    required="true"/>
+  <composite:attribute name="title"
+    shortDescription="tooltip for button"
+    required="true"/>
+  <composite:attribute name="accepted"
+    shortDescription="comma-separated list of file extensions that can be uploaded"
+    required="true"/>
+  <composite:attribute name="maxfiles"
+    shortDescription="maximum number of files allowed in the upload dialog at once"
+    required="true"/>
+</composite:interface>
+
+<composite:implementation>
+
+<button class="button button--snug l--push-top-half"
+  id="#{cc.clientId}-toggle-button"
+  data-toggle="modal"
+  data-target="##{cc.clientId}"
+  title="#{cc.attrs.title}">
+  <composite:insertChildren/>
+</button>
+
+<div class="modal" id="#{cc.clientId}" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal__dialog l--constrain-medium">
+
+<header class="modal__header">
+  <h2 class="modal__title">
+    #{msgs['jsf.upload.UploadNewDocuments']}</h2>
+  <button type="button"
+    class="fileupload-close modal__close button--link"
+    data-dismiss="modal">
+    <i class="i i--huge i--cancel"></i></button>
+</header>
+
+<form class="fileupload l--push-bottom-0" action="#{cc.attrs.url}"
+  method="post" enctype="multipart/form-data"
+  data-accepted="#{cc.attrs.accepted}"
+  data-maxfiles="#{cc.attrs.maxfiles}">
+
+  <!-- UI strings used in the control script -->
+  <ul class="js-upload-strings is-hidden">
+    <li data-key="jsf.upload.NoDocumentsQueued">
+      #{msgs['jsf.upload.NoDocumentsQueued']}
+    </li>
+    <li data-key="jsf.upload.OneDocumentQueued">
+      #{msgs['jsf.upload.OneDocumentQueued']}
+    </li>
+    <li data-key="jsf.upload.NumberOfDocumentsQueued">
+      #{msgs['jsf.upload.NumberOfDocumentsQueued']}
+    </li>
+    <li data-key="jsf.upload.UploadedOfTotal">
+      #{msgs['jsf.upload.UploadedOfTotal']}
+    </li>
+    <li data-key="jsf.upload.UploadedOfTotalWithFailures">
+      #{msgs['jsf.upload.UploadedOfTotalWithFailures']}
+    </li>
+    <li data-key="jsf.upload.ConfirmStopUploading">
+      #{msgs['jsf.upload.ConfirmStopUploading']}
+    </li>
+    <li data-key="jsf.upload.ConfirmInterruptByLeavingPage">
+      #{msgs['jsf.upload.ConfirmInterruptByLeavingPage']}
+    </li>
+    <li data-key="jsf.upload.FailedToUpload">
+      #{msgs['jsf.upload.FailedToUpload']}
+    </li>
+    <li data-key="jsf.upload.NotSupportedFileType">
+      #{msgs['jsf.upload.NotSupportedFileType']}
+    </li>
+    <li data-key="jsf.upload.FileIsTooLarge">
+      #{msgs['jsf.upload.FileIsTooLarge']}
+    </li>
+    <li data-key="jsf.upload.TooManyFiles">
+      #{msgs['jsf.upload.TooManyFiles']}
+    </li>
+    <li data-key="jsf.upload.SessionTimedOut">
+      #{msgs['jsf.upload.SessionTimedOut']}
+    </li>
+    <li data-key="jsf.upload.ServerStoppedResponding">
+      #{msgs['jsf.upload.ServerStoppedResponding']}
+    </li>
+    <li data-key="jsf.upload.NotLoggedIn">
+      #{msgs['jsf.upload.NotLoggedIn']}
+    </li>
+    <li data-key="jsf.upload.UploadInProgress">
+      #{msgs['jsf.upload.UploadInProgress']}
+    </li>
+    <li data-key="jsf.upload.ErrorWhileChecking">
+      #{msgs['jsf.upload.ErrorWhileChecking']}
+    </li>
+    <li data-key="uploadedBytes">
+      #{msgs['jsf.upload.UploadedBytesExceedFileSize']}
+    </li>
+  </ul>
+
+  <div class="modal__content">
+
+    <ul class="js-errors list--no-bullets">
+    </ul>
+
+    <div class="js-upload-not-supported">
+      <div class="message--warning txt--align-center txt--hero">
+        #{msgs['jsf.upload.NotSupported']}
+      </div>
+      <div class="l--pad-h-2 l--pad-v-1">
+        <p>
+          <h:outputFormat
+            value="#{msgs['jsf.upload.ClientUploadInstructions']}"
+            escape="false">
+            <f:param value="&lt;a href=&quot;http://zanata.org/help/cli/cli-push/&quot;>"/>
+            <f:param value="&lt;/a>"/>
+          </h:outputFormat>
+        </p>
+
+        <p>
+          #{msgs['jsf.upload.ChangeProjectTypeInstructions']}</p>
+      </div>
+    </div>
+
+    <div class="js-upload-supported">
+      <div class="drag-drop l--push-all-1">
+        <p class="txt--lead l--push-bottom-0"><i
+          class="i i--left i--document"></i>
+          <h:outputFormat
+            value="#{msgs['jsf.upload.DragDropOrBrowseFiles']}"
+            escape="false">
+            <f:param
+              value="&lt;a href=&quot;#&quot; style=&quot;position:relative;overflow:hidden;white-space:nowrap;&quot;>"/>
+            <f:param
+              value="&lt;input id=&quot;#{cc.clientId}-file-input&quot; type=&quot;file&quot; name=&quot;files[]&quot; multiple=&quot;multiple&quot; style=&quot;position:absolute;top:0;left:0;width:100%;height:100%;direction:ltr;opacity:0;font-size:14px;&quot; />&lt;/a>"/>
+          </h:outputFormat>
+        </p>
+        <small class="txt--meta">
+          <h:outputFormat
+            value="#{msgs['jsf.upload.MaximumFileSize']}">
+            <f:param value="200"/>
+          </h:outputFormat>
+        </small>
+        <br/>
+        <small class="txt--meta">
+          <h:outputFormat
+            value="#{msgs['jsf.upload.MaximumNumberOfFiles']}">
+            <f:param value="#{cc.attrs.maxfiles}"/>
+          </h:outputFormat>
+        </small>
+        <br/>
+        <small class="txt--meta">
+          <h:outputFormat
+            value="#{msgs['jsf.upload.AcceptedFileTypes']}">
+            <f:param value="#{cc.attrs.accepted}"/>
+          </h:outputFormat>
+        </small>
+      </div>
+
+      <div class="js-files-panel panel l--push-h-1 l--push-v-half is-hidden">
+        <!-- .files is used for attaching elements generated from templates. Could change to use id or data- -->
+        <ul class="files list--panel bg--higher">
+        </ul>
+      </div>
+      <div
+        class="js-fileupload-advanced-settings l--push-bottom-1 l--push-h-1 js-reveal">
+        <p class="txt--align-center">
+          <button class="button--link js-reveal__toggle"
+            data-target="##{cc.clientId}-fileupload-advanced">
+            #{msgs['jsf.upload.AdvancedSettings']}
+          </button>
+        </p>
+        <div id="#{cc.clientId}-fileupload-advanced"
+          class="l--pad-all-half bg--pop-higher is-hidden">
+          <label for="#filepath">#{msgs['jsf.upload.FilePath']}</label>
+          <input type="text" id="filepath" name="filepath"/>
+          <!-- Source language is currently ignored by the server.
+          <label for="filelang">Source Language</label>
+          <select name="filelang" id="filelang">
+            <option value="english-US" selected="selected">English (United States)</option>
+          </select>
+          -->
+          <button class="button--link js-reveal__toggle"
+            data-target="##{cc.clientId}-fileupload-file-params"
+            title="#{msgs['jsf.upload.ClickToExpand']}">
+            #{msgs['jsf.upload.FileParameters']}
+          </button>
+                  <span id="#{cc.clientId}-fileupload-file-params"
+                    class="is-hidden">
+                    <a
+                      href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters"
+                      title="#{msgs['jsf.upload.FileParametersHelp']}"><i
+                      class="i i--help"></i></a>
+                    <textarea name="fileparams" id="fileparams"
+                      class="l--push-bottom-0"
+                      style="background-image: none; background-position: 0% 0%; background-repeat: repeat repeat;"></textarea>
+                  </span>
+        </div>
+      </div>
+      <!-- fileupload-progress is used in the script to locate the progress bar -->
+      <div class="fileupload-progress progress-bar">
+        <div class="progress">
+                            <span class="progress-bar__success"
+                              style="width: 0%"></span>
+        </div>
+      </div>
+    </div>
+    <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+      <div class="g--tight">
+        <div class="g__item w--2-3 l--pad-v-quarter">
+                            <span class="txt--meta js-upload-supported"><i
+                              class="i i--left i-documents"></i><span
+                              class="js-file-count">#{msgs['jsf.upload.NoDocumentsQueued']}</span></span>
+        </div>
+        <!-- fileupload-buttonbar is used in the script to find the global 'start' and 'cancel' buttons -->
+        <div class="fileupload-buttonbar g__item w--1-3 txt--align-right">
+          <button id="#{cc.clientId}-cancel-upload"
+            type="button"
+            class="fileupload-cancel cancel button--link l--push-right-half"
+            data-dismiss="modal">#{msgs['jsf.Cancel']}
+          </button>
+          <button id="#{cc.clientId}-start-upload"
+            class="js-upload-supported js-fileupload-main-start start button--primary"
+            disabled="disabled">
+            #{msgs['jsf.upload.UploadDocuments']}
+          </button>
+          <button id="#{cc.clientId}-done-upload"
+            type="button"
+            class="js-upload-supported fileupload-done button--primary is-hidden"
+            disabled="disabled"
+            data-dismiss="modal">#{msgs['jsf.Done']}
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+</form>
+
+</div>
+</div>
+
+<!-- templates are used in JavaScript, see jquery.fileupload-ui.js -->
+<script id="template-error" type="text/x-tmpl">
+<![CDATA[
+            <li class="message message--danger l--pad-h-1">
+               {%=o.error%}
+            </li>
+]]>
+
+
+
+
+
+</script>
+
+<!-- The template to display files available for upload. Templates are used in JavaScript, see jquery.fileupload-ui.js -->
+<script id="template-upload" type="text/x-tmpl">
+<![CDATA[
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+            <li class="template-upload js-upload-queued">
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <span class="list__title">{%=file.name%}</span>
+                  {% if (file.error) { %}
+                    <span class="fileupload-error message message--danger">{%=file.error%}</span>
+                  {% } else { %}
+                    <span class="fileupload-error message message--danger is-invisible"></span>
+                  {% } %}
+                </div>
+                <div class="list__item__actions">
+                  <span class="loader loader--inline loader--small is-reserve-space">
+                    <span class="loader__spinner">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </span>
+                  </span>
+                  <span class="txt--meta">{%=o.formatFileSize(file.size)%}</span>
+                    {% if (!i && !o.options.autoUpload) { %}
+                      <button class="start is-invisible" disabled />
+                    {% } %}
+                    {% if (!i) { %}
+                      <button class="button--link link--danger cancel" title="#{msgs['jsf.upload.RemoveDocument']}">
+                        <span class="is-invisible">#{msgs['jsf.upload.RemoveDocument']}</span>
+                        <i class="i i--large i--remove"></i>
+                      </button>
+                    {% } %}
+                </div>
+              </div>
+            </li>
+{% } %}
+]]>
+
+
+
+
+
+</script>
+
+<!-- The template to display files available for download. Templates are used in JavaScript, see jquery.fileupload-ui.js -->
+<script id="template-download" type="text/x-tmpl">
+<![CDATA[
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+            <li class="template-download">
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <span class="list__title">{%=file.name%}</span>
+                  {% if (file.error) { %}
+                    <span class="txt--danger l--push-left-quarter">{%=file.error%}</span>
+                  {% } %}
+                </div>
+
+                <div class="list__item__actions">
+                <!-- this is a workaround to force the height to be the same as for upload
+                     it is not intended to be shown -->
+                  <span class="loader loader--inline loader--small is-reserve-space">
+                    <span class="loader__spinner">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </span>
+                  </span>
+                  {% if (file.error) { %}
+                    <i class="i i--dot txt--danger"></i>
+                  {% } else { %}
+                    <span class="is-invisible">#{msgs['jsf.upload.SuccessfullyUploaded']}</span>
+                  {% } %}
+                  <span class="txt--meta">{%=o.formatFileSize(file.size)%}</span>
+                </div>
+              </div>
+            </li>
+{% } %}
+]]>
+
+
+
+
+
+</script>
+
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/vendor/jquery.ui.widget.js"/>
+
+<!-- The Templates plugin is included to render the upload/download listings -->
+<h:outputScript target="body" library="JavaScript-Templates"
+  name="js/tmpl.min.js"/>
+
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/jquery.iframe-transport.js"/>
+
+<!-- The basic File Upload plugin -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/jquery.fileupload.js"/>
+
+<!-- The File Upload processing plugin -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/jquery.fileupload-process.js"/>
+
+<!-- The File Upload validation plugin -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/jquery.fileupload-validate.js"/>
+
+<!-- The File Upload user interface plugin -->
+<h:outputScript target="body" library="jQuery-File-Upload"
+  name="js/jquery.fileupload-ui.js"/>
+
+<!-- The main application script -->
+<h:outputScript target="body" library="jQuery-File-Upload" name="js/main.js"/>
+
+<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
+<!-- FIXME this might not work as expected -->
+<!--[if (gte IE 8)&(lt IE 10)]>
+<script src="js/cors/jquery.xdr-transport.js"></script>
+<![endif]-->
+
+</composite:implementation>
+</html>

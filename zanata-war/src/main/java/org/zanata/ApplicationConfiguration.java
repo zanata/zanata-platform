@@ -75,6 +75,9 @@ public class ApplicationConfiguration implements Serializable {
 
     private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.min.css";
 
+    @Getter
+    private static final int defaultMaxFilesPerUpload = 100;
+
     @In
     private DatabaseBackedConfig databaseBackedConfig;
     @In
@@ -430,20 +433,25 @@ public class ApplicationConfiguration implements Serializable {
     }
 
     public int getMaxConcurrentRequestsPerApiKey() {
-        String max =
-                databaseBackedConfig.getMaxConcurrentRequestsPerApiKey();
-        if (Strings.isNullOrEmpty(max)) {
-            return 6;
-        }
-        return Integer.parseInt(max);
+        return parseIntegerOrDefault(databaseBackedConfig.getMaxConcurrentRequestsPerApiKey(), 6);
     }
 
     public int getMaxActiveRequestsPerApiKey() {
-        String max =
-                databaseBackedConfig.getMaxActiveRequestsPerApiKey();
-        if (Strings.isNullOrEmpty(max)) {
-            return 2;
+        return parseIntegerOrDefault(databaseBackedConfig.getMaxActiveRequestsPerApiKey(), 2);
+    }
+
+    public int getMaxFilesPerUpload() {
+        return parseIntegerOrDefault(databaseBackedConfig.getMaxFilesPerUpload(), defaultMaxFilesPerUpload);
+    }
+
+    private int parseIntegerOrDefault(String value, int defaultValue) {
+        if (Strings.isNullOrEmpty(value)) {
+            return defaultValue;
         }
-        return Integer.parseInt(max);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 }

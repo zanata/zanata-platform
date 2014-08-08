@@ -114,7 +114,7 @@ public class TranslationDocumentUpload {
                             Optional.of(util
                                     .combineToTempFileAndDeleteUploadRecord(
                                             previousParts,
-                                            uploadForm.getFileStream()));
+                                            uploadForm));
                 }
             }
 
@@ -168,6 +168,7 @@ public class TranslationDocumentUpload {
             String localeId, DocumentFileUploadForm uploadForm)
             throws ChunkUploadException {
         util.failIfUploadNotValid(id, uploadForm);
+        util.failIfHashNotPresent(uploadForm);
         failIfDocumentDoesNotExist(id);
         failIfFileTypeNotValid(uploadForm);
         failIfTranslationUploadNotAllowed(id, localeId);

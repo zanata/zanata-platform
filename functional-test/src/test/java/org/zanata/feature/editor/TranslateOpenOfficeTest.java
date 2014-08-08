@@ -87,24 +87,20 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
         tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Theory
     public void translateBasicOpenOfficeFile(String extension) {
-        File testfile =
-                testFileGenerator.openTestFile("test-" + extension + "."
-                        + extension);
-
-        HashMap<String, String> projectSettings =
-                ProjectWorkFlow.projectDefaults();
-        projectSettings.put("Project ID", extension + "-project");
-        projectSettings.put("Name", extension + "-project");
-        projectSettings.put("Project Type", "File");
+        File testfile = testFileGenerator
+                .openTestFile("test-" + extension + "." + extension);
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings)
-                .clickCreateVersionLink().inputVersionId(extension)
-                .saveVersion().gotoSettingsTab()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
+                .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(testfile.getAbsolutePath())
-                .submitUpload().translate("fr", testfile.getName());
+                .submitUpload()
+                .clickUploadDone()
+                .gotoLanguageTab()
+                .translate("fr", testfile.getName());
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
                 .isEqualTo("Line One")

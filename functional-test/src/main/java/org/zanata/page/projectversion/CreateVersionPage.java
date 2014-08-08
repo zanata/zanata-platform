@@ -81,7 +81,7 @@ public class CreateVersionPage extends BasePage {
                 projectTypeSelection.findElements(By.tagName("li"));
         for (WebElement projectTypeLi : projectTypes) {
             if (projectTypeLi.findElement(By.xpath(".//div/label")).getText()
-                    .equals(projectType)) {
+                    .startsWith(projectType)) {
                 projectTypeLi.findElement(By.xpath(".//div")).click();
                 break;
             }

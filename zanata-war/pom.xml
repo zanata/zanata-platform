@@ -138,9 +138,7 @@
             <usedDependency>com.lowagie:itext</usedDependency>
             <!-- used for arquillian tests -->
             <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
-            <!-- used for gwt super devmode -->
-            <usedDependency>org.json:json</usedDependency>
-             <!--used to log sql and parameters when debugging Hibernate -->
+            <!--used to log sql and parameters when debugging Hibernate -->
             <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
             <!-- used for org.hibernate:hibernate-core and  org.drools:drools-compiler -->
             <usedDependency>antlr:antlr</usedDependency>
@@ -1172,7 +1170,6 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20090211</version>
-      <scope>provided</scope>
     </dependency>
 
     <!-- NB: This must be before jboss-seam, because beanutils includes old commons collections classes -->

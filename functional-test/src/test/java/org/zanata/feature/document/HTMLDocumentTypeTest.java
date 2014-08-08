@@ -23,6 +23,8 @@ package org.zanata.feature.document;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -30,14 +32,13 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.projectversion.VersionLanguagesPage;
+import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
-import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,18 +49,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class HTMLDocumentTypeTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @Rule
-    public CleanDocumentStorageRule documentStorageRule;
+    @ClassRule
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
-    @Before
-    public void before() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        documentStorageRule = new CleanDocumentStorageRule();
+    @BeforeClass
+    public static void beforeClass() {
         ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -73,7 +69,9 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
         projectPermissionsTab = projectPermissionsTab.clickRemoveOn("admin");
         projectPermissionsTab.expectNotification("Maintainer \"Administrator\" " +
                 "has been removed from project.");
-        projectPermissionsTab.logout();
+        new ProjectWorkFlow().createNewProjectVersion(
+                "about fedora", "html-upload", "File")
+                .logout();
     }
 
     @Feature(bugzilla = 980670,
@@ -87,33 +85,27 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
             "<html><title>Test content</title>" +
             "<br>This is <b>Bold</b> text</html>");
         String testFileName = htmlfile.getName();
-        String successfullyUploaded = "Document " + testFileName + " uploaded.";
-        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
-                .gotoVersion("master")
+                .gotoVersion("html-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(htmlfile.getAbsolutePath())
-                .submitUpload();
-
-        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
-                .isTrue()
-                .as("Document uploaded notification shows");
+                .submitUpload()
+                .clickUploadDone();
 
         VersionDocumentsPage versionDocumentsPage =
-                projectVersionPage.gotoDocumentTab();
+                versionDocumentsTab.gotoDocumentTab();
 
         assertThat(versionDocumentsPage.
                 sourceDocumentsContains(htmlfile.getName()))
                 .as("Document shows in table");
 
-        EditorPage editorPage = projectVersionPage
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("master")
+        EditorPage editorPage = versionDocumentsPage
+                .gotoLanguageTab()
                 .translate("pl", testFileName);
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
@@ -133,34 +125,30 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
         File htmlfile = testFileGenerator.generateTestFileWithContent(
                 "testhtmlfile", ".html",
                 "<html><title>Test content</title>" +
-                "<br>This is <b>Bold</b> text</html>");
+                        "<br>This is <b>Bold</b> text</html>"
+        );
         String testFileName = htmlfile.getName();
-        String successfullyUploaded = "Document " + testFileName + " uploaded.";
-        VersionLanguagesPage projectVersionPage = new LoginWorkFlow()
+        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToProjects()
                 .goToProject("about fedora")
-                .gotoVersion("master")
+                .gotoVersion("html-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(htmlfile.getAbsolutePath())
-                .submitUpload();
-
-        assertThat(projectVersionPage.expectNotification(successfullyUploaded))
-                .as("Document uploaded notification shows");
+                .submitUpload()
+                .clickUploadDone();
 
         VersionDocumentsPage versionDocumentsPage =
-                projectVersionPage.gotoDocumentTab();
+                versionDocumentsTab.gotoDocumentTab();
 
         assertThat(versionDocumentsPage
                 .sourceDocumentsContains(htmlfile.getName()))
                 .as("Document shows in table");
 
-        EditorPage editorPage = projectVersionPage
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("master")
+        EditorPage editorPage = versionDocumentsPage
+                .gotoLanguageTab()
                 .translate("pl", testFileName);
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))

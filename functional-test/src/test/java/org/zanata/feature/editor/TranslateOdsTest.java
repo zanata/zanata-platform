@@ -75,24 +75,17 @@ public class TranslateOdsTest extends ZanataTestCase {
     public void translateBasicOdsFile() {
         File testfile = testFileGenerator.openTestFile("test-ods.ods");
 
-        HashMap<String, String> projectSettings =
-                ProjectWorkFlow.projectDefaults();
-        projectSettings.put("Project ID", "ods-project");
-        projectSettings.put("Name", "ods-project");
-        projectSettings.put("Project Type", "File");
-
-        VersionLanguagesPage projectVersionPage = new ProjectWorkFlow()
-                .createNewProject(projectSettings)
-                .clickCreateVersionLink().inputVersionId("ods")
-                .saveVersion()
+        EditorPage editorPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoVersion("master")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
                 .enterFilePath(testfile.getAbsolutePath())
-                .submitUpload();
-
-        EditorPage editorPage =
-                projectVersionPage.translate("fr", testfile.getName());
+                .submitUpload()
+                .clickUploadDone()
+                .gotoLanguageTab()
+                .translate("fr", testfile.getName());
 
         assertThat(editorPage.getMessageSourceAtRowIndex(0))
                 .isEqualTo("TestODS")
