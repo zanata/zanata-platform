@@ -57,10 +57,6 @@
       <property name="jboss.entity.manager.factory.jndi.name"
         value="java:/zanataEntityManagerFactory" />
 
-      <!-- Breaks under Hibernate 3.6/4
-        <property name="hibernate.dialect_resolvers" value="org.zanata.util.ZanataDialectResolver" />
-       -->
-
       <!-- Automatic schema export and drop -->
       <property name="hibernate.hbm2ddl.auto"
         value="${env.hibernate.hbm2ddl.auto}" />

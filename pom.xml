@@ -979,9 +979,6 @@
   <profiles>
 
     <profile>
-    </profile>
-
-    <profile>
       <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
       <id>delombok</id>
       <properties>
