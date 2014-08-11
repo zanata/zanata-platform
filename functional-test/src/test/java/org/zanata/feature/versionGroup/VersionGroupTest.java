@@ -174,4 +174,24 @@ public class VersionGroupTest extends ZanataTestCase {
                 .contains("about fedora\nmaster")
                 .as("The version group shows in the list");
     }
+
+    @Feature(summary = "The administrator can use numbers, letters, periods, " +
+            "underscores and hyphens to create a group",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 396261)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void groupIdCharactersAreAcceptable() throws Exception {
+        String groupID = "test-_.1";
+        String groupName = "TestValidIdCharacters";
+        VersionGroupPage versionGroupPage = dashboardPage
+                .goToGroups()
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .saveGroup()
+                .goToGroup(groupName);
+
+        assertThat(versionGroupPage.getGroupName())
+                .isEqualTo(groupName)
+                .as("The group was created");
+    }
 }

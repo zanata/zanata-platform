@@ -38,6 +38,11 @@ public class VersionGroupPage extends BasePage {
     private final By newVersionListBy = By
             .id("settings-projects-form:newVersionField:newVersionItems");
 
+    public String getGroupName() {
+        return getDriver().findElement(By.id("group-info"))
+                .findElement(By.tagName("h1")).getText();
+    }
+
     public List<WebElement> searchProject(final String projectName,
             final int expectedResultNum) {
         projectSearchField.sendKeys(projectName);

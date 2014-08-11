@@ -110,10 +110,6 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
 
     @Theory
     public void inputValidationForID(String inputText) {
-        String errorMsg =
-                "must start and end with letter or number, and "
-                        + "contain only letters, numbers, underscores and hyphens.";
-
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
         groupPage = groupPage
@@ -123,7 +119,7 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
                 .saveGroupFailure();
 
         assertThat(groupPage.getFieldErrors())
-                .contains(errorMsg)
+                .contains(CreateVersionGroupPage.VALIDATION_ERROR)
                 .as("Validation error is displayed for input:" + inputText);
     }
 }
