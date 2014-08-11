@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import javax.faces.application.FacesMessage;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -37,14 +38,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.async.tasks.CopyVersionTask;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
@@ -56,7 +61,6 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
-import org.zanata.util.UrlUtil;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -83,9 +87,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private VersionStateCache versionStateCacheImpl;
 
     @In
-    private UrlUtil urlUtil;
-
-    @In
     private ProjectDAO projectDAO;
 
     @In
@@ -98,11 +99,20 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private ZanataIdentity identity;
 
     @In
+    private CopyVersionManager copyVersionManager;
+
+    @In
     private Messages msgs;
 
     @Setter
     @Getter
     private String slug;
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
+
+    @In
+    private ConversationScopeMessages conversationScopeMessages;
 
     @Getter
     private SortingType VersionSortingList = new SortingType(
@@ -133,20 +143,79 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     private List<HProjectIteration> projectVersions;
 
-    private Map<String, WordStatistic> statisticMap;
+    private Map<String, WordStatistic> statisticMap = Maps.newHashMap();
 
     private final VersionComparator versionComparator = new VersionComparator(
             getVersionSortingList());
 
     @Getter(lazy = true)
-    private final List<Activity> projectLastActivity = fetchProjectLastActivity();
+    private final List<Activity> projectLastActivity =
+            fetchProjectLastActivity();
 
     // for storing last activity date for the version
     private Map<Long, Date> versionLatestActivityDate = Maps.newHashMap();
 
+    public boolean isVersionCopying(String projectSlug, String versionSlug) {
+        return copyVersionManager
+                .isCopyVersionRunning(projectSlug, versionSlug);
+    }
+
+    public String
+            getCopiedDocumentCount(String projectSlug, String versionSlug) {
+        CopyVersionTask.CopyVersionTaskHandle handler =
+                copyVersionManager.getCopyVersionProcessHandle(projectSlug,
+                        versionSlug);
+
+        if (handler == null) {
+            return "0";
+        } else {
+            return String.valueOf(handler.getDocumentCopied());
+        }
+    }
+
+    public void cancelCopyVersion(String projectSlug, String versionSlug) {
+        copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.copyVersion.Cancelled", versionSlug));
+    }
+
+    public String getCopyVersionCompletePercent(String projectSlug,
+            String versionSlug) {
+        CopyVersionTask.CopyVersionTaskHandle handler =
+                copyVersionManager.getCopyVersionProcessHandle(projectSlug,
+                        versionSlug);
+
+        if (handler != null) {
+            double completedPercent =
+                    (double) handler.getCurrentProgress() / (double) handler
+                            .getMaxProgress() * 100;
+            if (Double.compare(completedPercent, 100) == 0) {
+                conversationScopeMessages.setMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        msgs.format("jsf.copyVersion.Completed", versionSlug));
+            }
+            return String.format("%1$,.2f", completedPercent);
+        } else {
+            return "0";
+        }
+    }
+
+    public String getCopyVersionTotalDocuments(String projectSlug,
+            String versionSlug) {
+        CopyVersionTask.CopyVersionTaskHandle handler =
+                copyVersionManager.getCopyVersionProcessHandle(projectSlug,
+                        versionSlug);
+
+        if (handler == null) {
+            return "0";
+        } else {
+            return String.valueOf(handler.getTotalDoc());
+        }
+    }
+
     private List<Activity> fetchProjectLastActivity() {
         if (StringUtils.isEmpty(slug) || !identity.isLoggedIn()) {
-            return Lists.newArrayList();
+            return Collections.EMPTY_LIST;
         }
 
         Collection<Long> versionIds =
@@ -169,13 +238,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
         WordStatistic statistic = getStatisticForVersion(version.getSlug());
 
         return getDisplayUnit(sortOption, statistic, version.getLastChanged());
-    }
-
-    public WordStatistic getStatisticForVersion(String versionSlug) {
-        WordStatistic statistic = statisticMap.get(versionSlug);
-        statistic
-                .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
-        return statistic;
     }
 
     /**
@@ -261,19 +323,44 @@ public class ProjectHomeAction extends AbstractSortAction implements
         return versionLatestActivityDate.get(versionId);
     }
 
+    public void clearVersionStats(String versionSlug) {
+        statisticMap.remove(versionSlug);
+    }
+
+    public WordStatistic getStatisticForVersion(String versionSlug) {
+        WordStatistic statistic;
+        if (statisticMap.containsKey(versionSlug)) {
+            statistic = statisticMap.get(versionSlug);
+        } else {
+            HProjectIteration version =
+                    projectIterationDAO.getBySlug(slug, versionSlug);
+            statistic = getAllLocaleStatisticForVersion(version);
+            statisticMap.put(versionSlug, statistic);
+        }
+        statistic
+                .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
+        return statistic;
+    }
+
     @Override
     protected void loadStatistics() {
-        statisticMap = Maps.newHashMap();
+        statisticMap.clear();
 
         for (HProjectIteration version : getProjectVersions()) {
-            WordStatistic versionStats = new WordStatistic();
-            List<HLocale> locales = getSupportedLocale(version);
-            for (HLocale locale : locales) {
-                versionStats.add(versionStateCacheImpl.getVersionStatistics(
-                        version.getId(), locale.getLocaleId()));
-            }
-            statisticMap.put(version.getSlug(), versionStats);
+            statisticMap.put(version.getSlug(),
+                    getAllLocaleStatisticForVersion(version));
         }
+    }
+
+    private WordStatistic getAllLocaleStatisticForVersion(
+            HProjectIteration version) {
+        WordStatistic versionStats = new WordStatistic();
+        List<HLocale> locales = getSupportedLocale(version);
+        for (HLocale locale : locales) {
+            versionStats.add(versionStateCacheImpl.getVersionStatistics(
+                    version.getId(), locale.getLocaleId()));
+        }
+        return versionStats;
     }
 
     public List<HLocale> getSupportedLocale(HProjectIteration version) {
@@ -281,12 +368,12 @@ public class ProjectHomeAction extends AbstractSortAction implements
             return localeServiceImpl.getSupportedLanguageByProjectIteration(
                     slug, version.getSlug());
         }
-        return Lists.newArrayList();
+        return Collections.EMPTY_LIST;
     }
 
     public List<HLocale> getUserJoinedLocales(HProjectIteration version) {
         if (authenticatedAccount == null) {
-            return Lists.newArrayList();
+            return Collections.EMPTY_LIST;
         }
 
         List<HLocale> userJoinedLocales = Lists.newArrayList();
@@ -359,9 +446,5 @@ public class ProjectHomeAction extends AbstractSortAction implements
     @Override
     protected String getMessage(String key, Object... args) {
         return msgs.format(key, args);
-    }
-
-    public String getCreateVersionUrl(String projectSlug) {
-        return urlUtil.createNewVersionUrl(projectSlug);
     }
 }

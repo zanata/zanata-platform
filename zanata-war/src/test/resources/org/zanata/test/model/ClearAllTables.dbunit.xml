@@ -24,8 +24,13 @@
   <HPoTargetHeader />
   <HPotEntryData />
   <HProject />
-  <HProjectIteration />
+  <HProject_Locale />
   <HProject_Maintainer />
+  <HProject_Validation />
+  <HProjectIteration />
+  <HProjectIteration_Locale />
+  <HProjectIteration_Validation />
+  <HRawDocument />
   <HRoleAssignmentRule />
   <HSimpleComment />
   <HTermComment />

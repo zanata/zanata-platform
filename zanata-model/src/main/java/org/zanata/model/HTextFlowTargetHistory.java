@@ -222,11 +222,11 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         return reviewer;
     }
 
-    protected void setTranslator(HPerson translator) {
+    public void setTranslator(HPerson translator) {
         this.translator = translator;
     }
 
-    protected void setReviewer(HPerson reviewer) {
+    public void setReviewer(HPerson reviewer) {
         this.reviewer = reviewer;
     }
 

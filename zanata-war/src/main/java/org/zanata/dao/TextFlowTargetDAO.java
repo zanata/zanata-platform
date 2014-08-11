@@ -2,7 +2,6 @@ package org.zanata.dao;
 
 import java.util.List;
 
-import com.google.common.base.Optional;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -20,6 +19,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationFinder;
+
+import com.google.common.base.Optional;
 
 @Name("textFlowTargetDAO")
 @AutoCreate
@@ -44,6 +45,32 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
         return (HTextFlowTarget) getSession()
                 .byNaturalId(HTextFlowTarget.class).using("textFlow", textFlow)
                 .using("locale", locale).load();
+    }
+
+    public List<HTextFlowTarget> getByTextFlowId(Long tfId, int offset,
+            int maxResults) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.id = :tfId");
+        q.setParameter("tfId", tfId);
+        q.setFirstResult(offset);
+        q.setMaxResults(maxResults);
+        q.setCacheable(true)
+                .setComment("TextFlowTargetDAO.getByTextFlowId");
+        return q.list();
+    }
+
+    public int countTextFlowTargetsInTextFlow(Long tfId) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select count(*) from HTextFlowTarget tft where tft.textFlow.obsolete=0 and tft.textFlow.id = :tfId");
+        q.setParameter("tfId", tfId);
+        q.setCacheable(true).setComment(
+                "TextFlowTargetDAO.countTextFlowTargetsInTextFlow");
+        Long totalCount = (Long) q.uniqueResult();
+        return totalCount == null ? 0 : totalCount.intValue();
     }
 
     public int getTotalTextFlowTargets() {
@@ -235,7 +262,8 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                 .append(" tft.lastChanged DESC ")
                 .append("LIMIT 1");
 
-        SQLQuery sqlQuery = getSession().createSQLQuery(queryBuilder.toString());
+        SQLQuery sqlQuery =
+                getSession().createSQLQuery(queryBuilder.toString());
         sqlQuery.setParameter("textFlowId", textFlow.getId());
         sqlQuery.setParameter("contentHash", textFlow.getContentHash());
         sqlQuery.setParameter("resId", textFlow.getResId());
@@ -264,9 +292,10 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             hTextFlowTarget = new HTextFlowTarget(hTextFlow, hLocale);
             hTextFlowTarget.setVersionNum(0); // this will be incremented when
                                               // content is set (below)
-            // TODO getTargets just to make sure hTextFlowTarget is persisted in the end
+            // TODO getTargets just to make sure hTextFlowTarget is persisted in
+            // the end
             hTextFlow.getTargets().put(hLocale.getId(), hTextFlowTarget);
-//            getSession().persist(hTextFlowTarget);
+            // getSession().persist(hTextFlowTarget);
         }
         return hTextFlowTarget;
     }
@@ -371,12 +400,11 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             HDocument document,
             HLocale targetLocale) {
         String queryString =
-                "select count(*) from HTextFlowTarget tft "
-                        +
-                        "where tft.textFlow.document.docId = :docId and tft.locale = :locale "
-                        +
-                        "and tft.textFlow.obsolete = false and tft.textFlow.document.obsolete = false "
-                        +
+                "select count(*) from HTextFlowTarget tft " +
+                        "where tft.textFlow.document.docId = :docId " +
+                        "and tft.locale = :locale " +
+                        "and tft.textFlow.obsolete = false " +
+                        "and tft.textFlow.document.obsolete = false " +
                         "and tft.textFlow.document.projectIteration <> :self";
         Query query =
                 getSession()
@@ -403,19 +431,25 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
             HDocument document, HLocale targetLocale) {
         HProjectIteration projectIteration = document.getProjectIteration();
         HProject project = projectIteration.getProject();
-        String queryString = "select count(*) from HTextFlowTarget tft " +
-                "where tft.textFlow.document.projectIteration.project = :project and tft.locale = :locale " +
-                "and tft.textFlow.obsolete = false and tft.textFlow.document.obsolete = false " +
-                "and tft.textFlow.document.projectIteration.status <> :obsoleteStatus " +
-                "and tft.textFlow.document.projectIteration <> :self";
-        Query query = getSession().createQuery(queryString)
-                .setParameter("project", project)
-                .setParameter("locale", targetLocale)
-                .setParameter("self", projectIteration)
-                .setParameter("obsoleteStatus", EntityStatus.OBSOLETE)
-                .setCacheable(true)
-                .setComment(
-                        "TextFlowTargetDAO.getTranslationCandidateCountWithProjectAndLocale");
+        String queryString =
+                "select count(*) from HTextFlowTarget tft " +
+                        "where tft.textFlow.document.projectIteration.project = :project " +
+                        "and tft.locale = :locale " +
+                        "and tft.textFlow.obsolete = false " +
+                        "and tft.textFlow.document.obsolete = false " +
+                        "and tft.textFlow.document.projectIteration.status <> :obsoleteStatus " +
+                        "and tft.textFlow.document.projectIteration <> :self";
+
+        Query query =
+                getSession()
+                        .createQuery(queryString)
+                        .setParameter("project", project)
+                        .setParameter("locale", targetLocale)
+                        .setParameter("self", projectIteration)
+                        .setParameter("obsoleteStatus", EntityStatus.OBSOLETE)
+                        .setCacheable(true)
+                        .setComment(
+                                "TextFlowTargetDAO.getTranslationCandidateCountWithProjectAndLocale");
         return (Long) query.uniqueResult();
     }
 }

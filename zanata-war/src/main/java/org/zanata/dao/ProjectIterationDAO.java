@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ import org.zanata.ui.model.statistic.MessageStatistic;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.HashUtil;
 import org.zanata.util.StatisticsUtil;
+
+import com.google.common.collect.Lists;
 
 @Name("projectIterationDAO")
 @AutoCreate
@@ -82,6 +85,32 @@ public class ProjectIterationDAO extends
         return (HProjectIteration) getSession()
                 .byNaturalId(HProjectIteration.class)
                 .using("slug", iterationSlug).using("project", project).load();
+    }
+
+    public List<HProjectIteration> getByProjectSlug(
+            @Nonnull String projectSlug, EntityStatus... includeStatus) {
+        if (StringUtils.isEmpty(projectSlug)) {
+            return Collections.EMPTY_LIST;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("from HProjectIteration version where ").
+                append("version.project.slug = :projectSlug ");
+
+        if (includeStatus != null) {
+            sb.append("and version.status in :includesStatus");
+        }
+
+        Query q = getSession().createQuery(sb.toString());
+        q.setParameter("projectSlug", projectSlug);
+
+        if (includeStatus != null) {
+            q.setParameterList("includesStatus",
+                    Lists.newArrayList(includeStatus));
+        }
+        q.setComment("ProjectIterationDAO.getByProjectSlug");
+        List<HProjectIteration> results = q.list();
+        return results;
+
     }
 
     public List<HProjectIteration> getByGroup(HIterationGroup group) {

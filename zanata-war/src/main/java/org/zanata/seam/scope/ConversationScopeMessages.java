@@ -55,12 +55,10 @@ public class ConversationScopeMessages implements Serializable {
         this.messages = messages;
     }
 
-    public List<FacesMessage> getMessages() {
-        return messages;
-    }
-
-    public void clearMessages() {
+    public List<FacesMessage> getAndClearMessages() {
+        List<FacesMessage> tempMsgs = Lists.newArrayList(messages);
         messages.clear();
+        return tempMsgs;
     }
 
     public boolean hasMessages() {

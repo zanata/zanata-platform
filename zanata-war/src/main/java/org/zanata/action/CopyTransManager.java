@@ -22,6 +22,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -63,7 +65,7 @@ public class CopyTransManager implements Serializable {
     @In
     private Identity identity;
 
-    public boolean isCopyTransRunning(Object target) {
+    public boolean isCopyTransRunning(@Nonnull Object target) {
         CopyTransProcessKey key;
 
         if (target instanceof HProjectIteration) {
@@ -125,7 +127,7 @@ public class CopyTransManager implements Serializable {
         asyncTaskManagerServiceImpl.startTask(task, key);
     }
 
-    public CopyTransTaskHandle getCopyTransProcessHandle(Object target) {
+    public CopyTransTaskHandle getCopyTransProcessHandle(@Nonnull Object target) {
         CopyTransProcessKey key;
 
         if (target instanceof HProjectIteration) {

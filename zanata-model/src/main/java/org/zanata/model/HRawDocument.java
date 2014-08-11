@@ -63,9 +63,7 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     }
 
     public void setDocument(HDocument document) {
-        if (!Objects.equal(this.document, document)) {
-            this.document = document;
-        }
+        this.document = document;
     }
 
     @NotEmpty
@@ -89,7 +87,5 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
                 + ",versionNum=" + versionNum + ",contentHash=" + contentHash
                 + "]";
     }
-
     // TODO override equals to use contentHash, type, parameters, etc.
-
 }

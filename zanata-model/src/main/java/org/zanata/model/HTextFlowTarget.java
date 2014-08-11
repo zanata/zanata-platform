@@ -222,13 +222,13 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Deprecated
     @Transient
+    @NotEmpty
     public void setContent(String content) {
         this.setContents(Arrays.asList(content));
     }
 
     @Override
     @Transient
-    @NotEmpty
     // TODO extend HTextContainer and remove this
     @Field(name = IndexFieldLabels.CONTENT, bridge = @FieldBridge(
             impl = StringListBridge.class, params = {

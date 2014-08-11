@@ -51,7 +51,7 @@
         <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{facesContext.messageList}"
             rendered="#{not facesContext.validationFailed and not empty facesContext.messageList}"/>
-          <zanata:global-messages value="#{conversationScopeMessages.messages}"
+          <zanata:global-messages value="#{conversationScopeMessages.getAndClearMessages()}"
             rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
         <h:outputScript

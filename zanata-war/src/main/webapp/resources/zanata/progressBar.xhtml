@@ -25,6 +25,9 @@
   <composite:attribute name="oncomplete"
     shortDescription="The client-side script method to be called after complete"/>
 
+  <composite:attribute name="oncompleteAction"
+    shortDescription="MethodExpression representing the application action to invoke on complete"/>
+
   <composite:attribute name="onCompleteRender"
     shortDescription="Ids of component to render on complete"/>
 
@@ -35,7 +38,10 @@
 </composite:interface>
 <composite:implementation>
 
-  <a4j:jsFunction name="onCompleteFunction"
+  <a4j:jsFunction name="onCompleteFunction" action="#{cc.attrs.oncompleteAction}" rendered="#{not empty cc.attrs.oncompleteAction}"
+    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}" oncomplete="#{cc.attrs.oncomplete}"/>
+
+  <a4j:jsFunction name="onCompleteFunction" rendered="#{empty cc.attrs.oncompleteAction}"
     render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}" oncomplete="#{cc.attrs.oncomplete}"/>
 
   <a4j:poll id="poll-#{cc.attrs.id}" interval="#{cc.attrs.interval}"

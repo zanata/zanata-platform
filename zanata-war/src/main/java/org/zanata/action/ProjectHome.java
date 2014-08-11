@@ -254,6 +254,7 @@ public class ProjectHome extends SlugHome<HProject> {
     }
 
     public void initialize() {
+        initInstance();
         validateSuppliedId();
         if (getInstance().getDefaultCopyTransOpts() != null) {
             copyTransOptionsModel.setInstance(getInstance()
@@ -292,7 +293,6 @@ public class ProjectHome extends SlugHome<HProject> {
     @Override
     @Transactional
     public String persist() {
-        conversationScopeMessages.clearMessages();
         String retValue = "";
         if (!validateSlug(getInstance().getSlug(), "slug")) {
             return null;

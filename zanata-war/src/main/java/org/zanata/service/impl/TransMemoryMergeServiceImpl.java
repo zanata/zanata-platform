@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -143,7 +144,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
 
         if (updateRequests.isEmpty()) {
-            return Lists.newArrayList();
+            return Collections.EMPTY_LIST;
         }
 
         if (Events.exists()) {

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -135,7 +136,7 @@ public class HPerson extends ModelEntityBase implements Serializable {
     }
 
     @Transient
-    public boolean isMaintainer(HProject proj) {
+    public boolean isMaintainer(@Nonnull HProject proj) {
         // TODO consider implementing business key equality and using
         // getMaintainerProjects().contains(proj)
         for (HProject project : getMaintainerProjects()) {

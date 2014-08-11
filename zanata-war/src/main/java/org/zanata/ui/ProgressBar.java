@@ -22,12 +22,16 @@
 
 package org.zanata.ui;
 
+import java.text.DecimalFormat;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public interface ProgressBar {
 
+    final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.####");
+
     boolean isInProgress();
 
-    int getCompletedPercentage();
+    String getCompletedPercentage();
 }

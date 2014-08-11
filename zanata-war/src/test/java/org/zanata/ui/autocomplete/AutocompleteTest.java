@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.mockito.Mock;
@@ -76,7 +77,7 @@ public class AutocompleteTest {
         LocaleAutocomplete autocomplete = new LocaleAutocomplete() {
             @Override
             protected Collection<HLocale> getLocales() {
-                return Lists.newArrayList();
+                return Collections.EMPTY_LIST;
             }
 
             @Override

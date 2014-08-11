@@ -30,7 +30,6 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
@@ -44,23 +43,21 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
  *
  */
 @Entity
-@EntityListeners({HSimpleComment.EntityListener.class})
+@EntityListeners({ HSimpleComment.EntityListener.class })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @BatchSize(size = 20)
 @Setter
 @NoArgsConstructor
 public class HSimpleComment implements HashableState, Serializable {
     private static final long serialVersionUID = 5684831285769022524L;
-    private Long id;
 
+    private Long id;
     private String comment;
     protected Date lastChanged;
 

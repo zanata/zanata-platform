@@ -68,7 +68,8 @@ public class MockHandlerFactory {
 
         int maxSize = Math.min(startIndex + count, hTextFlows.size());
         when(
-                textFlowDAO.getTextFlowsByDocumentId(documentId, startIndex,
+                textFlowDAO.getTextFlowsByDocumentId(documentId.getId(),
+                        startIndex,
                         count)).thenReturn(
                 hTextFlows.subList(startIndex, maxSize));
         when(

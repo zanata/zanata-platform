@@ -32,6 +32,9 @@ public interface FilePersistService {
     public void persistRawDocumentContentFromFile(HRawDocument rawDocument,
             File rawFile);
 
+    void copyAndPersistRawDocument(HRawDocument fromDoc,
+            HRawDocument toDoc);
+
     // TODO damason: parsing code only needs a file URI for this. Change to
     // return
     // uri when files are persisted to server.

@@ -92,8 +92,6 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 .setResultTransformer(resultTransformer).list();
     }
 
-
-
     public int getTotalWords() {
         Query q =
                 getSession()
@@ -136,36 +134,29 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
-        q.setParameter("id", documentId);
-        q.setCacheable(true).setComment("TextFlowDAO.countActiveTextFlowsInDocument");
+                                "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId");
+        q.setParameter("documentId", documentId);
+        q.setCacheable(true).setComment(
+                "TextFlowDAO.countActiveTextFlowsInDocument");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
     }
 
-    @SuppressWarnings("unchecked")
-    public List<HTextFlow> getTextFlowsByDocumentId(DocumentId documentId,
-            int startIndex, int maxSize) {
+    public List<HTextFlow> getTextFlowsByDocumentId(Long documentId,
+            Integer offset, Integer maxResults) {
         Query q =
                 getSession()
                         .createQuery(
-                                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
-        q.setParameter("id", documentId.getId());
-        q.setFirstResult(startIndex);
-        q.setMaxResults(maxSize);
-        q.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByDocumentId");
-        return q.list();
-    }
+                                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId order by tf.pos");
+        q.setParameter("documentId", documentId);
 
-    @SuppressWarnings("unchecked")
-    public List<HTextFlow> getAllTextFlowsByDocumentId(DocumentId documentId) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :id order by tf.pos");
-        q.setParameter("id", documentId.getId());
-        q.setCacheable(true).setComment(
-                "TextFlowDAO.getAllTextFlowsByDocumentId");
+        if (offset != null) {
+            q.setFirstResult(offset);
+        }
+        if (maxResults != null) {
+            q.setMaxResults(maxResults);
+        }
+        q.setCacheable(true).setComment("TextFlowDAO.getTextFlowsByDocumentId");
         return q.list();
     }
 
@@ -231,18 +222,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return result;
     }
 
-    public long countActiveTextFlowsInProjectIteration(Long projIterId) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select count(*) from HTextFlow tf " +
-                                        "where tf.obsolete = 0 and " +
-                                        "tf.document.obsolete = 0 and " +
-                                        "tf.document.projectIteration.id=:projIterId");
-        q.setParameter("projIterId", projIterId);
+    public long countActiveTextFlowsInProjectIteration(Long versionId) {
+        String query =
+                "select count(*) from HTextFlow tf where tf.obsolete = 0 " +
+                        "and tf.document.obsolete = 0 " +
+                        "and tf.document.projectIteration.id=:versionId";
+
+        Query q = getSession().createQuery(query);
+        q.setParameter("versionId", versionId);
         q.setCacheable(true).setComment(
                 "TextFlowDAO.countTextFlowsInProjectIteration");
         return (Long) q.uniqueResult();
     }
-
 }

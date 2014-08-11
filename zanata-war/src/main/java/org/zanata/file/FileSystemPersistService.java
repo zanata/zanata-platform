@@ -79,6 +79,12 @@ public class FileSystemPersistService implements FilePersistService {
         virusScanner.scan(newFile, globalId.toString());
     }
 
+    @Override
+    public void copyAndPersistRawDocument(HRawDocument fromDoc,
+            HRawDocument toDoc) {
+        persistRawDocumentContentFromFile(toDoc, getFileForRawDocument(fromDoc));
+    }
+
     private File getFileForName(String fileName) {
         File docsPath = ensureDocsDirectory();
         File newFile = new File(docsPath, fileName);

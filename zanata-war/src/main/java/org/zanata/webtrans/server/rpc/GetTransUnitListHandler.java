@@ -170,16 +170,16 @@ public class GetTransUnitListHandler extends
                 // TODO debt: this should use a left join to fetch target (and
                 // possibly comments)
                 textFlows =
-                        textFlowDAO.getTextFlowsByDocumentId(
-                                action.getDocumentId(), offset,
+                        textFlowDAO.getTextFlowsByDocumentId(action
+                                .getDocumentId().getId(), offset,
                                 action.getCount());
             } else {
                 // TODO debt: this is not scalable. But we may not have other
                 // choice
                 // for validation filter. Maybe use scrollable result will help?
                 textFlows =
-                        textFlowDAO.getAllTextFlowsByDocumentId(action
-                                .getDocumentId());
+                        textFlowDAO.getTextFlowsByDocumentId(action
+                                .getDocumentId().getId(), null, null);
                 textFlows =
                         validationServiceImpl.filterHasWarningOrErrorTextFlow(
                                 textFlows, action.getValidationIds(),

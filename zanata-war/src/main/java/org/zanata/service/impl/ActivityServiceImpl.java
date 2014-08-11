@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -98,7 +99,7 @@ public class ActivityServiceImpl implements ActivityService {
     public List<Activity> findLatestVersionActivitiesByUser(long personId,
             List<Long> versionIds, int offset, int maxResults) {
         if (versionIds.isEmpty()) {
-            return Lists.newArrayList();
+            return Collections.EMPTY_LIST;
         }
         return activityDAO.findLatestVersionActivitiesByUser(personId,
                 versionIds, offset, maxResults);

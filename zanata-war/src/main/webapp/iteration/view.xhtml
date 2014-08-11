@@ -125,6 +125,13 @@
       fileInput.value === "";
     submitButton.disabled = noFileSelected;
   }
+
+  function onCancelCopyVersion() {
+    if(confirm('#{msgs['jsf.copyVersion.cancel.confirm']}')) {
+      cancelCopyVersion();
+      refreshStatistics();
+    }
+  }
 </script>
 
 <a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
@@ -159,6 +166,10 @@
 
 <a4j:jsFunction name="cancelCopyTrans" action="#{copyTransAction.cancel}"
   render="copy-trans, copy-trans-buttons"/>
+
+<a4j:jsFunction name="cancelCopyVersion" limitRender="true"
+  action="#{versionHomeAction.cancelCopyVersion()}"
+  render="version-info, version-more-actions, version-settings, copy-version, messages"/>
 
 
 <div class="g" id="version-page">
@@ -250,7 +261,7 @@
         styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
 
-        <a href="javascript:void(0)" onclick="cancelCopyTrans()"
+        <a href="javascript:void(0)" onclick="if(confirm('#{msgs['jsf.copyVersion.cancel.confirm']}')) {cancelCopyTrans()};"
           title="#{msgs['jsf.CopyTrans.cancel']}"
           class="button--small button--link">#{msgs['jsf.Cancel']}</a>
 
@@ -281,6 +292,50 @@
         </span>
       </s:div>
     </div>
+  </s:div>
+
+  <s:div id="copy-version"
+    styleClass="panel l--push-top-1 #{versionHomeAction.copyVersionHandler.inProgress ? '' : 'is-hidden'}">
+    <s:div styleClass="panel__header"
+      rendered="#{versionHomeAction.copyVersionHandler.inProgress}">
+      <s:div
+        styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
+        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+
+        <a href="javascript:void(0)"
+          onclick="onCancelCopyVersion();"
+          title="#{msgs['jsf.copyVersion.cancel.message']}"
+          class="button--small button--link">#{msgs['jsf.Cancel']}</a>
+
+      </s:div>
+
+      <h2 class="panel__heading--small">#{msgs['jsf.CopyVersion']}</h2>
+    </s:div>
+
+    <div class="l--pad-all-half l--push-top-quarter">
+      <zanata:progressBar id="copy-version-progress-bar"
+        actionBean="#{versionHomeAction.copyVersionHandler}"
+        render="copy-version-progress-messages"
+        oncomplete="refreshStatistics();"
+        oncompleteAction="#{versionHomeAction.onCopyVersionComplete()}"
+        onCompleteRender="version-info, version-more-actions, version-settings, copy-version, messages"/>
+
+      <s:div id="copy-version-progress-messages"
+        styleClass="txt--meta l--push-top-quarter">
+        <zanata:loader layout="inline" type="loader--small"
+          rendered="#{versionHomeAction.copyVersionHandler.inProgress}"/>
+        <span>
+          <h:outputFormat
+            value="#{msgs['jsf.copyVersion.processedDocuments']}">
+            <f:param
+              value="#{versionHomeAction.copyVersionHandler.getProcessedDocuments()}"/>
+            <f:param
+              value="#{versionHomeAction.copyVersionHandler.getTotalDocuments()}"/>
+          </h:outputFormat>
+        </span>
+      </s:div>
+    </div>
+
   </s:div>
 </div>
 
@@ -329,25 +384,39 @@
           </a>
         </li>
       </s:fragment>
-      <s:fragment rendered="#{identity.loggedIn}">
-        <li class="tab__end">
-          <div
-            class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
+      <li class="tab__end">
+        <s:div
+          styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
+          id="version-more-actions">
+          <s:fragment
+            rendered="#{identity.loggedIn and not versionHomeAction.copyVersionHandler.inProgress}">
             <a class="dropdown__toggle js-dropdown__toggle"
               title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
               <i class="i i--ellipsis"></i>
             </a>
             <ul class="dropdown__content js-dropdown__content"
               role="content" aria-labelledby="dropdownContent">
-              <li>
-                <h:outputLink id="exportTMXIterLink"
-                  onclick="return confirm('#{msgs['jsf.ConfirmExportTMXIter']}')"
-                  styleClass="i__item--right"
-                  value="#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}">
-                  #{msgs['jsf.iteration.ExportTMXIter']}<i
-                  class="i i--export i__item__icon"></i>
-                </h:outputLink>
-              </li>
+              <s:fragment
+                rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+                <li>
+                  <a href="javascript:void(0)" class="i__item--right"
+                    onclick="zanata.modal.show('#copy-trans-modal')">
+                    #{msgs['jsf.CopyTrans']}
+                    <i class="i i--translate i__item__icon"></i>
+                  </a>
+                </li>
+              </s:fragment>
+              <s:fragment rendered="#{s:hasPermission(versionHome.instance.project, 'insert')}">
+                <li>
+                  <s:link view="/project/add_iteration.xhtml" action="#{versionHome.reset()}"
+                    styleClass="i__item--right"
+                    value="#{msgs['jsf.copyVersion.versionPage.label']}">
+                    <f:param name="projectSlug" value="#{versionHome.projectSlug}"/>
+                    <f:param name="copyFromVersionSlug" value="#{versionHome.slug}"/>
+                    <i class="i i--plus i__item__icon"></i>
+                  </s:link>
+                </li>
+              </s:fragment>
               <li>
                 <s:link title="#{msgs['jsf.GenerateProjectConfig']}"
                   styleClass="i__item--right"
@@ -360,20 +429,19 @@
                   <i class="i i--export i__item__icon"></i>
                 </s:link>
               </li>
-              <s:fragment
-                rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
-                <li>
-                  <a href="javascript:void(0)" class="i__item--right"
-                    onclick="zanata.modal.show('#copy-trans-modal')">
-                    #{msgs['jsf.CopyTrans']}
-                    <i class="i i--translate i__item__icon"></i>
-                  </a>
-                </li>
-              </s:fragment>
+              <li>
+                <h:outputLink id="exportTMXIterLink"
+                  onclick="return confirm('#{msgs['jsf.ConfirmExportTMXIter']}')"
+                  styleClass="i__item--right"
+                  value="#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}">
+                  #{msgs['jsf.iteration.ExportTMXIter']}<i
+                  class="i i--export i__item__icon"></i>
+                </h:outputLink>
+              </li>
             </ul>
-          </div>
-        </li>
-      </s:fragment>
+          </s:fragment>
+        </s:div>
+      </li>
       <s:fragment
         rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
         <li class="tab__end">

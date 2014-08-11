@@ -5,26 +5,50 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:rich="http://richfaces.org/rich">
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
   <script type="text/javascript">
     function onProjectTypeChanged(radioForm) {
       var selectedProjectType = jQuery(radioForm).children(".form__radio__input").val();
-      jQuery(getSelectedProjectTypeId()).val(selectedProjectType);
+      jQuery(getSelectedProjectTypeInput()).val(selectedProjectType);
+    }
+
+    function onCopyFromVersionChanged(versionSlug) {
+      jQuery(getCopyFromVersionInput()).val(versionSlug);
+      bindCopyFromVersionSlug(versionSlug);
     }
 
     function getProjectTypeId() {
       return "[id='#{rich:clientId('project-type')}']";
     }
 
-    function getSelectedProjectTypeId() {
+    function getProjectVersionId() {
+      return "[id='#{rich:clientId('project-version')}']";
+    }
+
+    function getSelectedProjectTypeInput() {
       return "[id='#{rich:clientId('selectedProjectType')}']";
+    }
+
+    function getCopyFromVersionInput() {
+      return "[id='#{rich:clientId('copyFromVersionSlug')}']";
     }
   </script>
 
+  <a4j:jsFunction name="bindCopyFromVersionSlug">
+    <a4j:param name="val1" assignTo="#{versionHome.copyFromVersionSlug}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindCopyFromVersion"
+    oncomplete="zanata.form.appendRadios(getProjectTypeId());zanata.form.appendRadios(getProjectVersionId())"
+    render="project-type-list, project-version">
+    <a4j:param name="val1" assignTo="#{value}"/>
+    <a4j:param name="val2" assignTo="#{versionHome.copyFromVersion}"/>
+  </a4j:jsFunction>
+
   <div class="form__item l--push-top-1">
-    <h:outputLabel
-      for="slug">#{msgs['jsf.ProjectVersionId']}
+    <h:outputLabel for="slug">#{msgs['jsf.ProjectVersionId']}
       <span class="txt--meta"><i class="i i--info"
         title="#{msgs['jsf.SlugExample']}"></i></span>
     </h:outputLabel>
@@ -34,8 +58,7 @@
       </h:inputText>
 
       <h:inputText rendered="#{not versionHome.managed}" maxlength="40"
-        id="slug" required="true"
-        value="#{versionHome.instance.slug}"
+        id="slug" required="true" value="#{versionHome.instance.slug}"
         valueChangeListener="#{versionHome.verifySlugAvailable}">
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
         <f:validateLength minimum="1"/>
@@ -43,73 +66,124 @@
     </s:decorate>
   </div>
 
-  <h3
-    class="heading--secondary l--push-all-0">#{msgs['jsf.projectType']}</h3>
+  <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}"
+    rendered="#{not versionHome.managed and not empty versionHome.project.projectIterations}"
+    onValueChanged="bindCopyFromVersion" value="copy-version-checkbox"
+    styleClass="l--push-v-1" checked="#{versionHome.copyFromVersion}"/>
 
-  <p>#{msgs['jsf.ProjectType.title']} <a target="_blank"
-    href="http://zanata.org/help/projects/create-version/"
-    title="#{msgs['jsf.iteration.projectType.Description']}">
-    <i class="i i--help"></i>
-  </a>
-  </p>
+  <s:div id="project-type-list">
+    <s:fragment rendered="#{not versionHome.copyFromVersion}">
+      <h3
+        class="heading--secondary l--push-all-0">#{msgs['jsf.projectType']}</h3>
 
-  <a4j:commandButton styleClass="button--small l--push-bottom-half"
-    id="copy-project-type" rendered="#{!versionHome.isNewInstance()}"
-    action="#{versionHome.copyProjectTypeFromProject()}"
-    value="#{msgs['jsf.iteration.CopyProjectType.label']}"
-    render="copy-project-type, project-type"
-    oncomplete="zanata.form.appendRadios(getProjectTypeId())"
-    disabled="#{versionHome.instance.projectType.name() eq versionHome.instance.project.defaultProjectType.name()}"/>
+      <p>#{msgs['jsf.ProjectType.title']} <a target="_blank"
+        href="http://zanata.org/help/projects/create-version/"
+        title="#{msgs['jsf.iteration.projectType.Description']}">
+        <i class="i i--help"></i>
+      </a>
+      </p>
 
-  <h:inputHidden id="selectedProjectType"
-    value="#{versionHome.selectedProjectType}"
-    valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
+      <a4j:commandButton styleClass="button--small l--push-bottom-half"
+        id="copy-project-type" rendered="#{!versionHome.isNewInstance()}"
+        action="#{versionHome.copyProjectTypeFromProject()}"
+        value="#{msgs['jsf.iteration.CopyProjectType.label']}"
+        render="copy-project-type, project-type"
+        oncomplete="zanata.form.appendRadios(getProjectTypeId())"
+        disabled="#{versionHome.instance.projectType.name() eq versionHome.instance.project.defaultProjectType.name()}"/>
 
-  <s:div id="project-type">
-    <ul class="list--slat l--push-bottom-1">
-      <ui:repeat value="#{versionHome.projectTypeList}" var="projectType"
-        varStatus="status">
-        <li>
-          <div class="form__radio js-form__radio"
-            onclick="onProjectTypeChanged(this)">
-            <s:fragment
-              rendered="#{versionHome.selectedProjectType eq projectType.name()}">
-              <input type="radio" name="project-type"
-                value="#{projectType.name()}"
-                class="form__radio__input js-form__radio__input"
-                id="#{status.index}:project-type" checked="true"/>
-            </s:fragment>
-            <s:fragment
-              rendered="#{versionHome.selectedProjectType ne projectType.name()}">
-              <input type="radio" name="project-type"
-                value="#{projectType.name()}"
-                class="form__radio__input js-form__radio__input"
-                id="#{status.index}:project-type"/>
-            </s:fragment>
+      <h:inputHidden id="selectedProjectType"
+        value="#{versionHome.selectedProjectType}"
+        valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
 
-            <label for="#{status.index}:project-type"
-              class="form__radio__label">#{projectType.name()} <span
-              class="txt--meta">#{msgs['jsf.projectType.detail.'.concat(projectType)]}</span>
-            </label>
-          </div>
-        </li>
-      </ui:repeat>
-      <s:fragment
-        rendered="#{(versionHome.isNewInstance() and versionHome.project.defaultProjectType eq null) or (versionHome.managed and versionHome.instance.projectType eq null)}">
-        <li>
-          <div class="form__radio js-form__radio"
-            onclick="onProjectTypeChanged(this)">
-            <input type="radio" name="project-type" id="project-type-null"
-              checked="true" class="form__radio__input js-form__radio__input"/>
-            <label for="project-type-null"
-              class="form__radio__label">#{msgs['jsf.projectType.NoSelection']} <span
-              class="txt--meta">#{msgs['jsf.projectType.detail.noSelection']}
-              <i class="i i--info"
-                title="#{msgs['jsf.projectType.detail.noSelection.message']}"></i></span>
-            </label>
-          </div>
-        </li>
-      </s:fragment>
-    </ul>
+      <s:div id="project-type">
+        <ul class="list--slat l--push-bottom-1">
+          <ui:repeat value="#{versionHome.projectTypeList}" var="projectType"
+            varStatus="status">
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="onProjectTypeChanged(this)">
+                <s:fragment
+                  rendered="#{versionHome.selectedProjectType eq projectType.name()}">
+                  <input type="radio" name="project-type"
+                    value="#{projectType.name()}"
+                    class="form__radio__input js-form__radio__input"
+                    id="#{status.index}:project-type" checked="true"/>
+                </s:fragment>
+                <s:fragment
+                  rendered="#{versionHome.selectedProjectType ne projectType.name()}">
+                  <input type="radio" name="project-type"
+                    value="#{projectType.name()}"
+                    class="form__radio__input js-form__radio__input"
+                    id="#{status.index}:project-type"/>
+                </s:fragment>
+
+                <label for="#{status.index}:project-type"
+                  class="form__radio__label">#{projectType.name()} <span
+                  class="txt--meta">#{msgs['jsf.projectType.detail.'.concat(projectType)]}</span>
+                </label>
+              </div>
+            </li>
+          </ui:repeat>
+          <s:fragment
+            rendered="#{(versionHome.isNewInstance() and versionHome.project.defaultProjectType eq null) or (versionHome.managed and versionHome.instance.projectType eq null)}">
+            <li>
+              <div class="form__radio js-form__radio"
+                onclick="onProjectTypeChanged(this)">
+                <input type="radio" name="project-type" id="project-type-null"
+                  checked="true"
+                  class="form__radio__input js-form__radio__input"/>
+                <label for="project-type-null"
+                  class="form__radio__label">#{msgs['jsf.projectType.NoSelection']} <span
+                  class="txt--meta">#{msgs['jsf.projectType.detail.noSelection']}
+                  <i class="i i--info"
+                    title="#{msgs['jsf.projectType.detail.noSelection.message']}"></i></span>
+                </label>
+              </div>
+            </li>
+          </s:fragment>
+        </ul>
+      </s:div>
+    </s:fragment>
   </s:div>
+
+  <s:div id="project-version" rendered="#{not versionHome.managed}">
+    <h:inputHidden id="copyFromVersion" value="#{versionHome.copyFromVersion}"/>
+    <h:inputHidden id="copyFromVersionSlug"
+      value="#{versionHome.copyFromVersionSlug}"/>
+
+    <s:fragment
+      rendered="#{versionHome.copyFromVersion and not empty versionHome.project.projectIterations}">
+      <ul class="list--slat l--push-bottom-1">
+        <ui:repeat value="#{versionHome.getOtherVersions()}"
+          var="versionItem" varStatus="status">
+          <li>
+            <div class="form__radio js-form__radio"
+              onclick="onCopyFromVersionChanged('#{versionItem.version.slug}')">
+              <s:fragment rendered="#{versionItem.selected}">
+                <input type="radio" name="project-type" value="#{versionItem.version.slug}"
+                  class="form__radio__input js-form__radio__input"
+                  checked="true" id="#{status.index}:version:#{versionItem.version.slug}"/>
+              </s:fragment>
+              <s:fragment rendered="#{!versionItem.selected}">
+                <input type="radio" name="project-type" value="#{versionItem.version.slug}"
+                  class="form__radio__input js-form__radio__input"
+                  id="#{status.index}:version:#{versionItem.version.slug}"/>
+              </s:fragment>
+              <label for="#{status.index}:version:#{versionItem.version.slug}"
+                class="form__radio__label">#{versionItem.version.slug} <span
+                class="txt--meta">
+                <i class="i--document i txt--neutral"
+                  title="#{msgs['jsf.Documents']}"></i> #{versionItem.version.documents.size()}  <i
+                class="i--language i txt--neutral"
+                title="#{msgs['jsf.Languages']}"></i> #{versionHomeAction.getVersionSupportedLocaleCount(versionItem.version.project.slug, versionItem.version.slug)}
+              </span>
+              </label>
+            </div>
+          </li>
+        </ui:repeat>
+      </ul>
+    </s:fragment>
+  </s:div>
+
+
 </s:fragment>

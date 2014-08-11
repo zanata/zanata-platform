@@ -149,6 +149,14 @@
     projectIterationId="900"
     localeId="4" />
 
+  <HProjectIteration_Validation
+    projectIterationId="900"
+    validation="TAB" state="WARNING" />
+
+  <HProjectIteration_Validation
+    projectIterationId="900"
+    validation="XML_ENTITY" state="ERROR" />
+
   <!-- Tell DbUnit to delete any existing documents -->
   <HDocument />
 </dataset>

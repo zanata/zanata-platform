@@ -21,6 +21,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
 
-import com.google.common.base.Joiner;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -63,6 +65,8 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -84,6 +88,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private String projectSlug;
 
     @In
+    private ProjectIterationDAO projectIterationDAO;
+
+    @In
     private ConversationScopeMessages conversationScopeMessages;
 
     @In
@@ -101,6 +108,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @In
     private Messages msgs;
 
+    @In
+    private CopyVersionManager copyVersionManager;
+
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
 
@@ -116,16 +126,57 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private VersionLocaleAutocomplete localeAutocomplete =
             new VersionLocaleAutocomplete();
 
+    @Getter
+    private boolean copyFromVersion;
+
+    @Getter
+    @Setter
+    private String copyFromVersionSlug;
+
+    private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
+            new Function<HProjectIteration, VersionItem>() {
+                @Override
+                public VersionItem apply(HProjectIteration input) {
+                    boolean selected = StringUtils.isNotEmpty(
+                            copyFromVersionSlug) && copyFromVersionSlug
+                            .equals(input.getSlug()) ? true : false;
+                    return new VersionItem(selected, input);
+                }
+            };
+
+    public void setCopyFromVersion(boolean copyFromVersion) {
+        this.copyFromVersion = copyFromVersion;
+        List<VersionItem> otherVersions = getOtherVersions();
+        if (!otherVersions.isEmpty()) {
+            this.copyFromVersionSlug =
+                    otherVersions.get(0).getVersion().getSlug();
+        } else {
+            this.copyFromVersionSlug = "";
+        }
+    }
+
+    public void reset() {
+        slug = null;
+        copyFromVersionSlug = null;
+        clearInstance();
+    }
+
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {
-            ProjectType projectType = getProject().getDefaultProjectType();
-            if (projectType != null) {
-                selectedProjectType = projectType.name();
+            // set copy from version option to true
+            if (StringUtils.isNotEmpty(copyFromVersionSlug)) {
+                copyFromVersion = true;
+            } else {
+                ProjectType projectType = getProject().getDefaultProjectType();
+                if (projectType != null) {
+                    selectedProjectType = projectType.name();
+                }
             }
+
         } else {
             ProjectType versionProjectType = getInstance().getProjectType();
-            if(versionProjectType != null) {
+            if (versionProjectType != null) {
                 selectedProjectType = versionProjectType.name();
             }
         }
@@ -133,6 +184,36 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     public HProject getProject() {
         return projectDAO.getBySlug(projectSlug);
+    }
+
+    public List<VersionItem> getOtherVersions() {
+        HProject project = getProject();
+        if (project != null) {
+            List<HProjectIteration> versionList =
+                    projectIterationDAO.getByProjectSlug(projectSlug,
+                            EntityStatus.ACTIVE, EntityStatus.READONLY);
+
+            Collections.sort(versionList,
+                    ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
+
+            List<VersionItem> versionItems =
+                    Lists.transform(versionList, VERSION_ITEM_FN);
+
+            if (StringUtils.isEmpty(copyFromVersionSlug)
+                    && !versionItems.isEmpty()) {
+                versionItems.get(0).setSelected(true);
+            }
+            return versionItems;
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public class VersionItem implements Serializable {
+        private boolean selected;
+        private HProjectIteration version;
     }
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
@@ -230,25 +311,50 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                 projectSlug);
     }
 
+    public String createVersion() {
+        if (!validateSlug(getInstance().getSlug(), "slug"))
+            return "invalid-slug";
+
+        if (copyFromVersion) {
+            copyVersion();
+            return "copy-version";
+        } else {
+            return persist();
+        }
+    }
+
+    public void copyVersion() {
+        getInstance().setStatus(EntityStatus.READONLY);
+
+        // create basic version here
+        HProject project = getProject();
+        project.addIteration(getInstance());
+        super.persist();
+
+        copyVersionManager.startCopyVersion(projectSlug,
+                copyFromVersionSlug, getInstance().getSlug());
+
+        conversationScopeMessages
+                .setMessage(FacesMessage.SEVERITY_INFO, msgs.
+                        format("jsf.copyVersion.started",
+                                getInstance().getSlug(), copyFromVersionSlug));
+    }
+
     @Override
     public String persist() {
-        conversationScopeMessages.clearMessages();
         updateProjectType();
-
-        if (!validateSlug(getInstance().getSlug(), "slug"))
-            return null;
 
         HProject project = getProject();
         project.addIteration(getInstance());
 
         List<HLocale> projectLocales =
-                localeServiceImpl.getSupportedLanguageByProject(projectSlug);
+                localeServiceImpl
+                        .getSupportedLanguageByProject(projectSlug);
 
         getInstance().getCustomizedLocales().addAll(projectLocales);
 
         getInstance().getCustomizedValidations().putAll(
                 project.getCustomizedValidations());
-
         return super.persist();
     }
 
@@ -306,7 +412,6 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Override
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
-        conversationScopeMessages.clearMessages();
         String state = super.update();
         Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
         return state;
@@ -432,7 +537,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                         .getSupportedLanguageByProjectIteration(projectSlug,
                                 slug);
             }
-            return Lists.newArrayList();
+            return Collections.EMPTY_LIST;
         }
 
         /**

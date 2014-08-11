@@ -140,7 +140,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String persist() {
-        conversationScopeMessages.clearMessages();
         if (!validateSlug(getInstance().getSlug(), "slug"))
             return null;
 
@@ -153,7 +152,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @Override
     @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String update() {
-        conversationScopeMessages.clearMessages();
         return super.update();
     }
 

@@ -467,6 +467,39 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         return q.list();
     }
 
+    public List<HDocument> findAllByVersionId(Long versionId, int offset,
+            int maxResults) {
+        Query q =
+                getSession()
+                        .createQuery(
+                                "from HDocument doc where doc.obsolete=0 and doc.projectIteration.id = :versionId");
+        q.setParameter("versionId", versionId);
+        q.setFirstResult(offset);
+        q.setMaxResults(maxResults);
+        q.setCacheable(true).setComment("DocumentDAO.getDocByVersionId");
+        return q.list();
+    }
+
+    public int getDocCountByVersion(String projectSlug, String versionSlug) {
+        Long totalCount =
+                (Long) getSession()
+                        .createQuery(
+                                "select count(doc) from HDocument doc "
+                                        +
+                                        "where doc.obsolete=0 and doc.projectIteration.slug = :versionSlug "
+                                        +
+                                        "and doc.projectIteration.project.slug = :projectSlug")
+                        .setParameter("versionSlug", versionSlug)
+                        .setParameter("projectSlug", projectSlug)
+                        .setComment("DocumentDAO.getDocCountByVersion")
+                        .setCacheable(true).uniqueResult();
+
+        if (totalCount == null) {
+            totalCount = 0L;
+        }
+        return totalCount.intValue();
+    }
+
     /**
      * Calculates a translated document's hash.
      *

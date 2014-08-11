@@ -47,13 +47,16 @@ import org.zanata.hibernate.search.DateBridge;
 
 import com.google.common.annotations.VisibleForTesting;
 
-@EntityListeners({ModelEntityBase.EntityListener.class})
+@EntityListeners({ ModelEntityBase.EntityListener.class })
 @MappedSuperclass
 public class ModelEntityBase implements Serializable, HashableState {
 
     private static final long serialVersionUID = -6139220551322868743L;
+
     protected Long id;
+
     protected Date creationDate;
+
     protected Date lastChanged;
 
     protected Integer versionNum;
@@ -88,6 +91,7 @@ public class ModelEntityBase implements Serializable, HashableState {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
+
 
     // TODO extract lastChanged from ModelEntityBase and use with @Embedded
     // NB: also used in HSimpleComment

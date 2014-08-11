@@ -78,6 +78,7 @@ public class HGlossaryEntry extends ModelEntityBase {
         return sourceRef;
     }
 
+    //TODO: this should be many to one
     @OneToOne
     @JoinColumn(name = "srcLocaleId", nullable = false)
     @Field(analyze = Analyze.NO)

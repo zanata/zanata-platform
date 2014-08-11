@@ -59,8 +59,8 @@
   <!-- Project Rules -->
 
   <rule>
-    <from casesensitive="true">^/project/add_iteration/(.+)$</from>
-    <to last="true">/project/add_iteration.seam\?projectSlug=$1</to>
+    <from casesensitive="true">^/project/add_iteration/([^/]+)/([^/]+)?$</from>
+    <to last="true">/project/add_iteration.seam\?projectSlug=$1&amp;copyFromVersionSlug=$2</to>
   </rule>
 
   <rule>
@@ -345,9 +345,15 @@
     <to>$1/language/list$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/add_iteration.seam\?projectSlug=(.+)$</from>
-    <to>$1/project/add_iteration/$2</to>
+    <from>^(/.+)?/project/add_iteration.seam\?projectSlug=([^&amp;]+)(?:&amp;copyFromVersionSlug=([^&amp;]+))?(.+)?$</from>
+    <to>$1/project/add_iteration/$2/$3</to>
   </outbound-rule>
+
+  <outbound-rule>
+    <from>^(/.+)?/project/add_iteration.seam\?copyFromVersionSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)(.+)?$</from>
+    <to>$1/project/add_iteration/$3/$2</to>
+  </outbound-rule>
+
   <outbound-rule>
     <from>^(/.+)?/project/create_project.seam(.+)?$</from>
     <to>$1/project/create/$2</to>
@@ -368,11 +374,11 @@
   <!-- repeated to handle either param order (there should be a better way to do this) -->
   <outbound-rule>
     <from>^(/.+)?/iteration/view.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/view/$2/$3?$5</to>
+    <to>$1/iteration/view/$2/$3</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/iteration/view.seam\?iterationSlug=([^&amp;]+)&amp;projectSlug=([^&amp;]+)(&amp;(.+))?$</from>
-    <to>$1/iteration/view/$3/$2?$5</to>
+    <to>$1/iteration/view/$3/$2</to>
   </outbound-rule>
 
   <outbound-rule>

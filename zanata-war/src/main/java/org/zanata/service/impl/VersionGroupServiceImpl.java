@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -164,7 +165,7 @@ public class VersionGroupServiceImpl implements VersionGroupService {
         if (group != null) {
             return group.getActiveLocales();
         }
-        return Sets.newHashSet();
+        return Collections.EMPTY_SET;
     }
 
     @Override

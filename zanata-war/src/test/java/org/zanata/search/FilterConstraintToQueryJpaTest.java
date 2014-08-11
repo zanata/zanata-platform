@@ -18,6 +18,8 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentHistory;
+import org.zanata.model.HDocumentUpload;
+import org.zanata.model.HDocumentUploadPart;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HIterationGroup;
@@ -163,6 +165,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 HTextFlowTarget.class, HTextFlow.class,
                 // documents
                 HDocumentHistory.class, HDocument.class,
+                HDocumentUploadPart.class, HDocumentUpload.class,
                 // locales
                 HLocaleMember.class, HLocale.class,
                 // version group

@@ -480,7 +480,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         if (getMissingLocaleVersionMap().containsKey(localeId)) {
             return getMissingLocaleVersionMap().get(localeId);
         }
-        return Lists.newArrayList();
+        return Collections.EMPTY_LIST;
     }
 
     public String getMissingVersionTitle(LocaleId localeId) {

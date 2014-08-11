@@ -129,5 +129,4 @@ public class HPotEntryData implements Serializable {
     public String getReferences() {
         return references;
     }
-
 }

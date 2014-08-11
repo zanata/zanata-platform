@@ -48,7 +48,13 @@
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
-<div class="tabs--vertical js-tabs">
+<s:div styleClass="tabs--vertical js-tabs" id="version-settings">
+<s:fragment rendered="#{versionHomeAction.copyVersionHandler.inProgress}">
+  <div class="bg--pop-highest l--pad-all-1">
+    #{msgs['jsf.copyVersion.versionSettingsDisabled']}
+  </div>
+</s:fragment>
+<s:fragment rendered="#{not versionHomeAction.copyVersionHandler.inProgress}">
 <ul class="tabs__nav js-tabs-nav">
   <li>
     <a id="settings-general_tab"
@@ -216,12 +222,12 @@
               <div class="list__item__actions">
                 <ul class="list--horizontal">
                   <li>
-                    <span class="txt--meta"
-                      title="#{versionHomeAction.getFormattedDate(document)}">
-                      <h:outputText escape="false"
-                        value="#{versionHomeAction.getLastUpdatedDescription(document)}"/>
-                      <i class="i i--clock"></i>
-                    </span>
+                        <span class="txt--meta"
+                          title="#{versionHomeAction.getFormattedDate(document)}">
+                          <h:outputText escape="false"
+                            value="#{versionHomeAction.getLastUpdatedDescription(document)}"/>
+                          <i class="i i--clock"></i>
+                        </span>
                   </li>
                   <li>
                     <a href="#"
@@ -356,10 +362,10 @@
                   data-target="##{validationAction.id.name()}-example"
                   data-toggle-title="#{msgs['jsf.tooltip.HideExample']}"
                   title="#{msgs['jsf.tooltip.ShowExample']}">
-                  <span class="js-reveal__toggle__text"
-                    data-toggle-value="Less">
-                    #{msgs['jsf.tooltip.More']}
-                  </span>…
+                      <span class="js-reveal__toggle__text"
+                        data-toggle-value="Less">
+                        #{msgs['jsf.tooltip.More']}
+                      </span>…
                 </a>
               </p>
             </div>
@@ -393,19 +399,19 @@
               <h4 class="zeta heading--secondary txt--uppercase">
                 #{msgs['jsf.validation.source']}
               </h4>
-              <pre class="l--push-all-0"><code class="txt--mini">
-                <h:outputText value="#{validationAction.sourceExample}"
-                  escape="false"/>
-              </code></pre>
+                  <pre class="l--push-all-0"><code class="txt--mini">
+                    <h:outputText value="#{validationAction.sourceExample}"
+                      escape="false"/>
+                  </code></pre>
             </div>
             <div class="g__item w--1-2 l--push-top-quarter">
               <h4 class="zeta heading--secondary txt--uppercase">
                 #{msgs['jsf.validation.target']}
               </h4>
-              <pre class="l--push-all-0"><code class="txt--mini">
-                <h:outputText value="#{validationAction.targetExample}"
-                  escape="false"/>
-              </code></pre>
+                  <pre class="l--push-all-0"><code class="txt--mini">
+                    <h:outputText value="#{validationAction.targetExample}"
+                      escape="false"/>
+                  </code></pre>
             </div>
           </div>
         </li>
@@ -414,7 +420,8 @@
   </h:form>
 </li>
 </ul>
-</div>
+</s:fragment>
+</s:div>
 
 <ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
 </ui:composition>
