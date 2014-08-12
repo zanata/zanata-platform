@@ -25,7 +25,7 @@
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <guava.version>14.0.1</guava.version>
-    <gwt.version>2.5.0</gwt.version>
+    <gwt.version>2.5.1</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
