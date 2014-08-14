@@ -195,6 +195,7 @@
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
     <slf4j.version>1.7.5</slf4j.version>
+    <victims.updates>daily</victims.updates>
   </properties>
 
   <build>
@@ -434,7 +435,7 @@
                 daily : Update the database entries once per day.
                 off   : Disable the synchronization mechanism.
               -->
-              <updates>daily</updates>
+              <updates>${victims.updates}</updates>
             </rule>
           </rules>
         </configuration>
