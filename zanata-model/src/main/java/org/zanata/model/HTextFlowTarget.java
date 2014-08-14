@@ -222,7 +222,6 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Deprecated
     @Transient
-    @NotEmpty
     public void setContent(String content) {
         this.setContents(Arrays.asList(content));
     }
