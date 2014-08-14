@@ -2,7 +2,6 @@ package org.zanata.rest;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
