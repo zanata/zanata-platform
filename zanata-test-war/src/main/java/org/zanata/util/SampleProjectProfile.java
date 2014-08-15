@@ -4,8 +4,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.Session;
-import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.jboss.seam.ScopeType;
@@ -228,7 +226,7 @@ public class SampleProjectProfile {
     }
 
     private HAccountRole getAccountRole(String roleName) {
-        log.debug("get account role with name {}", roleName);
+        SampleProjectProfile.log.debug("get account role with name {}", roleName);
         return entityManager.createQuery(
                 String.format("from HAccountRole where name = '%s' ", roleName),
                 HAccountRole.class)

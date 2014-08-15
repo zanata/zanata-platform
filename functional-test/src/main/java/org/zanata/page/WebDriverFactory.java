@@ -29,7 +29,6 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -91,18 +90,14 @@ public enum WebDriverFactory {
 
     private WebDriver createPlainDriver() {
         String driverType =
-                PropertiesHolder.getProperty(webDriverType.value(), "htmlUnit");
+                PropertiesHolder.getProperty(webDriverType.value(), chrome.value());
         if (driverType.equalsIgnoreCase(chrome.value())) {
             return configureChromeDriver();
         } else if (driverType.equalsIgnoreCase(firefox.value())) {
             return configureFirefoxDriver();
         } else {
-            return configureHtmlDriver();
+            throw new UnsupportedOperationException("only support chrome and firefox driver");
         }
-    }
-
-    private WebDriver configureHtmlDriver() {
-        return new HtmlUnitDriver(true);
     }
 
     private WebDriver configureChromeDriver() {

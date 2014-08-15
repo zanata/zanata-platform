@@ -33,9 +33,6 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.model.HApplicationConfiguration.KEY_ADMIN_EMAIL;
-import static org.zanata.model.HApplicationConfiguration.KEY_MAX_ACTIVE_REQ_PER_API_KEY;
-import static org.zanata.model.HApplicationConfiguration.KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
 import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
 import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
 
@@ -55,9 +52,8 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             "d83882201764f7d339e97c4b087f0806";
-    private String maxConcurrentPathParam = "c/"
-            + KEY_MAX_CONCURRENT_REQ_PER_API_KEY;
-    private String maxActivePathParam = "c/" + KEY_MAX_ACTIVE_REQ_PER_API_KEY;
+    private String maxConcurrentPathParam = "c/max.concurrent.req.per.apikey";
+    private String maxActivePathParam = "c/max.active.req.per.apikey";
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canConfigureRateLimitByWebUI() {
@@ -108,7 +104,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 ((BaseClientResponse<String>) getResponse)
                         .getEntity(String.class);
         assertThat(rateLimitConfig)
-                .contains(KEY_MAX_CONCURRENT_REQ_PER_API_KEY);
+                .contains("max.concurrent.req.per.apikey");
         assertThat(rateLimitConfig).contains("<value>1</value>");
 
         // can get all configurations
@@ -147,12 +143,11 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
         Response response1 =
                 clientRequestAsTranslator(
-                        "rest/configurations/c/" + KEY_ADMIN_EMAIL).get();
+                        "rest/configurations/c/email.admin.addr").get();
         assertThat(getStatusAndReleaseConnection(response1)).isEqualTo(401);
 
         ClientRequest request =
-                clientRequestAsTranslator("rest/configurations/c/"
-                        + KEY_ADMIN_EMAIL);
+                clientRequestAsTranslator("rest/configurations/c/email.admin.addr");
         request.body("text/plain", "admin@email.com");
         Response response2 = request.put();
         assertThat(getStatusAndReleaseConnection(response2)).isEqualTo(401);
