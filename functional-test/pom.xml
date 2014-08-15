@@ -434,7 +434,7 @@
               <deployables>
                 <deployable>
                   <type>war</type>
-                  <location>${project.basedir}/../overlay-for-test/target/${zanata.test.war.name}.war</location>
+                  <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
                   <pingTimeout>180000</pingTimeout>
                   <properties>
