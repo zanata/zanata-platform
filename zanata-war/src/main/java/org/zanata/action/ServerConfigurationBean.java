@@ -89,10 +89,14 @@ public class ServerConfigurationBean implements Serializable {
     private String fromEmailAddr;
     private PropertyWithKey<String> fromEmailAddrProperty = new PropertyWithKey<String>("fromEmailAddr", KEY_EMAIL_FROM_ADDRESS);
 
-    private String homeContent;
+    @Getter
+    @Setter
+    private String homeContent = "";
     private PropertyWithKey<String> homeContentProperty = new PropertyWithKey<String>("homeContent", KEY_HOME_CONTENT);
 
-    private String helpContent;
+    @Getter
+    @Setter
+    private String helpContent = "";
     private PropertyWithKey<String> helpContentProperty = new PropertyWithKey<String>("helpContent", KEY_HELP_CONTENT);
 
     @Getter
@@ -149,22 +153,10 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
             new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
-            new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD)
+            new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
+            homeContentProperty,
+            helpContentProperty
     );
-
-    public String getHomeContent() {
-        HApplicationConfiguration var =
-                applicationConfigurationDAO
-                        .findByKey(homeContentProperty.getKey());
-        return var != null ? var.getValue() : "";
-    }
-
-    public String getHelpContent() {
-        HApplicationConfiguration var =
-                applicationConfigurationDAO
-                        .findByKey(helpContentProperty.getKey());
-        return var != null ? var.getValue() : "";
-    }
 
     public String updateHomeContent() {
         persistPropertyToDatabase(homeContentProperty);
