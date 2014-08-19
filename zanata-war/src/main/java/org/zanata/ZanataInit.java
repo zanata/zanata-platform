@@ -22,7 +22,12 @@ package org.zanata;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Proxy;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -38,7 +43,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
@@ -148,7 +152,7 @@ public class ZanataInit {
     }
 
     private void checkLuceneLocks(File indexDir)
-            throws ZanataInitializationException {
+            throws IOException, ZanataInitializationException {
         if (!indexDir.exists()) {
             if (indexDir.mkdirs()) {
                 log.info("Created lucene index directory.");
@@ -156,17 +160,39 @@ public class ZanataInit {
                 log.warn("Could not create lucene index directory");
             }
         }
+        if (mightUseNFS(indexDir)) {
+            // we don't trust Lucene's NativeFSLockFactory for NFS locks
+            String docURL = "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
+            log.warn("The Hibernate Search index dir '{}' might be NFS. " +
+                    "NativeFSLockFactory might not be safe: {}" +
+                    indexDir, docURL);
+        }
         Collection<File> lockFiles =
                 FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
-        Collection<String> lockedDirs = Lists.newArrayList();
-        for (File f : lockFiles) {
-            lockedDirs.add(f.getParent());
-        }
         if (!lockFiles.isEmpty()) {
-            log.error("Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the locked directories: "
-                    + lockedDirs);
-            throw new ZanataInitializationException("Found lock files: "
-                    + lockFiles);
+            log.info("Lucene lock files found: {}", lockFiles);
+        }
+    }
+
+    /**
+     * Returns true if any of the files appear to be stored in NFS (or we
+     * can't tell).
+     */
+    private boolean mightUseNFS(File... files) {
+        try {
+            FileSystem fileSystem = FileSystems.getDefault();
+            for (File file: files) {
+                Path path = fileSystem.getPath(file.getAbsolutePath());
+                String fileStoreType = Files.getFileStore(path).type();
+                if (fileStoreType.toLowerCase().contains("nfs")) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            log.warn(e.toString(), e);
+            // assume the worst case
+            return true;
         }
     }
 
