@@ -61,6 +61,7 @@
       <property name="hibernate.hbm2ddl.auto"
         value="${env.hibernate.hbm2ddl.auto}" />
 
+      <!-- TODO this won't work with Hibernate 4.3 or later -->
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDatasourceConnectionProvider" />
 
@@ -74,9 +75,13 @@
       <property name="hibernate.connection.characterEncoding" value="UTF-8" />
 
       <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
+      <!-- NB: Might have to be removed for Hibernate 4.3 -->
       <property name="hibernate.transaction.manager_lookup_class"
         value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 
+      <!-- for Hibernate 4.3 (but not 4.2):
+      <property name="hibernate.transaction.jta.platform" value="JBossAS" />
+      -->
 
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
