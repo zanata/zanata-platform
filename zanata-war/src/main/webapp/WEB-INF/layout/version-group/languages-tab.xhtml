@@ -28,7 +28,8 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <li>
-              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+              <a
+                href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
                 onclick="changeBrowserUrl(this.href, true);return false;">
                 #{msgs['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
@@ -65,7 +66,8 @@
       <s:fragment
         rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
         <p>
-          <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+          <a class="button--primary"
+            href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
             onclick="changeBrowserUrl(this.href, true);return false;">
             #{msgs['jsf.AddLanguages']}
           </a>
@@ -85,7 +87,8 @@
           value="#{versionGroupHomeAction.languageTabLanguageFilter.currentPage}"
           var="hLocale">
           <li class="progress-bar__expander panels__panel__item">
-            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages/#{hLocale.localeId}"
+            <a
+              href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/languages/#{hLocale.localeId}"
               onclick="changeBrowserUrl(this.href, true);return false;"
               class="#{hLocale.localeId}">
               <div class="list__item">
@@ -194,7 +197,8 @@
         <s:fragment
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <p>
-            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+            <a class="button--primary"
+              href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
               onclick="changeBrowserUrl(this.href, true);return false;">
               #{msgs['jsf.AddProjectVersions']}
             </a>
@@ -214,10 +218,8 @@
             value="#{versionGroupHomeAction.languageTabVersionFilter.currentPage}"
             var="version">
             <li class="progress-bar__expander">
-              <s:link view="/iteration/view.xhtml">
-                <f:param name="projectSlug" value="#{version.project.slug}"/>
-                <f:param name="iterationSlug" value="#{version.slug}"/>
-
+              <a
+                href="#{request.contextPath}/iteration/view/#{version.project.slug}/#{version.slug}/languages/#{versionGroupHomeAction.selectedLocale.localeId}">
                 <div class="list__item">
                   <div class="list__item__info">
                     <h3 class="list__title">#{version.project.name}</h3>
@@ -247,7 +249,7 @@
 
                 <zanata:statistic
                   value="#{versionGroupHomeAction.getSelectedLocaleStatistic(version.id)}"/>
-              </s:link>
+              </a>
             </li>
           </ui:repeat>
         </ul>
