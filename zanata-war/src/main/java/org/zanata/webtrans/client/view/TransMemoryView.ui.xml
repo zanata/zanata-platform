@@ -19,16 +19,15 @@
     }
 
     .container input {
-      display: inline-block;
       vertical-align: middle;
-      margin-right: 0.3em;
+      margin-right: 0.2em;
     }
 
   </ui:style>
 
   <g:HTMLPanel styleName="l--scroll-auto {style.container}">
-    <ul class="list--horizontal l--push-h-quarter">
-      <li class="epsilon">
+    <ul class="list--horizontal l--push-all-quarter">
+      <li class="zeta">
         <ui:text from="{messages.translationMemoryHeading}" />
       </li>
       <li>

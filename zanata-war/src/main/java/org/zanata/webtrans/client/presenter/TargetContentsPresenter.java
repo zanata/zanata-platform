@@ -28,8 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CheckStateHasChangedEvent;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
@@ -70,7 +68,6 @@ import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
 import org.zanata.webtrans.shared.util.Finds;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -79,6 +76,8 @@ import com.google.gwt.core.shared.GWT;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 @Singleton
 public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
@@ -132,6 +131,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         this.userOptionsService = userOptionsService;
         this.saveAsApprovedConfirmation = saveAsApprovedConfirmation;
         this.validationWarning = validationWarning;
+
         isDisplayButtons =
                 userOptionsService.getConfigHolder().getState()
                         .isDisplayButtons();
@@ -200,11 +200,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         this.currentTransUnitId = currentTransUnitId;
 
         if (display != null) {
-            editorTranslators.clearTranslatorList(display.getEditors()); // clear
-                                                                         // previous
-                                                                         // selection's
-                                                                         // translator
-                                                                         // list
+            // clear previous selection's translator list
+            display.clearTranslatorList();
         }
 
         display = Finds.findDisplayById(displayList, currentTransUnitId).get();
@@ -214,7 +211,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
         normaliseCurrentEditorIndex();
 
         for (ToggleEditor editor : display.getEditors()) {
-            editor.clearTranslatorList();
             validate(editor);
         }
         display.showButtons(isDisplayButtons());
@@ -224,8 +220,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             concealDisplay();
         } else {
             display.focusEditor(currentEditorIndex);
-            editorTranslators.updateTranslator(display.getEditors(),
-                    currentTransUnitId);
+            editorTranslators.updateTranslator(display, currentTransUnitId);
             revealDisplay();
         }
     }
@@ -246,9 +241,8 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
     @Override
     public void onTransUnitEdit(TransUnitEditEvent event) {
         if (event.getSelectedTransUnitId() != null && display != null) {
-            ArrayList<ToggleEditor> editors = display.getEditors();
-            editorTranslators.clearTranslatorList(editors);
-            editorTranslators.updateTranslator(editors, currentTransUnitId);
+            display.clearTranslatorList();
+            editorTranslators.updateTranslator(display, currentTransUnitId);
         }
     }
 
@@ -418,7 +412,6 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
                 userOptionsService.getConfigHolder().getState()
                         .isDisplayButtons();
 
-
         if (isDisplayButtons != displayButtons) {
             for (TargetContentsDisplay contentsDisplay : displayList) {
                 contentsDisplay.showButtons(displayButtons);
@@ -530,8 +523,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             contentsDisplay.setState(TargetContentsDisplay.EditingState.SAVED);
             contentsDisplay.refresh();
             if (equal(updatedTransUnit.getId(), currentTransUnitId)) {
-                editorTranslators.updateTranslator(display.getEditors(),
-                        currentTransUnitId);
+                editorTranslators.updateTranslator(display, currentTransUnitId);
             }
         }
     }

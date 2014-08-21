@@ -15,7 +15,7 @@
 
   <g:HTMLPanel tag="ul" styleName="list--no-bullets">
     <li>
-      <h5 class="txt--invert txt--align-center">
+      <h5>
         <ui:text from="{messages.editorOptions}" />
       </h5>
     </li>
@@ -35,21 +35,20 @@
       </g:CheckBox>
     </li>
     <li>
-      <g:CheckBox ui:field="showSaveApprovedWarningChk"
-        styleName="txt--invert">
+      <g:CheckBox ui:field="showSaveApprovedWarningChk">
         <ui:text from="{messages.showSaveApproveWarning}" />
       </g:CheckBox>
     </li>
 
     <li class="l--push-v-half">
-      <h5 class="txt--invert txt--align-center">
+      <h5>
         <ui:text from="{messages.navOption}" />
       </h5>
       <g:VerticalPanel ui:field="optionsContainer"
         styleName="{style.nav-options}" />
     </li>
     <li class="l--push-v-half">
-      <h5 class="txt--invert txt--align-center">
+      <h5>
         <ui:text from="{messages.transMemoryOption}" />
       </h5>
     </li>
@@ -62,21 +61,21 @@
     </li>
 
     <li class="l--push-v-half">
-      <h5 class="txt--invert txt--align-center">
+      <h5>
         <ui:text from="{messages.pageSize}" />
       </h5>
     </li>
     <li>
-      <g:Anchor ui:field="five" styleName="txt--lead txt--invert">5</g:Anchor>
-      <g:Anchor ui:field="ten" styleName="txt--lead txt--invert">10</g:Anchor>
-      <g:Anchor ui:field="twentyFive" styleName="txt--lead txt--invert">25</g:Anchor>
-      <g:Anchor ui:field="fifty" styleName="txt--lead txt--invert">50</g:Anchor>
+      <g:Anchor ui:field="five" styleName="txt--lead">5</g:Anchor>
+      <g:Anchor ui:field="ten" styleName="txt--lead">10</g:Anchor>
+      <g:Anchor ui:field="twentyFive" styleName="txt--lead">25
+      </g:Anchor>
+      <g:Anchor ui:field="fifty" styleName="txt--lead">50</g:Anchor>
     </li>
 
     <li class="l--push-v-half">
-      <h5 class="txt--invert txt--align-center"
-        title="{messages.displayConfigurationTooltip}">
-        <ui:text from="{messages.displayConfiguration}" />
+      <h5 title="{messages.displayConfigurationTooltip}">
+        <ui:text from="{messages.displayConfiguration}"/>
       </h5>
     </li>
     <li>
@@ -88,9 +87,9 @@
     <li>
       <g:CheckBox ui:field="showOptionalTransUnitDetailsChk" />
     </li>
-  <li>
-    <g:HTMLPanel ui:field="sourceLangListBoxContainer" />
-  </li>
+    <li>
+      <g:HTMLPanel ui:field="sourceLangListBoxContainer" />
+    </li>
   </g:HTMLPanel>
 
 </ui:UiBinder>

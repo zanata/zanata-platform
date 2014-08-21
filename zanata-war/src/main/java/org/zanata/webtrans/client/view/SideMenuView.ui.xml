@@ -2,26 +2,17 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui"
   xmlns:f="urn:import:org.zanata.webtrans.client">
-  <ui:style type="org.zanata.webtrans.client.view.SideMenuView.Styles">
+  <ui:style>
     .mainPanel {
-      color: #c4ccd4;
       width: 21em;
-      background-color: #444c54;
-      border-radius: 0 0 0 5px;
     }
 
     .menuButton {
-      background: #626262;
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
       padding: 0.1em;
       margin-bottom: 0.1em;
       display: block;
-    }
-
-    .selectedButton {
-      color: #96FFFF !important;
-      background: #444c54;
     }
 
     .notificationLabel {
@@ -33,25 +24,24 @@
 
   <g:LayoutPanel>
     <g:layer top="0" bottom="0" left="0" width="2em">
-      <g:FlowPanel styleName="new-zanata">
+      <g:FlowPanel>
         <g:Anchor ui:field="notificationTab"
-          styleName="icon-bell txt--invert txt--hero {style.menuButton}" />
+          styleName="i i--notification txt--invert txt--hero {style.menuButton} bg--lowest " />
         <g:InlineLabel ui:field="notificationLabel"
           styleName="{style.notificationLabel} badge--warning" />
         <g:Anchor ui:field="chatTab"
-          styleName="icon-chat-1 {style.menuButton} txt--invert txt--hero " />
+          styleName="i i--users {style.menuButton} txt--invert txt--hero bg--lowest" />
         <g:Anchor ui:field="optionsTab"
-          styleName="icon-cog {style.menuButton} txt--invert txt--hero" />
+          styleName="i i--settings {style.menuButton} txt--invert txt--hero bg--lowest" />
         <g:Anchor ui:field="validationOptionsTab"
-          styleName="icon-check {style.menuButton} txt--invert txt--hero" />
+          styleName="i i--checkmark {style.menuButton} txt--invert txt--hero bg--lowest" />
       </g:FlowPanel>
     </g:layer>
 
 
     <g:layer top="0px" bottom="0" left="2em" right="0">
       <g:TabLayoutPanel ui:field="container"
-        styleName="{style.mainPanel} new-zanata"
-        barHeight="0" />
+        styleName="{style.mainPanel} bg--low" barHeight="0" />
     </g:layer>
   </g:LayoutPanel>
 </ui:UiBinder>

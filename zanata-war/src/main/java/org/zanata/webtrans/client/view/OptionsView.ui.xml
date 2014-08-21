@@ -8,7 +8,6 @@
 
   <ui:style field="style">
     .container label {
-      color: #f0f2f4 !important;
       font-weight: initial;
     }
 
@@ -24,9 +23,7 @@
     styleName="list--no-bullets l--push-all-quarter l--scroll-auto {style.container}">
     <g:HTMLPanel tag="li" ui:field="optionsContainer" />
     <li>
-      <h5 class="txt--invert txt--align-center">
-        <ui:text from="{messages.otherConfiguration}" />
-      </h5>
+      <h5><ui:text from="{messages.otherConfiguration}"/></h5>
     </li>
     <li>
       <ul class="list--horizontal">
@@ -34,7 +31,7 @@
           <span>Layout</span>
         </li>
         <li>
-          <g:ListBox ui:field="themesList" styleName="txt--highlight"/>
+          <g:ListBox ui:field="themesList"/>
         </li>
       </ul>
     </li>

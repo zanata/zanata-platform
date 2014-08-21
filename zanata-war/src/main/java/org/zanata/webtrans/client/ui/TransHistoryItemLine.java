@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 import com.google.gwt.core.shared.GWT;
@@ -75,7 +76,7 @@ public class TransHistoryItemLine extends Composite {
                         .getModifiedBy();
         heading =
                 new InlineHTML(template.heading(person,
-                        stateToStyle(item.getStatus()),
+                        ContentStateToStyleUtil.stateToStyle(item.getStatus()),
                         stateRenderer.render(item.getStatus())));
         targetContents =
                 new InlineHTML(template.targetContent(TextContentsDisplay
@@ -92,25 +93,6 @@ public class TransHistoryItemLine extends Composite {
             icon.addClassName("i--translate");
         }
         creationDate.setText(DateUtil.formatShortDate(item.getModifiedDate()));
-    }
-
-    private static String stateToStyle(ContentState status) {
-        if (status == null) {
-            return "";
-        }
-        switch (status) {
-        case New:
-            return "txt--state-neutral";
-        case NeedReview:
-            return "txt--state-unsure";
-        case Translated:
-            return "txt--state-success";
-        case Approved:
-            return "txt--state-highlight";
-        case Rejected:
-            return "txt--state-danger";
-        }
-        return "";
     }
 
     @UiHandler("copyIntoEditor")

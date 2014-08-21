@@ -7,6 +7,7 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.ui.TextContentsDisplay;
+import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
 
 import com.google.common.base.Strings;
@@ -39,13 +40,10 @@ public class TransMemoryDetailsView extends DialogBox implements
     private static TMIUiBinder uiBinder = GWT.create(TMIUiBinder.class);
 
     @UiField
-    TextBox sourceComment, targetComment, targetState;
+    InlineLabel projectName, versionName, docName, targetState;
 
     @UiField
-    InlineLabel projectIterationName, docName;
-
-    @UiField
-    Label lastModified;
+    Label lastModified, sourceComment, targetComment;
 
     @UiField(provided = true)
     DialogBoxCloseButton closeButton;
@@ -65,7 +63,6 @@ public class TransMemoryDetailsView extends DialogBox implements
         setGlassEnabled(true);
         closeButton = new DialogBoxCloseButton(this);
         this.messages = messages;
-
         HTMLPanel container = uiBinder.createAndBindUi(this);
         getCaption().setText(messages.translationMemoryDetails());
 
@@ -93,8 +90,13 @@ public class TransMemoryDetailsView extends DialogBox implements
     }
 
     @Override
-    public void setProjectIterationName(String projectIterationName) {
-        this.projectIterationName.setText(projectIterationName);
+    public void setVersionName(String versionName) {
+        this.versionName.setText(versionName);
+    }
+
+    @Override
+    public void setProjectName(String projectName) {
+        this.projectName.setText(projectName);
     }
 
     @Override
@@ -164,5 +166,6 @@ public class TransMemoryDetailsView extends DialogBox implements
     @Override
     public void setState(ContentState state) {
         targetState.setText(state.toString());
+        targetState.setStyleName(ContentStateToStyleUtil.stateToStyle(state));
     }
 }

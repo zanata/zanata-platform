@@ -46,10 +46,6 @@ public class ValidationMessagePanelView extends Composite implements
     }
 
     interface Styles extends CssResource {
-        String error();
-
-        String warning();
-
         String container();
 
         String header();
@@ -109,10 +105,10 @@ public class ValidationMessagePanelView extends Composite implements
                 liElement.setTitle(entry.getKey().getId().getDisplayName());
 
                 if (isErrorLocked(entry.getKey().getRules())) {
-                    liElement.addStyleName(style.error());
+                    liElement.addStyleName("txt--danger");
                     errorCount++;
                 } else {
-                    liElement.addStyleName(style.warning());
+                    liElement.addStyleName("txt--warning");
                     warningCount++;
                 }
 
@@ -122,14 +118,14 @@ public class ValidationMessagePanelView extends Composite implements
 
         headerLabel.setText(this.messages.validationNotificationHeading(
                 warningCount, errorCount));
-        setVisible(true);
+        removeStyleName("is-hidden");
     }
 
     private void clear() {
         displayMessages.clear();
         contents.clear();
         headerLabel.setText(messages.validationNotificationHeading(0, 0));
-        setVisible(false);
+        addStyleName("is-hidden");
     }
 
     public Map<ValidationAction, List<String>> getErrorMessages() {
@@ -146,8 +142,9 @@ public class ValidationMessagePanelView extends Composite implements
 
     public void setVisibleIfHasError(boolean visible) {
         if (!displayMessages.isEmpty()) { // has error message
-            setVisible(visible);
+            removeStyleName("is-hidden");
+        } else {
+            addStyleName("is-hidden");
         }
-        setVisible(false);
     }
 }

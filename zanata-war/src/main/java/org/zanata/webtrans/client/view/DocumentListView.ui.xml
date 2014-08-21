@@ -46,7 +46,7 @@
         </g:HTMLPanel>
         <g:HTMLPanel tag="li" styleName="{style.right-nav}">
           <ul class="list--horizontal">
-            <li>
+            <li class="txt--understated">
               <ui:msg>Stats by:</ui:msg>
             </li>
             <li>

@@ -13,19 +13,12 @@
     }
 
     .hasValidationError {
-      border: 1px solid #ff0000;
+      border-left: 3px solid #e0575b !important;
     }
 
     .copyButton {
-      font-size: 18px;
+      font-size: 1.2em;
       cursor: pointer;
-    }
-
-    .textAreaWrapper {
-    }
-
-    .textAreaWrapper table {
-      table-layout: fixed;
     }
 
     .textAreaWrapper textArea {
@@ -33,41 +26,18 @@
       min-height: 3em;
     }
 
-    .targetContainer {
-      width: 100%;
-      height: 100%;
-      table-layout: fixed;
-    }
-
   </ui:style>
 
   <g:FocusPanel ui:field="rootContainer" styleName="{style.rootContainer}">
-    <g:VerticalPanel width="100%" spacing="3">
-      <g:cell horizontalAlignment="ALIGN_LEFT">
-        <g:HorizontalPanel ui:field="topContainer"
-          styleName="{style.targetContainer}">
-          <g:cell width="22px" verticalAlignment="middle">
-            <g:InlineLabel ui:field="copyIcon"
-              title="{tableMessages.copyFromSource}"
-              styleName="icon-right-1 {style.copyButton} fadeElement" />
-          </g:cell>
-          <g:cell>
-            <!-- this extra wrapper is needed to make the validation error border around editor and remove (magically) a scrollbar from who-knows-what-->
-            <g:HTMLPanel ui:field="targetWrapper"
-              styleName="TableEditorCell-Target {style.textAreaWrapper}">
-              <g:HorizontalPanel width="100%" height="100%"
-                ui:field="textAreaTable">
-                <g:cell width="100%">
-                  <fui:TextAreaWrapper ui:field="textArea" />
-                </g:cell>
-                <g:cell>
-                  <fui:TranslatorListWidget ui:field="translatorList" />
-                </g:cell>
-              </g:HorizontalPanel>
-            </g:HTMLPanel>
-          </g:cell>
-        </g:HorizontalPanel>
-      </g:cell>
-    </g:VerticalPanel>
+    <g:HTMLPanel tag="div" ui:field="textAreaTable" styleName="g--tight g--fit">
+      <div class="w--1-12 g__item txt--align-center l--push-top-half">
+        <g:InlineLabel ui:field="copyIcon"
+          title="{tableMessages.copyFromSource}"
+          styleName="icon-right-1 {style.copyButton} fadeElement" />
+      </div>
+      <div class="w--11-12 g__item {style.textAreaWrapper}">
+        <fui:TextAreaWrapper ui:field="textArea"/>
+      </div>
+    </g:HTMLPanel>
   </g:FocusPanel>
 </ui:UiBinder>

@@ -82,8 +82,8 @@ public class TransUnitsTableView extends Composite implements
             }
         });
         transUnitTable.resize(0, 2);
-        transUnitTable.getColumnFormatter().setWidth(0, "50%");
-        transUnitTable.getColumnFormatter().setWidth(1, "50%");
+        transUnitTable.getColumnFormatter().setWidth(0, "49%");
+        transUnitTable.getColumnFormatter().setWidth(1, "51%");
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {

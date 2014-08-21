@@ -24,8 +24,6 @@ package org.zanata.webtrans.client.ui;
 import java.util.Collection;
 import java.util.List;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -34,7 +32,6 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -43,14 +40,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.inject.Inject;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class RevertTransUnitUpdateLink extends InlineLabel implements UndoLink {
+public class RevertTransUnitUpdateLink extends Anchor implements UndoLink {
     private final CachingDispatchAsync dispatcher;
     private final WebTransMessages messages;
     private final EventBus eventBus;

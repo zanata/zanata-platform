@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
+
+  <ui:style field="style"
+    type="org.zanata.webtrans.client.view.SourceContentsView.Styles">
+
+    .bookmark {
+      position: absolute;
+    }
+
+  </ui:style>
+
+  <g:HTMLPanel tag="ul" styleName="list--no-bullets l--push-h-quarter l--push-top-quarter">
+    <li>
+      <g:HTMLPanel ui:field="sourcePanelContainer" />
+    </li>
+    <li>
+      <fui:ReferencePanel ui:field="referencePanel" />
+    </li>
+    <li>
+      <g:InlineLabel ui:field="bookmarkIcon"
+        styleName="{style.bookmark} i i--star l--float-left l--push-top-quarter" />
+      <fui:TransUnitDetailsPanel ui:field="transUnitDetailsPanel"/>
+    </li>
+  </g:HTMLPanel>
+</ui:UiBinder>

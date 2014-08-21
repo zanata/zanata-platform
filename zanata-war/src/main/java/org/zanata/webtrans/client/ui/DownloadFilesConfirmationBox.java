@@ -46,7 +46,7 @@ public class DownloadFilesConfirmationBox extends DialogBox {
         infoPanel.setStyleName("list--horizontal");
 
         ListItemWidget infoImg = new ListItemWidget();
-        infoImg.setStyleName("icon-help-circle");
+        infoImg.setStyleName("i i--info txt--highlight");
 
         infoPanel.add(infoImg);
         infoPanel

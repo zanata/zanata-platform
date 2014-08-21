@@ -24,11 +24,6 @@
   xmlns:fui="urn:import:org.zanata.webtrans.client.ui">
 
   <ui:style>
-    .editor {
-      background-color: #ffffff;
-      border-bottom: 1px solid #E5E5E5;
-    }
-
     .topBar {
       border-bottom: 1px solid lightGrey;
     }
@@ -45,43 +40,31 @@
       top: 0.5em;
     }
 
-    .toggle-south-button {
-      font-size: 1.5em;
-      cursor: pointer;
-      color: #4E4E4E;
-    }
-
-    .toggle-south-button:hover {
-      color: #0085CC;
-    }
-
   </ui:style>
 
   <g:LayoutPanel styleName="translatorEditorContainer">
-    <g:layer top="0" height="2.5em">
-      <g:HTMLPanel styleName="new-zanata">
-        <ul class="list--no-bullets {style.topBar}">
-          <li class="w--7-8">
-            <g:Widget ui:field="transFilterView" />
-          </li>
-          <li class="{style.right-nav}">
-            <g:Widget ui:field="transUnitNavigationView" />
-          </li>
-          <li class="{style.right-refresh}">
-            <g:Anchor ui:field="refreshCurrentPage"
-              styleName="icon-arrows-cw gamma" />
-          </li>
-        </ul>
+    <g:layer top="0" height="3em">
+      <g:HTMLPanel tag="ul" styleName="list--no-bullets {style.topBar}">
+        <li class="w--7-8">
+          <g:Widget ui:field="transFilterView" />
+        </li>
+        <li class="{style.right-nav}">
+          <g:Widget ui:field="transUnitNavigationView" />
+        </li>
+        <li class="{style.right-refresh}">
+          <g:Anchor ui:field="refreshCurrentPage"
+            styleName="icon-arrows-cw gamma" />
+        </li>
       </g:HTMLPanel>
     </g:layer>
     <g:layer top="3em" bottom="2.5em">
-      <g:Widget ui:field="transUnitsTableView" styleName="{style.editor}" />
+      <g:Widget ui:field="transUnitsTableView" />
     </g:layer>
     <g:layer bottom="0" height="2.5em" left="0" right="0">
       <fui:Pager ui:field="pager" />
     </g:layer>
-    <g:layer bottom="0px" height="1.8em" right="0" width="1.8em">
-      <g:Anchor ui:field="resize" styleName="{style.toggle-south-button}" />
+    <g:layer bottom="0" height="1.8em" right="0" width="1.8em">
+      <g:Anchor ui:field="resize" styleName="txt--hero i" />
     </g:layer>
   </g:LayoutPanel>
 </ui:UiBinder>

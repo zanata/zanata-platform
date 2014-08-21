@@ -8,7 +8,6 @@
 
   <ui:style>
     .container ul label {
-      color: #f0f2f4 !important;
       font-weight: initial;
     }
 
@@ -21,9 +20,7 @@
 
 
   <g:HTMLPanel styleName="l--push-all-quarter {style.container} l--scroll-auto">
-    <h5 class="txt--invert txt--align-center">
-      <ui:text from="{messages.validationOptions}" />
-    </h5>
+    <h5><ui:text from="{messages.validationOptions}" /></h5>
     <z:UnorderedListWidget ui:field="contentPanel"
       styleName="list--no-bullets l--push-bottom-half" />
     <g:Button ui:field="runValidation"

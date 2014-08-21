@@ -14,40 +14,40 @@
     <fui:DialogBoxCloseButton ui:field="closeButton" />
     <div class="l__wrapper {style.container} l--scroll-auto">
       <div>
-        <span class="delta">Locations</span>
-        <g:ListBox ui:field='documentListBox' visibleItemCount='5' />
+        <span class="epsilon">Locations</span>
+        <g:ListBox ui:field='documentListBox' visibleItemCount='1' />
       </div>
-      <div class="l--push-top-half">
-        <span class="delta">Project/Iteration</span>
-        <g:InlineLabel ui:field='projectIterationName' />
-      </div>
-      <div>
-        <span class="delta">Document</span>
+      <div class="l--push-top-half txt--understated epsilon">
+        <i class="i i--project"></i>
+        <g:InlineLabel ui:field='projectName' />
+        <i class="i i--version"></i>
+        <g:InlineLabel ui:field='versionName' />
+        <i class="i i--document"></i>
         <g:InlineLabel ui:field='docName' />
       </div>
       <div class="l--push-top-half">
-        <span class="delta">Source</span>
+        <span class="epsilon">Source</span>
         <g:SimplePanel ui:field="sourceTextContainer" />
+
+        <div class="l--push-left-quarter l--pad-all-quarter bg--higher">
+          <label class="txt--understated">Comments</label>
+          <g:Label ui:field='sourceComment' styleName="txt--understated" />
+        </div>
       </div>
-      <div class="l--push-left-half">
-        <label>Comments</label>
-        <g:TextBox readOnly="true" ui:field="sourceComment" />
-      </div>
-      <div class="l--push-top-half">
-        <span class="delta">Target</span>
+
+      <div class="l--push-v-1">
+        <span class="epsilon">Target</span>
+        -
+        <g:InlineLabel ui:field='targetState' />
         <g:SimplePanel ui:field="targetTextContainer" />
+
+        <div class="l--push-left-quarter l--pad-all-quarter bg--higher">
+          <label class="txt--understated">Comments</label>
+          <g:Label ui:field='targetComment' styleName="txt--understated" />
+        </div>
       </div>
-      <div class="l--push-left-half">
-        <label>Comments</label>
-        <g:TextBox ui:field='targetComment' readOnly="true" />
-      </div>
-      <div>
-        <label>Content State</label>
-        <g:TextBox ui:field='targetState' readOnly="true" />
-      </div>
-      <div>
-        <g:InlineLabel ui:field='lastModified' />
-      </div>
+
+      <g:InlineLabel ui:field='lastModified' styleName="txt--understated" />
     </div>
   </g:HTMLPanel>
 </ui:UiBinder>

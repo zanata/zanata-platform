@@ -94,7 +94,8 @@ public class TransMemoryDetailsPresenterTest {
 
         verify(display).setSourceComment("source comment");
         verify(display).setTargetComment("target comment");
-        verify(display).setProjectIterationName("project / iteration");
+        verify(display).setProjectName("project");
+        verify(display).setVersionName("iteration");
         verify(display).setDocumentName("docId");
         verify(display).setLastModified("admin", lastModifiedDate);
 
@@ -130,7 +131,8 @@ public class TransMemoryDetailsPresenterTest {
         // Then:
         verify(display).setSourceComment("source comment2");
         verify(display).setTargetComment("target comment2");
-        verify(display).setProjectIterationName("project / 2");
+        verify(display).setProjectName("project");
+        verify(display).setVersionName("2");
         verify(display).setDocumentName("docId2");
         verify(display).setLastModified(null, lastModifiedDate);
     }

@@ -26,7 +26,9 @@ public interface TransMemoryDetailsDisplay extends WidgetDisplay {
 
     void setTargetComment(String targetComment);
 
-    void setProjectIterationName(String projectIterationName);
+    void setProjectName(String projectName);
+
+    void setVersionName(String versionName);
 
     void setDocumentName(String documentName);
 

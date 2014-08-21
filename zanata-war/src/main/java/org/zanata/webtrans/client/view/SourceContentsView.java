@@ -26,40 +26,57 @@ import java.util.List;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
+import org.zanata.webtrans.client.ui.ReferencePanel;
 import org.zanata.webtrans.client.ui.SourcePanel;
 import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
+import org.zanata.webtrans.shared.model.TextFlowTarget;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
 import com.google.common.base.Preconditions;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.ui.ReferencePanel;
-import org.zanata.webtrans.shared.model.TextFlowTarget;
 
 public class SourceContentsView extends Composite implements
         SourceContentsDisplay {
+    private static Binder binder = GWT.create(Binder.class);
 
     public static final int COLUMNS = 1;
-    public static final int DEFAULT_ROWS = 1;
-    private final Grid sourcePanelContainer;
-    private List<HasSelectableSource> sourcePanelList;
-    private final TransUnitDetailsPanel transUnitDetailsPanel;
 
+    @UiField
+    HTMLPanel sourcePanelContainer;
+
+    @UiField
+    Styles style;
+
+    @UiField(provided = true)
+    InlineLabel bookmarkIcon;
+
+    @UiField(provided = true)
+    ReferencePanel referencePanel;
+
+    @UiField(provided = true)
+    TransUnitDetailsPanel transUnitDetailsPanel;
+
+    private List<HasSelectableSource> sourcePanelList;
     private TransUnit transUnit;
     private final UserConfigHolder configHolder;
     private final History history;
-    private ReferencePanel referencePanel;
     private UiMessages messages;
+
+    private HTMLPanel rootPanel;
 
     @Inject
     public SourceContentsView(
@@ -70,31 +87,19 @@ public class SourceContentsView extends Composite implements
         this.history = history;
         this.messages = messages;
         sourcePanelList = new ArrayList<HasSelectableSource>();
-        FlowPanel root = new FlowPanel();
-        root.setSize("100%", "100%");
-
-        sourcePanelContainer = new Grid(DEFAULT_ROWS, COLUMNS);
-        sourcePanelContainer.addStyleName("sourceTable");
-
-        root.add(sourcePanelContainer);
-
         referencePanel = new ReferencePanel();
         referencePanel.setReferenceText(messages.noReferenceFoundText());
-        root.add(referencePanel);
-        referencePanel.setVisible(false); //Reference is hidden by default
+        referencePanel.setVisible(false); // Reference is hidden by default
 
-        InlineLabel bookmarkIcon = createBookmarkIcon();
-        root.add(bookmarkIcon);
+        bookmarkIcon = createBookmarkIcon();
 
         transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
-        root.add(transUnitDetailsPanel);
 
-        initWidget(root);
+        rootPanel = binder.createAndBindUi(this);
     }
 
     private InlineLabel createBookmarkIcon() {
         InlineLabel bookmarkIcon = new InlineLabel();
-        bookmarkIcon.setStyleName("bookmark icon-bookmark-1");
         bookmarkIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -120,19 +125,20 @@ public class SourceContentsView extends Composite implements
     public void setValue(TransUnit value, boolean fireEvents) {
         transUnit = value;
         transUnitDetailsPanel.setDetails(value);
-        sourcePanelContainer.resizeRows(value.getSources().size());
         sourcePanelList.clear();
 
         int rowIndex = 0;
+        sourcePanelContainer.clear();
         boolean useCodeMirrorEditor =
                 configHolder.getState().isUseCodeMirrorEditor();
         for (String source : value.getSources()) {
             SourcePanel sourcePanel =
                     new SourcePanel(transUnit.getId(), useCodeMirrorEditor);
-            sourcePanel.ensureDebugId(value.getRowIndex() + "-source-panel-" + rowIndex);
+            sourcePanel.ensureDebugId(value.getRowIndex() + "-source-panel-"
+                    + rowIndex);
             sourcePanel.setValue(source, value.getSourceComment(),
                     value.isPlural());
-            sourcePanelContainer.setWidget(rowIndex, 0, sourcePanel);
+            sourcePanelContainer.add(sourcePanel);
             sourcePanelList.add(sourcePanel);
             rowIndex++;
         }
@@ -189,7 +195,8 @@ public class SourceContentsView extends Composite implements
             referencePanel.setReferenceText(messages.noReferenceFoundText());
         } else {
             referencePanel.setReferenceText(messages.inLocale() + " "
-                    + reference.getDisplayName() + ": " + reference.getContent());
+                    + reference.getDisplayName() + ": "
+                    + reference.getContent());
         }
         referencePanel.setVisible(true);
     }
@@ -198,4 +205,16 @@ public class SourceContentsView extends Composite implements
     public void hideReference() {
         referencePanel.setVisible(false);
     }
+
+    @Override
+    public Widget asWidget() {
+        return rootPanel;
+    }
+
+    interface Binder extends UiBinder<HTMLPanel, SourceContentsView> {
+    }
+
+    interface Styles extends CssResource {
+    }
+
 }

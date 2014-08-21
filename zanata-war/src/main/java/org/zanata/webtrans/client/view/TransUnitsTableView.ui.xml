@@ -5,10 +5,12 @@
     type="org.zanata.webtrans.client.resources.WebTransMessages" />
 
   <ui:style>
-
+    .scroll_panel, .scroll_panel>:first-child{
+      overflow-x: hidden !important;
+    }
   </ui:style>
 
-  <g:ScrollPanel ui:field="root">
+  <g:ScrollPanel ui:field="root" styleName="{style.scroll_panel}">
     <g:Grid ui:field="transUnitTable" styleName="transUnitTable" />
   </g:ScrollPanel>
 </ui:UiBinder>

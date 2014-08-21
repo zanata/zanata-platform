@@ -53,7 +53,6 @@ public class SaveAsApprovedConfirmationPanel extends PopupPanel implements
     @Inject
     public SaveAsApprovedConfirmationPanel(TableEditorMessages messages) {
         super(false, true);
-
         FlowPanel panel = new FlowPanel();
 
         saveAsApproved = new Button(messages.saveAsTranslated());
@@ -61,7 +60,7 @@ public class SaveAsApprovedConfirmationPanel extends PopupPanel implements
         rememberDecision = new CheckBox(messages.dontShowThisAgain());
 
         Label message = new Label(messages.saveAsTranslatedDialogWarning1());
-        message.addStyleName("message");
+        message.setStyleName("txt--invert delta txt--important");
 
         InlineLabel info = new InlineLabel();
         info.setStyleName("icon-info-circle-2 infoIcon");
@@ -80,8 +79,8 @@ public class SaveAsApprovedConfirmationPanel extends PopupPanel implements
         infoPanel.add(message4);
         infoPanel.add(message5);
 
-        setStyleName("confirmationDialogPanel");
-
+        setStyleName("confirmationDialogPanel new-zanata");
+        panel.setStyleName("l--pad-all-half");
         panel.add(message);
         panel.add(infoPanel);
         panel.add(saveAsApproved);

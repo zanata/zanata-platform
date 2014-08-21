@@ -219,6 +219,7 @@ public class Pager extends Composite implements HasPager {
         } else {
             button.addStyleName(style.disabled());
         }
+        button.setEnabled(enabled);
     }
 
     public boolean isFocused() {

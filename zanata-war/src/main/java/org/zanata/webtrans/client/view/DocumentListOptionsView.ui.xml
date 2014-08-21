@@ -12,15 +12,13 @@
 
   <g:HTMLPanel tag="ul" styleName="list--no-bullets">
     <li>
-      <h5 class="txt--invert txt--align-center">
-        <ui:text from="{messages.pageSize}" />
-      </h5>
+      <h5><ui:text from="{messages.pageSize}"/></h5>
     </li>
     <li>
-      <g:Anchor ui:field="twentyFiveDoc" styleName="txt--lead txt--invert">25</g:Anchor>
-      <g:Anchor ui:field="fiftyDoc" styleName="txt--lead txt--invert">50</g:Anchor>
-      <g:Anchor ui:field="hundredDoc" styleName="txt--lead txt--invert">100</g:Anchor>
-      <g:Anchor ui:field="twoHundredFiftyDoc" styleName="txt--lead txt--invert">250
+      <g:Anchor ui:field="twentyFiveDoc" styleName="txt--lead">25</g:Anchor>
+      <g:Anchor ui:field="fiftyDoc" styleName="txt--lead">50</g:Anchor>
+      <g:Anchor ui:field="hundredDoc" styleName="txt--lead">100</g:Anchor>
+      <g:Anchor ui:field="twoHundredFiftyDoc" styleName="txt--lead">250
       </g:Anchor>
     </li>
   </g:HTMLPanel>

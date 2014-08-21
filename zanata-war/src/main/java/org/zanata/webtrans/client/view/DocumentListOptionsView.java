@@ -85,12 +85,12 @@ public class DocumentListOptionsView extends Composite implements
     }
 
     private void onPageSizeChanged(Anchor selectedWidget) {
-        twentyFiveDoc.addStyleName("txt--invert");
-        fiftyDoc.addStyleName("txt--invert");
-        hundredDoc.addStyleName("txt--invert");
-        twoHundredFiftyDoc.addStyleName("txt--invert");
+        twentyFiveDoc.removeStyleName("txt--important");
+        fiftyDoc.removeStyleName("txt--important");
+        hundredDoc.removeStyleName("txt--important");
+        twoHundredFiftyDoc.removeStyleName("txt--important");
 
-        selectedWidget.removeStyleName("txt--invert");
+        selectedWidget.addStyleName("txt--important");
     }
 
     @Override

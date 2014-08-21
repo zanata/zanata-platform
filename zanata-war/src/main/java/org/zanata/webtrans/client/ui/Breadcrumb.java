@@ -29,7 +29,7 @@ public class Breadcrumb extends Composite implements HasClickHandlers {
             .create(BreadcrumbUiBinder.class);
 
     @UiField
-    InlineLabel rightChevron;
+    HTMLPanel rightChevron;
 
     @UiField
     Anchor link;
@@ -39,8 +39,6 @@ public class Breadcrumb extends Composite implements HasClickHandlers {
 
     interface Styles extends CssResource {
         String readOnlyLink();
-
-        String link();
     }
 
     public Breadcrumb(boolean isFirstNode, boolean isAnchorReadOnly, String href) {
@@ -51,7 +49,6 @@ public class Breadcrumb extends Composite implements HasClickHandlers {
         }
 
         if (isAnchorReadOnly) {
-            link.removeStyleName(style.link());
             link.setStyleName(style.readOnlyLink());
         }
 

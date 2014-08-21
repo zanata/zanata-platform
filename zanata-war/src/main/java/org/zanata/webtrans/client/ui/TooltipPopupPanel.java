@@ -274,8 +274,6 @@ public class TooltipPopupPanel extends PopupPanel {
 
         String approved();
 
-        String topHeader();
-
         String draft();
 
         @ClassName("draft-header")

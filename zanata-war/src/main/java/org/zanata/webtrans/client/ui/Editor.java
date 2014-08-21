@@ -26,7 +26,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,16 +45,10 @@ public class Editor extends Composite implements ToggleEditor {
     FocusPanel rootContainer;
 
     @UiField
-    HorizontalPanel topContainer, textAreaTable;
-
-    @UiField
-    TranslatorListWidget translatorList;
+    HTMLPanel textAreaTable;
 
     @UiField
     InlineLabel copyIcon;
-
-    @UiField
-    HTMLPanel targetWrapper;
 
     @UiField(provided = true)
     TextAreaWrapper textArea;
@@ -122,7 +115,7 @@ public class Editor extends Composite implements ToggleEditor {
 
     @Override
     protected void onEnsureDebugId(String baseID) {
-        textArea.ensureDebugId(baseID+ "target-" + index);
+        textArea.ensureDebugId(baseID + "target-" + index);
     }
 
     private void fireValidationEvent() {
@@ -177,16 +170,6 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public void setViewMode(ViewMode viewMode) {
         textArea.setReadOnly(viewMode == ViewMode.VIEW);
-        translatorList.setVisible(viewMode == ViewMode.EDIT);
-        toggleTranslatorList();
-    }
-
-    public void toggleTranslatorList() {
-        if (translatorList.isVisible() && !translatorList.isEmpty()) {
-            textAreaTable.setCellWidth(translatorList, "60px");
-        } else {
-            textAreaTable.setCellWidth(translatorList, "0");
-        }
     }
 
     @Override
@@ -230,8 +213,8 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public String toString() {
         return Objects.toStringHelper(this).add("id", id)
-        // .add("label", label.getText())
-        // .add("textArea", textArea.getText())
+                // .add("label", label.getText())
+                // .add("textArea", textArea.getText())
                 .add("isFocused", isFocused()).toString();
     }
 
@@ -250,14 +233,11 @@ public class Editor extends Composite implements ToggleEditor {
         String currentText = textArea.getText();
         int cursorPos = textArea.getCursorPos();
         boolean editing = textArea.isEditing();
-        textAreaTable.remove(textArea);
         if (textArea instanceof EditorTextArea) {
             textArea = new CodeMirrorEditor(onCodeMirrorFocusCallback);
         } else {
             textArea = new EditorTextArea(currentText);
         }
-        textAreaTable.insert(textArea, 0);
-        textAreaTable.setCellWidth(textArea, "100%");
         textArea.setText(currentText);
         if (editing) {
             // avoid focusing on wrong editor (in plural mode)
@@ -275,23 +255,11 @@ public class Editor extends Composite implements ToggleEditor {
     public void updateValidationMessages(
             Map<ValidationAction, List<String>> messages) {
         if (messages.isEmpty()) {
-            targetWrapper.removeStyleName(style.hasValidationError());
+            textArea.removeStyleName(style.hasValidationError());
         } else {
             Log.info(id + " id has error: " + messages.values());
-            targetWrapper.addStyleName(style.hasValidationError());
+            textArea.addStyleName(style.hasValidationError());
         }
-    }
-
-    @Override
-    public void addTranslator(String name, String color) {
-        translatorList.addTranslator(name, color);
-        toggleTranslatorList();
-    }
-
-    @Override
-    public void clearTranslatorList() {
-        translatorList.clearTranslatorList();
-        toggleTranslatorList();
     }
 
     @Override
@@ -302,12 +270,6 @@ public class Editor extends Composite implements ToggleEditor {
     @Override
     public void refresh() {
         textArea.refresh();
-    }
-
-    @Override
-    public void removeTranslator(String name, String color) {
-        translatorList.removeTranslator(name, color);
-        toggleTranslatorList();
     }
 
     @Override
@@ -325,7 +287,5 @@ public class Editor extends Composite implements ToggleEditor {
         String hasValidationError();
 
         String copyButton();
-
-        String targetContainer();
     }
 }

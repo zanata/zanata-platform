@@ -128,11 +128,11 @@ public class EditorOptionsView extends Composite implements
     }
 
     private void selectPage(Anchor selectedPage) {
-        five.addStyleName("txt--invert");
-        ten.addStyleName("txt--invert");
-        twentyFive.addStyleName("txt--invert");
-        fifty.addStyleName("txt--invert");
-        selectedPage.removeStyleName("txt--invert");
+        five.removeStyleName("txt--important");
+        ten.removeStyleName("txt--important");
+        twentyFive.removeStyleName("txt--important");
+        fifty.removeStyleName("txt--important");
+        selectedPage.addStyleName("txt--important");
     }
 
     @UiHandler("editorButtonsChk")

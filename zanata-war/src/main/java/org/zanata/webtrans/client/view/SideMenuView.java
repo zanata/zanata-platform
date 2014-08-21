@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -23,13 +24,6 @@ public class SideMenuView extends Composite implements SideMenuDisplay {
 
     interface SideMenuViewUiBinder extends UiBinder<Widget, SideMenuView> {
     }
-
-    interface Styles extends CssResource {
-        String selectedButton();
-    }
-
-    @UiField
-    Styles style;
 
     @UiField
     Anchor notificationTab, optionsTab, validationOptionsTab, chatTab;
@@ -86,32 +80,42 @@ public class SideMenuView extends Composite implements SideMenuDisplay {
 
     @Override
     public void setSelectedTab(int view) {
-        optionsTab.removeStyleName(style.selectedButton());
-        validationOptionsTab.removeStyleName(style.selectedButton());
-        chatTab.removeStyleName(style.selectedButton());
-        notificationTab.removeStyleName(style.selectedButton());
+        setDefaultTabStyle(optionsTab);
+        setDefaultTabStyle(validationOptionsTab);
+        setDefaultTabStyle(chatTab);
+        setDefaultTabStyle(notificationTab);
 
         switch (view) {
         case OPTION_VIEW:
             container.selectTab(OPTION_VIEW);
-            optionsTab.addStyleName(style.selectedButton());
+            setSelectTabStyle(optionsTab);
             break;
         case VALIDATION_OPTION_VIEW:
             container.selectTab(VALIDATION_OPTION_VIEW);
-            validationOptionsTab.addStyleName(style.selectedButton());
+            setSelectTabStyle(validationOptionsTab);
             break;
         case WORKSPACEUSER_VIEW:
             container.selectTab(WORKSPACEUSER_VIEW);
-            chatTab.addStyleName(style.selectedButton());
+            setSelectTabStyle(chatTab);
             setChatTabAlert(false);
             break;
         case NOTIFICATION_VIEW:
             container.selectTab(NOTIFICATION_VIEW);
-            notificationTab.addStyleName(style.selectedButton());
+            setSelectTabStyle(notificationTab);
             break;
         default:
             break;
         }
+    }
+
+    private void setDefaultTabStyle(UIObject tab) {
+        tab.removeStyleName("bg--low");
+        tab.addStyleName("bg--lowest");
+    }
+
+    private void setSelectTabStyle(UIObject tab) {
+        tab.addStyleName("bg--low");
+        tab.removeStyleName("bg--lowest");
     }
 
     @Override

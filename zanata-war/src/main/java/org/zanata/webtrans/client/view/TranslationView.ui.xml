@@ -8,11 +8,11 @@
 
   </ui:style>
 
-  <g:LayoutPanel styleName="translationContainer">
+  <g:LayoutPanel styleName="translationContainer new-zanata">
     <g:layer top="0" bottom="0">
       <g:SplitLayoutPanel ui:field="mainSplitPanel">
         <g:south size="150">
-          <g:SplitLayoutPanel ui:field="tmGlossaryPanel" styleName="new-zanata"/>
+          <g:SplitLayoutPanel ui:field="tmGlossaryPanel"/>
         </g:south>
         <g:center>
           <g:Widget ui:field="translationEditorView" />

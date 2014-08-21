@@ -29,7 +29,6 @@
     .translationStats {
       width: 230px;
       height: 1.2em;
-      color: #595959;
       cursor: pointer;
       display: inline-block;
     }
@@ -38,15 +37,9 @@
       color: #FF4500;
     }
 
-    .readonly_label {
-      font-size: 14px;
-      font-weight: bold;
-      color: #B62918;
-      font-style: normal;
-    }
-
     .selectedTab, .selectedTab:hover {
       color: #416988 !important;
+      opacity: 1;
     }
 
     .disableTab, .disableTab:hover {
@@ -60,16 +53,24 @@
       margin: 0 2em 0 0.1em;
     }
 
+    .tab {
+      opacity:0.6;
+    }
+
+    .tab:hover {
+      opacity:0.8;
+    }
+
   </ui:style>
   <g:LayoutPanel stylePrimaryName="{style.rootContainer}"
     ui:field="rootContainer">
-    <g:layer top="0" height="1.8em" left="0.5em" right="0.5em">
+    <g:layer top="0.40625em" height="1.8em" left="0.5em" right="0.5em">
       <g:HTMLPanel styleName="new-zanata">
         <ul class="list--horizontal">
           <li class="{style.topPanel-Workspace}">
             <nobr>
               <g:InlineLabel ui:field="readOnlyLabel"
-                styleName="{style.readonly_label}" />
+                styleName="i i--lock txt--warning txt--hero l--push-right-quarter" />
               <fui:Breadcrumb ui:field="projectLink" />
               <fui:Breadcrumb ui:field="versionLink" />
               <fui:Breadcrumb ui:field="filesLink" />
@@ -79,14 +80,14 @@
           <li class="{style.right-nav}">
             <fui:TransUnitCountBar ui:field="translationStatsBar"
               styleName="{style.translationStats}" />
-            <g:Anchor styleName="icon-list txt--hero"
+            <g:Anchor styleName="i i--document txt--hero {style.tab}"
               ui:field="documentListTab" />
-            <g:Anchor styleName="icon-edit txt--hero"
+            <g:Anchor styleName="i i--translate txt--hero {style.tab}"
               ui:field="editorTab" />
-            <g:Anchor styleName="icon-search txt--hero"
+            <g:Anchor styleName="i i--search txt--hero {style.tab}"
               ui:field="searchAndReplaceTab" />
             <g:Anchor ui:field="keyShortcuts"
-              styleName="icon-keyboard txt--hero" />
+              styleName="i i--keyboard txt--hero {style.tab}" />
           </li>
         </ul>
       </g:HTMLPanel>

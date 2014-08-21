@@ -63,9 +63,7 @@
     }
 
     .filterListToggle {
-      font-size: 16px;
       cursor: pointer;
-      padding: 7px 3px 7px 0;
     }
 
     .drop-down:hover .filterListToggle {
@@ -163,7 +161,7 @@
       <g:CheckBox ui:field="parentIncompleteChk" styleName="{style.checkbox}">
         <ui:msg>Incomplete</ui:msg>
       </g:CheckBox>
-      <span class="icon-down-open {style.filterListToggle}" />
+      <span class="i i--arrow-down txt--lead l--pad-v-quarter {style.filterListToggle}" />
       <ul class="{style.filterList}">
         <li>
           <g:CheckBox ui:field="untranslatedChk"
@@ -190,7 +188,7 @@
       <g:CheckBox ui:field="parentCompleteChk" styleName="{style.checkbox}">
         <ui:msg>Complete</ui:msg>
       </g:CheckBox>
-      <span class="icon-down-open {style.filterListToggle}" />
+      <span class="i i--arrow-down txt--lead l--pad-v-quarter {style.filterListToggle}" />
       <ul class="{style.filterList}">
         <li>
           <g:CheckBox ui:field="translatedChk"

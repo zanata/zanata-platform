@@ -24,20 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.ui.Editor;
 import org.zanata.webtrans.client.ui.EditorButtonsWidget;
 import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.ui.TranslatorListWidget;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.client.ui.ValidationMessagePanelView;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
@@ -48,11 +46,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 public class TargetContentsView extends Composite implements
         TargetContentsDisplay {
@@ -62,6 +62,9 @@ public class TargetContentsView extends Composite implements
 
     @UiField
     Grid editorGrid;
+
+    @UiField
+    HTMLPanel container;
 
     @UiField(provided = true)
     ValidationMessagePanelView validationPanel;
@@ -78,7 +81,10 @@ public class TargetContentsView extends Composite implements
     @UiField
     Label commentIndicator;
 
-    private HorizontalPanel rootPanel;
+    @UiField
+    TranslatorListWidget translatorList;
+
+    private HTMLPanel rootPanel;
     private ArrayList<ToggleEditor> editors;
     private Listener listener;
 
@@ -93,9 +99,7 @@ public class TargetContentsView extends Composite implements
         buttons = new EditorButtonsWidget();
         validationPanel = validationMessagePanelViewProvider.get();
         rootPanel = binder.createAndBindUi(this);
-        editorGrid.addStyleName("TableEditorCell-Target-Table");
         editorGrid.ensureDebugId("target-contents-grid");
-        editorGrid.setWidth("100%");
         editors = Lists.newArrayList();
     }
 
@@ -175,13 +179,16 @@ public class TargetContentsView extends Composite implements
     public void setState(EditingState editingState) {
         this.editingState = editingState;
         if (editingState == EditingState.UNSAVED) {
-            editorGrid.setStyleName(style.unsaved());
+            editorGrid.addStyleName(style.unsaved());
             savingIndicator.setVisible(false);
 
         } else if (editingState == EditingState.SAVING) {
             savingIndicator.setVisible(true);
+            editorGrid.removeStyleName(style.unsaved());
         } else {
-            editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+            container.setStyleName(resolveStyleName(cachedValue.getStatus()));
+            container.addStyleName("list--no-bullets");
+            editorGrid.removeStyleName(style.unsaved());
             savingIndicator.setVisible(false);
         }
     }
@@ -200,7 +207,8 @@ public class TargetContentsView extends Composite implements
 
     private void setCachedTU(TransUnit newTransUnit) {
         cachedValue = newTransUnit;
-        editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+        container.setStyleName(resolveStyleName(cachedValue.getStatus()));
+        container.addStyleName("list--no-bullets");
         buttons.setId(cachedValue.getId());
     }
 
@@ -248,7 +256,8 @@ public class TargetContentsView extends Composite implements
             String target = cachedTargets.get(i);
             editors.get(i).setTextAndValidate(target);
         }
-        editorGrid.setStyleName(resolveStyleName(cachedValue.getStatus()));
+        container.setStyleName(resolveStyleName(cachedValue.getStatus()));
+        container.addStyleName("list--no-bullets");
     }
 
     @Override
@@ -268,8 +277,24 @@ public class TargetContentsView extends Composite implements
         for (ToggleEditor editor : editors) {
             editor.setViewMode(viewMode);
         }
+        translatorList.setVisible(viewMode == ToggleEditor.ViewMode.EDIT);
         validationPanel
                 .setVisibleIfHasError(viewMode == ToggleEditor.ViewMode.EDIT);
+    }
+
+    @Override
+    public void addTranslator(String name, String color) {
+        translatorList.addTranslator(name, color);
+    }
+
+    @Override
+    public void clearTranslatorList() {
+        translatorList.clearTranslatorList();
+    }
+
+    @Override
+    public void removeTranslator(String name, String color) {
+        translatorList.removeTranslator(name, color);
     }
 
     @Override
@@ -297,7 +322,7 @@ public class TargetContentsView extends Composite implements
         String commentIndicator();
     }
 
-    interface Binder extends UiBinder<HorizontalPanel, TargetContentsView> {
+    interface Binder extends UiBinder<HTMLPanel, TargetContentsView> {
     }
 
     @Override

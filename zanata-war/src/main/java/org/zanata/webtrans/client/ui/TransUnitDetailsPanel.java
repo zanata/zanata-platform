@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
 public class TransUnitDetailsPanel extends Composite {
@@ -22,7 +23,7 @@ public class TransUnitDetailsPanel extends Composite {
     @UiField
     Label headerLabel;
     @UiField
-    Label resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
+    InlineLabel resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
     @UiField
     DisclosurePanel disclosurePanel;
     @UiField
@@ -33,7 +34,7 @@ public class TransUnitDetailsPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         // this is to remove the .header class so that it won't get style from
         // menu.css
-        disclosurePanel.getHeader().getParent().setStyleName(style.header());
+        disclosurePanel.getHeader().getParent().setStyleName("l--pad-h-quarter txt--important txt--mini");
     }
 
     public void setDetails(TransUnit transUnit) {
@@ -82,14 +83,6 @@ public class TransUnitDetailsPanel extends Composite {
     }
 
     interface Styles extends CssResource {
-        String tuDetails();
-
-        String container();
-
-        String header();
-
-        String tuDetailsLabel();
-
         String headerLabel();
     }
 }

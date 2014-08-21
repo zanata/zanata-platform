@@ -103,7 +103,8 @@ public class TransMemoryDetailsPresenter extends
 
         display.setSourceComment(sourceComment);
         display.setTargetComment(targetComment);
-        display.setProjectIterationName(project + " / " + iteration);
+        display.setProjectName(project);
+        display.setVersionName(iteration);
         display.setDocumentName(doc);
 
         display.setLastModified(lastModifiedBy, lastModifiedDate);

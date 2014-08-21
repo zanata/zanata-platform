@@ -1,10 +1,9 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.List;
 import java.util.Map;
 
 import org.zanata.webtrans.client.service.UserSessionService;
-import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
@@ -30,40 +29,32 @@ public class EditorTranslators {
         this.identity = identity;
     }
 
-    void clearTranslatorList(List<ToggleEditor> editors) {
-        for (ToggleEditor editor : editors) {
-            editor.clearTranslatorList();
-        }
-    }
-
-    void updateTranslator(List<ToggleEditor> editors,
+    public void updateTranslator(TargetContentsDisplay display,
             TransUnitId currentTransUnitId) {
         for (Map.Entry<EditorClientId, UserPanelSessionItem> entry : sessionService
                 .getUserSessionMap().entrySet()) {
             EditorClientId editorClientId = entry.getKey();
             UserPanelSessionItem panelSessionItem = entry.getValue();
             if (panelSessionItem.getSelectedId() != null) {
-                updateEditorTranslatorList(panelSessionItem.getSelectedId(),
-                        panelSessionItem.getPerson(), editorClientId, editors,
+                updateEditorTranslatorList(display,
+                        panelSessionItem.getSelectedId(),
+                        panelSessionItem.getPerson(), editorClientId,
                         currentTransUnitId);
             }
         }
     }
 
-    private void updateEditorTranslatorList(TransUnitId selectedTransUnitId,
+    private void updateEditorTranslatorList(TargetContentsDisplay display,
+            TransUnitId selectedTransUnitId,
             Person person, EditorClientId editorClientId,
-            List<ToggleEditor> editors, TransUnitId currentTransUnitId) {
+            TransUnitId currentTransUnitId) {
         if (!editorClientId.equals(identity.getEditorClientId())
                 && Objects.equal(currentTransUnitId, selectedTransUnitId)) {
-            for (ToggleEditor editor : editors) {
-                editor.addTranslator(person.getName(),
-                        sessionService.getColor(editorClientId));
-            }
+            display.addTranslator(person.getName(),
+                    sessionService.getColor(editorClientId));
         } else {
-            for (ToggleEditor editor : editors) {
-                editor.removeTranslator(person.getName(),
-                        sessionService.getColor(editorClientId));
-            }
+            display.removeTranslator(person.getName(),
+                    sessionService.getColor(editorClientId));
         }
     }
 }

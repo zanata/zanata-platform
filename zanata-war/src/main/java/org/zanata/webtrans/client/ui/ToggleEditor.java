@@ -19,10 +19,6 @@ public interface ToggleEditor extends IsWidget, HasText,
 
     void setFocus();
 
-    void addTranslator(String name, String color);
-
-    void clearTranslatorList();
-
     void highlightSearch(String findMessage);
 
     void refresh();
@@ -37,8 +33,6 @@ public interface ToggleEditor extends IsWidget, HasText,
     }
 
     void setTextAndValidate(String text);
-
-    void removeTranslator(String name, String color);
 
     boolean isFocused();
 }

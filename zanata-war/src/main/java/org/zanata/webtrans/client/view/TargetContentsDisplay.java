@@ -76,6 +76,12 @@ public interface TargetContentsDisplay extends WidgetDisplay, HasTransUnitId,
 
     void toggleSyntaxHighlighting();
 
+    void addTranslator(String name, String color);
+
+    void clearTranslatorList();
+
+    void removeTranslator(String name, String color);
+
     interface Listener {
         void validate(ToggleEditor editor);
 

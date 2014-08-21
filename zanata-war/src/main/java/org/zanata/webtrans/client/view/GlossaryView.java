@@ -80,10 +80,10 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
         resultTable.setCellPadding(3);
 
         FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
-        formatter.setStyleName(0, SOURCE_COL, "epsilon");
-        formatter.setStyleName(0, TARGET_COL, "epsilon");
-        formatter.setStyleName(0, ACTION_COL, "epsilon txt--align-center smallCol");
-        formatter.setStyleName(0, DETAILS_COL, "epsilon txt--align-center smallCol");
+        formatter.setStyleName(0, SOURCE_COL, "zeta");
+        formatter.setStyleName(0, TARGET_COL, "zeta");
+        formatter.setStyleName(0, ACTION_COL, "zeta txt--align-center smallCol");
+        formatter.setStyleName(0, DETAILS_COL, "zeta txt--align-center smallCol");
 
         resultTable
                 .setWidget(0, SOURCE_COL, new Label(messages.srcTermLabel()));
@@ -200,7 +200,7 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
                     "txt--align-center smallCol");
 
             Anchor infoCell = new Anchor();
-            infoCell.setStyleName("icon-info-circle-2  txt--lead");
+            infoCell.setStyleName("i i--info txt--lead");
             infoCell.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {

@@ -26,14 +26,8 @@
   <ui:style>
     .cancelBtn {
       position: absolute;
-      bottom: 0.4em;
+      bottom: 0.35em;
       right: 0.1em;
-      font-size: 1.2em;
-      cursor: pointer;
-    }
-
-    .cancelBtn:hover {
-      color: #0085CC;
     }
 
     .container {
@@ -44,7 +38,7 @@
     <g:HTMLPanel ui:field="wrapper" styleName="js-suggest autocomplete {style.container}">
       <z:SearchTextBox ui:field="filterTextBox" styleName="js-suggest__input autocomplete__input" autocomplete="off" placeholder="Click to search..." />
       <g:Anchor ui:field="cancelBtn"
-        styleName="{style.cancelBtn} icon-cancel-circle" />
+        styleName="{style.cancelBtn} i i--cancel txt--lead" />
       <ul class="js-suggest__results autocomplete__results list--vertical">
         <li class="js-suggest__result autocomplete__result" data-key="text">text: <span class="txt--understated">source and target text</span></li>
         <li class="js-suggest__result autocomplete__result" data-key="resource-id">resource-id: <span class="txt--understated">exact Resource ID for a string</span></li>

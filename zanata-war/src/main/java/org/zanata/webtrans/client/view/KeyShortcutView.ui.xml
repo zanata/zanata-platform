@@ -2,22 +2,15 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
+  <ui:with field="messages"
+    type="org.zanata.webtrans.client.resources.WebTransMessages" />
+
   <ui:style type="org.zanata.webtrans.client.view.KeyShortcutView.Styles">
     .keyShortcutPanel {
       color: #FFFFFF;
       background: black;
       opacity: 0.85;
       border-radius: 8px;
-      padding: 20px;
-    }
-
-    .keyShortcutHeading {
-      font-size: 1.4em;
-    }
-
-    .keyShortcutCategoryTitle {
-      font-size: 1.2em;
-      padding: 4px 0;
     }
 
     .keyShortcutTable {
@@ -28,21 +21,17 @@
     .keyShortcutTable td {
       color: #ccc;
       background: black;
-      padding: 2px 10px 2px 0;
-      border-width: 0px;
+      padding: 0.4em 1em 0.4em 0;
+      border-width: 0;
       border-bottom-width: 1px;
       border-color: #444;
     }
   </ui:style>
 
-  <g:VerticalPanel styleName="{style.keyShortcutPanel}">
-    <g:cell horizontalAlignment="ALIGN_CENTER">
-      <g:Label ui:field="heading" styleName="{style.keyShortcutHeading}" />
-    </g:cell>
-
-    <g:cell>
-      <g:FlowPanel ui:field="shortcutContainer" />
-    </g:cell>
-  </g:VerticalPanel>
-
+  <g:HTMLPanel styleName="l--pad-all-1 {style.keyShortcutPanel}">
+    <h2 class="txt--invert">
+      <ui:text from="{messages.availableKeyShortcutsTitle}" />
+    </h2>
+    <g:FlowPanel ui:field="shortcutContainer" />
+  </g:HTMLPanel>
 </ui:UiBinder>

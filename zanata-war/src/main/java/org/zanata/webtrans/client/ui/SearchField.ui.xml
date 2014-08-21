@@ -6,42 +6,33 @@
   <ui:style>
     .filterTextBox {
       margin: 0 !important;
-      padding-left: 1.6em !important;
-      padding-right: 1.6em !important;
     }
 
     .searchIcon {
       position: absolute;
-      font-size: 1.5em;
-      opacity: 0.8;
       left: 0.15em;
       bottom: 0.34em;
     }
 
     .cancelBtn {
       position: absolute;
-      bottom: 0.5em;
+      bottom: 0.4em;
       right: 0.1em;
-      font-size: 1.2em;
-      cursor: pointer;
-    }
-
-    .cancelBtn:hover {
-      color: #0085CC;
     }
 
     .container {
       width: 25em;
       position: relative;
+      opacity: 0.8;
     }
 
 
   </ui:style>
   <g:HTMLPanel styleName="{style.container}">
-    <g:InlineLabel styleName="icon-search {style.searchIcon}" />
-    <g:TextBox ui:field="filterTextBox" addStyleNames='{style.filterTextBox}' />
+    <g:InlineLabel styleName="i i--search txt--understated txt--lead {style.searchIcon}" />
+    <g:TextBox ui:field="filterTextBox" styleName="{style.filterTextBox} l--pad-h-1" />
     <g:Anchor ui:field="cancelBtn"
-      styleName="{style.cancelBtn} icon-cancel-circle" />
+      styleName="{style.cancelBtn} i i--cancel txt--lead" />
   </g:HTMLPanel>
 
 

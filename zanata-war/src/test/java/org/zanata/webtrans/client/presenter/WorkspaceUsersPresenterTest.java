@@ -75,14 +75,14 @@ public class WorkspaceUsersPresenterTest {
         // ArgumentCaptor<KeyShortcutEventHandler> keyShortcutEventHandlerCaptor
         // = ArgumentCaptor.forClass(KeyShortcutEventHandler.class);
         when(messages.thisIsAPublicChannel()).thenReturn(
-                "Warning! This is a public channel");
+                "This is a public channel");
         presenter.onBind();
 
         verify(keyShortcutPresenter).register(keyShortcutCaptor.capture());
         verify(eventBus).addHandler(PublishWorkspaceChatEvent.getType(),
                 presenter);
         verify(display).appendChat(null, null,
-                "Warning! This is a public channel",
+                "This is a public channel",
                 HasWorkspaceChatData.MESSAGE_TYPE.SYSTEM_WARNING);
     }
 

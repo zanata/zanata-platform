@@ -5,35 +5,14 @@
 
   <ui:style
     type="org.zanata.webtrans.client.ui.ValidationMessagePanelView.Styles">
+
     .container {
-      width: 96%;
-      table-layout: fixed;
-      margin: 0.1em 0 0.1em 0.1em;
+      display: table !important;
     }
 
     .container td {
       padding-top: 0;
       padding-bottom: 0;
-    }
-
-    .error {
-      color: rgb(224, 87, 91);
-    }
-
-    .warning {
-      color: rgb(227, 130, 78);
-    }
-
-    .header {
-      cursor: pointer;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      background: #e3824e;
-      padding: 0.25em;
-      font-size: 0.9em;
-      font-weight: bold;
-      color: #FFFFFF;
     }
 
     .header:hover {
@@ -42,17 +21,15 @@
 
     .contents li {
       border-left: 3px solid;
-      padding: 0.1em 0.5em;
-      margin: 0.15em 0;
-      font-size: 0.9em;
+      padding-left: 0.40625em;
     }
 
   </ui:style>
 
-  <g:DisclosurePanel addStyleNames="{style.container} new-zanata"
+  <g:DisclosurePanel addStyleNames="{style.container}"
     animationEnabled="true" ui:field="disclosurePanel">
     <g:customHeader>
-      <g:Label ui:field="headerLabel" styleName="{style.header}" />
+      <g:Label ui:field="headerLabel" styleName="{style.header} label--warning txt--important" />
     </g:customHeader>
 
     <z:UnorderedListWidget ui:field="contents"

@@ -54,12 +54,10 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay {
             .create(KeyShortcutViewUiBinder.class);
 
     interface KeyShortcutViewUiBinder extends
-            UiBinder<VerticalPanel, KeyShortcutView> {
+            UiBinder<Widget, KeyShortcutView> {
     }
 
     interface Styles extends CssResource {
-        String keyShortcutCategoryTitle();
-
         String keyShortcutTable();
     }
 
@@ -67,7 +65,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay {
     FlowPanel shortcutContainer;
 
     @UiField
-    Label heading;
+    WebTransMessages messages;
 
     @UiField
     Styles style;
@@ -96,11 +94,9 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay {
     }
 
     @Inject
-    public KeyShortcutView(final WebTransMessages webTransMessages) {
+    public KeyShortcutView() {
         setWidget(uiBinder.createAndBindUi(this));
-        heading.setText(webTransMessages.availableKeyShortcutsTitle());
-
-        setStyleName("keyShortcutPanel");
+        setStyleName("keyShortcutPanel new-zanata");
         setAutoHideEnabled(true);
         setAutoHideOnHistoryEventsEnabled(true);
         setGlassEnabled(true);
@@ -131,7 +127,7 @@ public class KeyShortcutView extends PopupPanel implements KeyShortcutDisplay {
 
     public ListDataProvider<KeyShortcut> addContext(String contextName) {
         Label categoryTitle = new Label(contextName);
-        categoryTitle.addStyleName(style.keyShortcutCategoryTitle());
+        categoryTitle.setStyleName("txt--lead txt--important l--push-v-quarter");
         shortcutContainer.add(categoryTitle);
 
         CellTable<KeyShortcut> table = new CellTable<KeyShortcut>();

@@ -3,8 +3,6 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui">
   <ui:style>
     .unitStatus {
-      float: left;
-      width: 100px;
       height: 1.2em;
     }
 
@@ -33,14 +31,11 @@
     }
 
     .label {
-      font-weight: bold;
-      font-size: 13px;
-      text-align: left;
       z-index: 0;
     }
 
   </ui:style>
-  <g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus}">
+  <g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus} new-zanata">
     <g:layer left='0' width='0'>
       <g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}" />
     </g:layer>
@@ -58,7 +53,7 @@
       <g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}" />
     </g:layer>
     <g:layer left='102px' width="120px">
-      <g:Label ui:field='label' styleName='{style.label}' />
+      <g:Label ui:field='label' styleName='{style.label} txt--align-left txt--understated' />
     </g:layer>
   </g:LayoutPanel>
 </ui:UiBinder>

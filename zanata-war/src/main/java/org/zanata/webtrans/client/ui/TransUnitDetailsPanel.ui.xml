@@ -6,82 +6,43 @@
 
   <ui:style field="style"
     type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
-    .container {
-      width: 95%;
-      table-layout: fixed;
-      margin-left: 6px;
-      padding-right: 32px;
-      margin-bottom: 3px;
-    }
-
-    .header {
-      font-size: 11px;
-      font-weight: bold;
-      text-align: left;
-      text-indent: 5px;
-      cursor: pointer;
-      color: #686868;
-    }
-
-    .header:hover {
-      color: #686868;
-    }
-
     .headerLabel {
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
     }
-
-    .tuDetailsLabel {
-      font-weight: bold;
-      font-size: 11px;
-      color: #686868;
-      text-align: right;
-    }
-
-    .tuDetails {
-      font-size: 11px;
-      color: #686868;
-    }
   </ui:style>
 
   <g:DisclosurePanel animationEnabled="true"
-    addStyleNames="{style.container} fadeElement" ui:field="disclosurePanel">
+    addStyleNames="fadeElement" ui:field="disclosurePanel">
     <g:customHeader>
       <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
     </g:customHeader>
-    <g:Grid>
-      <g:row>
-        <g:cell styleName="{style.tuDetailsLabel}">Resource ID:</g:cell>
-        <g:customCell>
-          <g:Label ui:field="resId" styleName="{style.tuDetails}" />
-        </g:customCell>
-      </g:row>
-      <g:row>
-        <g:cell styleName="{style.tuDetailsLabel}">Message Context:</g:cell>
-        <g:customCell>
-          <g:Label ui:field="msgContext" styleName="{style.tuDetails}" />
-        </g:customCell>
-      </g:row>
-      <g:row>
-        <g:cell styleName="{style.tuDetailsLabel}">Source Comment:</g:cell>
-        <g:customCell>
-          <g:Label ui:field="sourceComment" styleName="{style.tuDetails}" />
-        </g:customCell>
-      </g:row>
-      <g:row>
-        <g:cell styleName="{style.tuDetailsLabel}">Last Modified By:</g:cell>
-        <g:customCell>
-          <g:Label ui:field="lastModifiedBy" styleName="{style.tuDetails}" />
-        </g:customCell>
-      </g:row>
-      <g:row>
-        <g:cell styleName="{style.tuDetailsLabel}">Last Modified Time:</g:cell>
-        <g:customCell>
-          <g:Label ui:field="lastModifiedTime" styleName="{style.tuDetails}" />
-        </g:customCell>
-      </g:row>
-    </g:Grid>
+    <g:HTMLPanel tag="ul" styleName="list--no-bullets">
+      <li>
+        <span class="txt--mini txt--understated txt--important">Resource ID:</span>
+        <g:InlineLabel ui:field="resId" styleName="txt--meta" />
+      </li>
+
+      <li>
+        <span class="txt--mini txt--understated txt--important">Message Context:</span>
+        <g:InlineLabel ui:field="msgContext" styleName="txt--meta" />
+      </li>
+
+      <li>
+        <span class="txt--mini txt--understated txt--important">Source Comment:</span>
+        <g:InlineLabel ui:field="sourceComment" styleName="txt--meta" />
+      </li>
+
+      <li>
+        <span class="txt--mini txt--understated txt--important">Last Modified By:</span>
+        <g:InlineLabel ui:field="lastModifiedBy" styleName="txt--meta" />
+      </li>
+
+      <li>
+        <span class="txt--mini txt--understated txt--important">Last Modified Time:</span>
+        <g:InlineLabel ui:field="lastModifiedTime" styleName="txt--meta" />
+      </li>
+    </g:HTMLPanel>
   </g:DisclosurePanel>
 </ui:UiBinder>

@@ -6,7 +6,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TranslatorListWidget extends Composite {
@@ -25,15 +25,15 @@ public class TranslatorListWidget extends Composite {
     }
 
     public void addTranslator(String name, String color) {
-        Label nameLabel = new Label(name);
-        nameLabel.setStyleName(style.userLabel());
+        HTMLPanel liElement = new HTMLPanel("li", "");
 
+        InlineLabel nameLabel = new InlineLabel(name);
+        nameLabel.setTitle(name);
+        nameLabel.setStyleName(style.userLabel() + " badge");
         nameLabel.getElement().getStyle().setProperty("backgroundColor", color);
-        nameLabel.getElement().getStyle().setProperty("borderColor", color);
-        nameLabel.getElement().getStyle().setProperty("borderWidth", "1px");
-        nameLabel.getElement().getStyle().setProperty("borderStyle", "solid");
 
-        container.add(nameLabel);
+        liElement.add(nameLabel);
+        container.add(liElement);
         isEmpty = false;
     }
 
@@ -45,7 +45,8 @@ public class TranslatorListWidget extends Composite {
     public void removeTranslator(String name, String color) {
 
         for (int i = 0; i < container.getWidgetCount(); i++) {
-            Label translatorLabel = (Label) container.getWidget(i);
+            HTMLPanel liElement = (HTMLPanel) container.getWidget(i);
+            InlineLabel translatorLabel = (InlineLabel) liElement.getWidget(0);
 
             if (translatorLabel.getText().equals(name)
                     && removeFormat(
@@ -80,8 +81,6 @@ public class TranslatorListWidget extends Composite {
     }
 
     interface Styles extends CssResource {
-
-        String translatorList();
 
         String userLabel();
     }

@@ -294,7 +294,7 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Show project-wide search view")
     String showProjectWideSearch();
 
-    @DefaultMessage("Warning! This is a public channel")
+    @DefaultMessage("This is a public channel")
     String thisIsAPublicChannel();
 
     @DefaultMessage("Only show documents that contain the search text with matching case")

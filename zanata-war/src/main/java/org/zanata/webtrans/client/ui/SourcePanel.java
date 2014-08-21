@@ -20,9 +20,6 @@
  */
 package org.zanata.webtrans.client.ui;
 
-import org.zanata.webtrans.client.resources.NavigationMessages;
-import org.zanata.webtrans.shared.model.TransUnitId;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,10 +30,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.zanata.webtrans.client.resources.NavigationMessages;
+import org.zanata.webtrans.shared.model.TransUnitId;
 
 public class SourcePanel extends Composite implements HasSelectableSource {
     private static SourcePanelUiBinder uiBinder = GWT
@@ -46,13 +45,11 @@ public class SourcePanel extends Composite implements HasSelectableSource {
     }
 
     interface Styles extends CssResource {
-        String nonSelectedRow();
-
         String selectedRow();
     }
 
     @UiField
-    HorizontalPanel container;
+    HTMLPanel container;
 
     @UiField
     RadioButton selectButton;
@@ -114,11 +111,11 @@ public class SourcePanel extends Composite implements HasSelectableSource {
 
     @Override
     public void setSelected(boolean selected) {
-        if (selected) {
-            container.setStyleName(style.selectedRow());
+        if (selected && selectButton.isVisible()) {
+            container.addStyleName(style.selectedRow());
             selectButton.setValue(true, true);
         } else {
-            container.setStyleName(style.nonSelectedRow());
+            container.removeStyleName(style.selectedRow());
         }
     }
 

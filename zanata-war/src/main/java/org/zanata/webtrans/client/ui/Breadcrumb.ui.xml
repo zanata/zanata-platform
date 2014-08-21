@@ -8,7 +8,6 @@
   <ui:style type="org.zanata.webtrans.client.ui.Breadcrumb.Styles">
     .container {
       display: inline-block;
-      font-size: 1.1em;
     }
 
     a.readOnlyLink, a.readOnlyLink:hover {
@@ -16,14 +15,6 @@
       color: #416988;
       text-decoration: none;
       cursor: default;
-    }
-
-    a.link {
-      font-weight: bold;
-    }
-
-    a.link:hover {
-      text-decoration: underline;
     }
 
     .divider {
@@ -34,8 +25,8 @@
   </ui:style>
 
   <g:HTMLPanel styleName="{style.container}">
-    <g:InlineLabel ui:field="rightChevron"
-      styleName="icon-right-open {style.divider}" />
-    <g:Anchor ui:field="link" styleName="{style.link}" />
+    <g:HTMLPanel tag="i" ui:field="rightChevron"
+      styleName="i i--arrow-right" />
+    <g:Anchor ui:field="link"/>
   </g:HTMLPanel>
 </ui:UiBinder>

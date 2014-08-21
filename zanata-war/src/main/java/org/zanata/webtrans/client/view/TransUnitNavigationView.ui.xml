@@ -7,8 +7,6 @@
 
     .navButton {
       cursor: pointer;
-      font-size: 18px;
-      color: #4E4E4E;
     }
 
     .navButton:hover {
@@ -16,34 +14,34 @@
     }
 
     .fuzzyUntranslated {
-      color: #c6d2db;
+      color: #c6d2db !important;
     }
 
     .fuzzy {
-      color: #e0c350;
+      color: #e0c350 !important;
     }
 
     .untranslated {
-      color: #c6d2db;
+      color: #c6d2db !important;
     }
 
   </ui:style>
   <fui:UnorderedListWidget styleName="list--horizontal">
     <g:HTMLPanel tag="li">
       <g:InlineLabel ui:field="firstEntry"
-        addStyleNames="{style.navButton} icon-to-start" />
+        styleName="{style.navButton} delta icon-to-start" />
     </g:HTMLPanel>
     <g:HTMLPanel tag="li">
       <g:InlineLabel ui:field="prevState"
-        addStyleNames="{style.navButton} icon-left-open" />
+        styleName="{style.navButton} gamma i i--arrow-left" />
     </g:HTMLPanel>
     <g:HTMLPanel tag="li">
       <g:InlineLabel ui:field="nextState"
-        addStyleNames="{style.navButton} icon-right-open-1" />
+        styleName="{style.navButton} gamma i i--arrow-right" />
     </g:HTMLPanel>
     <g:HTMLPanel tag="li">
       <g:InlineLabel ui:field="lastEntry"
-        addStyleNames="{style.navButton} icon-to-end" />
+        styleName="{style.navButton} delta icon-to-end" />
     </g:HTMLPanel>
   </fui:UnorderedListWidget>
 </ui:UiBinder>

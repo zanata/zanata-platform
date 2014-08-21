@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.HTMLPanel;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -39,7 +38,6 @@ import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -48,7 +46,6 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
@@ -234,9 +231,9 @@ public class DocumentListTable extends FlexTable {
             this.getCellFormatter().setStyleName(i + 1, REMAINING_COLUMN,
                     "remainingCol");
             this.getCellFormatter().setStyleName(i + 1, LAST_UPLOAD_COLUMN,
-                    "auditCol");
+                    "txt--understated auditCol");
             this.getCellFormatter().setStyleName(i + 1, LAST_TRANSLATED_COLUMN,
-                    "auditCol");
+                    "txt--understated auditCol");
             this.getCellFormatter().setStyleName(i + 1, ACTION_COLUMN,
                     "actionCol");
 
@@ -278,12 +275,12 @@ public class DocumentListTable extends FlexTable {
             this.add(loading);
 
             noError = new InlineLabel();
-            noError.setStyleName("icon-ok-circle-2");
+            noError.setStyleName("i--checkmark i");
             noError.setVisible(false);
             this.add(noError);
 
             hasError = new InlineLabel();
-            hasError.setStyleName("icon-cancel-circle-2 hasError");
+            hasError.setStyleName("i i--cancel txt--danger");
             hasError.setVisible(false);
             this.add(hasError);
 
@@ -419,7 +416,7 @@ public class DocumentListTable extends FlexTable {
         }
         Anchor upload = new Anchor();
         upload.setTitle(messages.uploadButtonTitle());
-        upload.setStyleName("icon-upload txt--lead l--push-left-half");
+        upload.setStyleName("i i--import l--push-left-half");
         upload.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

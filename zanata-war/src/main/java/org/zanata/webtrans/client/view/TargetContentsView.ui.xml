@@ -9,34 +9,20 @@
 
   <ui:style field="style"
     type="org.zanata.webtrans.client.view.TargetContentsView.Styles">
-    .targetContentsCell {
-      table-layout: fixed;
-    }
-
     .unsaved {
       background-color: #416988;
     }
 
     .saving {
       position: absolute;
-      left: 32px;
-      font-size: smaller;
-      color: #ffffff;
       z-index: 5;
-      background-color: #416988;
     }
 
     .commentIndicator {
       position: absolute;
-      right: 3px;
-      font-size: 12px;
-      color: #fff;
+      right: 0;
       z-index: 1;
-      font-weight: 600;
-      background-color: #a2b4c3;
-      border-radius: 2px;
       border: none;
-      padding: 2px 6px;
       cursor: pointer;
     }
 
@@ -44,24 +30,31 @@
       position: relative;
     }
 
+    .grid_table {
+      display:table !important;
+    }
+
   </ui:style>
 
-  <g:HorizontalPanel width="100%" addStyleNames="{style.targetContentsCell}">
-    <g:cell verticalAlignment="ALIGN_TOP">
-      <g:FlowPanel styleName="{style.container}">
-        <g:Label ui:field="savingIndicator" text="{messages.saving}"
-          styleName="icon-progress {style.saving}" visible="false" />
-        <g:Label ui:field="commentIndicator"
-          styleName="{style.commentIndicator}" visible="false" />
-        <g:Grid ui:field="editorGrid" />
-        <fui:ValidationMessagePanelView ui:field="validationPanel" />
-      </g:FlowPanel>
-    </g:cell>
-    <g:cell verticalAlignment="ALIGN_TOP" width="22px">
-      <g:HTMLPanel styleName="new-zanata">
-        <fui:EditorButtonsWidget ui:field="buttons" />
-      </g:HTMLPanel>
-    </g:cell>
-  </g:HorizontalPanel>
-
+  <g:HTMLPanel tag="ul" styleName="list--no-bullets l--push-h-quarter" ui:field="container">
+    <li>
+      <fui:TranslatorListWidget ui:field="translatorList" />
+    </li>
+    <li class="TableEditorCell-Target">
+      <g:Label ui:field="savingIndicator" text="{messages.saving}"
+        styleName="icon-progress {style.saving} txt--mini label--warning"
+        visible="false" />
+      <g:Label ui:field="commentIndicator"
+        styleName="{style.commentIndicator} badge--warning" visible="false" />
+      <g:Grid ui:field="editorGrid" styleName="{style.grid_table}"/>
+    </li>
+    <li class="g">
+        <div class="w--4-6 g__item">
+          <fui:ValidationMessagePanelView ui:field="validationPanel" />
+        </div>
+        <div class="w--2-6 g__item txt--align-right">
+          <fui:EditorButtonsWidget ui:field="buttons" />
+        </div>
+    </li>
+  </g:HTMLPanel>
 </ui:UiBinder>

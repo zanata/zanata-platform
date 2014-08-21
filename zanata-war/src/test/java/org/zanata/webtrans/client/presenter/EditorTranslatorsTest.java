@@ -1,8 +1,7 @@
 package org.zanata.webtrans.client.presenter;
 
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -10,13 +9,15 @@ import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
+import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -39,6 +40,8 @@ public class EditorTranslatorsTest {
     @Mock
     private ToggleEditor editor2;
     @Mock
+    private TargetContentsDisplay display;
+    @Mock
     private UserPanelSessionItem panelSessionItem;
 
     @BeforeMethod
@@ -47,14 +50,6 @@ public class EditorTranslatorsTest {
         editors = Lists.newArrayList(editor1, editor2);
 
         editorTranslators = new EditorTranslators(sessionService, identity);
-    }
-
-    @Test
-    public void testClearTranslators() {
-        editorTranslators.clearTranslatorList(editors);
-
-        verify(editor1).clearTranslatorList();
-        verify(editor2).clearTranslatorList();
     }
 
     @Test
@@ -74,11 +69,11 @@ public class EditorTranslatorsTest {
         when(identity.getEditorClientId()).thenReturn(ourClientId);
 
         // When:
-        editorTranslators.updateTranslator(editors, new TransUnitId(1));
+        editorTranslators.updateTranslator(display, new TransUnitId(1));
 
         // Then:
-        verify(editor1).addTranslator("admin", "red");
-        verify(editor2).addTranslator("admin", "red");
+        verify(display).addTranslator("admin", "red");
+        verify(display).addTranslator("admin", "red");
     }
 
     @Test
@@ -98,12 +93,12 @@ public class EditorTranslatorsTest {
         when(identity.getEditorClientId()).thenReturn(ourClientId);
 
         // When:
-        editorTranslators.updateTranslator(editors, new TransUnitId(2)); // different
+        editorTranslators.updateTranslator(display, new TransUnitId(2)); // different
                                                                          // id
 
         // Then:
-        verify(editor1).removeTranslator("admin", "red");
-        verify(editor2).removeTranslator("admin", "red");
+        verify(display).removeTranslator("admin", "red");
+        verify(display).removeTranslator("admin", "red");
     }
 
     @Test
@@ -117,7 +112,7 @@ public class EditorTranslatorsTest {
         when(panelSessionItem.getSelectedId()).thenReturn(null);
 
         // When:
-        editorTranslators.updateTranslator(editors, new TransUnitId(1));
+        editorTranslators.updateTranslator(display, new TransUnitId(1));
 
         // Then:
         verifyZeroInteractions(editor1, editor2);

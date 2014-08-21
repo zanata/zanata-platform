@@ -2,39 +2,41 @@ package org.zanata.webtrans.client.ui;
 
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import com.google.gwt.core.shared.GWT;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public class EditorButtonsWidget extends Composite {
     private static EditorButtonsWidgetUiBinder ourUiBinder = GWT
-        .create(EditorButtonsWidgetUiBinder.class);
+            .create(EditorButtonsWidgetUiBinder.class);
 
     @UiField
     HTMLPanel buttons;
     @UiField
-    InlineLabel saveIcon;
+    Anchor saveIcon;
     @UiField
-    InlineLabel fuzzyIcon;
+    Anchor fuzzyIcon;
     @UiField
-    InlineLabel cancelIcon;
+    Anchor cancelIcon;
     @UiField
-    InlineLabel historyIcon;
+    Anchor historyIcon;
     @UiField
     SimplePanel undoContainer;
     @UiField
+    Anchor acceptIcon;
+    @UiField
+    Anchor rejectIcon;
+
+    @UiField
     Style style;
-    @UiField
-    InlineLabel acceptIcon;
-    @UiField
-    InlineLabel rejectIcon;
 
     private TargetContentsDisplay.Listener listener;
     private TransUnitId id;
@@ -43,7 +45,7 @@ public class EditorButtonsWidget extends Composite {
         initWidget(ourUiBinder.createAndBindUi(this));
         setDisplayReviewButtons(listener != null && listener.canReview());
         setDisplayModifyTranslationButtons(listener != null
-            && listener.canEditTranslation());
+                && listener.canEditTranslation());
     }
 
     @Override
@@ -69,11 +71,11 @@ public class EditorButtonsWidget extends Composite {
     }
 
     public void addUndo(final UndoLink undoLink) {
-        undoLink.setLinkStyle("icon-undo " + style.button());
+        undoLink.setLinkStyle("icon-undo ");
         undoLink.setUndoCallback(new UndoLink.UndoCallback() {
             @Override
             public void preUndo() {
-                undoLink.setLinkStyle("icon-progress " + style.button());
+                undoLink.setLinkStyle("icon-progress ");
             }
 
             @Override
@@ -131,11 +133,9 @@ public class EditorButtonsWidget extends Composite {
     }
 
     interface EditorButtonsWidgetUiBinder extends
-        UiBinder<HTMLPanel, EditorButtonsWidget> {
+            UiBinder<HTMLPanel, EditorButtonsWidget> {
     }
 
     interface Style extends CssResource {
-
-        String button();
     }
 }

@@ -5,31 +5,40 @@
 
   <ui:style field="style"
     type="org.zanata.webtrans.client.ui.EditorButtonsWidget.Style">
-    .button {
-      cursor: pointer;
-      padding: 1px;
+    .buttons>li{
+      margin-right: 0 !important;
     }
-
-    .button:hover {
-      color: #0085CC;
-    }
-
   </ui:style>
 
-  <g:HTMLPanel ui:field="buttons" styleName="fadeElement buttons">
-    <g:InlineLabel ui:field="acceptIcon" title="{messages.reviewAccept}"
-      styleName="icon-thumbs-up {style.button}" />
-    <g:InlineLabel ui:field="rejectIcon" title="{messages.reviewReject}"
-      styleName="icon-thumbs-down {style.button}" />
-    <g:InlineLabel ui:field="saveIcon" title="{messages.editSaveShortcut}"
-      styleName="icon-install {style.button}" />
-    <g:InlineLabel ui:field="fuzzyIcon"
-      title="{messages.editSaveAsFuzzyShortcut}"
-      styleName="icon-flag-1 {style.button}" />
-    <g:InlineLabel ui:field="cancelIcon" title="{messages.editCancelShortcut}"
-      styleName="icon-cancel-circle {style.button}" />
-    <g:InlineLabel ui:field="historyIcon" title="{messages.history}"
-      styleName="icon-back-in-time {style.button}" />
-    <g:SimplePanel ui:field="undoContainer" />
+
+  <g:HTMLPanel tag="ul" ui:field="buttons"
+    styleName="fadeElement buttons list--horizontal {style.buttons}">
+    <li>
+      <g:Anchor ui:field="acceptIcon" title="{messages.reviewAccept}"
+        styleName="icon-thumbs-up" />
+    </li>
+    <li>
+      <g:Anchor ui:field="rejectIcon" title="{messages.reviewReject}"
+        styleName="icon-thumbs-down" />
+    </li>
+    <li>
+      <g:Anchor ui:field="saveIcon" title="{messages.editSaveShortcut}"
+        styleName="icon-install" />
+    </li>
+    <li>
+      <g:Anchor ui:field="fuzzyIcon" title="{messages.editSaveAsFuzzyShortcut}"
+        styleName="icon-flag-1" />
+    </li>
+    <li>
+      <g:Anchor ui:field="cancelIcon" title="{messages.editCancelShortcut}"
+        styleName="icon-cancel-circle" />
+    </li>
+    <li>
+      <g:Anchor ui:field="historyIcon" title="{messages.history}"
+        styleName="icon-back-in-time" />
+    </li>
+    <li>
+      <g:SimplePanel ui:field="undoContainer" />
+    </li>
   </g:HTMLPanel>
 </ui:UiBinder>

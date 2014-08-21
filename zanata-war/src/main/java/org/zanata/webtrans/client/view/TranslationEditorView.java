@@ -23,7 +23,6 @@ package org.zanata.webtrans.client.view;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.Pager;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,7 +34,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -67,8 +65,8 @@ public class TranslationEditorView extends Composite implements
 
     private final WebTransMessages messages;
 
-    private final static String STYLE_HIDE_SOUTHPANEL = "icon-down-circle";
-    private final static String STYLE_RESTORE_SOUTHPANEL = "icon-up-circle";
+    private final static String STYLE_HIDE_SOUTHPANEL = "i--arrow-down";
+    private final static String STYLE_RESTORE_SOUTHPANEL = "i--arrow-up";
 
     @Inject
     public TranslationEditorView(final WebTransMessages messages,

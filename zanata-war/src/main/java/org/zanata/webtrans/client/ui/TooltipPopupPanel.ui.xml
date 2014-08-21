@@ -16,68 +16,44 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
-    .table {
-      text-align: center;
-      font-size: 12px
-    }
-
     .table td {
       width: 75px;
-      font-weight: 600;
+      border: 1px solid;
     }
 
     .topHeader {
-      border: none;
-      color: #4F4F4F;
+      border: none !important;
       white-space: nowrap;
-      padding: 2px;
-      font-weight: 700;
     }
 
     .translated-header {
-      border: none;
       color: #70a98b;
-      white-space: nowrap;
-      padding: 2px;
     }
 
     .rejected-header {
-      border: none;
       color: #e3824e;
-      white-space: nowrap;
-      padding: 2px;
     }
 
     .approved-header {
-      border: none;
       color: #4e9fdd;
-      white-space: nowrap;
-      padding: 2px;
     }
 
     .draft-header {
-      border: none;
       color: #e0c350;
-      white-space: nowrap;
-      padding: 2px;
     }
 
     .untranslated-header {
-      border: none;
       color: #c6d2db;
-      white-space: nowrap;
-      padding: 2px;
     }
 
     td.sideHeader {
-      border: none;
-      color: #4F4F4F;
       white-space: nowrap;
       width: 40px;
+      border: none !important;
     }
 
     .total {
-      border: none;
+      border: none !important;
       color: #4F4F4F;
     }
 
@@ -103,20 +79,20 @@
 
   </ui:style>
 
-  <g:HTMLPanel>
+  <g:HTMLPanel styleName="new-zanata">
     <g:Grid styleName="{style.table}" cellPadding="2" ui:field="grid">
       <g:row>
         <g:cell styleName="{style.sideHeader}" />
-        <g:cell styleName="{style.approved-header}">Approved</g:cell>
-        <g:cell styleName="{style.translated-header}">Translated</g:cell>
-        <g:cell styleName="{style.draft-header}">Draft</g:cell>
-        <g:cell styleName="{style.untranslated-header}">Untranslated</g:cell>
-        <g:cell styleName="{style.topHeader}">Total</g:cell>
+        <g:cell styleName="{style.approved-header} {style.topHeader}">Approved</g:cell>
+        <g:cell styleName="{style.translated-header} {style.topHeader}">Translated</g:cell>
+        <g:cell styleName="{style.draft-header} {style.topHeader}">Draft</g:cell>
+        <g:cell styleName="{style.untranslated-header} {style.topHeader}">Untranslated</g:cell>
+        <g:cell styleName="{style.total}">Total</g:cell>
 
       </g:row>
 
       <g:row>
-        <g:cell styleName="{style.sideHeader}">Words</g:cell>
+        <g:cell styleName="{style.sideHeader} txt--understated">Words</g:cell>
         <g:customCell styleName="{style.approved}">
           <g:InlineLabel ui:field="wordApproved" />
         </g:customCell>
@@ -135,7 +111,7 @@
       </g:row>
 
       <g:row>
-        <g:cell styleName="{style.sideHeader}">Msg</g:cell>
+        <g:cell styleName="{style.sideHeader} txt--understated">Msg</g:cell>
         <g:customCell styleName="{style.approved}">
           <g:InlineLabel ui:field="msgApproved" />
         </g:customCell>

@@ -161,7 +161,7 @@ public class AppView extends Composite implements AppDisplay,
 
         initWidget(uiBinder.createAndBindUi(this));
 
-        readOnlyLabel.setText("[" + messages.readOnly() + "]");
+        readOnlyLabel.setTitle(messages.readOnly());
 
         keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
 

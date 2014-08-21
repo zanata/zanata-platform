@@ -3,10 +3,6 @@
   xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
   <ui:style type="org.zanata.webtrans.client.ui.Pager.Styles">
-    .nav-button {
-      font-size: 1.2em;
-    }
-
     .textBox {
       width: 3em !important;
     }
@@ -17,31 +13,29 @@
     }
   </ui:style>
 
-  <g:HTMLPanel styleName="new-zanata">
-    <ul class="list--horizontal txt--align-center">
-      <li>
-        <g:Anchor ui:field="firstPage"
-          addStyleNames="{style.nav-button} icon-to-start" />
-      </li>
-      <li>
-        <g:Anchor ui:field="prevPage"
-          addStyleNames="{style.nav-button} icon-left-open" />
-      </li>
-      <li>
-        <g:TextBox ui:field="gotoPage" maxLength="8"
-          styleName="{style.textBox} l--push-bottom-0" />
-      </li>
-      <li>
-        <g:InlineLabel ui:field="pageCountLabel" />
-      </li>
-      <li>
-        <g:Anchor ui:field="nextPage"
-          addStyleNames="{style.nav-button} icon-right-open-1" />
-      </li>
-      <li>
-        <g:Anchor ui:field="lastPage"
-          addStyleNames="{style.nav-button} icon-to-end" />
-      </li>
-    </ul>
+  <g:HTMLPanel tag="ul" styleName="list--horizontal txt--align-center">
+    <li>
+      <g:Anchor ui:field="firstPage"
+        styleName="txt--lead icon-to-start" />
+    </li>
+    <li>
+      <g:Anchor ui:field="prevPage"
+        styleName="txt--hero i i--arrow-left" />
+    </li>
+    <li>
+      <g:TextBox ui:field="gotoPage" maxLength="8"
+        styleName="{style.textBox} l--push-all-0" />
+    </li>
+    <li>
+      <g:InlineLabel ui:field="pageCountLabel" styleName="txt--understated" />
+    </li>
+    <li>
+      <g:Anchor ui:field="nextPage"
+        styleName="txt--hero i i--arrow-right" />
+    </li>
+    <li>
+      <g:Anchor ui:field="lastPage"
+        styleName="txt--lead icon-to-end" />
+    </li>
   </g:HTMLPanel>
 </ui:UiBinder>

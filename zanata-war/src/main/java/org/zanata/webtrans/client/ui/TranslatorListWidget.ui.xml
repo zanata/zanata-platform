@@ -2,26 +2,15 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   <ui:style field="style"
     type="org.zanata.webtrans.client.ui.TranslatorListWidget.Styles">
-    .translatorList {
-      float: right;
-      margin-left: 7px;
-      margin-right: 3px;
-      height: 100%;
-      overflow-y: auto;
-      width: 54px;
-    }
-
     .userLabel {
-      font-size: 10px;
-      text-align: center;
-      color: #FFFFFF;
       text-overflow: ellipsis;
       overflow: hidden;
     }
 
   </ui:style>
 
-  <g:HTMLPanel styleName="{style.translatorList}" ui:field="container">
+  <g:HTMLPanel tag="ul" ui:field="container"
+    styleName="list--horizontal txt--mini txt--invert l--push-h-half">
 
   </g:HTMLPanel>
 </ui:UiBinder>
