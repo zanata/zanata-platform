@@ -26,7 +26,7 @@
 </composite:interface>
 
 <composite:implementation>
-  <div class="form__checkbox js-form__checkbox #{cc.attrs.styleClass}"
+  <div class="form__checkbox js-form__checkbox #{cc.attrs.styleClass}" id="#{cc.clientId}"
     onclick="onCheckboxValueChanged(this, #{cc.attrs.onValueChanged})">
     <s:fragment rendered="#{cc.attrs.checked}">
       <input type="checkbox" value="#{cc.attrs.value}"

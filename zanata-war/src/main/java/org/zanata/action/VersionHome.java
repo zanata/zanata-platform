@@ -21,22 +21,14 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.event.ValueChangeEvent;
-import javax.persistence.EntityNotFoundException;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -65,10 +57,15 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.faces.application.FacesMessage;
+import javax.faces.event.ValueChangeEvent;
+import javax.persistence.EntityNotFoundException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Name("versionHome")
 @Slf4j
@@ -127,7 +124,8 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             new VersionLocaleAutocomplete();
 
     @Getter
-    private boolean copyFromVersion;
+    @Setter
+    private boolean copyFromVersion = true;
 
     @Getter
     @Setter
@@ -144,41 +142,30 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                 }
             };
 
-    public void setCopyFromVersion(boolean copyFromVersion) {
-        this.copyFromVersion = copyFromVersion;
+    private void setDefaultCopyFromVersion() {
         List<VersionItem> otherVersions = getOtherVersions();
-        if (!otherVersions.isEmpty()) {
+        if (!otherVersions.isEmpty()
+                && StringUtils.isEmpty(copyFromVersionSlug)) {
             this.copyFromVersionSlug =
                     otherVersions.get(0).getVersion().getSlug();
-        } else {
-            this.copyFromVersionSlug = "";
         }
-    }
-
-    public void reset() {
-        slug = null;
-        copyFromVersionSlug = null;
-        clearInstance();
     }
 
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {
-            // set copy from version option to true
-            if (StringUtils.isNotEmpty(copyFromVersionSlug)) {
-                copyFromVersion = true;
-            } else {
-                ProjectType projectType = getProject().getDefaultProjectType();
-                if (projectType != null) {
-                    selectedProjectType = projectType.name();
-                }
+            ProjectType projectType = getProject().getDefaultProjectType();
+            if (projectType != null) {
+                selectedProjectType = projectType.name();
             }
-
+            setDefaultCopyFromVersion();
         } else {
             ProjectType versionProjectType = getInstance().getProjectType();
             if (versionProjectType != null) {
                 selectedProjectType = versionProjectType.name();
             }
+            copyFromVersion = false;
+            copyFromVersionSlug = "";
         }
     }
 
@@ -465,11 +452,13 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     }
 
     /**
-     * @return comma-separated list of accepted file extensions. May be an empty string
+     * @return comma-separated list of accepted file extensions. May be an empty
+     *         string
      */
     public String getAcceptedSourceFileTypes() {
-        return Joiner.on(", ")
-            .join(ProjectType.getSupportedSourceFileTypes(getProjectType()));
+        return Joiner
+                .on(", ")
+                .join(ProjectType.getSupportedSourceFileTypes(getProjectType()));
     }
 
     private void updateProjectType() {

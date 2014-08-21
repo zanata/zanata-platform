@@ -66,12 +66,16 @@
     </s:decorate>
   </div>
 
-  <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}"
+  <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}" id="copy-from-version"
     rendered="#{not versionHome.managed and not empty versionHome.project.projectIterations}"
     onValueChanged="bindCopyFromVersion" value="copy-version-checkbox"
     styleClass="l--push-v-1" checked="#{versionHome.copyFromVersion}"/>
 
   <s:div id="project-type-list">
+    <h:inputHidden id="selectedProjectType"
+      value="#{versionHome.selectedProjectType}"
+      valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
+
     <s:fragment rendered="#{not versionHome.copyFromVersion}">
       <h3
         class="heading--secondary l--push-all-0">#{msgs['jsf.projectType']}</h3>
@@ -90,10 +94,6 @@
         render="copy-project-type, project-type"
         oncomplete="zanata.form.appendRadios(getProjectTypeId())"
         disabled="#{versionHome.instance.projectType.name() eq versionHome.instance.project.defaultProjectType.name()}"/>
-
-      <h:inputHidden id="selectedProjectType"
-        value="#{versionHome.selectedProjectType}"
-        valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
 
       <s:div id="project-type">
         <ul class="list--slat l--push-bottom-1">

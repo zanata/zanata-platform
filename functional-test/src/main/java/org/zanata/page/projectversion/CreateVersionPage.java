@@ -20,6 +20,7 @@
  */
 package org.zanata.page.projectversion;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -36,7 +37,7 @@ public class CreateVersionPage extends BasePage {
 
     public final static String VALIDATION_ERROR =
             "must start and end with letter or number, and contain only " +
-            "letters, numbers, periods, underscores and hyphens.";
+                    "letters, numbers, periods, underscores and hyphens.";
 
     @FindBy(id = "create-version-form:project-type")
     private WebElement projectTypeSelection;
@@ -47,6 +48,9 @@ public class CreateVersionPage extends BasePage {
     @FindBy(id = "create-version-form:button-create")
     private WebElement saveButton;
 
+    @FindBy(id = "create-version-form:copy-from-version")
+    private WebElement copyFromPreviousVersionChk;
+
     private static final Map<String, String> projectTypeOptions =
             Constants.projectTypeOptions();
 
@@ -56,6 +60,7 @@ public class CreateVersionPage extends BasePage {
 
     /**
      * Enter a version ID - only available on creating a new version
+     *
      * @param versionId
      * @return new CreateVersionPage
      */
@@ -64,7 +69,8 @@ public class CreateVersionPage extends BasePage {
             @Override
             public boolean apply(WebDriver input) {
                 getVersionIdField().clear();
-                new Actions(getDriver()).moveToElement(getVersionIdField()).perform();
+                new Actions(getDriver()).moveToElement(getVersionIdField())
+                        .perform();
                 getVersionIdField().sendKeys(versionId);
                 return true;
             }
@@ -72,8 +78,21 @@ public class CreateVersionPage extends BasePage {
         return new CreateVersionPage(getDriver());
     }
 
+    public CreateVersionPage clickCopyFromVersion() {
+        copyFromPreviousVersionChk.click();
+        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver driver) {
+                return getDriver().findElement(By.id(
+                        "create-version-form:project-type-list"));
+            }
+        });
+        return this;
+    }
+
     private WebElement getVersionIdField() {
-        return getDriver().findElement(By.id("create-version-form:slugField:slug"));
+        return getDriver().findElement(
+                By.id("create-version-form:slugField:slug"));
     }
 
     public CreateVersionPage selectProjectType(String projectType) {

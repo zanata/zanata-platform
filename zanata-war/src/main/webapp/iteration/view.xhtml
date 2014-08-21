@@ -408,8 +408,8 @@
               </s:fragment>
               <s:fragment rendered="#{s:hasPermission(versionHome.instance.project, 'insert')}">
                 <li>
-                  <s:link view="/project/add_iteration.xhtml" action="#{versionHome.reset()}"
-                    styleClass="i__item--right"
+                  <s:link view="/project/add_iteration.xhtml"
+                    styleClass="i__item--right" propagation="none"
                     value="#{msgs['jsf.copyVersion.versionPage.label']}">
                     <f:param name="projectSlug" value="#{versionHome.projectSlug}"/>
                     <f:param name="copyFromVersionSlug" value="#{versionHome.slug}"/>

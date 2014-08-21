@@ -131,6 +131,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         }
         return projectVersionsPage
                 .clickCreateVersionLink()
+                .clickCopyFromVersion()
                 .inputVersionId(versionID)
                 .selectProjectType(versionType)
                 .saveVersion();

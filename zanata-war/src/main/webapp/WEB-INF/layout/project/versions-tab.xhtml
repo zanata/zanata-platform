@@ -45,7 +45,7 @@
       status="versionTab-versionsLoader"/>
 
     <s:fragment
-      rendered="#{s:hasPermission(projectHome.instance, 'insert')}">
+      rendered="#{s:hasPermission(projectHome.instance, 'update')}">
       <div
         class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
         id="versions-more-actions">
@@ -55,10 +55,9 @@
         <ul class="dropdown__content js-dropdown__content" role="content"
           aria-labelledby="dropdownContent">
           <li>
-            <s:link id="new-version-link"
+            <s:link id="new-version-link" propagation="none"
               value="#{msgs['jsf.project.NewVersion']}"
-              view="/project/add_iteration.xhtml"
-              action="#{versionHome.reset()}">
+              view="/project/add_iteration.xhtml">
               <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
               <i class="i i--plus i__item__icon"></i>
             </s:link>
@@ -140,11 +139,10 @@
                 </a>
                 <ul class="dropdown__content js-dropdown__content">
                   <s:fragment
-                    rendered="#{s:hasPermission(projectHome.instance, 'insert')}">
+                    rendered="#{s:hasPermission(projectHome.instance, 'update')}">
                     <li>
                       <s:link view="/project/add_iteration.xhtml"
-                        action="#{versionHome.reset()}"
-                        styleClass="i__item--right"
+                        propagation="none" styleClass="i__item--right"
                         value="#{msgs['jsf.copyVersion.versionPage.label']}">
                         <f:param name="projectSlug"
                           value="#{projectHome.slug}"/>
@@ -189,7 +187,7 @@
               </div>
             </s:div>
 
-            <s:link view="/iteration/view.xhtml" action="#{versionHome.reset()}"
+            <s:link view="/iteration/view.xhtml" propagation="none"
               disabled="#{projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
               <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
