@@ -49,6 +49,8 @@
     <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
     <class>org.zanata.model.tm.TransMemory</class>
 
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
     <properties>
       <!--
           Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when
@@ -105,7 +107,8 @@
            See http://stackoverflow.com/a/8701914
       -->
       <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+        value="org.hibernate.cache.infinispan.JndiInfinispanRegionFactory" />
+      <property name="hibernate.cache.infinispan.cachemanager" value="java:jboss/infinispan/container/hibernate" />
       <property name="hibernate.cache.region_prefix" value="" />
 
       <!-- Default EHcache config location -->

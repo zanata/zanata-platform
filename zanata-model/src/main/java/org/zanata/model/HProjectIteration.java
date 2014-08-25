@@ -75,7 +75,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @Restrict
 @EntityRestrict({ INSERT, UPDATE, DELETE })

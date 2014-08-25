@@ -38,7 +38,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Setter
 @ToString(callSuper = true)
 public class HRoleAssignmentRule extends ModelEntityBase {

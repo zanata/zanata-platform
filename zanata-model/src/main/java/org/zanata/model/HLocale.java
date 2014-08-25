@@ -50,7 +50,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.ibm.icu.util.ULocale;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 @Setter
 @NoArgsConstructor
@@ -101,7 +101,7 @@ public class HLocale extends ModelEntityBase implements Serializable {
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.supportedLanguage")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     public Set<HLocaleMember> getMembers() {
         if (this.members == null) {
             this.members = new HashSet<HLocaleMember>();

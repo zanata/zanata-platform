@@ -39,7 +39,7 @@ import org.zanata.model.HLocale;
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Setter
 @ToString(callSuper = true, of = "targetLanguage")
 public class HPoTargetHeader extends PoHeaderBase {
