@@ -11,6 +11,7 @@
     <exclusions>
     </exclusions>
     <dependencies>
+      <module name="org.infinispan" />
       <!-- needed by arquillian test -->
       <module name="com.h2database.h2" />
       <module name="javax.annotation.api" />

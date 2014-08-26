@@ -586,6 +586,13 @@
       </dependency>
 
       <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-infinispan</artifactId>
+        <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>4.0.4.Final</version>
