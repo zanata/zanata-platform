@@ -62,6 +62,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
 
+    private SeamAutowire seam = SeamAutowire.instance();
+
     @Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
@@ -75,13 +77,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance().reset().use("resourceUtils", resourceUtils)
-                        .autowire(TransUnitTransformer.class);
+            seam.reset().use("resourceUtils", resourceUtils)
+                .autowire(TransUnitTransformer.class);
 
-        SeamAutowire seam =
-                SeamAutowire
-                        .instance()
-                        .use("localeServiceImpl", localeService)
+            seam.use("localeServiceImpl", localeService)
                         .use("documentDAO", new DocumentDAO(getSession()))
                         .use("projectIterationDAO",
                                 new ProjectIterationDAO(getSession()))

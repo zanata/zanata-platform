@@ -1,5 +1,6 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ *
+ * Copyright 2010-2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -22,6 +23,7 @@ package org.zanata.service;
 
 import org.zanata.common.LocaleId;
 import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
 
@@ -52,7 +54,6 @@ public interface TranslationStateCache {
      *
      * @param documentId
      * @param localeId
-     * @return
      */
     DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId);
 
@@ -62,8 +63,16 @@ public interface TranslationStateCache {
      *
      * @param textFlowTargetId
      * @param validationId
-     * @return
      */
     Boolean textFlowTargetHasWarningOrError(Long textFlowTargetId,
-            ValidationId validationId);
+        ValidationId validationId);
+
+    /**
+     * Return document wordStatistic in given localeId
+     *
+     * @param documentId
+     * @param localeId
+     */
+    WordStatistic getDocumentStatistics(Long documentId,
+            LocaleId localeId);
 }

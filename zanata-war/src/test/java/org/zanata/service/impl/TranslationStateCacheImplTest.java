@@ -36,8 +36,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.service.ValidationService;
-import org.zanata.service.impl.TranslationStateCacheImpl.TranslatedDocumentKey;
+import org.zanata.service.impl.TranslationStateCacheImpl.DocumentLocaleKey;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -48,7 +48,10 @@ import com.google.common.cache.CacheLoader;
 public class TranslationStateCacheImplTest {
     TranslationStateCacheImpl tsCache;
     @Mock
-    private CacheLoader<TranslatedDocumentKey, DocumentStatus> docStatsLoader;
+    private CacheLoader<DocumentLocaleKey, WordStatistic> docStatisticLoader;
+
+    @Mock
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader;
     @Mock
     private TextFlowTargetDAO textFlowTargetDAO;
     @Mock
@@ -58,7 +61,7 @@ public class TranslationStateCacheImplTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         tsCache =
-                new TranslationStateCacheImpl(docStatsLoader,
+                new TranslationStateCacheImpl(docStatisticLoader, docStatsLoader,
                         targetValidationLoader) {
             @Override
             TextFlowTargetDAO getTextFlowTargetDAO() {
@@ -80,8 +83,8 @@ public class TranslationStateCacheImplTest {
         // Given:
         Long documentId = new Long("100");
         LocaleId testLocaleId = LocaleId.DE;
-        TranslatedDocumentKey key =
-                new TranslatedDocumentKey(documentId, testLocaleId);
+        TranslationStateCacheImpl.DocumentLocaleKey key =
+                new DocumentLocaleKey(documentId, testLocaleId);
         DocumentStatus docStats =
                 new DocumentStatus(new DocumentId(documentId, ""), new Date(),
                         "");
