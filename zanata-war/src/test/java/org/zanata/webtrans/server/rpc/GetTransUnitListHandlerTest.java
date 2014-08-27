@@ -50,7 +50,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 @Test(groups = { "jpa-tests" })
 @Slf4j
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
-
     private GetTransUnitListHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -62,6 +61,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private final DocumentInfo document = TestFixture.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
+
     private SeamAutowire seam = SeamAutowire.instance();
 
     @Override
@@ -77,24 +77,24 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance().reset().use("resourceUtils", resourceUtils)
-                        .autowire(TransUnitTransformer.class);
+            seam.reset().use("resourceUtils", resourceUtils)
+                .autowire(TransUnitTransformer.class);
 
-        seam.use("localeServiceImpl", localeService)
-                .use("documentDAO", new DocumentDAO(getSession()))
-                .use("projectIterationDAO",
-                        new ProjectIterationDAO(getSession()))
-                .use("entityManager",
-                        new FullTextEntityManagerImpl(getEm()))
-                .use("session", new FullTextSessionImpl(getSession()))
-                .use("identity", identity)
-                .use("textFlowDAO", new TextFlowDAO(getSession()))
-                .use("transUnitTransformer", transUnitTransformer)
-                .use("webtrans.gwt.GetTransUnitsNavigationHandler",
-                        getTransUnitsNavigationService)
-                .useImpl(TranslationStateCacheImpl.class)
-                .useImpl(TextFlowSearchServiceImpl.class)
-                .useImpl(ValidationServiceImpl.class).allowCycles();
+            seam.use("localeServiceImpl", localeService)
+                        .use("documentDAO", new DocumentDAO(getSession()))
+                        .use("projectIterationDAO",
+                                new ProjectIterationDAO(getSession()))
+                        .use("entityManager",
+                                new FullTextEntityManagerImpl(getEm()))
+                        .use("session", new FullTextSessionImpl(getSession()))
+                        .use("identity", identity)
+                        .use("textFlowDAO", new TextFlowDAO(getSession()))
+                        .use("transUnitTransformer", transUnitTransformer)
+                        .use("webtrans.gwt.GetTransUnitsNavigationHandler",
+                                getTransUnitsNavigationService)
+                        .useImpl(TranslationStateCacheImpl.class)
+                        .useImpl(TextFlowSearchServiceImpl.class)
+                        .useImpl(ValidationServiceImpl.class).allowCycles();
 
         // @formatter:off
       handler = seam.autowire(GetTransUnitListHandler.class);

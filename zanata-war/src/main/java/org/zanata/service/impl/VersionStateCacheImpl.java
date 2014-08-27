@@ -97,10 +97,10 @@ public class VersionStateCacheImpl implements VersionStateCache {
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
-        TextFlowDAO textFlowDAO = serviceLocator.getInstance(TextFlowDAO.class);
-        HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
-
         if (stats != null) {
+            TextFlowDAO textFlowDAO = serviceLocator.getInstance(TextFlowDAO.class);
+            HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
+
             stats.decrement(event.getPreviousState(),
                     textFlow.getWordCount().intValue());
             stats.increment(event.getNewState(),
