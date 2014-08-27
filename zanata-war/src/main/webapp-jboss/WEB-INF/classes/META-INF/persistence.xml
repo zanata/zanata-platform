@@ -89,8 +89,8 @@
       <property name="hibernate.search.default.directory_provider"
         value="infinispan" />
       <!-- to use an existing cache manager (Good for external configuration) -->
-      <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"
-        value="java:jboss/mycachemanager"/>-->
+      <property name="hibernate.search.infinispan.cachemanager_jndiname"
+        value="java:jboss/infinispan/container/hibernate-search"/>
       <!--<property name="hibernate.search.lucene_version" value="LUCENE_36" />-->
       <property name="hibernate.search.worker.batch_size" value="50" />
 
