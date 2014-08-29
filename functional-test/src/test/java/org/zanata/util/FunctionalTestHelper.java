@@ -61,4 +61,16 @@ public class FunctionalTestHelper {
         if (condition)
             throw new RuntimeException(message);
     }
+
+    /**
+     * Converts literal text into a loose regex pattern, ignoring preceding
+     * and following text, and matching space chars against any whitespace
+     * @param text
+     * @return
+     */
+    public static String loosely(String text) {
+        return ".*" + text.replace(" ", "\\s+") + ".*";
+    }
+
+
 }
