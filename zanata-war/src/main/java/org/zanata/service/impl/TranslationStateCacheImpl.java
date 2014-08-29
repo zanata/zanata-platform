@@ -193,10 +193,12 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private void updateDocStatusCache(DocumentLocaleKey key,
             Long updatedTargetId) {
         DocumentStatus documentStatus = docStatusCache.get(key);
-        HTextFlowTarget target =
+        if(documentStatus != null) {
+            HTextFlowTarget target =
                 getTextFlowTargetDAO().findById(updatedTargetId, false);
-        updateDocumentStatus(getDocumentDAO(), documentStatus,
+            updateDocumentStatus(getDocumentDAO(), documentStatus,
                 key.getDocumentId(), target);
+        }
     }
 
     private Boolean loadTargetValidation(Long textFlowTargetId,
