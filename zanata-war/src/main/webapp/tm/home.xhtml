@@ -107,9 +107,6 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <ui:remove><!-- Simply needed to load jQuery --></ui:remove>
-    <rich:jQuery query="jquery"/>
-
     <s:decorate id="main_content">
       <s:fragment
         rendered="#{translationMemoryAction.allTranslationMemories.size() eq 0}">

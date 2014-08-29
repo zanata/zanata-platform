@@ -39,7 +39,7 @@
     <zanata.client.version>3.3.1</zanata.client.version>
     <zanata.common.version>3.3.0</zanata.common.version>
 
-    <richfaces.version>4.3.4.Final</richfaces.version>
+    <richfaces.version>4.3.7.Final</richfaces.version>
     <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->

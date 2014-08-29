@@ -58,12 +58,14 @@
       TODO: When this is set to all, css from custom Richfaces components
       such as zanata-richfaces-ui components are not loaded.
     -->
-    <param-value>false</param-value>
+    <param-value>true</param-value>
   </context-param>
 
+  <!-- Enable this to stop optimizing resources
+  (for example: to debug javascript) -->
   <!--<context-param>
-    <param-name>org.richfaces.LoadScriptStrategy</param-name>
-    <param-value>DEFAULT</param-value>
+    <param-name>javax.faces.PROJECT_STAGE</param-name>
+    <param-value>Development</param-value>
   </context-param>-->
 
   <!--
