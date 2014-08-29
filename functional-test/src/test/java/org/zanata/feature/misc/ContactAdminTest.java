@@ -20,6 +20,7 @@ import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.FunctionalTestHelper.loosely;
 
 /**
  * @author Patrick Huang <a
@@ -70,7 +71,7 @@ public class ContactAdminTest extends ZanataTestCase {
                 .contains("Zanata user ")
                 .contains("translator")
                 .contains(" with id ")
-                .contains(" has sent the following message:")
+                .matches(loosely(" has sent the following message:"))
                 .as("The email header is correct");
         assertThat(content)
                 .contains("I love Zanata")
