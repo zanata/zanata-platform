@@ -21,7 +21,6 @@
 package org.zanata.feature.editor;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,11 +29,11 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -57,9 +56,11 @@ public class TranslateOdsTest extends ZanataTestCase {
             new CleanDocumentStorageRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
+    private ZanataRestCaller zanataRestCaller;
 
     @Before
     public void before() {
+        zanataRestCaller = new ZanataRestCaller();
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
@@ -74,10 +75,11 @@ public class TranslateOdsTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicOdsFile() {
         File testfile = testFileGenerator.openTestFile("test-ods.ods");
+        zanataRestCaller.createProjectAndVersion("ods-translate", "ods", "file");
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
+                .goToProjectByName("ods-translate")
+                .gotoVersion("ods")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()

@@ -21,10 +21,12 @@
 package org.zanata.workflow;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
+import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 
 import java.util.HashMap;
@@ -122,19 +124,24 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      */
     public VersionLanguagesPage createNewProjectVersion(String projectName,
             String versionID, String versionType) {
-        ProjectVersionsPage projectVersionsPage = goToProjectByName(projectName);
+        ProjectVersionsPage projectVersionsPage =
+                goToProjectByName(projectName);
         if (projectVersionsPage.getVersions().contains(versionID)) {
             log.warn("{} has already been created. " +
                     "Presumably you are running this test manually and more" +
                     " than once.", versionID);
             return projectVersionsPage.gotoVersion(versionID);
         }
-        return projectVersionsPage
-                .clickCreateVersionLink()
-                .clickCopyFromVersion()
-                .inputVersionId(versionID)
-                .selectProjectType(versionType)
-                .saveVersion();
+        CreateVersionPage createVersionPage = projectVersionsPage
+                .clickCreateVersionLink();
+        // First version has no copy options
+        if (driver.findElements(By.id("create-version-form:copy-from-version"))
+                .size() > 0) {
+            createVersionPage = createVersionPage
+                    .clickCopyFromVersion()
+                    .selectProjectType(versionType);
+        }
+        return createVersionPage.inputVersionId(versionID).saveVersion();
     }
 
     public ProjectVersionsPage goToProjectByName(String projectName) {
