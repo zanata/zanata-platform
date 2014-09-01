@@ -34,6 +34,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -55,10 +56,12 @@ public class TranslateIdmlTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @Before
     public void before() {
+        zanataRestCaller = new ZanataRestCaller();
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
@@ -72,11 +75,12 @@ public class TranslateIdmlTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicIdmlFile() {
+        zanataRestCaller.createProjectAndVersion("idml-translate", "idml", "file");
         File testfile = testFileGenerator.openTestFile("test-idml.idml");
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
+                .goToProjectByName("idml-translate")
+                .gotoVersion("idml")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()

@@ -296,8 +296,8 @@ public class UploadTest extends ZanataTestCase {
                 .submitUpload();
 
         assertThat(versionDocumentsTab.getUploadError())
-                .contains("is not valid for a source file on this server")
-                .as("Unrecognized file extension error is shown");
+                .contains(VersionDocumentsTab.UNSUPPORTED_FILETYPE)
+                .as("Unsupported file type error is shown");
     }
 
 }

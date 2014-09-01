@@ -34,6 +34,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -55,10 +56,13 @@ public class TranslateTextTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
+
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @Before
     public void before() {
+        zanataRestCaller = new ZanataRestCaller();
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
@@ -75,10 +79,10 @@ public class TranslateTextTest extends ZanataTestCase {
         File testfile = testFileGenerator.generateTestFileWithContent(
                 "basictext",".txt",
                 "Line One\nLine Two\nLine Three");
-
+        zanataRestCaller.createProjectAndVersion("txt-translate", "txt", "file");
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
+                .goToProjectByName("txt-translate")
+                .gotoVersion("txt")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()

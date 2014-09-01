@@ -16,6 +16,9 @@ import org.zanata.page.projectversion.VersionBasePage;
  */
 public class VersionDocumentsTab extends VersionBasePage {
 
+    public static final String UNSUPPORTED_FILETYPE =
+            " is not a supported file type.";
+
     public VersionDocumentsTab(WebDriver driver) {
         super(driver);
     }

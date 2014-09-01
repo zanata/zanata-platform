@@ -185,12 +185,12 @@ public class EditorPage extends BasePage {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
-                        .findElement(By.className("icon-cog"))
+                        .findElement(By.className("i--settings"))
                         .isEnabled();
             }
         });
         new Actions(getDriver()).click(
-                getDriver().findElement(By.className("icon-cog"))).perform();
+                getDriver().findElement(By.className("i--settings"))).perform();
         return waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
@@ -385,7 +385,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage openValidationOptions() {
-        getDriver().findElement(By.className("icon-check")).click();
+        getDriver().findElement(By.className("i--checkmark")).click();
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {

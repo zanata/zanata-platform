@@ -38,6 +38,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -63,6 +64,7 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @DataPoint
@@ -74,6 +76,7 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
 
     @Before
     public void before() {
+        zanataRestCaller = new ZanataRestCaller();
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
@@ -89,10 +92,11 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
     public void translateBasicOpenOfficeFile(String extension) {
         File testfile = testFileGenerator
                 .openTestFile("test-" + extension + "." + extension);
-
+        zanataRestCaller.createProjectAndVersion(extension+"-translate",
+                extension, "file");
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
+                .goToProjectByName(extension+"-translate")
+                .gotoVersion(extension)
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()

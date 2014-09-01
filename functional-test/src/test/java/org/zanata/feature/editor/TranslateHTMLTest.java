@@ -38,6 +38,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -63,6 +64,7 @@ public class TranslateHTMLTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @DataPoint
@@ -72,6 +74,7 @@ public class TranslateHTMLTest extends ZanataTestCase {
 
     @Before
     public void before() {
+        zanataRestCaller = new ZanataRestCaller();
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
@@ -88,10 +91,12 @@ public class TranslateHTMLTest extends ZanataTestCase {
         File testfile = testFileGenerator.generateTestFileWithContent(
                 "basichtml", "." + extension,
                 "<html><body>Line One<p>Line Two<p>Line Three</body></html>");
+        zanataRestCaller.createProjectAndVersion(extension+"-translate",
+                extension, "file");
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName("about fedora")
-                .gotoVersion("master")
+                .goToProjectByName(extension+"-translate")
+                .gotoVersion(extension)
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()
@@ -126,7 +131,6 @@ public class TranslateHTMLTest extends ZanataTestCase {
         editorPage.reload();
 
         assertTranslations(editorPage);
-
     }
 
     private void assertTranslations(EditorPage editorPage) {
