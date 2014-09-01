@@ -69,7 +69,7 @@ public class FunctionalTestHelper {
      * @return
      */
     public static String loosely(String text) {
-        return ".*" + text.replace(" ", "\\s+") + ".*";
+        return "(.|\n)*" + text.replace(" ", "\\s+") + "(.|\n)*";
     }
 
 
