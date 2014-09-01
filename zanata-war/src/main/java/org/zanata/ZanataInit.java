@@ -303,12 +303,11 @@ public class ZanataInit {
 
     private void logBanner(VersionInfo ver) {
         log.info("============================================");
-        log.info("   _____                 _         ");
-        log.info("  |__  /__ _ _ __   __ _| |_ __ _  ");
-        log.info("    / // _' | '_ \\ / _' | __/ _' | ");
-        log.info("   / /| (_| | | | | (_| | || (_| | ");
-        log.info("  /____\\__,_|_| |_|\\__,_|\\__\\__,_| ");
-        log.info("                                   ");
+        log.info("   _____                     _              ");
+        log.info("  /__  /  ____ _____  ____ _/ /_____ _      ");
+        log.info("    / /  / __ `/ __ \\/ __ `/ __/ __ `/      ");
+        log.info("   / /__/ /_/ / / / / /_/ / /_/ /_/ /       ");
+        log.info("  /____/\\__,_/_/ /_/\\__,_/\\__/\\__,_/        ");
         log.info("  Version: " + ver.getVersionNo());
         log.info("  SCM: " + ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-2014");
