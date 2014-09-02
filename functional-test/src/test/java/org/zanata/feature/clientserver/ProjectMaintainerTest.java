@@ -163,7 +163,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         client.callWithTimeout(workDir,
                 "mvn -B org.zanata:zanata-maven-plugin:pull -DdryRun -Dzanata.userConfig="
                         + translatorConfig + " -Dzanata.transDir=" + transDir);
-        assertThat(transDir.listFiles(propFilter).length).isEqualTo(0);
+        assertThat(transDir.listFiles(propFilter)).isEmpty();
 
         // create skeletons is false will only pull translated files
         client.callWithTimeout(

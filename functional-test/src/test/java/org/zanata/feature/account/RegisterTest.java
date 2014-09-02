@@ -82,8 +82,9 @@ public class RegisterTest extends ZanataTestCase {
                 .goToRegistration()
                 .setFields(fields);
 
-        assertThat(registerPage.getFieldErrors().size()).isEqualTo(0)
-                .as("No errors are shown");
+        assertThat(registerPage.getFieldErrors())
+                .as("No errors are shown")
+                .isEmpty();
 
         homePage = registerPage.register();
 
