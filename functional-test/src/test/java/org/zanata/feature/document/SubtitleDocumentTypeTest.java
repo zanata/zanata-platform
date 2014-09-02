@@ -35,6 +35,7 @@ import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -60,15 +61,15 @@ public class SubtitleDocumentTypeTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String sep = System.getProperty("line.separator");
 
-    @BeforeClass
-    public static void beforeClass() {
-        new LoginWorkFlow().signIn("admin", "admin");
-        new ProjectWorkFlow().createNewProjectVersion(
-                "about fedora", "subtitle-upload", "File")
-                .logout();
+    @Before
+    public void beforeClass() {
+        zanataRestCaller = new ZanataRestCaller();
+        zanataRestCaller.createProjectAndVersion("subtitle-test", "subtitles",
+                "file");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -243,8 +244,8 @@ public class SubtitleDocumentTypeTest extends ZanataTestCase {
         VersionDocumentsPage versionDocumentsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
-                .goToProject("about fedora")
-                .gotoVersion("subtitle-upload")
+                .goToProject("subtitle-test")
+                .gotoVersion("subtitles")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
                 .pressUploadFileButton()

@@ -37,6 +37,7 @@ import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -51,28 +52,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
+    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
-
-
-    @BeforeClass
-    public static void beforeClass() {
-        new LoginWorkFlow().signIn("admin", "admin");
-        new ProjectWorkFlow().createNewProjectVersion(
-                "about fedora", "multi-upload", "File")
-                .logout();
-    }
 
     @Before
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        zanataRestCaller = new ZanataRestCaller();
+        zanataRestCaller.createProjectAndVersion("multi-upload", "multi-upload",
+            "file");
         documentStorageDirectory = CleanDocumentStorageRule
                 .getDocumentStoragePath()
                 .concat(File.separator)
@@ -82,6 +78,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
+        new LoginWorkFlow().signIn("admin", "admin");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -95,10 +92,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 "This is another test file");
         String testFileName = firstFile.getName();
 
-        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
+                .goToProjectByName("multi-upload")
                 .gotoVersion("multi-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
@@ -127,10 +122,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
         File keptUploadFile = testFileGenerator.generateTestFileWithContent(
                 "removeFileFromUploadList", ".txt", "Remove File Upload Test");
 
-        VersionDocumentsTab versionDocumentsTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
+                .goToProjectByName("multi-upload")
                 .gotoVersion("multi-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()
