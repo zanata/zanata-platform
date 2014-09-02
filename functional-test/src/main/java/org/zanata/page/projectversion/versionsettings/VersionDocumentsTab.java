@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,7 @@ import org.zanata.page.projectversion.VersionBasePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class VersionDocumentsTab extends VersionBasePage {
 
     public static final String UNSUPPORTED_FILETYPE =
@@ -144,10 +146,10 @@ public class VersionDocumentsTab extends VersionBasePage {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver().findElement(By.id("file-upload-component"))
-                        .findElement(By.className("txt--danger")).isDisplayed();
+                        .findElement(By.className("message--danger")).isDisplayed();
             }
         });
         return getDriver().findElement(By.id("file-upload-component"))
-                .findElement(By.className("txt--danger")).getText();
+                .findElement(By.className("message--danger")).getText();
     }
 }
