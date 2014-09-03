@@ -57,10 +57,11 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    private CacheContainer cacheManager;
-
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+
+    @In
+    private CacheContainer cacheContainer;
 
     @In
     private ServiceLocator serviceLocator;
@@ -78,20 +79,16 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Create
     public void create() {
-        cacheManager =
-                ServiceLocator.instance().getJndiComponent(
-                        "java:jboss/infinispan/container/zanata",
-                        CacheContainer.class);
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
-                        cacheManager, versionStatisticLoader);
+                        cacheContainer, versionStatisticLoader);
     }
 
     @Destroy
     public void destroy() {
         // NB Since infinispan is container managed, there's no need to stop the
         // cache manager with
-        // cacheManager.stop();
+        // cacheContainer.stop();
     }
 
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)

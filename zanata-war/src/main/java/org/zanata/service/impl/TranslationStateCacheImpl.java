@@ -82,8 +82,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
 
-    private CacheContainer cacheManager;
-
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
     private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
 
@@ -92,6 +90,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+
+    @In
+    private CacheContainer cacheContainer;
 
     @In
     private ServiceLocator serviceLocator;
@@ -114,21 +115,17 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     @Create
     public void create() {
-        cacheManager =
-                ServiceLocator.instance().getJndiComponent(
-                        "java:jboss/infinispan/container/zanata",
-                        CacheContainer.class);
         documentStatisticCache =
                 InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
-                        cacheManager, documentStatisticLoader);
+                        cacheContainer, documentStatisticLoader);
 
         docStatusCache =
                 InfinispanCacheWrapper.create(DOC_STATUS_CACHE_NAME,
-                        cacheManager,
+                        cacheContainer,
                         docStatusLoader);
         targetValidationCache =
                 InfinispanCacheWrapper.create(TFT_VALIDATION_CACHE_NAME,
-                        cacheManager,
+                        cacheContainer,
                         targetValidationLoader);
     }
 
@@ -136,7 +133,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     public void destroy() {
         // NB Since infinispan is container managed, there's no need to stop the
         // cache manager with
-        // cacheManager.stop();
+        // cacheContainer.stop();
     }
 
     @Override
