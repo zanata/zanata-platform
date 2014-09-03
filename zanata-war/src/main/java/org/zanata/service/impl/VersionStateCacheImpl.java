@@ -22,8 +22,7 @@
 
 package org.zanata.service.impl;
 
-import net.sf.ehcache.CacheManager;
-
+import org.infinispan.manager.CacheContainer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
@@ -32,7 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
-import org.zanata.cache.EhcacheWrapper;
+import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -58,7 +57,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    private CacheManager cacheManager;
+    private CacheContainer cacheManager;
 
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
@@ -79,15 +78,20 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Create
     public void create() {
-        cacheManager = CacheManager.create();
+        cacheManager =
+                ServiceLocator.instance().getJndiComponent(
+                        "java:jboss/infinispan/container/zanata",
+                        CacheContainer.class);
         versionStatisticCache =
-                EhcacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
+                InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
                         cacheManager, versionStatisticLoader);
     }
 
     @Destroy
     public void destroy() {
-        cacheManager.shutdown();
+        // NB Since infinispan is container managed, there's no need to stop the
+        // cache manager with
+        // cacheManager.stop();
     }
 
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)

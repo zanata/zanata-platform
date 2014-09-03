@@ -29,8 +29,8 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.sf.ehcache.CacheManager;
 
+import org.infinispan.manager.CacheContainer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -40,7 +40,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
-import org.zanata.cache.EhcacheWrapper;
+import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -82,7 +82,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
 
-    private CacheManager cacheManager;
+    private CacheContainer cacheManager;
 
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
     private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
@@ -114,22 +114,29 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     @Create
     public void create() {
-        cacheManager = CacheManager.create();
+        cacheManager =
+                ServiceLocator.instance().getJndiComponent(
+                        "java:jboss/infinispan/container/zanata",
+                        CacheContainer.class);
         documentStatisticCache =
-                EhcacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
+                InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
                         cacheManager, documentStatisticLoader);
 
         docStatusCache =
-                EhcacheWrapper.create(DOC_STATUS_CACHE_NAME, cacheManager,
+                InfinispanCacheWrapper.create(DOC_STATUS_CACHE_NAME,
+                        cacheManager,
                         docStatusLoader);
         targetValidationCache =
-                EhcacheWrapper.create(TFT_VALIDATION_CACHE_NAME, cacheManager,
+                InfinispanCacheWrapper.create(TFT_VALIDATION_CACHE_NAME,
+                        cacheManager,
                         targetValidationLoader);
     }
 
     @Destroy
     public void destroy() {
-        cacheManager.shutdown();
+        // NB Since infinispan is container managed, there's no need to stop the
+        // cache manager with
+        // cacheManager.stop();
     }
 
     @Override

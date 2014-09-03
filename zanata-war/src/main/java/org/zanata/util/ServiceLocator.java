@@ -21,6 +21,10 @@
 
 package org.zanata.util;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -70,6 +74,17 @@ public class ServiceLocator {
 
     public EntityManagerFactory getEntityManagerFactory() {
         return (EntityManagerFactory) Component.getInstance("entityManagerFactory");
+    }
+
+    public <T> T getJndiComponent(String jndiName, Class<T> clazz) {
+        try {
+            Context ctx = new InitialContext();
+            return (T) ctx.lookup(jndiName);
+        } catch (Exception ex) {
+            throw new RuntimeException(
+                    "Problem when fetching Jndi component '" + jndiName + "'",
+                    ex);
+        }
     }
 
 }
