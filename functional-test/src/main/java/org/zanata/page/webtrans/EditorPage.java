@@ -385,7 +385,21 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage openValidationOptions() {
-        getDriver().findElement(By.className("i--checkmark")).click();
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDriver()
+                        .findElement(By.id("container"))
+                        .findElement(By.className("new-zanata"))
+                        .findElement(By.xpath("//a[@title='Validation options']"))
+                        .isEnabled();
+            }
+        });
+        new Actions(getDriver()).click(
+                getDriver().findElement(By.id("container"))
+                        .findElement(By.className("new-zanata"))
+                        .findElement(By.xpath("//a[@title='Validation options']")))
+                .perform();
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
