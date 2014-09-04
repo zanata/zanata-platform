@@ -55,6 +55,10 @@ class ConnectionWrapper implements InvocationHandler {
     private final Connection connection;
     private Set<Throwable> resultSetsOpened = Sets.newHashSet();
     private Throwable streamingResultSetOpened;
+    public static final String PROPERTY_USE_WRAPPER =
+            "zanata.connection.use.wrapper";
+    private static final String USE_WRAPPER =
+            System.getProperty(PROPERTY_USE_WRAPPER);
 
     public static Connection wrap(Connection connection) {
         if (Proxy.isProxyClass(connection.getClass())
@@ -65,14 +69,93 @@ class ConnectionWrapper implements InvocationHandler {
                 .newProxy(connection, new ConnectionWrapper(connection));
     }
 
+    public static boolean shouldWrap(DatabaseMetaData metaData)
+            throws SQLException {
+        if (USE_WRAPPER != null) {
+            if ("false".equals(USE_WRAPPER)) {
+                log.info("Not wrapping JDBC connection (disabled by system " +
+                        "property {})", PROPERTY_USE_WRAPPER);
+                return false;
+            }
+            if ("true".equals(USE_WRAPPER)) {
+                log.info("Wrapping JDBC connection (forced by system " +
+                        "property {})", PROPERTY_USE_WRAPPER);
+                return true;
+            }
+            if (!("auto".equals(USE_WRAPPER))) {
+                log.warn("Unknown value for system property {}: {}",
+                        PROPERTY_USE_WRAPPER, USE_WRAPPER);
+            }
+        }
+        String driverName = metaData.getDriverName();
+        if (driverName.equals("MySQL Connector Java") ||
+                driverName.equals("mariadb-jdbc")) {
+            // these drivers are known to use streaming result sets
+            // when fetchSize == Integer.MIN_VALUE
+            log.info("No need to wrap JDBC connection: driver: {}", driverName);
+            return false;
+        } else if (driverName.toLowerCase().contains("mysql") ||
+                driverName.toLowerCase().contains("mariadb")) {
+            // NB: if a future mysql/mariadb driver does away with the
+            // fetchSize trick for streaming, please add a special case and
+            // return true, or remove the Zanata code which calls
+            // setFetchSize(Integer.MIN_VALUE). See StreamingEntityIterator.
+            log.warn("Unrecognised mysql/mariadb driver: {}", driverName);
+            log.warn("Streaming results may not work");
+            return false;
+        } else {
+            log.info("Wrapping JDBC connection: found non-mysql/mariadb " +
+                    "driver: {}", driverName);
+            return true;
+        }
+    }
+
+    /**
+     * Log warnings or errors if the database or driver is not supported.
+     * @param metaData
+     * @throws SQLException
+     */
+    public static void checkSupported(DatabaseMetaData metaData)
+            throws SQLException {
+        String dbName = metaData.getDatabaseProductName();
+        String dbVer = metaData.getDatabaseProductVersion();
+        int dbMaj = metaData.getDatabaseMajorVersion();
+        int dbMin = metaData.getDatabaseMinorVersion();
+        log.info("Database product: {} version: {} ({}.{})",
+                dbName, dbVer, dbMaj, dbMin);
+        String lcName = dbName.toLowerCase();
+        if (lcName.contains("mysql")) {
+            log.info("Using MySQL database");
+            if (dbMaj != 5) {
+                log.warn("Unsupported MySQL major version: {}", dbMaj);
+            }
+            if (dbMin > 5) {
+                log.warn("Unsupported MySQL minor version: {}", dbMin);
+            }
+        } else if (lcName.contains("h2")) {
+            log.info("Using H2 database (not for production)");
+        } else {
+            log.warn("Unsupported database");
+        }
+        String drvName = metaData.getDriverName();
+        String drvVer = metaData.getDriverVersion();
+        int drvMaj = metaData.getDriverMajorVersion();
+        int drvMin = metaData.getDriverMinorVersion();
+        log.info("JDBC driver: {} version: {} ({}.{})",
+                drvName, drvVer, drvMaj, drvMin);
+    }
+
     public static Connection wrapUnlessMysql(Connection connection)
             throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        String databaseName = metaData.getDatabaseProductName();
-        if ("MySQL".equals(databaseName)) {
-            return connection;
+        checkSupported(metaData);
+        if (shouldWrap(metaData)) {
+            Connection wrappedConnection = wrap(connection);
+            log.info("Connection {} is wrapped by {}",
+                    connection, wrappedConnection);
+            return wrappedConnection;
         } else {
-            return wrap(connection);
+            return connection;
         }
     }
 
