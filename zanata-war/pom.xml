@@ -440,7 +440,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
+          <argLine>-Dconcordion.output.dir=${concordion.output.dir} -XX:MaxPermSize=256m</argLine>
           <junitArtifactName>none:none</junitArtifactName>
           <testNGArtifactName>org.testng:testng</testNGArtifactName>
           <forkCount>1.5C</forkCount>
