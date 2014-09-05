@@ -175,7 +175,7 @@
     <hamcrest.version>1.3</hamcrest.version>
     <lombok.version>1.12.6</lombok.version>
     <resteasy.version>2.3.7.Final</resteasy.version>
-    <findbugs.version>2.0.1</findbugs.version>
+    <findbugs.version>3.0.0</findbugs.version>
     <groovy.version>1.8.9</groovy.version>
     <guava.version>13.0.1</guava.version>
     <jackson.version>1.9.13</jackson.version>
@@ -806,18 +806,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>jdk18</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <!-- FindBugs 2.0.x is not compatible with Java 8
-             See http://sourceforge.net/p/findbugs/bugs/1162/
-         -->
-        <findbugs.skip>true</findbugs.skip>
-      </properties>
     </profile>
     <profile>
       <id>sonatype-oss-release</id>
