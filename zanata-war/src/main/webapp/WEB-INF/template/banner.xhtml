@@ -160,7 +160,7 @@
 
       <h:form rendered="#{applicationConfigurationAction.singleOpenId}">
         <h:commandLink id="openid_single_signin_link"
-          action="#{loginAction.genericOpenIdLogin(applicationConfiguration.openIdProviderUrl)}"
+          action="#{loginAction.getLoginPageRedirect()}"
           propagation="none" styleClass="l--push-left-half button--primary">
           #{messages['jsf.Login']}
         </h:commandLink>
