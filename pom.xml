@@ -54,7 +54,7 @@
     <!-- Hibernate Search 4.4.x is for Hibernate Core 4.2.x:
      http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
      -->
-    <hibernate.search.version>4.4.2.Final</hibernate.search.version>
+    <hibernate.search.version>4.4.4.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
     <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
@@ -590,6 +590,13 @@
         <artifactId>hibernate-search-infinispan</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <!-- Slightly older version provided by the app server -->
+          <exclusion>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
