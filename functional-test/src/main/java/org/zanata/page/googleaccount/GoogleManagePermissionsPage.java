@@ -20,6 +20,7 @@
  */
 package org.zanata.page.googleaccount;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -29,6 +30,7 @@ import org.zanata.page.AbstractPage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class GoogleManagePermissionsPage extends AbstractPage {
 
     public GoogleManagePermissionsPage(WebDriver driver) {
@@ -36,6 +38,7 @@ public class GoogleManagePermissionsPage extends AbstractPage {
     }
 
     public GoogleManagePermissionsPage removePermission(String permissionName) {
+        log.info("Click remove permissions for {}", permissionName);
         if (pageContainsPermission(permissionName)) {
             getDriver().findElement(By.name(permissionName))
                     .findElement(By.cssSelector("input[type='submit']"))
@@ -45,6 +48,7 @@ public class GoogleManagePermissionsPage extends AbstractPage {
     }
 
     public boolean pageContainsPermission(String permissionName) {
+        log.info("Query page has permissions for {}", permissionName);
         try {
             return getDriver().findElement(By.name(permissionName))
                     .isDisplayed();

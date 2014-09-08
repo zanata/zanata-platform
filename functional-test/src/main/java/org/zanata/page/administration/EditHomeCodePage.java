@@ -20,6 +20,7 @@
  */
 package org.zanata.page.administration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -30,6 +31,7 @@ import org.zanata.page.utility.HomePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class EditHomeCodePage extends BasePage {
 
     @FindBy(id = "homeContentForm:homeContent")
@@ -46,17 +48,20 @@ public class EditHomeCodePage extends BasePage {
     }
 
     public EditHomeCodePage enterText(String text) {
+        log.info("Enter homepage text\n{}", text);
         textEdit.sendKeys(text);
         return new EditHomeCodePage(getDriver());
     }
 
     public HomePage update() {
+        log.info("Click Update");
         updateButton.click();
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
-        updateButton.click();
+        log.info("Click Cancel");
+        cancelButton.click();
         return new HomePage(getDriver());
     }
 }

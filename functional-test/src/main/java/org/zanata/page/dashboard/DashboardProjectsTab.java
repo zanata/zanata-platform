@@ -20,6 +20,7 @@
  */
 package org.zanata.page.dashboard;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,7 @@ import java.util.List;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class DashboardProjectsTab extends DashboardBasePage {
 
     public DashboardProjectsTab(WebDriver driver) {
@@ -38,6 +40,7 @@ public class DashboardProjectsTab extends DashboardBasePage {
     }
 
     public List<WebElement> getMaintainedProjectList() {
+        log.info("Query maintained projects list");
         WebElement listWrapper =
                 getDriver().findElement(By.id("maintainedProjects"))
                         .findElement(By.tagName("ul"));
@@ -49,6 +52,7 @@ public class DashboardProjectsTab extends DashboardBasePage {
     }
 
     public CreateProjectPage clickOnCreateProjectLink() {
+        log.info("Click Create Project");
         WebElement createProjLink =
                 getDriver().findElement(By.id("create-project-link"));
         createProjLink.click();

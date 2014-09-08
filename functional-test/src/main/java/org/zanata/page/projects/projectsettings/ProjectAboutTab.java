@@ -22,6 +22,7 @@
 package org.zanata.page.projects.projectsettings;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -32,6 +33,7 @@ import org.zanata.page.projects.ProjectBasePage;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectAboutTab extends ProjectBasePage {
 
     public ProjectAboutTab(WebDriver driver) {
@@ -39,23 +41,27 @@ public class ProjectAboutTab extends ProjectBasePage {
     }
 
     public ProjectAboutTab enterAboutText(String aboutText) {
+        log.info("Enter About text {}", aboutText);
         getDriver().findElement(By.id("settings-about-form:homeContent"))
                 .sendKeys(aboutText);
         return new ProjectAboutTab(getDriver());
     }
 
     public ProjectAboutTab clearAboutText() {
+        log.info("Clear About textedit");
         getDriver().findElement(By.id("settings-about-form:homeContent"))
                 .clear();
         return new ProjectAboutTab(getDriver());
     }
 
     public String getAboutText() {
+        log.info("Query About text");
         return getDriver().findElement(By.id("settings-about-form:homeContent"))
                 .getText();
     }
 
     public ProjectAboutTab pressSave() {
+        log.info("Click Save notes");
         clickElement(By.linkText("Save notes"));
         return new ProjectAboutTab(getDriver());
     }

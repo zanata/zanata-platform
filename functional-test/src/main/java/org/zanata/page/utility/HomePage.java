@@ -20,6 +20,7 @@
  */
 package org.zanata.page.utility;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,6 +29,7 @@ import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
 
+@Slf4j
 public class HomePage extends BasePage {
 
     public static final String SIGNUP_SUCCESS_MESSAGE =
@@ -42,16 +44,19 @@ public class HomePage extends BasePage {
     }
 
     public EditHomeContentPage goToEditPageContent() {
+        log.info("Click Edit Page Content");
         getDriver().findElement(By.linkText("Edit Page Content")).click();
         return new EditHomeContentPage(getDriver());
     }
 
     public EditHomeCodePage goToEditPageCode() {
+        log.info("Click Edit Page Code");
         getDriver().findElement(By.linkText("Edit Page Code")).click();
         return new EditHomeCodePage(getDriver());
     }
 
     public String getMainBodyContent() {
+        log.info("Query homepage content");
         return mainBodyContent.getText();
     }
 }

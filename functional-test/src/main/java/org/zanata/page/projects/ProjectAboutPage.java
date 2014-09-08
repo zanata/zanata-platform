@@ -22,12 +22,14 @@
 package org.zanata.page.projects;
 
 import com.google.common.base.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectAboutPage extends ProjectBasePage {
 
     public ProjectAboutPage(WebDriver driver) {
@@ -35,6 +37,7 @@ public class ProjectAboutPage extends ProjectBasePage {
     }
 
     public String getAboutText() {
+        log.info("Query About content");
         return waitForTenSec().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver driver) {

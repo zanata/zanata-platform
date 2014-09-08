@@ -26,6 +26,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public VersionDocumentsTab pressUploadFileButton() {
+        log.info("Click Upload file button");
         clickLinkAfterAnimation(By.id("file-upload-component-toggle-button"));
         return new VersionDocumentsTab(getDriver());
     }
@@ -36,12 +37,14 @@ public class VersionDocumentsTab extends VersionBasePage {
      * @return boolean can submit file upload
      */
     public boolean canSubmitDocument() {
+        log.info("Query can start upload");
         return getDriver().findElement(
                 By.id("file-upload-component-start-upload"))
                 .isEnabled();
     }
 
     public VersionDocumentsTab cancelUpload() {
+        log.info("Click Cancel");
         getDriver()
                 .findElement(By.id("file-upload-component-cancel-upload"))
                 .click();
@@ -56,6 +59,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public VersionDocumentsTab enterFilePath(String filePath) {
+        log.info("Enter file path {}", filePath);
         // Make the hidden input element slightly not hidden
         ((JavascriptExecutor)getDriver())
                 .executeScript("arguments[0].style.visibility = 'visible'; " +
@@ -72,6 +76,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public VersionDocumentsTab submitUpload() {
+        log.info("Click Submit upload");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -86,6 +91,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public VersionDocumentsTab clickUploadDone() {
+        log.info("Click upload Done button");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -100,6 +106,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public boolean sourceDocumentsContains(String document) {
+        log.info("Query source documents contain {}", document);
         List<WebElement> documentLabelList =
                 getDriver()
                         .findElement(By.id("settings-document_form"))
@@ -115,6 +122,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public List<String> getUploadList() {
+        log.info("Query upload list");
         List<String> filenames = new ArrayList<String>();
         for (WebElement element : getUploadListElements()) {
             filenames.add(element.findElement(By.className("list__title"))
@@ -124,6 +132,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public VersionDocumentsTab clickRemoveOn(String filename) {
+        log.info("Click remove on {}", filename);
         for (WebElement element : getUploadListElements()) {
             if (element.findElement(By.className("list__title"))
                     .getText().equals(filename)) {
@@ -142,6 +151,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public String getUploadError() {
+        log.info("Query upload error message");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {

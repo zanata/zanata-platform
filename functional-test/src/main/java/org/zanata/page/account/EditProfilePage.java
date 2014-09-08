@@ -20,6 +20,7 @@
  */
 package org.zanata.page.account;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -30,6 +31,7 @@ import org.zanata.page.utility.HomePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class EditProfilePage extends BasePage {
     @FindBy(id = "profile-form:nameField:name")
     private WebElement nameField;
@@ -51,6 +53,7 @@ public class EditProfilePage extends BasePage {
     }
 
     public EditProfilePage enterName(String name) {
+        log.info("Enter name {}", name);
         nameField.clear();
         nameField.sendKeys(name);
         defocus();
@@ -58,11 +61,13 @@ public class EditProfilePage extends BasePage {
     }
 
     public EditProfilePage enterUserName(String userName) {
+        log.info("Enter username {}", userName);
         usernameField.sendKeys(userName);
         return new EditProfilePage(getDriver());
     }
 
     public EditProfilePage enterEmail(String email) {
+        log.info("Enter email {}", email);
         emailField.clear();
         emailField.sendKeys(email);
         defocus();
@@ -70,11 +75,13 @@ public class EditProfilePage extends BasePage {
     }
 
     public HomePage clickSave() {
+        log.info("Click Save");
         saveButton.click();
         return new HomePage(getDriver());
     }
 
     public EditProfilePage clickSaveAndExpectErrors() {
+        log.info("Click Save");
         saveButton.click();
         return new EditProfilePage(getDriver());
     }

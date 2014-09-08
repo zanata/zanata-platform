@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,6 +39,7 @@ import java.util.List;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ManageUserPage extends BasePage {
     public static final int USERNAME_COLUMN = 0;
     @FindBy(id = "usermanagerForm:userList")
@@ -50,6 +52,7 @@ public class ManageUserPage extends BasePage {
     }
 
     public ManageUserAccountPage editUserAccount(String username) {
+        log.info("Click edit on {}", username);
         TableRow userRow = findRowByUserName(username);
         List<WebElement> cells = userRow.getCells();
         WebElement editCell = cells.get(cells.size() - 1);
@@ -93,6 +96,7 @@ public class ManageUserPage extends BasePage {
     }
 
     public List<String> getUserList() {
+        log.info("Query user list");
         return WebElementUtil.getColumnContents(getDriver(), userTableBy,
                 USERNAME_COLUMN);
     }

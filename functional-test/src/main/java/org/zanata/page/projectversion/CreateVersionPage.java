@@ -22,6 +22,7 @@ package org.zanata.page.projectversion;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,6 +34,7 @@ import org.zanata.util.Constants;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class CreateVersionPage extends BasePage {
 
     public final static String VALIDATION_ERROR =
@@ -65,6 +67,7 @@ public class CreateVersionPage extends BasePage {
      * @return new CreateVersionPage
      */
     public CreateVersionPage inputVersionId(final String versionId) {
+        log.info("Enter version ID {}", versionId);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -79,6 +82,7 @@ public class CreateVersionPage extends BasePage {
     }
 
     public CreateVersionPage clickCopyFromVersion() {
+        log.info("Click Copy From Previous checkbox");
         copyFromPreviousVersionChk.click();
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
@@ -91,11 +95,13 @@ public class CreateVersionPage extends BasePage {
     }
 
     private WebElement getVersionIdField() {
+        log.info("Query Version ID");
         return getDriver().findElement(
                 By.id("create-version-form:slugField:slug"));
     }
 
     public CreateVersionPage selectProjectType(String projectType) {
+        log.info("Click project type {}", projectType);
         List<WebElement> projectTypes =
                 projectTypeSelection.findElements(By.tagName("li"));
         for (WebElement projectTypeLi : projectTypes) {
@@ -109,11 +115,13 @@ public class CreateVersionPage extends BasePage {
     }
 
     public VersionLanguagesPage saveVersion() {
+        log.info("Click Save");
         clickAndCheckErrors(saveButton);
         return new VersionLanguagesPage(getDriver());
     }
 
     public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
+        log.info("Wait for number of error to be {}", numberOfErrors);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {

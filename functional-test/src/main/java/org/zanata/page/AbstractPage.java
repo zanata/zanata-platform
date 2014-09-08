@@ -56,10 +56,12 @@ public class AbstractPage {
     }
 
     public void reload() {
+        log.info("Sys: Reload");
         getDriver().navigate().refresh();
     }
 
     public void deleteCookiesAndRefresh() {
+        log.info("Sys: Delete cookies, reload");
         getDriver().manage().deleteAllCookies();
         Set<Cookie> cookies = getDriver().manage().getCookies();
         if (cookies.size() > 0) {

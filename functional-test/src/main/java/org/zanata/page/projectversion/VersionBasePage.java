@@ -61,12 +61,14 @@ public class VersionBasePage extends BasePage {
     }
 
     public String getProjectVersionName() {
+        log.info("Query Version name");
         return getDriver()
                 .findElement(By.id("version-info"))
                 .findElement(By.tagName("h1")).getText();
     }
 
     public ProjectVersionsPage clickProjectLink(String projectName) {
+        log.info("Click Project link");
         getDriver().findElement(By.id("version-page"))
                 .findElement(By.linkText(projectName))
                 .click();
@@ -87,6 +89,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionDocumentsPage gotoDocumentTab() {
+        log.info("Click Documents tab");
         clickWhenTabEnabled(getDriver().findElement(By.id("documents_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -100,6 +103,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionLanguagesPage gotoLanguageTab() {
+        log.info("Click Languages tab");
         clickWhenTabEnabled(getDriver().findElement(By.id("languages_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -113,6 +117,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionBasePage gotoSettingsTab() {
+        log.info("Click Settings tab");
         slightPause();
         clickWhenTabEnabled(getDriver().findElement(By.id("settings_tab")));
         waitForTenSec().until(new Predicate<WebDriver>() {
@@ -127,6 +132,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionGeneralTab gotoSettingsGeneral() {
+        log.info("Click General settings sub-tab");
         clickWhenTabEnabled(settingsGeneralTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -140,6 +146,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionLanguagesTab gotoSettingsLanguagesTab() {
+        log.info("Click Languages settings sub-tab");
         clickWhenTabEnabled(settingsLanguagesTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -153,6 +160,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionDocumentsTab gotoSettingsDocumentsTab() {
+        log.info("Click Documents settings sub-tab");
         clickWhenTabEnabled(settingsDocumentsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -166,6 +174,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public VersionTranslationTab gotoSettingsTranslationTab() {
+        log.info("Click Translation settings sub-tab");
         clickWhenTabEnabled(settingsTranslationTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override

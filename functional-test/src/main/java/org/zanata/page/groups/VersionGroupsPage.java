@@ -39,6 +39,7 @@ public class VersionGroupsPage extends BasePage {
     }
 
     public CreateVersionGroupPage createNewGroup() {
+        log.info("Click New Group button");
         WebElement createLink =
                 getDriver().findElement(By.id("group-create"));
         createLink.click();
@@ -46,8 +47,8 @@ public class VersionGroupsPage extends BasePage {
     }
 
     public VersionGroupPage goToGroup(String groupName) {
-        WebElement groupLink = groupTable.findElement(By.linkText(groupName));
-        groupLink.click();
+        log.info("Click group {}", groupName);
+        groupTable.findElement(By.linkText(groupName)).click();
         return new VersionGroupPage(getDriver());
     }
 

@@ -22,12 +22,14 @@ package org.zanata.page.projects;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
+@Slf4j
 public class CreateProjectPage extends BasePage {
 
     @FindBy(id = "project-form:descriptionField:description")
@@ -44,23 +46,27 @@ public class CreateProjectPage extends BasePage {
     }
 
     public CreateProjectPage enterProjectId(String projectId) {
+        log.info("Enter project ID {}", projectId);
         getDriver().findElement(By.id("project-form:slugField:slug"))
                 .sendKeys(projectId);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterProjectName(final String projectName) {
+        log.info("Enter project name {}", projectName);
         getDriver().findElement(By.id("project-form:nameField:name"))
                 .sendKeys(projectName);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterDescription(String projectDescription) {
+        log.info("Enter project description {}", projectDescription);
         descriptionField.sendKeys(projectDescription);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage selectProjectType(String projectType) {
+        log.info("Click project type {}", projectType);
         List<WebElement> projectTypes =
                 projectTypeList.findElements(By.tagName("li"));
 
@@ -75,6 +81,7 @@ public class CreateProjectPage extends BasePage {
     }
 
     public ProjectVersionsPage pressCreateProject() {
+        log.info("Click Create");
         clickAndCheckErrors(createButton);
         return new ProjectVersionsPage(getDriver());
     }

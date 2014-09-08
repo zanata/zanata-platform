@@ -20,6 +20,7 @@
  */
 package org.zanata.page.googleaccount;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,6 +31,7 @@ import org.zanata.page.AbstractPage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class GoogleAccountPage extends AbstractPage {
     @FindBy(id = "Email")
     private WebElement emailField;
@@ -48,34 +50,41 @@ public class GoogleAccountPage extends AbstractPage {
     }
 
     public GoogleAccountPage enterGoogleEmail(String email) {
+        log.info("Enter email {}", email);
         emailField.sendKeys(email);
         return new GoogleAccountPage(getDriver());
     }
 
     public GoogleAccountPage enterGooglePassword(String password) {
+        log.info("Enter password {}", password);
         passwordField.sendKeys(password);
         return new GoogleAccountPage(getDriver());
     }
 
     public GooglePermissionsPage clickSignIn() {
+        log.info("Click account Sign In");
         signInButton.click();
         return new GooglePermissionsPage(getDriver());
     }
 
     public GoogleManagePermissionsPage clickPermissionsSignIn() {
+        log.info("Click account management Sign In");
         signInButton.click();
         return new GoogleManagePermissionsPage(getDriver());
     }
 
     public String rememberedUser() {
+        log.info("Query remembered user email");
         return emailLabelField.getText();
     }
 
     public boolean hasRememberedAuthentication() {
+        log.info("Query is user remembered");
         return emailLabelField.isDisplayed();
     }
 
     public GoogleAccountPage removeSavedAuthentication() {
+        log.info("Click Sign in with different account");
         getDriver().findElement(By.linkText("Sign in with a different account")).click();
         return new GoogleAccountPage(getDriver());
     }
@@ -88,6 +97,7 @@ public class GoogleAccountPage extends AbstractPage {
      * @return true if the profile image is not shown.
      */
     public boolean isTheOldGoogleSite() {
+        log.info("Query is the old Google site displayed");
         return getDriver().findElements(By.id("profile-img")).size() < 1;
     }
 }

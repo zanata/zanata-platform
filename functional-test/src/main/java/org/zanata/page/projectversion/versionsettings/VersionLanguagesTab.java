@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -39,6 +40,7 @@ import java.util.List;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class VersionLanguagesTab extends VersionBasePage {
 
     @FindBy(id = "languageAutocomplete-autocomplete__input")
@@ -54,6 +56,7 @@ public class VersionLanguagesTab extends VersionBasePage {
      * @return new language settings tab
      */
     public VersionLanguagesTab clickInheritCheckbox() {
+        log.info("Click Inherit check box");
         getDriver().findElement(By.id("settings-languages-form"))
                 .findElement(By.className("form__checkbox"))
                 .click();
@@ -61,6 +64,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public VersionLanguagesTab waitForLocaleListVisible() {
+        log.info("Wait for locale list visible");
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -79,6 +83,7 @@ public class VersionLanguagesTab extends VersionBasePage {
      * @return String list of language/locale names
      */
     public List<String> getEnabledLocaleList() {
+        log.info("Query enabled locales list");
         List<String> rows =Lists.transform(getEnabledLocaleListElement(),
                 new Function<WebElement, String>() {
                     @Override
@@ -95,10 +100,12 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public void waitForLanguagesContains(String language) {
+        log.info("Wait for languages contains {}", language);
         waitForLanguageEntryExpected(language, true);
     }
 
     public void waitForLanguagesNotContains(String language) {
+        log.info("Wait for languages does not contain {}", language);
         waitForLanguageEntryExpected(language, false);
     }
 
@@ -113,12 +120,14 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public VersionLanguagesTab enterSearchLanguage(String localeQuery) {
+        log.info("Enter search language {}", localeQuery);
         WebElementUtil.searchAutocomplete(getDriver(), "languageAutocomplete",
                 localeQuery);
         return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab removeLocale(final String localeId) {
+        log.info("Click Remove on {}", localeId);
         boolean removedLocale = false;
         for (WebElement localeLi : getEnabledLocaleListElement()) {
             String displayedLocaleId =
@@ -144,6 +153,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     }
 
     public VersionLanguagesTab addLocale(final String localeId) {
+        log.info("Click to add {}", localeId);
         String message = "can not find locale - " + localeId;
         waitForTenSec().withMessage(message).until(new Predicate<WebDriver>() {
             @Override

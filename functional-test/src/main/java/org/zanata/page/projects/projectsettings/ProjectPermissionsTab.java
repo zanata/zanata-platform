@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,6 +39,7 @@ import java.util.List;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectPermissionsTab extends ProjectBasePage {
 
     public ProjectPermissionsTab(WebDriver driver) {
@@ -46,12 +48,14 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     public ProjectPermissionsTab enterSearchMaintainer(
             String maintainerQuery) {
+        log.info("Enter user search {}", maintainerQuery);
         WebElementUtil.searchAutocomplete(getDriver(),
                 "maintainerAutocomplete", maintainerQuery);
         return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectPermissionsTab selectSearchMaintainer(final String maintainer) {
+        log.info("Select user {}", maintainer);
         waitForTenSec()
                 .until(new Predicate<WebDriver>() {
                     @Override
@@ -76,11 +80,13 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     public ProjectPermissionsTab clickRemoveOn(String maintainer) {
+        log.info("Click Remove on {}", maintainer);
         getMaintainerElementFromList(maintainer).click();
         return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectBasePage clickRemoveOnSelf(String maintainer) {
+        log.info("Click Remove on (self) {}", maintainer);
         getMaintainerElementFromList(maintainer).click();
         return new ProjectBasePage(getDriver());
     }
@@ -108,6 +114,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     public ProjectPermissionsTab waitForMaintainersContains(
             final String username) {
+        log.info("Wait for maintainers contains {}", username);
         return refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
@@ -118,6 +125,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     public ProjectPermissionsTab waitForMaintainersNotContains(
             final String username) {
+        log.info("Wait for maintainers does not contain {}", username);
         return refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
@@ -126,7 +134,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         });
     }
 
-    public List<WebElement> getSettingsMaintainersElement() {
+    private List<WebElement> getSettingsMaintainersElement() {
         return getDriver()
                 .findElement(By.id("settings-permissions-form"))
                 .findElement(By.id("maintainers-list"))
@@ -134,6 +142,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     public List<String> getSettingsMaintainersList() {
+        log.info("Query maintainers list");
         List<WebElement> items = getSettingsMaintainersElement();
         List<String> rows =
                 Lists.transform(items, new Function<WebElement, String>() {

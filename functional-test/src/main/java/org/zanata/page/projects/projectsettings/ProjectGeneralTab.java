@@ -77,6 +77,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterProjectName(final String projectName) {
+        log.info("Enter project name {}", projectName);
         projectNameField.clear();
         projectNameField.sendKeys(projectName);
         defocus();
@@ -89,6 +90,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterDescription(String projectDescription) {
+        log.info("Enter project description {}", projectDescription);
         descriptionField.clear();
         descriptionField.sendKeys(projectDescription);
         defocus();
@@ -103,6 +105,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab selectProjectType(String projectType) {
+        log.info("Click Project type {}", projectType);
         assert getProjectTypes().containsKey(projectType);
         WebElement projectTypeButton = getProjectTypes().get(projectType);
         scrollIntoView(projectTypeButton);
@@ -115,6 +118,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return String project type selected
      */
     public String getSelectedProjectType() {
+        log.info("Query selected project type");
         Map<String, WebElement> projectTypes = getProjectTypes();
         for (String type : projectTypes.keySet()) {
             if (projectTypes.get(type)
@@ -147,6 +151,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return button available true/false
      */
     public boolean isArchiveButtonAvailable() {
+        log.info("Query is Archive button displayed");
         return getDriver().findElements(
                 By.id("settings-general-form:button-archive-project"))
                 .size() > 0;
@@ -157,6 +162,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab archiveProject() {
+        log.info("Click Archive this project");
         clickElement(By.id("settings-general-form:button-archive-project"));
         return new ProjectGeneralTab(getDriver());
     }
@@ -166,6 +172,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab unarchiveProject() {
+        log.info("Click Unarchive this project");
         clickElement(By.id("settings-general-form:button-unarchive-project"));
         return new ProjectGeneralTab(getDriver());
     }
@@ -175,6 +182,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab lockProject() {
+        log.info("Click Make this project read only");
         clickElement(By.id("settings-general-form:button-lock-project"));
         return new ProjectGeneralTab(getDriver());
     }
@@ -184,6 +192,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab unlockProject() {
+        log.info("Click Make this project writable");
         clickElement(By.id("settings-general-form:button-unlock-project"));
         return new ProjectGeneralTab(getDriver());
     }
@@ -194,6 +203,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterHomePage(String homepage) {
+        log.info("Enter home page {}", homepage);
         homepageField.clear();
         homepageField.sendKeys(homepage);
         return new ProjectGeneralTab(getDriver());
@@ -205,6 +215,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterRepository(String repo) {
+        log.info("Enter repository {}", repo);
         repoField.clear();
         repoField.sendKeys(repo);
         return new ProjectGeneralTab(getDriver());
@@ -215,6 +226,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return new Project General Settings page
      */
     public ProjectGeneralTab updateProject() {
+        log.info("Click Update general settings");
         scrollIntoView(updateButton());
         clickAndCheckErrors(updateButton());
         return new ProjectGeneralTab(getDriver());

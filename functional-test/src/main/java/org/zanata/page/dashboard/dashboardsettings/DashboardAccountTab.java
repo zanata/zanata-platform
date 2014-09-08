@@ -20,6 +20,7 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -28,6 +29,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class DashboardAccountTab extends DashboardBasePage {
 
     public static final String INCORRECT_OLD_PASSWORD_ERROR =
@@ -61,29 +63,34 @@ public class DashboardAccountTab extends DashboardBasePage {
     }
 
     public DashboardAccountTab typeNewAccountEmailAddress(String emailAddress) {
+        log.info("Enter email {}", emailAddress);
         emailField.clear();
         emailField.sendKeys(emailAddress);
         return this;
     }
 
     public DashboardAccountTab clickUpdateEmailButton() {
+        log.info("Click Update Email");
         updateEmailButton.click();
         return this;
     }
 
     public DashboardAccountTab typeOldPassword(String oldPassword) {
+        log.info("Enter old password {}", oldPassword);
         oldPasswordField.clear();
         oldPasswordField.sendKeys(oldPassword);
         return this;
     }
 
     public DashboardAccountTab typeNewPassword(String newPassword) {
+        log.info("Enter new password {}", newPassword);
         newPasswordField.clear();
         newPasswordField.sendKeys(newPassword);
         return this;
     }
 
     public DashboardAccountTab clickUpdatePasswordButton() {
+        log.info("Click Update Password");
         changePasswordButton.click();
         return this;
     }

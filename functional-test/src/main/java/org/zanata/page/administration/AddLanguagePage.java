@@ -21,6 +21,7 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class AddLanguagePage extends BasePage {
 
     public static final int NAME_ROW = 3;
@@ -52,6 +54,7 @@ public class AddLanguagePage extends BasePage {
     }
 
     public AddLanguagePage inputLanguage(String language) {
+        log.info("Enter language {}", language);
         languageInput.sendKeys(language);
         defocus();
         waitForPageSilence();
@@ -59,6 +62,7 @@ public class AddLanguagePage extends BasePage {
     }
 
     public AddLanguagePage enableLanguageByDefault() {
+        log.info("Click Enable by default");
         if (!enabledByDefaultInput.isSelected()) {
             enabledByDefaultInput.click();
         }
@@ -66,6 +70,7 @@ public class AddLanguagePage extends BasePage {
     }
 
     public AddLanguagePage disableLanguageByDefault() {
+        log.info("Click Disable by default");
         if (enabledByDefaultInput.isSelected()) {
             enabledByDefaultInput.click();
         }
@@ -73,6 +78,7 @@ public class AddLanguagePage extends BasePage {
     }
 
     public Map<String, String> getLanguageDetails() {
+        log.info("Query language details");
         Map<String, String> map = new HashMap();
         // Wait for the fields to be populated
         waitForTenSec().until(new Predicate<WebDriver>() {
@@ -95,6 +101,7 @@ public class AddLanguagePage extends BasePage {
     }
 
     public ManageLanguagePage saveLanguage() {
+        log.info("Click Save");
         clickAndCheckErrors(saveButton);
         return new ManageLanguagePage(getDriver());
     }

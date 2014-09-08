@@ -57,6 +57,7 @@ public class ManageLanguagePage extends BasePage {
 
     public ManageLanguageTeamMemberPage manageTeamMembersFor(
             final String localeId) {
+        log.info("Click team {}", localeId);
         TableRow matchedRow = findRowByLocale(localeId);
 
         log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
@@ -103,6 +104,7 @@ public class ManageLanguagePage extends BasePage {
     }
 
     public ManageLanguagePage enableLanguageByDefault(String localeId) {
+        log.info("Click to enable {}", localeId);
         TableRow matchedRow = findRowByLocale(localeId);
 
         WebElement enabledCell = matchedRow.getCells().get(ENABLED_COLUMN);
@@ -117,11 +119,13 @@ public class ManageLanguagePage extends BasePage {
     }
 
     public boolean languageIsEnabled(String localeId) {
+        log.info("Query is language enabled {}", localeId);
         return findRowByLocale(localeId).getCells().get(ENABLED_COLUMN)
                 .findElement(By.tagName("input")).isSelected();
     }
 
     public List<String> getLanguageLocales() {
+        log.info("Query list of languages");
         return WebElementUtil.getColumnContents(getDriver(), languageTableBy,
                 LOCALE_COLUMN);
     }

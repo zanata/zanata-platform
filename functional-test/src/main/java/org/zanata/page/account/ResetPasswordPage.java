@@ -20,6 +20,7 @@
  */
 package org.zanata.page.account;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,6 +30,7 @@ import org.zanata.page.BasePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ResetPasswordPage extends BasePage {
 
     @FindBy(id = "passwordResetRequestForm:usernameField:username")
@@ -45,27 +47,32 @@ public class ResetPasswordPage extends BasePage {
     }
 
     public ResetPasswordPage enterUserName(String username) {
+        log.info("Enter username {}", username);
         usernameField.sendKeys(username);
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage enterEmail(String email) {
+        log.info("Enter email {}", email);
         emailField.sendKeys(email);
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage clearFields() {
+        log.info("Clear fields");
         emailField.clear();
         usernameField.clear();
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage resetPassword() {
+        log.info("Click Submit");
         submitButton.click();
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage resetFailure() {
+        log.info("Click Submit");
         submitButton.click();
         return new ResetPasswordPage(getDriver());
     }

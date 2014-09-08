@@ -20,6 +20,7 @@
  */
 package org.zanata.page.dashboard;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,6 +34,7 @@ import java.util.List;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class DashboardActivityTab extends DashboardBasePage {
 
     public DashboardActivityTab(WebDriver driver) {
@@ -40,6 +42,7 @@ public class DashboardActivityTab extends DashboardBasePage {
     }
 
     public List<WebElement> getMyActivityList() {
+        log.info("Query activity list");
         WebElement listWrapper =
                 getDriver().findElement(By.id("activity-list"));
 
@@ -54,6 +57,7 @@ public class DashboardActivityTab extends DashboardBasePage {
      * @return true, if there is more activity available. False otherwise.
      */
     public boolean clickMoreActivity() {
+        log.info("Click More Activity button");
         WebElement moreActivity = getMoreActivityElement();
         final int activityListOrigSize = getMyActivityList().size();
         if (moreActivity != null) {
@@ -72,7 +76,7 @@ public class DashboardActivityTab extends DashboardBasePage {
         }
     }
 
-    public WebElement getMoreActivityElement() {
+    private WebElement getMoreActivityElement() {
         return getDriver().findElement(By.id("moreActivity"));
     }
 }

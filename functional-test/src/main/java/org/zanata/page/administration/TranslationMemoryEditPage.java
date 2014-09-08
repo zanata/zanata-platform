@@ -20,6 +20,7 @@
  */
 package org.zanata.page.administration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,6 +30,7 @@ import org.zanata.page.BasePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class TranslationMemoryEditPage extends BasePage {
 
     @FindBy(id = "tmForm:slugField:slug")
@@ -48,26 +50,31 @@ public class TranslationMemoryEditPage extends BasePage {
     }
 
     public TranslationMemoryEditPage enterMemoryID(String id) {
+        log.info("Enter TM ID {}", id);
         idField.sendKeys(id);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryEditPage enterMemoryDescription(String description) {
+        log.info("Enter TM description {}", description);
         descriptionField.sendKeys(description);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage saveTM() {
+        log.info("Click Save");
         saveButton.click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryEditPage clickSaveAndExpectFailure() {
+        log.info("Click Save");
         saveButton.click();
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage cancelTM() {
+        log.info("Click Cancel");
         cancelButton.click();
         return new TranslationMemoryPage(getDriver());
     }

@@ -21,6 +21,7 @@
 package org.zanata.page.projectversion;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,6 +33,7 @@ import java.util.List;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class VersionDocumentsPage extends VersionBasePage {
 
     public VersionDocumentsPage(WebDriver driver) {
@@ -39,6 +41,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     public VersionDocumentsPage waitForSourceDocsContains(final String document) {
+        log.info("Click Project link");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -49,6 +52,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     public boolean sourceDocumentsContains(String document) {
+        log.info("Query source documents contains {}", document);
         List<WebElement> documentList = getDocumentsTabDocumentList();
         for (final WebElement tableRow : documentList) {
             if (tableRow.findElement(By.className("list__title")).getText()
@@ -60,6 +64,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     public List<String> getSourceDocumentNames() {
+        log.info("Query source documents list");
         List<String> filenames = new ArrayList<String>();
         for (WebElement element : getDocumentsTabDocumentList()) {
             filenames.add(element.findElement(By.className("list__title"))

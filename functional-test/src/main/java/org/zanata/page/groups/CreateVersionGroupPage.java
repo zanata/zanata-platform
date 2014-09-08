@@ -46,6 +46,7 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
+        log.info("Enter Group ID {}", groupId);
         getGroupSlugField().sendKeys(groupId);
         return new CreateVersionGroupPage(getDriver());
     }
@@ -55,10 +56,12 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public String getGroupIdValue() {
+        log.info("Query Group ID");
         return getGroupSlugField().getAttribute("value");
     }
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
+        log.info("Enter Group name {}", groupName);
         getGroupNameField().sendKeys(groupName);
         return new CreateVersionGroupPage(getDriver());
     }
@@ -68,16 +71,19 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
+        log.info("Enter Group description {}", desc);
         groupDescriptionField.sendKeys(desc);
         return this;
     }
 
     public VersionGroupsPage saveGroup() {
+        log.info("Click Save");
         clickAndCheckErrors(saveButton);
         return new VersionGroupsPage(getDriver());
     }
 
     public CreateVersionGroupPage saveGroupFailure() {
+        log.info("Click Save");
         saveButton.click();
         return new CreateVersionGroupPage(getDriver());
     }
@@ -93,15 +99,5 @@ public class CreateVersionGroupPage extends BasePage {
             }
         });
         return new CreateVersionGroupPage(getDriver());
-    }
-
-    public List<String> getFieldValidationErrors() {
-        List<WebElement> elements =
-                getDriver().findElements(By.className("message--danger"));
-        List<String> errors = new ArrayList<String>();
-        for (WebElement element : elements) {
-            errors.add(element.getText());
-        }
-        return errors;
     }
 }

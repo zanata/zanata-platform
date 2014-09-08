@@ -53,6 +53,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public CreateVersionPage clickCreateVersionLink() {
+        log.info("Click Create Version");
         gotoVersionsTab();
 
         clickLinkAfterAnimation(versionTabMoreAction);
@@ -61,6 +62,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
+        log.info("Click Version {}", versionId);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -87,17 +89,20 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public List<String> getVersions() {
+        log.info("Query Versions list");
         return WebElementUtil.elementsToText(getDriver(),
                 By.xpath("//h3[@class='list__title']"));
     }
 
     public int getNumberOfDisplayedVersions() {
+        log.info("Query number of displayed versions");
         return Integer.parseInt(getDriver()
                 .findElement(By.id("versionSearch:versionSearch-page-info"))
                 .getText());
     }
 
     public ProjectVersionsPage waitForDisplayedVersions(final int expected) {
+        log.info("Wait for number of displayed versions to be {}", expected);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -109,6 +114,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public ProjectVersionsPage clickSearchIcon() {
+        log.info("Click Search icon");
         getDriver()
                 .findElement(By.id("versions"))
                 .findElement(By.className("panel__search__button"))
@@ -117,6 +123,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public ProjectVersionsPage clearVersionSearch() {
+        log.info("Clear version search field");
         int maxKeys = 500;
         while (!getDriver().findElement(By.id("versionSearch__input"))
                 .getAttribute("value").isEmpty() && maxKeys > 0) {
@@ -130,6 +137,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     }
 
     public ProjectVersionsPage enterVersionSearch(String searchTerm) {
+        log.info("Enter version search {}", searchTerm);
         getDriver().findElement(By.id("versionSearch__input"))
                 .sendKeys(searchTerm);
         return new ProjectVersionsPage(getDriver());
