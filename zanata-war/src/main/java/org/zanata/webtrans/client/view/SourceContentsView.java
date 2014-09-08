@@ -42,6 +42,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -62,7 +63,7 @@ public class SourceContentsView extends Composite implements
     Styles style;
 
     @UiField(provided = true)
-    InlineLabel bookmarkIcon;
+    Anchor bookmarkIcon;
 
     @UiField(provided = true)
     ReferencePanel referencePanel;
@@ -98,8 +99,8 @@ public class SourceContentsView extends Composite implements
         rootPanel = binder.createAndBindUi(this);
     }
 
-    private InlineLabel createBookmarkIcon() {
-        InlineLabel bookmarkIcon = new InlineLabel();
+    private Anchor createBookmarkIcon() {
+        Anchor bookmarkIcon = new Anchor();
         bookmarkIcon.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

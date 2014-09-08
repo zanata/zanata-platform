@@ -2,10 +2,12 @@ package org.zanata.webtrans.client.view;
 
 import java.util.List;
 
+import com.google.gwt.user.client.Element;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -175,19 +177,33 @@ public class TransUnitsTableView extends Composite implements
 
     @Override
     public void ensureVisible(TargetContentsDisplay currentDisplay) {
-        int rootBottom =
-                root.getAbsoluteTop() + root.getElement().getClientHeight();
         Widget transUnitRow = currentDisplay.asWidget();
-        int rowBottom =
-                transUnitRow.getAbsoluteTop()
-                        + transUnitRow.getElement().getClientHeight();
-        if (rowBottom > rootBottom) {
-            root.ensureVisible(transUnitRow);
-        }
-        if (transUnitRow.getAbsoluteTop() < root.getAbsoluteTop()) {
-            root.ensureVisible(transUnitRow);
-        }
+        scrollToElement(root.getElement(), transUnitRow.getElement());
     }
+
+    private native void scrollToElement(Element scroll, Element item) /*-{
+      if (!item || !scroll)  {
+        return;
+      }
+      //need time out due to dom loading
+      setTimeout(function () {
+        var realOffset = 0;
+        var loopItem = item;
+        while (loopItem && (loopItem != scroll)) {
+          realOffset += loopItem.offsetTop;
+          loopItem = loopItem.offsetParent;
+        }
+
+        // handle scrolling when user clicks
+        if((realOffset + item.offsetHeight) > (scroll.scrollTop + scroll.offsetHeight)) {
+          //scroll if text area is partial visible on bottom
+          scroll.scrollTop = realOffset - scroll.offsetHeight / 2;
+        } else if(realOffset < scroll.scrollTop) {
+          //scroll if text area is partial visible on top
+          scroll.scrollTop = realOffset;
+        }
+      }, 100);
+    }-*/;
 
     @Override
     public void setRowSelectionListener(Listener listener) {

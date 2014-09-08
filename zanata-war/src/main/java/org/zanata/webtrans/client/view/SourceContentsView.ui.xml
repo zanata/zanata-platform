@@ -20,9 +20,9 @@
       <fui:ReferencePanel ui:field="referencePanel" />
     </li>
     <li>
-      <g:InlineLabel ui:field="bookmarkIcon"
+      <g:Anchor ui:field="bookmarkIcon"
         styleName="{style.bookmark} i i--star l--float-left l--push-top-quarter" />
-      <fui:TransUnitDetailsPanel ui:field="transUnitDetailsPanel"/>
+      <fui:TransUnitDetailsPanel ui:field="transUnitDetailsPanel" styleName="l--push-left-half"/>
     </li>
   </g:HTMLPanel>
 </ui:UiBinder>
