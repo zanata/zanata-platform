@@ -27,13 +27,17 @@ import java.util.Set;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
+import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.DefaultCacheManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.mockito.Mockito;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.EntityStatus;
@@ -78,6 +82,7 @@ import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 @Test(groups = { "business-tests" })
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -97,10 +102,12 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
     @BeforeMethod
     protected void beforeMethod() throws Exception {
+        cacheContainer.start();
         seam.reset()
                 .use("entityManager", Search.getFullTextEntityManager(getEm()))
                 .use("entityManagerFactory", getEmf())
                 .use("session", new FullTextSessionImpl(getSession()))
+                .use("cacheContainer", cacheContainer)
                 .use(JpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)

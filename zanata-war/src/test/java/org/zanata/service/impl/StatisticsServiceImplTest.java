@@ -31,18 +31,17 @@ import static org.hamcrest.Matchers.nullValue;
 import java.util.Arrays;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.infinispan.manager.CacheContainer;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.ValidationService;
-
-import net.sf.ehcache.CacheManager;
 
 /**
  * @author Carlos Munoz <a
@@ -54,7 +53,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Mock
     private ValidationService validationServiceImpl;
-    private CacheManager cacheManager;
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -78,21 +77,16 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @BeforeMethod
     public void initializeSeam() {
         MockitoAnnotations.initMocks(this);
+        cacheContainer.start();
         // @formatter:off
-      seam.reset()
+        seam.reset()
             .use("entityManager", getEm())
             .use("session", getSession())
             .use("validationServiceImpl", validationServiceImpl)
+            .use("cacheContainer", cacheContainer)
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
-      // @formatter:on
-        cacheManager = CacheManager.create();
-        cacheManager.removalAll();
-    }
-
-    @AfterMethod
-    public void after() {
-        cacheManager.shutdown();
+        // @formatter:on
     }
 
     @Test

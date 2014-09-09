@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -95,7 +96,13 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private CacheContainer cacheContainer;
 
     @In
-    private ServiceLocator serviceLocator;
+    private TextFlowDAO textFlowDAO;
+
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
+
+    @In
+    private DocumentDAO documentDAO;
 
     // constructor for Seam
     public TranslationStateCacheImpl() {
@@ -104,6 +111,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     }
 
     // Constructor for testing
+    @VisibleForTesting
     public TranslationStateCacheImpl(
         CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader,
         CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader,
@@ -177,7 +185,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         WordStatistic stats = documentStatisticCache.get(key);
 
         if (stats != null) {
-            HTextFlow textFlow = getTextFlowDAO().findById(
+            HTextFlow textFlow = textFlowDAO.findById(
                     event.getTextFlowId());
 
             stats.decrement(event.getPreviousState(),
@@ -199,8 +207,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         DocumentStatus documentStatus = docStatusCache.get(key);
         if(documentStatus != null) {
             HTextFlowTarget target =
-                getTextFlowTargetDAO().findById(updatedTargetId, false);
-            updateDocumentStatus(getDocumentDAO(), documentStatus,
+                textFlowTargetDAO.findById(updatedTargetId, false);
+            updateDocumentStatus(documentDAO, documentStatus,
                 key.getDocumentId(), target);
         }
     }
@@ -208,7 +216,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private Boolean loadTargetValidation(Long textFlowTargetId,
             ValidationId validationId) {
         HTextFlowTarget tft =
-                getTextFlowTargetDAO().findById(textFlowTargetId, false);
+                textFlowTargetDAO.findById(textFlowTargetId, false);
         if (tft != null) {
             ValidationAction action =
                     ValidationFactoryProvider.getFactoryInstance()
@@ -219,18 +227,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             return !errorList.isEmpty();
         }
         return null;
-    }
-
-    DocumentDAO getDocumentDAO() {
-        return serviceLocator.getInstance(DocumentDAO.class);
-    }
-
-    TextFlowTargetDAO getTextFlowTargetDAO() {
-        return serviceLocator.getInstance(TextFlowTargetDAO.class);
-    }
-
-    TextFlowDAO getTextFlowDAO() {
-        return serviceLocator.getInstance(TextFlowDAO.class);
     }
 
     private static class DocumentStatisticLoader extends

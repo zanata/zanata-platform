@@ -30,9 +30,11 @@ import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
+import org.infinispan.manager.CacheContainer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -52,6 +54,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
     private VersionGroupServiceImpl versionGroupServiceImpl;
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     private final String GROUP1_SLUG = "group1";
     private final String GROUP2_SLUG = "group2";
@@ -81,11 +84,13 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
 
     @BeforeMethod
     public void initializeSeam() {
+        cacheContainer.start();
         seam.reset()
                 .use("versionGroupDAO", new VersionGroupDAO(getSession()))
                 .use("projectIterationDAO",
                         new ProjectIterationDAO(getSession()))
                 .use("session", getSession())
+                .use("cacheContainer", cacheContainer)
                 .useImpl(VersionStateCacheImpl.class).useImpl(LocaleServiceImpl.class).ignoreNonResolvable();
 
         versionGroupServiceImpl = seam.autowire(VersionGroupServiceImpl.class);

@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.hamcrest.Matchers;
+import org.infinispan.manager.CacheContainer;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -22,6 +23,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -110,6 +112,7 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     @Mock
     private TranslationWorkspaceManager transWorspaceManager;
 
+    CacheContainer cacheContainer = new InfinispanTestCacheContainer();
     ISourceDocResource sourceDocResource;
     ITranslatedDocResource transResource;
 
@@ -138,10 +141,12 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     @SuppressWarnings("serial")
     @Override
     protected void prepareResources() {
+        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("session", getSession()).use("identity", mockIdentity)
                 .use("translationWorkspaceManager", transWorspaceManager)
                 .use("entityManager", super.getEm())
+                .use("cacheContainer", cacheContainer)
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(TranslationServiceImpl.class)
                 .useImpl(LocaleServiceImpl.class)

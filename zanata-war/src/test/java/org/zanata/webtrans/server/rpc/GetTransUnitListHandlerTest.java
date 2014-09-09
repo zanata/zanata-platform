@@ -14,11 +14,13 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.impl.FullTextEntityManagerImpl;
+import org.infinispan.manager.CacheContainer;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
@@ -61,6 +63,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private final DocumentInfo document = TestFixture.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     private SeamAutowire seam = SeamAutowire.instance();
 
@@ -76,6 +79,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         MockitoAnnotations.initMocks(this);
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
+        cacheContainer.start();
         TransUnitTransformer transUnitTransformer =
             seam.reset().use("resourceUtils", resourceUtils)
                 .autowire(TransUnitTransformer.class);
@@ -92,6 +96,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
                         .use("transUnitTransformer", transUnitTransformer)
                         .use("webtrans.gwt.GetTransUnitsNavigationHandler",
                                 getTransUnitsNavigationService)
+                        .use("cacheContainer", cacheContainer)
                         .useImpl(TranslationStateCacheImpl.class)
                         .useImpl(TextFlowSearchServiceImpl.class)
                         .useImpl(ValidationServiceImpl.class).allowCycles();

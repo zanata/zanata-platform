@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.infinispan.manager.CacheContainer;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.mockito.Mock;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.StringSet;
@@ -33,13 +35,16 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest 
     @Mock
     private ZanataIdentity mockIdentity;
 
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
+
     @Override
     protected void prepareResources() {
         MockitoAnnotations.initMocks(this);
-
+        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("session", getSession()).use("entityManager", getEm())
                 .use("identity", mockIdentity).useImpl(LocaleServiceImpl.class)
+                .use("cacheContainer", cacheContainer)
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(DocumentServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class);

@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.JAXBException;
 
 import org.hamcrest.Matchers;
+import org.infinispan.manager.CacheContainer;
 import org.jboss.resteasy.client.ClientResponse;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.DTOUtil;
@@ -36,6 +38,7 @@ public class TranslationServiceRestTest extends
             new TranslationsResourceTestObjectFactory();
     private ResourceTestObjectFactory resourceTestFactory =
             new ResourceTestObjectFactory();
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @DataProvider(name = "TranslationTestData")
     public Object[][] getTestData() {
@@ -53,9 +56,11 @@ public class TranslationServiceRestTest extends
     @Override
     protected void prepareResources() {
         MockitoAnnotations.initMocks(this);
+        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("entityManager", getEm()).use("session", getSession())
                 .use("identity", Mockito.mock(ZanataIdentity.class))
+                .use("cacheContainer", cacheContainer)
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(DocumentServiceImpl.class)
