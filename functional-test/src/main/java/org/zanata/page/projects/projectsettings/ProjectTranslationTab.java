@@ -20,6 +20,7 @@
  */
 package org.zanata.page.projects.projectsettings;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectTranslationTab extends ProjectBasePage {
 
     private Map validationNames = getValidationMapping();
@@ -42,6 +44,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
     }
 
     public boolean isValidationLevel(String optionName, String level) {
+        log.info("Query is {} validation level {}", optionName, level);
         String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
@@ -53,6 +56,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
 
     public ProjectTranslationTab setValidationLevel(String optionName,
                                                     String level) {
+        log.info("Click {} validation level {}", optionName, level);
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 

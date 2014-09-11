@@ -75,6 +75,7 @@ public class EditorPage extends BasePage {
     }
 
     public EditorPage searchGlossary(final String term) {
+        log.info("Search glossary for {}", term);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -99,6 +100,7 @@ public class EditorPage extends BasePage {
      * @return a table representing the searchResultTable
      */
     public List<List<String>> getGlossaryResultTable() {
+        log.info("Query glossary results");
         return waitForTenSec().until(
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
@@ -125,10 +127,12 @@ public class EditorPage extends BasePage {
      * @return content of the source
      */
     public String getMessageSourceAtRowIndex(final int rowIndex) {
+        log.info("Query text flow source at {}", rowIndex);
         return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, Plurals.SourceSingular);
     }
 
     public String getMessageSourceAtRowIndex(int rowIndex, Plurals plural) {
+        log.info("Query text flow source at {}", rowIndex);
         return getCodeMirrorContent(rowIndex, SOURCE_ID_FMT, plural);
     }
 
@@ -142,6 +146,7 @@ public class EditorPage extends BasePage {
      * @return content of the target
      */
     public String getMessageTargetAtRowIndex(final int rowIndex) {
+        log.info("Query text flow target at {}", rowIndex);
         return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
     }
 
@@ -162,6 +167,7 @@ public class EditorPage extends BasePage {
     }
 
     public EditorPage setSyntaxHighlighting(boolean option) {
+        log.info("Set syntax highlight to {}", option);
         openConfigurationPanel();
         WebElement highlight = waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
@@ -181,6 +187,7 @@ public class EditorPage extends BasePage {
     }
 
     private Boolean openConfigurationPanel() {
+        log.info("Click to open Configuration options");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -208,15 +215,18 @@ public class EditorPage extends BasePage {
      * @return row target content
      */
     public String getBasicTranslationTargetAtRowIndex(final int rowIndex) {
+        log.info("Query text flow source at {}", rowIndex);
         return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
     }
 
     public String getBasicTranslationTargetAtRowIndex(int rowIndex, Plurals plurals) {
+        log.info("Query text flow source at {}", rowIndex);
         return getContentAtRowIndex(rowIndex, TARGET_ID_FMT, plurals);
     }
 
     public boolean expectBasicTranslationAtRowIndex(final int rowIndex,
                                                     final String expected) {
+        log.info("Wait for text flow target at {} to be {}", rowIndex, expected);
         return waitForTenSec().until(new  Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
@@ -245,6 +255,7 @@ public class EditorPage extends BasePage {
      * @return updated EditorPage
      */
     public EditorPage translateTargetAtRowIndex(final int rowIndex, String text) {
+        log.info("Enter at {} the text {}", rowIndex, text);
         setTargetContent(rowIndex, text, TARGET_ID_FMT, Plurals.SourceSingular);
         return new EditorPage(getDriver());
     }
@@ -272,6 +283,7 @@ public class EditorPage extends BasePage {
      */
     public EditorPage pasteIntoRowAtIndex(final long rowIndex,
                                           final String text) {
+        log.info("Paste at {} the text {}", rowIndex, text);
         WebElement we = waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
@@ -287,6 +299,7 @@ public class EditorPage extends BasePage {
     }
 
     public EditorPage approveTranslationAtRow(int rowIndex) {
+        log.info("Click Approve on row {}", rowIndex);
         WebElement button = getDriver()
                 .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
         button.click();
@@ -295,6 +308,7 @@ public class EditorPage extends BasePage {
     }
 
     public EditorPage saveAsFuzzyAtRow(int rowIndex) {
+        log.info("Click Fuzzy on row {}", rowIndex);
         WebElement button = getDriver()
                 .findElement(By.id(String.format(FUZZY_BUTTON_ID_FMT, rowIndex)));
         button.click();
@@ -302,15 +316,18 @@ public class EditorPage extends BasePage {
     }
 
     public String getMessageTargetAtRowIndex(int rowIndex, Plurals plurals) {
+        log.info("Query text flow target at {}", rowIndex);
         return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, plurals);
     }
 
     public String getStatistics() {
+        log.info("Query statistics");
         return getDriver().findElement(By.id("gwt-debug-statistics-label"))
                 .getText();
     }
 
     public List<String> getMessageSources() {
+        log.info("Query list of text flow sources");
         List<WebElement> sources = getDriver().findElement(transUnitTableBy)
                 .findElements(By.className("sourceTable"));
         return WebElementUtil.elementsToText(sources);
@@ -321,6 +338,7 @@ public class EditorPage extends BasePage {
      * @return error string
      */
     public String getValidationMessageCurrentTarget() {
+        log.info("Query validation messages on current item");
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -342,16 +360,19 @@ public class EditorPage extends BasePage {
      * @return is/not displayed
      */
     public boolean isValidationMessageCurrentTargetVisible() {
+        log.info("Query is validation message panel displayed");
         return getDriver()
                 .findElement(By.className("selected"))
-                .findElements(By.className("gwt-DisclosurePanel"))
-                .get(2).isDisplayed();
+                .findElements(By.className("transUnitCol")).get(1) // Right column
+                .findElement(By.className("gwt-DisclosurePanel"))
+                .isDisplayed();
     }
 
     /**
      * Wait for a delayed validation error panel to display
      */
     public void waitForValidationErrorsVisible() {
+        log.info("Wait for validation message panel displayed");
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -366,6 +387,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage openValidationBox() {
+        log.info("Click to open Validation panel");
         getDriver().findElements(By.className("gwt-DisclosurePanel")).get(2)
                 .click();
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
@@ -385,6 +407,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage openValidationOptions() {
+        log.info("Click to open Validation options panel");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -417,6 +440,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public boolean isValidationOptionAvailable(Validations validation) {
+        log.info("Query is validation option {} available", validation);
         return getDriver()
                 .findElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']"))
@@ -431,6 +455,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public boolean isValidationOptionSelected(Validations validation) {
+        log.info("Query is validation option {} selected", validation);
         return getDriver()
                 .findElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']"))
@@ -445,6 +470,7 @@ public class EditorPage extends BasePage {
      * @return new EditorPage
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
+        log.info("Click validation checkbox {}", validation);
         getDriver().findElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']"))
                 .findElement(By.tagName("input"))
@@ -476,11 +502,13 @@ public class EditorPage extends BasePage {
     }
 
     public EditorPage inputFilterQuery(String query) {
+        log.info("Enter filter query {}", query);
         editorFilterField.clear();
         editorFilterField.sendKeys(query + Keys.ENTER);
         return this;
     }
     public String getFilterQuery() {
+        log.info("Query filter text");
         return editorFilterField.getAttribute("value");
     }
 

@@ -20,6 +20,7 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,6 +31,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
  * @author Damian Jansen
  * <a href="mailto:camunoz@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class DashboardProfileTab extends DashboardBasePage {
 
     @FindBy(id = "profileForm:nameField:accountName")
@@ -43,18 +45,21 @@ public class DashboardProfileTab extends DashboardBasePage {
     }
 
     public String getUsername() {
+        log.info("Query user name");
         return getDriver().findElement(By.id("profileForm"))
                 .findElement(By.className("l--push-bottom-0"))
                 .getText();
     }
 
     public DashboardProfileTab enterName(String name) {
+        log.info("Enter name {}", name);
         accountNameField.clear();
         accountNameField.sendKeys(name);
         return this;
     }
 
     public DashboardProfileTab clickUpdateProfileButton() {
+        log.info("Click Update");
         updateProfileButton.click();
         return this;
     }

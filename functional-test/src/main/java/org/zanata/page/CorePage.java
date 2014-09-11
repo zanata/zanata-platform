@@ -61,6 +61,7 @@ public class CorePage extends AbstractPage {
     }
 
     public HomePage goToHomePage() {
+        log.info("Click Zanata home icon");
         scrollToTop();
         homeLink.click();
         return new HomePage(getDriver());
@@ -85,6 +86,7 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> getErrors() {
+        log.info("Query page errors");
         List<String> oldError =
                 WebElementUtil.elementsToText(getDriver(),
                         By.xpath("//span[@class='errors']"));
@@ -108,6 +110,7 @@ public class CorePage extends AbstractPage {
      * @return list of error message
      */
     public List<String> getErrors(final int expectedNumber) {
+        log.info("Query page errors, expecting {}", expectedNumber);
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -118,6 +121,7 @@ public class CorePage extends AbstractPage {
     }
 
     public String getNotificationMessage() {
+        log.info("Query notification message");
         List<WebElement> messages =
                 getDriver().findElement(By.id("messages"))
                         .findElements(By.tagName("li"));
@@ -125,6 +129,7 @@ public class CorePage extends AbstractPage {
     }
 
     public boolean expectNotification(final String notification) {
+        log.info("Wait for notification {}", notification);
         return waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -141,6 +146,7 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> waitForErrors() {
+        log.info("Query page errors list");
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
@@ -152,6 +158,7 @@ public class CorePage extends AbstractPage {
     }
 
     public void assertNoCriticalErrors() {
+        log.info("Query critical errors");
         List<WebElement> errors =
                 getDriver().findElements(By.id("errorMessage"));
         if (errors.size() > 0) {
@@ -161,6 +168,7 @@ public class CorePage extends AbstractPage {
     }
 
     public boolean hasNoCriticalErrors() {
+        log.info("Query critical errors");
         return getDriver().findElements(By.id("errorMessage")).size() <= 0;
     }
 
@@ -171,6 +179,7 @@ public class CorePage extends AbstractPage {
      * interact with the container instead.
      */
     public void defocus() {
+        log.info("Click off element focus");
         List<WebElement> webElements =
                 getDriver().findElements(By.id("container"));
         webElements.addAll(getDriver().findElements(By.tagName("body")));
@@ -182,6 +191,7 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> waitForFieldErrors() {
+        log.info("Query field errors");
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
@@ -192,6 +202,7 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> getFieldErrors() {
+        log.info("Query field errors");
         List<String> errorList = new ArrayList<String>();
         List<WebElement> errorObjects =
                 getDriver().findElements(By.className("message--danger"));

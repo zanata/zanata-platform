@@ -83,12 +83,14 @@ public class BasePage extends CorePage {
     }
 
     public DashboardBasePage goToMyDashboard() {
+        log.info("Click Dashboard menu link");
         userAvatar.click();
         clickLinkAfterAnimation(BY_DASHBOARD_LINK);
         return new DashboardBasePage(getDriver());
     }
 
     public ProjectsPage goToProjects() {
+        log.info("Click Projects");
         clickNavMenuItem(getDriver().findElement(By.id("projects_link")));
         return new ProjectsPage(getDriver());
     }
@@ -113,17 +115,20 @@ public class BasePage extends CorePage {
     }
 
     public VersionGroupsPage goToGroups() {
+        log.info("Click Groups");
         clickNavMenuItem(groupsLink);
         return new VersionGroupsPage(getDriver());
     }
 
     public GlossaryPage goToGlossary() {
+        log.info("Click Glossary");
         // Dynamically find the link, as it is not present for every user
         clickNavMenuItem(getDriver().findElement(By.id("glossary_link")));
         return new GlossaryPage(getDriver());
     }
 
     public AdministrationPage goToAdministration() {
+        log.info("Click Administration menu link");
         userAvatar.click();
 
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
@@ -132,6 +137,7 @@ public class BasePage extends CorePage {
     }
 
     public RegisterPage goToRegistration() {
+        log.info("Click Sign Up");
         Preconditions
                 .checkArgument(!hasLoggedIn(),
                         "User has logged in! You should sign out or delete cookie first in your test.");
@@ -143,21 +149,25 @@ public class BasePage extends CorePage {
     }
 
     public SignInPage clickSignInLink() {
+        log.info("Click Log In");
         WebElement signInLink = getDriver().findElement(BY_SIGN_IN);
         signInLink.click();
         return new SignInPage(getDriver());
     }
 
     public boolean hasLoggedIn() {
+        log.info("Query user is logged in");
         List<WebElement> signInLink = getDriver().findElements(BY_SIGN_IN);
         return signInLink.size() == 0;
     }
 
     public String loggedInAs() {
+        log.info("Query logged in user name");
         return userAvatar.getAttribute("data-original-title");
     }
 
     public HomePage logout() {
+        log.info("Click Log Out");
         scrollIntoView(userAvatar);
         userAvatar.click();
 
@@ -224,18 +234,21 @@ public class BasePage extends CorePage {
     }
 
     public HelpPage goToHelp() {
+        log.info("Click Help");
         WebElement help_link = getDriver().findElement(By.id("help_link"));
         clickNavMenuItem(help_link);
         return new HelpPage(getDriver());
     }
 
     public BasePage enterSearch(String searchText) {
+        log.info("Enter Project search {}", searchText);
         WebElementUtil.searchAutocomplete(getDriver(), "projectAutocomplete",
                 searchText);
         return new BasePage(getDriver());
     }
 
     public ProjectsPage submitSearch() {
+        log.info("Press Enter on Project search");
         getDriver().findElement(
                 By.id("projectAutocomplete-autocomplete__input")).sendKeys(
                 Keys.ENTER);
@@ -243,6 +256,7 @@ public class BasePage extends CorePage {
     }
 
     public BasePage waitForSearchListContains(final String expected) {
+        log.info("Wait for Project search list contains {}", expected);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -253,11 +267,13 @@ public class BasePage extends CorePage {
     }
 
     public List<String> getProjectSearchAutocompleteItems() {
+        log.info("Query Projects search results list");
         return WebElementUtil.getSearchAutocompleteItems(getDriver(),
                 "general-search-form", "projectAutocomplete");
     }
 
     public ProjectVersionsPage clickSearchEntry(final String searchEntry) {
+        log.info("Click Projects search result {}", searchEntry);
         WebElement searchItem =
                 waitForTenSec().until(new Function<WebDriver, WebElement>() {
                     @Override

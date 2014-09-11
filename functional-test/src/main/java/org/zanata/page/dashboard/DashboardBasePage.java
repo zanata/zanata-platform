@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,6 +34,7 @@ import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 
+@Slf4j
 public class DashboardBasePage extends BasePage {
 
     @FindBy(id = "activity_tab")
@@ -74,56 +76,55 @@ public class DashboardBasePage extends BasePage {
     }
 
     public String getUserFullName() {
+        log.info("Query user full name");
         return getDriver().findElement(By.id("profile-overview"))
                 .findElement(By.tagName("h1")).getText();
     }
 
     public DashboardActivityTab gotoActivityTab() {
+        log.info("Click Activity tab");
         clickWhenTabEnabled(activityTab);
         return new DashboardActivityTab(getDriver());
     }
 
     public boolean activityTabIsSelected() {
+        log.info("Query is Activity tab displayed");
         return getDriver().findElement(
                 By.cssSelector("#activity.is-active")) != null;
     }
 
-    public List<WebElement> getMyActivityList() {
-        WebElement listWrapper =
-                getDriver().findElement(By.id("activity-list"));
-
-        if (listWrapper != null) {
-            return listWrapper.findElements(By.xpath("./li"));
-        }
-        return new ArrayList<WebElement>();
-    }
-
     public DashboardProjectsTab gotoProjectsTab() {
+        log.info("Click Projects tab");
         projectsTab.click();
         return new DashboardProjectsTab(getDriver());
     }
 
     public DashboardBasePage goToSettingsTab() {
+        log.info("Click Settings tab");
         clickWhenTabEnabled(settingsTab);
         return new DashboardBasePage(getDriver());
     }
 
     public DashboardAccountTab gotoSettingsAccountTab() {
+        log.info("Click Account settings sub-tab");
         clickWhenTabEnabled(settingsAccountTab);
         return new DashboardAccountTab(getDriver());
     }
 
     public DashboardProfileTab goToSettingsProfileTab() {
+        log.info("Click Profile settings sub-tab");
         clickWhenTabEnabled(settingsProfileTab);
         return new DashboardProfileTab(getDriver());
     }
 
     public DashboardClientTab goToSettingsClientTab() {
+        log.info("Click Client settings sub-tab");
         clickWhenTabEnabled(settingsClientTab);
         return new DashboardClientTab(getDriver());
     }
 
     public void waitForUsernameChanged(final String current) {
+        log.info("Wait for username change from {}", current);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {

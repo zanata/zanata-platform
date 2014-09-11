@@ -21,6 +21,7 @@
 
 package org.zanata.page.projects;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,7 @@ import java.util.List;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectMaintainersPage extends ProjectBasePage {
 
     public ProjectMaintainersPage(WebDriver driver) {
@@ -38,6 +40,7 @@ public class ProjectMaintainersPage extends ProjectBasePage {
     }
 
     public List<String> getMaintainers() {
+        log.info("Query maintainers list");
         List<WebElement> rows = getDriver()
                 .findElement(By.id("maintainers"))
                 .findElements(By.tagName("li"));

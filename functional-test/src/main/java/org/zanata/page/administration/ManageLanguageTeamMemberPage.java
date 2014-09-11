@@ -34,11 +34,13 @@ public class ManageLanguageTeamMemberPage extends BasePage {
     }
 
     private String getMembersInfo() {
+        log.info("Query members info");
         WebElement memberInfo = memberPanel.findElement(By.xpath(".//p"));
         return memberInfo.getText();
     }
 
     public List<String> getMemberUsernames() {
+        log.info("Query username list");
         if (getMembersInfo().contains("0 members")) {
             log.info("no members yet for this language");
             return Collections.emptyList();
@@ -52,6 +54,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
     }
 
     public ManageLanguageTeamMemberPage joinLanguageTeam() {
+        log.info("Click Join");
         // Waiting 10 seconds for an element to be present on the page, checking
         // for its presence once every 1 second.
         WebElement joinLanguageTeamLink =
@@ -75,6 +78,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
     }
 
     public ManageLanguageTeamMemberPage clickAddTeamMember() {
+        log.info("Click Add Team Member");
         WebElement addTeamMemberLink =
                 waitForTenSec().until(new Function<WebDriver, WebElement>() {
                     public WebElement apply(WebDriver driver) {
@@ -87,6 +91,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
 
     public ManageLanguageTeamMemberPage searchPersonAndAddToTeam(
             final String personName) {
+        log.info("Enter username search {}", personName);
         final WebElement addUserPanel =
                 getDriver().findElement(By.id("userAddPanel_container"));
 

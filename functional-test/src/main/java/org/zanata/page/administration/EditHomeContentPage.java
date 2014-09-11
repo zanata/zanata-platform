@@ -21,6 +21,7 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Function;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,6 +33,7 @@ import org.zanata.page.utility.HomePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class EditHomeContentPage extends BasePage {
 
     @FindBy(id = "homeContentForm:update")
@@ -45,6 +47,7 @@ public class EditHomeContentPage extends BasePage {
     }
 
     public EditHomeContentPage enterText(String text) {
+        log.info("Enter homepage code\n{}", text);
         // Switch to the CKEditor frame
         getDriver().switchTo().frame(waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
@@ -69,12 +72,14 @@ public class EditHomeContentPage extends BasePage {
     }
 
     public HomePage update() {
+        log.info("Click Update");
         updateButton.click();
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
-        updateButton.click();
+        log.info("Click Cancel");
+        cancelButton.click();
         return new HomePage(getDriver());
     }
 }

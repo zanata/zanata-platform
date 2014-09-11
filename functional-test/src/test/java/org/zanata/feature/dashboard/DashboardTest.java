@@ -83,7 +83,7 @@ public class DashboardTest extends ZanataTestCase {
         assertThat(activityListExpands())
                 .as("Activity list is present and expandable").isTrue();
         assertThat(projectListIsNotEmpty())
-                .as("Project List is present and expandable").isTrue();
+                .as("Project List is not empty").isTrue();
     }
 
     private boolean dashboardPresentAfterLogin() throws Exception {
@@ -93,7 +93,6 @@ public class DashboardTest extends ZanataTestCase {
     private boolean activityListExpands() throws Exception {
         DashboardActivityTab activityTab = dashboard.gotoActivityTab();
         assertThat(activityTab.getMyActivityList()).isNotEmpty();
-        int initialActivitySize = activityTab.getMyActivityList().size();
         return activityTab.clickMoreActivity();
     }
 

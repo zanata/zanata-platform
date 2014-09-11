@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import java.util.List;
 
 import com.google.common.base.Throwables;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,6 +17,7 @@ import org.zanata.util.WebElementUtil;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Slf4j
 public class ManageSearchPage extends BasePage {
     private static final int SELECT_ALL_COLUMN = 0;
     private By classesTableBy = By.id("form:classList");
@@ -42,6 +44,7 @@ public class ManageSearchPage extends BasePage {
     }
 
     public ManageSearchPage clickSelectAll() {
+        log.info("Click Select All");
         getDriver().findElement(By.id("form:selectAll")).click();
         // It seems that if the Select All and Perform buttons are clicked too
         // quickly in succession, the operation will fail
@@ -54,6 +57,7 @@ public class ManageSearchPage extends BasePage {
     }
 
     public boolean allActionsSelected() {
+        log.info("Query all actions selected");
         List<TableRow> tableRows =
                 WebElementUtil.getTableRows(getDriver(), classesTableBy);
         for (TableRow tableRow : tableRows) {
@@ -69,6 +73,7 @@ public class ManageSearchPage extends BasePage {
     }
 
     public ManageSearchPage performSelectedActions() {
+        log.info("Click Perform Actions");
         getDriver().findElement(By.id("form:reindex")).click();
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -81,6 +86,7 @@ public class ManageSearchPage extends BasePage {
     }
 
     public ManageSearchPage waitForActionsToFinish() {
+        log.info("Wait: all actions are finished");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -92,20 +98,24 @@ public class ManageSearchPage extends BasePage {
     }
 
     public ManageSearchPage abort() {
+        log.info("Click Abort");
         getDriver().findElement(abortButtonBy).click();
         return new ManageSearchPage(getDriver());
     }
 
 
     public boolean noOperationsRunningIsDisplayed() {
+        log.info("Query No Operations");
         return getDriver().findElement(By.id("noOperationsRunning")).isDisplayed();
     }
 
     public boolean completedIsDisplayed() {
+        log.info("Query is action completed");
         return getDriver().findElement(By.id("completed")).isDisplayed();
     }
 
     public boolean abortedIsDisplayed() {
+        log.info("Query is action aborted");
         return getDriver().findElement(By.id("aborted")).isDisplayed();
     }
 

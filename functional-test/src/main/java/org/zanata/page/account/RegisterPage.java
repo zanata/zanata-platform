@@ -22,6 +22,7 @@ package org.zanata.page.account;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class RegisterPage extends CorePage {
 
     public static final String USERNAME_VALIDATION_ERROR =
@@ -79,37 +81,44 @@ public class RegisterPage extends CorePage {
     }
 
     public RegisterPage enterName(String name) {
+        log.info("Enter name {}", name);
         nameField.sendKeys(name);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterUserName(String userName) {
+        log.info("Enter username {}", userName);
         usernameField.sendKeys(userName);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterEmail(String email) {
+        log.info("Enter email {}", email);
         emailField.sendKeys(email);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterPassword(String password) {
+        log.info("Enter password {}", password);
         passwordField.sendKeys(password);
         return new RegisterPage(getDriver());
     }
 
     // TODO: Add a "signup success" page
     public HomePage register() {
+        log.info("Click Sign Up");
         registerButton.click();
         return new HomePage(getDriver());
     }
 
     public RegisterPage registerFailure() {
+        log.info("Click Sign Up");
         registerButton.click();
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage clearFields() {
+        log.info("Clear fields");
         nameField.clear();
         emailField.clear();
         usernameField.clear();
@@ -130,6 +139,7 @@ public class RegisterPage extends CorePage {
     }
 
     public List<String> waitForErrors() {
+        log.info("Query errors");
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
@@ -141,25 +151,30 @@ public class RegisterPage extends CorePage {
     }
 
     public String getPageTitle() {
+        log.info("Query page title");
         return getDriver().findElement(By.className("heading--sub"))
                 .getText();
     }
 
     public SignInPage goToSignIn() {
+        log.info("Click Log In");
         getDriver().findElement(By.linkText("Log In")).click();
         return new SignInPage(getDriver());
     }
 
     public RegisterPage clickPasswordShowToggle() {
+        log.info("Click Show/Hide");
         getDriver().findElement(By.className("js-form-password-toggle")).click();
         return new RegisterPage(getDriver());
     }
 
     public String getPassword() {
+        log.info("Query password");
         return passwordField.getAttribute("value");
     }
 
     public String getPasswordFieldType() {
+        log.info("Query password field type");
         return passwordField.getAttribute("type");
     }
 }

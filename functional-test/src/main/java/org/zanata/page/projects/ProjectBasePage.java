@@ -72,12 +72,14 @@ public class ProjectBasePage extends BasePage {
     }
 
     public String getProjectName() {
+        log.info("Query Project name");
         return getDriver()
                 .findElement(By.id("project-info"))
                 .findElement(By.tagName("h1")).getText();
     }
 
     public ProjectVersionsPage gotoVersionsTab() {
+        log.info("Click Versions tab");
         clickWhenTabEnabled(versionsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -90,6 +92,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectMaintainersPage gotoMaintainersTab() {
+        log.info("Click Maintainers tab");
         clickWhenTabEnabled(maintainersTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -102,6 +105,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectAboutPage gotoAboutTab() {
+        log.info("Click About tab");
         clickWhenTabEnabled(aboutTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -112,7 +116,9 @@ public class ProjectBasePage extends BasePage {
         });
         return new ProjectAboutPage(getDriver());
     }
+
     public boolean settingsTabIsDisplayed() {
+        log.info("Query Settings tab is displayed");
         return settingsTab.isDisplayed();
     }
 
@@ -126,6 +132,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectBasePage gotoSettingsTab() {
+        log.info("Click Settings tab");
         slightPause();
         clickWhenTabEnabled(settingsTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
@@ -139,6 +146,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectGeneralTab gotoSettingsGeneral() {
+        log.info("Click General settings sub-tab");
         clickWhenTabEnabled(settingsGeneralTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -151,6 +159,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectPermissionsTab gotoSettingsPermissionsTab() {
+        log.info("Click Permissions settings sub-tab");
         clickWhenTabEnabled(settingsPermissionTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -163,6 +172,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectTranslationTab gotoSettingsTranslationTab() {
+        log.info("Click Translation settings sub-tab");
         clickWhenTabEnabled(settingsTranslationTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -175,6 +185,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectLanguagesTab gotoSettingsLanguagesTab() {
+        log.info("Click Languages settings sub-tab");
         clickWhenTabEnabled(settingsLanguagesTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -187,6 +198,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public ProjectAboutTab gotoSettingsAboutTab() {
+        log.info("Click About settings sub-tab");
         clickWhenTabEnabled(settingsAboutTab);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
@@ -199,6 +211,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public List<String> getContentAreaParagraphs() {
+        log.info("Query Project info");
         List<String> paragraphTexts = new ArrayList<String>();
         List<WebElement> paragraphs =
                 getDriver().findElement(By.id("project-info"))
@@ -210,6 +223,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public String getHomepage() {
+        log.info("Query Project homepage");
         for (WebElement element : getDriver()
                 .findElement(By.id("project-info"))
                 .findElements(By.tagName("li"))) {
@@ -223,6 +237,7 @@ public class ProjectBasePage extends BasePage {
     }
 
     public String getGitUrl() {
+        log.info("Query Project repo");
         for (WebElement element : getDriver()
                 .findElement(By.id("project-info"))
                 .findElements(By.tagName("li"))) {

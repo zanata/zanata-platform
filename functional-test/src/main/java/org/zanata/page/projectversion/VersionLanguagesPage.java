@@ -57,6 +57,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     public EditorPage translate(final String locale, final String docName) {
+        log.info("Click on {} : {} to begin translation", locale, docName);
         gotoLanguageTab();
         return refreshPageUntil(this, new Function<WebDriver, EditorPage>() {
             @Override
@@ -101,6 +102,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     private List<WebElement> getVersionTabDocumentList() {
+        log.info("Query documents list");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -116,6 +118,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     public String getStatisticsForLocale(final String localeId) {
+        log.info("Query stats for {}", localeId);
         gotoLanguageTab();
 
         return refreshPageUntil(this, new Function<WebDriver, String>() {

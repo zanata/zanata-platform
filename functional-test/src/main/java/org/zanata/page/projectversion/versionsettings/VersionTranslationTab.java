@@ -1,5 +1,6 @@
 package org.zanata.page.projectversion.versionsettings;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +13,7 @@ import java.util.Map;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class VersionTranslationTab extends VersionBasePage {
 
     public VersionTranslationTab(WebDriver driver) {
@@ -21,6 +23,7 @@ public class VersionTranslationTab extends VersionBasePage {
     private Map validationNames = getValidationMapping();
 
     public boolean isValidationLevel(String optionName, String level) {
+        log.info("Query is {}  validation at level {}", optionName, level);
         String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
@@ -32,6 +35,7 @@ public class VersionTranslationTab extends VersionBasePage {
 
     public VersionTranslationTab setValidationLevel(String optionName,
                                                     String level) {
+        log.info("Click to set {} validation to {}", optionName, level);
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 

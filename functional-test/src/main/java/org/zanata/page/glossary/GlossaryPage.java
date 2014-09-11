@@ -46,11 +46,13 @@ public class GlossaryPage extends BasePage {
     }
 
     public List<String> getAvailableGlossaryLanguages() {
+        log.info("Query available glossary languages");
         return WebElementUtil.getColumnContents(getDriver(),
                 By.id("glossary_form:data_table"), 0);
     }
 
     public int getGlossaryEntryCount(String lang) {
+        log.info("Query number of glossary entries for {}", lang);
         List<String> langs = getAvailableGlossaryLanguages();
         int row = langs.indexOf(lang);
         if (row >= 0) {

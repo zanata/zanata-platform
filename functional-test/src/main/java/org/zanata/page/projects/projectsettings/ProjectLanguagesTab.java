@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -39,6 +40,7 @@ import java.util.List;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
 
     @FindBy(id = "languageAutocomplete-autocomplete__input")
@@ -54,6 +56,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      * @return String list of language/locale names
      */
     public List<String> getEnabledLocaleList() {
+        log.info("Query enabled locales");
         List<String> rows = Lists.transform(getEnabledLocaleListElement(),
                 new Function<WebElement, String>() {
                         @Override
@@ -71,6 +74,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     }
 
     public ProjectLanguagesTab waitForLocaleListVisible() {
+        log.info("Wait for locale list visible");
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
@@ -89,6 +93,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      * @return new language settings tab
      */
     public ProjectLanguagesTab enterSearchLanguage(String languageQuery) {
+        log.info("Enter language search {}", languageQuery);
         WebElementUtil.searchAutocomplete(getDriver(), "languageAutocomplete",
                 languageQuery);
         return new ProjectLanguagesTab(getDriver());
@@ -102,6 +107,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      * @return new language settings, anticipating the language has been added.
      */
     public ProjectLanguagesTab addLanguage(final String localeId) {
+        log.info("Click Add language on {}", localeId);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
@@ -141,6 +147,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      * @return new language settings tab
      */
     public ProjectLanguagesTab removeLocale(final String localeId) {
+        log.info("Click Remove on {}", localeId);
         boolean removedLocale = false;
         for (WebElement localeLi : getEnabledLocaleListElement()) {
             String displayedLocaleId =

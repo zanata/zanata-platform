@@ -72,21 +72,25 @@ public class ManageUserAccountPage extends BasePage {
     }
 
     public ManageUserAccountPage enterPassword(String password) {
+        log.info("Enter password {}", password);
         passwordField.sendKeys(password);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage enterConfirmPassword(String confirmPassword) {
+        log.info("Enter confirm password {}", confirmPassword);
         passwordConfirmField.sendKeys(confirmPassword);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickEnabled() {
+        log.info("Click Enabled");
         enabledField.click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickRole(String role) {
+        log.info("Click role {}", role);
         WebElement roleBox =
                 getDriver().findElement(
                         By.id("userdetailForm:rolesField:roles:".concat(roleMap
@@ -96,22 +100,26 @@ public class ManageUserAccountPage extends BasePage {
     }
 
     public boolean isRoleChecked(String role) {
+        log.info("Query is role {} checked", role);
         return getDriver().findElement(
                 By.id("userdetailForm:rolesField:roles:".concat(roleMap
                         .get(role)))).isSelected();
     }
 
     public ManageUserPage saveUser() {
+        log.info("Click Save");
         saveButton.click();
         return new ManageUserPage(getDriver());
     }
 
     public ManageUserAccountPage saveUserExpectFailure() {
+        log.info("Click Save");
         saveButton.click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserPage cancelEditUser() {
+        log.info("Click Cancel");
         cancelButton.click();
         return new ManageUserPage(getDriver());
     }

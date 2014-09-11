@@ -52,41 +52,49 @@ public class SignInPage extends CorePage {
     }
 
     public SignInPage enterUsername(String username) {
+        log.info("Enter username {}", username);
         usernameField.sendKeys(username);
         return new SignInPage(getDriver());
     }
 
     public SignInPage enterPassword(String password) {
+        log.info("Enter password {}", password);
         passwordField.sendKeys(password);
         return new SignInPage(getDriver());
     }
 
     public DashboardBasePage clickSignIn() {
+        log.info("Click Sign In");
         signInButton.click();
         return new DashboardBasePage(getDriver());
     }
 
     public SignInPage clickSignInExpectError() {
+        log.info("Click Sign In");
         signInButton.click();
         return new SignInPage(getDriver());
     }
 
     public GoogleAccountPage selectGoogleOpenID() {
+        log.info("Click 'Google'");
         getDriver().findElement(By.linkText("Google")).click();
         return new GoogleAccountPage(getDriver());
     }
 
     public ResetPasswordPage goToResetPassword() {
+        log.info("Click Forgot Password");
         forgotPasswordLink.click();
         return new ResetPasswordPage(getDriver());
     }
 
     public RegisterPage goToRegister() {
+        log.info("Click Sign Up");
         getDriver().findElement(By.linkText("Sign Up")).click();
         return new RegisterPage(getDriver());
     }
 
     public String getPageTitle() {
+        log.info("Query page title");
         return getDriver().findElement(By.className("heading--sub"))
                 .getText();
     }

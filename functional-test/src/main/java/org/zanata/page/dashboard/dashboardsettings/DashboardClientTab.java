@@ -21,6 +21,7 @@
 package org.zanata.page.dashboard.dashboardsettings;
 
 import com.google.common.base.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,6 +30,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class DashboardClientTab extends DashboardBasePage {
 
     @FindBy(id = "generateKeyButton")
@@ -45,20 +47,24 @@ public class DashboardClientTab extends DashboardBasePage {
     }
 
     public DashboardClientTab pressApiKeyGenerateButton() {
+        log.info("Press Generate API Key");
         generateApiKeyButton.click();
         getDriver().switchTo().alert().accept();
         return new DashboardClientTab(getDriver());
     }
 
     public String getApiKey() {
+        log.info("Query API Key");
         return apiKeyLabel.getAttribute("value");
     }
 
     public String getConfigurationDetails() {
+        log.info("Query configuration details");
         return configurationTextArea.getText();
     }
 
     public void waitForApiKeyChanged(final String current) {
+        log.info("Wait for API key changed from {}", current);
         waitForTenSec().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {

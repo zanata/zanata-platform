@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
@@ -36,6 +37,7 @@ import java.util.List;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class TranslationMemoryPage extends BasePage {
     private static final int ID_COLUMN = 0;
     private static final int DESCRIPTION_COLUMN = 1;
@@ -61,11 +63,13 @@ public class TranslationMemoryPage extends BasePage {
     }
 
     public TranslationMemoryEditPage clickCreateNew() {
+        log.info("Click Create New");
         createTmLink.click();
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage clickImport(String tmName) {
+        log.info("Click Import");
         WebElement importButton =
                 findRowByTMName(tmName).getCells().get(IMPORT_COLUMN)
                         .findElement(By.tagName("a"));
@@ -74,63 +78,75 @@ public class TranslationMemoryPage extends BasePage {
     }
 
     public TranslationMemoryPage enterImportFileName(String importFileName) {
+        log.info("Enter import TM filename {}", importFileName);
         getDriver().findElement(By.name("uploadedFile")).sendKeys(
                 importFileName);
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
+        log.info("Click and accept Upload button");
         getDriver().findElement(By.name("uploadBtn")).click();
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public Alert expectFailedUpload() {
+        log.info("Click Upload");
         getDriver().findElement(By.name("uploadBtn")).click();
         return switchToAlert();
     }
 
     public TranslationMemoryPage clickClearTMAndAccept(String tmName) {
+        log.info("Click and accept Clear {}", tmName);
         clickTMAction(tmName, 0).accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
+        log.info("Click and Cancel Clear {}", tmName);
         clickTMAction(tmName, 0).dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndAccept(String tmName) {
+        log.info("Click and accept Delete {}", tmName);
         clickTMAction(tmName, 1).accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
+        log.info("Click and cancel Delete {}", tmName);
         clickTMAction(tmName, 1).dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage dismissError() {
+        log.info("Dismiss error dialog");
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public List<String> getListedTranslationMemorys() {
+        log.info("Query translation memory names");
         return WebElementUtil.getColumnContents(getDriver(), tmListBy,
                 ID_COLUMN);
     }
 
     public String getDescription(String tmName) {
+        log.info("Query description {}", tmName);
         return findRowByTMName(tmName).getCells().get(DESCRIPTION_COLUMN)
                 .getText();
     }
 
     public String getNumberOfEntries(String tmName) {
+        log.info("Query number of entries {}", tmName);
         return findRowByTMName(tmName).getCells().get(ENTRIES_COLUMN).getText();
     }
 
     public String waitForExpectedNumberOfEntries(final String tmName,
             final String expected) {
+        log.info("Waiting for {} entries in {}", expected, tmName);
         return waitForTenSec().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver driver) {
@@ -141,6 +157,7 @@ public class TranslationMemoryPage extends BasePage {
     }
 
     public boolean canDelete(String tmName) {
+        log.info("Query can delete {}", tmName);
         return findRowByTMName(tmName).getCells().get(ACTIONS_COLUMN)
                 .findElements(By.tagName("input")).get(1).isEnabled();
     }
