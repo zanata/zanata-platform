@@ -19,6 +19,11 @@
       bindCopyFromVersionSlug(versionSlug);
     }
 
+    function onCopyFromVersionFlagChanged(chk, value) {
+      jQuery(getCopyFromVersionFlagInput()).val(value);
+      bindCopyFromVersion(value);
+    }
+
     function getProjectTypeId() {
       return "[id='#{rich:clientId('project-type')}']";
     }
@@ -34,6 +39,10 @@
     function getCopyFromVersionInput() {
       return "[id='#{rich:clientId('copyFromVersionSlug')}']";
     }
+
+    function getCopyFromVersionFlagInput() {
+      return "[id='#{rich:clientId('copyFromVersion')}']";
+    }
   </script>
 
   <a4j:jsFunction name="bindCopyFromVersionSlug">
@@ -43,8 +52,7 @@
   <a4j:jsFunction name="bindCopyFromVersion"
     oncomplete="zanata.form.appendRadios(getProjectTypeId());zanata.form.appendRadios(getProjectVersionId())"
     render="project-type-list, project-version">
-    <a4j:param name="val1" assignTo="#{value}"/>
-    <a4j:param name="val2" assignTo="#{versionHome.copyFromVersion}"/>
+    <a4j:param name="val" assignTo="#{versionHome.copyFromVersion}"/>
   </a4j:jsFunction>
 
   <div class="form__item l--push-top-1">
@@ -68,8 +76,10 @@
 
   <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}" id="copy-from-version"
     rendered="#{not versionHome.managed and not empty versionHome.project.projectIterations}"
-    onValueChanged="bindCopyFromVersion" value="copy-version-checkbox"
+    onValueChanged="onCopyFromVersionFlagChanged" value="copy-version-checkbox"
     styleClass="l--push-v-1" checked="#{versionHome.copyFromVersion}"/>
+
+  <h:inputHidden id="copyFromVersion" value="#{versionHome.copyFromVersion}"/>
 
   <s:div id="project-type-list">
     <h:inputHidden id="selectedProjectType"
@@ -147,7 +157,6 @@
   </s:div>
 
   <s:div id="project-version" rendered="#{not versionHome.managed}">
-    <h:inputHidden id="copyFromVersion" value="#{versionHome.copyFromVersion}"/>
     <h:inputHidden id="copyFromVersionSlug"
       value="#{versionHome.copyFromVersionSlug}"/>
 

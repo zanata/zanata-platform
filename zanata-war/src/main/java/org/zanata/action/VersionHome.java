@@ -123,9 +123,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     private VersionLocaleAutocomplete localeAutocomplete =
             new VersionLocaleAutocomplete();
 
+
     @Getter
     @Setter
-    private boolean copyFromVersion = true;
+    private boolean copyFromVersion = false;
 
     @Getter
     @Setter
@@ -148,6 +149,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                 && StringUtils.isEmpty(copyFromVersionSlug)) {
             this.copyFromVersionSlug =
                     otherVersions.get(0).getVersion().getSlug();
+            copyFromVersion = true;
         }
     }
 
@@ -164,7 +166,6 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             if (versionProjectType != null) {
                 selectedProjectType = versionProjectType.name();
             }
-            copyFromVersion = false;
             copyFromVersionSlug = "";
         }
     }
