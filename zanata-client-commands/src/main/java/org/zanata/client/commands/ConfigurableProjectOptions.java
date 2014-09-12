@@ -1,9 +1,11 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.util.List;
 
 
 import org.kohsuke.args4j.Option;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import com.google.common.collect.ImmutableList;
 
@@ -93,4 +95,8 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
             usage = "Wildcard pattern to exclude files and directories. Usage\n"
                     + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
     void setExcludes(String excludes);
+
+    void setFileMappingRules(List<FileMappingRule> rules);
+
+    List<FileMappingRule> getFileMappingRules();
 }

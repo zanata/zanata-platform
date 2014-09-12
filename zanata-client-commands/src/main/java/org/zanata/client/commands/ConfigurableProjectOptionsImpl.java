@@ -21,8 +21,13 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.kohsuke.args4j.Option;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -55,6 +60,7 @@ public abstract class ConfigurableProjectOptionsImpl extends
     private ImmutableList<String> excludes = ImmutableList.of();
     private Splitter splitter = Splitter.on(",").omitEmptyStrings()
             .trimResults();
+    private List<FileMappingRule> rules;
 
     @Override
     public String getProj() {
@@ -201,4 +207,18 @@ public abstract class ConfigurableProjectOptionsImpl extends
             this.excludes = ImmutableList.of();
         }
     }
+
+    @Override
+    public void setFileMappingRules(List<FileMappingRule> rules) {
+        this.rules = rules;
+    }
+
+    @Override
+    public List<FileMappingRule> getFileMappingRules() {
+        if (rules == null) {
+            return Collections.emptyList();
+        }
+        return ImmutableList.copyOf(rules);
+    }
+
 }

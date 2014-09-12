@@ -99,6 +99,7 @@ public class OptionsUtil {
         if (opts.getCommandHooks().isEmpty() && config.getHooks() != null) {
             opts.setCommandHooks(config.getHooks());
         }
+        opts.setFileMappingRules(config.getRules());
     }
 
 
