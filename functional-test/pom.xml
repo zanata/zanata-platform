@@ -64,6 +64,10 @@
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <smtp.port>2552</smtp.port>
+    <jndi-remote-client.groupId>org.jboss.as</jndi-remote-client.groupId>
+    <jndi-remote-client.artifactId>jboss-as-ejb-client-bom</jndi-remote-client.artifactId>
+    <jndi-remote-client.version>7.1.1.Final</jndi-remote-client.version>
+    <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
   <dependencyManagement>
@@ -268,9 +272,9 @@
 
     <!-- For remote JNDI lookup -->
     <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-ejb-client-bom</artifactId>
-      <version>7.1.1.Final</version>
+      <groupId>${jndi-remote-client.groupId}</groupId>
+      <artifactId>${jndi-remote-client.artifactId}</artifactId>
+      <version>${jndi-remote-client.version}</version>
       <type>pom</type>
       <scope>test</scope>
     </dependency>
@@ -291,9 +295,68 @@
       <artifactId>joda-time</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <profiles>
+    <profile>
+      <id>wildfly</id>
+      <activation>
+        <property>
+          <name>wildfly</name>
+        </property>
+      </activation>
+      <properties>
+        <wildfly.version>8.1.0.Final</wildfly.version>
+        <cargo.container>wildfly8x</cargo.container>
+        <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
+        <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
+        <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
+        <jndi-remote-client.artifactId>wildfly-ejb-client-bom</jndi-remote-client.artifactId>
+        <jndi-remote-client.version>${wildfly.version}</jndi-remote-client.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven2-plugin</artifactId>
+            <configuration combine.self="append">
+            </configuration>
+            <executions>
+              <execution>
+                <id>cargo-install</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-wildfly-modules</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${pom.basedir}/src/etc/wildflyModules.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>run-functional-test</id>
       <activation>
@@ -403,86 +466,27 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.5</version>
-            <configuration>
+            <configuration combine.self="append">
               <container>
-                <containerId>${cargo.container}</containerId>
-                <type>installed</type>
-
                 <!--if install from url-->
                 <zipUrlInstaller>
                   <url>${cargo.installation}</url>
                   <downloadDir>${user.home}/Downloads</downloadDir>
                   <extractDir>${cargo.extract.dir}</extractDir>
                 </zipUrlInstaller>
-
-                <output>${project.build.directory}/container.log</output>
-                <append>false</append>
-                <log>${project.build.directory}/cargo.log</log>
-
-                <systemProperties>
-                  <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
-                  <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
-                  <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
-                  <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
-                  <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
-                </systemProperties>
-
-                <timeout>0</timeout>
               </container>
-
               <deployables>
                 <deployable>
                   <type>war</type>
                   <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>180000</pingTimeout>
+                  <pingTimeout>300000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
                 </deployable>
 
               </deployables>
-
-              <configuration>
-                <type>standalone</type>
-                <home>${cargo.container.home}</home>
-
-                <configfiles>
-                  <configfile>
-                    <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
-                    <todir>deployments</todir>
-                  </configfile>
-                  <!-- see above zipUrlInstaller/extractDir-->
-                  <!-- cargo will force todir and tofile to be relative to container home directory -->
-
-                  <!-- security and jndi for properties -->
-                  <configfile>
-                    <file>${project.build.testOutputDirectory}/conf/standalone.xml</file>
-                    <todir>configuration</todir>
-                  </configfile>
-
-                </configfiles>
-
-                <files>
-                  <file>
-                    <file>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}/${jdbc.artifactId}-${jdbc.version}.jar</file>
-                    <tofile>deployments/${jdbc.artifactId}.jar</tofile>
-                  </file>
-                </files>
-
-                <properties>
-                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>
-                    <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                    -XX:PermSize=512m -XX:MaxPermSize=1024
-                    -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                    ${cargo.debug.jvm.args}
-                  </cargo.jvmargs>
-                  <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
-                  <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
-                </properties>
-              </configuration>
             </configuration>
             <executions>
               <execution>
@@ -658,6 +662,73 @@
         <configuration>
           <skip>true</skip>
           <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <version>1.4.5</version>
+        <!-- this plugin configuration is shared by two profiles: functional-test and wildfly -->
+        <configuration>
+          <container>
+            <containerId>${cargo.container}</containerId>
+            <type>installed</type>
+
+            <output>${project.build.directory}/container.log</output>
+            <append>false</append>
+            <log>${project.build.directory}/cargo.log</log>
+
+            <systemProperties>
+              <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
+              <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
+              <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
+              <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
+              <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
+            </systemProperties>
+
+            <timeout>0</timeout>
+          </container>
+
+          <configuration>
+            <type>standalone</type>
+            <home>${cargo.container.home}</home>
+
+            <configfiles>
+              <configfile>
+                <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
+                <todir>deployments</todir>
+              </configfile>
+              <!-- see above zipUrlInstaller/extractDir-->
+              <!-- cargo will force todir and tofile to be relative to container home directory -->
+
+              <!-- security and jndi for properties -->
+              <configfile>
+                <file>${project.build.testOutputDirectory}/conf/${standalone.xml.file}</file>
+                <tofile>configuration/standalone.xml</tofile>
+              </configfile>
+
+            </configfiles>
+
+            <files>
+              <file>
+                <file>${settings.localRepository}/${jdbc.groupId}/${jdbc.artifactId}/${jdbc.version}/${jdbc.artifactId}-${jdbc.version}.jar</file>
+                <tofile>deployments/${jdbc.artifactId}.jar</tofile>
+              </file>
+            </files>
+
+            <properties>
+              <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
+              <cargo.jvmargs>
+                <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                -XX:PermSize=512m -XX:MaxPermSize=1024
+                -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                ${cargo.debug.jvm.args}
+              </cargo.jvmargs>
+              <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
+              <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
+            </properties>
+          </configuration>
         </configuration>
       </plugin>
     </plugins>

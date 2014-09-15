@@ -10,6 +10,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -39,6 +40,7 @@ public class CleanDocumentStorageRule extends ExternalResource {
     public static String getDocumentStoragePath() {
         if (storagePath == null) {
             final Properties env = new Properties();
+//            env.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
             env.put(Context.INITIAL_CONTEXT_FACTORY,
                     org.jboss.naming.remote.client.InitialContextFactory.class
                             .getName());
@@ -54,7 +56,25 @@ public class CleanDocumentStorageRule extends ExternalResource {
                         .lookup("zanata/files/document-storage-directory");
             }
             catch (NamingException e) {
-                throw Throwables.propagate(e);
+                try {
+                    // wildfly uses 'http-remoting:' not 'remote:'
+                    rmiPort = 8080+portOffset;
+                    env.put(Context.PROVIDER_URL, "http-remoting://localhost:" + rmiPort);
+                    remoteContext = new InitialContext(env);
+                    storagePath =
+                            (String) remoteContext
+                                    .lookup("zanata/files/document-storage-directory");
+                } catch (NamingException e1) {
+                    // fall back option:
+                    URL testClassRoot =
+                            Thread.currentThread().getContextClassLoader()
+                                    .getResource("setup.properties");
+                    File targetDir =
+                            new File(testClassRoot.getPath()).getParentFile();
+                    storagePath =
+                            new File(targetDir, "zanata-documents")
+                                    .getAbsolutePath();
+                }
             }
         }
         return storagePath;
