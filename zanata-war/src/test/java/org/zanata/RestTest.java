@@ -32,10 +32,11 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
+import org.dbunit.operation.DatabaseOperation;
+import org.infinispan.manager.CacheContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.seam.util.Naming;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +47,7 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.helper.RemoteTestSignaler;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -112,8 +113,17 @@ public abstract class RestTest {
      */
     @RemoteBefore
     public void prepareDataBeforeTest() {
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
         prepareDBUnitOperations();
+        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
         dbUnitProvider.prepareDataBeforeTest();
+        // Clear the hibernate cache
+        ServiceLocator.instance().getEntityManagerFactory().getCache()
+                .evictAll();
     }
 
     /**

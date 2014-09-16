@@ -60,7 +60,6 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @In
     private CacheContainer cacheContainer;
 
     @In
@@ -125,6 +124,11 @@ public class VersionStateCacheImpl implements VersionStateCache {
                     new VersionLocaleKey(versionId, locale.getLocaleId());
             versionStatisticCache.remove(key);
         }
+    }
+
+    @In
+    public void setCacheContainer(CacheContainer cacheContainer) {
+        this.cacheContainer = cacheContainer;
     }
 
     private static class VersionStatisticLoader extends

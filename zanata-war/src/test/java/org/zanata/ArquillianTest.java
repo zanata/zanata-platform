@@ -26,6 +26,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
+import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.seam.util.Naming;
 import org.junit.After;
@@ -73,7 +74,13 @@ public abstract class ArquillianTest {
      */
     @Before
     public void prepareDataBeforeTest() {
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
         prepareDBUnitOperations();
+        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
         dbUnitProvider.prepareDataBeforeTest();
     }
 

@@ -74,10 +74,6 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/TextFlowTestData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
-
-        addAfterTestOperation(new DataSetOperation(
-                "org/zanata/test/model/HistoryTestData.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
     }
 
     @Test

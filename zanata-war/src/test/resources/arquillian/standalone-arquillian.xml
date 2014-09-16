@@ -175,6 +175,7 @@
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:infinispan:1.3">
       <cache-container name="hibernate" default-cache="local-query"
+        jndi-name="java:jboss/infinispan/container/hibernate" start="EAGER"
         module="org.jboss.as.jpa.hibernate:4">
         <local-cache name="entity">
           <transaction mode="NON_XA" />
@@ -189,6 +190,27 @@
         <local-cache name="timestamps">
           <transaction mode="NONE" />
           <eviction strategy="NONE" />
+        </local-cache>
+      </cache-container>
+      <!--
+      Hibernate search infinispan settings
+      - Default In-memory settings
+      -->
+      <cache-container name="hibernate-search" default-cache="indexes" jndi-name="java:jboss/infinispan/container/hibernate-search" start="EAGER" module="org.jboss.as.clustering.web.infinispan">
+        <local-cache name="LuceneIndexesMetadata" start="EAGER" batching="false"/>
+        <local-cache name="LuceneIndexesData" start="EAGER" batching="false"/>
+        <local-cache name="LuceneIndexesLocking" start="EAGER" batching="false"/>
+      </cache-container>
+      <!--
+      Zanata multi-purpose caches.
+      -->
+      <cache-container name="zanata" default-cache="default" jndi-name="java:jboss/infinispan/container/zanata"
+        start="EAGER"
+        module="org.jboss.as.clustering.web.infinispan">
+        <local-cache name="default">
+          <transaction mode="NON_XA"/>
+          <eviction strategy="LRU" max-entries="10000"/>
+          <expiration max-idle="100000"/>
         </local-cache>
       </cache-container>
     </subsystem>

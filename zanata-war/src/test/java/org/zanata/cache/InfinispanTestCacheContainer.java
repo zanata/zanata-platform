@@ -21,6 +21,8 @@
 package org.zanata.cache;
 
 import lombok.Delegate;
+import org.infinispan.configuration.global.GlobalConfiguration;
+import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.lifecycle.Lifecycle;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
@@ -35,13 +37,11 @@ public class InfinispanTestCacheContainer implements CacheContainer {
     @Delegate(types = CacheContainer.class, excludes = Lifecycle.class)
     private DefaultCacheManager delegate;
 
-    public InfinispanTestCacheContainer() {
-    }
-
     @Override
     public void start() {
         stop();
-        this.delegate = new DefaultCacheManager();
+        this.delegate =
+                new DefaultCacheManager(getCacheManagerGlobalConfiguration());
         this.delegate.start();
     }
 
@@ -50,5 +50,16 @@ public class InfinispanTestCacheContainer implements CacheContainer {
         if( delegate != null) {
             delegate.stop();
         }
+    }
+
+    private GlobalConfiguration getCacheManagerGlobalConfiguration() {
+        /* This allows multiple concurrent tests to run.
+           See https://issues.jboss.org/browse/ISPN-2886 for the exception that
+           is thrown when this is not used.
+         */
+        return new GlobalConfigurationBuilder()
+                .globalJmxStatistics()
+                    .allowDuplicateDomains(true)
+                .build();
     }
 }

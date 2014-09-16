@@ -20,11 +20,13 @@
  */
 package org.zanata.rest.compat;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.apicompat.rest.client.IVersionResource;
 import org.zanata.apicompat.rest.dto.VersionInfo;
+import org.zanata.provider.DBUnitProvider;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -33,6 +35,9 @@ public class VersionCompatibilityITCase extends RestTest {
 
     @Override
     protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
     }
 
     @Test
