@@ -22,6 +22,7 @@
 
 package org.zanata.service.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
@@ -60,6 +61,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
+    @In
     private CacheContainer cacheContainer;
 
     @In
@@ -81,13 +83,6 @@ public class VersionStateCacheImpl implements VersionStateCache {
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
                         cacheContainer, versionStatisticLoader);
-    }
-
-    @Destroy
-    public void destroy() {
-        // NB Since infinispan is container managed, there's no need to stop the
-        // cache manager with
-        // cacheContainer.stop();
     }
 
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
@@ -126,7 +121,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
         }
     }
 
-    @In
+    @VisibleForTesting
     public void setCacheContainer(CacheContainer cacheContainer) {
         this.cacheContainer = cacheContainer;
     }

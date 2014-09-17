@@ -61,12 +61,9 @@ public class TranslationStateCacheImplTest {
     @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
-
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
-        cacheContainer.start();
         tsCache =
                 new TranslationStateCacheImpl(docStatisticLoader,
                         docStatusLoader, targetValidationLoader);
@@ -74,7 +71,7 @@ public class TranslationStateCacheImplTest {
         SeamAutowire seam = SeamAutowire.instance();
         seam.reset()
             .use("textFlowTargetDAO", textFlowTargetDAO)
-            .use("cacheContainer", cacheContainer)
+            .use("cacheContainer", new InfinispanTestCacheContainer())
             .ignoreNonResolvable();
         tsCache = seam.autowire(tsCache);
 

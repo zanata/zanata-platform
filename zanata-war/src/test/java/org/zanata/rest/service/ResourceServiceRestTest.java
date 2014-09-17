@@ -35,16 +35,13 @@ public class ResourceServiceRestTest extends ResourceTranslationServiceRestTest 
     @Mock
     private ZanataIdentity mockIdentity;
 
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
-
     @Override
     protected void prepareResources() {
         MockitoAnnotations.initMocks(this);
-        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("session", getSession()).use("entityManager", getEm())
                 .use("identity", mockIdentity).useImpl(LocaleServiceImpl.class)
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(DocumentServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class);

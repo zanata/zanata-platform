@@ -53,7 +53,6 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Mock
     private ValidationService validationServiceImpl;
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -77,13 +76,12 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @BeforeMethod
     public void initializeSeam() {
         MockitoAnnotations.initMocks(this);
-        cacheContainer.start();
         // @formatter:off
         seam.reset()
             .use("entityManager", getEm())
             .use("session", getSession())
             .use("validationServiceImpl", validationServiceImpl)
-            .use("cacheContainer", cacheContainer)
+            .use("cacheContainer", new InfinispanTestCacheContainer())
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
         // @formatter:on

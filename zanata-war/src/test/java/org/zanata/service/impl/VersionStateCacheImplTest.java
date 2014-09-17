@@ -28,21 +28,13 @@ public class VersionStateCacheImplTest {
 
     @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
-    private final CacheContainer cacheContainer =
-            new InfinispanTestCacheContainer();
 
     @BeforeMethod
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         cache = new VersionStateCacheImpl(versionStatisticLoader);
-        cacheContainer.start();
-        cache.setCacheContainer(cacheContainer);
+        cache.setCacheContainer(new InfinispanTestCacheContainer());
         cache.create();
-    }
-
-    @AfterMethod
-    public void afterMethod() {
-        cache.destroy();
     }
 
     public void getStatisticTest() throws Exception {

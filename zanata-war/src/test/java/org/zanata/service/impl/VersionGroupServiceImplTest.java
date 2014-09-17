@@ -54,7 +54,6 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
     private VersionGroupServiceImpl versionGroupServiceImpl;
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     private final String GROUP1_SLUG = "group1";
     private final String GROUP2_SLUG = "group2";
@@ -84,13 +83,12 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
 
     @BeforeMethod
     public void initializeSeam() {
-        cacheContainer.start();
         seam.reset()
                 .use("versionGroupDAO", new VersionGroupDAO(getSession()))
                 .use("projectIterationDAO",
                         new ProjectIterationDAO(getSession()))
                 .use("session", getSession())
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(VersionStateCacheImpl.class).useImpl(LocaleServiceImpl.class).ignoreNonResolvable();
 
         versionGroupServiceImpl = seam.autowire(VersionGroupServiceImpl.class);

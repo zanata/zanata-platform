@@ -112,7 +112,6 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     @Mock
     private TranslationWorkspaceManager transWorspaceManager;
 
-    CacheContainer cacheContainer = new InfinispanTestCacheContainer();
     ISourceDocResource sourceDocResource;
     ITranslatedDocResource transResource;
 
@@ -141,12 +140,11 @@ public class TranslationResourceRestTest extends ZanataRestTest {
     @SuppressWarnings("serial")
     @Override
     protected void prepareResources() {
-        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("session", getSession()).use("identity", mockIdentity)
                 .use("translationWorkspaceManager", transWorspaceManager)
                 .use("entityManager", super.getEm())
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(TranslationServiceImpl.class)
                 .useImpl(LocaleServiceImpl.class)

@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import net.sf.ehcache.CacheManager;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,7 +41,7 @@ public abstract class ZanataJpaTest {
     @Before
     protected void setupEM() {
         log.debug("Setting up EM");
-        CacheManager.getInstance().clearAll();
+        emf.getCache().evictAll();
         em = emf.createEntityManager();
         em.getTransaction().begin();
     }
@@ -57,7 +56,7 @@ public abstract class ZanataJpaTest {
             em.close();
         }
         em = null;
-        CacheManager.getInstance().clearAll();
+        emf.getCache().evictAll();
     }
 
     protected EntityManager getEm() {

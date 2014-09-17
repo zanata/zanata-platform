@@ -87,8 +87,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
 
     private CopyVersionServiceImpl service;
 
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
-
     @Override
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
@@ -117,7 +115,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         textFlowTargetDAO = new TextFlowTargetDAO(getSession());
         textFlowDAO = new TextFlowDAO(getSession());
         rawDocumentDAO = new RawDocumentDAO((getSession()));
-        cacheContainer.start();
 
         service = seam.reset()
                 .use("projectIterationDAO",
@@ -129,7 +126,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 .use("session", getSession())
                 .use("identity", identity)
                 .use("filePersistService", fileSystemPersistService)
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(VersionStateCacheImpl.class)
                 .useImpl(AsyncTaskManagerServiceImpl.class)
                 .ignoreNonResolvable()

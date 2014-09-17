@@ -38,7 +38,6 @@ public class TranslationServiceRestTest extends
             new TranslationsResourceTestObjectFactory();
     private ResourceTestObjectFactory resourceTestFactory =
             new ResourceTestObjectFactory();
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @DataProvider(name = "TranslationTestData")
     public Object[][] getTestData() {
@@ -56,11 +55,10 @@ public class TranslationServiceRestTest extends
     @Override
     protected void prepareResources() {
         MockitoAnnotations.initMocks(this);
-        cacheContainer.start();
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("entityManager", getEm()).use("session", getSession())
                 .use("identity", Mockito.mock(ZanataIdentity.class))
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(CopyTransServiceImpl.class)
                 .useImpl(DocumentServiceImpl.class)

@@ -82,7 +82,6 @@ import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 @Test(groups = { "business-tests" })
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -102,12 +101,11 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
     @BeforeMethod
     protected void beforeMethod() throws Exception {
-        cacheContainer.start();
         seam.reset()
                 .use("entityManager", Search.getFullTextEntityManager(getEm()))
                 .use("entityManagerFactory", getEmf())
                 .use("session", new FullTextSessionImpl(getSession()))
-                .use("cacheContainer", cacheContainer)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .use(JpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)

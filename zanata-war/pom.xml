@@ -134,7 +134,6 @@
             <!-- Used by lucene search -->
             <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
-            <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <usedDependency>org.hibernate:hibernate-search</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
@@ -1529,11 +1528,6 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>${hibernate.scope}</scope>
     </dependency>
@@ -1597,12 +1591,6 @@
       <groupId>net.htmlparser.jericho</groupId>
       <artifactId>jericho-html</artifactId>
       <version>3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache-core</artifactId>
-      <version>2.5.1</version>
     </dependency>
 
     <!-- Okapi Filters -->

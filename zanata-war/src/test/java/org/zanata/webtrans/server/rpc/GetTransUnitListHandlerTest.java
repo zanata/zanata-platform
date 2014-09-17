@@ -63,8 +63,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private final DocumentInfo document = TestFixture.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
-    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
-
     private SeamAutowire seam = SeamAutowire.instance();
 
     @Override
@@ -79,7 +77,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         MockitoAnnotations.initMocks(this);
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
-        cacheContainer.start();
         TransUnitTransformer transUnitTransformer =
             seam.reset().use("resourceUtils", resourceUtils)
                 .autowire(TransUnitTransformer.class);
@@ -96,7 +93,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
                         .use("transUnitTransformer", transUnitTransformer)
                         .use("webtrans.gwt.GetTransUnitsNavigationHandler",
                                 getTransUnitsNavigationService)
-                        .use("cacheContainer", cacheContainer)
+                        .use("cacheContainer", new InfinispanTestCacheContainer())
                         .useImpl(TranslationStateCacheImpl.class)
                         .useImpl(TextFlowSearchServiceImpl.class)
                         .useImpl(ValidationServiceImpl.class).allowCycles();

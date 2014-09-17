@@ -37,6 +37,10 @@ public class InfinispanTestCacheContainer implements CacheContainer {
     @Delegate(types = CacheContainer.class, excludes = Lifecycle.class)
     private DefaultCacheManager delegate;
 
+    public InfinispanTestCacheContainer() {
+        start();
+    }
+
     @Override
     public void start() {
         stop();

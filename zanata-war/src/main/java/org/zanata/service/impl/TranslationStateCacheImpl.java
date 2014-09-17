@@ -137,13 +137,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                         targetValidationLoader);
     }
 
-    @Destroy
-    public void destroy() {
-        // NB Since infinispan is container managed, there's no need to stop the
-        // cache manager with
-        // cacheContainer.stop();
-    }
-
     @Override
     public WordStatistic getDocumentStatistics(Long documentId,
             LocaleId localeId) {
