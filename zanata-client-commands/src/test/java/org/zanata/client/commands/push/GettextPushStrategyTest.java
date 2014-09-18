@@ -21,6 +21,10 @@
 
 package org.zanata.client.commands.push;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -29,12 +33,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.zanata.client.TempTransFileRule;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
-import com.google.common.base.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
+import com.google.common.base.Optional;
 
 public class GettextPushStrategyTest {
     @Rule
@@ -61,11 +64,32 @@ public class GettextPushStrategyTest {
                         Optional.of("zh-Hans"),
                         opts);
 
-        File deTransFile = strategy.getTransFile(deMapping, "po/message.pot");
-        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule.getTransDir(), "po/de.po")));
+        File deTransFile = strategy.getTransFile(deMapping, "po/message");
+        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
+                .getTransDir(), "po/de.po")));
 
-        File zhTransFile = strategy.getTransFile(zhMapping, "po/message.pot");
-        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule.getTransDir(), "po/zh_Hans.po")));
+        File zhTransFile = strategy.getTransFile(zhMapping, "po/message");
+        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
+                .getTransDir(), "po/zh_Hans.po")));
     }
 
+    @Test
+    public void willWorkWithMappingRules() {
+        opts.setFileMappingRules(newArrayList(
+                new FileMappingRule(null, "{path}/{locale_with_underscore}.po")));
+        LocaleMapping deMapping = createAndAddLocaleMapping("de",
+                Optional.<String> absent(), opts);
+        LocaleMapping zhMapping =
+                createAndAddLocaleMapping("zh-CN",
+                        Optional.of("zh-Hans"),
+                        opts);
+
+        File deTransFile = strategy.getTransFile(deMapping, "po/message");
+        assertThat(deTransFile, Matchers.equalTo(new File(tempFileRule
+                .getTransDir(), "po/de.po")));
+
+        File zhTransFile = strategy.getTransFile(zhMapping, "po/message");
+        assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
+                .getTransDir(), "po/zh_Hans.po")));
+    }
 }

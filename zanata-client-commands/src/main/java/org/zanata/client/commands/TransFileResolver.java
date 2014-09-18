@@ -46,9 +46,10 @@ public class TransFileResolver {
     private Map<ProjectType, FileMappingRule> defaultProjectTypeToRules =
             ImmutableMap
                     .<ProjectType, FileMappingRule> builder()
-                    .put(ProjectType.File, new FileMappingRule(null,
+                    .put(ProjectType.File, new FileMappingRule(
                             "{locale}/{path}/{filename}.{extension}"))
-                    .put(ProjectType.Gettext, new FileMappingRule(null, ""))
+                    .put(ProjectType.Gettext, new FileMappingRule(
+                            "{path}/{locale_with_underscore}.po"))
                     .build();
 
     public TransFileResolver(ConfigurableProjectOptions opts) {
@@ -145,7 +146,7 @@ public class TransFileResolver {
         }
         public static UnqualifiedSrcDocName from(String docName) {
             String extension = Files.getFileExtension(docName);
-            Preconditions.checkArgument(Strings.isNullOrEmpty(extension), "expect an unqualifed document name (without extension)");
+            Preconditions.checkArgument(Strings.isNullOrEmpty(extension), "expect an unqualified document name (without extension)");
             return new UnqualifiedSrcDocName(docName);
         }
         public QualifiedSrcDocName toQualifiedDocName(ProjectType projectType) {

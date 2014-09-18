@@ -3,6 +3,7 @@ package org.zanata.client.commands.push;
 import static com.google.common.collect.Sets.newTreeSet;
 import static org.apache.commons.io.FileUtils.listFiles;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
+import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 import java.io.File;
 import java.util.Collection;
@@ -11,6 +12,8 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
@@ -35,7 +38,8 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         for (String localeName : localeNames) {
             LocaleMapping localLocale;
             if (localeList != null) {
-                localLocale = localeList.findByLocalLocaleOrJavaLocale(localeName);
+                localLocale = localeList.findByLocalLocaleOrJavaLocale(
+                        localeName);
                 if (localLocale == null) {
                     log.warn(
                             "Skipping locale {}; no locale entry found in zanata.xml",
@@ -52,10 +56,9 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
 
     @Override
     File getTransFile(LocaleMapping localeMapping, String docName) {
-        String localLocale = localeMapping.getJavaLocale();
-        File transDir = getOpts().getTransDir();
-        File docDir = new File(transDir, docName).getParentFile();
-        File transFile = new File(docDir, localLocale + ".po");
+        File transFile = new TransFileResolver(getOpts()).getTransFile(
+                UnqualifiedSrcDocName.from(docName),
+                localeMapping);
         return transFile;
     }
 

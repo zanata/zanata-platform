@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @XmlType(name = "fileMappingRule")
 @XmlRootElement(name = "rule")
@@ -45,6 +45,10 @@ public class FileMappingRule {
 
     public FileMappingRule(String pattern, String rule) {
         this.pattern = pattern;
+        this.rule = rule;
+    }
+
+    public FileMappingRule(String rule) {
         this.rule = rule;
     }
 
