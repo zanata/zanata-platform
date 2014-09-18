@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.adapter.xliff.XliffReader;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -23,6 +25,12 @@ public class XliffStrategy extends AbstractPushStrategy {
 
     public XliffStrategy() {
         super(new StringSet("comment"), ".xml");
+    }
+
+    @VisibleForTesting
+    protected XliffStrategy(XliffReader reader) {
+        super(new StringSet("comment"), ".xml");
+        this.reader = reader;
     }
 
     @Override
@@ -74,8 +82,9 @@ public class XliffStrategy extends AbstractPushStrategy {
     public void visitTranslationResources(String docName, Resource srcDoc,
             TranslationResourcesVisitor visitor) throws FileNotFoundException {
         for (LocaleMapping locale : getOpts().getLocaleMapList()) {
-            String filename = docNameToFilename(docName, locale);
-            File transFile = new File(getOpts().getTransDir(), filename);
+            File transFile = new TransFileResolver(getOpts()).getTransFile(
+                    TransFileResolver.UnqualifiedSrcDocName.from(docName),
+                    locale);
             if (transFile.exists()) {
                 TranslationsResource targetDoc =
                         reader.extractTarget(transFile);

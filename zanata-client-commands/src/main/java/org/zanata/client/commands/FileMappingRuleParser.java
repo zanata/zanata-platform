@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
@@ -76,8 +77,7 @@ public class FileMappingRuleParser {
     }
 
     private boolean matchFileExtensionWithProjectType(QualifiedSrcDocName qualifiedSrcDocName) {
-        List<String> supportedTypes =
-                ProjectType.getSupportedSourceFileTypes(projectType);
+        List<String> supportedTypes = projectType.getSourceFileTypes();
         return supportedTypes.contains(qualifiedSrcDocName.getExtension());
     }
 
@@ -101,14 +101,14 @@ public class FileMappingRuleParser {
                 new EnumMap<Placeholders, String>(Placeholders.class);
         File file = new File(sourceFile);
         String extension = Files.getFileExtension(sourceFile);
-        String filename =
-                file.getName().replaceFirst("\\." + extension + "$", "");
+        String filename = FilenameUtils.removeExtension(file.getName());
         parts.put(Placeholders.extension, extension);
         parts.put(Placeholders.filename, filename);
         parts.put(Placeholders.locale, originalLocale.getLocalLocale());
         parts.put(Placeholders.localeWithUnderscore,
                 originalLocale.getLocalLocale().replaceAll("\\-", "_"));
-        parts.put(Placeholders.path, Files.simplifyPath(file.getParent()));
+        String pathname = Strings.nullToEmpty(file.getParent());
+        parts.put(Placeholders.path, Files.simplifyPath(pathname));
         log.debug("parsed parts: {}", parts);
         return parts;
     }

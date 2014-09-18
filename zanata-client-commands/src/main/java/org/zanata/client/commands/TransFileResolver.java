@@ -35,6 +35,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkState;
 import static org.zanata.client.commands.Messages._;
 
 /**
@@ -55,6 +56,8 @@ public class TransFileResolver {
                     .put(ProjectType.Properties, new FileMappingRule(
                             "{path}/{filename}_{locale_with_underscore}.{extension}"))
                     .put(ProjectType.Utf8Properties, new FileMappingRule(
+                            "{path}/{filename}_{locale_with_underscore}.{extension}"))
+                    .put(ProjectType.Xliff, new FileMappingRule(
                             "{path}/{filename}_{locale_with_underscore}.{extension}"))
                     .build();
 
@@ -96,8 +99,7 @@ public class TransFileResolver {
             QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping,
             ProjectType projectType) {
         FileMappingRule rule = defaultProjectTypeToRules.get(projectType);
-        Preconditions
-                .checkNotNull(rule, _("no.default.mapping"), projectType);
+        checkState(rule != null, _("no.default.mapping"), projectType);
         String relativePath = new FileMappingRuleParser(rule, projectType)
                 .getRelativePathFromRule(qualifiedSrcDocName, localeMapping);
         return new File(opts.getTransDir(), relativePath);
