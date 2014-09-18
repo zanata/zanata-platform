@@ -55,6 +55,15 @@ public enum ProjectType {
         throw new Exception("Project type '" + projectType + "' not supported");
     }
 
+    /**
+     * This method returns file types/extensions that is supported by web UI
+     * upload.
+     *
+     * @param type
+     *            project type
+     * @return a list of file types or empty list if it's not a supported
+     *         project type
+     */
     public static List<String> getSupportedSourceFileTypes(ProjectType type) {
         if (type != null) {
             switch (type) {
@@ -68,6 +77,26 @@ public enum ProjectType {
             }
         }
         return Arrays.asList();
+    }
+
+    /**
+     * @return source file types/extensions that this project type uses
+     */
+    public List<String> getSourceFileTypes() {
+        switch (this) {
+            case Utf8Properties:
+            case Properties:
+                return PROPERTIES.getExtensions();
+            case Gettext:
+            case Podir:
+                return GETTEXT_PORTABLE_OBJECT_TEMPLATE.getExtensions();
+            case Xliff:
+            case Xml:
+                return XML.getExtensions();
+            case File:
+                return fileProjectSourceFileTypes();
+        }
+        throw new IllegalStateException("impossible");
     }
 
     private static List<String> fileProjectSourceFileTypes() {

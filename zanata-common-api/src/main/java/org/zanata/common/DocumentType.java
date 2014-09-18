@@ -40,7 +40,8 @@ public enum DocumentType {
 
     HTML("html", "htm"), IDML("idml"),
 
-    SUBTITLE("srt", "sbt", "sub", "vtt");
+    SUBTITLE("srt", "sbt", "sub", "vtt"),
+    PROPERTIES("properties"), XML("xml");
 
     private static final List<String> allExtensions = buildExtensionsList();
 
