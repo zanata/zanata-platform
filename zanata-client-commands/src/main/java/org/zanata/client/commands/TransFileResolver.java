@@ -59,6 +59,8 @@ public class TransFileResolver {
                             "{path}/{filename}_{locale_with_underscore}.{extension}"))
                     .put(ProjectType.Xliff, new FileMappingRule(
                             "{path}/{filename}_{locale_with_underscore}.{extension}"))
+                    .put(ProjectType.Xml, new FileMappingRule(
+                            "{path}/{filename}_{locale_with_underscore}.{extension}"))
                     .build();
 
     public TransFileResolver(ConfigurableProjectOptions opts) {

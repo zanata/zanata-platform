@@ -30,8 +30,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
@@ -57,6 +59,12 @@ public class XmlStrategy extends AbstractPushStrategy {
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @VisibleForTesting
+    protected XmlStrategy(Unmarshaller unmarshaller) {
+        super(new StringSet("comment;gettext"), ".xml");
+        this.unmarshaller = unmarshaller;
     }
 
     @Override
@@ -95,8 +103,9 @@ public class XmlStrategy extends AbstractPushStrategy {
             TranslationResourcesVisitor visitor) throws IOException {
         try {
             for (LocaleMapping locale : getOpts().getLocaleMapList()) {
-                String filename = docNameToFilename(docName, locale);
-                File transFile = new File(getOpts().getTransDir(), filename);
+                File transFile = new TransFileResolver(getOpts()).getTransFile(
+                        TransFileResolver.UnqualifiedSrcDocName.from(docName),
+                        locale);
                 if (transFile.exists()) {
                     TranslationsResource targetDoc =
                             (TranslationsResource) unmarshaller
