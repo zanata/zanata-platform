@@ -29,6 +29,7 @@ import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
 
@@ -67,9 +68,9 @@ public class RawPullStrategy {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
-        File transDir =
-                new File(opts.getTransDir(), localeMapping.getLocalLocale());
-        File file = new File(transDir, localDocName);
+        File file = new TransFileResolver(opts).getTransFile(
+                TransFileResolver.QualifiedSrcDocName.from(localDocName),
+                localeMapping);
         logAndStreamToFile(transFile, file);
     }
 
@@ -79,11 +80,10 @@ public class RawPullStrategy {
      *
      * @param stream
      * @param file
-     * @throws FileNotFoundException
      * @throws IOException
      */
     private void logAndStreamToFile(InputStream stream, File file)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         if (file.exists()) {
             log.warn("overwriting existing document at [{}]",
                     file.getAbsolutePath());
@@ -95,7 +95,7 @@ public class RawPullStrategy {
     }
 
     private void writeStreamToFile(InputStream stream, File file)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         OutputStream out = new FileOutputStream(file);
         try {
             int read;
