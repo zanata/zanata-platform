@@ -50,6 +50,16 @@ public class LocaleList implements List<LocaleMapping>, Serializable {
         return null;
     }
 
+    public LocaleMapping findByLocalLocaleOrJavaLocale(String localLocale) {
+        for (LocaleMapping loc : locales) {
+            if (loc.getLocalLocale().equals(localLocale)
+                    || loc.getJavaLocale().equals(localLocale)) {
+                return loc;
+            }
+        }
+        return null;
+    }
+
     /**
      * WARNING: slow!
      *
