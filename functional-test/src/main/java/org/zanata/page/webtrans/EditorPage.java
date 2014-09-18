@@ -342,16 +342,12 @@ public class EditorPage extends BasePage {
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                WebElement webElement = getDriver()
-                        .findElement(By.className("selected"))
-                        .findElements(By.className("gwt-DisclosurePanel"))
-                        .get(2);
+                WebElement webElement = getTargetValidationBox();
                 return webElement.isDisplayed()
                         && !webElement.getText().isEmpty();
             }
         });
-        return getDriver().findElements(By.className("gwt-DisclosurePanel"))
-                .get(2).getText();
+        return getTargetValidationBox().getText();
     }
 
     /**
@@ -361,11 +357,7 @@ public class EditorPage extends BasePage {
      */
     public boolean isValidationMessageCurrentTargetVisible() {
         log.info("Query is validation message panel displayed");
-        return getDriver()
-                .findElement(By.className("selected"))
-                .findElements(By.className("transUnitCol")).get(1) // Right column
-                .findElement(By.className("gwt-DisclosurePanel"))
-                .isDisplayed();
+        return getTargetValidationBox().isDisplayed();
     }
 
     /**
@@ -388,8 +380,7 @@ public class EditorPage extends BasePage {
      */
     public EditorPage openValidationBox() {
         log.info("Click to open Validation panel");
-        getDriver().findElements(By.className("gwt-DisclosurePanel")).get(2)
-                .click();
+        getTargetValidationBox().click();
         waitForTenSec().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
@@ -507,9 +498,21 @@ public class EditorPage extends BasePage {
         editorFilterField.sendKeys(query + Keys.ENTER);
         return this;
     }
+
     public String getFilterQuery() {
         log.info("Query filter text");
         return editorFilterField.getAttribute("value");
+    }
+
+    private WebElement getTranslationTargetColumn() {
+        return getDriver().findElement(By.className("selected"))
+                .findElements(By.className("transUnitCol"))
+                .get(1); // Right column
+    }
+
+    private WebElement getTargetValidationBox() {
+        return getTranslationTargetColumn()
+                .findElement(By.className("gwt-DisclosurePanel"));
     }
 
 }

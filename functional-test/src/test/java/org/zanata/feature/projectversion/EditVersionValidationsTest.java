@@ -86,7 +86,6 @@ public class EditVersionValidationsTest extends ZanataTestCase {
             "translation targets and displays them to the user",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("broken test")
     public void verifyValidationsAreErrors() throws Exception {
         VersionTranslationTab versionTranslationTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
