@@ -29,6 +29,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.ProjectType;
 
 public class FileMappingRuleParserTest {
 
@@ -50,20 +51,36 @@ public class FileMappingRuleParserTest {
     @Test
     public void willReturnTransFileRelativePath() {
         assertThat(getTransFile("pot/message.pot", "fr",
-                "{path}/../{locale}/{filename}.po"),
+                "{path}/../{locale}/{filename}.po", ProjectType.Podir),
                 Matchers.equalTo("fr/message.po"));
         assertThat(getTransFile("./message.pot", "fr",
-                "{path}/{locale_with_underscore}.po"),
+                "{path}/{locale_with_underscore}.po", ProjectType.Gettext),
                 Matchers.equalTo("fr.po"));
         assertThat(getTransFile("a/path/message.odt", "de-DE",
-                "{path}/{locale_with_underscore}_{filename}.{extension}"),
+                "{path}/{locale_with_underscore}_{filename}.{extension}",
+                        ProjectType.File),
                 Matchers.equalTo("a/path/de_DE_message.odt"));
     }
 
-    private String getTransFile(String sourceFile, String locale, String rule) {
+    @Test
+    public void ifNoPatternWillUseProjectType() {
+        FileMappingRuleParser parser =
+                new FileMappingRuleParser(
+                        new FileMappingRule(null,
+                                "{path}/{locale_with_underscore}.po"),
+                        ProjectType.Gettext);
+        assertThat(parser.getRelativePathFromRule(
+                TransFileResolver.QualifiedSrcDocName.from("message.pot"),
+                new LocaleMapping("zh")), Matchers.equalTo("zh.po"));
+    }
+
+    private String getTransFile(String sourceFile, String locale, String rule,
+            ProjectType projectType) {
         FileMappingRuleParser parser = new FileMappingRuleParser(
-            new FileMappingRule("**/*", rule));
-        return parser.getRelativePathFromRule(sourceFile, new LocaleMapping(locale));
+            new FileMappingRule("**/*", rule), projectType);
+        return parser.getRelativePathFromRule(
+                TransFileResolver.QualifiedSrcDocName.from(sourceFile),
+                new LocaleMapping(locale));
     }
 
 }

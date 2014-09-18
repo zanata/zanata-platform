@@ -48,4 +48,10 @@ public class ClientUtility {
             throw new RuntimeException(msg);
         }
     }
+
+    public static void checkResultAndReleaseConnection(
+            ClientResponse<?> clientResponse) {
+        checkResult(clientResponse, null);
+        clientResponse.releaseConnection();
+    }
 }

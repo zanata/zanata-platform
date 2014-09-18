@@ -21,11 +21,10 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 
 /**
@@ -61,9 +60,10 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
             return;
         }
         for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {
-            String locale = localeMapping.getLocalLocale();
-            File localeDir = new File(getOpts().getTransDir(), locale);
-            File translationFile = new File(localeDir, sourceDocument);
+            File translationFile = new TransFileResolver(getOpts())
+                    .getTransFile(TransFileResolver.QualifiedSrcDocName.from(
+                            sourceDocument), localeMapping);
+
             if (translationFile.canRead()) {
                 visitor.visit(localeMapping, translationFile);
             } else {

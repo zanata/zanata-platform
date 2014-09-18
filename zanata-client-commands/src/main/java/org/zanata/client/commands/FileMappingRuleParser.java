@@ -26,6 +26,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -34,9 +35,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.common.ProjectType;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
+
+import static org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName;
 
 /**
  * @author Patrick Huang <a
@@ -46,8 +51,11 @@ public class FileMappingRuleParser {
     private static final Logger log =
             LoggerFactory.getLogger(FileMappingRuleParser.class);
     private final FileMappingRule mappingRule;
+    private final ProjectType projectType;
 
-    public FileMappingRuleParser(FileMappingRule rule) {
+    public FileMappingRuleParser(FileMappingRule rule, ProjectType projectType) {
+        this.projectType = projectType;
+        Preconditions.checkState(isRuleValid(rule.getRule()), "rule defined is not valid: %s", rule.getRule());
         Preconditions.checkArgument(isRuleValid(rule.getRule()));
         this.mappingRule = rule;
     }
@@ -58,20 +66,25 @@ public class FileMappingRuleParser {
                 || rule.contains(Placeholders.localeWithUnderscore.holder);
     }
 
-    public boolean isApplicable(String qualifiedDocName) {
-        boolean ruleValid = isRuleValid(mappingRule.getRule());
-        if (!ruleValid) {
-            return false;
+    public boolean isApplicable(QualifiedSrcDocName qualifiedSrcDocName) {
+        if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
+            return matchFileExtensionWithProjectType(qualifiedSrcDocName);
         }
         PathMatcher matcher =
             FileSystems.getDefault().getPathMatcher("glob:" + mappingRule.getPattern());
-        return matcher.matches(Paths.get(qualifiedDocName));
+        return matcher.matches(Paths.get(qualifiedSrcDocName.getFullName()));
     }
 
-    public String getRelativePathFromRule(@Nonnull String sourceFile,
+    private boolean matchFileExtensionWithProjectType(QualifiedSrcDocName qualifiedSrcDocName) {
+        List<String> supportedTypes =
+                ProjectType.getSupportedSourceFileTypes(projectType);
+        return supportedTypes.contains(qualifiedSrcDocName.getExtension());
+    }
+
+    public String getRelativePathFromRule(QualifiedSrcDocName qualifiedSrcDocName,
             @Nonnull LocaleMapping localeMapping) {
         EnumMap<Placeholders, String> map =
-                parseToMap(sourceFile, localeMapping);
+                parseToMap(qualifiedSrcDocName.getFullName(), localeMapping);
 
         String temp = mappingRule.getRule();
         for (Map.Entry<Placeholders, String> entry : map.entrySet()) {
