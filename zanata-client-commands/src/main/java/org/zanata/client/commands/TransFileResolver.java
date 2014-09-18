@@ -52,6 +52,10 @@ public class TransFileResolver {
                             "{path}/{locale_with_underscore}.po"))
                     .put(ProjectType.Podir, new FileMappingRule(
                             "{locale}/{path}/{filename}.po"))
+                    .put(ProjectType.Properties, new FileMappingRule(
+                            "{path}/{filename}_{locale_with_underscore}.{extension}"))
+                    .put(ProjectType.Utf8Properties, new FileMappingRule(
+                            "{path}/{filename}_{locale_with_underscore}.{extension}"))
                     .build();
 
     public TransFileResolver(ConfigurableProjectOptions opts) {

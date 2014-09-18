@@ -21,10 +21,15 @@
 
 package org.zanata.client;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.junit.rules.TemporaryFolder;
+
+import com.google.common.io.Files;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -47,9 +52,18 @@ public class TempTransFileRule extends TemporaryFolder {
     public File createTransFileRelativeToTransDir(String path)
             throws IOException {
         File file = new File(transDir, path);
-        assertThat(file.getParentFile().mkdirs(), is(true));
+        File parentFile = file.getParentFile();
+        parentFile.mkdirs();
+        assertThat(parentFile.exists(), is(true));
         assertThat(file.createNewFile(), is(true));
         return file;
+    }
+
+    public void addContentToFile(File file, Charset charset, String content)
+            throws Exception {
+        BufferedWriter writer = Files.newWriter(file, charset);
+        writer.write(content);
+        writer.close();
     }
 
     public File getTransDir() {

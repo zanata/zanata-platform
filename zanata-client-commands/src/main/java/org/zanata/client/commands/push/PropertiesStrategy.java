@@ -30,6 +30,7 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.adapter.properties.PropReader;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ContentState;
@@ -126,8 +127,9 @@ public class PropertiesStrategy extends AbstractPushStrategy {
             TranslationResourcesVisitor callback) throws IOException,
             RuntimeException {
         for (LocaleMapping locale : getOpts().getLocaleMapList()) {
-            String filename = docNameToFilename(docName, locale);
-            File transFile = new File(getOpts().getTransDir(), filename);
+            File transFile = new TransFileResolver(getOpts()).getTransFile(
+                    TransFileResolver.UnqualifiedSrcDocName.from(docName),
+                    locale);
             if (transFile.exists()) {
                 TranslationsResource targetDoc =
                         loadTranslationsResource(srcDoc, transFile);
