@@ -124,6 +124,9 @@ public class TransFileResolver {
         return Optional.absent();
     }
 
+    /**
+     * Represents document name with extension.
+     */
     public static class QualifiedSrcDocName {
         private final String fullName;
         private final String extension;
@@ -149,6 +152,10 @@ public class TransFileResolver {
             return extension;
         }
     }
+
+    /**
+     * Represents document name without extension.
+     */
     public static class UnqualifiedSrcDocName {
         private final String name;
         private UnqualifiedSrcDocName(String name) {
