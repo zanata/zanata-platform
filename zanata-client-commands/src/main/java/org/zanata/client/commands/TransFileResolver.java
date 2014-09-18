@@ -50,6 +50,8 @@ public class TransFileResolver {
                             "{locale}/{path}/{filename}.{extension}"))
                     .put(ProjectType.Gettext, new FileMappingRule(
                             "{path}/{locale_with_underscore}.po"))
+                    .put(ProjectType.Podir, new FileMappingRule(
+                            "{locale}/{path}/{filename}.po"))
                     .build();
 
     public TransFileResolver(ConfigurableProjectOptions opts) {
@@ -153,13 +155,13 @@ public class TransFileResolver {
             switch (projectType) {
                 case Utf8Properties:
                 case Properties:
-                    return QualifiedSrcDocName.from(name, ".properties");
+                    return QualifiedSrcDocName.from(name, "properties");
                 case Gettext:
                 case Podir:
-                    return QualifiedSrcDocName.from(name, ".pot");
+                    return QualifiedSrcDocName.from(name, "pot");
                 case Xliff:
                 case Xml:
-                    return QualifiedSrcDocName.from(name, ".xml");
+                    return QualifiedSrcDocName.from(name, "xml");
                 case File:
                     throw new IllegalArgumentException("You can not using unqualified document name in file type project");
             }

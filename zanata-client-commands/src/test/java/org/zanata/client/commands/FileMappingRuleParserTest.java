@@ -21,6 +21,8 @@
 
 package org.zanata.client.commands;
 
+import java.util.EnumMap;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.zanata.client.commands.FileMappingRuleParser.*;
@@ -81,6 +83,18 @@ public class FileMappingRuleParserTest {
         return parser.getRelativePathFromRule(
                 TransFileResolver.QualifiedSrcDocName.from(sourceFile),
                 new LocaleMapping(locale));
+    }
+
+    @Test
+    public void canGetPartsFromQualifiedDocName() {
+        EnumMap<Placeholders, String> map =
+                FileMappingRuleParser.parseToMap("foo/message.pot",
+                        new LocaleMapping("zh-CN", "zh-Hans"));
+        assertThat(map, Matchers.hasEntry(Placeholders.path, "foo"));
+        assertThat(map, Matchers.hasEntry(Placeholders.filename, "message"));
+        assertThat(map, Matchers.hasEntry(Placeholders.extension, "pot"));
+        assertThat(map, Matchers.hasEntry(Placeholders.locale, "zh-Hans"));
+        assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
     }
 
 }

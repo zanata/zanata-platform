@@ -94,7 +94,8 @@ public class FileMappingRuleParser {
         return Files.simplifyPath(temp);
     }
 
-    private EnumMap<Placeholders, String> parseToMap(
+    @VisibleForTesting
+    protected static EnumMap<Placeholders, String> parseToMap(
             @Nonnull String sourceFile, @Nonnull LocaleMapping originalLocale) {
         EnumMap<Placeholders, String> parts =
                 new EnumMap<Placeholders, String>(Placeholders.class);
