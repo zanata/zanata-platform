@@ -28,12 +28,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
+
+import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 /**
  * @author Sean Flanigan <a
@@ -67,10 +70,6 @@ public class XmlStrategy extends AbstractPullStrategy {
         return docName + ".xml";
     }
 
-    private String docNameToFilename(String docName, LocaleMapping locale) {
-        return docName + "_" + locale.getJavaLocale() + ".xml";
-    }
-
     @Override
     public void writeSrcFile(Resource doc) throws IOException {
         try {
@@ -86,8 +85,9 @@ public class XmlStrategy extends AbstractPullStrategy {
     @Override
     public File
             getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        String filename = docNameToFilename(docName, localeMapping);
-        File transFile = new File(getOpts().getTransDir(), filename);
+        File transFile = new TransFileResolver(getOpts()).getTransFile(
+            UnqualifiedSrcDocName.from(docName),
+            localeMapping);
         return transFile;
     }
 
