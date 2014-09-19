@@ -112,13 +112,15 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
     public void inputValidationForID(String inputText) {
         // Yes reassign groupPage is necessary since JSF re-renders itself after
         // each field input and selenium is not happy with it
+        groupPage = groupPage.clearFields();
+        groupPage.slightPause();
         groupPage = groupPage
-                .clearFields()
                 .inputGroupId(inputText)
                 .inputGroupName(inputText)
                 .saveGroupFailure();
 
-        assertThat(groupPage.getFieldErrors())
+        assertThat(groupPage.expectFieldError(
+                    CreateVersionGroupPage.VALIDATION_ERROR))
                 .contains(CreateVersionGroupPage.VALIDATION_ERROR)
                 .as("Validation error is displayed for input:" + inputText);
     }

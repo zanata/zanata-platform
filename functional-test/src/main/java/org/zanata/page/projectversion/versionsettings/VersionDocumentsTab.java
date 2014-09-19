@@ -3,6 +3,7 @@ package org.zanata.page.projectversion.versionsettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -107,12 +108,17 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
-        List<WebElement> documentLabelList =
-                getDriver()
+        List<WebElement> documentLabelList = waitForTenSec()
+                .until(new Function<WebDriver, List<WebElement>>() {
+            @Override
+            public List<WebElement> apply(WebDriver input) {
+                return getDriver()
                         .findElement(By.id("settings-document_form"))
                         .findElement(By.tagName("ul"))
                         .findElements(
                                 By.xpath(".//li/label[@class='form__checkbox__label']"));
+            }
+        });
         for (WebElement label : documentLabelList) {
             if (label.getText().contains(document)) {
                 return true;

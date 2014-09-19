@@ -145,6 +145,16 @@ public class CorePage extends AbstractPage {
         });
     }
 
+    public List<String> expectFieldError(final String expected) {
+        waitForTenSec().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return waitForFieldErrors().contains(expected);
+            }
+        });
+        return getFieldErrors();
+    }
+
     public List<String> waitForErrors() {
         log.info("Query page errors list");
         waitForTenSec().until(new Function<WebDriver, WebElement>() {
