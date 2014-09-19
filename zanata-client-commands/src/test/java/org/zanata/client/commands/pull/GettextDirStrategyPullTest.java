@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
-public class GettextDirStrategyTest {
+public class GettextDirStrategyPullTest {
     private GettextDirStrategy strategy;
     private PullOptionsImpl opts;
 

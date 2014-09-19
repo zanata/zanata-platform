@@ -43,15 +43,6 @@ public class GettextDirStrategy extends AbstractGettextPullStrategy {
     }
 
     @Override
-    public File
-            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        File transFile = new TransFileResolver(getOpts()).getTransFile(
-            UnqualifiedSrcDocName.from(docName),
-            localeMapping);
-        return transFile;
-    }
-
-    @Override
     public FileDetails writeTransFile(Resource doc, String docName,
             LocaleMapping locMapping, TranslationsResource targetDoc)
             throws IOException {

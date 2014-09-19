@@ -62,13 +62,6 @@ public class PropertiesStrategy extends AbstractPullStrategy {
     }
 
     @Override
-    public File
-            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        return new TransFileResolver(getOpts()).getTransFile(
-            UnqualifiedSrcDocName.from(docName), localeMapping);
-    }
-
-    @Override
     public FileDetails writeTransFile(Resource doc, String docName,
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {

@@ -83,15 +83,6 @@ public class XmlStrategy extends AbstractPullStrategy {
     }
 
     @Override
-    public File
-            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        File transFile = new TransFileResolver(getOpts()).getTransFile(
-            UnqualifiedSrcDocName.from(docName),
-            localeMapping);
-        return transFile;
-    }
-
-    @Override
     public FileDetails writeTransFile(Resource doc, String docName,
             LocaleMapping locale, TranslationsResource targetDoc)
             throws IOException {
