@@ -25,11 +25,14 @@ import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+
+import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 /**
  * @author Sean Flanigan <a
@@ -61,9 +64,8 @@ public class PropertiesStrategy extends AbstractPullStrategy {
     @Override
     public File
             getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        // TODO This is the same as PropWriter's file, but code is duplicated
-        return new File(getOpts().getTransDir(), docName + "_"
-                + localeMapping.getJavaLocale() + ".properties");
+        return new TransFileResolver(getOpts()).getTransFile(
+            UnqualifiedSrcDocName.from(docName), localeMapping);
     }
 
     @Override
