@@ -73,7 +73,7 @@ public class ManageLanguagePage extends BasePage {
 
     private TableRow findRowByLocale(final String localeId) {
         TableRow matchedRow =
-                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                waitForAMoment().until(new Function<WebDriver, TableRow>() {
                     @Override
                     public TableRow apply(WebDriver driver) {
                         List<TableRow> tableRows =

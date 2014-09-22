@@ -48,7 +48,7 @@ public class ProjectsPage extends BasePage {
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
         WebElement createProjectActionLink =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     @Override
                     public WebElement apply(WebDriver driver) {
                         return driver.findElement(By.id("createProjectLink"));
@@ -94,7 +94,7 @@ public class ProjectsPage extends BasePage {
     public ProjectsPage waitForProjectVisibility(final String projectName,
                                             final boolean visible) {
         log.info("Wait for project {} visibility is {}", projectName, visible);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectNamesOnCurrentPage()

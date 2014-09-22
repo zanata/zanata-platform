@@ -80,7 +80,7 @@ public class VersionBasePage extends BasePage {
     }
 
     public void reloadUntilSettingsIsDisplayed() {
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return settingsTab.isDisplayed();
@@ -91,7 +91,7 @@ public class VersionBasePage extends BasePage {
     public VersionDocumentsPage gotoDocumentTab() {
         log.info("Click Documents tab");
         clickWhenTabEnabled(getDriver().findElement(By.id("documents_tab")));
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -105,7 +105,7 @@ public class VersionBasePage extends BasePage {
     public VersionLanguagesPage gotoLanguageTab() {
         log.info("Click Languages tab");
         clickWhenTabEnabled(getDriver().findElement(By.id("languages_tab")));
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -120,7 +120,7 @@ public class VersionBasePage extends BasePage {
         log.info("Click Settings tab");
         slightPause();
         clickWhenTabEnabled(getDriver().findElement(By.id("settings_tab")));
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -134,7 +134,7 @@ public class VersionBasePage extends BasePage {
     public VersionGeneralTab gotoSettingsGeneral() {
         log.info("Click General settings sub-tab");
         clickWhenTabEnabled(settingsGeneralTab);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -148,7 +148,7 @@ public class VersionBasePage extends BasePage {
     public VersionLanguagesTab gotoSettingsLanguagesTab() {
         log.info("Click Languages settings sub-tab");
         clickWhenTabEnabled(settingsLanguagesTab);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -162,7 +162,7 @@ public class VersionBasePage extends BasePage {
     public VersionDocumentsTab gotoSettingsDocumentsTab() {
         log.info("Click Documents settings sub-tab");
         clickWhenTabEnabled(settingsDocumentsTab);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()
@@ -176,7 +176,7 @@ public class VersionBasePage extends BasePage {
     public VersionTranslationTab gotoSettingsTranslationTab() {
         log.info("Click Translation settings sub-tab");
         clickWhenTabEnabled(settingsTranslationTab);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()

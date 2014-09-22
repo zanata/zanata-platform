@@ -130,14 +130,14 @@ public class CorePage extends AbstractPage {
 
     public boolean expectNotification(final String notification) {
         log.info("Wait for notification {}", notification);
-        return waitForTenSec().until(new Function<WebDriver, Boolean>() {
+        return waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 List<WebElement> messages = getDriver()
                         .findElement(By.id("messages"))
                         .findElements(By.tagName("li"));
                 List<String> notifications = new ArrayList<String>();
-                for( WebElement message : messages ) {
+                for (WebElement message : messages) {
                     notifications.add(message.getText().trim());
                 }
                 return notifications.contains(notification);
@@ -146,7 +146,7 @@ public class CorePage extends AbstractPage {
     }
 
     public List<String> expectFieldError(final String expected) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return waitForFieldErrors().contains(expected);
@@ -157,7 +157,7 @@ public class CorePage extends AbstractPage {
 
     public List<String> waitForErrors() {
         log.info("Query page errors list");
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 return getDriver().findElement(
@@ -202,7 +202,7 @@ public class CorePage extends AbstractPage {
 
     public List<String> waitForFieldErrors() {
         log.info("Query field errors");
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 return getDriver().findElement(By.className("message--danger"));

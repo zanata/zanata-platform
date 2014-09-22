@@ -65,7 +65,7 @@ public class ManageUserPage extends BasePage {
 
     private TableRow findRowByUserName(final String username) {
         TableRow matchedRow =
-                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                waitForAMoment().until(new Function<WebDriver, TableRow>() {
                     @Override
                     public TableRow apply(WebDriver driver) {
                         List<TableRow> tableRows =

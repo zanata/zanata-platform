@@ -40,7 +40,7 @@ public class GooglePermissionsPage extends AbstractPage {
 
     public EditProfilePage acceptPermissions() {
         log.info("Click Approve");
-        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+        waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 return getDriver().findElement(By.id("submit_approve_access"))

@@ -65,7 +65,7 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     public VersionLanguagesTab waitForLocaleListVisible() {
         log.info("Wait for locale list visible");
-        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+        waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 return getDriver()
@@ -111,7 +111,7 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     private void waitForLanguageEntryExpected(final String language,
                                               final boolean exists) {
-        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+        waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 return getEnabledLocaleList().contains(language) == exists;
@@ -155,7 +155,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     public VersionLanguagesTab addLocale(final String localeId) {
         log.info("Click to add {}", localeId);
         String message = "can not find locale - " + localeId;
-        waitForTenSec().withMessage(message).until(new Predicate<WebDriver>() {
+        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 List<WebElement> searchResults =

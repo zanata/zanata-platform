@@ -46,7 +46,7 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     private List<WebElement> getLanguageTabLocaleList() {
         WebElement languageList =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     @Override
                     public WebElement apply(WebDriver input) {
                         return getDriver().findElement(
@@ -103,7 +103,7 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     private List<WebElement> getVersionTabDocumentList() {
         log.info("Query documents list");
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()

@@ -147,7 +147,7 @@ public class TranslationMemoryPage extends BasePage {
     public String waitForExpectedNumberOfEntries(final String tmName,
             final String expected) {
         log.info("Waiting for {} entries in {}", expected, tmName);
-        return waitForTenSec().until(new Function<WebDriver, String>() {
+        return waitForAMoment().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver driver) {
                 return expected.equals(getNumberOfEntries(tmName)) ? getNumberOfEntries(tmName)
@@ -167,7 +167,7 @@ public class TranslationMemoryPage extends BasePage {
      */
     private TableRow findRowByTMName(final String tmName) {
         TableRow matchedRow =
-                waitForTenSec().until(new Function<WebDriver, TableRow>() {
+                waitForAMoment().until(new Function<WebDriver, TableRow>() {
                     @Override
                     public TableRow apply(WebDriver driver) {
                         List<TableRow> tableRows =

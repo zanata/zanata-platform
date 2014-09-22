@@ -81,7 +81,7 @@ public class AddLanguagePage extends BasePage {
         log.info("Query language details");
         Map<String, String> map = new HashMap();
         // Wait for the fields to be populated
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 List<WebElement> thisElement = getDriver()
