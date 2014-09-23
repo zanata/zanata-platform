@@ -53,9 +53,12 @@ public class FileMappingRuleParser {
             LoggerFactory.getLogger(FileMappingRuleParser.class);
     private final FileMappingRule mappingRule;
     private final ProjectType projectType;
+    private final ConfigurableProjectOptions opts;
 
-    public FileMappingRuleParser(FileMappingRule rule, ProjectType projectType) {
+    public FileMappingRuleParser(FileMappingRule rule, ProjectType projectType,
+            ConfigurableProjectOptions opts) {
         this.projectType = projectType;
+        this.opts = opts;
         Preconditions.checkState(isRuleValid(rule.getRule()), "rule defined is not valid: %s", rule.getRule());
         Preconditions.checkArgument(isRuleValid(rule.getRule()));
         this.mappingRule = rule;
@@ -71,9 +74,15 @@ public class FileMappingRuleParser {
         if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
             return matchFileExtensionWithProjectType(qualifiedSrcDocName);
         }
+        // this will only match existing translation on the file system
         PathMatcher matcher =
             FileSystems.getDefault().getPathMatcher("glob:" + mappingRule.getPattern());
-        return matcher.matches(Paths.get(qualifiedSrcDocName.getFullName()));
+        // this will help when qualifiedSrcDocName has just file name i.e.
+        // test.odt whereas pattern is defined as **/*.odt
+        File srcFile =
+                new File(opts.getSrcDir(),
+                        qualifiedSrcDocName.getFullName());
+        return matcher.matches(Paths.get(srcFile.getPath()));
     }
 
     private boolean matchFileExtensionWithProjectType(QualifiedSrcDocName qualifiedSrcDocName) {

@@ -102,7 +102,7 @@ public class TransFileResolver {
             ProjectType projectType) {
         FileMappingRule rule = defaultProjectTypeToRules.get(projectType);
         checkState(rule != null, _("no.default.mapping"), projectType);
-        String relativePath = new FileMappingRuleParser(rule, projectType)
+        String relativePath = new FileMappingRuleParser(rule, projectType, opts)
                 .getRelativePathFromRule(qualifiedSrcDocName, localeMapping);
         return new File(opts.getTransDir(), relativePath);
     }
@@ -113,7 +113,7 @@ public class TransFileResolver {
         // TODO may need to sort the rules. put rules without pattern to last
         for (FileMappingRule rule : fileMappingRules) {
             FileMappingRuleParser parser = new FileMappingRuleParser(rule,
-                    getProjectType());
+                    getProjectType(), opts);
             if (parser.isApplicable(qualifiedSrcDocName)) {
                 String relativePath = parser
                         .getRelativePathFromRule(qualifiedSrcDocName,

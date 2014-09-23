@@ -21,12 +21,15 @@
 
 package org.zanata.client;
 
+import java.io.InputStream;
+import java.lang.String;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.rules.ExternalResource;
@@ -37,26 +40,35 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptionsImpl;
+import org.zanata.client.commands.pull.RawPullCommand;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptionsImpl;
+import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
+import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.client.IAsynchronousProcessResource;
 import org.zanata.rest.client.ICopyTransResource;
+import org.zanata.rest.client.IFileResource;
 import org.zanata.rest.client.ISourceDocResource;
 import org.zanata.rest.client.ITranslatedDocResource;
 import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.FileResource;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,10 +81,17 @@ import static org.mockito.Mockito.when;
  */
 public class MockServerRule extends ExternalResource {
     private URI uri;
+    // async process statuses
+    private String mockProcessId = "MockServerRuleProcess";
+    private ProcessStatus finished = new ProcessStatus();
+    private ProcessStatus running = new ProcessStatus();
+    private PullOptionsImpl pullOpts;
     @Mock
     private IAsynchronousProcessResource asyncResource;
     @Mock
     private ICopyTransResource copyTransResource;
+    @Mock
+    private IFileResource fileResource;
     @Mock
     private ZanataProxyFactory factory;
     @Mock
@@ -96,17 +115,22 @@ public class MockServerRule extends ExternalResource {
     private ClientResponse<Resource> resourceResponse;
     @Mock
     private ClientResponse<TranslationsResource> transResourceResponse;
-
-    // async process statuses
-    private String mockProcessId = "MockServerRuleProcess";
-    private ProcessStatus finished = new ProcessStatus();
-    private ProcessStatus running = new ProcessStatus();
-    private PullOptionsImpl pullOpts;
+    @Mock
+    private ClientResponse<String> acceptedFilesResponse;
+    @Mock
+    private ClientResponse<ChunkUploadResponse> chunkUploadResponse;
+    @Captor
+    private ArgumentCaptor<DocumentFileUploadForm> uploadFormCaptor;
+    @Mock
+    private ClientResponse downloadSourceResponse;
+    @Mock
+    private ClientResponse downloadTransResponse;
 
     public MockServerRule() {
         MockitoAnnotations.initMocks(this);
         when(factory.getCopyTransResource()).thenReturn(copyTransResource);
         when(factory.getAsynchronousProcessResource()).thenReturn(asyncResource);
+        when(factory.getFileResource()).thenReturn(fileResource);
         // async process statuses
         running.setUrl(mockProcessId);
         running.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
@@ -261,5 +285,94 @@ public class MockServerRule extends ExternalResource {
                 transResourceOnServer);
         return new PullCommand(pullOpts, factory, sourceDocResource,
                 transDocResource, uri);
+    }
+
+    /**
+     * Creates a raw file push command that will interact with mock REST proxy factory.
+     * File service resource is stubbed to always return successful result.
+     *
+     * @see MockServerRule#verifyPushRawFileSource(int)
+     * @see MockServerRule#verifyPushRawFileTranslation(int)
+     * @return raw push command
+     */
+    public RawPushCommand createRawPushCommand() {
+        when(fileResource.acceptedFileTypes())
+                .thenReturn(acceptedFilesResponse);
+        List<String> fileTypes =
+                ProjectType.getSupportedSourceFileTypes(ProjectType.File);
+        when(acceptedFilesResponse.getEntity()).thenReturn(
+                Joiner.on(";").join(fileTypes));
+        // push source
+        when(fileResource.uploadSourceFile(eq(pushOpts.getProj()),
+                eq(pushOpts.getProjectVersion()), anyString(), any(
+                DocumentFileUploadForm.class))).thenReturn(chunkUploadResponse);
+        // push translation
+        when(
+                fileResource.uploadTranslationFile(eq(pushOpts.getProj()),
+                        eq(pushOpts.getProjectVersion()), anyString(),
+                        anyString(), anyString(),
+                        any(DocumentFileUploadForm.class))).thenReturn(
+                chunkUploadResponse);
+        when(chunkUploadResponse.getStatus()).thenReturn(201);
+        when(chunkUploadResponse.getEntity()).thenReturn(
+                new ChunkUploadResponse(1L, 1, false, "Upload successful"));
+        return new RawPushCommand(pushOpts, factory, sourceDocResource,
+                transDocResource, uri);
+    }
+
+    public void verifyPushRawFileSource(int numOfSource) {
+        verify(fileResource, times(numOfSource)).uploadSourceFile(
+                eq(pushOpts.getProj()),
+                eq(pushOpts.getProjectVersion()), docIdCaptor.capture(),
+                uploadFormCaptor.capture());
+    }
+
+    public void verifyPushRawFileTranslation(int numOfTrans) {
+        verify(fileResource, times(numOfTrans)).uploadTranslationFile(
+                eq(pushOpts.getProj()),
+                eq(pushOpts.getProjectVersion()),
+                anyString(), docIdCaptor.capture(),
+                anyString(), uploadFormCaptor.capture());
+    }
+
+    /**
+     * Creates a raw pull command that will interact with mock REST proxy factory
+     * and get back provided response.
+     *
+     * @param remoteDocList
+     *            stubbed server response that represents source doc meta list
+     * @param sourceFileStream
+     *            stubbed server response that represents source doc stream
+     * @param transFileStream
+     *            stubbed server response that represents translation doc stream
+     * @return raw pull command
+     */
+    public RawPullCommand createRawPullCommand(
+            List<ResourceMeta> remoteDocList,
+            InputStream sourceFileStream, InputStream transFileStream) {
+        // return provided remote doc meta list
+        when(sourceDocResource.get(null)).thenReturn(remoteDocListResponse);
+        when(remoteDocListResponse.getEntity()).thenReturn(remoteDocList);
+        // return provided source stream
+        when(fileResource.downloadSourceFile(
+                eq(pullOpts.getProj()), eq(pullOpts.getProjectVersion()),
+                eq(FileResource.FILETYPE_RAW_SOURCE_DOCUMENT),
+                anyString())).thenReturn(downloadSourceResponse);
+        when(downloadSourceResponse.getResponseStatus()).thenReturn(
+                Response.Status.OK);
+        when(downloadSourceResponse.getStatus()).thenReturn(200);
+        when(downloadSourceResponse.getEntity(InputStream.class))
+                .thenReturn(sourceFileStream);
+        // return provide translation stream
+        when(fileResource.downloadTranslationFile(eq(pullOpts.getProj()),
+                eq(pullOpts.getProjectVersion()), anyString(), anyString(),
+                anyString())).thenReturn(downloadTransResponse);
+        when(downloadTransResponse.getStatus()).thenReturn(200);
+        when(downloadTransResponse.getResponseStatus()).thenReturn(
+                Response.Status.OK);
+        when(downloadTransResponse.getEntity(InputStream.class))
+                .thenReturn(transFileStream);
+        return new RawPullCommand(pullOpts, factory, sourceDocResource,
+                transDocResource, uri, fileResource);
     }
 }

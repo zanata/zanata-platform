@@ -21,6 +21,7 @@
 
 package org.zanata.client.commands;
 
+import java.io.File;
 import java.util.EnumMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,11 +30,14 @@ import static org.zanata.client.commands.FileMappingRuleParser.*;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
 
 public class FileMappingRuleParserTest {
+
+    private ConfigurableProjectOptions opts = new PushOptionsImpl();
 
     @Test
     public void canCheckSyntaxErrorInTheRule() {
@@ -70,7 +74,7 @@ public class FileMappingRuleParserTest {
                 new FileMappingRuleParser(
                         new FileMappingRule(null,
                                 "{path}/{locale_with_underscore}.po"),
-                        ProjectType.Gettext);
+                        ProjectType.Gettext, opts);
         assertThat(parser.getRelativePathFromRule(
                 TransFileResolver.QualifiedSrcDocName.from("message.pot"),
                 new LocaleMapping("zh")), Matchers.equalTo("zh.po"));
@@ -79,7 +83,7 @@ public class FileMappingRuleParserTest {
     private String getTransFile(String sourceFile, String locale, String rule,
             ProjectType projectType) {
         FileMappingRuleParser parser = new FileMappingRuleParser(
-            new FileMappingRule("**/*", rule), projectType);
+            new FileMappingRule("**/*", rule), projectType, opts);
         return parser.getRelativePathFromRule(
                 TransFileResolver.QualifiedSrcDocName.from(sourceFile),
                 new LocaleMapping(locale));
@@ -97,4 +101,20 @@ public class FileMappingRuleParserTest {
         assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
     }
 
+    @Test
+    public void canTestApplicable() {
+        opts.setSrcDir(new File("."));
+        FileMappingRuleParser parser = new FileMappingRuleParser(
+                new FileMappingRule("**/*.odt",
+                        "{locale}/{filename}.{extension}"), ProjectType.File,
+                opts);
+        assertThat(parser.isApplicable(
+                TransFileResolver.QualifiedSrcDocName.from("test/doc.odt")), equalTo(true));
+        assertThat(parser.isApplicable(
+                TransFileResolver.QualifiedSrcDocName.from("test/doc.pot")), equalTo(false));
+        assertThat(parser.isApplicable(
+                TransFileResolver.QualifiedSrcDocName.from("doc.pot")), equalTo(false));
+        assertThat(parser.isApplicable(
+                TransFileResolver.QualifiedSrcDocName.from("doc.odt")), equalTo(true));
+    }
 }
