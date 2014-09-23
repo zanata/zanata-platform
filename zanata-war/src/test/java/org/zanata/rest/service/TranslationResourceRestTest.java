@@ -826,6 +826,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                 transResource.putTranslations("my.txt", de_DE, entity,
                         new StringSet("gettext"));
         assertThat(putResponse.getResponseStatus(), is(Status.OK));
+        getEm().flush();
+        getEm().clear();
 
         // Get the translations with PO headers
         ClientResponse<TranslationsResource> transResponse =

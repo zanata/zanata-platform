@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -86,6 +87,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -573,7 +575,7 @@ public class TranslationServiceImpl implements TranslationService {
         log.debug("pass evaluate");
         final HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
-        if (document.isObsolete()) {
+        if (document == null || document.isObsolete()) {
             throw new ZanataServiceException("A document was not found.", 404);
         }
 
@@ -715,10 +717,24 @@ public class TranslationServiceImpl implements TranslationService {
         protected Boolean work() throws Exception {
             boolean changed = false;
 
+            // we need a fresh object in this session,
+            // so that it can lazily load associated objects
+            HProjectIteration iteration =
+                    projectIterationDAO.findById(projectIterationId);
+            Map<String, HTextFlow> resIdToTextFlowMap = textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
+                    batch, new Function<TextFlowTarget, String>() {
+
+                        @Override
+                        public String apply(TextFlowTarget input) {
+                            return input.getResId();
+                        }
+                    }));
+            final int numPlurals = resourceUtils
+                    .getNumPlurals(document, locale);
             for (TextFlowTarget incomingTarget : batch) {
                 String resId = incomingTarget.getResId();
                 String sourceHash = incomingTarget.getSourceHash();
-                HTextFlow textFlow = textFlowDAO.getById(document, resId);
+                HTextFlow textFlow = resIdToTextFlowMap.get(resId);
                 if (textFlow == null) {
                     // return warning for unknown resId to caller
                     String warning =
@@ -743,13 +759,9 @@ public class TranslationServiceImpl implements TranslationService {
                             "skipping TextFlowTarget {} with unknown sourceHash: {}",
                             resId, sourceHash);
                 } else {
-                    // we need a fresh object in this session,
-                    // so that it can lazily load associated objects
-                    HProjectIteration iterationReloaded =
-                            projectIterationDAO.findById(projectIterationId);
                     String validationMessage =
                             validateTranslations(incomingTarget.getState(),
-                                    iterationReloaded,
+                                    iteration,
                                     incomingTarget.getResId(),
                                     textFlow.getContents(),
                                     incomingTarget.getContents());
@@ -760,11 +772,9 @@ public class TranslationServiceImpl implements TranslationService {
                         continue;
                     }
 
-                    int nPlurals = getNumPlurals(locale, textFlow);
-                    HTextFlowTarget hTarget =
-                            textFlowTargetDAO.getTextFlowTarget(textFlow,
-                                    locale);
-
+                    int nPlurals = textFlow.isPlural() ? numPlurals : 1;
+                    // we have eagerly loaded all targets upfront
+                    HTextFlowTarget hTarget = textFlow.getTargets().get(locale.getId());
                     ContentState currentState = ContentState.New;
                     if (hTarget != null) {
                         currentState = hTarget.getState();
@@ -822,17 +832,17 @@ public class TranslationServiceImpl implements TranslationService {
                     }
                 }
 
-                personDAO.flush();
-                textFlowTargetDAO.flush();
-                personDAO.clear();
-                textFlowTargetDAO.clear();
                 if (handleOp.isPresent()) {
                     handleOp.get().increaseProgress(1);
                 }
             }
+            // every batch will start with a new hibernate session therefore no
+            // need to call clear
+            textFlowTargetDAO.flush();
 
             return changed;
         }
+
     }
 
     public static class TranslationResultImpl implements TranslationResult {

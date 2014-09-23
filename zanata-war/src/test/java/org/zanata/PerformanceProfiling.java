@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,24 +20,17 @@
  */
 package org.zanata;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.zanata.util.SampleProjectRule;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * This is a class for experiment some things i.e. populate cargo instance with
- * some example users and languages so that a manual test can be performed.
- * Under normal circumstances it will have no active tests in it.
+ * This annotates a test that is used mainly to profile performance issues. It
+ * may not have any verification nor testing functionality. It may not be part
+ * of the build and can/should only be run manually in IDE.
  */
-@Slf4j
-public class ExperimentTest {
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @Test
-    public void test() {
-        // we need at least a test to apply the rule
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface PerformanceProfiling {
 }

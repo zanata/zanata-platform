@@ -46,6 +46,7 @@ import org.hibernate.annotations.TypeDef;
 import org.zanata.common.LocaleId;
 import org.zanata.model.type.LocaleIdType;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.ibm.icu.util.ULocale;
 
 @Entity
@@ -68,6 +69,13 @@ public class HLocale extends ModelEntityBase implements Serializable {
 
     public HLocale(@Nonnull LocaleId localeId) {
         this.localeId = localeId;
+    }
+
+    public HLocale(@Nonnull LocaleId localeId, boolean enabledByDefault,
+            boolean active) {
+        this.localeId = localeId;
+        this.enabledByDefault = enabledByDefault;
+        this.active = active;
     }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching

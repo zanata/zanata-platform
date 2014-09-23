@@ -26,9 +26,23 @@
       <!--<level value="TRACE" />-->
   <!--</logger>-->
   <!-- this require log4jdbc -->
-  <!--<logger name="jdbc.sqlonly">-->
-    <!--<level value="DEBUG" />-->
-  <!--</logger>-->
+  <!--
+  <logger name="jdbc.sqlonly">
+    <level value="DEBUG" />
+  </logger>
+  -->
+  <!-- this can tell (somewhat) whether a jdbc batch is executed. Best to rely on mysql general log -->
+  <!--
+  <logger name="org.hibernate.engine.jdbc.batch.internal.BatchingBatch">
+    <level value="DEBUG" />
+  </logger>
+  -->
+  <!-- this will show hibernate configuration settings -->
+  <!--
+  <logger name="org.hibernate.cfg.SettingsFactory">
+    <level value="DEBUG" />
+  </logger>
+  -->
   <logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
     <level value="OFF" />
   </logger>

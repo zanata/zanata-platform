@@ -1,5 +1,7 @@
 package org.zanata;
 
+import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
+
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -7,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import net.sf.ehcache.CacheManager;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
@@ -22,6 +25,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.zanata.testng.TestMethodListener;
+import org.zanata.util.ZanataEntities;
 
 @Listeners(TestMethodListener.class)
 // single threaded because of ehcache (perhaps other reasons too)
@@ -126,4 +130,7 @@ public abstract class ZanataJpaTest {
         }
     }
 
+    protected void deleteAllTables() {
+        deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
+    }
 }

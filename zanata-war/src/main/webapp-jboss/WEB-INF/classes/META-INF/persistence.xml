@@ -94,6 +94,7 @@
       <property name="hibernate.ejb.use_class_enhancer" value="true" />
       <property name="hibernate.max_fetch_depth" value="1" />
       <property name="hibernate.jdbc.batch_size" value="100" />
+      <property name="hibernate.order_inserts" value="true" />
 
       <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring
       <property name="hibernate.generate_statistics" value="true"/>

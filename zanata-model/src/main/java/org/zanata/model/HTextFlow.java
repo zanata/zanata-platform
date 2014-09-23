@@ -38,6 +38,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
@@ -91,8 +93,14 @@ import com.google.common.collect.ImmutableList;
 @NoArgsConstructor
 @ToString(of = { "resId", "revision", "comment", "obsolete" })
 @Slf4j
+@NamedQueries({
+        @NamedQuery(
+                name = HTextFlow.QUERY_GET_BY_DOC_AND_RES_ID_BATCH,
+                query = "select distinct tf from HTextFlow tf left join fetch tf.targets tft left join fetch tft.history where tf.document = :document and tf.resId in (:resIds) and tf.obsolete = false")
+})
 public class HTextFlow extends HTextContainer implements Serializable,
         ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
+    public static final String QUERY_GET_BY_DOC_AND_RES_ID_BATCH = "HTextFlow.getByDocumentAndResIdBatch";
     private static final long serialVersionUID = 3023080107971905435L;
 
     private Long id;
@@ -227,12 +235,12 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @JoinColumn(name = "document_id", insertable = false, updatable = false,
             nullable = false)
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
-            @NaturalId
-            @AccessType("field")
-            @Field(analyze = Analyze.NO)
-            @FieldBridge(impl = ContainingWorkspaceBridge.class)
-            public
-            HDocument getDocument() {
+    @NaturalId
+    @AccessType("field")
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = ContainingWorkspaceBridge.class)
+    public
+    HDocument getDocument() {
         return document;
     }
 

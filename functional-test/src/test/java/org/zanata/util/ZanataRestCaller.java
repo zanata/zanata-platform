@@ -3,6 +3,7 @@ package org.zanata.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.EnumSet;
 
 import javax.ws.rs.core.Response;
 
@@ -11,11 +12,13 @@ import org.jboss.resteasy.client.core.BaseClientResponse;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
+import org.zanata.rest.client.IAsynchronousProcessResource;
 import org.zanata.rest.client.ICopyTransResource;
 import org.zanata.rest.client.IProjectIterationResource;
 import org.zanata.rest.client.IProjectResource;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.VersionInfo;
@@ -24,8 +27,10 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -189,15 +194,90 @@ public class ZanataRestCaller {
         CopyTransStatus copyTransStatus =
                 resource.startCopyTrans(projectSlug,
                         iterationSlug, docId);
-        while (!copyTransStatus.isInProgress()) {
+        log.info("copyTrans started: {}-{}-{}", projectSlug, iterationSlug, docId);
+        while (copyTransStatus.isInProgress()) {
             try {
                 Thread.sleep(1000);
-                log.info("copyTrans completion: {}", copyTransStatus.getPercentageComplete());
+                log.debug("copyTrans completion: {}", copyTransStatus.getPercentageComplete());
                 copyTransStatus = resource.getCopyTransStatus(projectSlug, iterationSlug, docId);
             }
             catch (InterruptedException e) {
                 throw Throwables.propagate(e);
             }
         }
+        log.info("copyTrans completed: {}-{}-{}", projectSlug, iterationSlug, docId);
+    }
+
+    public void asyncPushSource(String projectSlug, String iterationSlug,
+            Resource sourceResource, boolean copyTrans) {
+        IAsynchronousProcessResource resource =
+                zanataProxyFactory.getAsynchronousProcessResource();
+        ProcessStatus processStatus = resource.startSourceDocCreationOrUpdate(
+                sourceResource.getName(), projectSlug, iterationSlug,
+                sourceResource,
+                Sets.<String>newHashSet(), false);
+        processStatus = waitUntilFinished(resource, processStatus);
+        log.info("finished async source push ({}-{}): {}", projectSlug,
+                iterationSlug, processStatus.getStatusCode());
+        if (copyTrans) {
+            log.info("start copyTrans for {} - {}", projectSlug, iterationSlug);
+            ICopyTransResource copyTransResource =
+                    zanataProxyFactory.getCopyTransResource();
+            CopyTransStatus copyTransStatus =
+                    copyTransResource
+                            .startCopyTrans(projectSlug, iterationSlug,
+                                    sourceResource.getName());
+            while (copyTransStatus.isInProgress()) {
+                try {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException e) {
+                    throw Throwables.propagate(e);
+                }
+                copyTransStatus = copyTransResource.getCopyTransStatus(projectSlug, iterationSlug, sourceResource.getName());
+            }
+            log.info("finish copyTrans for {} - {}", projectSlug, iterationSlug);
+        }
+    }
+
+    private ProcessStatus waitUntilFinished(
+            IAsynchronousProcessResource resource,
+            ProcessStatus processStatus) {
+        EnumSet<ProcessStatus.ProcessStatusCode> doneStatus =
+                EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
+                        ProcessStatus.ProcessStatusCode.Finished,
+                        ProcessStatus.ProcessStatusCode.NotAccepted);
+        String processId = processStatus.getUrl();
+        while (!doneStatus.contains(processStatus.getStatusCode())) {
+            log.debug("{} percent completed {}, messages: {}", processId,
+                    processStatus.getPercentageComplete(),
+                    processStatus.getMessages());
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {
+                throw Throwables.propagate(e);
+            }
+            processStatus = resource.getProcessStatus(processId);
+        }
+        if (processStatus.getStatusCode().equals(
+                ProcessStatus.ProcessStatusCode.Failed)) {
+            throw new RuntimeException(processStatus.getStatusCode().toString());
+        }
+        return processStatus;
+    }
+
+    public void asyncPushTarget(String projectSlug, String iterationSlug,
+            String docId, LocaleId localeId, TranslationsResource transResource,
+            String mergeType) {
+        IAsynchronousProcessResource resource =
+                zanataProxyFactory.getAsynchronousProcessResource();
+        ProcessStatus processStatus =
+                resource.startTranslatedDocCreationOrUpdate(docId, projectSlug,
+                        iterationSlug, localeId, transResource,
+                        Collections.<String>emptySet(), mergeType);
+        processStatus = waitUntilFinished(resource, processStatus);
+        log.info("finished async translation({}-{}) push: {}", projectSlug,
+                iterationSlug, processStatus.getStatusCode());
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jboss.seam.security.Identity;
 import org.testng.annotations.BeforeClass;
@@ -20,6 +21,8 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 @Test(groups = { "jpa-tests" })
 public class DocumentJPATest extends ZanataDbunitJpaTest {
@@ -72,8 +75,14 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
         assertThat("Project should have 3 targets", projectTargets.size(),
                 is(3));
 
-        HProjectIteration target = projectTargets.get(0);
-        assertThat("Expect target with id 1", target.getId(), is(1l));
+        List<Long> iterationIds = Lists.transform(projectTargets,
+                new Function<HProjectIteration, Long>() {
+                    @Override
+                    public Long apply(HProjectIteration input) {
+                        return input.getId();
+                    }
+                });
+        assertThat(iterationIds, Matchers.containsInAnyOrder(1L, 2L, 900L));
     }
 
     @Test

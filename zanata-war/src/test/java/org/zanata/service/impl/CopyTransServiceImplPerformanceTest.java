@@ -1,5 +1,6 @@
 package org.zanata.service.impl;
 
+import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,45 +41,25 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
+import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
-import org.zanata.model.Activity;
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
-import org.zanata.model.HDocumentHistory;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTermComment;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
-import org.zanata.model.HTextFlowHistory;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.po.HPoTargetHeader;
-import org.zanata.model.security.HCredentials;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.SearchIndexManager;
+import org.zanata.util.ZanataEntities;
 
-import com.github.huangp.entityunit.entity.EntityCleaner;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 /**
  * This is a JUnit test that will setup large data and test the performance of
@@ -196,31 +177,6 @@ public class CopyTransServiceImplPerformanceTest {
         return (Session) em.getDelegate();
     }
 
-    // TODO dup in FilterConstraintToQueryJpaTest. Should move to a common place
-    private void deleteData() {
-        EntityCleaner.deleteAll(getEm(), Lists.<Class> newArrayList(
-                TransMemoryUnitVariant.class, TransMemoryUnit.class,
-                TransMemory.class,
-                Activity.class,
-                // glossary
-                HTermComment.class, HGlossaryTerm.class,
-                HGlossaryEntry.class,
-                // tex flows and targets
-                HPoTargetHeader.class, HTextFlowTargetHistory.class,
-                HTextFlowTarget.class, HTextFlowHistory.class, HTextFlow.class,
-                // documents
-                HDocumentHistory.class, HDocument.class,
-                // locales
-                HLocaleMember.class, HLocale.class,
-                // version group
-                HIterationGroup.class,
-                // project
-                HProjectIteration.class, HProject.class,
-                // account
-                HAccountActivationKey.class, HCredentials.class, HPerson.class,
-                HAccount.class));
-    }
-
     @Before
     public void setUp() throws Exception {
         // runLiquibase();
@@ -242,7 +198,7 @@ public class CopyTransServiceImplPerformanceTest {
 
         copyTransService = seam.autowire(CopyTransServiceImpl.class);
 
-        deleteData();
+        deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
 
         HLocale enUS = makeLocale(LocaleId.EN_US);
         HLocale de = makeLocale(LocaleId.DE);
@@ -355,8 +311,9 @@ public class CopyTransServiceImplPerformanceTest {
     }
 
     @Test
-    @Ignore()
+    @Ignore
     @SlowTest
+    @PerformanceProfiling
     public void testCopyTransForDocument() throws Exception {
         HCopyTransOptions options =
                 new HCopyTransOptions(

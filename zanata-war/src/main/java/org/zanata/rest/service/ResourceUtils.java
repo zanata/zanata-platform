@@ -195,6 +195,20 @@ public class ResourceUtils {
             if (count % 100 == 0) {
                 entityManager.flush();
             }
+            // FIXME we can't clear entityManager here. See
+            // org.zanata.feature.rest.CopyTransTest.testPushTranslationAndCopyTrans.
+            // If you clear, last copyTran REST call will trigger exception on
+            // the server (hDocument.getTextFlows() will contain null entries -
+            // corrupted collection.
+            // see https://github.com/zanata/zanata-server/pull/571#issuecomment-55547577)
+
+            /*
+            if (count % 500 == 0) {
+            // this in some cases seem to slow down overall performance
+                entityManager.clear();
+                to = entityManager.find(HDocument.class, to.getId());
+            }
+            */
         }
 
         // set remaining textflows to obsolete.
