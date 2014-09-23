@@ -35,8 +35,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * This class can be used as a JUnit rule to create temporary translation files.
+ * You should set trans-dir using getTransDir() method and then create
+ * translation file using relative path.
+ *
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TempTransFileRule extends TemporaryFolder {
     private File transDir;
