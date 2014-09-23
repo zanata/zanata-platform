@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -45,27 +47,39 @@ public class CleanDocumentStorageRule extends ExternalResource {
                     org.jboss.naming.remote.client.InitialContextFactory.class
                             .getName());
             long portOffset = Integer.parseInt(
-                PropertiesHolder.getProperty("cargo.port.offset", "0"));
-            long rmiPort = 4447 + portOffset;
-            env.put(Context.PROVIDER_URL, "remote://localhost:" + rmiPort);
+                    PropertiesHolder.getProperty("cargo.port.offset", "0"));
+            String rmiPort = System.getenv("JBOSS_REMOTING_PORT");
+            int rmiPortNum = rmiPort != null ? parseInt(rmiPort) : 4547;
+            long realRmiPort = portOffset + rmiPortNum;
+
+            String remoteUrl = "remote://localhost:" + realRmiPort;
+            env.put(Context.PROVIDER_URL, remoteUrl);
             InitialContext remoteContext = null;
             try {
                 remoteContext = new InitialContext(env);
                 storagePath =
-                    (String) remoteContext
-                        .lookup("zanata/files/document-storage-directory");
+                        (String) remoteContext
+                                .lookup("zanata/files/document-storage-directory");
             }
             catch (NamingException e) {
+                // wildfly uses 'http-remoting:' not 'remote:'
+                String httpPort = System.getenv("JBOSS_HTTP_PORT");
+                int httpPortNum = httpPort != null ? parseInt(httpPort) : 8180;
+
+                long realHttpPort = httpPortNum + portOffset;
+                String httpRemotingUrl = "http-remoting://localhost:" + realHttpPort;
+                log.warn("Unable to access {}: {}; trying {}", remoteUrl,
+                        e.toString(), httpRemotingUrl);
                 try {
-                    // wildfly uses 'http-remoting:' not 'remote:'
-                    rmiPort = 8080+portOffset;
-                    env.put(Context.PROVIDER_URL, "http-remoting://localhost:" + rmiPort);
+                    env.put(Context.PROVIDER_URL, httpRemotingUrl);
                     remoteContext = new InitialContext(env);
                     storagePath =
                             (String) remoteContext
                                     .lookup("zanata/files/document-storage-directory");
                 } catch (NamingException e1) {
                     // fall back option:
+                    log.warn("Unable to access {}: {}", httpRemotingUrl,
+                            e.toString());
                     URL testClassRoot =
                             Thread.currentThread().getContextClassLoader()
                                     .getResource("setup.properties");

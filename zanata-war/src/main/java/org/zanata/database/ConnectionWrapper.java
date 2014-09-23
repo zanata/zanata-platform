@@ -24,10 +24,7 @@ package org.zanata.database;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
@@ -35,6 +32,9 @@ import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.lang.reflect.Proxy.getInvocationHandler;
+import static java.lang.reflect.Proxy.isProxyClass;
 
 /**
  * @author Sean Flanigan <a
@@ -52,42 +52,25 @@ class ConnectionWrapper implements InvocationHandler {
     // sets before attempting more queries.
     public static final String CONCURRENT_RESULTSET =
             "Streaming ResultSet is still open on this Connection";
-    private final Connection connection;
+    private final Connection originalConnection;
     private Set<Throwable> resultSetsOpened = Sets.newHashSet();
     private Throwable streamingResultSetOpened;
 
-    public static Connection wrap(Connection connection) {
-        if (Proxy.isProxyClass(connection.getClass())
-                && Proxy.getInvocationHandler(connection) instanceof ConnectionWrapper) {
-            return connection;
+    public static Connection wrap(Connection conn) {
+        // avoid double-wrapping:
+        if (isProxyClass(conn.getClass())
+                && getInvocationHandler(conn) instanceof ConnectionWrapper) {
+            return conn;
         }
         return ProxyUtil
-                .newProxy(connection, new ConnectionWrapper(connection));
-    }
-
-    public static Connection wrapUnlessMysql(Connection connection)
-            throws SQLException {
-        DatabaseMetaData metaData = connection.getMetaData();
-        String databaseName = metaData.getDatabaseProductName();
-        if ("MySQL".equals(databaseName)) {
-            return connection;
-        } else {
-            return wrap(connection);
-        }
-    }
-
-    /**
-     * @return the connection
-     */
-    public Connection getConnection() {
-        return connection;
+                .newProxy(conn, new ConnectionWrapper(conn));
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
         if (method.getName().equals("toString")) {
-            return "ConnectionWrapper->" + connection.toString();
+            return "ConnectionWrapper->" + originalConnection.toString();
         }
         if (method.getName().equals("close")) {
             if (streamingResultSetOpened != null) {
@@ -100,7 +83,7 @@ class ConnectionWrapper implements InvocationHandler {
             }
         }
         try {
-            Object result = method.invoke(connection, args);
+            Object result = method.invoke(originalConnection, args);
             if (result instanceof Statement) {
                 Statement statement = (Statement) result;
                 return StatementWrapper.wrap(statement, (Connection) proxy);
@@ -111,14 +94,23 @@ class ConnectionWrapper implements InvocationHandler {
         }
     }
 
-    public void executed() throws SQLException {
+    /**
+     * Notify ConnectionWrapper that Statement.execute() has been called.
+     * @throws StreamingResultSetSQLException
+     */
+    public void executed() throws StreamingResultSetSQLException {
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
         }
     }
 
-    public void resultSetOpened(Throwable throwable) throws SQLException {
+    /**
+     * Notify ConnectionWrapper that a Statement has opened a non-streaming
+     * ResultSet.
+     * @throws StreamingResultSetSQLException
+     */
+    public void resultSetOpened(Throwable throwable) throws StreamingResultSetSQLException {
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
@@ -126,8 +118,13 @@ class ConnectionWrapper implements InvocationHandler {
         resultSetsOpened.add(throwable);
     }
 
+    /**
+     * Notify ConnectionWrapper that a Statement has opened a streaming
+     * ResultSet.
+     * @throws StreamingResultSetSQLException
+     */
     public void streamingResultSetOpened(Throwable throwable)
-            throws SQLException {
+            throws StreamingResultSetSQLException {
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
@@ -138,10 +135,18 @@ class ConnectionWrapper implements InvocationHandler {
         streamingResultSetOpened = throwable;
     }
 
+    /**
+     * Notify ConnectionWrapper that a non-streaming ResultSet has been closed.
+     * @throws StreamingResultSetSQLException
+     */
     public void resultSetClosed(Throwable throwable) {
         resultSetsOpened.remove(throwable);
     }
 
+    /**
+     * Notify ConnectionWrapper that a streaming ResultSet has been closed.
+     * @throws StreamingResultSetSQLException
+     */
     public void streamingResultSetClosed() {
         streamingResultSetOpened = null;
     }

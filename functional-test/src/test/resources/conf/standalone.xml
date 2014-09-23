@@ -212,7 +212,7 @@
           <keepalive-time time="10" unit="seconds" />
         </long-running-threads>
       </default-workmanager>
-      <cached-connection-manager />
+      <cached-connection-manager debug="true"/>
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:jdr:1.0" />
     <subsystem xmlns="urn:jboss:domain:jmx:1.2">
@@ -239,7 +239,7 @@
         <simple name="java:global/zanata/security/admin-users" value="admin" />
         <simple name="java:global/zanata/email/default-from-address"
           value="no-reply@zanata.org" />
-        <simple name="java:global/zanata/smtp/port" value="${smtp.port}" />
+        <simple name="java:global/zanata/smtp/port" value="${smtp.port,env.SMTP_PORT:2552}" />
         <simple name="java:global/zanata/files/document-storage-directory"
           value="${project.build.directory}/zanata-documents" />
         <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
@@ -350,19 +350,27 @@
   <socket-binding-group name="standard-sockets" default-interface="public"
     port-offset="${jboss.socket.binding.port-offset:0}">
     <socket-binding name="management-native" interface="management"
-      port="${jboss.management.native.port:9999}" />
+      port="${jboss.management.native.port,env.JBOSS_MANAGEMENT_NATIVE_PORT:10099}" />
     <socket-binding name="management-http" interface="management"
-      port="${jboss.management.http.port:9990}" />
+      port="${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090}" />
     <socket-binding name="management-https" interface="management"
-      port="${jboss.management.https.port:9443}" />
-    <socket-binding name="ajp" port="8009" />
-    <socket-binding name="http" port="8080" />
-    <socket-binding name="https" port="8443" />
-    <socket-binding name="remoting" port="4447" />
-    <socket-binding name="txn-recovery-environment" port="4712" />
-    <socket-binding name="txn-status-manager" port="4713" />
+      port="${jboss.management.https.port,env.JBOSS_MANAGEMENT_HTTPS_PORT:9543}" />
+    <socket-binding name="ajp"
+      port="${jboss.ajp.port,env.JBOSS_AJP_PORT:8109}" />
+    <socket-binding name="http"
+      port="${jboss.http.port,env.JBOSS_HTTP_PORT:8180}" />
+    <socket-binding name="https"
+      port="${jboss.https.port,env.JBOSS_HTTPS_PORT:8543}" />
+    <socket-binding name="osgi-http" interface="management"
+      port="${jboss.osgi.port,env.JBOSS_OSGI_PORT:8190}" />
+    <socket-binding name="remoting"
+      port="${jboss.remoting.port,env.JBOSS_REMOTING_PORT:4547}" />
+    <socket-binding name="txn-recovery-environment"
+      port="${jboss.txn.recovery.port,env.JBOSS_TXN_RECOVERY_PORT:4812}" />
+    <socket-binding name="txn-status-manager"
+      port="${jboss.txn.status.port,env.JBOSS_TXN_STATUS_PORT:4813}" />
     <outbound-socket-binding name="mail-smtp">
-      <remote-destination host="localhost" port="25" />
+      <remote-destination host="localhost" port="${smtp.port,env.SMTP_PORT:2552}" />
     </outbound-socket-binding>
   </socket-binding-group>
 </server>

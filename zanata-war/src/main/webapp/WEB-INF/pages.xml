@@ -5,6 +5,9 @@
   no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
 
   <page view-id="*">
+    <navigation from-action="#{identity.logout}">
+      <redirect view-id="/home.xhtml" />
+    </navigation>
     <navigation>
       <rule if-outcome="home">
         <redirect view-id="/home.xhtml" />
@@ -131,13 +134,6 @@
         if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
         <redirect url="#{userRedirect.url}" />
       </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/account/logout.xhtml">
-    <action execute="#{identity.logout}" if="#{identity.loggedIn}" />
-    <navigation>
-      <redirect view-id="/home.xhtml" />
     </navigation>
   </page>
 

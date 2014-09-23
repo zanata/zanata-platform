@@ -24,6 +24,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -71,6 +72,11 @@ public class EmailBuilder {
         ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         ve.setProperty("classpath.resource.loader.class",
                 ClasspathResourceLoader.class.getName());
+
+        // send Velocity log to SLF4J (via Commons Logging)
+        ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+                CommonsLogLogChute.class.getName());
+
         // this allows unit tests to detect missing context vars:
         ve.setProperty("runtime.references.strict", true);
         ve.init();

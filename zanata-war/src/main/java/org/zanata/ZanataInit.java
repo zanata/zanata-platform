@@ -54,21 +54,28 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
 
 /**
- * Doesn't do much useful stuff except printing a log message and firing the
- * "Zanata.startup" event.
+ * This class handles various tasks at startup.  It disables warnings for a
+ * couple of verbose log categories, logs some information about the system
+ * and configuration, checks for stray Lucene lock files, and finally fires
+ * the "Zanata.startup" event.
  *
  * @author Christian Bauer
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Name("zanataInit")
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class ZanataInit {
+
     static {
-        // Prevent AS 7 from warning about gwt-servlet's
+        // Prevent JBoss/WildFly from warning about gwt-servlet's
         // org.hibernate.validator.ValidationMessages
         Logger.getLogger("org.jboss.modules").setLevel(Level.SEVERE);
         // Disable "RP discovery / realm validation disabled;"
         Logger.getLogger("org.openid4java.server.RealmVerifier").setLevel(
+                Level.SEVERE);
+        // Disable "Queue with name '.*' has already been registered"
+        Logger.getLogger("org.richfaces.log.Components").setLevel(
                 Level.SEVERE);
     }
 
@@ -85,7 +92,7 @@ public class ZanataInit {
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
 
-        VersionInfo ver = new VersionInfo();
+        VersionInfo ver;
         Attributes atts = null;
         if (manifestFile.canRead()) {
             Manifest mf = new Manifest();

@@ -18,7 +18,7 @@
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <!-- zanata-war package phase will copy the war to this location. Jenkins will override this -->
-    <zanata.war.location>${java.io.tmpdir}/zanata-war/zanata-test.war</zanata.war.location>
+    <zanata.war.location>${project.build.directory}/zanata.war</zanata.war.location>
   </properties>
 
   <dependencies>
@@ -125,8 +125,7 @@
       <artifactId>zanata-war</artifactId>
       <version>${project.version}</version>
       <type>war</type>
-      <scope>system</scope>
-      <systemPath>${zanata.war.location}</systemPath>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -134,9 +133,6 @@
     <profile>
       <id>run-functional-test</id>
       <activation>
-        <file>
-          <exists>${zanata.war.location}</exists>
-        </file>
         <property>
           <name>functional-test</name>
         </property>

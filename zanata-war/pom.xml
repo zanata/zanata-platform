@@ -19,7 +19,6 @@
 
   <properties>
     <war.config.dir>${basedir}/src/etc</war.config.dir>
-    <containerId>jboss71x</containerId>
     <allow.deploy.skip>true</allow.deploy.skip>
 
     <!-- application properties -->
@@ -100,27 +99,6 @@
               <goal>properties</goal>
             </goals>
           </execution>
-          <execution>
-            <!-- install to a temporary location so that functional test can use it -->
-            <id>copy</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                  <type>war</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${java.io.tmpdir}/zanata-war</outputDirectory>
-                  <destFileName>zanata-test.war</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <usedDependencies combine.children="append">
@@ -136,8 +114,6 @@
             <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
             <!-- Used by javamelody for email/pdf support -->
             <usedDependency>com.lowagie:itext</usedDependency>
-            <!-- used for arquillian tests -->
-            <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
             <!--used to log sql and parameters when debugging Hibernate -->
             <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
             <!-- used for org.hibernate:hibernate-core and  org.drools:drools-compiler -->
@@ -165,7 +141,6 @@
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
-            <usedDependency>org.jboss.as:jboss-as-arquillian-container-managed</usedDependency>
             <!-- Used by JSON (RestEasy) -->
             <usedDependency>org.jboss.resteasy:resteasy-jackson-provider</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
@@ -186,27 +161,6 @@
           </usedDependencies>
         </configuration>
       </plugin>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-arquillian-jboss-home</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <phase>pre-integration-test</phase>
-            <configuration>
-              <rules combine.self="override">
-                <requireProperty>
-                  <property>arquillian.jboss.home</property>
-                  <message xml:space="preserve">You must set the arquillian.jboss.home property to run integration tests</message>
-                </requireProperty>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
 
       <plugin>
         <groupId>com.ning.maven.plugins</groupId>
@@ -273,18 +227,6 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>prepare-arquillian-container</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <copy file="${project.basedir}/src/test/resources/arquillian/standalone.xml" tofile="${arquillian.jboss.home}/standalone/configuration/zanata-standalone.xml" />
-              </target>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -500,28 +442,6 @@
             <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
           </check>
         </configuration>
-      </plugin>
-
-      <!-- Configure Failsafe to run in integration-test/verify phase -->
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <!-- Container (Arquillian tests) -->
-          <execution>
-            <id>container-tests</id>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <includes>
-                <include>**/*ITCase.java</include>
-              </includes>
-              <testNGArtifactName>none:none</testNGArtifactName>
-              <runOrder>alphabetical</runOrder>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -1052,6 +972,262 @@
       </build>
     </profile>
 
+    <profile>
+      <id>jbosseap6</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>jbosseap6</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>prepare-arquillian-container</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <fail message="'arquillian.jboss.home' property must be set to run integration tests in this profile"
+                      unless="arquillian.jboss.home"/>
+                    <copy overwrite="true"
+                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
+                      tofile="${arquillian.jboss.home}/standalone/configuration/standalone-arquillian.xml" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <usedDependencies combine.children="append">
+                <!-- used for arquillian tests -->
+                <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
+                <usedDependency>org.jboss.as:jboss-as-arquillian-container-managed</usedDependency>
+                <!-- NB: Don't add anything without a comment explaining how the
+                     dependency is used -->
+              </usedDependencies>
+            </configuration>
+          </plugin>
+
+          <!-- Configure Failsafe to run in integration-test/verify phase -->
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <!-- Container (Arquillian tests) -->
+              <execution>
+                <id>container-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>**/*ITCase.java</include>
+                  </includes>
+                  <testNGArtifactName>none:none</testNGArtifactName>
+                  <runOrder>alphabetical</runOrder>
+                  <forkCount>1</forkCount>
+                  <reuseForks>true</reuseForks>
+                  <systemPropertyVariables>
+                    <arquillian.launch>jbossas-managed</arquillian.launch>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-common</artifactId>
+          <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.jboss.logmanager</groupId>
+              <artifactId>log4j-jboss-logmanager</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <version>${jboss.as.version}</version>
+          <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.jboss.logmanager</groupId>
+              <artifactId>jboss-logmanager</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.jboss.logmanager</groupId>
+              <artifactId>log4j-jboss-logmanager</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-controller-client</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-controller</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>wildfly8</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>wildfly8</value>
+        </property>
+      </activation>
+      <properties>
+        <wildfly.home>${project.build.directory}/wildfly/wildfly-${wildfly.version}</wildfly.home>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- NB: This plugin needs to be before antrun, because it
+                 creates the wildfly directory for the unzip tasks. -->
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.wildfly</groupId>
+                      <artifactId>wildfly-dist</artifactId>
+                      <version>${wildfly.version}</version>
+                      <type>zip</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/wildfly</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <usedDependencies combine.children="append">
+                <!-- used for arquillian tests -->
+                <usedDependency>org.wildfly:wildfly-arquillian-container-managed</usedDependency>
+                <!-- NB: Don't add anything without a comment explaining how the
+                     dependency is used -->
+              </usedDependencies>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>prepare-arquillian-container</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy
+                      overwrite="true"
+                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
+                      tofile="${wildfly.home}/standalone/configuration/standalone.xml" />
+                    <mkdir dir="${project.build.directory}/downloads/" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip/download"
+                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
+                      usetimestamp="true" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip/download"
+                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
+                      usetimestamp="true" />
+                    <unzip
+                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
+                      dest="${wildfly.home}" />
+                    <unzip
+                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
+                      dest="${wildfly.home}" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Configure Failsafe to run in integration-test/verify phase -->
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <!-- Container (Arquillian tests) -->
+              <execution>
+                <id>container-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>**/*ITCase.java</include>
+                  </includes>
+                  <testNGArtifactName>none:none</testNGArtifactName>
+                  <runOrder>alphabetical</runOrder>
+                  <forkCount>1</forkCount>
+                  <reuseForks>true</reuseForks>
+                  <systemPropertyVariables>
+                    <arquillian.launch>wildfly81</arquillian.launch>
+                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                    <!-- the maven dependency plugin will have already downloaded the server on /target -->
+                    <jboss.home>${wildfly.home}</jboss.home>
+                  </systemPropertyVariables>
+                  <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>io.undertow</groupId>
+          <artifactId>undertow-core</artifactId>
+          <version>1.0.15.Final</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-arquillian-container-managed</artifactId>
+          <version>${wildfly.version}</version>
+          <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.jboss.remoting3</groupId>
+              <artifactId>jboss-remoting</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
+    </profile>
+
   </profiles>
 
   <dependencies>
@@ -1136,35 +1312,6 @@
       <artifactId>zanata-common-api</artifactId>
       <version>${zanata.api.compat.version}</version>
       <classifier>compat</classifier>
-    </dependency>
-
-    <!-- GWT Dependencies -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <version>1.1.2</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.gwt</groupId>
-          <artifactId>gwt-dev</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-all</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -1532,22 +1679,6 @@
       <artifactId>guava</artifactId>
     </dependency>
 
-    <!--to enable guava on gwt-->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-gwt</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>net.bull.javamelody</groupId>
       <artifactId>javamelody-core</artifactId>
@@ -1814,56 +1945,14 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-container-managed</artifactId>
-      <version>${jboss.as.version}</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>jboss-logmanager</artifactId>
-          <groupId>org.jboss.logmanager</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>log4j-jboss-logmanager</artifactId>
-          <groupId>org.jboss.logmanager</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-common</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>
-            log4j-jboss-logmanager
-          </artifactId>
-          <groupId>
-            org.jboss.logmanager
-          </groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-controller-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-controller</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Currently only needed for our override of Arquillian's
     ManagementClient -->
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.1.3.GA</version>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.jboss.arquillian.extension</groupId>
@@ -1920,8 +2009,6 @@
       <version>${groovy.version}</version>
     </dependency>
 
-    <!-- GWT related dependencies -->
-
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
@@ -1929,56 +2016,9 @@
     </dependency>
 
     <dependency>
-      <!-- needed for GWT compilation of JAXB annotated classes -->
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt.inject</groupId>
-      <artifactId>gin</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>net.customware.gwt.dispatch</groupId>
-      <artifactId>gwt-dispatch</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.customware.gwt.presenter</groupId>
-      <artifactId>gwt-presenter</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.allen-sauer.gwt.log</groupId>
-      <artifactId>gwt-log</artifactId>
-      <version>3.2.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>eventservice</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>gwteventservice</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>eventservice-rpc</artifactId>
-    </dependency>
-
-    <!-- end of GWT related dependencies -->
 
     <dependency>
       <groupId>org.liquibase</groupId>
@@ -2108,6 +2148,102 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- GWT Dependencies -->
+    <!-- NB: GWT and anything which depends on it should go last, to
+         avoid overriding Java APIs (especially javax.servlet) -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <version>1.1.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-dev</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!--to enable guava on gwt-->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-gwt</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <!-- needed for GWT compilation of JAXB annotated classes -->
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt.inject</groupId>
+      <artifactId>gin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.customware.gwt.presenter</groupId>
+      <artifactId>gwt-presenter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.allen-sauer.gwt.log</groupId>
+      <artifactId>gwt-log</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>eventservice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>gwteventservice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>eventservice-rpc</artifactId>
+    </dependency>
+
+    <!-- end of GWT related dependencies -->
+
   </dependencies>
 
 

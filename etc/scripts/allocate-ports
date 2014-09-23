@@ -1,0 +1,22 @@
+#!/bin/env python
+
+from __future__ import print_function
+import socket, sys
+
+sockets = []
+
+print("Allocating unused ports...", file=sys.stderr)
+try:
+    for port_name in sys.argv[1:]:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(('localhost', 0))
+        sockets.append(s)
+        addr, port = s.getsockname()
+
+        # Environment Script Plugin for Jenkins needs 'KEY=VALUE' on separate
+        # lines.
+        print("%s=%s" % (port_name, port))
+        print("  %s=%s" % (port_name, port), file=sys.stderr)
+finally:
+    for s in sockets:
+        s.close()

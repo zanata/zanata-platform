@@ -31,6 +31,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
+import org.zanata.model.HTextFlowHistory;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
@@ -162,7 +163,8 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                 // tex flows and targets
                 HPoTargetHeader.class, HTextFlowTargetHistory.class,
                 HTextFlowTargetReviewComment.class,
-                HTextFlowTarget.class, HTextFlow.class,
+                HTextFlowTarget.class,
+                HTextFlowHistory.class, HTextFlow.class,
                 // documents
                 HDocumentHistory.class, HDocument.class,
                 HDocumentUploadPart.class, HDocumentUpload.class,

@@ -52,8 +52,8 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @BypassInterceptors
 @Startup
 public class ZanataIdentity extends Identity {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(ZanataIdentity.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            ZanataIdentity.class);
 
     public static final String USER_LOGOUT_EVENT = "user.logout";
     public static final String USER_ENTER_WORKSPACE = "user.enter";
@@ -115,18 +115,42 @@ public class ZanataIdentity extends Identity {
 
     @Override
     public boolean hasPermission(Object target, String action) {
-        LOGGER.debug("ENTER hasPermission({}, {})", target, action);
+        log.trace("ENTER hasPermission({}, {})", target, action);
         boolean result = super.hasPermission(target, action);
-        LOGGER.debug("EXIT hasPermission(): {}", result);
+        if (result) {
+            if (log.isDebugEnabled()) {
+                log.debug("ALLOWED hasPermission({}, {}) for user {}",
+                        target, action, getAccountUsername());
+            }
+        } else {
+            if (log.isWarnEnabled()) {
+                log.warn("DENIED hasPermission({}, {}) for user {}",
+                        target, action, getAccountUsername());
+            }
+        }
+        log.trace("EXIT hasPermission(): {}", result);
         return result;
     }
 
     @Override
     public boolean hasPermission(String name, String action, Object... arg) {
-        LOGGER.debug("ENTER hasPermission({})",
-                Lists.newArrayList(name, action, arg));
+        if (log.isTraceEnabled()) {
+            log.trace("ENTER hasPermission({})",
+                    Lists.newArrayList(name, action, arg));
+        }
         boolean result = super.hasPermission(name, action, arg);
-        LOGGER.debug("EXIT hasPermission(): {}", result);
+        if (result) {
+            if (log.isDebugEnabled()) {
+                log.debug("ALLOWED hasPermission({}, {}, {}) for user {}",
+                        name, action, arg, getAccountUsername());
+            }
+        } else {
+            if (log.isWarnEnabled()) {
+                log.warn("DENIED hasPermission({}, {}, {}) for user {}",
+                        name, action, arg, getAccountUsername());
+            }
+        }
+        log.trace("EXIT hasPermission(): {}", result);
         return result;
     }
 

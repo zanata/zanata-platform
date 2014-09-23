@@ -19,7 +19,8 @@
     <cargo.host>localhost</cargo.host>
     <cargo.container>jboss72x</cargo.container>
     <!--jboss port offset -->
-    <cargo.port.offset>100</cargo.port.offset>
+    <cargo.port.offset>0</cargo.port.offset>
+    <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
     <cargo.servlet.port>8180</cargo.servlet.port>
     <cargo.installation>http://downloads.sourceforge.net/project/zanata/server/zanata-server.zip</cargo.installation>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -63,6 +64,7 @@
     <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
+    <!-- This may be changed by the SMTP_PORT profile -->
     <smtp.port>2552</smtp.port>
     <jndi-remote-client.groupId>org.jboss.as</jndi-remote-client.groupId>
     <jndi-remote-client.artifactId>jboss-as-ejb-client-bom</jndi-remote-client.artifactId>
@@ -281,7 +283,6 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-remote-naming</artifactId>
-      <version>1.0.4.Final</version>
       <scope>test</scope>
     </dependency>
 
@@ -306,14 +307,36 @@
 
   <profiles>
     <profile>
-      <id>wildfly</id>
+      <id>jbosseap6</id>
       <activation>
         <property>
-          <name>wildfly</name>
+          <name>appserver</name>
+          <value>jbosseap6</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <usedDependencies>
+                <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
+              </usedDependencies>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+    <profile>
+      <id>wildfly8</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>wildfly8</value>
         </property>
       </activation>
       <properties>
-        <wildfly.version>8.1.0.Final</wildfly.version>
         <cargo.container>wildfly8x</cargo.container>
         <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
@@ -323,6 +346,14 @@
       </properties>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <configuration>
+              <usedDependencies>
+                <usedDependency>org.wildfly:wildfly-ejb-client-bom</usedDependency>
+              </usedDependencies>
+            </configuration>
+          </plugin>
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -356,13 +387,26 @@
           </plugin>
         </plugins>
       </build>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb-client</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-remote-naming</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>test</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
     </profile>
     <profile>
       <id>run-functional-test</id>
       <activation>
-        <file>
-          <exists>${zanata.war.location}</exists>
-        </file>
         <property>
           <name>functional-test</name>
         </property>
@@ -475,6 +519,11 @@
                   <extractDir>${cargo.extract.dir}</extractDir>
                 </zipUrlInstaller>
               </container>
+              <configuration>
+                <properties>
+                  <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
+                </properties>
+              </configuration>
               <deployables>
                 <deployable>
                   <type>war</type>
@@ -546,6 +595,30 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+
+    <profile>
+      <id>JBOSS_HTTP_PORT</id>
+      <activation>
+        <property>
+          <name>env.JBOSS_HTTP_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.servlet.port>${env.JBOSS_HTTP_PORT}</cargo.servlet.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>SMTP_PORT</id>
+      <activation>
+        <property>
+          <name>env.SMTP_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <smtp.port>${env.SMTP_PORT}</smtp.port>
+      </properties>
     </profile>
   </profiles>
 
@@ -634,7 +707,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
-            <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
+            <usedDependency>org.codehaus.groovy:groovy-all</usedDependency>
             <usedDependency>org.jboss.resteasy:resteasy-jaxb-provider</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>

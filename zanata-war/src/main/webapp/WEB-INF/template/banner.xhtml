@@ -125,11 +125,11 @@
           </li>
         </s:fragment>
         <li>
-          <s:link id="right_menu_sign_out_link" view="/account/logout.seam"
-            propagation="none">
-            #{msgs['jsf.Logout']} <i
-            class="l--float-right i--inline i--logout"></i>
-          </s:link>
+          <a jsfc="s:link" id="right_menu_sign_out_link"
+            view="/home.xhtml"
+            action="#{identity.logout}" propagation="none">
+            #{msgs['jsf.Logout']} <i class="l--float-right i--inline i--logout"/>
+          </a>
         </li>
       </ul>
     </nav>
