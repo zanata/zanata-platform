@@ -70,7 +70,7 @@ public abstract class AbstractPushMojo extends
      *
      * @parameter expression="${zanata.pushType}" default-value="source"
      */
-    private String pushType;
+    private String pushType = "source";
 
     /**
      * Whether the server should copy latest translations from equivalent
@@ -85,7 +85,7 @@ public abstract class AbstractPushMojo extends
      *
      * @parameter expression="${zanata.merge}" default-value="auto"
      */
-    private String merge;
+    private String merge = "auto";
 
     /**
      * Add default excludes (.svn, .git, etc) to the exclude filters.
@@ -112,7 +112,8 @@ public abstract class AbstractPushMojo extends
      * @parameter expression="${zanata.fileTypes}"
      *            default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
      */
-    private String[] fileTypes;
+    private String[] fileTypes =
+            "txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb".split(",");
 
     /**
      * Case sensitive for includes and excludes options.
