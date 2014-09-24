@@ -20,7 +20,13 @@
  */
 package org.zanata.client.commands.init;
 
-import java.io.BufferedWriter;
+import static org.apache.commons.io.Charsets.UTF_8;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
+import static org.zanata.client.commands.Messages._;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +37,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.jboss.resteasy.client.ClientResponse;
@@ -46,16 +53,8 @@ import org.zanata.client.util.VersionComparator;
 import org.zanata.rest.client.ZanataProxyFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
-
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
-import static org.zanata.client.commands.Messages._;
 
 /**
  * @author Patrick Huang <a
@@ -250,13 +249,9 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
                 "Can not create %s. Make sure permission is writable.",
                 configFileDest);
 
-        BufferedWriter writer =
-                Files.newWriter(configFileDest, Charsets.UTF_8);
         String content = (String) response.getEntity(String.class);
         log.debug("project config from the server:\n{}", content);
-        writer.write(content);
-        writer.flush();
-        writer.close();
+        FileUtils.write(configFileDest, content, UTF_8);
         getOpts().setProjectConfig(configFileDest);
 
     }

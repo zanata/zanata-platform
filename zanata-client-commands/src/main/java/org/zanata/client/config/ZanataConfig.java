@@ -58,7 +58,7 @@ public class ZanataConfig implements Serializable {
     private String includes;
     private String excludes;
     private List<CommandHook> hooks = new ArrayList<CommandHook>();
-    private Splitter splitter = Splitter.on(",").omitEmptyStrings()
+    private transient Splitter splitter = Splitter.on(",").omitEmptyStrings()
             .trimResults();
 
     public ZanataConfig() {

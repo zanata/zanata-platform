@@ -4,13 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.client.commands.HTTPMockContainer.Builder.readFromClasspath;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
@@ -35,7 +33,6 @@ import org.zanata.rest.dto.VersionInfo;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.google.common.io.Files;
 
 public class InitCommandTest {
     private static final Logger log =
@@ -101,7 +98,7 @@ public class InitCommandTest {
         command.downloadZanataXml("gcc", "master", configFileDest);
 
         assertThat(configFileDest.exists(), Matchers.is(true));
-        List<String> lines = Files.readLines(configFileDest, Charsets.UTF_8);
+        List<String> lines = FileUtils.readLines(configFileDest, Charsets.UTF_8);
         String content = Joiner.on("\n").join(lines);
         assertThat(content, Matchers.equalTo(configContent));
         assertThat(opts.getProjectConfig(), Matchers.equalTo(configFileDest));
@@ -111,16 +108,12 @@ public class InitCommandTest {
     public void willWriteSrcDirIncludesExcludesToConfigFile() throws Exception {
         File configFile = new File(tempFolder.getRoot(), "zanata.xml");
         configFile.createNewFile();
-        BufferedWriter writer =
-                Files.newWriter(configFile, Charsets.UTF_8);
-        writer.write(readFromClasspath("serverresponse/projectConfig.xml"));
-        writer.flush();
-        writer.close();
+        FileUtils.write(configFile, readFromClasspath("serverresponse/projectConfig.xml"), Charsets.UTF_8);
 
         command.writeToConfig(new File("pot"), null, "", new File("po"),
                 configFile);
 
-        List<String> lines = Files.readLines(configFile, Charsets.UTF_8);
+        List<String> lines = FileUtils.readLines(configFile, Charsets.UTF_8);
         StringBuilder content = new StringBuilder();
         for (String line : lines) {
             log.debug(line);

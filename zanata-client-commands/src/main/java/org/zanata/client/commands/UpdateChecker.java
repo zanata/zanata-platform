@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.fedorahosted.openprops.Properties;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -41,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
-import com.google.common.io.Files;
 
 import static org.zanata.client.commands.ConsoleInteractorImpl.*;
 import static org.zanata.client.commands.Messages._;
@@ -155,7 +156,8 @@ public class UpdateChecker {
         props.setProperty(FREQUENCY, "weekly");
         props.setProperty(NO_ASKING, "true");
         props.setComment(NO_ASKING, _("no.check.update.prompt"));
-        props.store(Files.newWriter(updateMarker, Charsets.UTF_8), null);
+        props.store(new BufferedWriter(new FileWriterWithEncoding(updateMarker,
+                Charsets.UTF_8)), null);
     }
 
     public void checkNewerVersion() {
@@ -172,7 +174,8 @@ public class UpdateChecker {
             Properties props = loadFileToProperties(updateMarker);
             String today = DATE_FORMATTER.print(new DateTime());
             props.setProperty(LAST_CHECKED, today);
-            props.store(Files.newWriter(updateMarker, Charsets.UTF_8), null);
+            props.store(new BufferedWriter(new FileWriterWithEncoding(
+                    updateMarker, Charsets.UTF_8)), null);
         }
         catch (IOException e) {
             log.warn("failed to load file {}", updateMarker);

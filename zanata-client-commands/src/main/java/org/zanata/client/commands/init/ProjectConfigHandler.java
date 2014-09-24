@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.zanata.client.commands.ConsoleInteractor;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.Files;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
@@ -67,7 +67,7 @@ class ProjectConfigHandler {
                     new Date());
             backup = new File(projectConfig.getParent(),
                     "zanata.xml." + suffix);
-            Files.move(projectConfig, backup);
+            FileUtils.moveFile(projectConfig, backup);
             consoleInteractor
                     .printfln(Confirmation, _("backup.old.project.config"), backup);
 
