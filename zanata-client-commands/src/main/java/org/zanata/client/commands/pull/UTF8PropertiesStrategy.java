@@ -50,12 +50,13 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        if (createSkeletons)
+        if (createSkeletons) {
             PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(),
-                    docName, localeMapping.getJavaLocale(), createSkeletons);
-        else
+                    docName, localeMapping.getJavaLocale(), true);
+        } else {
             PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(),
-                    docName, localeMapping.getJavaLocale(), createSkeletons);
+                    docName, localeMapping.getJavaLocale(), false);
+        }
 
         return null;
     }

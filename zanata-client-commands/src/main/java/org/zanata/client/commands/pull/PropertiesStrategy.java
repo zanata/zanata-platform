@@ -66,12 +66,13 @@ public class PropertiesStrategy extends AbstractPullStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        if (createSkeletons)
+        if (createSkeletons) {
             PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName,
-                    localeMapping.getJavaLocale(), createSkeletons);
-        else
+                    localeMapping.getJavaLocale(), true);
+        } else {
             PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName,
-                    localeMapping.getJavaLocale(), createSkeletons);
+                    localeMapping.getJavaLocale(), false);
+        }
 
         return null;
     }
