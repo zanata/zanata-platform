@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>api</artifactId>
-    <version>3.4.0</version>
+    <version>3.4.1-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
 
@@ -15,7 +15,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
     <url>https://github.com/zanata/zanata-api</url>
-    <tag>api-3.4.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <build>
