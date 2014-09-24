@@ -63,6 +63,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeOldPassword("translator")
                 .typeNewPassword("newpassword")
                 .clickUpdatePasswordButton();
+        dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
 
         assertThat(dashboard.logout().hasLoggedIn()).isFalse()
                 .as("User is logged out");

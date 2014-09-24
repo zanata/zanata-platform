@@ -56,6 +56,8 @@ public class VersionDocumentsTab extends VersionBasePage {
                         .isDisplayed();
             }
         });
+        slightPause();
+        waitForPageSilence();
         return new VersionDocumentsTab(getDriver());
     }
 
