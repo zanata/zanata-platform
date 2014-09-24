@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.zanata</groupId>
   <artifactId>zanata-parent</artifactId>
-  <version>20-SNAPSHOT</version>
+  <version>20</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -23,7 +23,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-parent.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-parent.git</developerConnection>
     <url>https://github.com/zanata/zanata-parent</url>
-    <tag>HEAD</tag>
+    <tag>zanata-parent-20</tag>
   </scm>
 
   <licenses>
@@ -410,7 +410,7 @@
                 <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
               </allowedRepositories>
             </requireNoRepositories>
-            <requireUpperBoundDeps/>
+            <requireUpperBoundDeps />
             <rule implementation="com.redhat.victims.VictimsRule">
               <!--
                 Check the project's dependencies against the database using
