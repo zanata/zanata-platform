@@ -146,37 +146,6 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     }
 
     @Override
-    public ImmutableList<String> getIncludes() {
-        return includes;
-    }
-
-    @Option(
-            name = "--includes",
-            metaVar = "INCLUDES",
-            usage = "Wildcard pattern to include files and directories. This parameter is only\n"
-                    + "needed for some project types, eg XLIFF, Properties. Usage\n"
-                    + "--includes=\"src/myfile*.xml,**/*.xlf\"")
-    public
-            void setIncludes(String includes) {
-        this.includes = ImmutableList.copyOf(StringUtil.split(includes, ","));
-    }
-
-    @Override
-    public ImmutableList<String> getExcludes() {
-        return excludes;
-    }
-
-    @Option(
-            name = "--excludes",
-            metaVar = "EXCLUDES",
-            usage = "Wildcard pattern to exclude files and directories. Usage\n"
-                    + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
-    public
-            void setExcludes(String excludes) {
-        this.excludes = ImmutableList.copyOf(StringUtil.split(excludes, ","));
-    }
-
-    @Override
     public boolean getDefaultExcludes() {
         return defaultExcludes;
     }

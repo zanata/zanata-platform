@@ -45,8 +45,6 @@ public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions>
 
     protected String[] locales;
     private LocaleList effectiveLocales;
-    private File transDir;
-    private File srcDir;
     private String fromDoc = DEF_FROM_DOC;
     private boolean dryRun = DEFAULT_DRY_RUN;
 
@@ -68,40 +66,8 @@ public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions>
     }
 
     @Override
-    public File getSrcDir() {
-        return srcDir;
-    }
-
-    @Option(
-            aliases = { "-s" },
-            name = "--src-dir",
-            metaVar = "DIR",
-            required = true,
-            usage = "Base directory for source files (eg \".\", \"pot\", \"src/main/resources\")")
-    public
-            void setSrcDir(File file) {
-        this.srcDir = file;
-    }
-
-    @Override
     public String getSrcDirParameterName() {
         return "--src-dir";
-    }
-
-    @Override
-    public File getTransDir() {
-        return transDir;
-    }
-
-    @Option(
-            aliases = { "-t" },
-            name = "--trans-dir",
-            metaVar = "DIR",
-            required = true,
-            usage = "Base directory for translated files (eg \".\", \"po\", \"src/main/resources\")")
-    public
-            void setTransDir(File transDir) {
-        this.transDir = transDir;
     }
 
     @Override

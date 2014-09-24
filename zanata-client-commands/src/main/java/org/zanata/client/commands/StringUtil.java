@@ -1,5 +1,7 @@
 package org.zanata.client.commands;
 
+import com.google.common.base.Strings;
+
 /**
  *
  * @author Sean Flanigan <a
@@ -16,4 +18,7 @@ public class StringUtil {
         return basename;
     }
 
+    public static String indent(int numOfSpaces) {
+        return Strings.repeat(" ", numOfSpaces);
+    }
 }

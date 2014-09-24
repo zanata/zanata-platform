@@ -136,6 +136,7 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
         try {
             getLog().info("Please report Zanata bugs here: " + BUG_URL);
             OptionsUtil.applyConfigFiles(this);
+
             runCommand();
         } catch (Exception e) {
             throw new MojoExecutionException("Zanata mojo exception", e);

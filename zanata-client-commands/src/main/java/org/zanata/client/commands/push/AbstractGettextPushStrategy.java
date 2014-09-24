@@ -48,6 +48,15 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
         super(new StringSet("comment;gettext"), ".pot");
     }
 
+    /**
+     * Warn the user if they have selected project type 'podir' and the path
+     * contains 'pot/'. If 'pot/' is present in the source directory field, it
+     * is likely that the user has entered the translation directory by mistake.
+     */
+    protected void checkSrcFileNames(String projectType, String[] srcFiles,
+            boolean isInteractive) {
+    }
+
     public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
             ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
@@ -64,6 +73,8 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
             String docName = removeExtension(potName);
             localDocNames.add(docName);
         }
+        checkSrcFileNames(getOpts().getProjectType(), srcFiles,
+                getOpts().isInteractiveMode());
         return localDocNames;
     }
 

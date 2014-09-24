@@ -5,6 +5,7 @@ import java.io.File;
 
 import org.kohsuke.args4j.Option;
 import org.zanata.client.config.LocaleList;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Base options for commands which support configuration by the user's
@@ -53,4 +54,43 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
     public LocaleList getLocaleMapList();
 
     public void setLocaleMapList(LocaleList locales);
+
+    @Option(
+            aliases = { "-s" },
+            name = "--src-dir",
+            metaVar = "DIR",
+            required = true,
+            usage = "Base directory for source files (eg \".\", \"pot\", \"src/main/resources\")")
+    void setSrcDir(File srcDir);
+
+    File getSrcDir();
+
+    @Option(
+            aliases = { "-t" },
+            name = "--trans-dir",
+            metaVar = "DIR",
+            required = true,
+            usage = "Base directory for translated files (eg \".\", \"po\", \"src/main/resources\")")
+    void setTransDir(File transDir);
+
+    File getTransDir();
+
+    ImmutableList<String> getIncludes();
+
+    ImmutableList<String> getExcludes();
+
+    @Option(
+            name = "--includes",
+            metaVar = "INCLUDES",
+            usage = "Wildcard pattern to include files and directories. This parameter is only\n"
+                    + "needed for some project types, eg XLIFF, Properties. Usage\n"
+                    + "--includes=\"src/myfile*.xml,**/*.xlf\"")
+    void setIncludes(String includes);
+
+    @Option(
+            name = "--excludes",
+            metaVar = "EXCLUDES",
+            usage = "Wildcard pattern to exclude files and directories. Usage\n"
+                    + "--excludes=\"Pattern1,Pattern2,Pattern3\"")
+    void setExcludes(String excludes);
 }

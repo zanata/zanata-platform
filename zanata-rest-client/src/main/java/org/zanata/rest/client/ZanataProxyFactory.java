@@ -1,8 +1,8 @@
 package org.zanata.rest.client;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -18,7 +18,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -38,12 +37,14 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.ClientInterceptorRepository;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+import org.jboss.resteasy.client.exception.ResteasyIOException;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
+import com.google.common.base.Throwables;
 
 // TODO fix deprecation warnings
 public class ZanataProxyFactory implements ITranslationResourcesFactory {
@@ -60,10 +61,18 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         }
     }
 
+    private VersionInfo clientApiVersion;
+
     private String clientVersion;
     private String serverVersion;
 
-    private final ClientRequestFactory crf;
+    private ClientRequestFactory crf;
+
+    /**
+     * see org.zanata.client.commands.init.InitCommand.MockZanataProxyFactory
+     */
+    protected ZanataProxyFactory() {
+    }
 
     /**
      * This will by default pass a null ClientExecutor to the
@@ -86,6 +95,24 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
     public ZanataProxyFactory(URI base, String username, String apiKey,
             VersionInfo clientApiVersion, boolean logHttp,
             boolean sslCertDisabled) {
+        this(base, username, apiKey, clientApiVersion, logHttp,
+                sslCertDisabled, true);
+    }
+
+    /**
+     * Same as
+     * org.zanata.rest.client.ZanataProxyFactory#ZanataProxyFactory(java.
+     * net.URI, java.lang.String, java.lang.String,
+     * org.zanata.rest.dto.VersionInfo, boolean, boolean) except it allows to
+     * configure whether to do an eager REST version check to the server.
+     *
+     * @param eagerVersionCheck
+     *            whether or not to perform an eager REST version call
+     */
+    public ZanataProxyFactory(URI base, String username, String apiKey,
+            VersionInfo clientApiVersion, boolean logHttp,
+            boolean sslCertDisabled, boolean eagerVersionCheck) {
+        this.clientApiVersion = clientApiVersion;
         ClientExecutor clientExecutor = createClientExecutor(sslCertDisabled);
 
         crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
@@ -93,25 +120,42 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
         registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey,
                 clientApiVersion.getVersionNo()));
+        if (eagerVersionCheck) {
+            performVersionCheck();
+        }
+    }
 
+
+    public void performVersionCheck() {
         clientVersion = clientApiVersion.getVersionNo();
         String clientScm = clientApiVersion.getScmDescribe();
-        IVersionResource iversion = createIVersionResource();
-        ClientResponse<VersionInfo> versionResp = iversion.get();
-        // unauthorized
-        if (versionResp.getResponseStatus() == Response.Status.UNAUTHORIZED) {
-            throw new RuntimeException("Incorrect username/password");
-        } else if (versionResp.getResponseStatus() == Response.Status.SERVICE_UNAVAILABLE) {
-            throw new RuntimeException("Service is currently unavailable. " +
-                "Please check outage notification or try again later.");
-        }
-        ClientUtility.checkResult(versionResp);
-        VersionInfo serverVersionInfo = versionResp.getEntity();
+
+        VersionInfo serverVersionInfo = getServerVersionInfo();
         serverVersion = serverVersionInfo.getVersionNo();
         String serverScm = serverVersionInfo.getScmDescribe();
-
         log.info("client API version: {}, server API version: {}",
                 clientVersion, serverVersion);
+        warnMismatchAPIVersion(clientScm, serverScm);
+    }
+
+    public VersionInfo getServerVersionInfo() {
+        IVersionResource iversion = createIVersionResource();
+        ClientResponse<VersionInfo> versionResp;
+        try {
+            versionResp = iversion.get();
+        } catch (ResteasyIOException e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            if (rootCause instanceof ConnectException) {
+                throw new RuntimeException("Can not connect to the server [" + crf.getBase() + "]. Please check server is up.");
+            } else {
+                throw e;
+            }
+        }
+        ClientUtility.checkResult(versionResp);
+        return versionResp.getEntity();
+    }
+
+    private void warnMismatchAPIVersion(String clientScm, String serverScm) {
         if (!serverVersion.equals(clientVersion)) {
             log.warn("client API version is {}, but server API version is {}",
                     clientVersion, serverVersion);

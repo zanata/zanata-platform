@@ -68,13 +68,13 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         super(opts, factory, sourceDocResource, translationResources, uri);
     }
 
-    private PullStrategy createStrategy(String strategyType)
+    public PullStrategy createStrategy(PullOptions opts)
             throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
-        Class<? extends PullStrategy> clazz = strategies.get(strategyType);
+        Class<? extends PullStrategy> clazz = strategies.get(opts.getProjectType());
         if (clazz == null) {
             throw new RuntimeException("unknown project type: "
-                    + getOpts().getProjectType());
+                    + opts.getProjectType());
         }
         Constructor<? extends PullStrategy> ctor =
                 clazz.getDeclaredConstructor(PullOptions.class);
@@ -144,7 +144,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         LocaleList locales = getOpts().getLocaleMapList();
         if (locales == null && (getOpts().getPullType() != PushPullType.Source))
             throw new ConfigException("no locales specified");
-        PullStrategy strat = createStrategy(getOpts().getProjectType());
+        PullStrategy strat = createStrategy(
+                getOpts());
 
         if (strat.isTransOnly()
                 && getOpts().getPullType() == PushPullType.Source) {

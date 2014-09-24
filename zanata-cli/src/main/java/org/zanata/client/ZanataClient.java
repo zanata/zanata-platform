@@ -23,6 +23,7 @@ import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
 import org.zanata.client.commands.SystemExitStrategy;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.init.InitOptionsImpl;
 import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.stats.GetStatisticsOptionsImpl;
@@ -52,6 +53,7 @@ public class ZanataClient extends BasicOptionsImpl {
     @Argument(handler = SubCommandHandler2.class, metaVar = "<command>")
     @SubCommands({
             @SubCommand(name = "help", impl = HelpOptions.class),
+            @SubCommand(name = "init", impl = InitOptionsImpl.class),
             // @SubCommand(name="list-local", impl=ListLocalOptionsImpl.class),
             @SubCommand(name = "list-remote",
                     impl = ListRemoteOptionsImpl.class),

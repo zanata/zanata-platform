@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ns2:versionInfo xmlns:ns2='http://zanata.org/namespace/api/'>
+  <versionNo>3.4.0</versionNo>
+  <buildTimeStamp>unknown</buildTimeStamp>
+  <ns2:scmDescribe>unknown</ns2:scmDescribe>
+</ns2:versionInfo>

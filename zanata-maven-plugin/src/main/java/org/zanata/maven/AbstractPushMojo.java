@@ -21,6 +21,7 @@
 
 package org.zanata.maven;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
@@ -85,23 +86,6 @@ public abstract class AbstractPushMojo extends
      * @parameter expression="${zanata.merge}" default-value="auto"
      */
     private String merge;
-
-    /**
-     * Wildcard pattern to include files and directories. This parameter is only
-     * needed for some project types, eg XLIFF, Properties. Usage
-     * -Dzanata.includes="src/myfile*.xml,**&#47*.xliff.xml"
-     *
-     * @parameter expression="${zanata.includes}"
-     */
-    private String includes;
-
-    /**
-     * Wildcard pattern to exclude files and directories. Usage
-     * -Dzanata.excludes="Pattern1,Pattern2,Pattern3"
-     *
-     * @parameter expression="${zanata.excludes}"
-     */
-    private String excludes;
 
     /**
      * Add default excludes (.svn, .git, etc) to the exclude filters.
@@ -185,24 +169,6 @@ public abstract class AbstractPushMojo extends
     @Override
     public String getMergeType() {
         return merge;
-    }
-
-    @Override
-    public ImmutableList<String> getIncludes() {
-        if (includes != null) {
-            String[] includeList = StringUtils.split(includes, ",");
-            return ImmutableList.copyOf(includeList);
-        }
-        return ImmutableList.of();
-    }
-
-    @Override
-    public ImmutableList<String> getExcludes() {
-        if (excludes != null) {
-            String[] excludeList = StringUtils.split(excludes, ",");
-            return ImmutableList.copyOf(excludeList);
-        }
-        return ImmutableList.of();
     }
 
     @Override

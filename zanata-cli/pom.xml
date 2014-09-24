@@ -178,8 +178,6 @@
     <dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple</artifactId>
-      <version>5.1.6</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

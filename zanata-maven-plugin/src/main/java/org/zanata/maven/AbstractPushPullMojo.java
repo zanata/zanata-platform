@@ -118,20 +118,6 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
     private List<MavenProject> reactorProjects;
 
     /**
-     * Base directory for source-language files
-     *
-     * @parameter expression="${zanata.srcDir}" default-value="."
-     */
-    private File srcDir;
-
-    /**
-     * Base directory for target-language files (translations)
-     *
-     * @parameter expression="${zanata.transDir}" default-value="."
-     */
-    private File transDir;
-
-    /**
      * Specifies a document from which to begin the push operation. Documents
      * before this document (sorted alphabetically) will not be pushed.
      *
@@ -168,18 +154,8 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
     }
 
     @Override
-    public File getSrcDir() {
-        return srcDir;
-    }
-
-    @Override
     public String getSrcDirParameterName() {
         return "srcDir";
-    }
-
-    @Override
-    public File getTransDir() {
-        return transDir;
     }
 
     @Override

@@ -24,7 +24,6 @@ package org.zanata.client.commands;
 import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -105,17 +104,6 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             }
             console.printf(message + "\nAre you sure (y/n)? ");
             expectYes(console);
-        }
-    }
-
-    protected static void expectYes(Console console) throws IOException {
-        String line = console.readLine();
-        if (line == null) {
-            throw new IOException("console stream closed");
-        }
-        if (!line.toLowerCase().equals("y")
-                && !line.toLowerCase().equals("yes")) {
-            throw new RuntimeException("operation aborted by user");
         }
     }
 

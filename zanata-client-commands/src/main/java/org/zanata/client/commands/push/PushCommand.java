@@ -44,6 +44,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -97,13 +99,14 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         asyncProcessResource = factory.getAsynchronousProcessResource();
     }
 
-    private AbstractPushStrategy getStrategy(String strategyType) {
-        AbstractPushStrategy strat = strategies.get(strategyType);
+    public AbstractPushStrategy getStrategy(PushOptions pushOptions) {
+        AbstractPushStrategy strat =
+                strategies.get(pushOptions.getProjectType());
         if (strat == null) {
             throw new RuntimeException("unknown project type: "
-                    + getOpts().getProjectType());
+                    + pushOptions.getProjectType());
         }
-        strat.setPushOptions(getOpts());
+        strat.setPushOptions(pushOptions);
         strat.init();
         return strat;
     }
@@ -258,7 +261,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     }
 
     private void pushCurrentModule() throws IOException, RuntimeException {
-        AbstractPushStrategy strat = getStrategy(getOpts().getProjectType());
+        AbstractPushStrategy strat = getStrategy(getOpts());
         File sourceDir = getOpts().getSrcDir();
 
         if (!sourceDir.exists() && !strat.isTransOnly()) {

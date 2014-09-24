@@ -266,13 +266,4 @@ public class PublicanPushCommand extends
         }
     }
 
-    protected void expectYes(Console console) throws IOException {
-        String line = console.readLine();
-        if (line == null)
-            throw new IOException("console stream closed");
-        if (!line.toLowerCase().equals("y")
-                && !line.toLowerCase().equals("yes"))
-            throw new RuntimeException("operation aborted by user");
-    }
-
 }

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ns2:projects xmlns:ns2='http://zanata.org/namespace/api/'>
+  <ns2:project id='gcc'>
+    <name>gcc</name>
+    <defaultType>gettext</defaultType>
+    <status>ACTIVE</status>
+  </ns2:project>
+</ns2:projects>

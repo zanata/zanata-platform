@@ -14,7 +14,12 @@ public class ClientUtility {
     }
 
     public static void checkResult(ClientResponse<?> response, URI uri) {
-        if (response.getStatus() >= 399) {
+        if (response.getResponseStatus() == Response.Status.UNAUTHORIZED) {
+            throw new RuntimeException("Incorrect username/password");
+        } else if (response.getResponseStatus() == Response.Status.SERVICE_UNAVAILABLE) {
+            throw new RuntimeException("Service is currently unavailable. " +
+                    "Please check outage notification or try again later.");
+        } else if (response.getStatus() >= 399) {
             String annotString = "";
             String uriString = "";
             String entity = "";

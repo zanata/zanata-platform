@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.client.commands.gettext.PublicanUtil;
 import org.zanata.client.config.LocaleMapping;
 
@@ -58,11 +59,46 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
     }
 
     @Override
+    protected void checkSrcFileNames(String projectType, String[] srcFiles,
+            boolean isInteractive) {
+
+        boolean potentialProblem = checkForPotPrefix(srcFiles);
+        if (potentialProblem) {
+            String warningMsg =
+                    "Found source file path starting with pot, perhaps you want to set source directory to pot?";
+            ConsoleInteractorImpl console =
+                    new ConsoleInteractorImpl();
+            log.warn(warningMsg);
+            if (isInteractive) {
+                console.printfln(warningMsg);
+                console.printf(
+                        "Are you sure source directory [%s] is correct (y/n)?",
+                        getOpts().getSrcDir());
+                console.expectYes();
+            }
+        }
+    }
+
+    private boolean checkForPotPrefix(String[] srcFiles) {
+        for (String src : srcFiles) {
+            boolean potentialProblem =
+                    new File(src).getPath()
+                            .startsWith("pot" + File.separator);
+            if (potentialProblem) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     File getTransFile(LocaleMapping locale, String docName) {
         File localeDir =
                 new File(getOpts().getTransDir(), locale.getLocalLocale());
         File transFile = new File(localeDir, docName + ".po");
         return transFile;
     }
+
+
 
 }

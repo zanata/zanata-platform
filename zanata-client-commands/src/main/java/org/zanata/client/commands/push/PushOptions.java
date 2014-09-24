@@ -37,10 +37,6 @@ public interface PushOptions extends PushPullOptions {
 
     public String getMergeType();
 
-    public ImmutableList<String> getIncludes();
-
-    public ImmutableList<String> getExcludes();
-
     public boolean getCaseSensitive();
 
     public boolean getExcludeLocaleFilenames();

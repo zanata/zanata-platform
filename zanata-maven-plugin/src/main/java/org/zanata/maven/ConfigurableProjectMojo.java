@@ -5,6 +5,8 @@ import java.io.File;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleList;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Base class for mojos which support configuration by the user's zanata.ini and
@@ -61,6 +63,36 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
 
     private LocaleList localeMapList;
 
+    /**
+     * Base directory for source-language files
+     *
+     * @parameter expression="${zanata.srcDir}"
+     */
+    private File srcDir;
+    /**
+     * Base directory for target-language files (translations)
+     *
+     * @parameter expression="${zanata.transDir}"
+     */
+    private File transDir;
+    /**
+     * Wildcard pattern to include files and directories. This parameter is only
+     * needed for some project types, eg XLIFF, Properties. Usage
+     * -Dzanata.includes="src/myfile*.xml,**&#47*.xliff.xml"
+     *
+     * @parameter expression="${zanata.includes}"
+     */
+    private String includes;
+    /**
+     * Wildcard pattern to exclude files and directories. Usage
+     * -Dzanata.excludes="Pattern1,Pattern2,Pattern3"
+     *
+     * @parameter expression="${zanata.excludes}"
+     */
+    private String excludes;
+    private Splitter splitter = Splitter.on(",").omitEmptyStrings()
+            .trimResults();
+
     public ConfigurableProjectMojo() {
         super();
     }
@@ -106,6 +138,16 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
     }
 
     @Override
+    public File getSrcDir() {
+        return srcDir;
+    }
+
+    @Override
+    public File getTransDir() {
+        return transDir;
+    }
+
+    @Override
     public LocaleList getLocaleMapList() {
         return localeMapList;
     }
@@ -115,4 +157,39 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
         this.localeMapList = localeMapList;
     }
 
+    @Override
+    public void setSrcDir(File srcDir) {
+        this.srcDir = srcDir;
+    }
+
+    @Override
+    public void setTransDir(File transDir) {
+        this.transDir = transDir;
+    }
+
+    @Override
+    public ImmutableList<String> getIncludes() {
+        if (includes != null) {
+            return ImmutableList.copyOf(splitter.split(includes));
+        }
+        return ImmutableList.of();
+    }
+
+    @Override
+    public ImmutableList<String> getExcludes() {
+        if (excludes != null) {
+            return ImmutableList.copyOf(splitter.split(excludes));
+        }
+        return ImmutableList.of();
+    }
+
+    @Override
+    public void setIncludes(String includes) {
+        this.includes = includes;
+    }
+
+    @Override
+    public void setExcludes(String excludes) {
+        this.excludes = excludes;
+    }
 }

@@ -20,12 +20,12 @@
  */
 package org.zanata.client.commands;
 
+import java.io.Console;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,19 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
 
     public ConfigurableCommand(O opts) {
         this(opts, null);
+    }
+
+    // see ConsoleInteractorImpl
+    @Deprecated
+    protected static void expectYes(Console console) throws IOException {
+        String line = console.readLine();
+        if (line == null) {
+            throw new IOException("console stream closed");
+        }
+        if (!line.toLowerCase().equals("y")
+                && !line.toLowerCase().equals("yes")) {
+            throw new RuntimeException("operation aborted by user");
+        }
     }
 
     public O getOpts() {
@@ -93,7 +106,7 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         runBeforeActions();
         run();
         runAfterActions();
-    };
+    }
 
     /**
      * Runs the specific command, not including before- or after- actions.

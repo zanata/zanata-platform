@@ -18,6 +18,9 @@ import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.util.VersionUtility;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 
 public class OptionsUtil {
     private static final Logger log = LoggerFactory
@@ -88,6 +91,8 @@ public class OptionsUtil {
         if (opts.getProjectType() == null) {
             opts.setProjectType(config.getProjectType());
         }
+        applySrcDirAndTransDirFromProjectConfig(opts, config);
+        applyIncludesAndExcludesFromProjectConfig(opts, config);
         LocaleList locales = config.getLocales();
         opts.setLocaleMapList(locales);
 
@@ -96,13 +101,91 @@ public class OptionsUtil {
         }
     }
 
+
+    /**
+     * Note: command line options take precedence over pom.xml which
+     * takes precedence over zanata.xml.
+     *
+     * @see org.zanata.client.commands.OptionMismatchChecker
+     * @param opts
+     *            options
+     * @param config
+     *            config from project configuration file i.e. zanata.xml
+     */
+    @VisibleForTesting
+    protected static void applySrcDirAndTransDirFromProjectConfig(
+            ConfigurableProjectOptions opts, ZanataConfig config) {
+        // apply srcDir configuration
+        OptionMismatchChecker<File> srcDirChecker =
+                OptionMismatchChecker.from(opts.getSrcDir(),
+                        config.getSrcDirAsFile(),
+                        "Source directory");
+
+        if (srcDirChecker.hasValueInConfigOnly()) {
+            opts.setSrcDir(config.getSrcDirAsFile());
+        }
+        srcDirChecker.logHintIfNotDefinedInConfig(
+                String.format("<src-dir>%s</src-dir>", opts.getSrcDir()));
+        srcDirChecker.logWarningIfValuesMismatch();
+
+        // apply transDir configuration
+        OptionMismatchChecker<File> transDirChecker = OptionMismatchChecker
+                .from(opts.getTransDir(), config.getTransDirAsFile(),
+                        "Translation directory");
+        if (transDirChecker.hasValueInConfigOnly()) {
+            opts.setTransDir(config.getTransDirAsFile());
+        }
+        transDirChecker.logHintIfNotDefinedInConfig(String.format(
+                "<trans-dir>%s</trans-dir>", opts.getTransDir()));
+        transDirChecker.logWarningIfValuesMismatch();
+    }
+
+    /**
+     * Note: command line options take precedence over pom.xml which
+     * takes precedence over zanata.xml.
+     *
+     * @see org.zanata.client.commands.OptionMismatchChecker
+     * @param opts
+     *            options
+     * @param config
+     *            config from project configuration file i.e. zanata.xml
+     */
+    protected static void applyIncludesAndExcludesFromProjectConfig(
+            ConfigurableProjectOptions opts, ZanataConfig config) {
+        OptionMismatchChecker<ImmutableList<String>> includesChecker =
+                OptionMismatchChecker
+                        .from(opts.getIncludes(), config.getIncludesAsList(),
+                                "Includes");
+        if (includesChecker.hasValueInConfigOnly()) {
+            opts.setIncludes(config.getIncludes());
+        }
+        Joiner commaJoiner = Joiner.on(",");
+        includesChecker.logHintIfNotDefinedInConfig(String.format(
+                "<includes>%s</includes>",
+                commaJoiner.join(opts.getIncludes())));
+        includesChecker.logWarningIfValuesMismatch();
+
+        OptionMismatchChecker<ImmutableList<String>> excludesChecker =
+                OptionMismatchChecker
+                        .from(opts.getExcludes(), config.getExcludesAsList(),
+                                "Excludes");
+        if (excludesChecker.hasValueInConfigOnly()) {
+            opts.setExcludes(config.getExcludes());
+        }
+        excludesChecker
+                .logHintIfNotDefinedInConfig(
+                        String.format("<excludes>%s</excludes>",
+                                commaJoiner.join(opts.getExcludes())));
+        excludesChecker.logWarningIfValuesMismatch();
+    }
+
     /**
      * Applies values from the user's personal configuration unless they have
      * been set directly (by parameters or by project configuration).
      *
      * @param config
      */
-    private static void applyUserConfig(ConfigurableOptions opts,
+    public static void applyUserConfig(ConfigurableOptions opts,
             HierarchicalINIConfiguration config) {
         if (!opts.isDebugSet()) {
             Boolean debug = config.getBoolean("defaults.debug", null);
@@ -137,25 +220,52 @@ public class OptionsUtil {
         }
     }
 
+    /**
+     * Creates proxy factory that will perform an eager REST version check.
+     */
     public static ZanataProxyFactory createRequestFactory(
             ConfigurableOptions opts) {
         try {
-            if (opts.getUrl() == null) {
-                throw new ConfigException("Server URL must be specified");
-            }
-            if (opts.getUsername() == null) {
-                throw new ConfigException("Username must be specified");
-            }
-            if (opts.getKey() == null) {
-                throw new ConfigException("API key must be specified");
-            }
-            if (opts.isDisableSSLCert()) {
-                log.warn("SSL certificate verification will be disabled. You should consider adding the certificate instead of disabling it.");
-            }
+            checkMandatoryOptsForRequestFactory(opts);
             return new ZanataProxyFactory(opts.getUrl().toURI(),
                     opts.getUsername(), opts.getKey(),
                     VersionUtility.getAPIVersionInfo(), opts.getLogHttp(),
                     opts.isDisableSSLCert());
+        } catch (URISyntaxException e) {
+            throw new ConfigException(e);
+        }
+    }
+
+    private static void checkMandatoryOptsForRequestFactory(
+            ConfigurableOptions opts) {
+        if (opts.getUrl() == null) {
+            throw new ConfigException("Server URL must be specified");
+        }
+        if (opts.getUsername() == null) {
+            throw new ConfigException("Username must be specified");
+        }
+        if (opts.getKey() == null) {
+            throw new ConfigException("API key must be specified");
+        }
+        if (opts.isDisableSSLCert()) {
+            log.warn("SSL certificate verification will be disabled. You should consider adding the certificate instead of disabling it.");
+        }
+    }
+
+    /**
+     * Creates proxy factory that will NOT perform an eager REST version check.
+     * You can call
+     * org.zanata.rest.client.ZanataProxyFactory#performVersionCheck()
+     * afterwards.
+     */
+    public static ZanataProxyFactory createRequestFactoryWithoutVersionCheck(
+            ConfigurableProjectOptions opts) {
+        try {
+            checkMandatoryOptsForRequestFactory(opts);
+            return new ZanataProxyFactory(opts.getUrl().toURI(),
+                    opts.getUsername(), opts.getKey(),
+                    VersionUtility.getAPIVersionInfo(), opts.getLogHttp(),
+                    opts.isDisableSSLCert(), false);
         } catch (URISyntaxException e) {
             throw new ConfigException(e);
         }

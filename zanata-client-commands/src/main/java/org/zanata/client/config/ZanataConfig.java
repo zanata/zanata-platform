@@ -20,6 +20,7 @@
  */
 package org.zanata.client.config;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,7 +30,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Representation of the root node of a project configuration
@@ -38,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlType(name = "configType", propOrder = { "url", "project", "projectVersion",
-        "projectType", "hooks", "locales" })
+        "projectType", "srcDir", "transDir", "includes", "excludes", "hooks", "locales" })
 @XmlRootElement(name = "config")
 public class ZanataConfig implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -47,7 +52,14 @@ public class ZanataConfig implements Serializable {
     private URL url;
     private String projectType;
     private String projectVersion;
+    // default to current directory
+    private String srcDir = ".";
+    private String transDir = ".";
+    private String includes;
+    private String excludes;
     private List<CommandHook> hooks = new ArrayList<CommandHook>();
+    private Splitter splitter = Splitter.on(",").omitEmptyStrings()
+            .trimResults();
 
     public ZanataConfig() {
     }
@@ -108,4 +120,65 @@ public class ZanataConfig implements Serializable {
         this.projectVersion = version;
     }
 
+    @XmlElement(name = "src-dir")
+    public String getSrcDir() {
+        return srcDir;
+    }
+
+    public void setSrcDir(String srcDir) {
+        this.srcDir = srcDir;
+    }
+
+    @XmlElement(name = "trans-dir")
+    public String getTransDir() {
+        return transDir;
+    }
+
+    public void setTransDir(String transDir) {
+        this.transDir = transDir;
+    }
+
+    @XmlElement
+    public String getIncludes() {
+        return includes;
+    }
+
+    public void setIncludes(String includes) {
+        this.includes = includes;
+    }
+
+    @XmlElement
+    public String getExcludes() {
+        return excludes;
+    }
+
+    public void setExcludes(String excludes) {
+        this.excludes = excludes;
+    }
+
+    @XmlTransient
+    public File getSrcDirAsFile() {
+        return new File(srcDir);
+    }
+
+    @XmlTransient
+    public File getTransDirAsFile() {
+        return new File(transDir);
+    }
+
+    @XmlTransient
+    public ImmutableList<String> getIncludesAsList() {
+        if (includes != null) {
+            return ImmutableList.copyOf(splitter.split(includes));
+        }
+        return ImmutableList.of();
+    }
+
+    @XmlTransient
+    public ImmutableList<String> getExcludesAsList() {
+        if (excludes != null) {
+            return ImmutableList.copyOf(splitter.split(excludes));
+        }
+        return ImmutableList.of();
+    }
 }
