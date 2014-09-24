@@ -20,10 +20,13 @@
  */
 package org.zanata.client.commands;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.client.Client;
@@ -43,6 +46,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 
 import static org.zanata.client.commands.ConsoleInteractorImpl.*;
 import static org.zanata.client.commands.Messages._;
@@ -139,16 +144,24 @@ public class UpdateChecker {
         return props.getProperty(NO_ASKING, "false").equalsIgnoreCase("true");
     }
 
-    private static Properties loadFileToProperties(File updateMarker)
-            throws IOException {
+    private static Properties loadFileToProperties(File updateMarker) {
         Properties props = new Properties();
-        props.load(new FileReader(updateMarker));
+        try (InputStreamReader reader =
+                new InputStreamReader(new FileInputStream(updateMarker),
+                        Charsets.UTF_8)) {
+            props.load(reader);
+        }
+        catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
         return props;
     }
 
     private static void createUpdateMarkerFile(File updateMarker)
             throws IOException {
-        updateMarker.createNewFile();
+        boolean created = updateMarker.createNewFile();
+        Preconditions.checkState(created, _("create.file.failure"),
+                updateMarker);
         String today = DATE_FORMATTER.print(new DateTime());
         Properties props = new Properties();
         props.setProperty(LAST_CHECKED, today);
