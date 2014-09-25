@@ -39,6 +39,10 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.zanata.client.commands.Messages._;
 
 /**
+ * Resolve translation file destination. It will first try to apply file mapping
+ * rules. If no rule is applicable, it will fall back to default mapping rules
+ * for given project type.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -67,6 +71,16 @@ public class TransFileResolver {
         this.opts = opts;
     }
 
+    /**
+     * Determines where to store the translation file for a given source
+     * document and locale mapping.
+     *
+     * @param qualifiedSrcDocName
+     *            source document name with extension
+     * @param localeMapping
+     *            locale mapping
+     * @return translation destination
+     */
     public File getTransFile(QualifiedSrcDocName qualifiedSrcDocName,
             LocaleMapping localeMapping) {
         Optional<File> fileOptional =
@@ -81,6 +95,16 @@ public class TransFileResolver {
         }
     }
 
+    /**
+     * Determines where to store the translation file for a given source
+     * document and locale mapping.
+     *
+     * @param unqualifiedSrcDocName
+     *            source document name without extension
+     * @param localeMapping
+     *            locale mapping
+     * @return translation destination
+     */
     public File getTransFile(UnqualifiedSrcDocName unqualifiedSrcDocName,
             LocaleMapping localeMapping) {
         QualifiedSrcDocName qualifiedSrcDocName =

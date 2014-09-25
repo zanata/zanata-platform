@@ -27,11 +27,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConsoleInteractorImpl;
-import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.gettext.PublicanUtil;
 import org.zanata.client.config.LocaleMapping;
-
-import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 public class GettextDirStrategy extends AbstractGettextPushStrategy {
     private static final Logger log = LoggerFactory

@@ -21,18 +21,14 @@
 
 package org.zanata.client.commands.pull;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
-import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-
-import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 /**
  * @author Sean Flanigan <a

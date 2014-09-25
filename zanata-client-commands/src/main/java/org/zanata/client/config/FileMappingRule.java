@@ -48,16 +48,27 @@ public class FileMappingRule {
         this.rule = rule;
     }
 
+    /**
+     * If pattern is missing, this rule will be applied to matching file types.
+     *
+     * @see org.zanata.client.commands.FileMappingRuleParser#isApplicable(org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName)
+     */
     public FileMappingRule(String rule) {
         this.rule = rule;
     }
 
+    /**
+     * Represents glob pattern to files that are applicable for this rule.
+     */
     @XmlAttribute(name = "apply-to", required = false)
     @XmlJavaTypeAdapter(StringTrimAdapter.class)
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * Represents the actual mapping rule.
+     */
     @XmlValue
     @XmlJavaTypeAdapter(StringTrimAdapter.class)
     public String getRule() {

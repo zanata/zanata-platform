@@ -28,15 +28,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
-
-import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 /**
  * @author Sean Flanigan <a

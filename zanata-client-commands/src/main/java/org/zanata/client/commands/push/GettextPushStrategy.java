@@ -3,7 +3,6 @@ package org.zanata.client.commands.push;
 import static com.google.common.collect.Sets.newTreeSet;
 import static org.apache.commons.io.FileUtils.listFiles;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
-import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
 
 import java.io.File;
 import java.util.Collection;
@@ -12,8 +11,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 

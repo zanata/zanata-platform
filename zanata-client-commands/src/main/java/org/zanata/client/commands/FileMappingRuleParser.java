@@ -47,6 +47,9 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 /**
+ * Parse translation file mapping rule as well as applying the rule to get the
+ * final path of a translation file.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -77,6 +80,13 @@ public class FileMappingRuleParser {
                 || rule.contains(Placeholders.localeWithUnderscore.holder);
     }
 
+    /**
+     * Check whether this parsed rule is applicable to this document.
+     *
+     * @param qualifiedSrcDocName
+     *            source document name with extension
+     * @return true if this parsed rule is applicable
+     */
     public boolean isApplicable(QualifiedSrcDocName qualifiedSrcDocName) {
         if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
             return matchFileExtensionWithProjectType(qualifiedSrcDocName);
@@ -97,6 +107,15 @@ public class FileMappingRuleParser {
         return supportedTypes.contains(qualifiedSrcDocName.getExtension());
     }
 
+    /**
+     * Apply the rule and return relative path of the translation file.
+     *
+     * @param qualifiedSrcDocName
+     *            source document name with extension
+     * @param localeMapping
+     *            locale mapping
+     * @return relative path (relative to trans-dir) for the translation file
+     */
     public String getRelativePathFromRule(QualifiedSrcDocName qualifiedSrcDocName,
             @Nonnull LocaleMapping localeMapping) {
         EnumMap<Placeholders, String> map =
