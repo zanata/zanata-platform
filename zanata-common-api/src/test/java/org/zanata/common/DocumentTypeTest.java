@@ -66,7 +66,7 @@ public class DocumentTypeTest {
                 containsInAnyOrder("po", "pot", "txt", "dtd", "idml", "html",
                         "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
                         "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
-                        "vtt"));
+                        "vtt", "properties", "xml"));
     }
 
     @Test(expected = UnsupportedOperationException.class)

@@ -2,7 +2,6 @@ language: java
 install: true
 script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
   - oraclejdk8
