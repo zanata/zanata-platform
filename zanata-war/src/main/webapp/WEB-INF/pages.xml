@@ -111,9 +111,9 @@
       value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="continue" value="#{userRedirect.encodedUrl}" />
 
-    <action execute="#{identity.isLoggedIn()}" />
-    <navigation from-action="#{identity.isLoggedIn()}">
-      <rule if-outcome="true">
+    <action execute="#{loginAction.getLoginPageRedirect()}" />
+    <navigation from-action="#{loginAction.getLoginPageRedirect()}">
+      <rule if-outcome="dashboard">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
     </navigation>

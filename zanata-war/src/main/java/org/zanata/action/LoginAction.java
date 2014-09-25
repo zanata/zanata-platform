@@ -29,6 +29,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
@@ -49,6 +50,9 @@ import org.zanata.security.openid.YahooOpenIdProvider;
 @Scope(ScopeType.PAGE)
 public class LoginAction implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @In
+    private Identity identity;
 
     @In
     private ZanataCredentials credentials;
@@ -150,5 +154,25 @@ public class LoginAction implements Serializable {
         } else {
             return OpenIdProviderType.Generic;
         }
+    }
+
+    /**
+     * Indicates which location a user should be redirected when accessing the
+     * login page.
+     *
+     * @return A string indicating where the user should be redirected when
+     *         trying to access the login page.
+     */
+    public String getLoginPageRedirect() {
+        if (identity.isLoggedIn()) {
+            return "dashboard";
+        }
+        if (applicationConfiguration.isOpenIdAuth()
+                && applicationConfiguration.isSingleOpenIdProvider()) {
+            // go directly to the provider's login page
+            return genericOpenIdLogin(applicationConfiguration
+                    .getOpenIdProviderUrl());
+        }
+        return "login";
     }
 }
