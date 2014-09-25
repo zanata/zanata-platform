@@ -1,6 +1,7 @@
 /target/
 /*/target/
 *~
+*.orig
 /.settings
 /.project
 /.idea
