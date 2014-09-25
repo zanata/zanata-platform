@@ -13,6 +13,7 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.ConfigUtil;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
@@ -20,7 +21,14 @@ import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.util.VersionUtility;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
+import static org.zanata.client.commands.FileMappingRuleParser.*;
+import static org.zanata.client.commands.FileMappingRuleParser.Placeholders.allHolders;
+import static org.zanata.client.commands.Messages._;
 
 public class OptionsUtil {
     private static final Logger log = LoggerFactory
@@ -100,6 +108,45 @@ public class OptionsUtil {
             opts.setCommandHooks(config.getHooks());
         }
         opts.setFileMappingRules(config.getRules());
+        checkPotentialMistakesInRules(opts, new ConsoleInteractorImpl());
+    }
+
+    /**
+     * Will check potential mistakes in file mapping rules. Missing locale in
+     * the rule is considered invalid. Extra "{" and/or "}" will incur warnings
+     * (user may have mis-spelt the placeholder)
+     *
+     * @param opts
+     * @param console
+     */
+    @VisibleForTesting
+    protected static void checkPotentialMistakesInRules(
+            ConfigurableProjectOptions opts, ConsoleInteractor console) {
+        boolean potentialProblem = false;
+        boolean invalid = false;
+        for (FileMappingRule mappingRule : opts.getFileMappingRules()) {
+            String rule = mappingRule.getRule();
+            if (!isRuleValid(rule)) {
+                console.printfln(Warning, _("invalid.rule"), rule);
+                invalid = true;
+            }
+            if (ruleMayHaveProblem(rule)) {
+                console.printfln(Warning, _("unrecognized.variables"),
+                        allHolders(), rule);
+                potentialProblem = true;
+            }
+        }
+        Preconditions.checkState(!invalid);
+        if (potentialProblem && opts.isInteractiveMode()) {
+            console.printfln(Question, _("confirm.rule"));
+            console.expectYes();
+        }
+    }
+
+    private static boolean ruleMayHaveProblem(String rule) {
+        String remains = stripValidHolders(rule);
+        return remains.contains("{") || remains.contains("}");
+
     }
 
 

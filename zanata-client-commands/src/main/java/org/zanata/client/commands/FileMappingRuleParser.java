@@ -21,6 +21,8 @@
 
 package org.zanata.client.commands;
 
+import static org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName;
+
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
@@ -37,12 +39,12 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.io.Files;
 
-import static org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * @author Patrick Huang <a
@@ -59,13 +61,18 @@ public class FileMappingRuleParser {
             ConfigurableProjectOptions opts) {
         this.projectType = projectType;
         this.opts = opts;
-        Preconditions.checkState(isRuleValid(rule.getRule()), "rule defined is not valid: %s", rule.getRule());
-        Preconditions.checkArgument(isRuleValid(rule.getRule()));
         this.mappingRule = rule;
     }
 
-    @VisibleForTesting
-    protected static boolean isRuleValid(String rule) {
+    public static String stripValidHolders(String rule) {
+        String temp = rule;
+        for (Placeholders placeholder : Placeholders.values()) {
+            temp = temp.replace(placeholder.holder, "");
+        }
+        return temp;
+    }
+
+    public static boolean isRuleValid(String rule) {
         return rule.contains(Placeholders.locale.holder)
                 || rule.contains(Placeholders.localeWithUnderscore.holder);
     }
@@ -74,7 +81,6 @@ public class FileMappingRuleParser {
         if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
             return matchFileExtensionWithProjectType(qualifiedSrcDocName);
         }
-        // this will only match existing translation on the file system
         PathMatcher matcher =
             FileSystems.getDefault().getPathMatcher("glob:" + mappingRule.getPattern());
         // this will help when qualifiedSrcDocName has just file name i.e.
@@ -85,7 +91,8 @@ public class FileMappingRuleParser {
         return matcher.matches(Paths.get(srcFile.getPath()));
     }
 
-    private boolean matchFileExtensionWithProjectType(QualifiedSrcDocName qualifiedSrcDocName) {
+    private boolean matchFileExtensionWithProjectType(
+            QualifiedSrcDocName qualifiedSrcDocName) {
         List<String> supportedTypes = projectType.getSourceFileTypes();
         return supportedTypes.contains(qualifiedSrcDocName.getExtension());
     }
@@ -122,7 +129,7 @@ public class FileMappingRuleParser {
         return parts;
     }
 
-    enum Placeholders {
+    static enum Placeholders {
         path("{path}"),
         filename("{filename}"),
         locale("{locale}"),
@@ -133,5 +140,16 @@ public class FileMappingRuleParser {
         Placeholders(String holder) {
             this.holder = holder;
         }
+
+        static List<String> allHolders() {
+            return Lists.transform(Lists.newArrayList(
+                    values()), new Function<Placeholders, String>() {
+                @Override
+                public String apply(Placeholders input) {
+                    return input.holder;
+                }
+            });
+        }
+
     }
 }
