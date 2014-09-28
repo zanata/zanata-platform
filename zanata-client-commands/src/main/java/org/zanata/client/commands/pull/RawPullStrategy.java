@@ -21,7 +21,6 @@
 package org.zanata.client.commands.pull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +28,7 @@ import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.QualifiedSrcDocName;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
@@ -68,8 +68,8 @@ public class RawPullStrategy {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
-        File file = new TransFileResolver(opts).getTransFile(
-                TransFileResolver.QualifiedSrcDocName.from(localDocName),
+        File file = new TransFileResolver(opts).resolveTransFile(
+                QualifiedSrcDocName.from(localDocName),
                 localeMapping);
         logAndStreamToFile(transFile, file);
     }

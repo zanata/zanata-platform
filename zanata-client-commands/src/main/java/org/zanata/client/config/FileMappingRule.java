@@ -30,6 +30,20 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * If your project has single type of source documents, you can omit
+ * the pattern. It will then map everything belong to that project type with this
+ * rule. This is typically used for non-file type projects.
+ * <br />
+ * For example for a "gettext" type project, all pot file will be mapped:<br />
+ * {@code <rule>{path}/{locale_with_underscore}.po</rule>}
+ * <p>
+ * To map multiple file types in a "file" type project, you can use pattern to
+ * set individual rule(s):
+ * <br />
+ * {@code <rule pattern="**&#47*.odt">{path}/{locale}/{filename}.{extension}</rule> }
+ * {@code <rule pattern="**&#47*.idml">output/{path}/{locale}/{filename}.{extension}</rule> }
+ * <p>
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -51,7 +65,7 @@ public class FileMappingRule {
     /**
      * If pattern is missing, this rule will be applied to matching file types.
      *
-     * @see org.zanata.client.commands.FileMappingRuleParser#isApplicable(org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName)
+     * @see org.zanata.client.commands.FileMappingRuleHandler#isApplicable(org.zanata.client.commands.QualifiedSrcDocName)
      */
     public FileMappingRule(String rule) {
         this.rule = rule;

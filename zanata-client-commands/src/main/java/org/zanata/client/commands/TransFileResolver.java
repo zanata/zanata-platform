@@ -22,11 +22,8 @@
 package org.zanata.client.commands;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Files;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
@@ -48,7 +45,8 @@ import static org.zanata.client.commands.Messages._;
  */
 public class TransFileResolver {
     private final ConfigurableProjectOptions opts;
-    private Map<ProjectType, FileMappingRule> defaultProjectTypeToRules =
+    private static final Map<ProjectType, FileMappingRule>
+            PROJECT_TYPE_FILE_MAPPING_RULES =
             ImmutableMap
                     .<ProjectType, FileMappingRule> builder()
                     .put(ProjectType.File, new FileMappingRule(
@@ -81,7 +79,7 @@ public class TransFileResolver {
      *            locale mapping
      * @return translation destination
      */
-    public File getTransFile(QualifiedSrcDocName qualifiedSrcDocName,
+    public File resolveTransFile(QualifiedSrcDocName qualifiedSrcDocName,
             LocaleMapping localeMapping) {
         Optional<File> fileOptional =
                 tryGetTransFileFromProjectMappingRules(qualifiedSrcDocName,
@@ -109,7 +107,7 @@ public class TransFileResolver {
             LocaleMapping localeMapping) {
         QualifiedSrcDocName qualifiedSrcDocName =
                 unqualifiedSrcDocName.toQualifiedDocName(getProjectType());
-        return getTransFile(qualifiedSrcDocName, localeMapping);
+        return resolveTransFile(qualifiedSrcDocName, localeMapping);
     }
 
     private ProjectType getProjectType() {
@@ -124,10 +122,11 @@ public class TransFileResolver {
     private File getDefaultTransFileFromProjectType(
             QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping,
             ProjectType projectType) {
-        FileMappingRule rule = defaultProjectTypeToRules.get(projectType);
+        FileMappingRule rule = PROJECT_TYPE_FILE_MAPPING_RULES.get(projectType);
         checkState(rule != null, _("no.default.mapping"), projectType);
-        String relativePath = new FileMappingRuleParser(rule, projectType, opts)
-                .getRelativePathFromRule(qualifiedSrcDocName, localeMapping);
+        String relativePath = new FileMappingRuleHandler(rule, projectType, opts)
+                .getRelativeTransFilePathForSourceDoc(qualifiedSrcDocName,
+                        localeMapping);
         return new File(opts.getTransDir(), relativePath);
     }
 
@@ -136,11 +135,12 @@ public class TransFileResolver {
         List<FileMappingRule> fileMappingRules = opts.getFileMappingRules();
         // TODO may need to sort the rules. put rules without pattern to last
         for (FileMappingRule rule : fileMappingRules) {
-            FileMappingRuleParser parser = new FileMappingRuleParser(rule,
+            FileMappingRuleHandler handler = new FileMappingRuleHandler(rule,
                     getProjectType(), opts);
-            if (parser.isApplicable(qualifiedSrcDocName)) {
-                String relativePath = parser
-                        .getRelativePathFromRule(qualifiedSrcDocName,
+            if (handler.isApplicable(qualifiedSrcDocName)) {
+                String relativePath = handler
+                        .getRelativeTransFilePathForSourceDoc(
+                                qualifiedSrcDocName,
                                 localeMapping);
                 return Optional.of(new File(opts.getTransDir(), relativePath));
             }
@@ -148,63 +148,4 @@ public class TransFileResolver {
         return Optional.absent();
     }
 
-    /**
-     * Represents document name with extension.
-     */
-    public static class QualifiedSrcDocName {
-        private final String fullName;
-        private final String extension;
-
-        private QualifiedSrcDocName(String fullName) {
-            this.fullName = fullName;
-            extension = Files.getFileExtension(fullName).toLowerCase();
-        }
-        public static QualifiedSrcDocName from(String qualifiedName) {
-            String extension = Files.getFileExtension(qualifiedName);
-            Preconditions.checkArgument(!Strings.isNullOrEmpty(extension), "expect a qualified document name (with extension)");
-            return new QualifiedSrcDocName(qualifiedName);
-        }
-        public static QualifiedSrcDocName from(String unqualifiedName, String extension) {
-            return new QualifiedSrcDocName(unqualifiedName + "." + extension);
-        }
-
-        public String getFullName() {
-            return fullName;
-        }
-
-        public String getExtension() {
-            return extension;
-        }
-    }
-
-    /**
-     * Represents document name without extension.
-     */
-    public static class UnqualifiedSrcDocName {
-        private final String name;
-        private UnqualifiedSrcDocName(String name) {
-            this.name = name;
-        }
-        public static UnqualifiedSrcDocName from(String docName) {
-            String extension = Files.getFileExtension(docName);
-            Preconditions.checkArgument(Strings.isNullOrEmpty(extension), "expect an unqualified document name (without extension)");
-            return new UnqualifiedSrcDocName(docName);
-        }
-        public QualifiedSrcDocName toQualifiedDocName(ProjectType projectType) {
-            switch (projectType) {
-                case Utf8Properties:
-                case Properties:
-                    return QualifiedSrcDocName.from(name, "properties");
-                case Gettext:
-                case Podir:
-                    return QualifiedSrcDocName.from(name, "pot");
-                case Xliff:
-                case Xml:
-                    return QualifiedSrcDocName.from(name, "xml");
-                case File:
-                    throw new IllegalArgumentException("You can not using unqualified document name in file type project");
-            }
-            throw new IllegalStateException("Can not convert unqualified document name for this project type: " + projectType);
-        }
-    }
 }

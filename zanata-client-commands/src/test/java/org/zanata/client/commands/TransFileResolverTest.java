@@ -34,13 +34,13 @@ public class TransFileResolverTest {
             new FileMappingRule("**/*.properties",
                 "{path}/{filename}_{locale_with_underscore}.{extension}")));
         File gettext =
-            resolver.getTransFile(TransFileResolver.QualifiedSrcDocName.from(
+            resolver.resolveTransFile(QualifiedSrcDocName.from(
                     "gcc/po/gcc.pot"), new LocaleMapping("de-DE"));
 
         assertThat(gettext.getPath(), equalTo("./gcc/po/de_DE.po"));
 
         File prop = resolver
-            .getTransFile(TransFileResolver.QualifiedSrcDocName.from(
+            .resolveTransFile(QualifiedSrcDocName.from(
                             "src/main/resources/messages.properties"),
                     new LocaleMapping("zh"));
         assertThat(prop.getPath(), equalTo(
@@ -52,7 +52,7 @@ public class TransFileResolverTest {
         opts.setTransDir(new File("."));
         opts.setProjectType("file");
         File noMatching = resolver
-                .getTransFile(TransFileResolver.QualifiedSrcDocName.from(
+                .resolveTransFile(QualifiedSrcDocName.from(
                         "doc/marketing.odt"), new LocaleMapping("ja"));
         assertThat(noMatching.getPath(), equalTo("./ja/doc/marketing.odt"));
     }

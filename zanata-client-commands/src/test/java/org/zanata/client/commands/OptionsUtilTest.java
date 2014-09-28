@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
-import static org.zanata.client.commands.FileMappingRuleParser.Placeholders.allHolders;
+import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
 import static org.zanata.client.commands.Messages._;
 
 import java.io.File;

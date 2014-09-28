@@ -21,8 +21,6 @@
 
 package org.zanata.client.commands;
 
-import static org.zanata.client.commands.TransFileResolver.QualifiedSrcDocName;
-
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
@@ -53,26 +51,18 @@ import com.google.common.io.Files;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class FileMappingRuleParser {
+public class FileMappingRuleHandler {
     private static final Logger log =
-            LoggerFactory.getLogger(FileMappingRuleParser.class);
+            LoggerFactory.getLogger(FileMappingRuleHandler.class);
     private final FileMappingRule mappingRule;
     private final ProjectType projectType;
     private final ConfigurableProjectOptions opts;
 
-    public FileMappingRuleParser(FileMappingRule rule, ProjectType projectType,
+    public FileMappingRuleHandler(FileMappingRule rule, ProjectType projectType,
             ConfigurableProjectOptions opts) {
         this.projectType = projectType;
         this.opts = opts;
         this.mappingRule = rule;
-    }
-
-    public static String stripValidHolders(String rule) {
-        String temp = rule;
-        for (Placeholders placeholder : Placeholders.values()) {
-            temp = temp.replace(placeholder.holder, "");
-        }
-        return temp;
     }
 
     public static boolean isRuleValid(String rule) {
@@ -81,7 +71,7 @@ public class FileMappingRuleParser {
     }
 
     /**
-     * Check whether this parsed rule is applicable to this document.
+     * Check whether the parsed rule is applicable to a source document.
      *
      * @param qualifiedSrcDocName
      *            source document name with extension
@@ -103,8 +93,8 @@ public class FileMappingRuleParser {
 
     private boolean matchFileExtensionWithProjectType(
             QualifiedSrcDocName qualifiedSrcDocName) {
-        List<String> supportedTypes = projectType.getSourceFileTypes();
-        return supportedTypes.contains(qualifiedSrcDocName.getExtension());
+        return projectType.getSourceFileTypes()
+                .contains(qualifiedSrcDocName.getExtension());
     }
 
     /**
@@ -116,22 +106,26 @@ public class FileMappingRuleParser {
      *            locale mapping
      * @return relative path (relative to trans-dir) for the translation file
      */
-    public String getRelativePathFromRule(QualifiedSrcDocName qualifiedSrcDocName,
+    public String getRelativeTransFilePathForSourceDoc(
+            QualifiedSrcDocName qualifiedSrcDocName,
             @Nonnull LocaleMapping localeMapping) {
         EnumMap<Placeholders, String> map =
                 parseToMap(qualifiedSrcDocName.getFullName(), localeMapping);
 
-        String temp = mappingRule.getRule();
+        String transFilePath = mappingRule.getRule();
         for (Map.Entry<Placeholders, String> entry : map.entrySet()) {
-            temp = temp.replace(entry.getKey().holder, entry.getValue());
-            log.debug("replaced with {}, now is: {}", entry.getKey(), temp);
+            transFilePath =
+                    transFilePath.replace(entry.getKey().holder,
+                            entry.getValue());
+            log.debug("replaced with {}, now is: {}", entry.getKey(),
+                    transFilePath);
         }
-        return Files.simplifyPath(temp);
+        return Files.simplifyPath(transFilePath);
     }
 
     @VisibleForTesting
     protected static EnumMap<Placeholders, String> parseToMap(
-            @Nonnull String sourceFile, @Nonnull LocaleMapping originalLocale) {
+            @Nonnull String sourceFile, @Nonnull LocaleMapping localeMapping) {
         EnumMap<Placeholders, String> parts =
                 new EnumMap<Placeholders, String>(Placeholders.class);
         File file = new File(sourceFile);
@@ -139,9 +133,9 @@ public class FileMappingRuleParser {
         String filename = FilenameUtils.removeExtension(file.getName());
         parts.put(Placeholders.extension, extension);
         parts.put(Placeholders.filename, filename);
-        parts.put(Placeholders.locale, originalLocale.getLocalLocale());
+        parts.put(Placeholders.locale, localeMapping.getLocalLocale());
         parts.put(Placeholders.localeWithUnderscore,
-                originalLocale.getLocalLocale().replaceAll("\\-", "_"));
+                localeMapping.getLocalLocale().replaceAll("\\-", "_"));
         String pathname = Strings.nullToEmpty(file.getParent());
         parts.put(Placeholders.path, Files.simplifyPath(pathname));
         log.debug("parsed parts: {}", parts);
@@ -170,5 +164,8 @@ public class FileMappingRuleParser {
             });
         }
 
+        String holder() {
+            return holder;
+        }
     }
 }

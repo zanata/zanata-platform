@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectOptions;
@@ -74,7 +73,7 @@ public class TestProjectGenerator {
 
     /**
      * Ensure a project and a version are created on an instance with source and
-     * translation pushed. This can be used in manual test preparation.
+     * translation pushed. This should only be used in manual test preparation.
      *
      * @param opts
      *            options
@@ -85,7 +84,7 @@ public class TestProjectGenerator {
      * @throws Exception
      */
     public void ensureProjectOnServer(ConfigurableProjectOptions opts,
-            ProjectType projectType, LocalInstance instance) throws Exception {
+            ProjectType projectType, ServerInstance instance) throws Exception {
         Preconditions.checkState(projectRootMap.containsKey(projectType),
                 "We don't have sample project type for %s", projectType);
 
@@ -143,15 +142,16 @@ public class TestProjectGenerator {
     }
 
 
-    public static class LocalInstance {
-        public static final LocalInstance FunctionalTestCargo = new LocalInstance("http://localhost:8180/zanata/", "admin", "b6d7044e9ee3b2447c28fb7c50d86d98");
-        public static final LocalInstance Local = new LocalInstance("http://localhost:8080/zanata/", "admin", "b6d7044e9ee3b2447c28fb7c50d86d98");
+    public static class ServerInstance {
+        public static final ServerInstance
+                FunctionalTestCargo = new ServerInstance("http://localhost:8180/zanata/", "admin", "b6d7044e9ee3b2447c28fb7c50d86d98");
+        public static final ServerInstance Local = new ServerInstance("http://localhost:8080/zanata/", "admin", "b6d7044e9ee3b2447c28fb7c50d86d98");
 
         private final String url;
         private final String username;
         private final String key;
 
-        public LocalInstance(String url, String username, String key) {
+        public ServerInstance(String url, String username, String key) {
             this.url = url;
             this.username = username;
             this.key = key;

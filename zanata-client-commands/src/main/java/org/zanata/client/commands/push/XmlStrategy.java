@@ -34,6 +34,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.rest.StringSet;
@@ -104,7 +105,7 @@ public class XmlStrategy extends AbstractPushStrategy {
         try {
             for (LocaleMapping locale : getOpts().getLocaleMapList()) {
                 File transFile = new TransFileResolver(getOpts()).getTransFile(
-                        TransFileResolver.UnqualifiedSrcDocName.from(docName),
+                        UnqualifiedSrcDocName.from(docName),
                         locale);
                 if (transFile.exists()) {
                     TranslationsResource targetDoc =

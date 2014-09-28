@@ -5,7 +5,7 @@ import org.zanata.client.config.LocaleMapping;
 
 import java.io.File;
 
-import static org.zanata.client.commands.TransFileResolver.UnqualifiedSrcDocName;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
 
 public abstract class AbstractPullStrategy implements PullStrategy {
     private final PullOptions opts;

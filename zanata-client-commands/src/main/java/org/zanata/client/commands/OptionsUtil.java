@@ -26,8 +26,8 @@ import com.google.common.collect.ImmutableList;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
-import static org.zanata.client.commands.FileMappingRuleParser.*;
-import static org.zanata.client.commands.FileMappingRuleParser.Placeholders.allHolders;
+import static org.zanata.client.commands.FileMappingRuleHandler.*;
+import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
 import static org.zanata.client.commands.Messages._;
 
 public class OptionsUtil {
@@ -319,4 +319,11 @@ public class OptionsUtil {
         }
     }
 
+    public static String stripValidHolders(String rule) {
+        String temp = rule;
+        for (Placeholders placeholder : Placeholders.values()) {
+            temp = temp.replace(placeholder.holder(), "");
+        }
+        return temp;
+    }
 }
