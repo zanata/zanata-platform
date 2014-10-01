@@ -48,7 +48,7 @@ public class TranslationHistoryView extends ShortcutContextAwareDialogBox
     @Inject
     public TranslationHistoryView(ContentStateRenderer stateRenderer,
             KeyShortcutPresenter keyShortcutPresenter) {
-        super(true, true, ShortcutContext.TransHistoryPopup,
+        super(false, true, ShortcutContext.TransHistoryPopup,
                 keyShortcutPresenter);
         this.stateRenderer = stateRenderer;
         closeButton = new DialogBoxCloseButton(this);
