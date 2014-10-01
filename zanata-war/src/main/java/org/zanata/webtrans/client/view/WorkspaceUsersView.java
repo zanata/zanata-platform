@@ -140,7 +140,7 @@ public class WorkspaceUsersView extends Composite implements
                 || messageType == MESSAGE_TYPE.SYSTEM_WARNING) {
             return "txt--warning";
         }
-        return "txt--neutral";
+        return "";
     }
 
     interface WorkspaceUsersViewUiBinder extends
