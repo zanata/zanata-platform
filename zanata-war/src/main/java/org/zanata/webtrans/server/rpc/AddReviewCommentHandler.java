@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -65,6 +66,9 @@ public class AddReviewCommentHandler extends
 
     @In
     private TextFlowTargetDAO textFlowTargetDAO;
+
+    @In
+    private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -107,8 +111,8 @@ public class AddReviewCommentHandler extends
         HTextFlowTargetReviewComment hComment =
                 hTextFlowTarget.addReviewComment(action.getContent(),
                         authenticatedAccount.getPerson());
-        textFlowTargetDAO.makePersistent(hTextFlowTarget);
-        textFlowTargetDAO.flush();
+        textFlowTargetReviewCommentsDAO.makePersistent(hComment);
+        textFlowTargetReviewCommentsDAO.flush();
 
         AddReviewComment commentEvent = new AddReviewComment(
                 new TransUnitId(hTextFlowTarget.getTextFlow().getId()),
