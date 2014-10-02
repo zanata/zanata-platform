@@ -45,6 +45,7 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 
 /**
@@ -77,6 +78,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private VersionStateCache versionStateCacheImpl;
+
+    @In
+    private TranslationStateCache translationStateCacheImpl;
 
     @In
     private ResourceUtils resourceUtils;
@@ -201,5 +205,6 @@ public class DocumentServiceImpl implements DocumentService {
     private void clearStatsCacheForUpdatedDocument(HDocument document) {
         versionStateCacheImpl.clearVersionStatsCache(document.getProjectIteration()
                 .getId());
+        translationStateCacheImpl.clearDocumentStatistics(document.getId());
     }
 }
