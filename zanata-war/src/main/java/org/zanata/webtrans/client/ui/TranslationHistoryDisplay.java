@@ -36,6 +36,8 @@ public interface TranslationHistoryDisplay extends WidgetDisplay {
 
     String getComment();
 
+    void enableComment(boolean visible);
+
     interface Listener extends ForceReviewCommentDisplay.Listener {
 
         void copyIntoEditor(List<String> contents);

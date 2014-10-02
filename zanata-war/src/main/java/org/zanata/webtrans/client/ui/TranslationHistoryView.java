@@ -97,6 +97,11 @@ public class TranslationHistoryView extends ShortcutContextAwareDialogBox
     }
 
     @Override
+    public void enableComment(boolean enabled) {
+        commentInput.setVisible(enabled);
+    }
+
+    @Override
     public void showDiff(TransHistoryItem one, TransHistoryItem two,
             String description) {
         comparisonPanel.compare(one, two);
