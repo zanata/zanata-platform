@@ -140,6 +140,12 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     }
 
     @Override
+    public void clearDocumentStatistics(Long documentId, LocaleId localeId) {
+        documentStatisticCache.remove(new DocumentLocaleKey(documentId,
+                localeId));
+    }
+
+    @Override
     public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId) {
         return docStatusCache.getWithLoader(new DocumentLocaleKey(
                 documentId, localeId));
