@@ -37,24 +37,21 @@
     function updateForm(fileName) {
       var fileExtension = getFileExtension(fileName).toUpperCase();
       if (fileExtension == "CSV") {
-        document.getElementById('targetLangDiv').style.display = "none";
-        document.getElementById('sourceLangDiv').style.display = "none";
-        document.getElementById('commentColsDiv').style.display = "";
-        document.getElementById('treatCommentSameDiv').style.display = "";
+        document.getElementById('langDiv').style.visibility = "hidden";
+        document.getElementById('commentColsDiv').style.visibility = "visible";
+        document.getElementById('treatCommentSameDiv').style.visibility = "visible";
         document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
       }
       else if (fileExtension == "PO") {
-        document.getElementById('targetLangDiv').style.display = "";
-        document.getElementById('sourceLangDiv').style.display = "";
-        document.getElementById('commentColsDiv').style.display = "none";
-        document.getElementById('treatCommentSameDiv').style.display = "";
+        document.getElementById('langDiv').style.visibility = "visible";
+        document.getElementById('commentColsDiv').style.visibility = "hidden";
+        document.getElementById('treatCommentSameDiv').style.visibility = "visible";
         document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
       }
       else {
-        document.getElementById('targetLangDiv').style.display = "none";
-        document.getElementById('sourceLangDiv').style.display = "none";
-        document.getElementById('commentColsDiv').style.display = "none";
-        document.getElementById('treatCommentSameDiv').style.display = "none";
+        document.getElementById('langDiv').style.visibility = "hidden";
+        document.getElementById('commentColsDiv').style.visibility = "hidden";
+        document.getElementById('treatCommentSameDiv').style.visibility = "hidden";
         document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled",
           true);
       }
@@ -62,12 +59,12 @@
 
     function showLoading(show) {
       if (show == true) {
-        document.getElementById("#{rich:clientId('fileUploading')}").style.display =
-          'inline';
+        document.getElementById("#{rich:clientId('fileUploading')}").style.visibility =
+          'visible';
       }
       else {
-        document.getElementById("#{rich:clientId('fileUploading')}").style.display =
-          'none';
+        document.getElementById("#{rich:clientId('fileUploading')}").style.visibility =
+          'hidden';
       }
     }
 
@@ -189,8 +186,8 @@
                         <li>
                           <a href="#" onclick="if(confirmDelete('#{glossaryAction.getDeleteConfirmationMessage(glossary.displayName)}')) {deleteGlossary('#{glossary.localeId}')}; return false;"
                             class="i__item--right">
-                              #{msgs['jsf.Glossary.delete']}<i
-                              class="i i--remove i__item__icon"></i>
+                            #{msgs['jsf.Glossary.delete']}<i
+                            class="i i--remove i__item__icon"></i>
                           </a>
                         </li>
                       </s:fragment>
@@ -254,33 +251,35 @@
       onchange="updateForm(this.value)">
     </s:fileUpload>
 
-    <div title="#{msgs['jsf.Glossary.SourceLocale.Title']}"
-      class="glosaryFileUploadDialog" id="sourceLangDiv" style="display:none">
-      <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
-      <h:selectOneMenu
-        value="#{glossaryAction.glossaryFileUpload.sourceLang}">
-        <s:selectItems value="#{glossaryAction.availableLocales}"
-          var="locale"
-          label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-          itemValue="#{locale.localeId.id}" escape="true"/>
+    <div id="langDiv" style="visibility:hidden">
+      <div title="#{msgs['jsf.Glossary.SourceLocale.Title']}"
+        class="glosaryFileUploadDialog">
+        <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
+        <h:selectOneMenu
+          value="#{glossaryAction.glossaryFileUpload.sourceLang}">
+          <s:selectItems value="#{glossaryAction.availableLocales}"
+            var="locale"
+            label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+            itemValue="#{locale.localeId.id}" escape="true"/>
 
-      </h:selectOneMenu>
-    </div>
-    <div title="#{msgs['jsf.Glossary.TargetLocale.Title']}"
-      class="glosaryFileUploadDialog" id="targetLangDiv" style="display:none">
-      <h:outputLabel value="#{msgs['jsf.TargetLanguage']}"/>
-      <h:selectOneMenu
-        value="#{glossaryAction.glossaryFileUpload.transLang}">
-        <s:selectItems value="#{glossaryAction.availableLocales}"
-          var="locale"
-          label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-          itemValue="#{locale.localeId.id}" escape="true"/>
+        </h:selectOneMenu>
+      </div>
+      <div title="#{msgs['jsf.Glossary.TargetLocale.Title']}"
+        class="glosaryFileUploadDialog">
+        <h:outputLabel value="#{msgs['jsf.TargetLanguage']}"/>
+        <h:selectOneMenu
+          value="#{glossaryAction.glossaryFileUpload.transLang}">
+          <s:selectItems value="#{glossaryAction.availableLocales}"
+            var="locale"
+            label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+            itemValue="#{locale.localeId.id}" escape="true"/>
 
-      </h:selectOneMenu>
+        </h:selectOneMenu>
+      </div>
     </div>
 
     <div class="glosaryFileUploadDialog" id="treatCommentSameDiv"
-      style="display:none">
+      style="visibility:hidden">
       <h:outputText
         value="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget']}"
         title="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
@@ -290,7 +289,7 @@
     </div>
 
     <div class="glosaryFileUploadDialog" id="commentColsDiv"
-      style="display:none">
+      style="visibility:hidden">
       <h:outputText value="#{msgs['jsf.Glossary.CommentColumnNames']}"
         title="#{msgs['jsf.Glossary.CommentColumnNames.Title']}"/>
       <h:inputText
@@ -301,7 +300,7 @@
 
     <div align="right" class="glosaryFileUploadDialog">
       <h:graphicImage value="/images/loading.gif" id="fileUploading"
-        style="display:none"/>
+        style="visibility:hidden"/>
       <h:commandButton value="#{msgs['jsf.Upload']}"
         action="#{glossaryAction.uploadFile}" id="uploadButton"
         onclick="showLoading(true)"/>
