@@ -12,9 +12,19 @@
       <!-- Ukranian -->
       <supported-locale>uk</supported-locale>
       <!-- Traditional Chinese -->
-      <supported-locale>zh-TW-Hant</supported-locale>
+      <supported-locale>zh_TW_Hant</supported-locale>
       <!-- Japanese -->
       <supported-locale>ja</supported-locale>
+      <!-- Hungarian -->
+      <supported-locale>hu</supported-locale>
+      <!-- Breton -->
+      <supported-locale>br</supported-locale>
+      <!-- Czech -->
+      <supported-locale>cs</supported-locale>
+      <!-- Italian -->
+      <supported-locale>it</supported-locale>
+      <!-- Portuguese-Brazil -->
+      <supported-locale>pt_BR</supported-locale>
 
       <!--
       These languages are yet to translated to an acceptable coverage
