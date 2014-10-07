@@ -25,6 +25,8 @@
       <supported-locale>it</supported-locale>
       <!-- Portuguese-Brazil -->
       <supported-locale>pt_BR</supported-locale>
+      <!-- French -->
+      <supported-locale>fr</supported-locale>
 
       <!--
       These languages are yet to translated to an acceptable coverage
@@ -34,8 +36,6 @@
       <supported-locale>bg</supported-locale>
       Deutsch
       <supported-locale>de</supported-locale>
-      Francais
-      <supported-locale>fr</supported-locale>
       Italian
       <supported-locale>it</supported-locale>
       Turkish
