@@ -70,6 +70,7 @@ public class PublicanPullCommandTest {
         opts.setDstDir(new File("target/test-output/test2"));
         opts.setExportPot(exportPot);
         opts.setProjectConfig(new File("src/test/resources/test2/zanata.xml"));
+        opts.setLocaleMapList(new LocaleList());
         OptionsUtil.applyConfigFiles(opts);
         if (mapLocale) {
             LocaleList locales = new LocaleList();

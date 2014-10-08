@@ -91,14 +91,4 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
         return false;
     }
 
-    @Override
-    File getTransFile(LocaleMapping locale, String docName) {
-        File localeDir =
-                new File(getOpts().getTransDir(), locale.getLocalLocale());
-        File transFile = new File(localeDir, docName + ".po");
-        return transFile;
-    }
-
-
-
 }

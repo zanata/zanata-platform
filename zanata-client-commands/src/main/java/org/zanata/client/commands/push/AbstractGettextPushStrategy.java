@@ -34,6 +34,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -80,22 +82,23 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
 
     abstract Collection<LocaleMapping> findLocales();
 
-    abstract File getTransFile(LocaleMapping locale, String docName);
+    protected File getTransFile(LocaleMapping locale, String docName) {
+        File transFile = new TransFileResolver(getOpts()).getTransFile(
+                UnqualifiedSrcDocName.from(docName), locale);
+        return transFile;
+    }
 
     @Override
     public Resource loadSrcDoc(File sourceDir, String docName)
             throws IOException {
         File srcFile = new File(sourceDir, docName + getFileExtension());
-        BufferedInputStream bis =
-                new BufferedInputStream(new FileInputStream(srcFile));
-        try {
+        try (BufferedInputStream bis = new BufferedInputStream(
+                new FileInputStream(srcFile))) {
             InputSource potInputSource = new InputSource(bis);
             potInputSource.setEncoding("utf8");
             // load 'srcDoc' from pot/${docID}.pot
             return getPoReader().extractTemplate(potInputSource,
                     new LocaleId(getOpts().getSourceLang()), docName);
-        } finally {
-            bis.close();
         }
     }
 
@@ -105,16 +108,13 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
         for (LocaleMapping locale : findLocales()) {
             File transFile = getTransFile(locale, docName);
             if (transFile.canRead()) {
-                BufferedInputStream bis =
-                        new BufferedInputStream(new FileInputStream(transFile));
-                try {
+                try (BufferedInputStream bis = new BufferedInputStream(
+                        new FileInputStream(transFile))) {
                     InputSource inputSource = new InputSource(bis);
                     inputSource.setEncoding("utf8");
                     TranslationsResource targetDoc =
                             getPoReader().extractTarget(inputSource);
                     callback.visit(locale, targetDoc);
-                } finally {
-                    bis.close();
                 }
             }
         }

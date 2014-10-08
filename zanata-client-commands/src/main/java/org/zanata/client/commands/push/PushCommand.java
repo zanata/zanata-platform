@@ -613,9 +613,9 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         if (!getOpts().isDryRun()) {
             log.info(
                     "Pushing target doc [name={} size={} client-locale={}] to server [locale={}]",
-                    new Object[] { localDocName,
-                            targetDoc.getTextFlowTargets().size(),
-                            locale.getLocalLocale(), locale.getLocale() });
+                    localDocName,
+                    targetDoc.getTextFlowTargets().size(),
+                    locale.getLocalLocale(), locale.getLocale());
 
             ConsoleUtils.startProgressFeedback();
 

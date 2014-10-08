@@ -95,19 +95,11 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             // TODO remove when modules implemented
             if (enableModules) {
                 log.warn("enableModules=true but multi-modules not yet supported for this command. Using single module push.");
-                enableModules = false;
             }
 
-            if (enableModules) {
-                log.info("source directory '" + sourceDir
-                        + "' not found; skipping docs push for module "
-                        + getOpts().getCurrentModule());
-                return;
-            } else {
-                throw new RuntimeException("directory '" + sourceDir
-                        + "' does not exist - check "
-                        + getOpts().getSrcDirParameterName() + " option");
-            }
+            throw new RuntimeException("directory '" + sourceDir
+                    + "' does not exist - check "
+                    + getOpts().getSrcDirParameterName() + " option");
         }
 
         RawPushStrategy strat = new RawPushStrategy();
@@ -243,13 +235,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                                 }
                             });
                 }
-            } catch (IOException e) {
-                log.error(
-                        "Operation failed: "+e.getMessage()+"\n\n"
-                        + "    To retry from the last document, please add the option: {}\n",
-                        getOpts().buildFromDocArgument(localDocName));
-                throw new RuntimeException(e.getMessage(), e);
-            } catch (RuntimeException e) {
+            } catch (IOException | RuntimeException e) {
                 log.error(
                         "Operation failed: "+e.getMessage()+"\n\n"
                         + "    To retry from the last document, please add the option: {}\n",
@@ -313,20 +299,17 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             if (docFile.length() <= getOpts().getChunkSize()) {
                 log.info("    transmitting file [{}] as single chunk",
                         docFile.getAbsolutePath());
-                InputStream fileStream = new FileInputStream(docFile);
-                try {
+                try (InputStream fileStream = new FileInputStream(docFile)) {
                     DocumentFileUploadForm uploadForm =
                             generateUploadForm(true, true, fileType, md5hash,
                                     docFile.length(), fileStream);
                     ClientResponse<ChunkUploadResponse> response =
                             uploadDocumentPart(docId, locale, uploadForm);
                     checkChunkUploadStatus(response);
-                } finally {
-                    fileStream.close();
                 }
             } else {
-                StreamChunker chunker = new StreamChunker(docFile, getOpts().getChunkSize());
-                try {
+                try (StreamChunker chunker = new StreamChunker(docFile,
+                        getOpts().getChunkSize())) {
                     log.info("    transmitting file [{}] as {} chunks",
                             docFile.getAbsolutePath(), chunker.totalChunks());
                     ClientResponse<ChunkUploadResponse> uploadResponse;
@@ -335,17 +318,20 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
                     for (InputStream chunkStream : chunker) {
                         log.info("        pushing chunk {} of {}",
-                                chunker.currentChunkNumber(), chunker.totalChunks());
+                                chunker.currentChunkNumber(),
+                                chunker.totalChunks());
                         boolean isFirst = chunker.currentChunkNumber() == 1;
                         boolean isLast = chunker.getRemainingChunks() == 0;
                         long chunkSize = chunker.currentChunkSize();
                         uploadForm =
-                                generateUploadForm(isFirst, isLast, fileType, md5hash,
+                                generateUploadForm(isFirst, isLast, fileType,
+                                        md5hash,
                                         chunkSize, chunkStream);
                         if (!isFirst) {
                             uploadForm.setUploadId(uploadId);
                         }
-                        uploadResponse = uploadDocumentPart(docId, locale, uploadForm);
+                        uploadResponse =
+                                uploadDocumentPart(docId, locale, uploadForm);
                         checkChunkUploadStatus(uploadResponse);
                         if (isFirst) {
                             uploadId = uploadResponse.getEntity().getUploadId();
@@ -355,8 +341,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                             }
                         }
                     }
-                } finally {
-                    chunker.close();
                 }
             }
         } catch (IOException e) {
@@ -420,11 +404,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             }
             String md5hash = new String(Hex.encodeHex(md.digest()));
             return md5hash;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
     }

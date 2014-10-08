@@ -30,6 +30,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.adapter.properties.PropReader;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ContentState;
@@ -92,11 +94,8 @@ public class PropertiesStrategy extends AbstractPushStrategy {
             throws IOException, RuntimeException {
         Resource doc = new Resource(docName);
         // doc.setContentType(contentType);
-        FileInputStream in = new FileInputStream(propFile);
-        try {
+        try (FileInputStream in = new FileInputStream(propFile)) {
             propReader.extractTemplate(doc, in);
-        } finally {
-            in.close();
         }
         return doc;
     }
@@ -112,11 +111,8 @@ public class PropertiesStrategy extends AbstractPushStrategy {
     private TranslationsResource loadTranslationsResource(Resource srcDoc,
             File transFile) throws IOException, RuntimeException {
         TranslationsResource targetDoc = new TranslationsResource();
-        FileInputStream in = new FileInputStream(transFile);
-        try {
+        try (FileInputStream in = new FileInputStream(transFile)) {
             propReader.extractTarget(targetDoc, in, srcDoc);
-        } finally {
-            in.close();
         }
         return targetDoc;
     }
@@ -126,8 +122,9 @@ public class PropertiesStrategy extends AbstractPushStrategy {
             TranslationResourcesVisitor callback) throws IOException,
             RuntimeException {
         for (LocaleMapping locale : getOpts().getLocaleMapList()) {
-            String filename = docNameToFilename(docName, locale);
-            File transFile = new File(getOpts().getTransDir(), filename);
+            File transFile = new TransFileResolver(getOpts()).getTransFile(
+                    UnqualifiedSrcDocName.from(docName),
+                    locale);
             if (transFile.exists()) {
                 TranslationsResource targetDoc =
                         loadTranslationsResource(srcDoc, transFile);

@@ -1,9 +1,12 @@
 package org.zanata.client.config;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -11,18 +14,26 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.FileConfiguration;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 import static org.junit.Assert.*;
 
 public class ZanataConfigTest {
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
     JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
     Unmarshaller unmarshaller = jc.createUnmarshaller();
     Marshaller marshaller = jc.createMarshaller();
-    File zanataProjectXml = new File(System.getProperty("user.dir"),
-            "target/zanata.xml");
-    File zanataUserFile = new File(System.getProperty("user.dir"),
-            "target/zanata.ini");
+    File zanataProjectXml;
+    File zanataUserFile;
 
     public ZanataConfigTest() throws Exception {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -32,6 +43,14 @@ public class ZanataConfigTest {
     // {
     // GenerateSchema.generateSchemaToStdout(jc);
     // }
+
+    @Before
+    public void setUp() throws IOException {
+        zanataProjectXml = new File(tempFolder.newFolder(),
+                "zanata.xml");
+        zanataUserFile = new File(tempFolder.newFolder(),
+                "zanata.ini");
+    }
 
     @Test
     public void testWriteReadProject() throws Exception {
@@ -91,6 +110,22 @@ public class ZanataConfigTest {
         assertFalse(debug);
         boolean errors = config.getBoolean("zanata.errors");
         assertTrue(errors);
+    }
+
+    @Test
+    public void canReadAndWriteRules() throws Exception {
+        ZanataConfig zanataConfig = new ZanataConfig();
+        zanataConfig.setRules(Lists.newArrayList(new FileMappingRule("*.odt",
+                "{filename}_{locale}.{extension}")));
+        marshaller.marshal(zanataConfig, zanataProjectXml);
+
+        ZanataConfig config =
+                (ZanataConfig) unmarshaller.unmarshal(zanataProjectXml);
+        assertThat(config.getRules(), Matchers.hasSize(1));
+        FileMappingRule rule = config.getRules().get(0);
+        assertThat(rule.getPattern(), Matchers.equalTo("*.odt"));
+        assertThat(rule.getRule(),
+                Matchers.equalTo("{filename}_{locale}.{extension}"));
     }
 
 }

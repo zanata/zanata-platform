@@ -134,10 +134,6 @@ public abstract class AbstractPushStrategy extends
         return docName + fileExtension;
     }
 
-    protected String docNameToFilename(String docName, LocaleMapping locale) {
-        return docName + "_" + locale.getJavaLocale() + fileExtension;
-    }
-
     public StringSet getExtensions() {
         return extensions;
     }

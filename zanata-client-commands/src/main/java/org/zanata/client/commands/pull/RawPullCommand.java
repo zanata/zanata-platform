@@ -22,6 +22,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -40,7 +41,11 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtility;
 import org.zanata.rest.client.IFileResource;
+import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.ITranslatedDocResource;
+import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.service.FileResource;
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  *
@@ -59,6 +64,16 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         this.fileResource = getRequestFactory().getFileResource();
     }
 
+    @VisibleForTesting
+    public RawPullCommand(PullOptions opts,
+            ZanataProxyFactory factory,
+            ISourceDocResource sourceDocResource,
+            ITranslatedDocResource translationResources,
+            URI uri, IFileResource fileResource) {
+        super(opts, factory, sourceDocResource, translationResources, uri);
+        this.fileResource = fileResource;
+    }
+
     @Override
     public void run() throws IOException {
         PullCommand.logOptions(log, getOpts());
@@ -69,8 +84,9 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         log.warn("Using EXPERIMENTAL project type 'file'.");
 
         LocaleList locales = getOpts().getLocaleMapList();
-        if (locales == null)
+        if (locales == null) {
             throw new ConfigException("no locales specified");
+        }
         RawPullStrategy strat = new RawPullStrategy();
         strat.setPullOptions(getOpts());
 
@@ -202,13 +218,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                         }
                     }
                 }
-            } catch (IOException e) {
-                log.error(
-                        "Operation failed: "+e.getMessage()+"\n\n"
-                        + "    To retry from the last document, please add the option: {}\n",
-                        getOpts().buildFromDocArgument(qualifiedDocName));
-                throw new RuntimeException(e.getMessage(), e);
-            } catch (RuntimeException e) {
+            } catch (IOException | RuntimeException e) {
                 log.error(
                         "Operation failed: "+e.getMessage()+"\n\n"
                         + "    To retry from the last document, please add the option: {}\n",

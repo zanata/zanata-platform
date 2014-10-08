@@ -47,7 +47,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     private static final Map<String, Class<? extends PullStrategy>> strategies =
             new HashMap<String, Class<? extends PullStrategy>>();
 
-    {
+    static {
         strategies.put(PROJECT_TYPE_UTF8_PROPERTIES,
                 UTF8PropertiesStrategy.class);
         strategies.put(PROJECT_TYPE_PROPERTIES, PropertiesStrategy.class);

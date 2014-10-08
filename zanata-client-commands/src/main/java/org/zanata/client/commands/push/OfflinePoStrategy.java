@@ -61,7 +61,7 @@ public class OfflinePoStrategy extends GettextDirStrategy {
     @Override
     public boolean isTransOnly() {
         return true;
-    };
+    }
 
     /**
      * This implementation retrieves document names from the server. All

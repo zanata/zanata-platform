@@ -43,7 +43,7 @@ import com.google.common.collect.ImmutableList;
  *
  */
 @XmlType(name = "configType", propOrder = { "url", "project", "projectVersion",
-        "projectType", "srcDir", "transDir", "includes", "excludes", "hooks", "locales" })
+        "projectType", "srcDir", "transDir", "includes", "excludes", "hooks", "locales", "rules" })
 @XmlRootElement(name = "config")
 public class ZanataConfig implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -60,6 +60,7 @@ public class ZanataConfig implements Serializable {
     private List<CommandHook> hooks = new ArrayList<CommandHook>();
     private transient Splitter splitter = Splitter.on(",").omitEmptyStrings()
             .trimResults();
+    private List<FileMappingRule> rules = new ArrayList<FileMappingRule>();
 
     public ZanataConfig() {
     }
@@ -180,5 +181,15 @@ public class ZanataConfig implements Serializable {
             return ImmutableList.copyOf(splitter.split(excludes));
         }
         return ImmutableList.of();
+    }
+
+    @XmlElementWrapper(name = "rules", required = false)
+    @XmlElement(name = "rule")
+    public List<FileMappingRule> getRules() {
+        return rules;
+    }
+
+    public void setRules(List<FileMappingRule> rules) {
+        this.rules = rules;
     }
 }

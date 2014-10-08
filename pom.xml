@@ -35,7 +35,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>3.4.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.4.1-SNAPSHOT</zanata.api.version>
     <zanata.common.version>3.3.0</zanata.common.version>
     <resteasy.version>3.0.1.Final</resteasy.version>
   </properties>

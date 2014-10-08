@@ -1,0 +1,22 @@
+#: src/create.c:1552
+msgid ""
+msgstr ""
+"Project-Id-Version: tar 1.25\n"
+"POT-Creation-Date: 2011-03-12 11:53+0200\n"
+"PO-Revision-Date: 2010-11-12 09:33+0800\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: gnu/argmatch.c:135
+#, c-format
+msgid "invalid argument %s for %s"
+msgstr "%2$s 的参数 %1$s 无效"
+
+#: gnu/argp-help.c:1248
+msgid ""
+"Mandatory or optional arguments to long options are also mandatory or "
+"optional for any corresponding short options."
+msgstr "长选项和相应短选项具有相同的强制参数或可选参数。"

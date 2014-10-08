@@ -35,7 +35,8 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         for (String localeName : localeNames) {
             LocaleMapping localLocale;
             if (localeList != null) {
-                localLocale = localeList.findByLocalLocale(localeName);
+                localLocale = localeList.findByLocalLocaleOrJavaLocale(
+                        localeName);
                 if (localLocale == null) {
                     log.warn(
                             "Skipping locale {}; no locale entry found in zanata.xml",
@@ -48,15 +49,6 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
             locales.add(localLocale);
         }
         return locales;
-    }
-
-    @Override
-    File getTransFile(LocaleMapping localeMapping, String docName) {
-        String localLocale = localeMapping.getLocalLocale();
-        File transDir = getOpts().getTransDir();
-        File docDir = new File(transDir, docName).getParentFile();
-        File transFile = new File(docDir, localLocale + ".po");
-        return transFile;
     }
 
 }

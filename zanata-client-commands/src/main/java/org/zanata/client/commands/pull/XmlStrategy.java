@@ -67,10 +67,6 @@ public class XmlStrategy extends AbstractPullStrategy {
         return docName + ".xml";
     }
 
-    private String docNameToFilename(String docName, LocaleMapping locale) {
-        return docName + "_" + locale.getJavaLocale() + ".xml";
-    }
-
     @Override
     public void writeSrcFile(Resource doc) throws IOException {
         try {
@@ -81,14 +77,6 @@ public class XmlStrategy extends AbstractPullStrategy {
         } catch (JAXBException e) {
             throw new IOException(e);
         }
-    }
-
-    @Override
-    public File
-            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        String filename = docNameToFilename(docName, localeMapping);
-        File transFile = new File(getOpts().getTransDir(), filename);
-        return transFile;
     }
 
     @Override

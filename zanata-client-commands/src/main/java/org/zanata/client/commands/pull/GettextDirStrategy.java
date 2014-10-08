@@ -40,16 +40,6 @@ public class GettextDirStrategy extends AbstractGettextPullStrategy {
     }
 
     @Override
-    public File
-            getTransFileToWrite(String docName, LocaleMapping localeMapping) {
-        String localLocale = localeMapping.getLocalLocale();
-        // write the PO file to $locale/$name.po
-        File localeDir = new File(getOpts().getTransDir(), localLocale);
-        File transFile = new File(localeDir, docName + ".po");
-        return transFile;
-    }
-
-    @Override
     public FileDetails writeTransFile(Resource doc, String docName,
             LocaleMapping locMapping, TranslationsResource targetDoc)
             throws IOException {

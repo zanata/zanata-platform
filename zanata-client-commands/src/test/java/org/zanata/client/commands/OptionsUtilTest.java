@@ -1,21 +1,36 @@
 package org.zanata.client.commands;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
+import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
+import static org.zanata.client.commands.Messages._;
 
 import java.io.File;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.ZanataConfig;
+import com.google.common.collect.Lists;
 
 public class OptionsUtilTest {
-
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     private ConfigurableProjectOptions opts;
     private ZanataConfig config;
+    @Mock
+    private ConsoleInteractor console;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         opts = new ConfigurableProjectOptionsImpl() {
             @Override
             public ZanataCommand initCommand() {
@@ -86,4 +101,37 @@ public class OptionsUtilTest {
                 Matchers.contains("a.properties", "b.properties"));
     }
 
+    @Test
+    public void willWarnUserIfRuleSeemsWrong() {
+        opts.setInteractiveMode(false);
+        String rule = "{foo}/{bar}/{locale}";
+        opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(rule)));
+        OptionsUtil.checkPotentialMistakesInRules(opts, console);
+
+        verify(console).printfln(Warning, _("unrecognized.variables"),
+                allHolders(), rule);
+    }
+
+    @Test
+    public void willAskUserToConfirmIfRuleSeemsWrongAndInInteractiveMode() {
+        opts.setInteractiveMode(true);
+        String rule = "{foo}/{bar}/{locale}";
+        opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(rule)));
+        OptionsUtil.checkPotentialMistakesInRules(opts, console);
+
+        verify(console).printfln(Warning, _("unrecognized.variables"),
+                allHolders(), rule);
+        verify(console).printfln(Question, _("confirm.rule"));
+    }
+
+    @Test
+    public void willThrowExceptionIfRuleIsInvalid() {
+        expectedException.expect(IllegalStateException.class);
+        String rule = "{filename}/{path}";
+        opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(rule)));
+
+        OptionsUtil.checkPotentialMistakesInRules(opts, console);
+
+        verify(console).printfln(Warning, _("invalid.rule"),rule);
+    }
 }

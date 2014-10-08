@@ -21,7 +21,6 @@
 package org.zanata.client.commands.pull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +28,8 @@ import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.QualifiedSrcDocName;
+import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
 
@@ -67,9 +68,9 @@ public class RawPullStrategy {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
-        File transDir =
-                new File(opts.getTransDir(), localeMapping.getLocalLocale());
-        File file = new File(transDir, localDocName);
+        File file = new TransFileResolver(opts).resolveTransFile(
+                QualifiedSrcDocName.from(localDocName),
+                localeMapping);
         logAndStreamToFile(transFile, file);
     }
 
@@ -79,11 +80,10 @@ public class RawPullStrategy {
      *
      * @param stream
      * @param file
-     * @throws FileNotFoundException
      * @throws IOException
      */
     private void logAndStreamToFile(InputStream stream, File file)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         if (file.exists()) {
             log.warn("overwriting existing document at [{}]",
                     file.getAbsolutePath());
@@ -95,17 +95,14 @@ public class RawPullStrategy {
     }
 
     private void writeStreamToFile(InputStream stream, File file)
-            throws FileNotFoundException, IOException {
-        OutputStream out = new FileOutputStream(file);
-        try {
+            throws IOException {
+        try (OutputStream out = new FileOutputStream(file)) {
             int read;
             byte[] buffer = new byte[1024];
             while ((read = stream.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
             }
             out.flush();
-        } finally {
-            out.close();
         }
     }
 
