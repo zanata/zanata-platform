@@ -21,9 +21,9 @@
 
 package org.zanata.client.commands;
 
+import org.apache.commons.io.FilenameUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 
 /**
  * Represents document name with extension.
@@ -34,10 +34,10 @@ public class QualifiedSrcDocName {
 
     QualifiedSrcDocName(String fullName) {
         this.fullName = fullName;
-        extension = Files.getFileExtension(fullName).toLowerCase();
+        extension = FilenameUtils.getExtension(fullName).toLowerCase();
     }
     public static QualifiedSrcDocName from(String qualifiedName) {
-        String extension = Files.getFileExtension(qualifiedName);
+        String extension = FilenameUtils.getExtension(qualifiedName);
         Preconditions.checkArgument(!Strings.isNullOrEmpty(extension),
                 "expect a qualified document name (with extension)");
         return new QualifiedSrcDocName(qualifiedName);

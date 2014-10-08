@@ -21,10 +21,10 @@
 
 package org.zanata.client.commands;
 
+import org.apache.commons.io.FilenameUtils;
 import org.zanata.common.ProjectType;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 
 /**
  * Represents document name without extension.
@@ -35,7 +35,7 @@ public class UnqualifiedSrcDocName {
         this.name = name;
     }
     public static UnqualifiedSrcDocName from(String docName) {
-        String extension = Files.getFileExtension(docName);
+        String extension = FilenameUtils.getExtension(docName);
         Preconditions.checkArgument(Strings.isNullOrEmpty(extension),
                 "expect an unqualified document name (without extension)");
         return new UnqualifiedSrcDocName(docName);
