@@ -36,13 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
+import org.zanata.client.util.FileUtil;
 import org.zanata.common.ProjectType;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 
 /**
  * Parse translation file mapping rule as well as applying the rule to get the
@@ -120,7 +120,7 @@ public class FileMappingRuleHandler {
             log.debug("replaced with {}, now is: {}", entry.getKey(),
                     transFilePath);
         }
-        return Files.simplifyPath(transFilePath);
+        return FileUtil.simplifyPath(transFilePath);
     }
 
     @VisibleForTesting
@@ -129,7 +129,7 @@ public class FileMappingRuleHandler {
         EnumMap<Placeholders, String> parts =
                 new EnumMap<Placeholders, String>(Placeholders.class);
         File file = new File(sourceFile);
-        String extension = Files.getFileExtension(sourceFile);
+        String extension = FilenameUtils.getExtension(sourceFile);
         String filename = FilenameUtils.removeExtension(file.getName());
         parts.put(Placeholders.extension, extension);
         parts.put(Placeholders.filename, filename);
@@ -137,7 +137,7 @@ public class FileMappingRuleHandler {
         parts.put(Placeholders.localeWithUnderscore,
                 localeMapping.getLocalLocale().replaceAll("\\-", "_"));
         String pathname = Strings.nullToEmpty(file.getParent());
-        parts.put(Placeholders.path, Files.simplifyPath(pathname));
+        parts.put(Placeholders.path, FileUtil.simplifyPath(pathname));
         log.debug("parsed parts: {}", parts);
         return parts;
     }
@@ -159,7 +159,8 @@ public class FileMappingRuleHandler {
                     values()), new Function<Placeholders, String>() {
                 @Override
                 public String apply(Placeholders input) {
-                    return input.holder;
+                    // this is just to make findbugs happy
+                    return input == null ? "" : input.holder;
                 }
             });
         }

@@ -21,6 +21,7 @@
 
 package org.zanata.client.config;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -50,7 +51,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "fileMappingRule")
 @XmlRootElement(name = "rule")
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
-public class FileMappingRule {
+public class FileMappingRule implements Serializable {
     private String pattern;
     private String rule;
 

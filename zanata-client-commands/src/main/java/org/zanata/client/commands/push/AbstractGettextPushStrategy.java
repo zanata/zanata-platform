@@ -44,7 +44,7 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
-    private PoReader2 poReader;
+    private PoReader2 poReader = new PoReader2();
 
     public AbstractGettextPushStrategy() {
         super(new StringSet("comment;gettext"), ".pot");
@@ -92,8 +92,9 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     public Resource loadSrcDoc(File sourceDir, String docName)
             throws IOException {
         File srcFile = new File(sourceDir, docName + getFileExtension());
-        try (BufferedInputStream bis = new BufferedInputStream(
-                new FileInputStream(srcFile))) {
+        try (FileInputStream fileInputStream = new FileInputStream(srcFile);
+                BufferedInputStream bis = new BufferedInputStream(
+                fileInputStream)) {
             InputSource potInputSource = new InputSource(bis);
             potInputSource.setEncoding("utf8");
             // load 'srcDoc' from pot/${docID}.pot
@@ -121,9 +122,6 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     }
 
     protected PoReader2 getPoReader() {
-        if (poReader == null) {
-            poReader = new PoReader2();
-        }
         return poReader;
     }
 
