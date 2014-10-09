@@ -91,7 +91,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .createNewGroup()
                 .saveGroupFailure();
 
-        assertThat(groupPage.getFieldErrors())
+        assertThat(groupPage.getErrors())
                 .contains(errorMsg, errorMsg)
                 .as("The two errors are value is required");
 
@@ -99,7 +99,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .inputGroupName(groupName)
                 .saveGroupFailure();
 
-        assertThat(groupPage.getFieldErrors())
+        assertThat(groupPage.getErrors())
                 .contains(errorMsg)
                 .as("The value required error shown");
 
@@ -107,7 +107,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .inputGroupId(groupID)
                 .saveGroupFailure();
 
-        assertThat(groupPage.getFieldErrors())
+        assertThat(groupPage.getErrors())
                 .contains(errorMsg)
                 .as("The value required error shown");
     }
@@ -133,7 +133,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .inputGroupDescription(groupDescription)
                 .saveGroupFailure();
 
-        assertThat(groupPage.getFieldErrors())
+        assertThat(groupPage.getErrors())
                 .contains(CreateVersionGroupPage.LENGTH_ERROR)
                 .as("Invalid length error is shown");
 

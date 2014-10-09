@@ -23,6 +23,8 @@ package org.zanata.feature.versionGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -34,6 +36,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 /**
@@ -47,8 +50,8 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
     @Rule
     public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
 
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
 
     @DataPoint
     public static String INVALID_CHARACTER_PIPE = "Group|ID";
@@ -96,30 +99,31 @@ public class VersionGroupIDValidationTest extends ZanataTestCase {
     public static String MUST_START_ALPHANUMERIC = "-GroupID";
     @DataPoint
     public static String MUST_END_ALPHANUMERIC = "GroupID-";
+
     private static CreateVersionGroupPage groupPage;
+
+    @BeforeClass
+    public static void loginToStart() {
+        new LoginWorkFlow().signIn("admin", "admin");
+    }
 
     @Before
     public void goToGroupPage() {
-        if (groupPage == null) {
-            groupPage = new LoginWorkFlow()
-                    .signIn("admin", "admin")
-                    .goToGroups()
-                    .createNewGroup();
-        }
+        groupPage = new BasicWorkFlow()
+                .goToHome()
+                .goToGroups()
+                .createNewGroup();
     }
 
     @Theory
     public void inputValidationForID(String inputText) {
-        // Yes reassign groupPage is necessary since JSF re-renders itself after
-        // each field input and selenium is not happy with it
-        groupPage = groupPage.clearFields();
-        groupPage.slightPause();
+        groupPage.waitForPageSilence();
         groupPage = groupPage
                 .inputGroupId(inputText)
                 .inputGroupName(inputText)
                 .saveGroupFailure();
 
-        assertThat(groupPage.expectFieldError(
+        assertThat(groupPage.expectError(
                     CreateVersionGroupPage.VALIDATION_ERROR))
                 .contains(CreateVersionGroupPage.VALIDATION_ERROR)
                 .as("Validation error is displayed for input:" + inputText);

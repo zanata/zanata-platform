@@ -82,7 +82,7 @@ public class RegisterTest extends ZanataTestCase {
                 .goToRegistration()
                 .setFields(fields);
 
-        assertThat(registerPage.getFieldErrors())
+        assertThat(registerPage.getErrors())
                 .as("No errors are shown")
                 .isEmpty();
 
@@ -104,21 +104,21 @@ public class RegisterTest extends ZanataTestCase {
         fields.put("username", "bo");
         registerPage = registerPage.setFields(fields);
 
-        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+        assertThat(containsUsernameError(registerPage.getErrors()))
                 .isTrue()
                 .as("Size errors are shown for string too short");
 
         fields.put("username", "testusername");
         registerPage = registerPage.setFields(fields);
 
-        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+        assertThat(containsUsernameError(registerPage.getErrors()))
                 .isFalse()
                 .as("Size errors are not shown");
 
         fields.put("username", "12345678901234567890a");
         registerPage = registerPage.setFields(fields);
 
-        assertThat(containsUsernameError(registerPage.getFieldErrors()))
+        assertThat(containsUsernameError(registerPage.getErrors()))
                 .isTrue()
                 .as("Size errors are shown for string too long");
     }
@@ -132,7 +132,8 @@ public class RegisterTest extends ZanataTestCase {
                 .enterUserName("admin");
         registerPage.defocus();
 
-        assertThat(registerPage.waitForFieldErrors())
+        assertThat(registerPage.expectError(
+                    RegisterPage.USERNAME_UNAVAILABLE_ERROR))
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
                 .as("Username not available message is shown");
     }
@@ -149,7 +150,7 @@ public class RegisterTest extends ZanataTestCase {
                 .setFields(fields);
         registerPage.defocus();
 
-        assertThat(registerPage.getFieldErrors())
+        assertThat(registerPage.getErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("Email validation errors are shown");
     }
@@ -167,7 +168,7 @@ public class RegisterTest extends ZanataTestCase {
                 homePage.goToRegistration().setFields(fields);
         registerPage.defocus();
 
-        assertThat(registerPage.waitForFieldErrors()).containsExactly(
+        assertThat(registerPage.getErrors(4)).containsExactly(
                 RegisterPage.REQUIRED_FIELD_ERROR,
                 RegisterPage.USERNAME_VALIDATION_ERROR,
                 RegisterPage.REQUIRED_FIELD_ERROR,
@@ -237,7 +238,7 @@ public class RegisterTest extends ZanataTestCase {
                 homePage.goToRegistration().setFields(fields);
         registerPage.defocus();
 
-        assertThat(registerPage.getFieldErrors())
+        assertThat(registerPage.getErrors())
                 .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
                 .as("A username of all underscores is not valid");
     }

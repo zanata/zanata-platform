@@ -111,7 +111,7 @@ public class ManageUsersTest extends ZanataTestCase {
                 .enterUsername("translator")
                 .enterPassword("translator")
                 .clickSignInExpectError();
-        assertThat(signInPage.getFieldErrors())
+        assertThat(signInPage.getErrors())
                 .contains(SignInPage.LOGIN_FAILED_ERROR)
                 .as("The user's account cannot be logged in");
     }

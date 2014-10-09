@@ -50,7 +50,7 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     private WebElement getGroupSlugField() {
-        return getDriver().findElement(By.id("group-form:slugField:slug"));
+        return waitForWebElement(By.id("group-form:slugField:slug"));
     }
 
     public String getGroupIdValue() {
@@ -65,7 +65,7 @@ public class CreateVersionGroupPage extends BasePage {
     }
 
     private WebElement getGroupNameField() {
-        return getDriver().findElement(By.id("group-form:nameField:name"));
+        return waitForWebElement(By.id("group-form:nameField:name"));
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
