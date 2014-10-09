@@ -65,7 +65,7 @@ public class DashboardClientTab extends DashboardBasePage {
 
     public void waitForApiKeyChanged(final String current) {
         log.info("Wait for API key changed from {}", current);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return !getApiKey().equals(current);

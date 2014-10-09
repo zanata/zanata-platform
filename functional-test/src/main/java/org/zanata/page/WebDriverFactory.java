@@ -44,6 +44,7 @@ import org.zanata.util.TestEventForScreenshotListener;
 import static org.zanata.util.Constants.chrome;
 import static org.zanata.util.Constants.firefox;
 import static org.zanata.util.Constants.webDriverType;
+import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
 
 @Slf4j
@@ -53,6 +54,7 @@ public enum WebDriverFactory {
     private volatile WebDriver driver = createDriver();
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
+    private int webdriverWait;
 
     public WebDriver getDriver() {
         return driver;
@@ -60,14 +62,19 @@ public enum WebDriverFactory {
 
     public WebDriver createDriver() {
         WebDriver driver = createPlainDriver();
+        webdriverWait = Integer.parseInt(PropertiesHolder
+                .getProperty(webDriverWait.value()));
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         return driver;
     }
 
     public String getHostUrl() {
         return PropertiesHolder.getProperty(zanataInstance.value());
+    }
+
+    public int getWebDriverWait() {
+        return webdriverWait;
     }
 
     public void updateListenerTestName(String testName) {
@@ -77,7 +84,6 @@ public enum WebDriverFactory {
         enableScreenshots();
         eventListener.updateTestID(testName);
     }
-
 
     private WebDriver enableScreenshots() {
         log.debug("Enabling screenshot module...");

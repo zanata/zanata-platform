@@ -30,7 +30,7 @@ public enum Constants {
     propFile("setup.properties"), zanataInstance("zanata.instance.url"),
     projectsLink("Projects"), webDriverType("webdriver.type"), chrome, firefox,
     htmlUnit, sampleProjects("zanata.sample.projects.basedir"), zanataApiKey(
-            "zanata.apikey");
+            "zanata.apikey"), webDriverWait("webdriver.wait");
 
     public static final int FIFTY_SEC = 50000;
     private String value;

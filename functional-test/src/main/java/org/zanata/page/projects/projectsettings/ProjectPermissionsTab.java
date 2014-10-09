@@ -21,7 +21,6 @@
 package org.zanata.page.projects.projectsettings;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -32,7 +31,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -56,7 +54,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     public ProjectPermissionsTab selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
-        waitForTenSec()
+        waitForAMoment()
                 .until(new Predicate<WebDriver>() {
                     @Override
                     public boolean apply(WebDriver driver) {
@@ -98,7 +96,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
-        return waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 for (WebElement maintainersLi : getSettingsMaintainersElement()) {

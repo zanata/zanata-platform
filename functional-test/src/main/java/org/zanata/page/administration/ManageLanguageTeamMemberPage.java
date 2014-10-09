@@ -58,7 +58,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
         // Waiting 10 seconds for an element to be present on the page, checking
         // for its presence once every 1 second.
         WebElement joinLanguageTeamLink =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     public WebElement apply(WebDriver driver) {
                         return driver.findElement(By
                                 .linkText("Join Language Team"));
@@ -66,7 +66,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
                 });
         joinLanguageTeamLink.click();
         // we need to wait for this join to finish before returning the page
-        waitForTenSec().until(new Function<WebDriver, Boolean>() {
+        waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 List<WebElement> joinLanguageTeam =
@@ -80,7 +80,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
     public ManageLanguageTeamMemberPage clickAddTeamMember() {
         log.info("Click Add Team Member");
         WebElement addTeamMemberLink =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     public WebElement apply(WebDriver driver) {
                         return driver.findElement(By.id("addTeamMemberLink"));
                     }
@@ -96,7 +96,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
                 getDriver().findElement(By.id("userAddPanel_container"));
 
         WebElement searchInput =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     public WebElement apply(WebDriver driver) {
                         return addUserPanel.findElement(By
                                 .id("searchForm:searchField"));
@@ -107,7 +107,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
                 getDriver().findElement(By.id("searchForm:searchBtn"));
         searchButton.click();
 
-        return waitForTenSec().until(
+        return waitForAMoment().until(
                 new Function<WebDriver, ManageLanguageTeamMemberPage>() {
                     @Override
                     public ManageLanguageTeamMemberPage apply(WebDriver driver) {

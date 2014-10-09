@@ -38,7 +38,7 @@ public class ProjectAboutPage extends ProjectBasePage {
 
     public String getAboutText() {
         log.info("Query About content");
-        return waitForTenSec().until(new Function<WebDriver, String>() {
+        return waitForAMoment().until(new Function<WebDriver, String>() {
             @Override
             public String apply(WebDriver driver) {
                 return getDriver()

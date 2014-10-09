@@ -75,7 +75,7 @@ public class ManageSearchPage extends BasePage {
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
         getDriver().findElement(By.id("form:reindex")).click();
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 // The Abort button will display
@@ -87,7 +87,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage waitForActionsToFinish() {
         log.info("Wait: all actions are finished");
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 // once the button re-appears, it means the reindex is done.

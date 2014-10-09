@@ -49,7 +49,7 @@ public class EditHomeContentPage extends BasePage {
     public EditHomeContentPage enterText(String text) {
         log.info("Enter homepage code\n{}", text);
         // Switch to the CKEditor frame
-        getDriver().switchTo().frame(waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        getDriver().switchTo().frame(waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 return getDriver().findElement(
@@ -58,7 +58,7 @@ public class EditHomeContentPage extends BasePage {
             }
         }));
 
-        WebElement textEdit = waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        WebElement textEdit = waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 System.out.println(getDriver().findElements(By.tagName("body")).size());

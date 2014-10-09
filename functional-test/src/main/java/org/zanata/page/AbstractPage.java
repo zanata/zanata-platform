@@ -35,7 +35,6 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 
 /**
@@ -45,13 +44,13 @@ import com.google.common.base.Predicate;
 @Slf4j
 public class AbstractPage {
     private final WebDriver driver;
-    private final FluentWait<WebDriver> ajaxWaitForTenSec;
+    private final FluentWait<WebDriver> ajaxWaitForSec;
 
     public AbstractPage(final WebDriver driver) {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
-        ajaxWaitForTenSec = WebElementUtil.waitForTenSeconds(driver);
+        ajaxWaitForSec = WebElementUtil.waitForAMoment(driver);
         waitForPageSilence();
     }
 
@@ -78,8 +77,8 @@ public class AbstractPage {
         return driver.getCurrentUrl();
     }
 
-    public FluentWait<WebDriver> waitForTenSec() {
-        return ajaxWaitForTenSec;
+    public FluentWait<WebDriver> waitForAMoment() {
+        return ajaxWaitForSec;
     }
 
     /**
@@ -89,7 +88,7 @@ public class AbstractPage {
      */
     public void waitForPage(List<By> elementBys) {
         for (final By by : elementBys) {
-            waitForTenSec().until(new Function<WebDriver, WebElement>() {
+            waitForAMoment().until(new Function<WebDriver, WebElement>() {
                 @Override
                 public WebElement apply(WebDriver driver) {
                     return getDriver().findElement(by);
@@ -99,12 +98,13 @@ public class AbstractPage {
     }
 
     public Alert switchToAlert() {
-        return waitForTenSec().until(new Function<WebDriver, Alert>() {
+        return waitForAMoment().until(new Function<WebDriver, Alert>() {
             @Override
             public Alert apply(WebDriver driver) {
                 try {
                     return getDriver().switchTo().alert();
-                } catch (NoAlertPresentException noAlertPresent) {
+                }
+                catch (NoAlertPresentException noAlertPresent) {
                     return null;
                 }
             }
@@ -113,14 +113,14 @@ public class AbstractPage {
 
     protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
             Predicate<WebDriver> predicate) {
-        waitForTenSec().until(predicate);
+        waitForAMoment().until(predicate);
         PageFactory.initElements(driver, currentPage);
         return currentPage;
     }
 
     protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
             Function<WebDriver, T> function) {
-        T done = waitForTenSec().until(function);
+        T done = waitForAMoment().until(function);
         PageFactory.initElements(driver, currentPage);
         return done;
     }
@@ -136,7 +136,7 @@ public class AbstractPage {
      */
     public <T> void
             waitFor(final Callable<T> callable, final Matcher<T> matcher) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 try {
@@ -146,7 +146,8 @@ public class AbstractPage {
                                 new Description.NullDescription());
                     }
                     return matcher.matches(result);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     log.warn("exception", e);
                     return false;
                 }
@@ -160,7 +161,7 @@ public class AbstractPage {
      */
     public void waitForPageSilence() {
         // Wait for jQuery calls to be 0
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 int ajaxCalls;
@@ -168,18 +169,23 @@ public class AbstractPage {
                 try {
                     jQueryCalls = Integer.parseInt(
                             ((JavascriptExecutor) getDriver())
-                            .executeScript("return jQuery.active")
-                            .toString());
-                } catch (WebDriverException jCall) {
+                                    .executeScript("return jQuery.active")
+                                    .toString()
+                    );
+                }
+                catch (WebDriverException jCall) {
                     jQueryCalls = 0;
                 }
 
                 try {
                     ajaxCalls = Integer.parseInt(
                             ((JavascriptExecutor) getDriver())
-                            .executeScript("return Ajax.activeRequestCount")
-                            .toString());
-                } catch (WebDriverException jCall) {
+                                    .executeScript(
+                                            "return Ajax.activeRequestCount")
+                                    .toString()
+                    );
+                }
+                catch (WebDriverException jCall) {
                     ajaxCalls = 0;
                 }
                 return ajaxCalls + jQueryCalls == 0;
