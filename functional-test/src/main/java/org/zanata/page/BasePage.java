@@ -37,6 +37,7 @@ import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HelpPage;
@@ -118,6 +119,12 @@ public class BasePage extends CorePage {
         log.info("Click Groups");
         clickNavMenuItem(groupsLink);
         return new VersionGroupsPage(getDriver());
+    }
+
+    public LanguagesPage goToLanguages() {
+        log.info("Click Languages");
+        clickNavMenuItem(getDriver().findElement(By.id("languages_link")));
+        return new LanguagesPage(getDriver());
     }
 
     public GlossaryPage goToGlossary() {
