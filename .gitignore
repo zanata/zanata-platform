@@ -31,6 +31,7 @@ bin/
 # eclipse scrapbook page:
 *.jpage
 
+*.pdf
 
 # idea
 *.idea/
