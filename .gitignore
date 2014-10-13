@@ -1,8 +1,3 @@
-# NB be careful ignoring anything under src/ (especially directories or .jar files)
-# because ignoring files under these directories can make it
-# difficult to debug build problems.  At the very least, we should ensure
-# 'mvn clean' will clean such directories.
-
 
 *~
 *.patch
@@ -53,6 +48,18 @@ bin/
 # vim
 *.swp
 
+
+# binary files
+*.class
+*.cli
+*.exe
+*.jar
+*.war
+*.zip
+
+# temp files
 *.log
+*.temp
+*.tmp
 /tmp*
 *.bak
