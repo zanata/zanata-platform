@@ -31,10 +31,15 @@ public class GravatarServiceImpl implements GravatarService {
     @Override
     public String getUserImageUrl(int size, String email) {
         StringBuilder url = new StringBuilder(GRAVATAR_URL);
-        url.append(HashUtil.md5Hex(email.toLowerCase().trim()));
+        url.append(getGravatarHash(email));
         url.append("?d=mm&r=g&s="); // d = default image, r = rating, s = size
         url.append(size);
         return url.toString();
+    }
+
+    @Override
+    public String getGravatarHash(String email) {
+       return HashUtil.md5Hex(email.toLowerCase().trim());
     }
 
 }

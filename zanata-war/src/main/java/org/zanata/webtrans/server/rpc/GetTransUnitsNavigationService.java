@@ -81,13 +81,14 @@ public class GetTransUnitsNavigationService {
      * This class is just so we can set id (protected) and avoid hibernate
      * proxies.
      */
-    private static class SimpleHTextFlow extends HTextFlow {
+    public static class SimpleHTextFlow extends HTextFlow {
         private static final long serialVersionUID = 1L;
 
-        public SimpleHTextFlow(Long id, ContentState contentState,
+        public SimpleHTextFlow(Long id, String resId, ContentState contentState,
                 HLocale hLocale) {
             super();
             setId(id);
+            setResId(resId);
             HTextFlowTarget target = new HTextFlowTarget(this, hLocale);
             target.setState(contentState);
             getTargets().put(hLocale.getId(), target);
@@ -97,6 +98,7 @@ public class GetTransUnitsNavigationService {
     public static class TextFlowResultTransformer implements ResultTransformer {
         public static final String ID = "id";
         public static final String CONTENT_STATE = "state";
+        public static final String RESID = "resId";
         private static final long serialVersionUID = 1L;
         private final HLocale hLocale;
 
@@ -108,6 +110,7 @@ public class GetTransUnitsNavigationService {
         public SimpleHTextFlow transformTuple(Object[] tuple, String[] aliases) {
             Long id = null;
             ContentState state = null;
+            String resId = null;
             for (int i = 0, aliasesLength = aliases.length; i < aliasesLength; i++) {
                 String columnName = aliases[i];
                 if (columnName.equals(ID)) {
@@ -119,9 +122,12 @@ public class GetTransUnitsNavigationService {
                             index == null ? ContentState.New : ContentState
                                     .values()[index];
                 }
+                if (columnName.equals(RESID)) {
+                    resId = (String) tuple[i];
+                }
             }
             GetTransUnitsNavigationService.log.debug(" {} - {}", id, state);
-            return new SimpleHTextFlow(id, state, hLocale);
+            return new SimpleHTextFlow(id, resId, state, hLocale);
         }
 
         @Override

@@ -127,7 +127,7 @@ public class FilterConstraintToQuery {
         String docIdCondition =
                 eq("tf.document.id", Parameters.DocumentId.placeHolder());
         return buildQuery(
-                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos",
+                "distinct tf.id as id, (case when tfts is null then 0 else tfts.state end) as state, tf.pos as pos, tf.resId as resId",
                 docIdCondition);
     }
 

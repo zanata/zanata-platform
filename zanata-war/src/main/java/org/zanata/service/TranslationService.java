@@ -131,6 +131,8 @@ public interface TranslationService {
     public interface TranslationResult {
         boolean isTranslationSuccessful();
 
+        boolean isVersionNumConflict();
+
         boolean isTargetChanged();
 
         HTextFlowTarget getTranslatedTextFlowTarget();
