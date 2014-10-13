@@ -23,6 +23,7 @@ package org.zanata.page.webtrans;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -504,15 +505,141 @@ public class EditorPage extends BasePage {
         return editorFilterField.getAttribute("value");
     }
 
+    // Find the right side column for the selected row
     private WebElement getTranslationTargetColumn() {
         return getDriver().findElement(By.className("selected"))
                 .findElements(By.className("transUnitCol"))
                 .get(1); // Right column
     }
 
+    // Find the validation messages / errors box
     private WebElement getTargetValidationBox() {
         return getTranslationTargetColumn()
                 .findElement(By.className("gwt-DisclosurePanel"));
+    }
+
+    // Click the History button for the selected row - row id must be known
+    public EditorPage clickShowHistoryForRow(int row) {
+        log.info("Click history button on row {}", row);
+        getTranslationTargetColumn()
+                .findElement(By.id("gwt-debug-target-" + row + "-history"))
+                .click();
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getTranslationHistoryBox().isDisplayed();
+            }
+        });
+        return new EditorPage(getDriver());
+
+    }
+
+    public String getHistoryEntryAuthor(int entry) {
+        log.info("Query author, action on history entry {}", entry);
+        return getTranslationHistoryList()
+                .get(entry)
+                .findElements(By.className("gwt-InlineHTML"))
+                .get(0)
+                .findElement(By.className("txt--meta"))
+                .getText();
+    }
+
+    public String getHistoryEntryContent(int entry) {
+        log.info("Query content on history entry {}", entry);
+        return getTranslationHistoryList()
+                .get(entry)
+                .findElements(By.className("gwt-InlineHTML"))
+                .get(1)
+                .findElement(By.className("cm-s-default"))
+                .getText();
+    }
+
+    public EditorPage clickCompareOn(final int entry) {
+        log.info("Click Compare on history entry {}", entry);
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                try {
+                    return getTranslationHistoryList().get(entry)
+                            .findElement(By.linkText("Compare"))
+                            .isDisplayed();
+                } catch(IndexOutOfBoundsException ioobe) {
+                    return false;
+                }
+            }
+        });
+        getTranslationHistoryList().get(entry)
+                .findElement(By.linkText("Compare"))
+                .click();
+        slightPause();
+        return new EditorPage(getDriver());
+    }
+
+    public String getTranslationHistoryCompareTabtext() {
+        log.info("Query history tab text");
+        return getCompareTab().getText();
+    }
+
+    public EditorPage clickCompareVersionsTab() {
+        log.info("Click on Compare versions tab");
+        getCompareTab().click();
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getTranslationHistoryBox()
+                        .findElement(By.className("html-face"))
+                        .isDisplayed();
+            }
+        });
+        return new EditorPage(getDriver());
+    }
+
+    public String getComparisonTextInRow(int row) {
+        log.info("Query comparison text in row {}", row);
+        return getCompareTabEntries()
+                .get(row)
+                .findElement(By.tagName("pre"))
+                .getText();
+    }
+
+    public List<String> getComparisonTextDiff() {
+        log.info("Query diff from history compare");
+        List<String> diffs = new ArrayList<>();
+        for (WebElement element : getCompareTabEntries()) {
+            for (WebElement diffElement : element.findElements(By.className("diff-insert"))) {
+                diffs.add("++" + diffElement.getText());
+            }
+            for (WebElement diffElement : element.findElements(By.className("diff-delete"))) {
+                diffs.add("--" + diffElement.getText());
+            }
+        }
+        return diffs;
+    }
+
+    private WebElement getTranslationHistoryBox() {
+        return getDriver().findElement(By.id("gwt-debug-transHistory"))
+                .findElement(By.id("gwt-debug-transHistoryTabPanel"));
+    }
+
+    private List<WebElement> getTranslationHistoryList() {
+        return getTranslationHistoryBox()
+                .findElement(By.className("gwt-TabLayoutPanelContent"))
+                .findElement(By.className("list--slat"))
+                .findElements(By.className("l--pad-v-1"));
+    }
+
+    private WebElement getCompareTab() {
+        return getTranslationHistoryBox()
+                .findElement(By.className("gwt-TabLayoutPanelTabs"))
+                .findElements(By.className("gwt-TabLayoutPanelTabInner"))
+                .get(1);
+    }
+
+    private List<WebElement> getCompareTabEntries() {
+        return getTranslationHistoryBox()
+                .findElements(By.className("gwt-TabLayoutPanelContent"))
+                .get(1) // Second tab
+                .findElements(By.className("textFlowEntry"));
     }
 
 }
