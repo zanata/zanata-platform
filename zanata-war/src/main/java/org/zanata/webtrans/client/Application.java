@@ -260,6 +260,14 @@ public class Application implements EntryPoint {
                 + workspaceId.getLocaleId().getId();
     }
 
+    public static String getNewEditorLink(WorkspaceId workspaceId, String docId) {
+        return getModuleParentBaseUrl() + "app/#/"
+                + workspaceId.getProjectIterationId().getProjectSlug() + "/"
+                + workspaceId.getProjectIterationId().getIterationSlug()
+                + "/translate/" + docId + "/"
+                + workspaceId.getLocaleId().getId();
+    }
+
     public static String getFileDownloadURL(WorkspaceId workspaceId,
             String downloadExtension) {
         return getModuleParentBaseUrl() + "rest/file/translation/"

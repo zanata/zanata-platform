@@ -42,7 +42,7 @@ public class VersionDocumentsPage extends VersionBasePage {
 
     public VersionDocumentsPage waitForSourceDocsContains(final String document) {
         log.info("Click Project link");
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return sourceDocumentsContains(document);
@@ -74,7 +74,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     private List<WebElement> getDocumentsTabDocumentList() {
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getDriver()

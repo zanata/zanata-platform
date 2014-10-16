@@ -63,7 +63,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
         log.info("Click Version {}", versionId);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 List<WebElement> versionLinks = getDriver()
@@ -103,7 +103,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage waitForDisplayedVersions(final int expected) {
         log.info("Wait for number of displayed versions to be {}", expected);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getNumberOfDisplayedVersions() == expected &&

@@ -33,6 +33,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -95,6 +96,21 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query query = getSession().createQuery(hql);
         return constraintToQuery.setQueryParameters(query, hLocale)
                 .setResultTransformer(resultTransformer).list();
+    }
+
+    public List<Object[]> getTextFlowAndTarget(List<Long> idList, Long localeId) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("from HTextFlow tf ")
+                .append("left join tf.targets tft with tft.locale.id =:localeId ")
+                .append("where tf.id in (:idList)");
+
+        Query q = getSession().createQuery(queryBuilder.toString());
+        q.setParameterList("idList", idList);
+        q.setParameter("localeId", localeId);
+        q.setCacheable(true);
+        q.setComment("TextFlowTargetDAO.getTextFlowTarget");
+
+        return q.list();
     }
 
     public int getTotalWords() {

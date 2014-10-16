@@ -112,6 +112,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .useImpl(TranslationMemoryServiceImpl.class)
                 .useImpl(AsyncTaskManagerServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)
+                .useImpl(TranslationStateCacheImpl.class)
                 .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
 
         seam.autowire(SearchIndexManager.class).reindex(true, true, false);

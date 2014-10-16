@@ -140,7 +140,7 @@ public class RegisterPage extends CorePage {
 
     public List<String> waitForErrors() {
         log.info("Query errors");
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 return getDriver().findElement(

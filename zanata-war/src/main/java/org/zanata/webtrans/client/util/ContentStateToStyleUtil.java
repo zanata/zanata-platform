@@ -26,6 +26,9 @@ public class ContentStateToStyleUtil {
 
     public static String stateToStyle(ContentState state) {
         String styleNames = "";
+        if (state == null) {
+            return styleNames;
+        }
         switch (state) {
             case New:
                 return "txt--state-neutral";

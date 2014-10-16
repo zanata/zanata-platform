@@ -224,7 +224,7 @@ public class ProjectService implements ProjectResource {
         to.setSourceCheckoutURL(from.getSourceCheckoutURL());
     }
 
-    private static Project toResource(HProject hProject, MediaType mediaType) {
+    public static Project toResource(HProject hProject, MediaType mediaType) {
         Project project = new Project();
         transfer(hProject, project);
         for (HProjectIteration pIt : hProject.getProjectIterations()) {

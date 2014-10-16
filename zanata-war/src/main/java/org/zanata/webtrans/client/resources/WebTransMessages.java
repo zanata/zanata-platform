@@ -542,4 +542,7 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Toggle Syntax Highlighting: H")
     String attentionKeyToggleSyntaxHighlightingLabel();
+
+    @DefaultMessage("Try the new alpha editor")
+    String newEditorMessage();
 }

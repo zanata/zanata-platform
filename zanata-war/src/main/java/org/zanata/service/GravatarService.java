@@ -4,4 +4,6 @@ public interface GravatarService {
     String getUserImageUrl(int size);
 
     String getUserImageUrl(int size, String email);
+
+    String getGravatarHash(String email);
 }

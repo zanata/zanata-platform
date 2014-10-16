@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -337,6 +338,26 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                         .setComment("TextFlowTargetDAO.getTextFlowTarget")
                         .uniqueResult();
         return hTextFlowTarget;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<HTextFlowTarget> findByTextFlowIdList(List<Long> idList,
+            LocaleId localeId) {
+        if (idList == null || idList.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        Query query =
+                getSession()
+                        .createQuery(
+                                "select tft from HTextFlowTarget tft "
+                                        + "where tft.textFlow.id in (:idList) "
+                                        + "and tft.locale.localeId = :localeId");
+
+        query.setParameterList("idList", idList);
+        query.setParameter("localeId", localeId);
+        query.setCacheable(false).setComment(
+                "TextFlowTargetDAO.findByTextFlowIdList");
+        return query.list();
     }
 
     public HTextFlowTarget getTextFlowTarget(HTextFlow hTextFlow,

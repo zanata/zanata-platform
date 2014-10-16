@@ -157,15 +157,6 @@
       execute="#{breadcrumbs.addLocation('', msgs['jsf.ResetPassword'])}" />
   </page>
 
-  <page view-id="/account/changepassword.xhtml" login-required="true">
-    <restrict>#{applicationConfiguration.internalAuth}</restrict>
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.ChangePassword'])}" />
-  </page>
-
   <page view-id="/account/register.xhtml">
     <action execute="#{identity.isLoggedIn()}" />
     <navigation from-action="#{identity.isLoggedIn()}">
@@ -445,22 +436,6 @@
     </navigation>
   </page>
 
-  <!-- Profile -->
-  <page view-id="/profile/edit.xhtml">
-    <restrict>#{identity.preAuthenticated}</restrict>
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.EditProfile'])}" />
-    <navigation from-action="#{profileAction.edit}">
-      <redirect view-id="/profile/view.xhtml" />
-    </navigation>
-    <navigation from-action="#{profileAction.cancel}">
-      <redirect view-id="/profile/view.xhtml" />
-    </navigation>
-  </page>
-
   <page view-id="/profile/create_user.xhtml">
     <restrict>#{identity.preAuthenticated}</restrict>
     <navigation from-action="#{newProfileAction.createUser}">
@@ -468,35 +443,6 @@
     </navigation>
     <navigation from-action="#{newProfileAction.cancel}">
       <redirect view-id="/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/profile/view.xhtml" login-required="true">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.MyProfile'])}" />
-  </page>
-
-  <page view-id="/profile/identities.xhtml" login-required="true">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.identities.Title'])}" />
-    <action execute="#{credentialsAction.loadUserCredentials}" />
-  </page>
-
-  <page view-id="/profile/add_identity.xhtml" login-required="true">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/view.xhtml', msgs['jsf.MyProfile'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/profile/identities.xhtml', msgs['jsf.identities.Title'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.identities.AddIdentity'])}" />
-
-    <navigation from-action="#{credentialsAction.cancel}">
-      <redirect view-id="/profile/identities.xhtml" />
     </navigation>
   </page>
 

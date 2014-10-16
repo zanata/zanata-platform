@@ -20,7 +20,7 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <h:form>
+    <h:form id="tribesForm">
       <rich:dataTable id="latestTribes"
         value="#{supportedLanguageAction.supportedLanguages}" var="language">
         <rich:column sortBy="#{language.localeId.id}">

@@ -61,6 +61,11 @@
       opacity:0.8;
     }
 
+    .newEditorLink {
+      position: relative;
+      top: -0.1em;
+    }
+
   </ui:style>
   <g:LayoutPanel stylePrimaryName="{style.rootContainer}"
     ui:field="rootContainer">
@@ -78,6 +83,8 @@
             </nobr>
           </li>
           <li class="{style.right-nav}">
+            <g:Anchor styleName="button--primary button l--push-h-half l--pad-v-0 bx--round {style.newEditorLink}"
+              ui:field="newEditorLink"/>
             <fui:TransUnitCountBar ui:field="translationStatsBar"
               styleName="{style.translationStats}" />
             <g:Anchor styleName="i i--document txt--hero {style.tab}"

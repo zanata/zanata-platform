@@ -118,6 +118,9 @@ public class AppView extends Composite implements AppDisplay,
     @UiField
     Anchor editorTab, searchAndReplaceTab, documentListTab, keyShortcuts;
 
+    @UiField(provided = true)
+    Anchor newEditorLink;
+
     @UiField
     UnorderedListWidget notifications;
     @UiField
@@ -129,6 +132,8 @@ public class AppView extends Composite implements AppDisplay,
 
     private Listener listener;
 
+    private final UserWorkspaceContext userWorkspaceContext;
+
     @Inject
     public AppView(WebTransMessages messages,
             DocumentListDisplay documentListView,
@@ -139,6 +144,7 @@ public class AppView extends Composite implements AppDisplay,
             final UserWorkspaceContext userWorkspaceContext) {
         // this must be initialized before uiBinder.createAndBindUi(), or an
         // exception will be thrown at runtime
+        this.userWorkspaceContext = userWorkspaceContext;
         this.messages = messages;
         translationStatsBar =
                 new TransUnitCountBar(userWorkspaceContext, messages,
@@ -158,6 +164,11 @@ public class AppView extends Composite implements AppDisplay,
         filesLink = new Breadcrumb(false, false, "");
         // filesLink.setHref(Application.getVersionFilesURL(userWorkspaceContext.getWorkspaceContext().getWorkspaceId()));
         selectedDocumentSpan = new Breadcrumb(false, true, "");
+
+        newEditorLink = new Anchor();
+        newEditorLink.setTarget("_blank");
+        newEditorLink.setText(messages.newEditorMessage());
+        newEditorLink.addStyleName("is-invisible");
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -200,16 +211,19 @@ public class AppView extends Composite implements AppDisplay,
         case Documents:
             content.selectTab(DOCUMENT_VIEW);
             selectedDocumentSpan.setVisible(false);
+            newEditorLink.addStyleName("is-invisible");
             setSelectedTab(documentListTab);
             break;
         case Search:
             content.selectTab(SEARCH_AND_REPLACE_VIEW);
             selectedDocumentSpan.setVisible(true);
+            newEditorLink.addStyleName("is-invisible");
             setSelectedTab(searchAndReplaceTab);
             break;
         case Editor:
             content.selectTab(EDITOR_VIEW);
             selectedDocumentSpan.setVisible(true);
+            newEditorLink.removeStyleName("is-invisible");
             setSelectedTab(editorTab);
         }
     }
@@ -244,7 +258,12 @@ public class AppView extends Composite implements AppDisplay,
 
     @Override
     public void setDocumentLabel(String docPath, String docName) {
-        selectedDocumentSpan.setText(docPath + docName);
+        String selectedDocId = docPath + docName;
+        selectedDocumentSpan.setText(selectedDocId);
+
+        newEditorLink.setHref(Application.getNewEditorLink(
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId(),
+                selectedDocId.replace("/", ",")));
     }
 
     @Override

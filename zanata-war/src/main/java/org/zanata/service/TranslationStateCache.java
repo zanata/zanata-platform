@@ -75,4 +75,19 @@ public interface TranslationStateCache {
      */
     WordStatistic getDocumentStatistics(Long documentId,
             LocaleId localeId);
+
+    /*
+     * Clears the stats for a document in all present locales.
+     *
+     * @param documentId
+     */
+    void clearDocumentStatistics(Long documentId);
+
+    /**
+     * Clears the stats for a document and locale.
+     *
+     * @param documentId
+     * @param localeId
+     */
+    void clearDocumentStatistics(Long documentId, LocaleId localeId);
 }

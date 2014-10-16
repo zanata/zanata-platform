@@ -20,9 +20,6 @@
  */
 package org.zanata.page.dashboard;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -125,7 +122,7 @@ public class DashboardBasePage extends BasePage {
 
     public void waitForUsernameChanged(final String current) {
         log.info("Wait for username change from {}", current);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return !getUserFullName().equals(current);

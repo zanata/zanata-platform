@@ -136,7 +136,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage clickAddProjectVersionsButton() {
         log.info("Click Add Project Version");
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 WebElement addProjectVersionButton = driver
@@ -182,7 +182,7 @@ public class VersionGroupPage extends BasePage {
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
         final WebElement languagesTab = getDriver().findElement(By.id("languages"));
-        waitForTenSec().until( new Predicate<WebDriver>() {
+        waitForAMoment().until( new Predicate<WebDriver>() {
             @Override
             public boolean apply(@Nullable WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
@@ -193,7 +193,7 @@ public class VersionGroupPage extends BasePage {
 
     public Boolean isProjectsTabActive() {
         final WebElement languagesTab = getDriver().findElement(By.id("projects"));
-        waitForTenSec().until( new Predicate<WebDriver>() {
+        waitForAMoment().until( new Predicate<WebDriver>() {
             @Override
             public boolean apply(@Nullable WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
@@ -217,7 +217,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectProjectVersion(final String searchEntry) {
         log.info("Click project version {}", searchEntry);
-        waitForTenSec().until(
+        waitForAMoment().until(
                 new Predicate<WebDriver>() {
                     @Override
                     public boolean apply(WebDriver driver) {

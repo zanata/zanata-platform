@@ -142,6 +142,10 @@ public class TranslationHistoryPresenter extends
         all.addAll(reviewComments);
         Collections.sort(all, Collections.reverseOrder());
         display.setData(all);
+        // if transunitId is null, it's called by
+        // org.zanata.webtrans.client.presenter.TransUnitsTablePresenter.refreshRow
+        // in concurrent editing conflict. We will hide the comment field.
+        display.enableComment(transUnitId != null);
     }
 
     @Override

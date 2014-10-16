@@ -68,7 +68,7 @@ public class CreateVersionPage extends BasePage {
      */
     public CreateVersionPage inputVersionId(final String versionId) {
         log.info("Enter version ID {}", versionId);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 getVersionIdField().clear();
@@ -84,7 +84,7 @@ public class CreateVersionPage extends BasePage {
     public CreateVersionPage clickCopyFromVersion() {
         log.info("Click Copy From Previous checkbox");
         copyFromPreviousVersionChk.click();
-        waitForTenSec().until(new Function<WebDriver, WebElement>() {
+        waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver driver) {
                 return getDriver().findElement(By.id(
@@ -122,7 +122,7 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
         log.info("Wait for number of error to be {}", numberOfErrors);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getErrors().size() == numberOfErrors;

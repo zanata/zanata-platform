@@ -142,9 +142,6 @@ public class TranslationServiceImpl implements TranslationService {
     @In
     private Messages msgs;
 
-    @In
-    private ActivityService activityServiceImpl;
-
     @Override
     public List<TranslationResult> translate(LocaleId localeId,
             List<TransUnitUpdateRequest> translationRequests) {
@@ -250,8 +247,8 @@ public class TranslationServiceImpl implements TranslationService {
                                 + hTextFlowTarget.getVersionNum();
 
                 log.warn(errorMessage);
-
                 result.errorMessage = errorMessage;
+                result.isVersionNumConflict = true;
                 result.isSuccess = false;
             }
             result.translatedTextFlowTarget = hTextFlowTarget;
@@ -849,6 +846,7 @@ public class TranslationServiceImpl implements TranslationService {
         private HTextFlowTarget translatedTextFlowTarget;
         private boolean isSuccess;
         private boolean targetChanged = false;
+        private boolean isVersionNumConflict = false;
         private int baseVersion;
         private ContentState baseContentState;
         private String errorMessage;
@@ -856,6 +854,11 @@ public class TranslationServiceImpl implements TranslationService {
         @Override
         public boolean isTranslationSuccessful() {
             return isSuccess;
+        }
+
+        @Override
+        public boolean isVersionNumConflict() {
+            return isVersionNumConflict;
         }
 
         @Override
@@ -968,6 +971,7 @@ public class TranslationServiceImpl implements TranslationService {
         result.baseVersion = hTextFlowTarget.getVersionNum();
         result.baseContentState = hTextFlowTarget.getState();
         result.isSuccess = false;
+        result.isVersionNumConflict = false;
         result.translatedTextFlowTarget = hTextFlowTarget;
         result.errorMessage = null;
         return result;

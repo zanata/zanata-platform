@@ -70,6 +70,8 @@ public class AddReviewCommentHandlerTest {
     @Mock
     private org.zanata.dao.TextFlowTargetDAO textFlowTargetDAO;
     @Mock
+    private org.zanata.dao.TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
+    @Mock
     private org.zanata.model.HAccount authenticatedAccount;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private HTextFlowTarget hTextFlowTarget;
@@ -100,6 +102,8 @@ public class AddReviewCommentHandlerTest {
                         .reset()
                         .use("securityServiceImpl", securityServiceImpl)
                         .use("textFlowTargetDAO", textFlowTargetDAO)
+                        .use("textFlowTargetReviewCommentsDAO",
+                                textFlowTargetReviewCommentsDAO)
                         .use(JpaIdentityStore.AUTHENTICATED_USER,
                                 authenticatedAccount)
                         .use("localeServiceImpl", localeService)
@@ -151,7 +155,9 @@ public class AddReviewCommentHandlerTest {
 
         // Then:
         InOrder inOrder =
-                Mockito.inOrder(textFlowTargetDAO, hTextFlowTarget, workspace,
+                Mockito.inOrder(textFlowTargetDAO,
+                        textFlowTargetReviewCommentsDAO,
+                        hTextFlowTarget, workspace,
                         securityServiceImpl, identity);
         inOrder.verify(securityServiceImpl).checkWorkspaceStatus(
                 action.getWorkspaceId());
@@ -161,8 +167,7 @@ public class AddReviewCommentHandlerTest {
                 hProject);
         inOrder.verify(hTextFlowTarget).addReviewComment(commentContent,
                 hPerson);
-        inOrder.verify(textFlowTargetDAO).makePersistent(hTextFlowTarget);
-        inOrder.verify(textFlowTargetDAO).flush();
+        inOrder.verify(textFlowTargetReviewCommentsDAO).flush();
         inOrder.verify(workspace).publish(isA(AddReviewComment.class));
 
         assertThat(result.getComment().getId(),

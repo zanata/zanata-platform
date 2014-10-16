@@ -31,7 +31,9 @@ import java.util.Set;
 
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.contexts.Contexts;
 import org.zanata.util.EmptyEnumeration;
 
 import javax.annotation.Nonnull;
@@ -85,6 +87,12 @@ public class Messages extends AbstractMap<String, String> {
         this.resourceBundle = getResourceBundle();
     }
 
+    @Observer("org.jboss.seam.localeSelected")
+    public void changeLocale(String localeString) {
+        // we need to refresh the bean
+        // see org.jboss.seam.international.LocaleSelector.select()
+        Contexts.removeFromAllContexts("msgs");
+    }
     // the default toString includes the entire list of properties,
     // which makes a mess of the log file
     @Override

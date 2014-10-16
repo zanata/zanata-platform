@@ -58,7 +58,7 @@ public class VersionGroupsPage extends BasePage {
         if (show != showObsolete.isSelected()) {
             showObsolete.click();
         }
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 WebElement table =

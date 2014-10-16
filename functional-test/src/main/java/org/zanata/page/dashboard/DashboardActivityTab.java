@@ -62,7 +62,7 @@ public class DashboardActivityTab extends DashboardBasePage {
         final int activityListOrigSize = getMyActivityList().size();
         if (moreActivity != null) {
             moreActivity.click();
-            WebElementUtil.waitForTenSeconds(getDriver()).until(
+            WebElementUtil.waitForAMoment(getDriver()).until(
                     new ExpectedCondition<Object>() {
                         @Nullable
                         @Override

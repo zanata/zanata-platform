@@ -75,7 +75,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
 
     public ProjectLanguagesTab waitForLocaleListVisible() {
         log.info("Wait for locale list visible");
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 return getDriver()
@@ -108,7 +108,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public ProjectLanguagesTab addLanguage(final String localeId) {
         log.info("Click Add language on {}", localeId);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 List<WebElement> searchResults =

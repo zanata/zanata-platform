@@ -37,6 +37,7 @@ import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.page.groups.VersionGroupsPage;
+import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.utility.HelpPage;
@@ -103,14 +104,14 @@ public class BasePage extends CorePage {
             getDriver().findElement(By.id("nav-main"))
                     .findElement(By.tagName("a")).click();
         }
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return menuItem.isDisplayed();
             }
         });
         // The notifications can sometimes get in the way
-        waitForTenSec().until(ExpectedConditions.elementToBeClickable(menuItem));
+        waitForAMoment().until(ExpectedConditions.elementToBeClickable(menuItem));
         menuItem.click();
     }
 
@@ -118,6 +119,12 @@ public class BasePage extends CorePage {
         log.info("Click Groups");
         clickNavMenuItem(groupsLink);
         return new VersionGroupsPage(getDriver());
+    }
+
+    public LanguagesPage goToLanguages() {
+        log.info("Click Languages");
+        clickNavMenuItem(getDriver().findElement(By.id("languages_link")));
+        return new LanguagesPage(getDriver());
     }
 
     public GlossaryPage goToGlossary() {
@@ -257,7 +264,7 @@ public class BasePage extends CorePage {
 
     public BasePage waitForSearchListContains(final String expected) {
         log.info("Wait for Project search list contains {}", expected);
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectSearchAutocompleteItems().contains(expected);
@@ -275,7 +282,7 @@ public class BasePage extends CorePage {
     public ProjectVersionsPage clickSearchEntry(final String searchEntry) {
         log.info("Click Projects search result {}", searchEntry);
         WebElement searchItem =
-                waitForTenSec().until(new Function<WebDriver, WebElement>() {
+                waitForAMoment().until(new Function<WebDriver, WebElement>() {
                     @Override
                     public WebElement apply(WebDriver driver) {
                         List<WebElement> items =
@@ -296,7 +303,7 @@ public class BasePage extends CorePage {
     }
 
     public void clickWhenTabEnabled(final WebElement tab) {
-        waitForTenSec().until(new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 waitForPageSilence();

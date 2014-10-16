@@ -64,7 +64,8 @@ public class TranslationServiceRestTest extends
                 .useImpl(DocumentServiceImpl.class)
                 .useImpl(TranslationServiceImpl.class)
                 .useImpl(ValidationServiceImpl.class)
-                .useImpl(VersionStateCacheImpl.class);
+                .useImpl(VersionStateCacheImpl.class)
+                .useImpl(TranslationStateCacheImpl.class);
 
         SourceDocResourceService sourceDocResourceService =
                 seamAutowire.autowire(SourceDocResourceService.class);

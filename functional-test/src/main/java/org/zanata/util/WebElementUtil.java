@@ -39,6 +39,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.zanata.page.WebDriverFactory;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -64,7 +65,7 @@ public class WebElementUtil {
     }
 
     public static List<String> elementsToText(WebDriver driver, final By by) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(@Nullable WebDriver input) {
@@ -75,7 +76,8 @@ public class WebElementUtil {
                         return ImmutableList.copyOf(Lists.transform(elements,
                                 WebElementToTextFunction.FUNCTION));
                     }
-                });
+                }
+        );
     }
 
     public static String getInnerHTML(WebDriver driver, WebElement element) {
@@ -91,7 +93,7 @@ public class WebElementUtil {
 
     public static List<TableRow> getTableRows(WebDriver driver,
             final By byQueryForTable) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
                     public List<TableRow> apply(@Nullable WebDriver webDriver) {
@@ -105,12 +107,13 @@ public class WebElementUtil {
                         return ImmutableList.copyOf(Lists.transform(rows,
                                 WebElementTableRowFunction.FUNCTION));
                     }
-                });
+                }
+        );
     }
 
     public static List<TableRow> getTableRows(WebDriver driver,
             final WebElement table) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<TableRow>>() {
                     @Override
                     public List<TableRow> apply(@Nullable WebDriver webDriver) {
@@ -122,7 +125,8 @@ public class WebElementUtil {
                         return ImmutableList.copyOf(Lists.transform(rows,
                                 WebElementTableRowFunction.FUNCTION));
                     }
-                });
+                }
+        );
     }
 
     public static ImmutableList<List<String>> transformToTwoDimensionList(
@@ -148,13 +152,13 @@ public class WebElementUtil {
                         StaleElementReferenceException.class);
     }
 
-    public static FluentWait<WebDriver> waitForTenSeconds(WebDriver webDriver) {
-        return waitForSeconds(webDriver, 10);
+    public static FluentWait<WebDriver> waitForAMoment(WebDriver webDriver) {
+        return waitForSeconds(webDriver, WebDriverFactory.INSTANCE.getWebDriverWait());
     }
 
     public static List<String> getColumnContents(WebDriver driver, final By by,
             final int columnIndex) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(@Nullable WebDriver input) {
@@ -164,7 +168,8 @@ public class WebElementUtil {
                         WebElement table;
                         try {
                             table = input.findElement(by);
-                        } catch (NoSuchElementException noElement) {
+                        }
+                        catch (NoSuchElementException noElement) {
                             // Some pages don't show a table, if there's no
                             // items to show
                             return Collections.emptyList();
@@ -186,15 +191,17 @@ public class WebElementUtil {
                                                 "column index");
                                         return cellContents.get(columnIndex);
                                     }
-                                }));
+                                }
+                        ));
                     }
-                });
+                }
+        );
 
     }
 
     public static List<List<String>> getTwoDimensionList(WebDriver driver,
             final By by) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
                     public List<List<String>> apply(@Nullable WebDriver input) {
@@ -209,11 +216,12 @@ public class WebElementUtil {
                                         WebElementTableRowFunction.FUNCTION);
                         return transformToTwoDimensionList(tableRows);
                     }
-                });
+                }
+        );
     }
 
     public static List<WebElement> getListItems(WebDriver driver, final By by) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<WebElement>>() {
                     @Override
                     public List<WebElement> apply(@Nullable WebDriver input) {
@@ -223,7 +231,8 @@ public class WebElementUtil {
                         final WebElement list = input.findElement(by);
                         return list.findElements(By.xpath(".//li"));
                     }
-                });
+                }
+        );
     }
 
     /**
@@ -292,15 +301,17 @@ public class WebElementUtil {
 
     public static List<WebElement> getSearchAutocompleteResults(
             WebDriver driver, final String formId, final String id) {
-        return waitForTenSeconds(driver).until(
+        return waitForAMoment(driver).until(
                 new Function<WebDriver, List<WebElement>>() {
-                @Override
-                public List<WebElement> apply(WebDriver input) {
-                    String locator = formId + ":" + id + ":" + id + "-result";
-                    return input.findElement(By.id(locator)).findElements(
-                            By.className("js-autocomplete__result"));
+                    @Override
+                    public List<WebElement> apply(WebDriver input) {
+                        String locator =
+                                formId + ":" + id + ":" + id + "-result";
+                        return input.findElement(By.id(locator)).findElements(
+                                By.className("js-autocomplete__result"));
+                    }
                 }
-        });
+        );
     }
 
     public static List<String> getSearchAutocompleteItems(WebDriver driver,

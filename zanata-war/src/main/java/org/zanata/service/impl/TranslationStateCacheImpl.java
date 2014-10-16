@@ -44,10 +44,12 @@ import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
@@ -104,6 +106,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     @In
     private DocumentDAO documentDAO;
 
+    @In
+    private LocaleDAO localeDAO;
+
     // constructor for Seam
     public TranslationStateCacheImpl() {
         this(new DocumentStatisticLoader(), new HTextFlowTargetIdLoader(),
@@ -145,6 +150,20 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     }
 
     @Override
+    public void clearDocumentStatistics(Long documentId) {
+        for (HLocale locale : localeDAO.findAll()) {
+            DocumentLocaleKey key =
+                    new DocumentLocaleKey(documentId, locale.getLocaleId());
+            documentStatisticCache.remove(key);
+        }
+    }
+
+    @Override
+    public void clearDocumentStatistics(Long documentId, LocaleId localeId) {
+        documentStatisticCache.remove(new DocumentLocaleKey(documentId,
+                localeId));
+    }
+
     public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId) {
         return docStatusCache.getWithLoader(new DocumentLocaleKey(
                 documentId, localeId));

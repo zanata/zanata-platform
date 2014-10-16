@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.5.0-SNAPSHOT</version>
+    <version>3.6.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -54,6 +54,7 @@
     <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
+    <webdriver.wait>10</webdriver.wait>
     <googleopenid.credentials>zanata.user.1:</googleopenid.credentials>
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
@@ -695,6 +696,7 @@
                 <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
                 <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
+                <echo>-Dwebdriver.wait=global wait time in seconds for element searches. Default is 10.</echo>
                 <echo>==========================================================</echo>
                 <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dfunctional-test -Dmysql.port=13306</echo>
               </target>

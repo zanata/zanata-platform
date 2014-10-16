@@ -39,6 +39,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
@@ -66,6 +67,8 @@ public class CopyTransServiceImpl implements CopyTransService {
     private CopyTransWorkFactory copyTransWorkFactory;
     @In
     private TextFlowTargetDAO textFlowTargetDAO;
+    @In
+    private TranslationStateCache translationStateCacheImpl;
 
     /**
      * Copies previous matching translations for the given locale into a
@@ -134,6 +137,13 @@ public class CopyTransServiceImpl implements CopyTransService {
 
             taskHandleOpt.get().increaseProgress(totalActiveTextFlows);
         }
+
+        // If there have been any changes to the document stats, reset them
+        if( numCopied > 0 ) {
+            translationStateCacheImpl.clearDocumentStatistics(document.getId(),
+                    targetLocale.getLocaleId());
+        }
+
         stopwatch.stop();
         log.info(
                 "copyTrans: {} {} translations for document \"{}{}\" - duration: {}",
