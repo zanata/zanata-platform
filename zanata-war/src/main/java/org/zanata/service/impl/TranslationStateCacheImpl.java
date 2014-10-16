@@ -164,6 +164,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 localeId));
     }
 
+
     public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId) {
         return docStatusCache.getWithLoader(new DocumentLocaleKey(
                 documentId, localeId));
