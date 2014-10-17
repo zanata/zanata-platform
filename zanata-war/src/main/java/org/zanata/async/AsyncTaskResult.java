@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,30 +20,35 @@
  */
 package org.zanata.async;
 
-import java.util.concurrent.Future;
+import javax.annotation.Nullable;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.google.common.util.concurrent.AbstractFuture;
 
 /**
- * Public common class for all asynchronous tasks in the system.
- *
- * @param <V>
- *            The type of value returned by this task once finished.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class AsyncTask<V> {
+public class AsyncTaskResult<V> extends AbstractFuture<V> {
 
-    @Getter @Setter
-    private Future<V> future;
+    AsyncTaskResult() {
+    }
 
-    /**
-     * Computes a result, or throws a Throwable if unable to do so.
-     *
-     * @return computed result
-     * @throws Throwable if unable to compute a result
-     */
-    abstract V call() throws Throwable;
+    public static <T> AsyncTaskResult<T> taskResult(T value) {
+        AsyncTaskResult<T> result = new AsyncTaskResult<T>();
+        result.set(value);
+        return result;
+    }
+
+    public static <T> AsyncTaskResult<T> taskResult() {
+        return taskResult(null);
+    }
+
+    @Override
+    public boolean set(@Nullable V value) {
+        return super.set(value);
+    }
+
+    @Override
+    public boolean setException(Throwable throwable) {
+        return super.setException(throwable);
+    }
 }

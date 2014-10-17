@@ -39,6 +39,7 @@ import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
@@ -79,6 +80,8 @@ public class CopyTransServiceUnitTest {
     CopyTransWorkFactory copyTransWorkFactory;
     @Mock
     TranslationStateCache translationStateCacheImpl;
+    @Mock
+    TextFlowDAO textFlowDAO;
 
     @BeforeMethod
     public void initializeSeam() {
@@ -100,7 +103,7 @@ public class CopyTransServiceUnitTest {
                 new CopyTransServiceImpl(
                         localeServiceImpl, projectDAO, documentDAO,
                         copyTransWorkFactory, textFlowTargetDAO,
-                        translationStateCacheImpl);
+                        translationStateCacheImpl, textFlowDAO);
 
         HCopyTransOptions projOptions = new HCopyTransOptions(IGNORE, IGNORE, IGNORE);
 
@@ -139,7 +142,7 @@ public class CopyTransServiceUnitTest {
             optionsOut = optionsIn;
         }
 
-        ctService.copyTransForDocument(doc, optionsIn);
+        ctService.copyTransForDocument(doc, optionsIn, null);
 
         verify(copyTransWorkFactory).createCopyTransWork(de, optionsOut, doc,
                 requireReview, textFlows);

@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +30,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.SimpleAsyncTask;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -44,17 +45,13 @@ import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.AsyncTaskManagerService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import org.zanata.service.impl.DocumentServiceImpl;
-import org.zanata.service.impl.TranslationServiceImpl;
 
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.util.ServiceLocator;
 
 import javax.ws.rs.Path;
 
@@ -74,10 +71,16 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 public class AsynchronousProcessResourceService implements
         AsynchronousProcessResource {
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
+    private LocaleService localeServiceImpl;
 
     @In
-    private LocaleService localeServiceImpl;
+    private DocumentService documentServiceImpl;
+
+    @In
+    private TranslationService translationServiceImpl;
+
+    @In
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @In
     private DocumentDAO documentDAO;
@@ -119,23 +122,15 @@ public class AsynchronousProcessResourceService implements
         }
 
         String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>(name) {
-            @Override
-            public Void call() throws Exception {
-                DocumentService documentServiceImpl =
-                        ServiceLocator.instance().getInstance(
-                                DocumentServiceImpl.class);
-                documentServiceImpl.saveDocument(projectSlug, iterationSlug,
-                        resource, extensions, copytrans, true);
-                // TODO This should update with real progress
-                getHandle().setCurrentProgress(getHandle().getMaxProgress());
-                return null;
-            }
-        };
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
+                resource, extensions, copytrans, true, handle);
 
-        String taskId = asyncTaskManagerServiceImpl.startTask(task);
-        return getProcessStatus(taskId); // TODO Change to return 202 Accepted,
-                                         // with a url to get the progress
+        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+                                                    // Accepted,
+                                                    // with a url to get the
+                                                    // progress
     }
 
     @Override
@@ -150,23 +145,15 @@ public class AsynchronousProcessResourceService implements
         resourceUtils.validateExtensions(extensions); // gettext, comment
 
         String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        SimpleAsyncTask<Void> task = new SimpleAsyncTask<Void>(name) {
-            @Override
-            public Void call() throws Exception {
-                DocumentService documentServiceImpl =
-                        ServiceLocator.instance().getInstance(
-                                DocumentServiceImpl.class);
-                documentServiceImpl.saveDocument(projectSlug, iterationSlug,
-                        resource, extensions, copytrans, true);
-                // TODO This should update with real progress
-                return null;
-            }
-        };
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
+                resource, extensions, copytrans, true, handle);
 
-        String taskId = asyncTaskManagerServiceImpl.startTask(task);
-        return this.getProcessStatus(taskId); // TODO Change to return 202
-                                              // Accepted, with a url to get the
-                                              // progress
+        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+                                                    // Accepted,
+                                                    // with a url to get the
+                                                    // progress
     }
 
     @Override
@@ -196,33 +183,19 @@ public class AsynchronousProcessResourceService implements
         final MergeType finalMergeType = mergeType;
 
         String name = "TranslatedDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash+"-"+locale;
-        SimpleAsyncTask<List<String>> task =
-                new SimpleAsyncTask<List<String>>(name) {
-                    @Override
-                    public List<String> call() throws Exception {
-                        TranslationService translationServiceImpl =
-                                ServiceLocator.instance().getInstance(
-                                        TranslationServiceImpl.class);
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        translationServiceImpl.translateAllInDocAsync(projectSlug,
+                iterationSlug, id, locale, translatedDoc, extensions,
+                finalMergeType, true, handle);
 
-                        // Translate
-                        List<String> messages =
-                                translationServiceImpl.translateAllInDoc(
-                                        projectSlug, iterationSlug, id, locale,
-                                        translatedDoc, extensions,
-                                        finalMergeType, true);
-
-                        return messages;
-                    }
-                };
-
-        String taskId = asyncTaskManagerServiceImpl.startTask(task);
-        return this.getProcessStatus(taskId);
+        return this.getProcessStatus(taskId.toString());
     }
 
     @Override
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
-                asyncTaskManagerServiceImpl.getHandle(processId);
+                asyncTaskHandleManager.getHandleByKey(processId);
 
         if (handle == null) {
             throw new NotFoundException("A process was not found for id "
@@ -244,7 +217,7 @@ public class AsynchronousProcessResourceService implements
         if (handle.isDone()) {
             Object result = null;
             try {
-                result = handle.get();
+                result = handle.getResult();
             } catch (InterruptedException e) {
                 // The process was forcefully cancelled
                 status.setStatusCode(ProcessStatusCode.Failed);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,111 +18,94 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.async.tasks;
+package org.zanata.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
+import com.google.common.base.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.async.AsyncTask;
+import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskResult;
+import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
-import org.zanata.service.impl.ConfigurationServiceImpl;
-import org.zanata.service.impl.FileSystemServiceImpl;
+import org.zanata.service.TranslationArchiveService;
 
-import com.google.common.base.Optional;
-import org.zanata.util.ServiceLocator;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-import javax.annotation.Nonnull;
+import static org.zanata.common.ProjectType.*;
 
 /**
- * This is an asynchronous task to build a zip file containing all files for a
- * Project Iteration. its expected return value is an input stream with the
- * contents of the Zip file. Currently only supports PO files.
- *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class ZipFileBuildTask implements
-        AsyncTask<String, AsyncTaskHandle<String>> {
+@Name("translationArchiveServiceImpl")
+@Scope(ScopeType.STATELESS)
+@AutoCreate
+@Slf4j
+@ContainsAsyncMethods
+public class TranslationArchiveServiceImpl implements
+        TranslationArchiveService {
 
-    private final String projectSlug;
-    private final String iterationSlug;
-    private final String localeId;
-    private final String userName;
-    private final boolean isPoProject;
+    @In
+    private DocumentDAO documentDAO;
 
-    private AsyncTaskHandle<String> handle;
+    @In
+    private LocaleDAO localeDAO;
 
-    public ZipFileBuildTask(String projectSlug, String iterationSlug,
-            String localeId, String userName, boolean isPoProject) {
-        this.projectSlug = projectSlug;
-        this.iterationSlug = iterationSlug;
-        this.localeId = localeId;
-        this.userName = userName;
-        this.isPoProject = isPoProject;
-    }
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
-    @Nonnull
+    @In
+    private ResourceUtils resourceUtils;
+
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
+
+    @In
+    private FileSystemService fileSystemServiceImpl;
+
+    @In
+    private ConfigurationService configurationServiceImpl;
+
     @Override
-    public AsyncTaskHandle<String> getHandle() {
-        if (handle == null) {
-            handle = buildHandle();
+    public String buildTranslationFileArchive(String projectSlug,
+            String iterationSlug, String localeId, String userName,
+            AsyncTaskHandle<String> handle)
+            throws Exception {
+
+        Optional<AsyncTaskHandle<String>> handleOpt =
+                Optional.fromNullable(handle);
+
+        if( handleOpt.isPresent() ) {
+            prepareHandle(handleOpt.get(), projectSlug, iterationSlug);
         }
-        return handle;
-    }
-
-    private AsyncTaskHandle<String> buildHandle() {
-        String name = "ZipFileBuildTask: "+projectSlug+"-"+iterationSlug+"-"+localeId;
-        AsyncTaskHandle<String> newHandle = new AsyncTaskHandle<String>(name);
-
-        // Max documents to process
-        DocumentDAO documentDAO =
-                ServiceLocator.instance().getInstance(DocumentDAO.class);
-        final List<HDocument> allIterationDocs =
-                documentDAO
-                        .getAllByProjectIteration(projectSlug, iterationSlug);
-        newHandle.setMaxProgress(allIterationDocs.size() + 1); // all files plus
-                                                               // the zanata.xml
-                                                               // file
-
-        return newHandle;
-    }
-
-    @Override
-    public String call() throws Exception {
-        // Needed Components
-        DocumentDAO documentDAO =
-                ServiceLocator.instance().getInstance(DocumentDAO.class);
-        LocaleDAO localeDAO =
-                ServiceLocator.instance().getInstance(LocaleDAO.class);
-        ResourceUtils resourceUtils =
-                ServiceLocator.instance().getInstance(ResourceUtils.class);
-        TextFlowTargetDAO textFlowTargetDAO =
-                ServiceLocator.instance().getInstance(TextFlowTargetDAO.class);
-        FileSystemService fileSystemService =
-                ServiceLocator.instance().getInstance(
-                        FileSystemServiceImpl.class);
-        ConfigurationService configurationService =
-                ServiceLocator.instance().getInstance(
-                        ConfigurationServiceImpl.class);
-
+        boolean isPoProject = isPoProject(projectSlug, iterationSlug);
         final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
         final HLocale hLocale =
                 localeDAO.findByLocaleId(new LocaleId(localeId));
@@ -130,7 +113,7 @@ public class ZipFileBuildTask implements
         final String localeDirectory = projectDirectory + mappedLocale + "/";
 
         final File downloadFile =
-                fileSystemService.createDownloadStagingFile("zip");
+                fileSystemServiceImpl.createDownloadStagingFile("zip");
         final FileOutputStream output = new FileOutputStream(downloadFile);
         final ZipOutputStream zipOutput = new ZipOutputStream(output);
         zipOutput.setMethod(ZipOutputStream.DEFLATED);
@@ -142,29 +125,29 @@ public class ZipFileBuildTask implements
 
         // Generate the download descriptor file
         String downloadId =
-                fileSystemService.createDownloadDescriptorFile(downloadFile,
+                fileSystemServiceImpl.createDownloadDescriptorFile(downloadFile,
                         projectSlug + "_" + iterationSlug + "_" + localeId
                                 + ".zip", userName);
 
         // Add the config file at the root of the project directory
         String configFilename =
                 projectDirectory
-                        + configurationService.getConfigurationFileName();
+                        + configurationServiceImpl.getConfigurationFileName();
         zipOutput.putNextEntry(new ZipEntry(configFilename));
-        zipOutput.write(configurationService.getConfigForOfflineTranslation(
+        zipOutput.write(configurationServiceImpl.getConfigForOfflineTranslation(
                 projectSlug, iterationSlug, hLocale).getBytes());
         zipOutput.closeEntry();
-        getHandle().increaseProgress(1);
+        handle.increaseProgress(1);
 
         final List<HDocument> allIterationDocs =
                 documentDAO
                         .getAllByProjectIteration(projectSlug, iterationSlug);
         for (HDocument document : allIterationDocs) {
             // Stop the process if signaled to do so
-            if (getHandle().isCancelled()) {
+            if (handleOpt.isPresent() && handleOpt.get().isCancelled()) {
                 zipOutput.close();
                 downloadFile.delete();
-                fileSystemService.deleteDownloadDescriptorFile(downloadId);
+                fileSystemServiceImpl.deleteDownloadDescriptorFile(downloadId);
                 return null;
             }
 
@@ -183,12 +166,46 @@ public class ZipFileBuildTask implements
             poWriter.writePo(zipOutput, "UTF-8", res, translationResource);
             zipOutput.closeEntry();
 
-            getHandle().increaseProgress(1);
+            if( handleOpt.isPresent() ) {
+                handleOpt.get().increaseProgress(1);
+            }
         }
 
         zipOutput.flush();
         zipOutput.close();
 
         return downloadId;
+    }
+
+    @Override
+    @Async
+    public Future<String> startBuildingTranslationFileArchive(String projectSlug,
+            String iterationSlug, String localeId, String userName,
+            AsyncTaskHandle<String> handle) throws Exception {
+        String archiveId =
+                buildTranslationFileArchive(projectSlug, iterationSlug,
+                        localeId, userName, handle);
+        return AsyncTaskResult.taskResult(archiveId);
+    }
+
+    private void prepareHandle(AsyncTaskHandle<String> handle,
+            String projectSlug, String iterationSlug) {
+        // Max documents to process
+        final List<HDocument> allIterationDocs =
+                documentDAO
+                        .getAllByProjectIteration(projectSlug, iterationSlug);
+        handle.setMaxProgress(allIterationDocs.size() + 1); // all files plus
+        // the zanata.xml
+        // file
+    }
+
+    private boolean isPoProject(String projectSlug, String versionSlug) {
+        HProjectIteration projectIteration =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        ProjectType type = projectIteration.getProjectType();
+        if (type == null) {
+            type = projectIteration.getProject().getDefaultProjectType();
+        }
+        return type == Gettext || type == Podir;
     }
 }

@@ -38,6 +38,7 @@ import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -128,7 +129,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 .use("filePersistService", fileSystemPersistService)
                 .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(VersionStateCacheImpl.class)
-                .useImpl(AsyncTaskManagerServiceImpl.class)
                 .ignoreNonResolvable()
                 .autowire(CopyVersionServiceImpl.class);
     }
@@ -138,7 +138,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         String projectSlug = "non-exists-project";
         String versionSlug = "1.0";
         String newVersionSlug = "new-version";
-        service.copyVersion(projectSlug, versionSlug, newVersionSlug);
+        service.copyVersion(projectSlug, versionSlug, newVersionSlug, null);
         verifyZeroInteractions(identity);
         verifyZeroInteractions(credentials);
     }
@@ -161,7 +161,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         insertTextFlowAndTargetToDoc(existingDoc, tfCount, false);
 
         spyService.copyVersion(existingProjectSlug, existingVersionSlug,
-                newVersionSlug);
+                newVersionSlug, new CopyVersionTaskHandle());
 
         int expectedTfBatchRuns =
                 (tfCount / spyService.TF_BATCH_SIZE)
@@ -189,7 +189,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         int tftSize = insertTextFlowAndTargetToDoc(existingDoc, 1, true);
 
         spyService.copyVersion(existingProjectSlug, existingVersionSlug,
-                newVersionSlug);
+                newVersionSlug, new CopyVersionTaskHandle());
 
         int expectedTftBatchRuns =
                 (tftSize / spyService.TFT_BATCH_SIZE)
@@ -262,7 +262,8 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
 
     private void runCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
-        service.copyVersion(projectSlug, versionSlug, newVersionSlug);
+        service.copyVersion(projectSlug, versionSlug, newVersionSlug,
+                new CopyVersionTaskHandle());
 
         HProjectIteration existingVersion = projectIterationDAO.getBySlug(
                 projectSlug, versionSlug);

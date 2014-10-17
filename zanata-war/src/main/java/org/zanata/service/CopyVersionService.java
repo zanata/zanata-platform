@@ -22,11 +22,14 @@ package org.zanata.service;
 
 import javax.annotation.Nonnull;
 
+import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+
+import java.util.concurrent.Future;
 
 public interface CopyVersionService {
     //@formatter:off
@@ -45,7 +48,26 @@ public interface CopyVersionService {
      */
     //@formatter:on
     void copyVersion(String projectSlug, String versionSlug,
-            String newVersionSlug);
+            String newVersionSlug, CopyVersionTaskHandle handle);
+
+    //@formatter:off
+    /**
+     *  Starts a background version copy.
+     *
+     *  1) Copy version settings
+     *  2) Copy HDocument (in batch)
+     *  3) Copy textFlow for each of copied document (in batch)
+     *  4) Copy textFlowTarget for each of copied textFlow (in batch)
+     *
+     * @param projectSlug
+     * @param versionSlug
+     * @param newVersionSlug
+     *
+     *
+     */
+    //@formatter:on
+    Future<Void> startCopyVersion(String projectSlug, String versionSlug,
+            String newVersionSlug, CopyVersionTaskHandle handle);
 
     /**
      * Return total count of HDocument in HProjectIteration

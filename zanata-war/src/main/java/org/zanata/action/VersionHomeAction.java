@@ -43,7 +43,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.util.Hex;
-import org.zanata.async.tasks.CopyVersionTask;
+import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -325,7 +325,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public String getCompletedPercentage() {
-            CopyVersionTask.CopyVersionTaskHandle handle = getHandle();
+            CopyVersionTaskHandle handle = getHandle();
             if (handle != null) {
                 double completedPercent =
                         (double) handle.getCurrentProgress() / (double) handle
@@ -337,7 +337,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         public int getProcessedDocuments() {
-            CopyVersionTask.CopyVersionTaskHandle handle = getHandle();
+            CopyVersionTaskHandle handle = getHandle();
             if (handle != null) {
                 return handle.getDocumentCopied();
             }
@@ -345,7 +345,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         public int getTotalDocuments() {
-            CopyVersionTask.CopyVersionTaskHandle handle = getHandle();
+            CopyVersionTaskHandle handle = getHandle();
             if (handle != null) {
                 return handle.getTotalDoc();
             }
@@ -357,7 +357,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     CopyVersionManager.class);
         }
 
-        private CopyVersionTask.CopyVersionTaskHandle getHandle() {
+        private CopyVersionTaskHandle getHandle() {
             CopyVersionManager copyVersionManager = ServiceLocator
                     .instance().getInstance(CopyVersionManager.class);
 

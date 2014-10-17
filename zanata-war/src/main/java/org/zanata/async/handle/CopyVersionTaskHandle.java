@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,32 +18,40 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.async;
-
-import java.util.concurrent.Future;
+package org.zanata.async.handle;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.async.AsyncTaskHandle;
 
 /**
- * Public common class for all asynchronous tasks in the system.
- *
- * @param <V>
- *            The type of value returned by this task once finished.
+ * Asynchronous task handle for the copy version process.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class AsyncTask<V> {
-
+public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
     @Getter @Setter
-    private Future<V> future;
+    private int documentCopied;
+    @Getter @Setter
+    private int totalDoc;
+    @Getter @Setter
+    private String cancelledBy;
+    @Getter @Setter
+    private long cancelledTime;
+    @Getter @Setter
+    private String triggeredBy;
+    @Getter
+    private boolean prepared;
+
+    public void setPrepared() {
+        this.prepared = true;
+    }
 
     /**
-     * Computes a result, or throws a Throwable if unable to do so.
-     *
-     * @return computed result
-     * @throws Throwable if unable to compute a result
+     * Increments the processed document count by 1
      */
-    abstract V call() throws Throwable;
+    public void incrementDocumentProcessed() {
+        documentCopied++;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,26 +18,33 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.async;
+package org.zanata.async.handle;
 
 import lombok.Getter;
-
-import javax.annotation.Nonnull;
+import lombok.Setter;
+import org.zanata.async.AsyncTaskHandle;
 
 /**
- * Simple default partial implementation of an async task that produces a bare
- * bones {@link AsyncTaskHandle} that tracks progress.
- *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class SimpleAsyncTask<V> implements
-        AsyncTask<V, AsyncTaskHandle<V>> {
+public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
     @Getter
-    @Nonnull
-    private final AsyncTaskHandle<V> handle;
+    @Setter
+    private String cancelledBy;
 
-    public SimpleAsyncTask(String taskName) {
-        handle = new AsyncTaskHandle<V>(taskName);
+    @Getter
+    @Setter
+    private long cancelledTime;
+
+    @Getter
+    @Setter
+    private String triggeredBy;
+
+    @Getter
+    private boolean prepared;
+
+    public void setPrepared() {
+        this.prepared = true;
     }
 }

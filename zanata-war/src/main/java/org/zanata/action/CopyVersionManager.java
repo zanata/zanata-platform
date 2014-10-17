@@ -1,8 +1,11 @@
 package org.zanata.action;
 
-import static org.zanata.async.tasks.CopyVersionTask.CopyVersionTaskHandle;
-
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -10,16 +13,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
-import org.zanata.async.tasks.CopyVersionTask;
-import org.zanata.service.AsyncTaskManagerService;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.handle.CopyVersionTaskHandle;
+import org.zanata.service.CopyVersionService;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">aeng@redhat.com</a>
  */
 @AutoCreate
 @Name("copyVersionManager")
@@ -27,23 +27,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CopyVersionManager implements Serializable {
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
+    private AsyncTaskHandleManager asyncTaskHandleManager;
+
+    @In
+    private CopyVersionService copyVersionServiceImpl;
 
     @In
     private Identity identity;
 
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
-        asyncTaskManagerServiceImpl.startTask(new CopyVersionTask(
-                projectSlug, versionSlug, newVersionSlug),
-                CopyVersionKey.getKey(projectSlug, newVersionSlug));
+        CopyVersionKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
+        CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
+        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
+                newVersionSlug, handle);
     }
 
     public void cancelCopyVersion(String projectSlug, String versionSlug) {
         if (isCopyVersionRunning(projectSlug, versionSlug)) {
             CopyVersionTaskHandle handle =
                     getCopyVersionProcessHandle(projectSlug, versionSlug);
-            handle.forceCancel();
+            handle.cancel(true);
             handle.setCancelledTime(System.currentTimeMillis());
             handle.setCancelledBy(identity.getCredentials().getUsername());
 
@@ -51,9 +56,9 @@ public class CopyVersionManager implements Serializable {
         }
     }
 
-    public CopyVersionTask.CopyVersionTaskHandle getCopyVersionProcessHandle(
+    public CopyVersionTaskHandle getCopyVersionProcessHandle(
             String projectSlug, String versionSlug) {
-        return (CopyVersionTask.CopyVersionTaskHandle) asyncTaskManagerServiceImpl
+        return (CopyVersionTaskHandle) asyncTaskHandleManager
                 .getHandleByKey(CopyVersionKey.getKey(projectSlug, versionSlug));
     }
 

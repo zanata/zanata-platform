@@ -30,7 +30,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.service.AsyncTaskManagerService;
+import org.zanata.async.AsyncTaskHandleManager;
 
 /**
  * @author Carlos Munoz <a
@@ -41,19 +41,19 @@ import org.zanata.service.AsyncTaskManagerService;
 @Restrict("#{s:hasRole('admin')}")
 public class ProcessManagerAction {
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     public Collection<AsyncTaskHandle> getRunningProcesses() {
         ArrayList<AsyncTaskHandle> allHandles =
                 new ArrayList<AsyncTaskHandle>();
-        allHandles.addAll(asyncTaskManagerServiceImpl.getAllHandles());
+        allHandles.addAll(asyncTaskHandleManager.getAllHandles());
 
         return allHandles;
     }
 
     public int getRunningCount() {
         int running = 0;
-        for (AsyncTaskHandle h : asyncTaskManagerServiceImpl.getAllHandles()) {
+        for (AsyncTaskHandle h : asyncTaskHandleManager.getAllHandles()) {
             if (!h.isDone()) {
                 running++;
             }
@@ -62,7 +62,7 @@ public class ProcessManagerAction {
     }
 
     public int getStoppedCount() {
-        return asyncTaskManagerServiceImpl.getAllHandles().size()
+        return asyncTaskHandleManager.getAllHandles().size()
                 - getRunningCount();
     }
 
@@ -71,7 +71,7 @@ public class ProcessManagerAction {
     }
 
     public void cancel(AsyncTaskHandle handle) {
-        handle.cancel();
+        handle.cancel(true);
     }
 
 }

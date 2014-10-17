@@ -29,14 +29,16 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.tasks.ZipFileBuildTask;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.AsyncTaskManagerService;
+import org.zanata.service.TranslationArchiveService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
+
+import java.io.Serializable;
 
 /**
  *
@@ -53,12 +55,13 @@ public class DownloadAllFilesHandler extends
     private ZanataIdentity identity;
 
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
-
-    @In
     private ProjectIterationDAO projectIterationDAO;
 
-    private AsyncTaskHandle<String> zipFilePrepHandle;
+    @In
+    private TranslationArchiveService translationArchiveServiceImpl;
+
+    @In
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Override
     public DownloadAllFilesResult execute(DownloadAllFilesAction action,
@@ -67,25 +70,24 @@ public class DownloadAllFilesHandler extends
                 projectIterationDAO.getBySlug(action.getProjectSlug(),
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
-            if (this.zipFilePrepHandle != null
-                    && !this.zipFilePrepHandle.isDone()) {
-                // Cancel any other processes
-                this.zipFilePrepHandle.cancel();
-            }
-
-            // Build a new task
+            AsyncTaskHandle<String> handle = new AsyncTaskHandle<String>();
+            Serializable taskKey =
+                    asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing
-            ZipFileBuildTask task =
-                    new ZipFileBuildTask(action.getProjectSlug(),
-                            action.getVersionSlug(), action.getLocaleId(),
-                            Identity.instance().getCredentials().getUsername(),
-                            action.isPoProject());
+            try {
+                translationArchiveServiceImpl.startBuildingTranslationFileArchive(
+                        action.getProjectSlug(), action.getVersionSlug(),
+                        action.getLocaleId(), Identity.instance().getCredentials()
+                                .getUsername(), handle);
+            }
+            catch (Exception e) {
+                throw new ActionException(e);
+            }
 
-            // Fire the zip file building process and wait until it is ready to
-            // return
-            String taskId = asyncTaskManagerServiceImpl.startTask(task);
-            return new DownloadAllFilesResult(true, taskId);
+            // NB Keys are currently strings, but this is tied to the
+            // implementation
+            return new DownloadAllFilesResult(true, taskKey.toString());
         }
 
         return new DownloadAllFilesResult(false, null);
@@ -96,10 +98,6 @@ public class DownloadAllFilesHandler extends
     public void rollback(DownloadAllFilesAction action,
             DownloadAllFilesResult result, ExecutionContext context)
             throws ActionException {
-    }
-
-    public AsyncTaskHandle<String> getZipFilePrepHandle() {
-        return zipFilePrepHandle;
     }
 
 }

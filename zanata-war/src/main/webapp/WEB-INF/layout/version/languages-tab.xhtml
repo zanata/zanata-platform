@@ -489,7 +489,7 @@
         <script type="text/javascript">
           #{rich:component('downloadProgressPanel')}.hide();
           window.location =
-            "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.get()}";
+            "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.getResult()}";
         </script>
       </f:facet>
     </rich:progressBar>

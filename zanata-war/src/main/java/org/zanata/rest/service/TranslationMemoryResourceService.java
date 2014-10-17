@@ -21,6 +21,7 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
+import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,6 +37,10 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskResult;
+import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
@@ -60,6 +65,7 @@ import com.google.common.base.Optional;
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
+@ContainsAsyncMethods
 @ParametersAreNonnullByDefault
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements
@@ -204,6 +210,21 @@ public class TranslationMemoryResourceService implements
         } finally {
             lockManagerServiceImpl.release(tmLock);
         }
+    }
+
+    /**
+     * Deletes without checking security permissions and asynchronously.
+     *
+     * @param slug
+     * @return
+     */
+    @Async
+    public Future<Object> deleteTranslationUnitsUnguardedAsync(String slug,
+            AsyncTaskHandle handle) {
+        // TODO the handle is not being used for progress tracking in the
+        // current implementation
+        return AsyncTaskResult
+                .taskResult(deleteTranslationUnitsUnguarded(slug));
     }
 
     private Lock lockTM(String slug) {

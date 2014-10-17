@@ -9,8 +9,10 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.async.AsyncUtils;
-import org.zanata.async.tasks.CopyVersionTask;
+import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskResult;
+import org.zanata.async.ContainsAsyncMethods;
+import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -27,6 +29,7 @@ import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.po.HPotEntryData;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.JPACopier;
@@ -34,6 +37,7 @@ import org.zanata.util.JPACopier;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -42,6 +46,7 @@ import java.util.Map;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 @AutoCreate
+@ContainsAsyncMethods
 public class CopyVersionServiceImpl implements CopyVersionService {
 
     // Document batch size
@@ -71,19 +76,30 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @In
     private FilePersistService filePersistService;
 
+    @In
+    private ZanataIdentity identity;
+
     // Stop watch for textFlow and target copy process
     private Stopwatch copyTfAndTftStopWatch = new Stopwatch();
 
     @Override
     public void copyVersion(@Nonnull String projectSlug,
-            @Nonnull String versionSlug, @Nonnull String newVersionSlug) {
+            @Nonnull String versionSlug, @Nonnull String newVersionSlug,
+            CopyVersionTaskHandle handle) {
+        Optional<CopyVersionTaskHandle> taskHandleOpt =
+                Optional.fromNullable(handle);
+        HProjectIteration version =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+
+        if( taskHandleOpt.isPresent() ) {
+            prepareCopyVersionHandle(version, taskHandleOpt.get());
+        }
+
         Stopwatch overallStopwatch = new Stopwatch().start();
         log.info("copy version start: copy {} to {}",
                 projectSlug + ":" + versionSlug, projectSlug + ":"
                         + newVersionSlug);
 
-        HProjectIteration version =
-                projectIterationDAO.getBySlug(projectSlug, versionSlug);
         if (version == null) {
             log.error("Cannot find project iteration of {}:{}", projectSlug,
                     versionSlug);
@@ -98,10 +114,6 @@ public class CopyVersionServiceImpl implements CopyVersionService {
         newVersion = projectIterationDAO.makePersistent(newVersion);
 
         // Copy of HDocument
-        Optional<CopyVersionTask.CopyVersionTaskHandle> taskHandleOpt =
-                AsyncUtils.getEventAsyncHandle(
-                        CopyVersionTask.CopyVersionTaskHandle.class);
-
         int docSize =
                 documentDAO.getDocCountByVersion(projectSlug, versionSlug);
 
@@ -135,6 +147,25 @@ public class CopyVersionServiceImpl implements CopyVersionService {
         log.info("copy version end: copy {} to {}, {}", projectSlug
                 + ":" + versionSlug, projectSlug + ":" + newVersionSlug,
                 overallStopwatch);
+    }
+
+    @Override
+    @Async
+    public Future<Void> startCopyVersion(@Nonnull String projectSlug,
+            @Nonnull String versionSlug,
+            @Nonnull String newVersionSlug, CopyVersionTaskHandle handle) {
+        copyVersion(projectSlug, versionSlug, newVersionSlug, handle);
+        return AsyncTaskResult.taskResult();
+    }
+
+    private void prepareCopyVersionHandle(HProjectIteration originalVersion,
+            CopyVersionTaskHandle handle) {
+        handle.setTriggeredBy(identity.getAccountUsername());
+        int totalDocCount =
+                getTotalDocCount(originalVersion.getProject().getSlug(),
+                        originalVersion.getSlug());
+        handle.setMaxProgress(totalDocCount);
+        handle.setTotalDoc(totalDocCount);
     }
 
     @Override

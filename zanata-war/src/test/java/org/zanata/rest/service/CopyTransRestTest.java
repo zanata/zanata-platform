@@ -32,7 +32,6 @@ import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.impl.AsyncTaskManagerServiceImpl;
 import org.zanata.service.impl.CopyTransServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 
@@ -69,7 +68,6 @@ public class CopyTransRestTest extends ZanataRestTest {
         SeamAutowire seamAutowire = getSeamAutowire();
         seamAutowire.use("session", getSession()).use("identity", mockIdentity)
                 .useImpl(CopyTransServiceImpl.class)
-                .useImpl(AsyncTaskManagerServiceImpl.class)
                 .useImpl(LocaleServiceImpl.class)
                 .simulateSessionContext(true);
 

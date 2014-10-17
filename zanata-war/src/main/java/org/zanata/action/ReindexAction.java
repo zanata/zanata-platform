@@ -17,7 +17,6 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.TimedAsyncHandle;
 import org.zanata.service.SearchIndexManager;
 
 import com.google.common.base.Optional;
@@ -109,7 +108,7 @@ public class ReindexAction implements Serializable {
             return false;
         } else if (taskHandle.isDone()) {
             try {
-                taskHandle.get();
+                taskHandle.getResult();
             } catch (InterruptedException e) {
                 return true;
             } catch (ExecutionException e) {
@@ -145,7 +144,7 @@ public class ReindexAction implements Serializable {
     }
 
     public void cancel() {
-        searchIndexManager.getProcessHandle().cancel();
+        searchIndexManager.getProcessHandle().cancel(true);
     }
 
     public boolean isCanceled() {
@@ -173,7 +172,7 @@ public class ReindexAction implements Serializable {
     }
 
     public String getElapsedTime() {
-        TimedAsyncHandle<Void> processHandle = searchIndexManager.getProcessHandle();
+        AsyncTaskHandle<Void> processHandle = searchIndexManager.getProcessHandle();
         if (processHandle == null) {
             log.error("processHandle is null when looking up elapsed time");
             return "";
