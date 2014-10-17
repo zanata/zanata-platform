@@ -20,10 +20,12 @@
  */
 package org.zanata.service;
 
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * @author Carlos Munoz <a
@@ -75,6 +77,25 @@ public interface DocumentService {
      */
     public HDocument saveDocument(String projectSlug, String iterationSlug,
             Resource sourceDoc, Set<String> extensions, boolean copyTrans);
+
+    /**
+     * Creates or updates a document asynchronously. The process will be started
+     * in a different thread.
+     *
+     * @param projectSlug
+     * @param iterationSlug
+     * @param sourceDoc
+     * @param extensions
+     * @param copyTrans
+     * @param lock
+     * @return A future object that will eventually contain the result of the
+     * document save.
+     * @see {@link org.zanata.service.DocumentService#saveDocument(String, String, org.zanata.rest.dto.resource.Resource, java.util.Set, boolean, boolean)}
+     */
+    public Future<HDocument> saveDocumentAsync(String projectSlug,
+            String iterationSlug,
+            Resource sourceDoc, Set<String> extensions, boolean copyTrans,
+            boolean lock, AsyncTaskHandle<HDocument> handle);
 
     /**
      * Makes a document obsolete.

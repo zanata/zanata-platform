@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,42 +20,29 @@
  */
 package org.zanata.async;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.zanata.async.AsyncTaskResult.taskResult;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
-import org.junit.Assert;
+import org.jboss.seam.annotations.Name;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 
 import com.google.common.collect.Lists;
 
-import javax.annotation.Nonnull;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-
 /**
- * Integration tests for the Asynchrnous task framework.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AsyncTaskITCase extends ArquillianTest {
-    @In
-    private TaskExecutor taskExecutor;
 
-    private CountDownLatch completed = new CountDownLatch(1);
-    private Runnable onComplete = new Runnable() {
-        @Override
-        public void run() {
-            completed.countDown();
-        }
-    };
+    @In
+    TestAsyncBean testAsyncBean;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -67,101 +54,100 @@ public class AsyncTaskITCase extends ArquillianTest {
         final String expectedRetVal = "EXPECTED";
 
         // Start an asynchronous process
-        AsyncTaskHandle<String> handle =
-                taskExecutor.startTask(new SimpleAsyncTask<String>("taskReturnsValue") {
-                    @Override
-                    public String call() throws Exception {
-                        return expectedRetVal;
-                    }
-                }, onComplete);
+        Future<String> result = testAsyncBean.asyncString();
 
         // Wait for it to finish and get the result
-        String comp = handle.get();
-        awaitComplete();
+        String resultVal = result.get();
 
         // Must be the same as the component that was inserted outside of the
         // task
-        assertThat(comp, equalTo(expectedRetVal));
+        assertThat(resultVal).isEqualTo(expectedRetVal);
     }
 
-    private void awaitComplete() throws InterruptedException {
-        boolean done = completed.await(10, TimeUnit.SECONDS);
-        assertThat(done, is(true));
+    @Test
+    public void taskDoesNotReturnValue() throws Exception {
+        // Given a task handle
+        AsyncTaskHandle handle = new AsyncTaskHandle();
+
+        // Start an asynchronous process
+        testAsyncBean.doesNotReturn(handle);
+
+        // Wait for it to finish and get the result
+        handle.getResult();
+
+        // Must have executed the logic inside the method
+        assertThat(handle.getCurrentProgress()).isEqualTo(100);
     }
 
     @Test
     public void executionError() throws Exception {
         // Start an asynchronous process that throws an exception
-        AsyncTaskHandle<String> handle =
-                taskExecutor.startTask(new SimpleAsyncTask<String>("executionError") {
-                    @Override
-                    public String call() throws Exception {
-                        throw new RuntimeException("Expected Exception");
-                    }
-                }, onComplete);
-
-        // Wait for it to finish and get the result
-        waitUntilTaskIsDone(handle);
-        assertThat(handle.isDone(), is(true));
-        awaitComplete();
         try {
-            handle.get(); // Should throw an exception
-            Assert.fail();
-        } catch (ExecutionException e) {
-            // expected
+            Future<String> result = testAsyncBean.throwsError();
+            result.get();
+            failBecauseExceptionWasNotThrown(ExecutionException.class);
+        } catch (Exception e) {
+            // Original exception is wrapped around a
+            // java.concurrent.ExecutionException
+            assertThat(e.getCause()).hasMessage("Expected Exception");
         }
     }
 
     @Test
     public void progressUpdates() throws Exception {
         final List<Integer> progressUpdates = Lists.newArrayList();
-        // "Mock" the task handle so that progress updates are recorded
-        final AsyncTaskHandle<Void> taskHandle = new AsyncTaskHandle<Void>("progressUpdates") {
-            @Override
-            public void setCurrentProgress(int progress) {
-                super.setCurrentProgress(progress);
-                progressUpdates.add(progress);
-            }
-        };
+
+        // Custom handle so that progress updates are recorded
+        final AsyncTaskHandle<Void> taskHandle =
+                new AsyncTaskHandle<Void>() {
+                    @Override
+                    public void setCurrentProgress(int progress) {
+                        super.setCurrentProgress(progress);
+                        progressUpdates.add(progress);
+                    }
+                };
 
         // Start an asynchronous process that updates its progress
-        AsyncTaskHandle<Void> handle =
-                taskExecutor
-                        .startTask(new AsyncTask<Void, AsyncTaskHandle<Void>>() {
-                            @Nonnull
-                            @Override
-                            public AsyncTaskHandle<Void> getHandle() {
-                                return taskHandle;
-                            }
+        Future result = testAsyncBean.progressUpdates(taskHandle);
 
-                            @Override
-                            public Void call() throws Exception {
-                                getHandle().setCurrentProgress(25);
-                                getHandle().setCurrentProgress(50);
-                                getHandle().setCurrentProgress(75);
-                                getHandle().setCurrentProgress(100);
-                                return null;
-                            }
-                        }, onComplete);
-
-        // Wait for it to finish and get the result
-        waitUntilTaskIsDone(handle);
-        awaitComplete();
+        // Wait for it to finish
+        result.get();
 
         // Progress update calls should match the task's internal updates
-        assertThat(handle.getCurrentProgress(), is(100));
-        assertThat(progressUpdates.size(), is(4));
-        assertThat(progressUpdates, contains(25, 50, 75, 100));
+        assertThat(taskHandle.getCurrentProgress()).isEqualTo(100);
+        assertThat(progressUpdates.size()).isEqualTo(4);
+        assertThat(progressUpdates).contains(25, 50, 75, 100);
     }
 
-    /**
-     * This is an active wait for a task to finish. Only use for short lived
-     * tasks.
-     */
-    private static void waitUntilTaskIsDone(AsyncTaskHandle handle) {
-        while (!handle.isDone()) {
-            // Wait until it's done.
+
+    @Name("testAsyncBean")
+    @AutoCreate
+    @ContainsAsyncMethods
+    public static class TestAsyncBean {
+
+        @Async
+        public Future<String> asyncString() {
+            return taskResult("EXPECTED");
+        }
+
+        @Async
+        public void doesNotReturn(AsyncTaskHandle handle) {
+            handle.setCurrentProgress(100);
+            return;
+        }
+
+        @Async
+        public Future<String> throwsError() {
+            throw new RuntimeException("Expected Exception");
+        }
+
+        @Async
+        public Future progressUpdates(AsyncTaskHandle handle) {
+            handle.setCurrentProgress(25);
+            handle.setCurrentProgress(50);
+            handle.setCurrentProgress(75);
+            handle.setCurrentProgress(100);
+            return taskResult();
         }
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -20,30 +20,18 @@
  */
 package org.zanata.async;
 
-import java.util.concurrent.Future;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Public common class for all asynchronous tasks in the system.
- *
- * @param <V>
- *            The type of value returned by this task once finished.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class AsyncTask<V> {
-
-    @Getter @Setter
-    private Future<V> future;
-
-    /**
-     * Computes a result, or throws a Throwable if unable to do so.
-     *
-     * @return computed result
-     * @throws Throwable if unable to compute a result
-     */
-    abstract V call() throws Throwable;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@org.jboss.seam.annotations.intercept.Interceptors(AsyncMethodInterceptor.class)
+public @interface ContainsAsyncMethods {
 }

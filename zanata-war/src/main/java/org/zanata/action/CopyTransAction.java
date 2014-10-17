@@ -30,7 +30,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.zanata.async.tasks.CopyTransTask;
+import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
@@ -98,7 +98,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
 
     @Override
     public String getCompletedPercentage() {
-        CopyTransTask.CopyTransTaskHandle handle =
+       CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {
@@ -150,7 +150,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     }
 
     public String getCurrentProgress() {
-        CopyTransTask.CopyTransTaskHandle handle =
+        CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {
@@ -160,7 +160,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     }
 
     public String getMaxProgress() {
-        CopyTransTask.CopyTransTaskHandle handle =
+        CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {
@@ -170,7 +170,7 @@ public class CopyTransAction implements Serializable, ProgressBar {
     }
 
     public String getCopyTransEstimatedTimeLeft() {
-        CopyTransTask.CopyTransTaskHandle handle =
+        CopyTransTaskHandle handle =
                 copyTransManager
                         .getCopyTransProcessHandle(getProjectIteration());
         if (handle != null) {

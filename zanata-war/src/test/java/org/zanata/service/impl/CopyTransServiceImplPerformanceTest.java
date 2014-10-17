@@ -189,7 +189,6 @@ public class CopyTransServiceImplPerformanceTest {
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(TranslationMemoryServiceImpl.class)
-                .useImpl(AsyncTaskManagerServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)
                 .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
 
@@ -320,7 +319,8 @@ public class CopyTransServiceImplPerformanceTest {
                         HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
                         HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
                         HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY);
-        copyTransService.copyTransForDocument(copyTransTargetDoc, options);
+        copyTransService
+                .copyTransForDocument(copyTransTargetDoc, options, null);
 
         Long totalTranslation =
                 getEm().createQuery("select count(*) from HTextFlowTarget",

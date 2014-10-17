@@ -34,6 +34,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.EntityStatus;
@@ -105,12 +106,10 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(TranslationMemoryServiceImpl.class)
-                .useImpl(AsyncTaskManagerServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)
                 .useImpl(TranslationStateCacheImpl.class)
                 .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
 
-        seam.autowire(SearchIndexManager.class).reindex(true, true, false);
         AutowireTransaction.instance().rollback();
     }
 
@@ -205,7 +204,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                         execution.getProjectMismatchAction());
         CopyTransService copyTransService =
                 seam.autowire(CopyTransServiceImpl.class);
-        copyTransService.copyTransForIteration(projectIteration, options);
+        copyTransService.copyTransForIteration(projectIteration, options,
+                new CopyTransTaskHandle());
         getEm().flush();
 
         // Validate execution

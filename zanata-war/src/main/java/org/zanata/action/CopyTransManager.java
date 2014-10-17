@@ -24,26 +24,26 @@ import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.Identity;
-import org.zanata.async.tasks.CopyTransTask;
-import org.zanata.async.tasks.DocumentCopyTransTask;
-import org.zanata.async.tasks.IterationCopyTransTask;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
-import org.zanata.service.AsyncTaskManagerService;
-
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
+import org.zanata.service.CopyTransService;
 
 /**
  * Manager Bean that keeps track of manual copy trans being run in the system,
@@ -55,12 +55,16 @@ import static org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
 @AutoCreate
 @Name("copyTransManager")
 @Scope(ScopeType.STATELESS)
+@Slf4j
 // TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
+    private AsyncTaskHandleManager asyncTaskHandleManager;
+
+    @In
+    private CopyTransService copyTransServiceImpl;
 
     @In
     private Identity identity;
@@ -77,9 +81,7 @@ public class CopyTransManager implements Serializable {
                     "Copy Trans can only run for HProjectIteration and HDocument");
         }
 
-        CopyTransTaskHandle handle =
-                (CopyTransTaskHandle) asyncTaskManagerServiceImpl
-                        .getHandleByKey(key);
+        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKey(key);
         return handle != null && !handle.isDone();
     }
 
@@ -106,8 +108,10 @@ public class CopyTransManager implements Serializable {
         }
 
         CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
-        CopyTransTask task = new DocumentCopyTransTask(document, options);
-        asyncTaskManagerServiceImpl.startTask(task, key);
+        CopyTransTaskHandle handle = new CopyTransTaskHandle();
+        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        copyTransServiceImpl.startCopyTransForDocument(document, options,
+                handle);
     }
 
     /**
@@ -123,8 +127,10 @@ public class CopyTransManager implements Serializable {
         }
 
         CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
-        CopyTransTask task = new IterationCopyTransTask(iteration, options);
-        asyncTaskManagerServiceImpl.startTask(task, key);
+        CopyTransTaskHandle handle = new CopyTransTaskHandle();
+        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        copyTransServiceImpl.startCopyTransForIteration(iteration, options,
+                handle);
     }
 
     public CopyTransTaskHandle getCopyTransProcessHandle(@Nonnull Object target) {
@@ -138,7 +144,7 @@ public class CopyTransManager implements Serializable {
             throw new IllegalArgumentException(
                     "Copy Trans can only run for HProjectIteration and HDocument");
         }
-        return (CopyTransTaskHandle) asyncTaskManagerServiceImpl
+        return (CopyTransTaskHandle) asyncTaskHandleManager
                 .getHandleByKey(key);
     }
 
@@ -147,7 +153,7 @@ public class CopyTransManager implements Serializable {
             CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
             CopyTransTaskHandle handle =
                     this.getCopyTransProcessHandle(iteration);
-            handle.forceCancel();
+            handle.cancel(true);
             handle.setCancelledTime(System.currentTimeMillis());
             handle.setCancelledBy(identity.getCredentials().getUsername());
         }

@@ -22,7 +22,9 @@ package org.zanata.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -69,8 +71,9 @@ public interface TranslationService {
             List<TransUnitUpdateInfo> translationsToRevert);
 
     /**
-     * Translates all text flows in a document. This method is intended to be
-     * called using a {@link org.zanata.process.RunnableProcess}.
+     * Translates all text flows in a document. Implementations of this method
+     * should run in a separate thread and use the returned
+     * {@link java.util.concurrent.Future} to return a value.
      *
      * @param projectSlug
      *            The project to translate
@@ -92,14 +95,15 @@ public interface TranslationService {
      *            If true, no other caller will be allowed to translate All for
      *            the same project, iteration, document and locale.
      * @see TranslationService#translateAllInDoc(String, String, String,
-     *      org.zanata.common.LocaleId,
-     *      org.zanata.rest.dto.resource.TranslationsResource, java.util.Set,
-     *      org.zanata.common.MergeType)
+     * org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource,
+     * java.util.Set, org.zanata.common.MergeType,
+     * org.zanata.async.AsyncTaskHandle)
      */
-    public List<String> translateAllInDoc(String projectSlug,
+    public Future<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
-            MergeType mergeType, boolean lock);
+            MergeType mergeType, boolean lock,
+            AsyncTaskHandle handle);
 
     /**
      * Translates all text flows in a document.
@@ -124,6 +128,10 @@ public interface TranslationService {
      *         matched to any text flows in the source document or (b) whose
      *         states don't match their contents.
      */
+    List<String> translateAllInDoc(String projectSlug, String iterationSlug,
+            String docId, LocaleId locale, TranslationsResource translations,
+            Set<String> extensions, MergeType mergeType, AsyncTaskHandle handle);
+
     List<String> translateAllInDoc(String projectSlug, String iterationSlug,
             String docId, LocaleId locale, TranslationsResource translations,
             Set<String> extensions, MergeType mergeType);

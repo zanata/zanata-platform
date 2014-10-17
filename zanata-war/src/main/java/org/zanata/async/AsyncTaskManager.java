@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -21,68 +21,83 @@
 package org.zanata.async;
 
 import java.security.Principal;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.Subject;
 
-import com.google.common.util.concurrent.MoreExecutors;
+import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.async.Asynchronous;
+import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.RunAsOperation;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.action.AuthenticationEvents;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.ZanataJpaIdentityStore;
 import org.zanata.util.ServiceLocator;
 
+import com.google.common.util.concurrent.ListenableFuture;
+
 /**
- * This class executes a Runnable Process asynchronously. Do not use this class
- * directly. Use {@link org.zanata.async.TaskExecutor} instead as this is just a
- * wrapper to make sure Seam can run the task in the background.
- * {@link TaskExecutor} is able to do this as well as return an instance of the
- * task handle to keep track of the task's progress.
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asynchronousTaskExecutor")
-@Scope(ScopeType.STATELESS)
+@Name("asyncTaskManager")
+@Scope(ScopeType.APPLICATION)
 @AutoCreate
 @Slf4j
-public class AsynchronousTaskExecutor {
+public class AsyncTaskManager {
 
-    /**
-     * Runs the provided task asynchronously with the given security
-     * constraints.
-     *
-     * @param task Task to run asynchronously.
-     * @param runAsPpal Security Principal to tun the task.
-     * @param runAsSubject Security Subject to run the task.
-     * @param username The username to run the task.
-     */
-    @Asynchronous
-    public <V, H extends AsyncTaskHandle<V>> void runAsynchronously(
-            final AsyncTask<V, H> task, final Runnable onComplete,
-            final Principal runAsPpal,
-            final Subject runAsSubject, final String username) {
-        AsyncUtils.outject(task.getHandle(), ScopeType.EVENT);
+    private ExecutorService scheduler;
 
-        RunAsOperation runAsOp = new RunAsOperation() {
+    @Create
+    public void init() {
+        scheduler = Executors.newFixedThreadPool(3);
+    }
+
+    @Destroy
+    public void cleanup() {
+        scheduler.shutdown();
+    }
+
+    public <V> ListenableFuture<V> startTask(
+            final @Nonnull AsyncTask<Future<V>> task) {
+        HAccount taskOwner = ServiceLocator.instance()
+                .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
+                        HAccount.class);
+        ZanataIdentity ownerIdentity = ZanataIdentity.instance();
+
+        // Extract security context from current thread
+        final String taskOwnerUsername =
+                taskOwner != null ? taskOwner.getUsername() : null;
+        final Principal runAsPpal = ownerIdentity.getPrincipal();
+        final Subject runAsSubject = ownerIdentity.getSubject();
+
+        // final result
+        final AsyncTaskResult<V> taskFuture = new AsyncTaskResult<V>();
+
+        final RunnableOperation runnableOp = new RunnableOperation() {
+
             @Override
             public void execute() {
                 try {
-                    prepareSecurityContext(username);
-                    V returnValue = task.call();
-                    task.getHandle().set(returnValue);
+                    prepareSecurityContext(taskOwnerUsername);
+                    V returnValue = getReturnValue(task.call());
+                    taskFuture.set(returnValue);
                 } catch (Throwable t) {
-                    task.getHandle().setException(t);
+                    taskFuture.setException(t);
                     log.error(
-                        "Exception when executing an asynchronous task.", t);
+                            "Exception when executing an asynchronous task.", t);
                 }
-                onComplete.run();
             }
 
             @Override
@@ -95,7 +110,17 @@ public class AsynchronousTaskExecutor {
                 return runAsSubject;
             }
         };
-        runAsOp.run();
+        scheduler.execute(runnableOp);
+        return taskFuture;
+    }
+
+    private static <V> V getReturnValue(Future<V> asyncTaskFuture)
+            throws Exception {
+        // If the async method returns void
+        if (asyncTaskFuture == null) {
+            return null;
+        }
+        return asyncTaskFuture.get();
     }
 
     /**
@@ -108,7 +133,7 @@ public class AsynchronousTaskExecutor {
          * a way to simulate a login for asyn tasks, or at least to inherit the
          * caller's context
          */
-        if( username != null ) {
+        if (username != null) {
             // Only if it's an authenticated task should it try and do this
             // injection
             AccountDAO accountDAO =
@@ -123,4 +148,16 @@ public class AsynchronousTaskExecutor {
             idStore.setAuthenticateUser(authenticatedAccount);
         }
     }
+
+    public abstract class RunnableOperation extends RunAsOperation implements
+            Runnable {
+
+        @Override
+        public void run() {
+            Lifecycle.beginCall(); // Start contexts
+            super.run();
+            Lifecycle.endCall(); // End contexts
+        }
+    }
+
 }

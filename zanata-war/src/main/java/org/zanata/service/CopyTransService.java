@@ -20,10 +20,13 @@
  */
 package org.zanata.service;
 
+import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+
+import javax.validation.constraints.NotNull;
+import java.util.concurrent.Future;
 
 public interface CopyTransService {
     /**
@@ -40,20 +43,47 @@ public interface CopyTransService {
      * @param document
      *            the document to copy translations into
      */
-    void copyTransForDocument(HDocument document);
+    void copyTransForDocument(HDocument document, CopyTransTaskHandle handle);
 
     /**
      * Similar to
-     * {@link CopyTransService#copyTransForDocument(org.zanata.model.HDocument)}
+     * {@link CopyTransService#copyTransForDocument(org.zanata.model.HDocument, org.zanata.async.handle.CopyTransTaskHandle)}
      * , with custom copy trans options.
      *
      * @param document
      *            the document to copy translations into
      * @param copyTransOptions
      *            The copy Trans options to use.
+     * @param handle
+     *            Optional Task handle to track progress for the operation.
      */
     void copyTransForDocument(HDocument document,
-            HCopyTransOptions copyTransOptions);
+            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
+
+    /**
+     *
+     * @param document
+     *            the document to copy translations into
+     * @param copyTransOptions
+     *            The copy Trans options to use.
+     * @param handle
+     *            Optional Task handle to track progress for the operation.
+     */
+    Future<Void> startCopyTransForDocument(HDocument document,
+            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
+
+    /**
+     *
+     *
+     * @param iteration
+     *            The project iteration to copy translations into
+     * @param copyTransOptions
+     *            The copy Trans options to use.
+     * @param handle Task handle to track progress for the operation.
+     */
+    Future<Void> startCopyTransForIteration(HProjectIteration iteration,
+            HCopyTransOptions copyTransOptions,
+            @NotNull CopyTransTaskHandle handle);
 
     /**
      * Copies previous matching translations for all available locales and
@@ -69,7 +99,8 @@ public interface CopyTransService {
      *            The project iteration to copy translations into
      * @param copyTransOptions
      *            The copy Trans options to use.
+     * @param handle Optional Task handle to track progress for the operation.
      */
     void copyTransForIteration(HProjectIteration iteration,
-            HCopyTransOptions copyTransOptions);
+            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
 }

@@ -21,13 +21,16 @@
 package org.zanata.service.impl;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.async.AsyncUtils;
-import org.zanata.async.tasks.CopyTransTask.CopyTransTaskHandle;
+import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskResult;
+import org.zanata.async.ContainsAsyncMethods;
+import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -48,9 +51,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.constraints.NotNull;
+
 @Name("copyTransServiceImpl")
 @Scope(ScopeType.STATELESS)
 @Slf4j
+@ContainsAsyncMethods
 @AllArgsConstructor
 @NoArgsConstructor
 public class CopyTransServiceImpl implements CopyTransService {
@@ -69,6 +75,8 @@ public class CopyTransServiceImpl implements CopyTransService {
     private TextFlowTargetDAO textFlowTargetDAO;
     @In
     private TranslationStateCache translationStateCacheImpl;
+    @In
+    private TextFlowDAO textFlowDAO;
 
     /**
      * Copies previous matching translations for the given locale into a
@@ -193,13 +201,20 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     @Override
-    public void copyTransForDocument(HDocument document) {
-        copyTransForDocument(document, null);
+    public void copyTransForDocument(HDocument document, CopyTransTaskHandle handle) {
+        copyTransForDocument(document, null, handle);
     }
 
     @Override
     public void copyTransForDocument(HDocument document,
-            HCopyTransOptions copyTransOpts) {
+            HCopyTransOptions copyTransOpts, CopyTransTaskHandle handle) {
+
+        Optional<CopyTransTaskHandle> taskHandleOpt =
+                Optional.fromNullable(handle);
+        if( taskHandleOpt.isPresent() ) {
+            prepareCopyTransHandle(document, taskHandleOpt.get());
+        }
+
         // use project level options
         if (copyTransOpts == null) {
             // NB: Need to reload the options from the db
@@ -216,8 +231,6 @@ public class CopyTransServiceImpl implements CopyTransService {
         }
 
         log.info("copyTrans start: document \"{}\"", document.getDocId());
-        Optional<CopyTransTaskHandle> taskHandleOpt =
-                AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
         List<HLocale> localeList =
                 localeServiceImpl.getSupportedLanguageByProjectIteration(
                         document.getProjectIteration().getProject().getSlug(),
@@ -234,10 +247,31 @@ public class CopyTransServiceImpl implements CopyTransService {
     }
 
     @Override
+    @Async
+    public Future<Void> startCopyTransForDocument(HDocument document,
+            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
+        copyTransForDocument(document, copyTransOptions, handle);
+        return AsyncTaskResult.taskResult();
+    }
+
+    @Override
+    @Async
+    public Future<Void> startCopyTransForIteration(HProjectIteration iteration,
+            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
+        copyTransForIteration(iteration, copyTransOptions, handle);
+        return AsyncTaskResult.taskResult();
+    }
+
+    @Override
     public void copyTransForIteration(HProjectIteration iteration,
-            HCopyTransOptions copyTransOptions) {
+            HCopyTransOptions copyTransOptions,
+            @NotNull CopyTransTaskHandle handle) {
         Optional<CopyTransTaskHandle> taskHandleOpt =
-                AsyncUtils.getEventAsyncHandle(CopyTransTaskHandle.class);
+                Optional.fromNullable(handle);
+
+        if( taskHandleOpt.isPresent() ) {
+            prepareCopyTransHandle(iteration, taskHandleOpt.get());
+        }
 
         for (HDocument doc : iteration.getDocuments().values()) {
             if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
@@ -251,15 +285,57 @@ public class CopyTransServiceImpl implements CopyTransService {
                         iteration.getProject().getId());
                 if (copyCandidates < 2) {
                     if (taskHandleOpt.isPresent()) {
-                        CopyTransTaskHandle taskHandle = taskHandleOpt.get();
-                        taskHandleOpt.get()
-                                .increaseProgress(taskHandle.getMaxProgress());
+                        taskHandleOpt.get().increaseProgress(
+                                taskHandleOpt.get().getMaxProgress());
                     }
                     return;
                 }
             }
-            this.copyTransForDocument(doc, copyTransOptions);
+            this.copyTransForDocument(doc, copyTransOptions, handle);
         }
+    }
+
+    private void prepareCopyTransHandle( HProjectIteration iteration, CopyTransTaskHandle handle ) {
+        if( !handle.isPrepared() ) {
+            // TODO Progress should be handle as long
+            handle.setMaxProgress( (int)getMaxProgress(iteration) );
+            handle.setPrepared();
+        }
+    }
+
+    private void prepareCopyTransHandle( HDocument document, CopyTransTaskHandle handle ) {
+        if( !handle.isPrepared() ) {
+            // TODO Progress should be handle as long
+            handle.setMaxProgress( (int)getMaxProgress(document) );
+            handle.setPrepared();
+        }
+    }
+
+    private long getMaxProgress(HProjectIteration iteration) {
+        log.debug("counting locales");
+        List<HLocale> localeList =
+                localeServiceImpl.getSupportedLanguageByProjectIteration(
+                        iteration.getProject().getSlug(),
+                        iteration.getSlug());
+        int localeCount = localeList.size();
+        log.debug("counting locales finished");
+        log.debug("counting textflows");
+        long textFlowCount = textFlowDAO.countActiveTextFlowsInProjectIteration(
+                iteration.getId());
+        log.debug("counting textflows finished");
+        return localeCount * textFlowCount;
+    }
+
+    private long getMaxProgress(HDocument document) {
+        List<HLocale> localeList =
+                localeServiceImpl.getSupportedLanguageByProjectIteration(document
+                        .getProjectIteration().getProject().getSlug(), document
+                        .getProjectIteration().getSlug());
+        int localeCount = localeList.size();
+
+        int textFlowCount =
+                textFlowDAO.countActiveTextFlowsInDocument(document.getId());
+        return localeCount * textFlowCount;
     }
 
 }

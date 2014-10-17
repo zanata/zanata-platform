@@ -30,7 +30,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.service.AsyncTaskManagerService;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgress;
 import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
@@ -47,7 +47,7 @@ public class GetDownloadAllFilesProgressHandler
         extends
         AbstractActionHandler<GetDownloadAllFilesProgress, GetDownloadAllFilesProgressResult> {
     @In
-    private AsyncTaskManagerService asyncTaskManagerServiceImpl;
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Override
     public GetDownloadAllFilesProgressResult execute(
@@ -58,11 +58,11 @@ public class GetDownloadAllFilesProgressHandler
         String downloadId = "";
 
         AsyncTaskHandle<String> handle =
-                asyncTaskManagerServiceImpl.getHandle(action.getProcessId());
+                asyncTaskHandleManager.getHandleByKey(action.getProcessId());
         if (handle != null) {
             if (handle.isDone()) {
                 try {
-                    downloadId = handle.get();
+                    downloadId = handle.getResult();
                 } catch (InterruptedException e) {
                     throw new ActionException(
                             "Zip file preparation was interrupted", e);
