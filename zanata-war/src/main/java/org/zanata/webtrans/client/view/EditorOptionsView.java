@@ -96,6 +96,8 @@ public class EditorOptionsView extends Composite implements
                 .setText(messages.showTransUnitDetails());
         showOptionalTransUnitDetailsChk.setTitle(messages
                 .showTransUnitDetailsTooltip());
+
+        useCodeMirrorChk.ensureDebugId("syntax-highlight-chk");
     }
 
     @Override
