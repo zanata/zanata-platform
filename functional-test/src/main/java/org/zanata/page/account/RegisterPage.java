@@ -20,7 +20,6 @@
  */
 package org.zanata.page.account;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;

@@ -28,7 +28,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 
 /**
