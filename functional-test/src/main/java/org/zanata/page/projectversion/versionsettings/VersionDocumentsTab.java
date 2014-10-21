@@ -110,19 +110,23 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
-        List<WebElement> documentLabelList = waitForAMoment()
-                .until(new Function<WebDriver, List<WebElement>>() {
-            @Override
-            public List<WebElement> apply(WebDriver input) {
-                return getDriver()
-                        .findElement(By.id("settings-document_form"))
-                        .findElement(By.tagName("ul"))
-                        .findElements(
-                                By.xpath(".//li/label[@class='form__checkbox__label']"));
-            }
-        });
-        for (WebElement label : documentLabelList) {
-            if (label.getText().contains(document)) {
+        for(String documentLabel : waitForAMoment()
+                .until(new Function<WebDriver, List<String>>() {
+                    @Override
+                    public List<String> apply(WebDriver input) {
+                        List<WebElement> elements = getDriver()
+                                .findElement(By.id("settings-document_form"))
+                                .findElement(By.tagName("ul"))
+                                .findElements(By.xpath(".//li/label[@class='" +
+                                        "form__checkbox__label']"));
+                        List<String> namesList = new ArrayList<String>();
+                        for (WebElement element : elements) {
+                            namesList.add(element.getText());
+                        }
+                        return namesList;
+                    }
+                })) {
+            if (documentLabel.contains(document)) {
                 return true;
             }
         }

@@ -290,7 +290,7 @@ public class WebElementUtil {
             if (from == null) {
                 throw new RuntimeException("Source element is null");
             }
-            return from.getText();
+            return from.getText().trim();
         }
     }
 

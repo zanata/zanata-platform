@@ -117,7 +117,7 @@ public class ValidEmailAddressTest extends ZanataTestCase {
                 .registerFailure();
 
         assertThat(RegisterPage.MALFORMED_EMAIL_ERROR)
-                .isNotIn(registerPage.getFieldErrors())
+                .isNotIn(registerPage.getErrors())
                 .as("Email validation errors are not shown");
     }
 

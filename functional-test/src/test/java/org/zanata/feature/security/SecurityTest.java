@@ -75,7 +75,7 @@ public class SecurityTest extends ZanataTestCase {
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
-                .waitForFieldErrors())
+                .expectError("Login failed"))
                 .contains("Login failed")
                 .as("Log in error message is shown");
     }
@@ -139,7 +139,7 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("b")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.waitForErrors())
+        assertThat(resetPasswordPage.expectError("not a well-formed email address"))
                 .contains("not a well-formed email address")
                 .as("Invalid email error is displayed");
 
@@ -163,7 +163,7 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.waitForErrors())
+        assertThat(resetPasswordPage.expectError("may not be empty"))
                 .contains("may not be empty")
                 .as("Empty email error is displayed");
 

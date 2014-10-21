@@ -192,4 +192,18 @@ public class AbstractPage {
             }
         });
     }
+
+    /**
+     * Wait for an element to be visible, and return it
+     * @param elementBy WebDriver By locator
+     * @return target WebElement
+     */
+    public WebElement waitForWebElement(final By elementBy) {
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return getDriver().findElement(elementBy);
+            }
+        });
+    }
 }

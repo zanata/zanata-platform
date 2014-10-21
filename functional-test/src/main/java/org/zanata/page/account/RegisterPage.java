@@ -138,18 +138,6 @@ public class RegisterPage extends CorePage {
             .enterPassword(fields.get("password"));
     }
 
-    public List<String> waitForErrors() {
-        log.info("Query errors");
-        waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.xpath("//span[@class='errors']"));
-            }
-        });
-        return getErrors();
-    }
-
     public String getPageTitle() {
         log.info("Query page title");
         return getDriver().findElement(By.className("heading--sub"))

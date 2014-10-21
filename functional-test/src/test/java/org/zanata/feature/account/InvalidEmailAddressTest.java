@@ -190,7 +190,7 @@ public class InvalidEmailAddressTest extends ZanataTestCase {
                 .enterEmail(emailAddress.toString())
                 .registerFailure();
 
-        assertThat(registerPage.waitForFieldErrors())
+        assertThat(registerPage.expectError(RegisterPage.MALFORMED_EMAIL_ERROR))
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email formation error is displayed");
     }
