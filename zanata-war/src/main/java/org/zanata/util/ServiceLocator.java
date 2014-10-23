@@ -76,15 +76,10 @@ public class ServiceLocator {
         return (EntityManagerFactory) Component.getInstance("entityManagerFactory");
     }
 
-    public <T> T getJndiComponent(String jndiName, Class<T> clazz) {
-        try {
-            Context ctx = new InitialContext();
-            return (T) ctx.lookup(jndiName);
-        } catch (Exception ex) {
-            throw new RuntimeException(
-                    "Problem when fetching Jndi component '" + jndiName + "'",
-                    ex);
-        }
+    public <T> T getJndiComponent(String jndiName, Class<T> clazz)
+            throws NamingException {
+        Context ctx = new InitialContext();
+        return (T) ctx.lookup(jndiName);
     }
 
 }
