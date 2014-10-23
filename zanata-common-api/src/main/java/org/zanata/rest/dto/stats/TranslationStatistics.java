@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.zanata.common.AbstractTranslationCount;
+import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.ContentState;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -55,7 +55,7 @@ import org.zanata.common.TransUnitWords;
 public class TranslationStatistics implements Serializable {
     private static final long serialVersionUID = 1L;
     private StatUnit unit;
-    private AbstractTranslationCount translationCount;
+    private BaseTranslationCount translationCount;
     private String locale;
     private double remainingHours;
     private String lastTranslated;

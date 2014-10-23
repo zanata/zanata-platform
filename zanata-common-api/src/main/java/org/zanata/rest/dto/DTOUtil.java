@@ -1,5 +1,6 @@
 package org.zanata.rest.dto;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -12,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,4 +58,26 @@ public class DTOUtil {
         return elem.getValue();
     }
 
+    public static String toJSON(Object obj) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(obj);
+        } catch (IOException e) {
+            log.error("toJSON failed", e);
+            return obj.getClass().getName() + "@"
+                    + Integer.toHexString(obj.hashCode());
+        }
+    }
+
+    public static <T> T fromJSONToObject(String json, Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return (T)mapper.readValue(json, clazz);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            log.error("fromJSONToObject failed", e);
+            return null;
+        }
+    }
 }

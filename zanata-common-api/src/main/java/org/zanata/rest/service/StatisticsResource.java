@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 
 /**
  * @author Carlos Munoz <a
@@ -39,6 +40,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface StatisticsResource {
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+
     public static final String SERVICE_PATH = "/stats";
 
     /**
@@ -116,5 +119,38 @@ public interface StatisticsResource {
                     @PathParam("docId") String docId,
                     @QueryParam("word") @DefaultValue("false") boolean includeWordStats,
                     @QueryParam("locale") String[] locales);
+
+    /**
+     * Get contribution statistic from project-version within given date
+     * range.
+     *
+     * @param projectSlug
+     *            project identifier
+     * @param versionSlug
+     *            version identifier
+     * @param username
+     *            username of contributor
+     * @param dateRange
+     *            date range from..to (yyyy-mm-dd..yyyy-mm-dd)
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing contribution statistics for the
+     *         specified parameters.<br>
+     *         NOT FOUND(404) - If a version or user could not be found.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Path("/project/{projectSlug}/version/{versionSlug}/contributor/{username}/{dateRange}")
+    @TypeHint(ContributionStatistics.class)
+    @Produces({ MediaType.APPLICATION_JSON })
+    public
+            ContributionStatistics getContributionStatistics(
+                    @PathParam("projectSlug") String projectSlug,
+                    @PathParam("versionSlug") String versionSlug,
+                    @PathParam("username") String username,
+                    @PathParam("dateRange") String dateRange
+            );
 
 }

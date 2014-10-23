@@ -1,6 +1,6 @@
 package org.zanata.common;
 
-public class TransUnitWords extends AbstractTranslationCount {
+public class TransUnitWords extends BaseTranslationCount {
 
     private static final long serialVersionUID = 849734798480292025L;
 
@@ -33,6 +33,11 @@ public class TransUnitWords extends AbstractTranslationCount {
             // TODO why are we using ceil?
             return (int) Math.ceil(per);
         }
+    }
+
+    public int getNotApproved() {
+        return getUntranslated() + getNeedReview() + getRejected() +
+                getTranslated();
     }
 
     @Override

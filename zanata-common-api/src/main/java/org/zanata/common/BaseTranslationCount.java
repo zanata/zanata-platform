@@ -2,7 +2,10 @@ package org.zanata.common;
 
 import java.io.Serializable;
 
-public abstract class AbstractTranslationCount implements Serializable {
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BaseTranslationCount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,10 +15,10 @@ public abstract class AbstractTranslationCount implements Serializable {
     private int translated;
     private int rejected;
 
-    public AbstractTranslationCount() {
+    public BaseTranslationCount() {
     }
 
-    protected AbstractTranslationCount(int approved, int needReview,
+    public BaseTranslationCount(int approved, int needReview,
             int untranslated, int translated, int rejected) {
         this.approved = approved;
         this.needReview = needReview;
@@ -24,7 +27,7 @@ public abstract class AbstractTranslationCount implements Serializable {
         this.rejected = rejected;
     }
 
-    protected AbstractTranslationCount(int approved, int needReview,
+    protected BaseTranslationCount(int approved, int needReview,
             int untranslated) {
         this(approved, needReview, untranslated, 0, 0);
     }
@@ -78,7 +81,7 @@ public abstract class AbstractTranslationCount implements Serializable {
         }
     }
 
-    public void add(AbstractTranslationCount other) {
+    public void add(BaseTranslationCount other) {
         this.approved += other.approved;
         this.needReview += other.needReview;
         this.untranslated += other.untranslated;
@@ -86,7 +89,7 @@ public abstract class AbstractTranslationCount implements Serializable {
         this.rejected += other.rejected;
     }
 
-    protected void set(AbstractTranslationCount other) {
+    protected void set(BaseTranslationCount other) {
         this.approved = other.approved;
         this.needReview = other.needReview;
         this.untranslated = other.untranslated;
@@ -114,10 +117,6 @@ public abstract class AbstractTranslationCount implements Serializable {
         return translated;
     }
 
-    public int getNotApproved() {
-        return untranslated + needReview + rejected + translated;
-    }
-
     public int getRejected() {
         return rejected;
     }
@@ -128,8 +127,8 @@ public abstract class AbstractTranslationCount implements Serializable {
             return true;
         if (obj == null)
             return false;
-        if (obj instanceof AbstractTranslationCount) {
-            AbstractTranslationCount o = (AbstractTranslationCount) obj;
+        if (obj instanceof BaseTranslationCount) {
+            BaseTranslationCount o = (BaseTranslationCount) obj;
             return (approved == o.approved && needReview == o.needReview
                     && untranslated == o.untranslated
                     && translated == o.translated && rejected == o.rejected);
@@ -137,8 +136,13 @@ public abstract class AbstractTranslationCount implements Serializable {
         return false;
     }
 
+    @Override
     public int hashCode() {
-        assert false : "hashCode not designed";
-        return 42; // any arbitrary constant will do
+        int result = approved;
+        result = 31 * result + needReview;
+        result = 31 * result + untranslated;
+        result = 31 * result + translated;
+        result = 31 * result + rejected;
+        return result;
     }
 }

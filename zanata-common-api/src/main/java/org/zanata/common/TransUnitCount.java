@@ -1,6 +1,6 @@
 package org.zanata.common;
 
-public final class TransUnitCount extends AbstractTranslationCount {
+public final class TransUnitCount extends BaseTranslationCount {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,6 +30,11 @@ public final class TransUnitCount extends AbstractTranslationCount {
 
     public void set(TransUnitCount other) {
         super.set(other);
+    }
+
+    public int getNotApproved() {
+        return getUntranslated() + getNeedReview() + getRejected() +
+                getTranslated();
     }
 
     @Override
