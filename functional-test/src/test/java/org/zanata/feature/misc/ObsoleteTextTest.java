@@ -122,7 +122,6 @@ public class ObsoleteTextTest extends ZanataTestCase {
 
     private static EditorPage openEditor() {
         return new BasicWorkFlow().goToEditor("obsolete-test", "master", "fr",
-                "message1")
-                .setSyntaxHighlighting(false);
+                "message1");
     }
 }

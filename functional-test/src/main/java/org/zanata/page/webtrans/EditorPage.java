@@ -58,6 +58,8 @@ public class EditorPage extends BasePage {
     // first %d is row index, second %d is plural form index (i.e. 0-6)
     private static final String TARGET_ID_FMT = "gwt-debug-%d-target-%d";
 
+    private static final String EDITOR_SYNTAXHIGHLIGHT =
+            "gwt-debug-syntax-highlight-chk-input";
     // buttons id format
     private static final String APPROVE_BUTTON_ID_FMT =
             "gwt-debug-target-%d-save-approve";
@@ -106,7 +108,8 @@ public class EditorPage extends BasePage {
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
                     public List<List<String>> apply(WebDriver input) {
-                        if (input.findElements(glossaryNoResultBy).size() == 1) {
+                        if (input.findElements(glossaryNoResultBy).size() ==
+                                1) {
                             return Collections.emptyList();
                         }
                         List<List<String>> resultTable =
@@ -148,7 +151,8 @@ public class EditorPage extends BasePage {
      */
     public String getMessageTargetAtRowIndex(final int rowIndex) {
         log.info("Query text flow target at {}", rowIndex);
-        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT, Plurals.TargetSingular);
+        return getCodeMirrorContent(rowIndex, TARGET_ID_FMT,
+                Plurals.TargetSingular);
     }
 
     private String getCodeMirrorContent(final long rowIndex,
@@ -173,8 +177,8 @@ public class EditorPage extends BasePage {
         WebElement highlight = waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement element = getDriver()
-                        .findElement(By.id("gwt-uid-143"));
+                WebElement element =
+                        getDriver().findElement(By.id(EDITOR_SYNTAXHIGHLIGHT));
                 if (element.isDisplayed()) {
                     return element;
                 }
@@ -207,7 +211,6 @@ public class EditorPage extends BasePage {
                         .isDisplayed();
             }
         });
-
     }
 
     /**
