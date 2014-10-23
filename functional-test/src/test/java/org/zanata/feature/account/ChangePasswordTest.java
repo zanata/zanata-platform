@@ -64,8 +64,9 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeNewPassword("newpassword")
                 .clickUpdatePasswordButton();
         dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
+        dashboard.logout();
 
-        assertThat(dashboard.logout().goToHomePage().hasLoggedIn()).isFalse()
+        assertThat(new BasicWorkFlow().goToHome().hasLoggedIn()).isFalse()
                 .as("User is logged out");
 
         DashboardBasePage dashboardPage = new LoginWorkFlow()

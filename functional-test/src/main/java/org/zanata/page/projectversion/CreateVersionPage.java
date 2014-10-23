@@ -120,6 +120,12 @@ public class CreateVersionPage extends BasePage {
         return new VersionLanguagesPage(getDriver());
     }
 
+    public CreateVersionPage saveExpectingError() {
+        log.info("Click Save");
+        saveButton.click();
+        return new CreateVersionPage(getDriver());
+    }
+
     public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
         log.info("Wait for number of error to be {}", numberOfErrors);
         waitForAMoment().until(new Predicate<WebDriver>() {
