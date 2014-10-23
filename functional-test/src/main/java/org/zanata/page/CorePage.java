@@ -93,16 +93,11 @@ public class CorePage extends AbstractPage {
 
         List<String> newError =
                 WebElementUtil.elementsToText(getDriver(),
-                        By.xpath("//div[@class='message--danger']"));
-
-        List<String> topError =
-                WebElementUtil.elementsToText(getDriver(),
                         By.className("message--danger"));
 
         List<String> allErrors = Lists.newArrayList();
         allErrors.addAll(oldError);
         allErrors.addAll(newError);
-        allErrors.addAll(topError);
 
         return allErrors;
     }
