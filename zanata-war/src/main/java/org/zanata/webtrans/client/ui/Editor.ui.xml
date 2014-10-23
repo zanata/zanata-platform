@@ -35,9 +35,9 @@
           title="{tableMessages.copyFromSource}"
           styleName="icon-right-1 {style.copyButton} fadeElement" />
       </div>
-      <div class="w--11-12 g__item {style.textAreaWrapper}">
+      <g:HTMLPanel styleName="w--11-12 g__item {style.textAreaWrapper}" ui:field="textAreaWrapper">
         <fui:TextAreaWrapper ui:field="textArea"/>
-      </div>
+      </g:HTMLPanel>
     </g:HTMLPanel>
   </g:FocusPanel>
 </ui:UiBinder>
