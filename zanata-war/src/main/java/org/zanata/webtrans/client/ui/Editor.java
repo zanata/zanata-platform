@@ -45,7 +45,7 @@ public class Editor extends Composite implements ToggleEditor {
     FocusPanel rootContainer;
 
     @UiField
-    HTMLPanel textAreaTable;
+    HTMLPanel textAreaTable, textAreaWrapper;
 
     @UiField
     InlineLabel copyIcon;
@@ -230,6 +230,7 @@ public class Editor extends Composite implements ToggleEditor {
 
     @Override
     public void toggleType() {
+        textAreaWrapper.clear();
         String currentText = textArea.getText();
         int cursorPos = textArea.getCursorPos();
         boolean editing = textArea.isEditing();
@@ -244,6 +245,8 @@ public class Editor extends Composite implements ToggleEditor {
             textArea.setCursorPos(cursorPos);
             textArea.setEditing(true);
         }
+        textAreaWrapper.add(textArea);
+        textArea.refresh();
     }
 
     @Override

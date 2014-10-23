@@ -139,11 +139,6 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/account/sign_form(.+)?$</from>
-    <to last="true">/account/login_input.seam$1</to>
-  </rule>
-
-  <rule>
     <from casesensitive="true">^/account/sign_out(.+)?$</from>
     <to last="true">/account/logout.seam$1</to>
   </rule>
@@ -392,10 +387,6 @@
   <outbound-rule>
     <from>^(/.+)?/account/klogin.seam(.+)?$</from>
     <to>$1/account/klogin$2</to>
-  </outbound-rule>
-  <outbound-rule>
-    <from>^(/.+)?/account/login_input.seam(.+)?$</from>
-    <to>$1/account/sign_form$2</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/account/logout.seam(.+)?$</from>
