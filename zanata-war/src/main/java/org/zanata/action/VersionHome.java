@@ -149,8 +149,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
                 && StringUtils.isEmpty(copyFromVersionSlug)) {
             this.copyFromVersionSlug =
                     otherVersions.get(0).getVersion().getSlug();
-            copyFromVersion = true;
+
         }
+        copyFromVersion = true;
     }
 
     public void init(boolean isNewInstance) {
