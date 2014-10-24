@@ -70,8 +70,8 @@ public class RetryRule implements TestRule {
                         return;
                     } catch (Throwable t) {
                         throwable = t;
-                        log.info(description.getDisplayName() + ": Execution "
-                                + (currentTry()) + " failed");
+                        log.warn(description.getDisplayName() + ": Execution "
+                                + (currentTry()) + " failed", t);
                     }
                 }
                 log.info(description.getDisplayName() +
