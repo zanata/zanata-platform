@@ -533,9 +533,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
             assertThat(newTextFlow.getPotEntryData().getReferences())
                     .isEqualTo(
                             existingTextFlow.getPotEntryData().getReferences());
-
-            assertThat(newTextFlow.getPotEntryData().getTextFlow()).isEqualTo(
-                    newTextFlow);
         }
     }
 
