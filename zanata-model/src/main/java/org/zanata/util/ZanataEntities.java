@@ -81,8 +81,8 @@ public class ZanataEntities {
                 HTextFlowTargetReviewComment.class,
                 HTextFlowTarget.class,
                 HTextFlowHistory.class,
-                HPotEntryData.class,
                 HTextFlow.class);
+        builder.add(HPotEntryData.class);
         // documents
         builder.add(HDocumentHistory.class, HDocument.class);
         builder.add(HPoHeader.class);
