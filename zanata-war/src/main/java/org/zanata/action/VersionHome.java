@@ -126,7 +126,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     @Getter
     @Setter
-    private boolean copyFromVersion = false;
+    private boolean copyFromVersion = true;
 
     @Getter
     @Setter
@@ -161,8 +161,11 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             if (projectType != null) {
                 selectedProjectType = projectType.name();
             }
-            setDefaultCopyFromVersion();
+            if(StringUtils.isEmpty(copyFromVersionSlug)) {
+                setDefaultCopyFromVersion();
+            }
         } else {
+            copyFromVersion = false;
             ProjectType versionProjectType = getInstance().getProjectType();
             if (versionProjectType != null) {
                 selectedProjectType = versionProjectType.name();
