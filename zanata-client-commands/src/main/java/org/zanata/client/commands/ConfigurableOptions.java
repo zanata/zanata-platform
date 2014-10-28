@@ -20,8 +20,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     public String getKey();
 
-    @Option(name = "--key", metaVar = "KEY",
-            usage = "API key (from user's profile page)")
     public void setKey(String key);
 
     /**
@@ -29,8 +27,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     public URL getUrl();
 
-    @Option(name = "--url", metaVar = "URL",
-            usage = "Base URL, eg http://zanata.example.com/zanata/")
     public void setUrl(URL url);
 
     /**
@@ -38,8 +34,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     public File getUserConfig();
 
-    @Option(name = "--user-config", metaVar = "FILE",
-            usage = "User configuration, eg /home/user/.config/zanata.ini")
     public void setUserConfig(File userConfig);
 
     /**
@@ -47,7 +41,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     public String getUsername();
 
-    @Option(name = "--username", metaVar = "USER", usage = "Username")
     public void setUsername(String username);
 
     /**
@@ -55,8 +48,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     public boolean getLogHttp();
 
-    @Option(name = "--logHttp", metaVar = "LOGHTTP",
-            usage = "Enable HTTP message logging.")
     public void setLogHttp(boolean traceLogging);
 
     /**
@@ -65,9 +56,6 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     boolean isDisableSSLCert();
 
-    @Option(
-            name = "--disable-ssl-cert",
-            usage = "Whether verification of SSL certificates should be disabled")
     public
             void setDisableSSLCert(boolean disableSSLCert);
 }
