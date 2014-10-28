@@ -137,6 +137,7 @@ public interface StatisticsResource {
      *         operation:<br>
      *         OK(200) - Response containing contribution statistics for the
      *         specified parameters.<br>
+     *         BAD REQUEST(400) - If dateRange param is invalid.<br>
      *         NOT FOUND(404) - If a version or user could not be found.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
