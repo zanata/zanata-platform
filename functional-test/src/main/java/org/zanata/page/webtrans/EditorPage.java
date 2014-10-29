@@ -32,7 +32,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
@@ -66,12 +65,15 @@ public class EditorPage extends BasePage {
     private static final String FUZZY_BUTTON_ID_FMT =
             "gwt-debug-target-%d-save-fuzzy";
 
-    private final By glossaryTableBy = By.id("gwt-debug-glossaryResultTable");
-    private final By glossaryNoResultBy = By.id("gwt-debug-glossaryNoResult");
-
-    private By transUnitTableBy = By.id("gwt-debug-transUnitTable");
-    @FindBy(id = "gwt-debug-editor-filter-box")
-    private WebElement editorFilterField;
+    private final By glossaryTable = By.id("gwt-debug-glossaryResultTable");
+    private final By glossaryNoResult = By.id("gwt-debug-glossaryNoResult");
+    private By glossarySearchInput = By.id("gwt-debug-glossaryTextBox");
+    private By transUnitTable = By.id("gwt-debug-transUnitTable");
+    private By editorFilterField = By.id("gwt-debug-editor-filter-box");
+    private By configurationPanel = By.className("i--settings");
+    private By validationBox = By.className("gwt-DisclosurePanel");
+    private By validationOptions = By.xpath("//a[@title='Validation options']");
+    private By validationOptionsView = By.id("validationOptionsView");
 
     public EditorPage(WebDriver driver) {
         super(driver);
@@ -82,19 +84,14 @@ public class EditorPage extends BasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return input.findElements(glossaryNoResultBy).size() == 1
-                        || input.findElements(glossaryTableBy).size() == 1;
+                return input.findElements(glossaryNoResult).size() == 1
+                        || input.findElements(glossaryTable).size() == 1;
             }
         });
-        WebElement searchBox =
-                getDriver().findElement(By.id("gwt-debug-glossaryTextBox"));
-        searchBox.clear();
-        searchBox.sendKeys(term);
-        WebElement searchButton =
-                getDriver()
-                        .findElement(By.id("gwt-debug-glossarySearchButton"));
-        searchButton.click();
-        return this;
+        waitForWebElement(glossarySearchInput).clear();
+        waitForWebElement(glossarySearchInput).sendKeys(term);
+        waitForWebElement(By.id("gwt-debug-glossarySearchButton")).click();
+        return new EditorPage(getDriver());
     }
 
     /**
@@ -108,13 +105,13 @@ public class EditorPage extends BasePage {
                 new Function<WebDriver, List<List<String>>>() {
                     @Override
                     public List<List<String>> apply(WebDriver input) {
-                        if (input.findElements(glossaryNoResultBy).size() ==
+                        if (input.findElements(glossaryNoResult).size() ==
                                 1) {
                             return Collections.emptyList();
                         }
                         List<List<String>> resultTable =
                                 WebElementUtil.getTwoDimensionList(input,
-                                        glossaryTableBy);
+                                        glossaryTable);
                         log.info("glossary result: {}", resultTable);
                         return resultTable;
                     }
@@ -174,17 +171,7 @@ public class EditorPage extends BasePage {
     public EditorPage setSyntaxHighlighting(boolean option) {
         log.info("Set syntax highlight to {}", option);
         openConfigurationPanel();
-        WebElement highlight = waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                WebElement element =
-                        getDriver().findElement(By.id(EDITOR_SYNTAXHIGHLIGHT));
-                if (element.isDisplayed()) {
-                    return element;
-                }
-                return null;
-            }
-        });
+        WebElement highlight = waitForWebElement(By.id(EDITOR_SYNTAXHIGHLIGHT));
         if (highlight.isSelected() != option) {
             highlight.click();
         }
@@ -201,8 +188,9 @@ public class EditorPage extends BasePage {
                         .isEnabled();
             }
         });
-        new Actions(getDriver()).click(
-                getDriver().findElement(By.className("i--settings"))).perform();
+        new Actions(getDriver())
+                .click(waitForWebElement(configurationPanel))
+                .perform();
         return waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
@@ -242,14 +230,9 @@ public class EditorPage extends BasePage {
     private String getContentAtRowIndex(final long rowIndex,
             final String idFormat,
             final Plurals plural) {
-        return waitForAMoment().until(new Function<WebDriver, String>() {
-            @Override
-            public String apply(WebDriver input) {
-                return input.findElement(
-                        By.id(String.format(idFormat, rowIndex, plural.index())))
-                        .getAttribute("value");
-            }
-        });
+        return waitForWebElement(By
+                .id(String.format(idFormat, rowIndex, plural.index())))
+                .getAttribute("value");
     }
 
     /**
@@ -266,13 +249,8 @@ public class EditorPage extends BasePage {
 
     private void setTargetContent(final long rowIndex, final String text,
             final String idFormat, final Plurals plural) {
-        WebElement we = waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return input.findElement(
-                        By.id(String.format(idFormat, rowIndex, plural.index())));
-            }
-        });
+        WebElement we = waitForWebElement(By
+                .id(String.format(idFormat, rowIndex, plural.index())));
         we.click();
         we.clear();
         we.sendKeys(text);
@@ -288,13 +266,8 @@ public class EditorPage extends BasePage {
     public EditorPage pasteIntoRowAtIndex(final long rowIndex,
                                           final String text) {
         log.info("Paste at {} the text {}", rowIndex, text);
-        WebElement we = waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return input.findElement(By.id(String.format(TARGET_ID_FMT,
+        WebElement we = waitForWebElement(By.id(String.format(TARGET_ID_FMT,
                         rowIndex, Plurals.SourceSingular.index())));
-            }
-        });
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(text), null);
         we.click();
@@ -304,19 +277,19 @@ public class EditorPage extends BasePage {
 
     public EditorPage approveTranslationAtRow(int rowIndex) {
         log.info("Click Approve on row {}", rowIndex);
-        WebElement button = getDriver()
-                .findElement(By.id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)));
-        button.click();
+        waitForWebElement(By
+                .id(String.format(APPROVE_BUTTON_ID_FMT, rowIndex)))
+                .click();
         slightPause();
-        return this;
+        return new EditorPage(getDriver());
     }
 
     public EditorPage saveAsFuzzyAtRow(int rowIndex) {
         log.info("Click Fuzzy on row {}", rowIndex);
-        WebElement button = getDriver()
-                .findElement(By.id(String.format(FUZZY_BUTTON_ID_FMT, rowIndex)));
-        button.click();
-        return this;
+        waitForWebElement(By
+                .id(String.format(FUZZY_BUTTON_ID_FMT, rowIndex)))
+                .click();
+        return new EditorPage(getDriver());
     }
 
     public String getMessageTargetAtRowIndex(int rowIndex, Plurals plurals) {
@@ -326,15 +299,13 @@ public class EditorPage extends BasePage {
 
     public String getStatistics() {
         log.info("Query statistics");
-        return getDriver().findElement(By.id("gwt-debug-statistics-label"))
-                .getText();
+        return waitForWebElement(By.id("gwt-debug-statistics-label")).getText();
     }
 
     public List<String> getMessageSources() {
         log.info("Query list of text flow sources");
-        List<WebElement> sources = getDriver().findElement(transUnitTableBy)
-                .findElements(By.className("sourceTable"));
-        return WebElementUtil.elementsToText(sources);
+        return WebElementUtil.elementsToText(waitForWebElement(transUnitTable)
+                .findElements(By.className("gwt-HTML")));
     }
 
     /**
@@ -346,9 +317,7 @@ public class EditorPage extends BasePage {
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                WebElement webElement = getTargetValidationBox();
-                return webElement.isDisplayed()
-                        && !webElement.getText().isEmpty();
+                return !getTargetValidationBox().getText().isEmpty();
             }
         });
         return getTargetValidationBox().getText();
@@ -403,28 +372,10 @@ public class EditorPage extends BasePage {
      */
     public EditorPage openValidationOptions() {
         log.info("Click to open Validation options panel");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(By.id("container"))
-                        .findElement(By.className("new-zanata"))
-                        .findElement(By.xpath("//a[@title='Validation options']"))
-                        .isEnabled();
-            }
-        });
-        new Actions(getDriver()).click(
-                getDriver().findElement(By.id("container"))
-                        .findElement(By.className("new-zanata"))
-                        .findElement(By.xpath("//a[@title='Validation options']")))
+        new Actions(getDriver()).click(waitForWebElement(
+                waitForElementExists(By.id("container")), validationOptions))
                 .perform();
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return getDriver().findElement(By.id("validationOptionsView"))
-                        .isDisplayed();
-            }
-        });
+        waitForElementExists(validationOptionsView);
         return new EditorPage(getDriver());
     }
 
@@ -436,8 +387,7 @@ public class EditorPage extends BasePage {
      */
     public boolean isValidationOptionAvailable(Validations validation) {
         log.info("Query is validation option {} available", validation);
-        return getDriver()
-                .findElement(By.xpath("//*[@title='" +
+        return waitForWebElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']"))
                 .findElement(By.tagName("input"))
                 .isEnabled();
@@ -451,8 +401,7 @@ public class EditorPage extends BasePage {
      */
     public boolean isValidationOptionSelected(Validations validation) {
         log.info("Query is validation option {} selected", validation);
-        return getDriver()
-                .findElement(By.xpath("//*[@title='" +
+        return waitForWebElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']"))
                 .findElement(By.tagName("input"))
                 .isSelected();
@@ -466,8 +415,8 @@ public class EditorPage extends BasePage {
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
         log.info("Click validation checkbox {}", validation);
-        getDriver().findElement(By.xpath("//*[@title='" +
-                        getValidationTitle(validation) + "']"))
+        waitForElementExists(By.xpath("//*[@title='" +
+                getValidationTitle(validation) + "']"))
                 .findElement(By.tagName("input"))
                 .click();
         return new EditorPage(getDriver());
@@ -498,34 +447,33 @@ public class EditorPage extends BasePage {
 
     public EditorPage inputFilterQuery(String query) {
         log.info("Enter filter query {}", query);
-        editorFilterField.clear();
-        editorFilterField.sendKeys(query + Keys.ENTER);
-        return this;
+        waitForWebElement(editorFilterField).clear();
+        waitForWebElement(editorFilterField).sendKeys(query + Keys.ENTER);
+        return new EditorPage(getDriver());
     }
 
     public String getFilterQuery() {
         log.info("Query filter text");
-        return editorFilterField.getAttribute("value");
+        return waitForWebElement(editorFilterField).getAttribute("value");
     }
 
     // Find the right side column for the selected row
     private WebElement getTranslationTargetColumn() {
-        return getDriver().findElement(By.className("selected"))
+        return waitForWebElement(By.className("selected"))
                 .findElements(By.className("transUnitCol"))
                 .get(1); // Right column
     }
 
     // Find the validation messages / errors box
     private WebElement getTargetValidationBox() {
-        return getTranslationTargetColumn()
-                .findElement(By.className("gwt-DisclosurePanel"));
+        return waitForElementExists(getTranslationTargetColumn(), validationBox);
     }
 
     // Click the History button for the selected row - row id must be known
     public EditorPage clickShowHistoryForRow(int row) {
         log.info("Click history button on row {}", row);
-        getTranslationTargetColumn()
-                .findElement(By.id("gwt-debug-target-" + row + "-history"))
+        waitForWebElement(getTranslationTargetColumn(), By
+                .id("gwt-debug-target-" + row + "-history"))
                 .click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
@@ -586,14 +534,7 @@ public class EditorPage extends BasePage {
     public EditorPage clickCompareVersionsTab() {
         log.info("Click on Compare versions tab");
         getCompareTab().click();
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getTranslationHistoryBox()
-                        .findElement(By.className("html-face"))
-                        .isDisplayed();
-            }
-        });
+        waitForWebElement(getTranslationHistoryBox(), By.className("html-face"));
         return new EditorPage(getDriver());
     }
 
@@ -620,8 +561,9 @@ public class EditorPage extends BasePage {
     }
 
     private WebElement getTranslationHistoryBox() {
-        return getDriver().findElement(By.id("gwt-debug-transHistory"))
-                .findElement(By.id("gwt-debug-transHistoryTabPanel"));
+        return waitForElementExists(
+                waitForElementExists(By.id("gwt-debug-transHistory")),
+                By.id("gwt-debug-transHistoryTabPanel"));
     }
 
     private List<WebElement> getTranslationHistoryList() {

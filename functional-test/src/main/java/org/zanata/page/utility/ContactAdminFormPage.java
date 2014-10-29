@@ -1,9 +1,8 @@
 package org.zanata.page.utility;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -13,14 +12,10 @@ import org.zanata.util.WebElementUtil;
  */
 @Slf4j
 public class ContactAdminFormPage extends BasePage {
-    @FindBy(id = "contactAdminForm:subjectField:subject")
-    private WebElement subjectField;
 
-    @FindBy(id = "contactAdminForm:messageField:message")
-    private WebElement messageField;
-
-    @FindBy(id = "contactAdminForm:send")
-    private WebElement sendButton;
+    private By subjectField = By.id("contactAdminForm:subjectField:subject");
+    private By messageField = By.id("contactAdminForm:messageField:message");
+    private By sendButton = By.id("contactAdminForm:send");
 
     public ContactAdminFormPage(WebDriver driver) {
         super(driver);
@@ -28,21 +23,23 @@ public class ContactAdminFormPage extends BasePage {
 
     public ContactAdminFormPage inputSubject(String subject) {
         log.info("Enter subject {}", subject);
-        subjectField.clear();
-        subjectField.sendKeys(subject);
+        waitForWebElement(subjectField).clear();
+        waitForWebElement(subjectField).sendKeys(subject);
         return new ContactAdminFormPage(getDriver());
     }
 
     public ContactAdminFormPage inputMessage(String message) {
         log.info("Enter message {}", message);
-        WebElementUtil
-                .setRichTextEditorContent(getDriver(), messageField, message);
+        WebElementUtil.setRichTextEditorContent(
+                getDriver(),
+                waitForWebElement(messageField),
+                message);
         return new ContactAdminFormPage(getDriver());
     }
 
     public HelpPage send() {
         log.info("Click Send");
-        sendButton.click();
+        waitForWebElement(sendButton).click();
         return new HelpPage(getDriver());
     }
 }

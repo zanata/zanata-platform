@@ -14,19 +14,11 @@ import org.zanata.util.WebElementUtil;
  */
 @Slf4j
 public class ServerConfigurationPage extends BasePage {
-    @FindBy(id = "serverConfigForm:urlField")
-    private WebElement urlField;
 
-    @FindBy(
-            id = "serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml")
-    private WebElement maxConcurrentField;
-
-    @FindBy(
-            id = "serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml")
-    private WebElement maxActiveField;
-
-    @FindBy(id = "serverConfigForm:save")
-    private WebElement saveButton;
+    private By urlField = By.id("serverConfigForm:urlField");
+    private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml");
+    private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml");
+    private By saveButton = By.id("serverConfigForm:save");
 
     public ServerConfigurationPage(WebDriver driver) {
         super(driver);
@@ -34,31 +26,31 @@ public class ServerConfigurationPage extends BasePage {
 
     public ServerConfigurationPage inputMaxConcurrent(int max) {
         log.info("Enter maximum concurrent API requests {}", max);
-        maxConcurrentField.clear();
-        maxConcurrentField.sendKeys(max + "");
-        return this;
+        waitForWebElement(maxConcurrentField).clear();
+        waitForWebElement(maxConcurrentField).sendKeys(max + "");
+        return new ServerConfigurationPage(getDriver());
     }
 
     public String getMaxConcurrentRequestsPerApiKey() {
         log.info("Query maximum concurrent API requests");
-        return maxConcurrentField.getAttribute("value");
+        return waitForWebElement(maxConcurrentField).getAttribute("value");
     }
 
     public ServerConfigurationPage inputMaxActive(int max) {
         log.info("Enter maximum active API requests {}", max);
-        maxActiveField.clear();
-        maxActiveField.sendKeys(max + "");
-        return this;
+        waitForWebElement(maxActiveField).clear();
+        waitForWebElement(maxActiveField).sendKeys(max + "");
+        return new ServerConfigurationPage(getDriver());
     }
 
     public String getMaxActiveRequestsPerApiKey() {
         log.info("Query maximum active API requests");
-        return maxActiveField.getAttribute("value");
+        return waitForWebElement(maxActiveField).getAttribute("value");
     }
 
     public AdministrationPage save() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new AdministrationPage(getDriver());
     }
 }

@@ -62,7 +62,6 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
             "for a project version",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("Behaviour changed - needs review")
     public void changeVersionLanguages() throws Exception {
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -81,40 +80,31 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         List<String> enabledLocaleList = versionLanguagesTab
                 .getEnabledLocaleList();
 
-        assertThat(enabledLocaleList)
-                .contains("French[fr]", "Hindi[hi]", "Polish[pl]")
-                .as("The enabled list contains three languages");
-
-        assertThat(enabledLocaleList)
-                .doesNotContain("English (United States)[en-US]")
-                .as("The enabled list does not contain " +
-                        "'English (United States)[en-US]'");
-
-        versionLanguagesTab = versionLanguagesTab.removeLocale("pl");
-        versionLanguagesTab.waitForLanguagesNotContains(
-                "English (United States)[en-US]");
-        versionLanguagesTab.waitForLanguagesNotContains("Polish[pl]");
-        enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
-
-        assertThat(enabledLocaleList)
-                .doesNotContain("English (United States)[en-US]")
-                .doesNotContain("Polish[pl]")
-                .as("The enabled list does not contain 'US English' or Polish");
+        assertThat(enabledLocaleList.isEmpty())
+                .as("The enabled list contains no languages");
 
         versionLanguagesTab = versionLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
                 .enterSearchLanguage("en-US")
                 .addLocale("English (United States)[en-US]");
+        versionLanguagesTab.expectNotification("Language \"English " +
+                "(United States)\" has been added to version.");
+        versionLanguagesTab = versionLanguagesTab
+                .waitForLanguagesContains("English (United States)[en-US]");
 
-        versionLanguagesTab.waitForLanguagesContains(
-                "English (United States)[en-US]");
+        versionLanguagesTab = versionLanguagesTab
+                .enterSearchLanguage("fr")
+                .addLocale("French[fr]");
+        versionLanguagesTab.expectNotification("Language \"French\" has " +
+                "been added to version.");
+        versionLanguagesTab = versionLanguagesTab
+                .waitForLanguagesContains("French[fr]");
+
         enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains("English (United States)[en-US]",
-                        "French[fr]",
-                        "Hindi[hi]")
-                .as("Three languages are available to translate");
+                .contains("English (United States)[en-US]", "French[fr]")
+                .as("Two languages are available to translate");
     }
 }

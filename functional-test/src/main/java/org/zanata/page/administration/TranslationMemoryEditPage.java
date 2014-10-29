@@ -21,9 +21,8 @@
 package org.zanata.page.administration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
@@ -33,17 +32,10 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class TranslationMemoryEditPage extends BasePage {
 
-    @FindBy(id = "tmForm:slugField:slug")
-    private WebElement idField;
-
-    @FindBy(id = "tmForm:descriptionField:description")
-    private WebElement descriptionField;
-
-    @FindBy(id = "tmForm:save")
-    private WebElement saveButton;
-
-    @FindBy(id = "tmForm:cancel")
-    private WebElement cancelButton;
+    private By idField = By.id("tmForm:slugField:slug");
+    private By descriptionField = By.id("tmForm:descriptionField:description");
+    private By saveButton = By.id("tmForm:save");
+    private By cancelButton = By.id("tmForm:cancel");
 
     public TranslationMemoryEditPage(WebDriver driver) {
         super(driver);
@@ -51,31 +43,31 @@ public class TranslationMemoryEditPage extends BasePage {
 
     public TranslationMemoryEditPage enterMemoryID(String id) {
         log.info("Enter TM ID {}", id);
-        idField.sendKeys(id);
+        waitForWebElement(idField).sendKeys(id);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryEditPage enterMemoryDescription(String description) {
         log.info("Enter TM description {}", description);
-        descriptionField.sendKeys(description);
+        waitForWebElement(descriptionField).sendKeys(description);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage saveTM() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryEditPage clickSaveAndExpectFailure() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage cancelTM() {
         log.info("Click Cancel");
-        cancelButton.click();
+        waitForWebElement(cancelButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 

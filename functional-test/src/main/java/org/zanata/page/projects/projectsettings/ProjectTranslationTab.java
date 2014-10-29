@@ -20,7 +20,6 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import com.google.common.base.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -40,6 +39,9 @@ public class ProjectTranslationTab extends ProjectBasePage {
 
     private Map validationNames = getValidationMapping();
 
+    private By validationsList =
+            By.id("settings-translation-form:validation-list");
+
     public ProjectTranslationTab(WebDriver driver) {
         super(driver);
     }
@@ -48,12 +50,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
         log.info("Query is {} validation level {}", optionName, level);
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
-        WebElement option = waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                return getDriver().findElement(By.id(optionElementID));
-            }
-        });
+        WebElement option = waitForElementExists(By.id(optionElementID));
         return option.getAttribute("checked").equals("true");
     }
 
@@ -63,8 +60,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
-        WebElement option =  getDriver().findElement(
-                By.id("settings-translation-form:validation-list"))
+        WebElement option =  waitForWebElement(validationsList)
                 .findElement(By.id(optionElementID));
 
         ((JavascriptExecutor) getDriver())

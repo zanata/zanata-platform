@@ -22,13 +22,21 @@ public class VersionDocumentsTab extends VersionBasePage {
     public static final String UNSUPPORTED_FILETYPE =
             " is not a supported file type.";
 
+    private By uploadButton = By.id("file-upload-component-toggle-button");
+    private By startUploadButton = By.id("file-upload-component-start-upload");
+    private By cancelUploadButton = By.id("file-upload-component-cancel-upload");
+    private By fileUploadInput = By.id("file-upload-component-file-input");
+    private By fileUploadDone = By.id("file-upload-component-done-upload");
+    private By filesListPanel = By.className("js-files-panel");
+    private By fileUploadPanel = By.id("file-upload-component");
+
     public VersionDocumentsTab(WebDriver driver) {
         super(driver);
     }
 
     public VersionDocumentsTab pressUploadFileButton() {
         log.info("Click Upload file button");
-        clickLinkAfterAnimation(By.id("file-upload-component-toggle-button"));
+        clickLinkAfterAnimation(waitForWebElement(uploadButton));
         return new VersionDocumentsTab(getDriver());
     }
 
@@ -39,16 +47,12 @@ public class VersionDocumentsTab extends VersionBasePage {
      */
     public boolean canSubmitDocument() {
         log.info("Query can start upload");
-        return getDriver().findElement(
-                By.id("file-upload-component-start-upload"))
-                .isEnabled();
+        return waitForElementExists(startUploadButton).isEnabled();
     }
 
     public VersionDocumentsTab cancelUpload() {
         log.info("Click Cancel");
-        getDriver()
-                .findElement(By.id("file-upload-component-cancel-upload"))
-                .click();
+        waitForWebElement(cancelUploadButton).click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply( WebDriver input) {
@@ -69,42 +73,21 @@ public class VersionDocumentsTab extends VersionBasePage {
                         "arguments[0].style.height = '1px'; " +
                         "arguments[0].style.width = '1px'; " +
                         "arguments[0].style.opacity = 1",
-                        getDriver().findElement(
-                                By.id("file-upload-component-file-input")));
+                        waitForElementExists(fileUploadInput));
 
-        getDriver().findElement(
-                By.id("file-upload-component-file-input"))
-                .sendKeys(filePath);
+        waitForWebElement(fileUploadInput).sendKeys(filePath);
         return new VersionDocumentsTab(getDriver());
     }
 
     public VersionDocumentsTab submitUpload() {
         log.info("Click Submit upload");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(
-                        By.id("file-upload-component-start-upload"))
-                        .isEnabled();
-            }
-        });
-        getDriver().findElement(
-                By.id("file-upload-component-start-upload")).click();
+        waitForWebElement(startUploadButton).click();
         return new VersionDocumentsTab(getDriver());
     }
 
     public VersionDocumentsTab clickUploadDone() {
         log.info("Click upload Done button");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                .findElement(By.id("file-upload-component-done-upload"))
-                .isEnabled();
-            }
-        });
-        getDriver().findElement(By.id("file-upload-component-done-upload"))
-                .click();
+        waitForWebElement(fileUploadDone).click();
         return new VersionDocumentsTab(getDriver());
     }
 
@@ -114,8 +97,8 @@ public class VersionDocumentsTab extends VersionBasePage {
                 .until(new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(WebDriver input) {
-                        List<WebElement> elements = getDriver()
-                                .findElement(By.id("settings-document_form"))
+                        List<WebElement> elements = waitForElementExists(
+                                By.id("settings-document_form"))
                                 .findElement(By.tagName("ul"))
                                 .findElements(By.xpath(".//li/label[@class='" +
                                         "form__checkbox__label']"));
@@ -157,21 +140,13 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     private List<WebElement> getUploadListElements() {
-        return getDriver().findElement(By.className("js-files-panel"))
-                .findElement(By.tagName("ul"))
+        return waitForWebElement(filesListPanel).findElement(By.tagName("ul"))
                 .findElements(By.tagName("li"));
     }
 
     public String getUploadError() {
         log.info("Query upload error message");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("file-upload-component"))
-                        .findElement(By.className("message--danger")).isDisplayed();
-            }
-        });
-        return getDriver().findElement(By.id("file-upload-component"))
-                .findElement(By.className("message--danger")).getText();
+        return waitForWebElement(waitForElementExists(fileUploadPanel),
+                By.className("message--danger")).getText();
     }
 }

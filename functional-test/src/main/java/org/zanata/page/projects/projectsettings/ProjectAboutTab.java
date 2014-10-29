@@ -36,33 +36,33 @@ import org.zanata.page.projects.ProjectBasePage;
 @Slf4j
 public class ProjectAboutTab extends ProjectBasePage {
 
+    private By aboutTextField = By.id("settings-about-form:homeContent");
+    private By saveButton = By.linkText("Save notes");
+
     public ProjectAboutTab(WebDriver driver) {
         super(driver);
     }
 
     public ProjectAboutTab enterAboutText(String aboutText) {
         log.info("Enter About text {}", aboutText);
-        getDriver().findElement(By.id("settings-about-form:homeContent"))
-                .sendKeys(aboutText);
+        waitForWebElement(aboutTextField).sendKeys(aboutText);
         return new ProjectAboutTab(getDriver());
     }
 
     public ProjectAboutTab clearAboutText() {
         log.info("Clear About textedit");
-        getDriver().findElement(By.id("settings-about-form:homeContent"))
-                .clear();
+        waitForWebElement(aboutTextField).clear();
         return new ProjectAboutTab(getDriver());
     }
 
     public String getAboutText() {
         log.info("Query About text");
-        return getDriver().findElement(By.id("settings-about-form:homeContent"))
-                .getText();
+        return waitForWebElement(aboutTextField).getText();
     }
 
     public ProjectAboutTab pressSave() {
         log.info("Click Save notes");
-        clickElement(By.linkText("Save notes"));
+        clickElement(saveButton);
         return new ProjectAboutTab(getDriver());
     }
 }

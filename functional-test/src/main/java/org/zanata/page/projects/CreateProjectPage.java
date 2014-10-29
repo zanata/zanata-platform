@@ -26,20 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 @Slf4j
 public class CreateProjectPage extends BasePage {
 
-    @FindBy(id = "project-form:descriptionField:description")
-    private WebElement descriptionField;
-
-    @FindBy(id = "project-types")
-    private WebElement projectTypeList;
-
-    @FindBy(id = "project-form:create-new")
-    private WebElement createButton;
+    private By idField = By.id("project-form:slugField:slug");
+    private By nameField = By.id("project-form:nameField:name");
+    private By descriptionField = By.id("project-form:descriptionField:description");
+    private By projectTypeList = By.id("project-types");
+    private By createButton = By.id("project-form:create-new");
 
     public CreateProjectPage(final WebDriver driver) {
         super(driver);
@@ -47,28 +43,26 @@ public class CreateProjectPage extends BasePage {
 
     public CreateProjectPage enterProjectId(String projectId) {
         log.info("Enter project ID {}", projectId);
-        getDriver().findElement(By.id("project-form:slugField:slug"))
-                .sendKeys(projectId);
+        waitForWebElement(idField).sendKeys(projectId);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
-        getDriver().findElement(By.id("project-form:nameField:name"))
-                .sendKeys(projectName);
+        waitForWebElement(nameField).sendKeys(projectName);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
-        descriptionField.sendKeys(projectDescription);
+        waitForWebElement(descriptionField).sendKeys(projectDescription);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage selectProjectType(String projectType) {
         log.info("Click project type {}", projectType);
-        List<WebElement> projectTypes =
-                projectTypeList.findElements(By.tagName("li"));
+        List<WebElement> projectTypes = waitForWebElement(projectTypeList)
+                .findElements(By.tagName("li"));
 
         for (WebElement projectTypeLi : projectTypes) {
             if (projectTypeLi.findElement(By.xpath(".//div/label")).getText()
@@ -82,7 +76,7 @@ public class CreateProjectPage extends BasePage {
 
     public ProjectVersionsPage pressCreateProject() {
         log.info("Click Create");
-        clickAndCheckErrors(createButton);
+        clickAndCheckErrors(waitForWebElement(createButton));
         return new ProjectVersionsPage(getDriver());
     }
 }

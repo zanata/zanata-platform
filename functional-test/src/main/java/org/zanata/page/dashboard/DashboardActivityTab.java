@@ -20,15 +20,14 @@
  */
 package org.zanata.page.dashboard;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.zanata.util.WebElementUtil;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,46 +36,35 @@ import java.util.List;
 @Slf4j
 public class DashboardActivityTab extends DashboardBasePage {
 
+    private By activityList = By.id("activity-list");
+    private By moreActivityButton = By.id("moreActivity");
+
     public DashboardActivityTab(WebDriver driver) {
         super(driver);
     }
 
     public List<WebElement> getMyActivityList() {
         log.info("Query activity list");
-        WebElement listWrapper =
-                getDriver().findElement(By.id("activity-list"));
-
-        if (listWrapper != null) {
-            return listWrapper.findElements(By.xpath("./li"));
-        }
-        return new ArrayList<WebElement>();
+        return waitForWebElement(activityList).findElements(By.xpath("./li"));
     }
 
     /**
      * Click on the activity list's "More Activity element".
-     * @return true, if there is more activity available. False otherwise.
+     * @return true, if the list has increased, false otherwise.
      */
     public boolean clickMoreActivity() {
         log.info("Click More Activity button");
-        WebElement moreActivity = getMoreActivityElement();
         final int activityListOrigSize = getMyActivityList().size();
-        if (moreActivity != null) {
-            moreActivity.click();
-            WebElementUtil.waitForAMoment(getDriver()).until(
-                    new ExpectedCondition<Object>() {
-                        @Nullable
-                        @Override
-                        public Object apply(@Nullable WebDriver input) {
-                            return getMyActivityList().size() > activityListOrigSize;
-                        }
-                    });
-            return true;
-        } else {
-            return false;
-        }
+        waitForWebElement(moreActivityButton).click();
+        return waitForAMoment().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver input) {
+                return getMyActivityList().size() > activityListOrigSize;
+            }
+        });
     }
 
-    private WebElement getMoreActivityElement() {
-        return getDriver().findElement(By.id("moreActivity"));
+    public boolean isMoreActivity() {
+        return getDriver().findElements(moreActivityButton).size() > 0;
     }
 }

@@ -31,13 +31,16 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class LanguagePage extends BasePage {
 
+    private By contactCoordinatorsButton =
+            By.linkText("Contact Team Coordinators");
+
     public LanguagePage(WebDriver driver) {
         super(driver);
     }
 
     public ContactTeamPage clickContactCoordinatorsButton() {
         log.info("Click Contact Coordinators button");
-        getDriver().findElement(By.linkText("Contact Team Coordinators")).click();
+        waitForWebElement(contactCoordinatorsButton).click();
         return new ContactTeamPage(getDriver());
     }
 

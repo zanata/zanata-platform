@@ -23,8 +23,6 @@ package org.zanata.page.languages;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -34,11 +32,9 @@ import org.zanata.util.WebElementUtil;
 @Slf4j
 public class ContactTeamPage extends BasePage {
 
-    @FindBy(id = "contactCoordinatorForm:messageField:message")
-    private WebElement messageField;
-
-    @FindBy(id = "contactCoordinatorForm:send")
-    private WebElement sendButton;
+    private By subjectField = By.id("contactCoordinatorForm:subjectField:subject");
+    private By messageField = By.id("contactCoordinatorForm:messageField:message");
+    private By sendButton = By.id("contactCoordinatorForm:send");
 
     public ContactTeamPage(WebDriver driver) {
         super(driver);
@@ -46,22 +42,21 @@ public class ContactTeamPage extends BasePage {
 
     public ContactTeamPage enterSubject(String subject) {
         log.info("Enter subject {}", subject);
-        getDriver().findElement(
-                By.id("contactCoordinatorForm:subjectField:subject"))
-                .sendKeys(subject);
+        waitForWebElement(subjectField).sendKeys(subject);
         return new ContactTeamPage(getDriver());
     }
 
     public ContactTeamPage enterMessage(String message) {
         log.info("Enter message {}", message);
-        WebElementUtil
-                .setRichTextEditorContent(getDriver(), messageField, message);
+        WebElementUtil.setRichTextEditorContent(getDriver(),
+                waitForWebElement(messageField),
+                message);
         return new ContactTeamPage(getDriver());
     }
 
     public LanguagesPage clickSend() {
         log.info("Click the Send Message button");
-        sendButton.click();
+        waitForWebElement(sendButton).click();
         return new LanguagesPage(getDriver());
     }
 }

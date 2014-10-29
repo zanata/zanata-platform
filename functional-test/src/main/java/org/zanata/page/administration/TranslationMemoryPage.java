@@ -26,7 +26,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
@@ -50,13 +49,10 @@ public class TranslationMemoryPage extends BasePage {
     public static final String UPLOAD_ERROR =
             "There was an error uploading the file";
 
-    @FindBy(id = "createTmLink")
-    private WebElement createTmLink;
-
-    @FindBy(id = "main_content:form:tmTable")
-    private WebElement tmList;
-
-    private By tmListBy = By.id("main_content:form:tmTable");
+    private By createTmLink = By.id("createTmLink");
+    private By tmList = By.id("main_content:form:tmTable");
+    private By filenameInput = By.name("uploadedFile");
+    private By uploadButton = By.name("uploadBtn");
 
     public TranslationMemoryPage(WebDriver driver) {
         super(driver);
@@ -64,36 +60,33 @@ public class TranslationMemoryPage extends BasePage {
 
     public TranslationMemoryEditPage clickCreateNew() {
         log.info("Click Create New");
-        createTmLink.click();
+        waitForWebElement(createTmLink).click();
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage clickImport(String tmName) {
         log.info("Click Import");
-        WebElement importButton =
-                findRowByTMName(tmName).getCells().get(IMPORT_COLUMN)
-                        .findElement(By.tagName("a"));
-        importButton.click();
+        findRowByTMName(tmName).getCells().get(IMPORT_COLUMN)
+                .findElement(By.tagName("a")).click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage enterImportFileName(String importFileName) {
         log.info("Enter import TM filename {}", importFileName);
-        getDriver().findElement(By.name("uploadedFile")).sendKeys(
-                importFileName);
+        waitForWebElement(filenameInput).sendKeys(importFileName);
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
         log.info("Click and accept Upload button");
-        getDriver().findElement(By.name("uploadBtn")).click();
+        waitForWebElement(uploadButton).click();
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public Alert expectFailedUpload() {
         log.info("Click Upload");
-        getDriver().findElement(By.name("uploadBtn")).click();
+        waitForWebElement(uploadButton).click();
         return switchToAlert();
     }
 
@@ -129,7 +122,7 @@ public class TranslationMemoryPage extends BasePage {
 
     public List<String> getListedTranslationMemorys() {
         log.info("Query translation memory names");
-        return WebElementUtil.getColumnContents(getDriver(), tmListBy,
+        return WebElementUtil.getColumnContents(getDriver(), tmList,
                 ID_COLUMN);
     }
 
@@ -166,35 +159,27 @@ public class TranslationMemoryPage extends BasePage {
      * Get a row from the TM table that corresponds with tmName
      */
     private TableRow findRowByTMName(final String tmName) {
-        TableRow matchedRow =
-                waitForAMoment().until(new Function<WebDriver, TableRow>() {
-                    @Override
-                    public TableRow apply(WebDriver driver) {
-                        List<TableRow> tableRows =
-                                WebElementUtil
-                                        .getTableRows(getDriver(), tmList);
-                        Optional<TableRow> matchedRow =
-                                Iterables.tryFind(tableRows,
-                                        new Predicate<TableRow>() {
-                                            @Override
-                                            public boolean
-                                                    apply(TableRow input) {
-                                                List<String> cellContents =
-                                                        input.getCellContents();
-                                                String localeCell =
-                                                        cellContents.get(
-                                                                ID_COLUMN)
-                                                                .trim();
-                                                return localeCell
-                                                        .equalsIgnoreCase(tmName);
-                                            }
-                                        });
+        return waitForAMoment().until(new Function<WebDriver, TableRow>() {
+            @Override
+            public TableRow apply(WebDriver driver) {
+                List<TableRow> tableRows = WebElementUtil
+                        .getTableRows(getDriver(), tmList);
+                Optional<TableRow> matchedRow =
+                        Iterables.tryFind(tableRows, new Predicate<TableRow>() {
+                            @Override
+                            public boolean apply(TableRow input) {
+                                List<String> cellContents = input
+                                        .getCellContents();
+                                String localeCell = cellContents.get(ID_COLUMN)
+                                        .trim();
+                                return localeCell.equalsIgnoreCase(tmName);
+                            }
+                        });
 
-                        // Keep looking for the TM entry until timeout
-                        return matchedRow.isPresent() ? matchedRow.get() : null;
-                    }
-                });
-        return matchedRow;
+                // Keep looking for the TM entry until timeout
+                return matchedRow.isPresent() ? matchedRow.get() : null;
+            }
+        });
     }
 
     private Alert clickTMAction(String tmName, int position) {

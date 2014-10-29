@@ -21,9 +21,8 @@
 package org.zanata.page.administration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
@@ -34,14 +33,9 @@ import org.zanata.page.utility.HomePage;
 @Slf4j
 public class EditHomeCodePage extends BasePage {
 
-    @FindBy(id = "homeContentForm:homeContent")
-    private WebElement textEdit;
-
-    @FindBy(id = "homeContentForm:update")
-    private WebElement updateButton;
-
-    @FindBy(id = "homeContentForm:cancel")
-    private WebElement cancelButton;
+    private By textEdit = By.id("homeContentForm:homeContent");
+    private By updateButton = By.id("homeContentForm:update");
+    private By cancelButton = By.id("homeContentForm:cancel");
 
     public EditHomeCodePage(final WebDriver driver) {
         super(driver);
@@ -49,19 +43,19 @@ public class EditHomeCodePage extends BasePage {
 
     public EditHomeCodePage enterText(String text) {
         log.info("Enter homepage text\n{}", text);
-        textEdit.sendKeys(text);
+        waitForWebElement(textEdit).sendKeys(text);
         return new EditHomeCodePage(getDriver());
     }
 
     public HomePage update() {
         log.info("Click Update");
-        updateButton.click();
+        waitForWebElement(updateButton).click();
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
         log.info("Click Cancel");
-        cancelButton.click();
+        waitForWebElement(cancelButton).click();
         return new HomePage(getDriver());
     }
 }

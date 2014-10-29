@@ -45,15 +45,8 @@ public class VersionLanguagesPage extends VersionBasePage {
     }
 
     private List<WebElement> getLanguageTabLocaleList() {
-        WebElement languageList =
-                waitForAMoment().until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver input) {
-                        return getDriver().findElement(
-                                By.id("languages-language_list"));
-                    }
-                });
-        return languageList.findElements(By.tagName("li"));
+        return waitForWebElement(By.id("languages-language_list"))
+                .findElements(By.tagName("li"));
     }
 
     public EditorPage translate(final String locale, final String docName) {
@@ -103,18 +96,9 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     private List<WebElement> getVersionTabDocumentList() {
         log.info("Query documents list");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(
-                                By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']"))
-                        .isDisplayed();
-            }
-        });
-        return getDriver()
-                .findElements(
-                        By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']/li"));
+        return waitForWebElement(
+                By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']"))
+                .findElements(By.tagName("li"));
     }
 
     public String getStatisticsForLocale(final String localeId) {
@@ -128,14 +112,13 @@ public class VersionLanguagesPage extends VersionBasePage {
 
                 List<WebElement> localeList = getLanguageTabLocaleList();
                 for (WebElement locale : localeList) {
-                    if (locale
-                            .findElement(
-                                    By.xpath(".//a/div/div/span[@class='list__item__meta']"))
-                            .getText().equals(localeId)) {
-                        figure =
-                                locale.findElement(
-                                        By.xpath(".//a/div/div[2]/span/span[@class='stats__figure']"))
-                                        .getText();
+                    if (locale.findElement(
+                            By.xpath(".//a/div/div/span[@class='list__item__meta']"))
+                            .getText()
+                            .equals(localeId)) {
+                        figure = locale.findElement(
+                                By.xpath(".//a/div/div[2]/span/span[@class='stats__figure']"))
+                                .getText();
                         break;
                     }
                 }

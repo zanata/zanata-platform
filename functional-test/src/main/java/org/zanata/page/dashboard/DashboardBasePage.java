@@ -24,8 +24,6 @@ import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
@@ -34,32 +32,16 @@ import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 @Slf4j
 public class DashboardBasePage extends BasePage {
 
-    @FindBy(id = "activity_tab")
-    private WebElement activityTab;
-
-    @FindBy(id = "projects_tab")
-    private WebElement projectsTab;
-
-    @FindBy(id = "settings_tab")
-    private WebElement settingsTab;
-
-    @FindBy(id = "account_tab")
-    private WebElement settingsAccountTab;
-
-    @FindBy(id = "profile_tab")
-    private WebElement settingsProfileTab;
-
-    @FindBy(id = "client_tab")
-    private WebElement settingsClientTab;
-
-    @FindBy(id = "activity-today_tab")
-    private WebElement todaysActivityTab;
-
-    @FindBy(id = "activity-week_tab")
-    private WebElement thisWeeksActivityTab;
-
-    @FindBy(id = "activity-month_tab")
-    private WebElement thisMonthsActivityTab;
+    private By activityTab = By.id("activity_tab");
+    private By projectsTab = By.id("projects_tab");
+    private By settingsTab = By.id("settings_tab");
+    private By settingsAccountTab = By.id("account_tab");
+    private By settingsProfileTab = By.id("profile_tab");
+    private By settingsClientTab = By.id("client_tab");
+    private By todaysActivityTab = By.id("activity-today_tab");
+    private By thisWeeksActivityTab = By.id("activity-week_tab");
+    private By thisMonthsActivityTab = By.id("activity-month_tab");
+    private By profileOverview = By.id("profile-overview");
 
     public final static String EMAIL_SENT =
             "You will soon receive an email with a link to activate your " +
@@ -74,49 +56,50 @@ public class DashboardBasePage extends BasePage {
 
     public String getUserFullName() {
         log.info("Query user full name");
-        return getDriver().findElement(By.id("profile-overview"))
+        return waitForWebElement(profileOverview)
                 .findElement(By.tagName("h1")).getText();
     }
 
     public DashboardActivityTab gotoActivityTab() {
         log.info("Click Activity tab");
-        clickWhenTabEnabled(activityTab);
+        clickWhenTabEnabled(waitForWebElement(activityTab));
         return new DashboardActivityTab(getDriver());
     }
 
     public boolean activityTabIsSelected() {
         log.info("Query is Activity tab displayed");
-        return getDriver().findElement(
-                By.cssSelector("#activity.is-active")) != null;
+        return getDriver()
+                .findElements(By.cssSelector("#activity.is-active"))
+                .size() > 0;
     }
 
     public DashboardProjectsTab gotoProjectsTab() {
         log.info("Click Projects tab");
-        projectsTab.click();
+        clickWhenTabEnabled(waitForWebElement(projectsTab));
         return new DashboardProjectsTab(getDriver());
     }
 
     public DashboardBasePage goToSettingsTab() {
         log.info("Click Settings tab");
-        clickWhenTabEnabled(settingsTab);
+        clickWhenTabEnabled(waitForWebElement(settingsTab));
         return new DashboardBasePage(getDriver());
     }
 
     public DashboardAccountTab gotoSettingsAccountTab() {
         log.info("Click Account settings sub-tab");
-        clickWhenTabEnabled(settingsAccountTab);
+        clickWhenTabEnabled(waitForWebElement(settingsAccountTab));
         return new DashboardAccountTab(getDriver());
     }
 
     public DashboardProfileTab goToSettingsProfileTab() {
         log.info("Click Profile settings sub-tab");
-        clickWhenTabEnabled(settingsProfileTab);
+        clickWhenTabEnabled(waitForWebElement(settingsProfileTab));
         return new DashboardProfileTab(getDriver());
     }
 
     public DashboardClientTab goToSettingsClientTab() {
         log.info("Click Client settings sub-tab");
-        clickWhenTabEnabled(settingsClientTab);
+        clickWhenTabEnabled(waitForWebElement(settingsClientTab));
         return new DashboardClientTab(getDriver());
     }
 

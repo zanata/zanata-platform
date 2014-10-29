@@ -21,9 +21,8 @@
 package org.zanata.page.dashboard.dashboardsettings;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
@@ -43,20 +42,11 @@ public class DashboardAccountTab extends DashboardBasePage {
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";
 
-    @FindBy(id = "email-update-form:emailField:email")
-    private WebElement emailField;
-
-    @FindBy(id = "email-update-form:updateEmailButton")
-    private WebElement updateEmailButton;
-
-    @FindBy(id = "passwordChangeForm:oldPasswordField:oldPassword")
-    private WebElement oldPasswordField;
-
-    @FindBy(id = "passwordChangeForm:newPasswordField:newPassword")
-    private WebElement newPasswordField;
-
-    @FindBy(id = "passwordChangeForm:changePasswordButton")
-    private WebElement changePasswordButton;
+    private By emailField = By.id("email-update-form:emailField:email");
+    private By updateEmailButton = By.id("email-update-form:updateEmailButton");
+    private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:oldPassword");
+    private By newPasswordField = By.id("passwordChangeForm:newPasswordField:newPassword");
+    private By changePasswordButton = By.id("passwordChangeForm:changePasswordButton");
 
     public DashboardAccountTab(WebDriver driver) {
         super(driver);
@@ -64,34 +54,34 @@ public class DashboardAccountTab extends DashboardBasePage {
 
     public DashboardAccountTab typeNewAccountEmailAddress(String emailAddress) {
         log.info("Enter email {}", emailAddress);
-        emailField.clear();
-        emailField.sendKeys(emailAddress);
-        return this;
+        waitForWebElement(emailField).clear();
+        waitForWebElement(emailField).sendKeys(emailAddress);
+        return new DashboardAccountTab(getDriver());
     }
 
     public DashboardAccountTab clickUpdateEmailButton() {
         log.info("Click Update Email");
-        updateEmailButton.click();
-        return this;
+        waitForWebElement(updateEmailButton).click();
+        return new DashboardAccountTab(getDriver());
     }
 
     public DashboardAccountTab typeOldPassword(String oldPassword) {
         log.info("Enter old password {}", oldPassword);
-        oldPasswordField.clear();
-        oldPasswordField.sendKeys(oldPassword);
-        return this;
+        waitForWebElement(oldPasswordField).clear();
+        waitForWebElement(oldPasswordField).sendKeys(oldPassword);
+        return new DashboardAccountTab(getDriver());
     }
 
     public DashboardAccountTab typeNewPassword(String newPassword) {
         log.info("Enter new password {}", newPassword);
-        newPasswordField.clear();
-        newPasswordField.sendKeys(newPassword);
-        return this;
+        waitForWebElement(newPasswordField).clear();
+        waitForWebElement(newPasswordField).sendKeys(newPassword);
+        return new DashboardAccountTab(getDriver());
     }
 
     public DashboardAccountTab clickUpdatePasswordButton() {
         log.info("Click Update Password");
-        changePasswordButton.click();
-        return this;
+        waitForWebElement(changePasswordButton).click();
+        return new DashboardAccountTab(getDriver());
     }
 }

@@ -55,9 +55,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoSettingsTab()
-                .gotoSettingsLanguagesTab();
-
-        projectLanguagesTab.slightPause();
+                .gotoSettingsLanguagesTab()
+                .expectEnabledLocaleListCount(3);
 
         List<String> enabledLocaleList = projectLanguagesTab
                 .getEnabledLocaleList();
@@ -74,11 +73,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         projectLanguagesTab = projectLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .removeLocale("pl");
+                .removeLocale("pl")
+                .expectEnabledLocaleListCount(2);
 
         enabledLocaleList = projectLanguagesTab
-                .gotoSettingsTab()
-                .gotoSettingsLanguagesTab()
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
@@ -91,6 +89,7 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .gotoSettingsLanguagesTab()
                 .enterSearchLanguage("en-US")
                 .addLanguage("English (United States)[en-US]")
+                .expectEnabledLocaleListCount(3)
                 .getEnabledLocaleList();
 
         Assertions.assertThat(enabledLocaleList)

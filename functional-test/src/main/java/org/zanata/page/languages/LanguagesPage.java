@@ -35,6 +35,8 @@ import java.util.List;
 @Slf4j
 public class LanguagesPage extends BasePage {
 
+    private By languagesList = By.id("tribesForm:latestTribes");
+
     public LanguagesPage(WebDriver driver) {
         super(driver);
     }
@@ -42,7 +44,7 @@ public class LanguagesPage extends BasePage {
     public LanguagePage selectLanguage(String language) {
         log.info("Select {} from the language list", language);
         List<TableRow> tableRowList = WebElementUtil
-                .getTableRows(getDriver(), By.id("tribesForm:latestTribes"));
+                .getTableRows(getDriver(), waitForWebElement(languagesList));
         boolean clicked = false;
         for (TableRow tableRow : tableRowList) {
             if (tableRow.getCells().get(0).getText().equals(language)) {

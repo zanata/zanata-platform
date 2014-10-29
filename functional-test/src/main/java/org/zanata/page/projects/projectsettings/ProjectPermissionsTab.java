@@ -40,6 +40,8 @@ import java.util.List;
 @Slf4j
 public class ProjectPermissionsTab extends ProjectBasePage {
 
+    private By maintainersForm = By.id("settings-permissions-form");
+
     public ProjectPermissionsTab(WebDriver driver) {
         super(driver);
     }
@@ -133,8 +135,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     private List<WebElement> getSettingsMaintainersElement() {
-        return getDriver()
-                .findElement(By.id("settings-permissions-form"))
+        return waitForWebElement(maintainersForm)
                 .findElement(By.id("maintainers-list"))
                 .findElements(By.className("reveal--list-item"));
     }
