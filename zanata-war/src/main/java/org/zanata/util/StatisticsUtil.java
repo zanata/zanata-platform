@@ -1,6 +1,6 @@
 package org.zanata.util;
 
-import org.zanata.common.AbstractTranslationCount;
+import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.ContentState;
 import org.zanata.common.TransUnitWords;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -13,7 +13,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 public class StatisticsUtil {
 
     public static int calculateUntranslated(Long totalCount,
-            AbstractTranslationCount translationCount) {
+            BaseTranslationCount translationCount) {
         return totalCount.intValue()
                 - translationCount.get(ContentState.Translated)
                 - translationCount.get(ContentState.NeedReview)

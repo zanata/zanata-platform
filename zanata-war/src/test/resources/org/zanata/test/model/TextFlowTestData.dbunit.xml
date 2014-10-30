@@ -50,6 +50,7 @@
     tf_id="1"
     tf_revision="1"
     content0="hello welt"
+    translated_by_id="2"
     last_modified_by_id="2"
     />
   <HTextFlowTarget

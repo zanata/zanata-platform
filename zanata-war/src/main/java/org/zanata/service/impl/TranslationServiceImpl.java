@@ -398,6 +398,9 @@ public class TranslationServiceImpl implements TranslationService {
             if (isReviewState(target.getState())) {
                 // reviewer saved it
                 target.setReviewer(authenticatedAccount.getPerson());
+                if (previousState == ContentState.New) {
+                    target.setTranslator(authenticatedAccount.getPerson());
+                }
             } else {
                 target.setTranslator(authenticatedAccount.getPerson());
             }
