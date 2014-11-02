@@ -117,6 +117,8 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     }
 
     @Override
+    @Option(name = "--log-http",
+            usage = "Enable HTTP message logging.")
     public void setLogHttp(boolean logHttp) {
         this.logHttp = logHttp;
     }

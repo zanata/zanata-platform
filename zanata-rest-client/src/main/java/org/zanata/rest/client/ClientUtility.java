@@ -1,12 +1,16 @@
 package org.zanata.rest.client;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.BaseClientResponse;
+import com.google.common.base.Strings;
 
 public class ClientUtility {
     public static void checkResult(ClientResponse<?> response) {
@@ -14,12 +18,31 @@ public class ClientUtility {
     }
 
     public static void checkResult(ClientResponse<?> response, URI uri) {
-        if (response.getResponseStatus() == Response.Status.UNAUTHORIZED) {
+        Response.Status responseStatus = response.getResponseStatus();
+        int statusCode = response.getStatus();
+
+        if (responseStatus == Response.Status.UNAUTHORIZED) {
             throw new RuntimeException("Incorrect username/password");
-        } else if (response.getResponseStatus() == Response.Status.SERVICE_UNAVAILABLE) {
+        } else if (responseStatus == Response.Status.SERVICE_UNAVAILABLE) {
             throw new RuntimeException("Service is currently unavailable. " +
                     "Please check outage notification or try again later.");
-        } else if (response.getStatus() >= 399) {
+        } else if (responseStatus == Response.Status.MOVED_PERMANENTLY
+                || statusCode == 302 ) {
+            // if server returns a redirect (most likely due to http to https
+            // redirect), we don't want to bury this information in a xml
+            // marshalling exception.
+            String movedTo = response.getHeaderString("Location");
+
+            String message;
+            if (!Strings.isNullOrEmpty(movedTo)) {
+                String baseUrl = getBaseURL(movedTo);
+                message = "Server returned a redirect to:" + baseUrl +
+                        ". You must change your url option or config file.";
+            } else {
+                message = "Server returned a redirect. You must change your url option or config file.";
+            }
+            throw new RuntimeException(message);
+        } else if (statusCode >= 399) {
             String annotString = "";
             String uriString = "";
             String entity = "";
@@ -40,12 +63,23 @@ public class ClientUtility {
             }
             String msg =
                     "operation returned "
-                            + response.getStatus()
+                            + statusCode
                             + " ("
-                            + Response.Status.fromStatusCode(response
-                                    .getStatus()) + ")" + entity + uriString
+                            + Response.Status.fromStatusCode(statusCode) + ")"
+                            + entity + uriString
                             + annotString;
             throw new RuntimeException(msg);
+        }
+    }
+
+    public static String getBaseURL(String movedTo) {
+        try {
+            URL url = new URI(movedTo).toURL();
+            int pathIndex = movedTo.lastIndexOf(url.getPath());
+            return movedTo.substring(0, pathIndex) + "/";
+        }
+        catch (MalformedURLException | URISyntaxException e) {
+            return movedTo;
         }
     }
 

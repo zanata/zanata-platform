@@ -180,6 +180,9 @@ public class ZanataClient extends BasicOptionsImpl {
             throw e;
         } catch (Exception e) {
             ArgsUtil.handleException(e, getErrors(), abortStrategy);
+        } finally {
+            out.flush();
+            err.flush();
         }
     }
 
