@@ -116,6 +116,10 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         ClientExecutor clientExecutor = createClientExecutor(sslCertDisabled);
 
         crf = new ClientRequestFactory(clientExecutor, null, fixBase(base));
+        // This is not doing anything.
+        // There is no easy way to handle redirect with resteasy at the moment.
+        // See https://issues.jboss.org/browse/RESTEASY-1075
+        // See org.zanata.rest.client.ClientUtility.checkResult(org.jboss.resteasy.client.ClientResponse<?>, java.net.URI)()
         crf.setFollowRedirects(true);
         registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
         registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey,
