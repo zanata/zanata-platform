@@ -3,9 +3,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Statistics']}</ui:define>
@@ -20,121 +17,121 @@
         <h1 class="l--push-all-0">#{msgs['jsf.Statistics']}</h1>
         <ul class="list--slat l--push-top-half">
           <li>
-            <ul class="list--horizontal">
-              <li>
-                <label>#{msgs['jsf.TotalTranslators']} - #{adminStatsAction.totalTranslator}</label>
-              </li>
-              <li>
-                <label>#{msgs['jsf.TotalReviewers']} - #{adminStatsAction.totalReviewer}</label>
-              </li>
-            </ul>
+            <div class="l--pad-v-quarter epsilon">
+              <i class="i i--users delta l--push-right-quarter"></i>
+              <span>
+                #{msgs['jsf.TotalTranslators']} <span class="badge">#{adminStatsAction.totalTranslator}</span>
+              </span>
+
+              <span class="l--push-h-quarter">
+                #{msgs['jsf.TotalReviewers']} <span class="badge">#{adminStatsAction.totalReviewer}</span>
+              </span>
+            </div>
           </li>
 
           <li>
-            <div class="txt--lead">
-              <label>#{msgs['jsf.TotalProjects']}</label>
+            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
+              <i class="i i--project delta l--push-right-quarter"></i>
+              <span>
+                #{msgs['jsf.TotalProjects']} <span class="badge">#{adminStatsAction.totalProjectCount}</span>
+              </span>
             </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--warning">#{msgs['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectCount}</label>
-              </li>
-              <li>
-                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectCount}</label>
-              </li>
-            </ul>
+            <div>
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveProjectCount}</span>
+              </span>
+
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.ReadOnly']} <span class="badge--warning">#{adminStatsAction.totalReadOnlyProjectCount}</span>
+              </span>
+
+               <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectCount}</span>
+              </span>
+            </div>
           </li>
 
 
           <li>
-            <div class="txt--lead">
-              <label>#{msgs['jsf.TotalProjectVersion']}</label>
+            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
+              <i class="i i--version delta l--push-right-quarter"></i>
+              <span>#{msgs['jsf.Versions']} <span class="badge">#{adminStatsAction.totalProjectIterCount}</span></span>
             </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--warning">#{msgs['jsf.ReadOnly']} - #{adminStatsAction.totalReadOnlyProjectIterCount}</label>
-              </li>
-              <li>
-                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteProjectIterCount}</label>
-              </li>
-            </ul>
+            <div>
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveProjectIterCount}</span>
+              </span>
+
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.ReadOnly']} <span class="badge--warning">#{adminStatsAction.totalReadOnlyProjectIterCount}</span>
+              </span>
+
+               <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectIterCount}</span>
+              </span>
+            </div>
           </li>
 
           <li>
-            <div class="txt--lead">
-              <label>#{msgs['jsf.TotalDocuments']}</label>
+            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
+              <i class="i i--document delta l--push-right-quarter"></i>
+              <span>#{msgs['jsf.TotalDocuments']} <span class="badge">#{adminStatsAction.totalDocuments}</span></span>
             </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalDocuments}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveDocuments}</label>
-                <span class="txt--success"></span>
-              </li>
-              <li>
-                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteDocuments}</label>
-              </li>
-            </ul>
+            <div>
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveDocuments}</span>
+              </span>
+
+               <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteDocuments}</span>
+              </span>
+            </div>
           </li>
 
           <li>
-            <div class="txt--lead">
-              <label>#{msgs['jsf.TotalTextFlows']}</label>
+            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
+              <i class="i i--translate delta l--push-right-quarter"></i>
+              <span>#{msgs['jsf.TotalTextFlows']} <span class="badge">#{adminStatsAction.totalTextFlows}</span></span>
             </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalTextFlows}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveTextFlows}</label>
-                <span class="txt--success"></span>
-              </li>
-              <li>
-                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlows}</label>
-              </li>
-            </ul>
+            <div>
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveTextFlows}</span>
+              </span>
+
+               <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteTextFlows}</span>
+              </span>
+            </div>
           </li>
 
           <li>
-            <div class="txt--lead">
-              <label>#{msgs['jsf.TotalTextFlowTargets']}</label>
+            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
+              <i class="i i--translate delta l--push-right-quarter"></i>
+              <span>#{msgs['jsf.TotalTextFlowTargets']} <span class="badge">#{adminStatsAction.totalTextFlowTargets}</span></span>
             </div>
-            <ul class="list--horizontal">
-              <li>
-                <label class="txt--highlight">#{msgs['jsf.Total']} - #{adminStatsAction.totalTextFlowTargets}</label>
-              </li>
-              <li>
-                <label class="txt--success">#{msgs['jsf.Active']} - #{adminStatsAction.totalActiveTextFlowTargets}</label>
-              </li>
-              <li>
-                <label class="txt--danger">#{msgs['jsf.Obsolete']} - #{adminStatsAction.totalObsoleteTextFlowTargets}</label>
-              </li>
-            </ul>
-            <ul class="list--no-bullet l--push-all-0">
-              <li>
-                <label>#{msgs['jsf.ApprovedOrTranslated']} - #{adminStatsAction.totalApprovedOrTranslatedTextFlowTargets}</label>
-              </li>
+            <div>
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveTextFlowTargets}</span>
+              </span>
 
-              <li>
-                <label>#{msgs['jsf.RejectedOrFuzzy']} - #{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</label>
-              </li>
+               <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteTextFlowTargets}</span>
+              </span>
+            </div>
 
-              <li>
-                <label>#{msgs['jsf.Untranslated']} - #{adminStatsAction.totalUntranslatedTextFlowTargets}</label>
-              </li>
-            </ul>
+            <div class="l--push-top-half">
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.ApprovedOrTranslated']} <span class="badge--success">#{adminStatsAction.totalApprovedOrTranslatedTextFlowTargets}</span>
+              </span>
+
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.RejectedOrFuzzy']} <span class="badge--unsure">#{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</span>
+              </span>
+
+              <span class="l--push-h-quarter txt--meta">
+                #{msgs['jsf.Untranslated']} <span class="badge">#{adminStatsAction.totalUntranslatedTextFlowTargets}</span>
+              </span>
+            </div>
           </li>
         </ul>
       </div>
