@@ -396,6 +396,18 @@
               </excludes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
+            <!--
+              Ensure that dependencies are compatible with our chosen
+              version of Java. See
+              http://mojo.codehaus.org/extra-enforcer-rules/enforceBytecodeVersion.html
+            -->
+            <enforceBytecodeVersion>
+              <maxJdkVersion>${required.java}</maxJdkVersion>
+            </enforceBytecodeVersion>
+            <!--
+              Ensure that Maven is using our chosen version of the JDK. See
+              http://maven.apache.org/enforcer/enforcer-rules/requireJavaVersion.html
+            -->
             <requireJavaVersion>
               <version>${required.java}</version>
             </requireJavaVersion>
@@ -461,7 +473,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.0-beta-2</version>
+            <version>1.0-beta-3</version>
           </dependency>
         </dependencies>
       </plugin>
