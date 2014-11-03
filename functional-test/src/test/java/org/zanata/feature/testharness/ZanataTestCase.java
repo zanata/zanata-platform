@@ -59,9 +59,15 @@ public class ZanataTestCase {
 
     public DateTime testFunctionStart;
 
+    private String getTestDescription() {
+        return this.getClass().getCanonicalName()
+                .concat(".")
+                .concat(testName.getMethodName());
+    }
+
     @Before
     public void testEntry() {
-        log.info("Starting " + testName.getMethodName());
+        log.info("Starting ".concat(getTestDescription()));
         testFunctionStart = new DateTime();
     }
 
@@ -69,7 +75,8 @@ public class ZanataTestCase {
     public void testExit() {
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-                .appendLiteral("Finished " + testName.getMethodName() + " in " )
+                .appendLiteral("Finished "
+                        .concat(getTestDescription()).concat(" in " ))
                 .printZeroAlways()
                 .appendMinutes()
                 .appendSuffix(" minutes, ")
