@@ -22,6 +22,8 @@ package org.zanata.util;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -149,6 +152,18 @@ public class UrlUtil implements Serializable {
             return URLDecoder.decode(var, ENCODING);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean isValidUrl(String url) {
+        if (StringUtils.isEmpty(url)) {
+            return false;
+        }
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
         }
     }
 }

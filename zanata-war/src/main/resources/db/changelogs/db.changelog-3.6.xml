@@ -10,4 +10,24 @@
     <dropColumn tableName="HPotEntryData" columnName="tf_id" />
   </changeSet>
 
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Create WebHook table</comment>
+
+    <createTable tableName="WebHook">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="projectId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="url" type="longtext">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName = "WebHook"
+      baseColumnNames = "projectId" constraintName = "FK_WebHook_HProject"
+      referencedTableName = "HProject" referencedColumnNames = "id"/>
+  </changeSet>
+
 </databaseChangeLog>

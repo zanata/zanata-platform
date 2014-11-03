@@ -36,6 +36,7 @@ import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
 import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 
 @Slf4j
 public class ProjectBasePage extends BasePage {
@@ -66,6 +67,8 @@ public class ProjectBasePage extends BasePage {
 
     @FindBy(id = "settings-about_tab")
     private WebElement settingsAboutTab;
+
+    private By settingsWebHooksTab = By.id("settings-webhooks_tab");
 
     public ProjectBasePage(final WebDriver driver) {
         super(driver);
@@ -195,6 +198,13 @@ public class ProjectBasePage extends BasePage {
             }
         });
         return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectWebHooksTab gotoSettingsWebHooksTab() {
+        log.info("Click WebHooks settings sub-tab");
+        clickWhenTabEnabled(waitForWebElement(settingsWebHooksTab));
+        waitForWebElement(By.id("settings-webhooks"));
+        return new ProjectWebHooksTab(getDriver());
     }
 
     public ProjectAboutTab gotoSettingsAboutTab() {

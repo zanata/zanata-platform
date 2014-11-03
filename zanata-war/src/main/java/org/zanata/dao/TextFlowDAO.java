@@ -113,6 +113,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return q.list();
     }
 
+    public int getWordCount(Long id) {
+        Query q = getSession().createQuery(
+                  "select tf.wordCount from HTextFlow tf where tf.id = :id");
+        q.setCacheable(true).
+                setComment("TextFlowDAO.getWordCount").
+                setParameter("id", id);
+        Long totalCount = (Long) q.uniqueResult();
+        return totalCount == null ? 0 : totalCount.intValue();
+    }
+
     public int getTotalWords() {
         Query q =
                 getSession()

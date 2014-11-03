@@ -52,6 +52,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
+import org.zanata.dao.WebHookDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -59,6 +60,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.WebHook;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -69,6 +71,7 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -109,6 +112,9 @@ public class ProjectHome extends SlugHome<HProject> {
 
     @In
     private AccountRoleDAO accountRoleDAO;
+
+    @In
+    private WebHookDAO webHookDAO;
 
     @In
     private ValidationService validationServiceImpl;
@@ -531,6 +537,41 @@ public class ProjectHome extends SlugHome<HProject> {
         Collections.sort(sortedList,
                 ValidationFactory.ValidationActionComparator);
         return sortedList;
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void addWebHook(String url) {
+        if (isValidUrl(url)) {
+            WebHook webHook = new WebHook(this.getInstance(), url);
+            getInstance().getWebHooks().add(webHook);
+            update();
+            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+                msgs.format("jsf.project.AddNewWebhook", webHook.getUrl()));
+        }
+    }
+
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void removeWebHook(WebHook webHook) {
+        getInstance().getWebHooks().remove(webHook);
+        webHookDAO.makeTransient(webHook);
+        FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
+    }
+
+    private boolean isValidUrl(String url) {
+        if (!UrlUtil.isValidUrl(url)) {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                    msgs.format("jsf.project.InvalidUrl", url));
+            return false;
+        }
+        for(WebHook webHook: getInstance().getWebHooks()) {
+            if(StringUtils.equalsIgnoreCase(webHook.getUrl(), url)) {
+                FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                        msgs.format("jsf.project.DuplicateUrl", url));
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

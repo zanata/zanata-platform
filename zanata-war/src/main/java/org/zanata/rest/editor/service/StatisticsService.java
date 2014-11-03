@@ -86,6 +86,7 @@ public class StatisticsService implements StatisticResource {
         return Response.ok(entity).build();
     }
 
+    //TODO: need to merge with StatisticsServiceImpl.getDocStatistics
     public ContainerTranslationStatistics getDocStatistics(Long documentId,
             LocaleId localeId) {
         ContainerTranslationStatistics result =

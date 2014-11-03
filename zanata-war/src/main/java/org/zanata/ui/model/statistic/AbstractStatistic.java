@@ -118,6 +118,24 @@ public abstract class AbstractStatistic implements Serializable {
         return rejected;
     }
 
+    public double getPercentage(ContentState contentState) {
+        switch (contentState) {
+            case Translated:
+                return getPercentTranslated();
+            case NeedReview:
+                return getPercentFuzzy();
+            case New:
+                return getPercentUntranslated();
+            case Approved:
+                return getPercentApproved();
+            case Rejected:
+                return getPercentRejected();
+            default:
+                throw new RuntimeException("not implemented for state "
+                    + contentState.name());
+        }
+    }
+
     public double getPercentTranslated() {
         return getPercentage(getTranslated());
     }
