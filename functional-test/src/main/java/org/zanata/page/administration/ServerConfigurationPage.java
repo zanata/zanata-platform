@@ -21,9 +21,8 @@
 package org.zanata.page.administration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
