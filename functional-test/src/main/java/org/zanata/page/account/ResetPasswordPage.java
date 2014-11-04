@@ -21,9 +21,8 @@
 package org.zanata.page.account;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
@@ -33,14 +32,9 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class ResetPasswordPage extends BasePage {
 
-    @FindBy(id = "passwordResetRequestForm:usernameField:username")
-    private WebElement usernameField;
-
-    @FindBy(id = "passwordResetRequestForm:emailField:email")
-    private WebElement emailField;
-
-    @FindBy(id = "passwordResetRequestForm:submitRequest")
-    private WebElement submitButton;
+    private By usernameField = By.id("passwordResetRequestForm:usernameField:username");
+    private By emailField = By.id("passwordResetRequestForm:emailField:email");
+    private By submitButton = By.id("passwordResetRequestForm:submitRequest");
 
     public ResetPasswordPage(WebDriver driver) {
         super(driver);
@@ -48,32 +42,32 @@ public class ResetPasswordPage extends BasePage {
 
     public ResetPasswordPage enterUserName(String username) {
         log.info("Enter username {}", username);
-        usernameField.sendKeys(username);
+        waitForWebElement(usernameField).sendKeys(username);
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage enterEmail(String email) {
         log.info("Enter email {}", email);
-        emailField.sendKeys(email);
+        waitForWebElement(emailField).sendKeys(email);
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage clearFields() {
         log.info("Clear fields");
-        emailField.clear();
-        usernameField.clear();
+        waitForWebElement(usernameField).clear();
+        waitForWebElement(emailField).clear();
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage resetPassword() {
         log.info("Click Submit");
-        submitButton.click();
+        waitForWebElement(submitButton).click();
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage resetFailure() {
         log.info("Click Submit");
-        submitButton.click();
+        waitForWebElement(submitButton).click();
         return new ResetPasswordPage(getDriver());
     }
 }

@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.CorePage;
 import org.zanata.page.utility.HomePage;
 
@@ -53,75 +51,69 @@ public class RegisterPage extends CorePage {
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
 
-    @FindBy(id = "loginForm:name")
-    private WebElement nameField;
-
-    @FindBy(id = "loginForm:emailField:email")
-    private WebElement emailField;
-
-    @FindBy(id = "loginForm:usernameField:username")
-    private WebElement usernameField;
-
-    @FindBy(id = "loginForm:passwordField:password")
-    private WebElement passwordField;
-
-    @FindBy(xpath = "//input[@value='Sign Up']")
-    private WebElement registerButton;
+    private By nameField = By.id("loginForm:name");
+    private By emailField = By.id("loginForm:emailField:email");
+    private By usernameField = By.id("loginForm:usernameField:username");
+    private By passwordField = By.id("loginForm:passwordField:password");
+    private By signUpButton = By.xpath("//input[@value='Sign Up']");
+    private By showHideToggleButton = By.className("js-form-password-toggle");
+    private By loginLink = By.linkText("Log In");
+    private By titleLabel = By.className("heading--sub");
 
     public RegisterPage(WebDriver driver) {
         super(driver);
         List<By> elementBys = ImmutableList.<By> builder()
-                .add(By.id("loginForm:name"))
-                .add(By.id("loginForm:emailField:email"))
-                .add(By.id("loginForm:usernameField:username"))
-                .add(By.id("loginForm:passwordField:password"))
-                .add(By.xpath("//input[@value='Sign Up']")).build();
+                .add(nameField)
+                .add(emailField)
+                .add(usernameField)
+                .add(passwordField)
+                .add(signUpButton).build();
         waitForPage(elementBys);
     }
 
     public RegisterPage enterName(String name) {
         log.info("Enter name {}", name);
-        nameField.sendKeys(name);
+        waitForWebElement(nameField).sendKeys(name);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterUserName(String userName) {
         log.info("Enter username {}", userName);
-        usernameField.sendKeys(userName);
+        waitForWebElement(usernameField).sendKeys(userName);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterEmail(String email) {
         log.info("Enter email {}", email);
-        emailField.sendKeys(email);
+        waitForWebElement(emailField).sendKeys(email);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        passwordField.sendKeys(password);
+        waitForWebElement(passwordField).sendKeys(password);
         return new RegisterPage(getDriver());
     }
 
     // TODO: Add a "signup success" page
     public HomePage register() {
         log.info("Click Sign Up");
-        registerButton.click();
+        waitForWebElement(signUpButton).click();
         return new HomePage(getDriver());
     }
 
     public RegisterPage registerFailure() {
         log.info("Click Sign Up");
-        registerButton.click();
+        waitForWebElement(signUpButton).click();
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage clearFields() {
         log.info("Clear fields");
-        nameField.clear();
-        emailField.clear();
-        usernameField.clear();
-        passwordField.clear();
+        waitForWebElement(nameField).clear();
+        waitForWebElement(emailField).clear();
+        waitForWebElement(usernameField).clear();
+        waitForWebElement(passwordField).clear();
         return new RegisterPage(getDriver());
     }
 
@@ -139,29 +131,28 @@ public class RegisterPage extends CorePage {
 
     public String getPageTitle() {
         log.info("Query page title");
-        return getDriver().findElement(By.className("heading--sub"))
-                .getText();
+        return waitForWebElement(titleLabel).getText();
     }
 
     public SignInPage goToSignIn() {
         log.info("Click Log In");
-        getDriver().findElement(By.linkText("Log In")).click();
+        waitForWebElement(loginLink).click();
         return new SignInPage(getDriver());
     }
 
     public RegisterPage clickPasswordShowToggle() {
         log.info("Click Show/Hide");
-        getDriver().findElement(By.className("js-form-password-toggle")).click();
+        waitForWebElement(showHideToggleButton).click();
         return new RegisterPage(getDriver());
     }
 
     public String getPassword() {
         log.info("Query password");
-        return passwordField.getAttribute("value");
+        return waitForWebElement(passwordField).getAttribute("value");
     }
 
     public String getPasswordFieldType() {
         log.info("Query password field type");
-        return passwordField.getAttribute("type");
+        return waitForWebElement(passwordField).getAttribute("type");
     }
 }

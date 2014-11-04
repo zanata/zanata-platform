@@ -20,17 +20,12 @@
  */
 package org.zanata.page.groups;
 
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Patrick Huang <a
@@ -46,74 +41,61 @@ public class CreateVersionGroupPage extends BasePage {
             "must start and end with letter or number, and contain only " +
             "letters, numbers, periods, underscores and hyphens.";
 
-    @FindBy(id = "group-form:descriptionField:description")
-    private WebElement groupDescriptionField;
-
-    @FindBy(id = "group-form:group-create-new")
-    private WebElement saveButton;
+    private By groupIdField = By.id("group-form:slugField:slug");
+    private By groupNameField = By.id("group-form:nameField:name");
+    private By groupDescriptionField = By.id("group-form:descriptionField:description");
+    private By saveButton = By.id("group-form:group-create-new");
+    private By createNewButton = By.id("group-form:group-create-new");
 
     public CreateVersionGroupPage(WebDriver driver) {
         super(driver);
-        List<By> elementBys =
-                ImmutableList.<By> builder()
-                        .add(By.id("group-form:slugField:slug"))
-                        .add(By.id("group-form:nameField:name"))
-                        .add(By.id("group-form:descriptionField:description"))
-                        .add(By.id("group-form:group-create-new")).build();
-        waitForPage(elementBys);
     }
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
         log.info("Enter Group ID {}", groupId);
-        getGroupSlugField().sendKeys(groupId);
+        waitForWebElement(groupIdField).sendKeys(groupId);
         return new CreateVersionGroupPage(getDriver());
-    }
-
-    private WebElement getGroupSlugField() {
-        return waitForWebElement(By.id("group-form:slugField:slug"));
     }
 
     public String getGroupIdValue() {
         log.info("Query Group ID");
-        return getGroupSlugField().getAttribute("value");
+        return waitForWebElement(groupIdField).getAttribute("value");
     }
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
         log.info("Enter Group name {}", groupName);
-        getGroupNameField().sendKeys(groupName);
+        waitForWebElement(groupNameField).sendKeys(groupName);
         return new CreateVersionGroupPage(getDriver());
-    }
-
-    private WebElement getGroupNameField() {
-        return waitForWebElement(By.id("group-form:nameField:name"));
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
         log.info("Enter Group description {}", desc);
-        groupDescriptionField.sendKeys(desc);
+        waitForWebElement(groupDescriptionField).sendKeys(desc);
         return this;
     }
 
     public VersionGroupsPage saveGroup() {
         log.info("Click Save");
-        clickAndCheckErrors(saveButton);
+        clickAndCheckErrors(waitForWebElement(saveButton));
         return new VersionGroupsPage(getDriver());
     }
 
     public CreateVersionGroupPage saveGroupFailure() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new CreateVersionGroupPage(getDriver());
     }
 
     public CreateVersionGroupPage clearFields() {
-        getGroupSlugField().clear();
-        getGroupNameField().clear();
-        groupDescriptionField.clear();
+        waitForWebElement(groupIdField).clear();
+        waitForWebElement(groupNameField).clear();
+        waitForWebElement(groupDescriptionField).clear();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getGroupIdValue().equals("") && getGroupNameField().getAttribute("value").equals("");
+                return getGroupIdValue().equals("") &&
+                        waitForWebElement(groupNameField).getAttribute("value")
+                                .equals("");
             }
         });
         return new CreateVersionGroupPage(getDriver());

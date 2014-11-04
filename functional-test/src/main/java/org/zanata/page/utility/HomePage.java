@@ -23,8 +23,6 @@ package org.zanata.page.utility;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeCodePage;
 import org.zanata.page.administration.EditHomeContentPage;
@@ -36,8 +34,9 @@ public class HomePage extends BasePage {
             "You will soon receive an email " +
             "with a link to activate your account.";
 
-    @FindBy(id = "main_body_content")
-    private WebElement mainBodyContent;
+    private By mainBodyContent = By.id("main_body_content");
+    private By editPageContentButton = By.linkText("Edit Page Content");
+    private By editPageCodeButton = By.linkText("Edit Page Code");
 
     public HomePage(final WebDriver driver) {
         super(driver);
@@ -45,18 +44,18 @@ public class HomePage extends BasePage {
 
     public EditHomeContentPage goToEditPageContent() {
         log.info("Click Edit Page Content");
-        getDriver().findElement(By.linkText("Edit Page Content")).click();
+        waitForWebElement(editPageContentButton).click();
         return new EditHomeContentPage(getDriver());
     }
 
     public EditHomeCodePage goToEditPageCode() {
         log.info("Click Edit Page Code");
-        getDriver().findElement(By.linkText("Edit Page Code")).click();
+        waitForWebElement(editPageCodeButton).click();
         return new EditHomeCodePage(getDriver());
     }
 
     public String getMainBodyContent() {
         log.info("Query homepage content");
-        return mainBodyContent.getText();
+        return waitForWebElement(mainBodyContent).getText();
     }
 }

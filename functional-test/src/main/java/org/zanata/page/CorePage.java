@@ -49,8 +49,7 @@ import com.google.common.collect.Lists;
 @Slf4j
 public class CorePage extends AbstractPage {
 
-    @FindBy(id = "home")
-    private WebElement homeLink;
+    private By homeLink = By.id("home");
 
     public CorePage(WebDriver driver) {
         super(driver);
@@ -63,7 +62,7 @@ public class CorePage extends AbstractPage {
     public HomePage goToHomePage() {
         log.info("Click Zanata home icon");
         scrollToTop();
-        homeLink.click();
+        waitForWebElement(homeLink).click();
         return new HomePage(getDriver());
     }
 
@@ -139,8 +138,7 @@ public class CorePage extends AbstractPage {
 
     public String getNotificationMessage() {
         log.info("Query notification message");
-        List<WebElement> messages =
-                getDriver().findElement(By.id("messages"))
+        List<WebElement> messages = waitForElementExists(By.id("messages"))
                         .findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }

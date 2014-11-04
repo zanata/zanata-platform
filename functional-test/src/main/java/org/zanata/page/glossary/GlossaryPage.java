@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -38,8 +36,7 @@ import org.zanata.util.WebElementUtil;
 @Slf4j
 public class GlossaryPage extends BasePage {
 
-    @FindBy(id = "glossary_form:data_table")
-    private WebElement glossaryTable;
+    private By glossaryTable = By.id("glossary_form:data_table");
 
     public GlossaryPage(WebDriver driver) {
         super(driver);
@@ -47,8 +44,7 @@ public class GlossaryPage extends BasePage {
 
     public List<String> getAvailableGlossaryLanguages() {
         log.info("Query available glossary languages");
-        return WebElementUtil.getColumnContents(getDriver(),
-                By.id("glossary_form:data_table"), 0);
+        return WebElementUtil.getColumnContents(getDriver(), glossaryTable, 0);
     }
 
     public int getGlossaryEntryCount(String lang) {
@@ -58,7 +54,7 @@ public class GlossaryPage extends BasePage {
         if (row >= 0) {
             return Integer
                     .parseInt(WebElementUtil.getColumnContents(getDriver(),
-                            By.id("glossary_form:data_table"), 2).get(row));
+                            glossaryTable, 2).get(row));
         }
         return -1;
     }

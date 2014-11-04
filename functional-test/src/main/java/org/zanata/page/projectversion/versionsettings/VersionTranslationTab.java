@@ -47,8 +47,7 @@ public class VersionTranslationTab extends VersionBasePage {
         String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
-        return getDriver()
-                .findElement(By.id(optionElementID))
+        return waitForElementExists(By.id(optionElementID))
                 .getAttribute("checked")
                 .equals("true");
     }
@@ -59,7 +58,7 @@ public class VersionTranslationTab extends VersionBasePage {
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
-        WebElement option =  getDriver().findElement(
+        WebElement option = waitForWebElement(
                 By.id("settings-translation-validation-form"))
                 .findElement(By.id(optionElementID));
 

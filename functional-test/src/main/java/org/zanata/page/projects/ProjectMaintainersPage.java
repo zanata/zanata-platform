@@ -35,20 +35,18 @@ import java.util.List;
 @Slf4j
 public class ProjectMaintainersPage extends ProjectBasePage {
 
+    private By maintainersList = By.id("maintainers");
     public ProjectMaintainersPage(WebDriver driver) {
         super(driver);
     }
 
     public List<String> getMaintainers() {
         log.info("Query maintainers list");
-        List<WebElement> rows = getDriver()
-                .findElement(By.id("maintainers"))
-                .findElements(By.tagName("li"));
         List<String> names = new ArrayList<String>();
-        for (WebElement row : rows) {
+        for (WebElement row : waitForWebElement(maintainersList)
+                .findElements(By.tagName("li"))) {
             names.add(row.getText());
         }
-        System.out.print(names);
         return names;
     }
 }

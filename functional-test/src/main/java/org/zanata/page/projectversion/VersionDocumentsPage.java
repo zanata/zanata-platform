@@ -20,6 +20,7 @@
  */
 package org.zanata.page.projectversion;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -53,40 +54,30 @@ public class VersionDocumentsPage extends VersionBasePage {
 
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contains {}", document);
-        List<WebElement> documentList = getDocumentsTabDocumentList();
-        for (final WebElement tableRow : documentList) {
-            if (tableRow.findElement(By.className("list__title")).getText()
-                    .contains(document)) {
-                return true;
-            }
-        }
-        return false;
+        return getSourceDocumentNames().contains(document);
     }
 
     public List<String> getSourceDocumentNames() {
         log.info("Query source documents list");
-        List<String> filenames = new ArrayList<String>();
-        for (WebElement element : getDocumentsTabDocumentList()) {
-            filenames.add(element.findElement(By.className("list__title"))
-                    .getText());
-        }
-        return filenames;
+        // getText often falls into a UI change
+        return waitForAMoment().until(new Function<WebDriver, List<String>>() {
+            @Override
+            public List<String> apply(WebDriver input) {
+                List<String> fileNames = new ArrayList<String>();
+                for (WebElement element : getDocumentsTabDocumentList()) {
+                    fileNames.add(waitForWebElement(element,
+                            By.className("list__title"))
+                            .getText());
+                }
+                return fileNames;
+            }
+        });
     }
 
     private List<WebElement> getDocumentsTabDocumentList() {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(By.id("documents-document_list"))
-                        .isDisplayed();
-            }
-        });
-
-        List<WebElement> rows =
-                getDriver().findElement(By.id("documents-document_list"))
+        slightPause();
+        return waitForWebElement(By.id("documents-document_list"))
                         .findElements(By.xpath("./li"));
-        return rows;
     }
 
 }

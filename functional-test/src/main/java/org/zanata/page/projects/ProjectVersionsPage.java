@@ -42,11 +42,12 @@ import com.google.common.base.Predicate;
 @Slf4j
 public class ProjectVersionsPage extends ProjectBasePage {
 
-    @FindBy(id = "versions-more-actions")
-    private WebElement versionTabMoreAction;
-
-    @FindBy(id = "new-version-link")
-    private WebElement createNewVersion;
+    private By versionTabMoreAction = By.id("versions-more-actions");
+    private By createNewVersion = By.id("new-version-link");
+    private By versionCount = By.id("versionSearch:versionSearch-page-info");
+    private By versions = By.id("versions");
+    private By searchIcon = By.className("panel__search__button");
+    private By versionSearchInput = By.id("versionSearch__input");
 
     public ProjectVersionsPage(WebDriver driver) {
         super(driver);
@@ -96,9 +97,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public int getNumberOfDisplayedVersions() {
         log.info("Query number of displayed versions");
-        return Integer.parseInt(getDriver()
-                .findElement(By.id("versionSearch:versionSearch-page-info"))
-                .getText());
+        return Integer.parseInt(waitForWebElement(versionCount).getText());
     }
 
     public ProjectVersionsPage waitForDisplayedVersions(final int expected) {
@@ -115,20 +114,17 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage clickSearchIcon() {
         log.info("Click Search icon");
-        getDriver()
-                .findElement(By.id("versions"))
-                .findElement(By.className("panel__search__button"))
-                .click();
+        waitForWebElement(waitForElementExists(versions), searchIcon).click();
         return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectVersionsPage clearVersionSearch() {
         log.info("Clear version search field");
         int maxKeys = 500;
-        while (!getDriver().findElement(By.id("versionSearch__input"))
+        while (!waitForWebElement(versionSearchInput)
                 .getAttribute("value").isEmpty() && maxKeys > 0) {
-            getDriver().findElement(By.id("versionSearch__input"))
-                .sendKeys(Keys.BACK_SPACE);
+            waitForWebElement(versionSearchInput).sendKeys(Keys.BACK_SPACE);
+            maxKeys = maxKeys - 1;
         }
         if (maxKeys == 0) {
             log.warn("Exceeded max keypresses for clearing search bar");
@@ -138,8 +134,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage enterVersionSearch(String searchTerm) {
         log.info("Enter version search {}", searchTerm);
-        getDriver().findElement(By.id("versionSearch__input"))
-                .sendKeys(searchTerm);
+        waitForWebElement(versionSearchInput).sendKeys(searchTerm);
         return new ProjectVersionsPage(getDriver());
     }
 }

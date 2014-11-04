@@ -24,8 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.CorePage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
@@ -35,17 +33,13 @@ public class SignInPage extends CorePage {
 
     public static final String LOGIN_FAILED_ERROR = "Login failed";
 
-    @FindBy(id = "loginForm:username")
-    private WebElement usernameField;
-
-    @FindBy(id = "loginForm:password")
-    private WebElement passwordField;
-
-    @FindBy(id = "loginForm:loginButton")
-    private WebElement signInButton;
-
-    @FindBy(linkText = "Forgot your password?")
-    private WebElement forgotPasswordLink;
+    private By usernameField = By.id("loginForm:username");
+    private By passwordField = By.id("loginForm:password");
+    private By signInButton = By.id("loginForm:loginButton");
+    private By forgotPasswordLink = By.linkText("Forgot your password?");
+    private By googleButton = By.linkText("Google");
+    private By signUpLink = By.linkText("Sign Up");
+    private By titleLabel = By.className("heading--sub");
 
     public SignInPage(final WebDriver driver) {
         super(driver);
@@ -53,49 +47,48 @@ public class SignInPage extends CorePage {
 
     public SignInPage enterUsername(String username) {
         log.info("Enter username {}", username);
-        usernameField.sendKeys(username);
+        waitForWebElement(usernameField).sendKeys(username);
         return new SignInPage(getDriver());
     }
 
     public SignInPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        passwordField.sendKeys(password);
+        waitForWebElement(passwordField).sendKeys(password);
         return new SignInPage(getDriver());
     }
 
     public DashboardBasePage clickSignIn() {
         log.info("Click Sign In");
-        signInButton.click();
+        waitForWebElement(signInButton).click();
         return new DashboardBasePage(getDriver());
     }
 
     public SignInPage clickSignInExpectError() {
         log.info("Click Sign In");
-        signInButton.click();
+        waitForWebElement(signInButton).click();
         return new SignInPage(getDriver());
     }
 
     public GoogleAccountPage selectGoogleOpenID() {
         log.info("Click 'Google'");
-        getDriver().findElement(By.linkText("Google")).click();
+        waitForWebElement(googleButton).click();
         return new GoogleAccountPage(getDriver());
     }
 
     public ResetPasswordPage goToResetPassword() {
         log.info("Click Forgot Password");
-        forgotPasswordLink.click();
+        waitForWebElement(forgotPasswordLink).click();
         return new ResetPasswordPage(getDriver());
     }
 
     public RegisterPage goToRegister() {
         log.info("Click Sign Up");
-        getDriver().findElement(By.linkText("Sign Up")).click();
+        waitForWebElement(signUpLink).click();
         return new RegisterPage(getDriver());
     }
 
     public String getPageTitle() {
         log.info("Query page title");
-        return getDriver().findElement(By.className("heading--sub"))
-                .getText();
+        return waitForWebElement(titleLabel).getText();
     }
 }

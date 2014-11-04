@@ -36,13 +36,16 @@ import java.util.List;
 @Slf4j
 public class RoleAssignmentsPage extends BasePage {
 
+    private By newRuleButton = By.linkText("New Rule");
+    private By roleTable = By.tagName("table");
+
     public RoleAssignmentsPage(WebDriver driver) {
         super(driver);
     }
 
     public EditRoleAssignmentPage clickCreateNew() {
         log.info("Click Create New");
-        getDriver().findElement(By.linkText("New Rule")).click();
+        waitForWebElement(newRuleButton).click();
         return new EditRoleAssignmentPage(getDriver());
     }
 
@@ -50,7 +53,7 @@ public class RoleAssignmentsPage extends BasePage {
         log.info("Query role rules");
         List<String> names = new ArrayList<String>();
         List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
-                By.tagName("table"));
+                roleTable);
         for (TableRow tableRow : tableRows) {
             names.add(tableRow.getCells().get(1).getText());
         }

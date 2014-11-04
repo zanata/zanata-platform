@@ -20,14 +20,12 @@
  */
 package org.zanata.page.projectversion;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.Constants;
 
@@ -41,17 +39,11 @@ public class CreateVersionPage extends BasePage {
             "must start and end with letter or number, and contain only " +
                     "letters, numbers, periods, underscores and hyphens.";
 
-    @FindBy(id = "create-version-form:project-type")
-    private WebElement projectTypeSelection;
-
-    @FindBy(id = "create-version-form:statusField:status")
-    private WebElement statusSelection;
-
-    @FindBy(id = "create-version-form:button-create")
-    private WebElement saveButton;
-
-    @FindBy(id = "create-version-form:copy-from-version")
-    private WebElement copyFromPreviousVersionChk;
+    private By projectTypeSelection = By.id("create-version-form:project-type");
+    private By statusSelection = By.id("create-version-form:statusField:status");
+    private By saveButton = By.id("create-version-form:button-create");
+    private By copyFromPreviousVersionChk = By.id("create-version-form:copy-from-version");
+    private By projectTypesList = By.id("create-version-form:project-type-list");
 
     private static final Map<String, String> projectTypeOptions =
             Constants.projectTypeOptions();
@@ -83,27 +75,20 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage clickCopyFromVersion() {
         log.info("Click Copy From Previous checkbox");
-        copyFromPreviousVersionChk.click();
-        waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(By.id(
-                        "create-version-form:project-type-list"));
-            }
-        });
-        return this;
+        waitForWebElement(copyFromPreviousVersionChk).click();
+        waitForWebElement(projectTypesList);
+        return new CreateVersionPage(getDriver());
     }
 
     private WebElement getVersionIdField() {
         log.info("Query Version ID");
-        return getDriver().findElement(
-                By.id("create-version-form:slugField:slug"));
+        return waitForWebElement(By.id("create-version-form:slugField:slug"));
     }
 
     public CreateVersionPage selectProjectType(String projectType) {
         log.info("Click project type {}", projectType);
-        List<WebElement> projectTypes =
-                projectTypeSelection.findElements(By.tagName("li"));
+        List<WebElement> projectTypes = waitForWebElement(projectTypeSelection)
+                .findElements(By.tagName("li"));
         for (WebElement projectTypeLi : projectTypes) {
             if (projectTypeLi.findElement(By.xpath(".//div/label")).getText()
                     .startsWith(projectType)) {
@@ -111,18 +96,18 @@ public class CreateVersionPage extends BasePage {
                 break;
             }
         }
-        return this;
+        return new CreateVersionPage(getDriver());
     }
 
     public VersionLanguagesPage saveVersion() {
         log.info("Click Save");
-        clickAndCheckErrors(saveButton);
+        clickAndCheckErrors(waitForWebElement(saveButton));
         return new VersionLanguagesPage(getDriver());
     }
 
     public CreateVersionPage saveExpectingError() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new CreateVersionPage(getDriver());
     }
 

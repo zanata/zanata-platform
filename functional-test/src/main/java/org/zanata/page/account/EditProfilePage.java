@@ -21,9 +21,8 @@
 package org.zanata.page.account;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
@@ -33,20 +32,12 @@ import org.zanata.page.utility.HomePage;
  */
 @Slf4j
 public class EditProfilePage extends BasePage {
-    @FindBy(id = "profile-form:nameField:name")
-    private WebElement nameField;
 
-    @FindBy(id = "profile-form:usernameField:username")
-    private WebElement usernameField;
-
-    @FindBy(id = "profile-form:emailField:email")
-    private WebElement emailField;
-
-    @FindBy(id = "profile-form:user-create-new")
-    private WebElement saveButton;
-
-    @FindBy(id = "profile-form:user-create-cancel")
-    private WebElement cancelButton;
+    private By nameField = By.id("profile-form:nameField:name");
+    private By usernameField = By.id("profile-form:usernameField:username");
+    private By emailField = By.id("profile-form:emailField:email");
+    private By saveButton =  By.id("profile-form:user-create-new");
+    private By cancelButton = By.id("profile-form:user-create-cancel");
 
     public EditProfilePage(WebDriver driver) {
         super(driver);
@@ -54,35 +45,36 @@ public class EditProfilePage extends BasePage {
 
     public EditProfilePage enterName(String name) {
         log.info("Enter name {}", name);
-        nameField.clear();
-        nameField.sendKeys(name);
+        waitForWebElement(nameField).clear();
+        waitForWebElement(nameField).sendKeys(name);
         defocus();
         return new EditProfilePage(getDriver());
     }
 
     public EditProfilePage enterUserName(String userName) {
         log.info("Enter username {}", userName);
-        usernameField.sendKeys(userName);
+        waitForWebElement(usernameField).clear();
+        waitForWebElement(usernameField).sendKeys(userName);
         return new EditProfilePage(getDriver());
     }
 
     public EditProfilePage enterEmail(String email) {
         log.info("Enter email {}", email);
-        emailField.clear();
-        emailField.sendKeys(email);
+        waitForWebElement(emailField).clear();
+        waitForWebElement(emailField).sendKeys(email);
         defocus();
         return new EditProfilePage(getDriver());
     }
 
     public HomePage clickSave() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new HomePage(getDriver());
     }
 
     public EditProfilePage clickSaveAndExpectErrors() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new EditProfilePage(getDriver());
     }
 

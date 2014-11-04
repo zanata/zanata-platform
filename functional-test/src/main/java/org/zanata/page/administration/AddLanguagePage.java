@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 import java.util.HashMap;
@@ -39,15 +38,11 @@ public class AddLanguagePage extends BasePage {
     private static final int NAME_COLUMN = 0;
     private static final int VALUE_COLUMN = 1;
 
-    @FindBy(xpath = "//input[@type='text' and contains(@id, 'localeName')]")
-    private WebElement languageInput;
-
-    @FindBy(xpath = "//input[@value='Save']")
-    private WebElement saveButton;
-
-    @FindBy(xpath =
-            "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]")
-    private WebElement enabledByDefaultInput;
+    private By languageInputField = By.xpath(
+            "//input[@type='text' and contains(@id, 'localeName')]");
+    private By saveButton = By.xpath("//input[@value='Save']");
+    private By enabledByDefaultCheckbox = By.xpath(
+            "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
@@ -55,26 +50,26 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage inputLanguage(String language) {
         log.info("Enter language {}", language);
-        languageInput.sendKeys(language);
+        waitForWebElement(languageInputField).sendKeys(language);
         defocus();
         waitForPageSilence();
-        return this;
+        return new AddLanguagePage(getDriver());
     }
 
     public AddLanguagePage enableLanguageByDefault() {
         log.info("Click Enable by default");
-        if (!enabledByDefaultInput.isSelected()) {
-            enabledByDefaultInput.click();
+        if (!waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
+            waitForWebElement(enabledByDefaultCheckbox).click();
         }
-        return this;
+        return new AddLanguagePage(getDriver());
     }
 
     public AddLanguagePage disableLanguageByDefault() {
         log.info("Click Disable by default");
-        if (enabledByDefaultInput.isSelected()) {
-            enabledByDefaultInput.click();
+        if (waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
+            waitForWebElement(enabledByDefaultCheckbox).click();
         }
-        return this;
+        return new AddLanguagePage(getDriver());
     }
 
     public Map<String, String> getLanguageDetails() {
@@ -102,7 +97,7 @@ public class AddLanguagePage extends BasePage {
 
     public ManageLanguagePage saveLanguage() {
         log.info("Click Save");
-        clickAndCheckErrors(saveButton);
+        clickAndCheckErrors(waitForWebElement(saveButton));
         return new ManageLanguagePage(getDriver());
     }
 }

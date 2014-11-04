@@ -26,7 +26,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
@@ -41,32 +40,16 @@ import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 @Slf4j
 public class ProjectBasePage extends BasePage {
 
-    @FindBy(id = "versions_tab")
-    private WebElement versionsTab;
-
-    @FindBy(id = "maintainers_tab")
-    private WebElement maintainersTab;
-
-    @FindBy(id = "about_tab")
-    private WebElement aboutTab;
-
-    @FindBy(id = "settings_tab")
-    private WebElement settingsTab;
-
-    @FindBy(id = "settings-general_tab")
-    private WebElement settingsGeneralTab;
-
-    @FindBy(id = "settings-permissions_tab")
-    private WebElement settingsPermissionTab;
-
-    @FindBy(id = "settings-translation_tab")
-    private WebElement settingsTranslationTab;
-
-    @FindBy(id = "settings-languages_tab")
-    private WebElement settingsLanguagesTab;
-
-    @FindBy(id = "settings-about_tab")
-    private WebElement settingsAboutTab;
+    private By versionsTab = By.id("versions_tab");
+    private By maintainersTab = By.id("maintainers_tab");
+    private By aboutTab = By.id("about_tab");
+    private By settingsTab = By.id("settings_tab");
+    private By settingsGeneralTab = By.id("settings-general_tab");
+    private By settingsPermissionTab = By.id("settings-permissions_tab");
+    private By settingsTranslationTab = By.id("settings-translation_tab");
+    private By settingsLanguagesTab = By.id("settings-languages_tab");
+    private By settingsAboutTab = By.id("settings-about_tab");
+    private By projectInfo = By.id("project-info");
 
     private By settingsWebHooksTab = By.id("settings-webhooks_tab");
 
@@ -76,127 +59,68 @@ public class ProjectBasePage extends BasePage {
 
     public String getProjectName() {
         log.info("Query Project name");
-        return getDriver()
-                .findElement(By.id("project-info"))
+        return waitForWebElement(projectInfo)
                 .findElement(By.tagName("h1")).getText();
     }
 
     public ProjectVersionsPage gotoVersionsTab() {
         log.info("Click Versions tab");
-        clickWhenTabEnabled(versionsTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("versions"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(versionsTab));
+        waitForWebElement(By.id("versions"));
         return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectMaintainersPage gotoMaintainersTab() {
         log.info("Click Maintainers tab");
-        clickWhenTabEnabled(maintainersTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("maintainers"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(maintainersTab));
+        waitForWebElement(By.id("maintainers"));
         return new ProjectMaintainersPage(getDriver());
     }
 
     public ProjectAboutPage gotoAboutTab() {
         log.info("Click About tab");
-        clickWhenTabEnabled(aboutTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("about"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(aboutTab));
+        waitForWebElement(By.id("about"));
         return new ProjectAboutPage(getDriver());
     }
 
     public boolean settingsTabIsDisplayed() {
         log.info("Query Settings tab is displayed");
-        return settingsTab.isDisplayed();
-    }
-
-    public void reloadUntilSettingsIsDisplayed() {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return settingsTab.isDisplayed();
-            }
-        });
+        return waitForElementExists(settingsTab).isDisplayed();
     }
 
     public ProjectBasePage gotoSettingsTab() {
         log.info("Click Settings tab");
-        slightPause();
-        clickWhenTabEnabled(settingsTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings_tab"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsTab));
+        waitForWebElement(settingsTab);
         return new ProjectBasePage(getDriver());
     }
 
     public ProjectGeneralTab gotoSettingsGeneral() {
         log.info("Click General settings sub-tab");
-        clickWhenTabEnabled(settingsGeneralTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-general"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsGeneralTab));
+        waitForWebElement(By.id("settings-general"));
         return new ProjectGeneralTab(getDriver());
     }
 
     public ProjectPermissionsTab gotoSettingsPermissionsTab() {
         log.info("Click Permissions settings sub-tab");
-        clickWhenTabEnabled(settingsPermissionTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-permissions"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsPermissionTab));
+        waitForWebElement(By.id("settings-permissions"));
         return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectTranslationTab gotoSettingsTranslationTab() {
         log.info("Click Translation settings sub-tab");
-        clickWhenTabEnabled(settingsTranslationTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-translation"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsTranslationTab));
+        waitForWebElement(By.id("settings-translation"));
         return new ProjectTranslationTab(getDriver());
     }
 
     public ProjectLanguagesTab gotoSettingsLanguagesTab() {
         log.info("Click Languages settings sub-tab");
-        clickWhenTabEnabled(settingsLanguagesTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-languages"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsLanguagesTab));
+        waitForWebElement(By.id("settings-languages"));
         return new ProjectLanguagesTab(getDriver());
     }
 
@@ -209,22 +133,15 @@ public class ProjectBasePage extends BasePage {
 
     public ProjectAboutTab gotoSettingsAboutTab() {
         log.info("Click About settings sub-tab");
-        clickWhenTabEnabled(settingsAboutTab);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver().findElement(By.id("settings-about"))
-                        .isDisplayed();
-            }
-        });
+        clickWhenTabEnabled(waitForWebElement(settingsAboutTab));
+        waitForWebElement(By.id("settings-about"));
         return new ProjectAboutTab(getDriver());
     }
 
     public List<String> getContentAreaParagraphs() {
         log.info("Query Project info");
         List<String> paragraphTexts = new ArrayList<String>();
-        List<WebElement> paragraphs =
-                getDriver().findElement(By.id("project-info"))
+        List<WebElement> paragraphs = waitForWebElement(projectInfo)
                         .findElements(By.tagName("p"));
         for (WebElement element : paragraphs) {
             paragraphTexts.add(element.getText());
@@ -234,8 +151,7 @@ public class ProjectBasePage extends BasePage {
 
     public String getHomepage() {
         log.info("Query Project homepage");
-        for (WebElement element : getDriver()
-                .findElement(By.id("project-info"))
+        for (WebElement element : waitForWebElement(projectInfo)
                 .findElements(By.tagName("li"))) {
             if (element.findElement(By.className("list__title"))
                     .getText().trim()
@@ -248,8 +164,7 @@ public class ProjectBasePage extends BasePage {
 
     public String getGitUrl() {
         log.info("Query Project repo");
-        for (WebElement element : getDriver()
-                .findElement(By.id("project-info"))
+        for (WebElement element : waitForWebElement(projectInfo)
                 .findElements(By.tagName("li"))) {
             if (element.findElement(By.className("list__title")).getText()
                     .trim().equals("Repository:")) {

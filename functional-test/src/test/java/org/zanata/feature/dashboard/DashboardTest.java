@@ -92,6 +92,7 @@ public class DashboardTest extends ZanataTestCase {
 
     private boolean activityListExpands() throws Exception {
         DashboardActivityTab activityTab = dashboard.gotoActivityTab();
+        assertThat(activityTab.isMoreActivity());
         assertThat(activityTab.getMyActivityList()).isNotEmpty();
         return activityTab.clickMoreActivity();
     }

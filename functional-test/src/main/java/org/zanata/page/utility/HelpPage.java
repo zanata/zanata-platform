@@ -21,9 +21,8 @@
 package org.zanata.page.utility;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 
 /**
@@ -32,8 +31,8 @@ import org.zanata.page.BasePage;
  */
 @Slf4j
 public class HelpPage extends BasePage {
-    @FindBy(linkText = "Contact Admin")
-    private WebElement contactAdminLink;
+
+    private By contactAdminLink = By.linkText("Contact Admin");
 
     public HelpPage(WebDriver driver) {
         super(driver);
@@ -41,7 +40,7 @@ public class HelpPage extends BasePage {
 
     public ContactAdminFormPage clickContactAdmin() {
         log.info("Click Contact Admin button");
-        contactAdminLink.click();
+        waitForWebElement(contactAdminLink).click();
         return new ContactAdminFormPage(getDriver());
     }
 }
