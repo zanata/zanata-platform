@@ -1,8 +1,17 @@
 language: java
-# Attempt to resolve most dependencies without actually compiling
+
+# Use the 'true' command to avoid up-front dependency fetching, for faster builds
 # See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
-install: travis_wait mvn dependency:resolve
-script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null -DstaticAnalysis
+install: true
+
+script: |
+  mvn test \
+    --batch-mode \
+    --settings .travis-settings.xml \
+    -Darquillian.jboss.home=/dev/null \
+    -Dgwt.validateOnly \
+    -DstaticAnalysis
+
 jdk:
   - openjdk7
   - oraclejdk7
