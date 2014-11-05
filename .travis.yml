@@ -1,6 +1,8 @@
 language: java
-install: true
-script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+# Attempt to resolve dependencies without actually compiling
+# See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
+install: mvn dependency:resolve dependency:resolve-plugins dependency:go-offline
+script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null -DstaticAnalysis
 jdk:
   - openjdk7
   - oraclejdk7
@@ -8,5 +10,3 @@ jdk:
 
 matrix:
   fast_finish: true
-#  allow_failures:
-#    - jdk: oraclejdk8
