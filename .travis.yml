@@ -1,8 +1,17 @@
 language: java
-# Skip dependency installation by using the 'true' command
+
+# Use the 'true' command to avoid up-front dependency fetching, for faster builds
 # See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
 install: true
-script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null -DstaticAnalysis
+
+script: |
+  mvn test \
+    --batch-mode \
+    --settings .travis-settings.xml \
+    -Darquillian.jboss.home=/dev/null \
+    -Dgwt.validateOnly \
+    -DstaticAnalysis
+
 jdk:
   - openjdk7
   - oraclejdk7
