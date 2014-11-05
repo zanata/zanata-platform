@@ -1,7 +1,7 @@
 language: java
-# Attempt to resolve dependencies without actually compiling
+# Attempt to resolve most dependencies without actually compiling
 # See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
-install: mvn dependency:resolve dependency:resolve-plugins dependency:go-offline
+install: travis_wait mvn dependency:resolve
 script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null -DstaticAnalysis
 jdk:
   - openjdk7
