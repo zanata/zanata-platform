@@ -1,6 +1,8 @@
 language: java
+# Skip dependency installation by using the 'true' command
+# See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
 install: true
-script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+script: mvn --batch-mode --settings settings.xml test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null -DstaticAnalysis
 jdk:
   - openjdk7
   - oraclejdk7
@@ -8,5 +10,3 @@ jdk:
 
 matrix:
   fast_finish: true
-#  allow_failures:
-#    - jdk: oraclejdk8
