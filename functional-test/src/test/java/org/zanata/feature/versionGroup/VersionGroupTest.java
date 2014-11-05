@@ -73,7 +73,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .as("The version group was created");
         VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
         assertThat(groupView.getTitle())
-                .isEqualTo("Groups - ".concat(groupName))
+                .isEqualTo("Zanata: Groups - ".concat(groupName))
                 .as("The group is displayed");
     }
 
