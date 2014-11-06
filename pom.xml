@@ -423,53 +423,9 @@
               </allowedRepositories>
             </requireNoRepositories>
             <requireUpperBoundDeps />
-            <rule implementation="com.redhat.victims.VictimsRule">
-              <!--
-                Check the project's dependencies against the database using
-                name and version. The default mode for this is 'warning'.
-
-                Valid options are:
-
-                disabled: Rule is still run but only INFO level messages aand no errors.
-                warning : Rule will spit out a warning message but doesn't result in a failure.
-                fatal   : Rule will spit out an error message and fail the build.
-              -->
-              <metadata>warning</metadata>
-
-              <!--
-                Check the project's dependencies against the database using
-                the SHA-512 checksum of the artifact. The default is fatal.
-
-                Valid options are:
-
-                disabled: Rule is still run but only INFO level messages aand no errors.
-                warning : Rule will spit out a warning message but doesn't result in a failure.
-                fatal   : Rule will spit out an error message and fail the build.
-              -->
-              <!-- TODO change to fatal -->
-              <fingerprint>warning</fingerprint>
-
-              <!--
-                Disables the synchronization mechansim. By default the rule will
-                attempt to update the database for each build.
-
-                Valid options are:
-
-                auto  : Automatically update the database entries on each build.
-                daily : Update the database entries once per day.
-                off   : Disable the synchronization mechanism.
-              -->
-              <updates>${victims.updates}</updates>
-            </rule>
           </rules>
         </configuration>
         <dependencies>
-          <dependency>
-            <groupId>com.redhat.victims</groupId>
-            <artifactId>enforce-victims-rule</artifactId>
-            <version>1.3.4</version>
-            <type>jar</type>
-          </dependency>
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
@@ -858,6 +814,76 @@
         <findbugs.skip>false</findbugs.skip>
         <mdep.analyze.skip>false</mdep.analyze.skip>
       </properties>
+    </profile>
+
+    <profile>
+      <id>victims</id>
+      <activation>
+        <property>
+          <name>victims</name>
+        </property>
+      </activation>
+      <properties>
+        <enforcer.skip>false</enforcer.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <configuration>
+              <rules>
+                <rule implementation="com.redhat.victims.VictimsRule">
+                  <!--
+                    Check the project's dependencies against the database using
+                    name and version. The default mode for this is 'warning'.
+
+                    Valid options are:
+
+                    disabled: Rule is still run but only INFO level messages aand no errors.
+                    warning : Rule will spit out a warning message but doesn't result in a failure.
+                    fatal   : Rule will spit out an error message and fail the build.
+                  -->
+                  <metadata>warning</metadata>
+
+                  <!--
+                    Check the project's dependencies against the database using
+                    the SHA-512 checksum of the artifact. The default is fatal.
+
+                    Valid options are:
+
+                    disabled: Rule is still run but only INFO level messages aand no errors.
+                    warning : Rule will spit out a warning message but doesn't result in a failure.
+                    fatal   : Rule will spit out an error message and fail the build.
+                  -->
+                  <!-- TODO change to fatal -->
+                  <fingerprint>warning</fingerprint>
+
+                  <!--
+                    Disables the synchronization mechansim. By default the rule will
+                    attempt to update the database for each build.
+
+                    Valid options are:
+
+                    auto  : Automatically update the database entries on each build.
+                    daily : Update the database entries once per day.
+                    off   : Disable the synchronization mechanism.
+                  -->
+                  <updates>${victims.updates}</updates>
+                </rule>
+              </rules>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.redhat.victims</groupId>
+                <artifactId>enforce-victims-rule</artifactId>
+                <version>1.3.4</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+        </plugins>
+      </build>
     </profile>
 
     <profile>
