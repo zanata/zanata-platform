@@ -21,35 +21,40 @@
 
 package org.zanata.rest.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.service.MockServerRule;
 
-public class RestClientFactoryTest {
-
-    private RestClientFactory restClientFactory;
+public class GlossaryClientTest {
+    @ClassRule
+    public static MockServerRule mockServerRule = new MockServerRule();
+    private GlossaryClient client;
 
     @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+    public void setUp() throws Exception {
+        client = new GlossaryClient(MockServerTestUtil
+                .createClientFactory(mockServerRule.getServerBaseUri()));
     }
 
     @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
+    public void testPut() throws Exception {
+        client.put(new Glossary());
 
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+        MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 
+    @Test
+    public void testDelete() throws Exception {
+        client.delete(LocaleId.DE);
+        MockServerTestUtil.verifyServerRespondSuccessStatus();
+    }
+
+    @Test
+    public void testDeleteAll() throws Exception {
+        client.deleteAll();
+        MockServerTestUtil.verifyServerRespondSuccessStatus();
+    }
 }

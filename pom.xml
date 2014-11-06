@@ -35,7 +35,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>3.4.1</zanata.api.version>
+    <zanata.api.version>3.6.0-SNAPSHOT</zanata.api.version>
     <zanata.common.version>3.3.0</zanata.common.version>
     <resteasy.version>3.0.1.Final</resteasy.version>
   </properties>
@@ -202,9 +202,11 @@
   </dependencies>
 
   <modules>
+    <module>mock-server</module>
     <module>zanata-cli</module>
     <module>zanata-client-commands</module>
     <module>zanata-maven-plugin</module>
     <module>zanata-rest-client</module>
+    <module>rest-client</module>
   </modules>
 </project>

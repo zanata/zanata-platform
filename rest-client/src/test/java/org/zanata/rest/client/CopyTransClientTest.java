@@ -21,35 +21,37 @@
 
 package org.zanata.rest.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.service.MockServerRule;
 
-public class RestClientFactoryTest {
+import static org.junit.Assert.*;
 
-    private RestClientFactory restClientFactory;
+public class CopyTransClientTest {
+    @ClassRule
+    public static MockServerRule mockServerRule = new MockServerRule();
+    private CopyTransClient client;
 
     @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+    public void setUp() throws Exception {
+        client = new CopyTransClient(MockServerTestUtil
+                .createClientFactory(mockServerRule.getServerBaseUri()));
     }
 
     @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
-
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+    public void testStartCopyTrans() throws Exception {
+        CopyTransStatus copyTransStatus =
+                client.startCopyTrans("about-fedora", "master", "Authors");
+        assertThat(copyTransStatus.isInProgress(), Matchers.is(true));
     }
 
+    @Test
+    public void testGetCopyTransStatus() throws Exception {
+        CopyTransStatus copyTransStatus =
+                client.getCopyTransStatus("about-fedora", "master", "Authors");
+        assertThat(copyTransStatus.isInProgress(), Matchers.is(false));
+    }
 }

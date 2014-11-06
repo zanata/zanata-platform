@@ -22,34 +22,39 @@
 package org.zanata.rest.client;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Account;
 
-public class RestClientFactoryTest {
+import com.sun.jersey.api.client.WebResource;
 
-    private RestClientFactory restClientFactory;
+/**
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public class AccountClient {
+    private final RestClientFactory factory;
+    private final URI baseUri;
 
-    @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+    public AccountClient(RestClientFactory factory) {
+        this.factory = factory;
+        this.baseUri = factory.getBaseUri();
     }
 
-    @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
-
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+    public Account get(String username) {
+        return webResource(username)
+                .get(Account.class);
     }
 
+    public void put(String username, Account account) {
+        webResource(username).type(
+                MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML)
+                .put(account);
+    }
+
+    private WebResource webResource(String username) {
+        return factory.getClient().resource(baseUri)
+                .path("accounts").path("u")
+                .path(username);
+    }
 }

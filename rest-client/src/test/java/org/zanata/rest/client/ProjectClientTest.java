@@ -21,35 +21,39 @@
 
 package org.zanata.rest.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.rest.dto.Project;
+import org.zanata.rest.service.MockServerRule;
 
-public class RestClientFactoryTest {
+import static org.junit.Assert.*;
 
-    private RestClientFactory restClientFactory;
+public class ProjectClientTest {
+    @ClassRule
+    public static MockServerRule mockServerRule = new MockServerRule();
+    private ProjectClient client;
 
     @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+    public void setUp() throws Exception {
+        client = new ProjectClient(MockServerTestUtil
+                .createClientFactory(mockServerRule.getServerBaseUri()),
+                "about-fedora");
     }
 
     @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
+    public void testGet() throws Exception {
+        Project project = client.get();
 
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+        assertThat(project.getId(), Matchers.equalTo("about-fedora"));
+    }
+
+    @Test
+    public void testPut() throws Exception {
+        client.put(new Project("a", "b", "gettext"));
+
+        MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 
 }

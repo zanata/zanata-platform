@@ -2,7 +2,9 @@ package org.zanata.client;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -159,6 +162,15 @@ public class TestProjectGenerator {
 
         public String getUrl() {
             return url;
+        }
+
+        public URL getURL() {
+            try {
+                return new URI(url).toURL();
+            }
+            catch (MalformedURLException | URISyntaxException e) {
+                throw Throwables.propagate(e);
+            }
         }
 
         public String getUsername() {

@@ -19,37 +19,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.rest.client;
+package org.zanata.rest.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Set;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import javax.ws.rs.core.Response;
 
-public class RestClientFactoryTest {
+import com.google.common.base.Preconditions;
 
-    private RestClientFactory restClientFactory;
-
-    @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+/**
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+class MockResourceUtil {
+    static void validateExtensions(Set<String> extensions) {
+        Preconditions.checkArgument(extensions == null || extensions.isEmpty()
+               || extensions.contains("gettext")
+                || extensions.contains("comment"));
     }
 
-    @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
-
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+    static <T> T notUsedByClient() {
+        throw new UnsupportedOperationException("Not being used by client");
     }
+
 
 }

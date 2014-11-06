@@ -21,35 +21,38 @@
 
 package org.zanata.rest.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.VersionInfo;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.MockServerRule;
 
-public class RestClientFactoryTest {
+import com.google.common.collect.Sets;
 
-    private RestClientFactory restClientFactory;
+import static org.junit.Assert.*;
+
+public class TransDocResourceClientTest {
+    @ClassRule
+    public static MockServerRule mockServerRule = new MockServerRule();
+
+    private TransDocResourceClient client;
 
     @Before
-    public void setUp() throws URISyntaxException {
-        restClientFactory =
-                new RestClientFactory(new URI("http://localhost:8180/zanata/"),
-                        "admin",
-                        "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                        "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true);
+    public void setUp() {
+        client = new TransDocResourceClient(
+                MockServerTestUtil.createClientFactory(mockServerRule.getServerBaseUri()), "about-fedora",
+                "master");
     }
 
     @Test
-    public void testGetVersion() {
-        VersionInfo serverVersionInfo = restClientFactory.getServerVersionInfo();
+    public void testGetTranslations() {
+        TranslationsResource translations =
+                client.getTranslations("test", LocaleId.DE,
+                        Sets.newHashSet("gettext", "comment"), true, "abc");
 
-        MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
-                Matchers.equalTo("3.6.0-SNAPSHOT"));
+        assertThat(translations.getTextFlowTargets(), Matchers.hasSize(1));
     }
 
 }
