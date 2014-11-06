@@ -133,6 +133,6 @@ public class DashboardTest extends ZanataTestCase {
         CreateProjectPage createProjectPage =
             dashboard.gotoProjectsTab().clickOnCreateProjectLink();
         assertThat(createProjectPage.getTitle())
-                .isEqualTo("Projects - New Project");
+                .contains("New Project");
     }
 }
