@@ -20,17 +20,15 @@
  */
 package org.zanata.page.projectversion;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
-import org.zanata.util.Constants;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class CreateVersionPage extends BasePage {
@@ -39,14 +37,13 @@ public class CreateVersionPage extends BasePage {
             "must start and end with letter or number, and contain only " +
                     "letters, numbers, periods, underscores and hyphens.";
 
+    private By projectVersionID = By.id("create-version-form:slugField:slug");
     private By projectTypeSelection = By.id("create-version-form:project-type");
-    private By statusSelection = By.id("create-version-form:statusField:status");
     private By saveButton = By.id("create-version-form:button-create");
     private By copyFromPreviousVersionChk = By.id("create-version-form:copy-from-version");
-    private By projectTypesList = By.id("create-version-form:project-type-list");
 
-    private static final Map<String, String> projectTypeOptions =
-            Constants.projectTypeOptions();
+    private By projectTypesList = By.id("create-version-form:project-type-list");
+    private By previousVersionsList = By.id("create-version-form:project-version");
 
     public CreateVersionPage(final WebDriver driver) {
         super(driver);
@@ -73,29 +70,78 @@ public class CreateVersionPage extends BasePage {
         return new CreateVersionPage(getDriver());
     }
 
-    public CreateVersionPage clickCopyFromVersion() {
-        log.info("Click Copy From Previous checkbox");
-        waitForWebElement(copyFromPreviousVersionChk).click();
+    private boolean isCopyFromVersionAvailable() {
+        return getDriver()
+                .findElements(copyFromPreviousVersionChk)
+                .size() > 0;
+    }
+
+    private void clickCopyFromCheckbox() {
+        ((JavascriptExecutor) getDriver())
+                .executeScript("arguments[0].click();",
+                waitForWebElement(copyFromPreviousVersionChk)
+                        .findElement(By.tagName("span")));
+
+    }
+
+    public CreateVersionPage enableCopyFromVersion() {
+        log.info("Set Copy From Previous checkbox");
+        if (!isCopyFromVersionAvailable()) {
+            log.warn("Copy Version not available!");
+            return this;
+        }
+        if (copyFromVersionIsChecked()) {
+            log.warn("Checkbox already enabled!");
+        } else {
+            clickCopyFromCheckbox();
+        }
+        waitForWebElement(previousVersionsList);
+        return this;
+    }
+
+    public CreateVersionPage disableCopyFromVersion() {
+        log.info("Unset Copy From Previous checkbox");
+        if (!isCopyFromVersionAvailable()) {
+            log.warn("Copy Version not available!");
+            return this;
+        }
+        if (!copyFromVersionIsChecked()) {
+            log.warn("Checkbox already disabled!");
+        } else {
+            clickCopyFromCheckbox();
+        }
         waitForWebElement(projectTypesList);
-        return new CreateVersionPage(getDriver());
+        return this;
+    }
+
+    public boolean copyFromVersionIsChecked() {
+        log.info("Query is Copy from Version checkbox checked");
+        return waitForWebElement(copyFromPreviousVersionChk)
+                .findElement(By.tagName("input")).isSelected();
     }
 
     private WebElement getVersionIdField() {
         log.info("Query Version ID");
-        return waitForWebElement(By.id("create-version-form:slugField:slug"));
+        return waitForWebElement(projectVersionID);
     }
 
-    public CreateVersionPage selectProjectType(String projectType) {
+    public CreateVersionPage selectProjectType(final String projectType) {
         log.info("Click project type {}", projectType);
-        List<WebElement> projectTypes = waitForWebElement(projectTypeSelection)
-                .findElements(By.tagName("li"));
-        for (WebElement projectTypeLi : projectTypes) {
-            if (projectTypeLi.findElement(By.xpath(".//div/label")).getText()
-                    .startsWith(projectType)) {
-                projectTypeLi.findElement(By.xpath(".//div")).click();
-                break;
+        WebElement projectTypeCheck = waitForAMoment()
+                .until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                for (WebElement item : waitForWebElement(projectTypeSelection)
+                        .findElements(By.tagName("li"))) {
+                    if (item.findElement(By.tagName("label")).getText()
+                            .startsWith(projectType)) {
+                        return item;
+                    }
+                }
+                return null;
             }
-        }
+        });
+        projectTypeCheck.click();
         return new CreateVersionPage(getDriver());
     }
 

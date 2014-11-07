@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.util.AddUsersRule;
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Category(TestPlan.DetailedTest.class)
+@Category(DetailedTest.class)
 public class ContactLanguageTeamTest extends ZanataTestCase {
 
     @Rule

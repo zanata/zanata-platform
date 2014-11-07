@@ -20,12 +20,14 @@
  */
 package org.zanata.page.glossary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -36,7 +38,10 @@ import org.zanata.util.WebElementUtil;
 @Slf4j
 public class GlossaryPage extends BasePage {
 
-    private By glossaryTable = By.id("glossary_form:data_table");
+    private By glossaryMain = By.id("glossary_form");
+    private By entryCount = By.className("stats__figure");
+    private By listItem = By.className("list__item--actionable");
+    private By entryName = By.className("list__title");
 
     public GlossaryPage(WebDriver driver) {
         super(driver);
@@ -44,18 +49,30 @@ public class GlossaryPage extends BasePage {
 
     public List<String> getAvailableGlossaryLanguages() {
         log.info("Query available glossary languages");
-        return WebElementUtil.getColumnContents(getDriver(), glossaryTable, 0);
+        List<String> availableLanguages = new ArrayList<>();
+        for (WebElement element : getListItems()) {
+            availableLanguages.add(element.findElement(entryName)
+                    .getText().trim());
+        }
+        return availableLanguages;
+
     }
 
     public int getGlossaryEntryCount(String lang) {
         log.info("Query number of glossary entries for {}", lang);
-        List<String> langs = getAvailableGlossaryLanguages();
-        int row = langs.indexOf(lang);
+        List<WebElement> langs = getListItems();
+        int row = getAvailableGlossaryLanguages().indexOf(lang);
         if (row >= 0) {
-            return Integer
-                    .parseInt(WebElementUtil.getColumnContents(getDriver(),
-                            glossaryTable, 2).get(row));
+            return Integer.parseInt(langs.get(row)
+                    .findElement(entryCount).getText());
         }
         return -1;
+    }
+
+    private List<WebElement> getListItems() {
+        return waitForElementExists(
+                waitForElementExists(glossaryMain),
+                        By.className("list--stats"))
+                .findElements(listItem);
     }
 }

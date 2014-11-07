@@ -24,8 +24,6 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;

@@ -23,17 +23,15 @@ package org.zanata.feature.document;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.projectversion.VersionLanguagesPage;
-import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
@@ -51,6 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @RunWith(Theories.class)
+@Category(DetailedTest.class)
 public class DocTypeUploadTest extends ZanataTestCase {
 
     @ClassRule

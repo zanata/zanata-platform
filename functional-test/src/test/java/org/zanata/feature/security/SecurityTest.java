@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.security;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -33,7 +32,6 @@ import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.RetryRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 

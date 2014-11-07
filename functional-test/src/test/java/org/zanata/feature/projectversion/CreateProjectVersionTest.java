@@ -57,7 +57,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject("about fedora")
                 .clickCreateVersionLink()
-                .clickCopyFromVersion()
+                .disableCopyFromVersion()
                 .inputVersionId("my-aboutfedora-version")
                 .saveVersion();
 

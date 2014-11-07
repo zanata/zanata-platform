@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.projectversion;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

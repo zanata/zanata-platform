@@ -21,7 +21,6 @@
 package org.zanata.feature.editor;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Rule;

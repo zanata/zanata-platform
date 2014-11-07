@@ -14,7 +14,7 @@
 
   <g:HTMLPanel tag="ul" styleName="list--no-bullets l--push-h-quarter l--push-top-quarter">
     <li>
-      <g:HTMLPanel ui:field="sourcePanelContainer" />
+      <g:HTMLPanel ui:field="sourcePanelContainer" styleName="sourceContentsContainer" />
     </li>
     <li>
       <fui:ReferencePanel ui:field="referencePanel" />

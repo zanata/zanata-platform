@@ -27,11 +27,20 @@ import org.zanata.feature.administration.*;
 import org.zanata.feature.clientserver.*;
 import org.zanata.feature.concurrentedit.*;
 import org.zanata.feature.dashboard.DashboardTest;
+import org.zanata.feature.document.DocTypeUploadTest;
 import org.zanata.feature.document.HTMLDocumentTypeTest;
+import org.zanata.feature.document.MultiFileUploadTest;
+import org.zanata.feature.document.SubtitleDocumentTypeTest;
 import org.zanata.feature.document.UploadTest;
 import org.zanata.feature.editor.*;
+import org.zanata.feature.glossary.GlossaryAdminTest;
+import org.zanata.feature.glossary.GlossaryDeleteTest;
+import org.zanata.feature.glossary.GlossaryPushTest;
+import org.zanata.feature.glossary.InvalidGlossaryPushTest;
+import org.zanata.feature.googleopenid.GoogleOpenIDTest;
 import org.zanata.feature.infrastructure.RetryRuleTest;
 import org.zanata.feature.language.AddLanguageTest;
+import org.zanata.feature.language.ContactLanguageTeamTest;
 import org.zanata.feature.language.JoinLanguageTeamTest;
 import org.zanata.feature.misc.*;
 import org.zanata.feature.project.*;
@@ -75,7 +84,6 @@ import org.zanata.feature.versionGroup.*;
         AutoRoleAssignmentTest.class,
         EditHomePageTest.class,
         EditTranslationMemoryTest.class,
-        EditTranslationMemoryTest.class,
         ManageSearchTest.class,
         ManageUsersTest.class,
 
@@ -103,18 +111,38 @@ import org.zanata.feature.versionGroup.*;
          * Document
          * Source document upload and management
          */
+        DocTypeUploadTest.class,
         HTMLDocumentTypeTest.class,
+        MultiFileUploadTest.class,
+        SubtitleDocumentTypeTest.class,
         UploadTest.class,
 
         /*
          * Editor
          * Translation editor general features
          */
+        EditorFilterMessagesTest.class,
         TranslateHTMLTest.class,
         TranslateIdmlTest.class,
         TranslateOdsTest.class,
         TranslateOpenOfficeTest.class,
         TranslateTextTest.class,
+        TranslationHistoryTest.class,
+
+        /*
+         * Glossary
+         * Glossary management features
+         */
+        GlossaryAdminTest.class,
+        GlossaryDeleteTest.class,
+        GlossaryPushTest.class,
+        InvalidGlossaryPushTest.class,
+
+        /*
+         * Google OpenID
+         * Registration and log in with Google OpenID
+         */
+        GoogleOpenIDTest.class,
 
         /*
          * Infrastructure
@@ -127,6 +155,7 @@ import org.zanata.feature.versionGroup.*;
          * Participation in an management of language teams
          */
         AddLanguageTest.class,
+        ContactLanguageTeamTest.class,
         JoinLanguageTeamTest.class,
 
         /*

@@ -31,7 +31,6 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.SampleProjectRule;
-import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
