@@ -33,6 +33,8 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
@@ -96,7 +98,8 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // translator creates the project and become maintainer
         ZanataRestCaller restCaller =
                 new ZanataRestCaller("translator",
-                        "d83882201764f7d339e97c4b087f0806");
+                        PropertiesHolder.getProperty(
+                                Constants.zanataTranslatorKey.value()));
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
                 client.callWithTimeout(projectRootPath,
@@ -147,9 +150,9 @@ public class ProjectMaintainerTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136564)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void projectMaintainerPullTest() throws IOException {
-        ZanataRestCaller restCaller =
-                new ZanataRestCaller("translator",
-                        "d83882201764f7d339e97c4b087f0806");
+        ZanataRestCaller restCaller = new ZanataRestCaller("translator",
+                PropertiesHolder
+                        .getProperty(Constants.zanataTranslatorKey.value()));
         File workDir = Files.createTempDir();
         String projectSlug = "pull-test";
         String iterationSlug = "master";

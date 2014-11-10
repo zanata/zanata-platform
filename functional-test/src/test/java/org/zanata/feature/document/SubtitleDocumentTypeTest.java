@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Covers more detailed testing of the subtitle formats
- * @see DocTypeUploadTest
+ * @see FileTypeUploadTest
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */

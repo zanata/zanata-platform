@@ -34,7 +34,10 @@ import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectMaintainersPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -115,6 +118,10 @@ public class EditPermissionsTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 199006)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addMaintainerAsMaintainer() throws Exception {
+        new ZanataRestCaller("translator", PropertiesHolder
+                .getProperty(Constants.zanataTranslatorKey.value()))
+                .createProjectAndVersion("addmaintainer", "addmaintainer", "file");
+
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
@@ -122,7 +129,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .as("Translator has signed in");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
-                .createNewSimpleProject("addmaintainer", "addmaintainer")
+                .goToProjectByName("addmaintainer")
                 .gotoSettingsTab()
                 .gotoSettingsPermissionsTab()
                 .enterSearchMaintainer("glossarist")
@@ -157,17 +164,15 @@ public class EditPermissionsTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 321234)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeMaintainer() throws Exception {
+        new ZanataRestCaller("translator", PropertiesHolder.getProperty(
+                Constants.zanataTranslatorKey.value()))
+                .createProjectAndVersion("removemaintainer", "removemaintainer",
+                        "file");
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
                 .isEqualTo("translator")
                 .as("Translator has signed in");
-
-        assertThat(new ProjectWorkFlow()
-                .createNewSimpleProject("removemaintainer", "removemaintainer")
-                .getProjectName())
-                .isEqualTo("removemaintainer")
-                .as("The project is created");
 
         assertThat(new ProjectWorkFlow()
                 .addMaintainer("removemaintainer", "glossarist")
@@ -193,20 +198,19 @@ public class EditPermissionsTest extends ZanataTestCase {
     @Feature(summary = "The maintainer can remove themselves as maintainer " +
             "from a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Ignore("Exception thrown on removing self")
+    @Ignore("rhbz1151935")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeSelfAsMaintainer() throws Exception {
+        new ZanataRestCaller("translator", PropertiesHolder.getProperty(
+                Constants.zanataTranslatorKey.value()))
+                .createProjectAndVersion(
+                        "removemaintainer", "removemaintainer", "file");
+
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .loggedInAs())
                 .isEqualTo("translator")
                 .as("Translator has signed in");
-
-        assertThat(new ProjectWorkFlow()
-                .createNewSimpleProject("removemaintainer", "removemaintainer")
-                .getProjectName())
-                .isEqualTo("removemaintainer")
-                .as("The project is created");
 
         ProjectPermissionsTab projectPermissionsTab = new ProjectWorkFlow()
                 .addMaintainer("removemaintainer", "admin");
@@ -219,6 +223,8 @@ public class EditPermissionsTest extends ZanataTestCase {
         ProjectBasePage projectBasePage = projectPermissionsTab
                 .clickRemoveOnSelf("translator");
         projectBasePage.slightPause();
+        projectBasePage.expectNotification("Maintainer \"translator\" has " +
+                "been removed from project.");
         ProjectVersionsPage projectVersionsPage = projectBasePage
                 .goToHomePage()
                 .goToProjects()

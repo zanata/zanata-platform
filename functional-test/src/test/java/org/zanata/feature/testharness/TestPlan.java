@@ -27,7 +27,7 @@ import org.zanata.feature.administration.*;
 import org.zanata.feature.clientserver.*;
 import org.zanata.feature.concurrentedit.*;
 import org.zanata.feature.dashboard.DashboardTest;
-import org.zanata.feature.document.DocTypeUploadTest;
+import org.zanata.feature.document.FileTypeUploadTest;
 import org.zanata.feature.document.HTMLDocumentTypeTest;
 import org.zanata.feature.document.MultiFileUploadTest;
 import org.zanata.feature.document.SubtitleDocumentTypeTest;
@@ -111,7 +111,7 @@ import org.zanata.feature.versionGroup.*;
          * Document
          * Source document upload and management
          */
-        DocTypeUploadTest.class,
+        FileTypeUploadTest.class,
         HTMLDocumentTypeTest.class,
         MultiFileUploadTest.class,
         SubtitleDocumentTypeTest.class,
