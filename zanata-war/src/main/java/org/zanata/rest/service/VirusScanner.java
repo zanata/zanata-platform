@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.exec.CommandLine;
@@ -63,27 +62,58 @@ import com.google.common.base.Stopwatch;
 @Name("virusScanner")
 @Slf4j
 public class VirusScanner {
-    @Getter
-    private final boolean disabled;
-    @Getter
-    private final boolean scannerSet;
-    private final String scannerName;
-    private final boolean usingClam;
+    private static final boolean DISABLED;
+    private static final boolean SCANNER_SET;
+    private static final String SCANNER_NAME;
+    private static final boolean USING_CLAM;
+    // clamdscan-specific options:
+    private static final String[] CLAMDSCAN_ARGS = {
+            // just makes the error messages less verbose
+            "--no-summary",
+            // This ensures that clamd can scan the file regardless of
+            // permissions or security context (since clamdscan actually
+            // accesses the file, not clamd):
+            "--stream"
+    };
 
-    public VirusScanner() {
+    static {
         // If the system property is empty or null, we try to use
         // clamdscan, but we don't throw an exception if we can't find it.
         // clamscan would work too, but takes ~15 seconds
         String scannerProperty = System.getProperty("virusScanner");
-        this.disabled = "DISABLED".equals(scannerProperty);
-        if (scannerProperty == null || scannerProperty.isEmpty()) {
-            this.scannerName = "clamdscan";
-            this.scannerSet = false;
+        DISABLED = "DISABLED".equals(scannerProperty);
+        if (DISABLED) {
+            log.warn("virus scanning disabled");
+            SCANNER_SET = true;
+            SCANNER_NAME = scannerProperty;
+            USING_CLAM = false;
         } else {
-            this.scannerName = scannerProperty;
-            this.scannerSet = true;
+            if (scannerProperty == null || scannerProperty.isEmpty()) {
+                SCANNER_NAME = "clamdscan";
+                SCANNER_SET = false;
+                log.info("defaulting to clamdscan (system property 'virusScanner' is null or empty)");
+                log.warn("failure to run scanner will be logged but otherwise ignored");
+            } else {
+                SCANNER_NAME = scannerProperty;
+                SCANNER_SET = true;
+                log.info("property 'virusScanner' found: failure to run scanner will be treated as an error");
+            }
+            USING_CLAM = SCANNER_NAME.toLowerCase().contains("clamdscan");
+            if (USING_CLAM) {
+                log.info("scanning with command '{}', using arguments: {}",
+                        SCANNER_NAME, CLAMDSCAN_ARGS);
+            } else {
+                log.info("scanning with command '{}'", SCANNER_NAME);
+            }
         }
-        this.usingClam = scannerName.endsWith("clamdscan");
+    }
+
+    public static boolean isDisabled() {
+        return DISABLED;
+    }
+
+    public static boolean isScannerSet() {
+        return SCANNER_SET;
     }
 
     /**
@@ -106,7 +136,7 @@ public class VirusScanner {
      */
     public void scan(File file, String documentName)
             throws VirusDetectedException {
-        if (disabled) {
+        if (DISABLED) {
             log.debug("file not scanned: {}", documentName);
         } else {
             doScan(file, documentName);
@@ -127,10 +157,10 @@ public class VirusScanner {
             // we omit the stack exception, because it tends to be uninteresting
             // in this case
             String msg =
-                    "error executing " + scannerName
+                    "error executing " + SCANNER_NAME
                             + ", unable to scan file '" + documentName
                             + "' for viruses: " + e.getMessage();
-            if (scannerSet) {
+            if (SCANNER_SET) {
                 throw new RuntimeException(msg);
             }
             log.error(msg);
@@ -148,39 +178,34 @@ public class VirusScanner {
         final int someErrorOccurred = 2;
         switch (exitValue) {
         case noVirusFound:
-            log.info("{} says file '{}' is clean: {}", scannerName,
+            log.info("{} says file '{}' is clean: {}", SCANNER_NAME,
                     documentName, output);
             return;
         case virusFound:
-            throw new VirusDetectedException(scannerName + " detected virus: "
+            throw new VirusDetectedException(SCANNER_NAME + " detected virus: "
                     + output);
         case someErrorOccurred:
         default:
             // This can happen if clamdscan is found, but the clamd service is
             // not running.
             String msg =
-                    scannerName
+                    SCANNER_NAME
                             + " returned error scanning file '"
                             + documentName
                             + "': "
                             + output
-                            + (usingClam ? "\nPlease ensure clamd service is running."
+                            + (USING_CLAM ? "\nPlease ensure clamd service is running."
                                     : "");
             throw new RuntimeException(msg);
         }
     }
 
     private CommandLine buildCommandLine(File file) {
-        CommandLine cmdLine = new CommandLine(scannerName);
-        if (usingClam) {
-            // clam-specific option; just makes the error messages less verbose
-            cmdLine.addArgument("--no-summary");
-            // This ensures that clamd can access the file regardless of
-            // permissions or security context (since clamdscan actually
-            // accesses the file):
-            cmdLine.addArgument("--stream");
+        CommandLine cmdLine = new CommandLine(SCANNER_NAME);
+        if (USING_CLAM) {
+            cmdLine.addArguments(CLAMDSCAN_ARGS, false);
         }
-        cmdLine.addArgument(file.getPath());
+        cmdLine.addArgument(file.getPath(), false);
         return cmdLine;
     }
 
