@@ -109,7 +109,7 @@ public class EmailBuilder {
         } catch (MessagingException e) {
             Throwable rootCause = Throwables.getRootCause(e);
             if (rootCause.getClass().equals(ConnectException.class) && rootCause.getMessage().equals("Connection refused")) {
-                throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!");
+                throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!", e);
             }
             throw new RuntimeException(e);
         }
