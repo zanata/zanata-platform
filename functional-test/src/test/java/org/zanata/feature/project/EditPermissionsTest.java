@@ -23,6 +23,7 @@ package org.zanata.feature.project;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -48,8 +50,15 @@ import org.zanata.workflow.ProjectWorkFlow;
 @Category(DetailedTest.class)
 public class EditPermissionsTest extends ZanataTestCase {
 
+    private final String TRANSLATOR_KEY = PropertiesHolder
+            .getProperty(Constants.zanataTranslatorKey.value());
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @After
+    public void after() {
+        new BasicWorkFlow().goToHome();
+    }
 
     @Feature(summary = "The user can view maintainers for a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
@@ -118,9 +127,9 @@ public class EditPermissionsTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 199006)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addMaintainerAsMaintainer() throws Exception {
-        new ZanataRestCaller("translator", PropertiesHolder
-                .getProperty(Constants.zanataTranslatorKey.value()))
-                .createProjectAndVersion("addmaintainer", "addmaintainer", "file");
+        new ZanataRestCaller("translator", TRANSLATOR_KEY)
+                .createProjectAndVersion("addmaintainer", "addmaintainer",
+                        "file");
 
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
@@ -164,8 +173,7 @@ public class EditPermissionsTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 321234)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeMaintainer() throws Exception {
-        new ZanataRestCaller("translator", PropertiesHolder.getProperty(
-                Constants.zanataTranslatorKey.value()))
+        new ZanataRestCaller("translator", TRANSLATOR_KEY)
                 .createProjectAndVersion("removemaintainer", "removemaintainer",
                         "file");
         assertThat(new LoginWorkFlow()
@@ -201,8 +209,7 @@ public class EditPermissionsTest extends ZanataTestCase {
     @Ignore("rhbz1151935")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeSelfAsMaintainer() throws Exception {
-        new ZanataRestCaller("translator", PropertiesHolder.getProperty(
-                Constants.zanataTranslatorKey.value()))
+        new ZanataRestCaller("translator", TRANSLATOR_KEY)
                 .createProjectAndVersion(
                         "removemaintainer", "removemaintainer", "file");
 

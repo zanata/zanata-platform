@@ -57,8 +57,6 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
 
     @Before
     public void before() {
-        System.out.println(PropertiesHolder
-                .getProperty(Constants.zanataTranslatorKey.value()));
         new ZanataRestCaller("translator", PropertiesHolder.getProperty(
                 Constants.zanataTranslatorKey.value()))
                 .createProjectAndVersion("html-project", "html-upload", "file");
