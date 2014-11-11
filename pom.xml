@@ -839,7 +839,7 @@
 
                     Valid options are:
 
-                    disabled: Rule is still run but only INFO level messages aand no errors.
+                    disabled: Rule is still run but only INFO level messages and no errors.
                     warning : Rule will spit out a warning message but doesn't result in a failure.
                     fatal   : Rule will spit out an error message and fail the build.
                   -->
@@ -851,7 +851,7 @@
 
                     Valid options are:
 
-                    disabled: Rule is still run but only INFO level messages aand no errors.
+                    disabled: Rule is still run but only INFO level messages and no errors.
                     warning : Rule will spit out a warning message but doesn't result in a failure.
                     fatal   : Rule will spit out an error message and fail the build.
                   -->
