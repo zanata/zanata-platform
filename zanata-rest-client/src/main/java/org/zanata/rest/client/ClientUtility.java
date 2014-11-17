@@ -31,7 +31,7 @@ public class ClientUtility {
             // if server returns a redirect (most likely due to http to https
             // redirect), we don't want to bury this information in a xml
             // marshalling exception.
-            String movedTo = response.getHeaderString("Location");
+            String movedTo = "FIX ME";
 
             String message;
             if (!Strings.isNullOrEmpty(movedTo)) {

@@ -47,7 +47,7 @@ import org.zanata.rest.dto.VersionInfo;
 import com.google.common.base.Throwables;
 
 // TODO fix deprecation warnings
-public class ZanataProxyFactory implements ITranslationResourcesFactory {
+public class ZanataProxyFactory {
     private static final Logger log = LoggerFactory
             .getLogger(ZanataProxyFactory.class);
 
@@ -121,9 +121,9 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         // See https://issues.jboss.org/browse/RESTEASY-1075
         // See org.zanata.rest.client.ClientUtility.checkResult(org.jboss.resteasy.client.ClientResponse<?>, java.net.URI)()
         crf.setFollowRedirects(true);
-        registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
-        registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey,
-                clientApiVersion.getVersionNo()));
+//        registerPrefixInterceptor(new TraceDebugInterceptor(logHttp));
+//        registerPrefixInterceptor(new ApiKeyHeaderDecorator(username, apiKey,
+//                clientApiVersion.getVersionNo()));
         if (eagerVersionCheck) {
             performVersionCheck();
         }
@@ -355,7 +355,6 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         return createProxy(IProjectsResource.class);
     }
 
-    @Override
     public ITranslatedDocResource getTranslatedDocResource(String projectSlug,
             String versionSlug) {
         return createProxy(ITranslatedDocResource.class,
@@ -384,7 +383,6 @@ public class ZanataProxyFactory implements ITranslationResourcesFactory {
         return createProxy(IAsynchronousProcessResource.class);
     }
 
-    @Override
     public URI getResourceURI(String projectSlug, String versionSlug) {
         String spec =
                 "projects/p/" + projectSlug + "/iterations/i/" + versionSlug

@@ -23,6 +23,98 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
+      <exclusions>
+        <!--<exclusion>-->
+        <!-- FIXME this is added back just so we can compile our old code -->
+          <!--<groupId>org.jboss.resteasy</groupId>-->
+          <!--<artifactId>resteasy-jaxrs</artifactId>-->
+        <!--</exclusion>-->
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxb-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>jaxrs-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-multipart-provider</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-po</artifactId>
+    </dependency>
+
+    <dependency>
+      <!--this dependency must appear before jersey-core because two Response classes are different -->
+      <groupId>org.zanata</groupId>
+      <artifactId>mock-server</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-core</artifactId>
+      <version>1.17.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>1.17.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey.contribs</groupId>
+      <artifactId>jersey-multipart</artifactId>
+      <version>1.17.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -30,27 +122,7 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
-      <version>${resteasy.version}</version>
-    </dependency>
-    <!-- core library -->
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>net.jcip</groupId>
-          <artifactId>jcip-annotations</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <version>${resteasy.version}</version>
-    </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
@@ -61,10 +133,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
