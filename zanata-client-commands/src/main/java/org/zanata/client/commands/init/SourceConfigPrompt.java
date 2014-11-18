@@ -36,9 +36,9 @@ import org.zanata.client.commands.push.AbstractPushStrategy;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushOptionsImpl;
-import org.zanata.rest.client.ZanataProxyFactory;
-
-import com.google.common.base.Throwables;
+import org.zanata.rest.client.AsyncProcessClient;
+import org.zanata.rest.client.CopyTransClient;
+import org.zanata.rest.client.RestClientFactory;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
@@ -85,13 +85,13 @@ class SourceConfigPrompt {
         pushOptions.setKey(opts.getKey());
         pushOptions.setLocaleMapList(opts.getLocaleMapList());
 
-        ZanataProxyFactory proxyFactory = OptionsUtil
-                .createRequestFactoryWithoutVersionCheck(pushOptions);
+        RestClientFactory clientFactory =
+                OptionsUtil.createClientFactoryWithoutVersionCheck(pushOptions);
         pushCommand =
-                new PushCommand(pushOptions, proxyFactory, null,
-                        null, proxyFactory
-                        .getResourceURI(pushOptions.getProj(),
-                                pushOptions.getProjectVersion()));
+                new PushCommand(pushOptions,
+                        clientFactory.getCopyTransClient(),
+                        clientFactory.getAsyncProcessClient(),
+                        clientFactory);
     }
 
     SourceConfigPrompt promptUser() throws Exception {

@@ -36,7 +36,7 @@ public class GlossaryClient {
     private final RestClientFactory factory;
     private final URI baseUri;
 
-    public GlossaryClient(RestClientFactory factory) {
+    GlossaryClient(RestClientFactory factory) {
         this.factory = factory;
         baseUri = factory.getBaseUri();
     }

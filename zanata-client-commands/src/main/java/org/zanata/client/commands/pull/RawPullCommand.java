@@ -22,15 +22,10 @@ package org.zanata.client.commands.pull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -39,13 +34,13 @@ import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IFileResource;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ClientUtil;
+import org.zanata.rest.client.FileResourceClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.service.FileResource;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  *
@@ -57,21 +52,19 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(RawPullCommand.class);
 
-    private IFileResource fileResource;
+    private FileResourceClient fileResourceClient;
 
     public RawPullCommand(PullOptions opts) {
         super(opts);
-        this.fileResource = getRequestFactory().getFileResource();
+        fileResourceClient = getClientFactory().getFileResourceClient();
     }
 
     @VisibleForTesting
     public RawPullCommand(PullOptions opts,
-            ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources,
-            URI uri, IFileResource fileResource) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
-        this.fileResource = fileResource;
+            FileResourceClient fileResourceClient,
+            RestClientFactory clientFactory) {
+        super(opts, clientFactory);
+        this.fileResourceClient = fileResourceClient;
     }
 
     @Override
@@ -157,20 +150,19 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
 
                 if (pullSrc) {
                     ClientResponse response =
-                            fileResource.downloadSourceFile(
+                            fileResourceClient.downloadSourceFile(
                                     getOpts().getProj(), getOpts()
                                             .getProjectVersion(),
                                     FileResource.FILETYPE_RAW_SOURCE_DOCUMENT,
                                     qualifiedDocName);
-                    if (response.getResponseStatus() == Status.NOT_FOUND) {
+                    if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
                         log.warn(
                                 "No source document file is available for [{}]. Skipping.",
                                 qualifiedDocName);
                     } else {
-                        ClientUtility.checkResult(response, uri);
-                        InputStream srcDoc =
-                                (InputStream) response
-                                        .getEntity(InputStream.class);
+                        ClientUtil.checkResult(response);
+                        InputStream srcDoc = response
+                                .getEntity(InputStream.class);
                         if (srcDoc != null) {
                             try {
                                 strat.writeSrcFile(localDocName, srcDoc);
@@ -194,16 +186,16 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                     for (LocaleMapping locMapping : locales) {
                         LocaleId locale = new LocaleId(locMapping.getLocale());
                         ClientResponse response =
-                                fileResource.downloadTranslationFile(getOpts()
+                                fileResourceClient.downloadTranslationFile(getOpts()
                                         .getProj(), getOpts()
                                         .getProjectVersion(), locale.getId(),
                                         fileExtension, qualifiedDocName);
-                        if (response.getResponseStatus() == Response.Status.NOT_FOUND) {
+                        if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
                             log.info(
                                     "No translation document file found in locale {} for document [{}]",
                                     locale, qualifiedDocName);
                         } else {
-                            ClientUtility.checkResult(response, uri);
+                            ClientUtil.checkResult(response);
                             InputStream transDoc =
                                     (InputStream) response
                                             .getEntity(InputStream.class);

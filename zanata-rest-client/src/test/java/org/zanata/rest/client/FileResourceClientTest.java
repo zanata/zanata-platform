@@ -75,8 +75,6 @@ public class FileResourceClientTest {
     }
 
     @Test
-//    @Ignore
-//    @ManualTest("I can't create a Jersey server endpoint that can parse multipart form data embedded in DocumentFileUploadForm")
     public
             void testSourceFileUpload() throws Exception {
 //        client = clientTalkingToRealServer();
@@ -149,7 +147,7 @@ public class FileResourceClientTest {
     public void testDownloadSourceFile() throws IOException {
         InputStream inputStream =
                 client.downloadSourceFile("about-fedora", "master", "pot",
-                        "About-Fedora");
+                        "About-Fedora").getEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
         Resource resource =
                 reader.extractTemplate(new InputSource(inputStream),
@@ -161,7 +159,7 @@ public class FileResourceClientTest {
     public void testDownloadTranslationFile() {
         InputStream inputStream =
                 client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora");
+                        "po", "About-Fedora").getEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
         TranslationsResource translationsResource =
                 reader.extractTarget(new InputSource(inputStream));

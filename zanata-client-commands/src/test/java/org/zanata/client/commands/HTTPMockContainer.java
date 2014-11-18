@@ -106,15 +106,6 @@ public class HTTPMockContainer implements Container {
             return new HTTPMockContainer(mapBuilder.build());
         }
 
-        public static String readFromClasspath(String relativePath)
-                throws IOException {
-            URL resource =
-                    Thread.currentThread().getContextClassLoader()
-                            .getResource(relativePath);
-            Preconditions.checkArgument(resource != null, "%s not found",
-                    relativePath);
-            return IOUtils.toString(resource, Charsets.UTF_8);
-        }
     }
 
     private static class StatusAndContent {

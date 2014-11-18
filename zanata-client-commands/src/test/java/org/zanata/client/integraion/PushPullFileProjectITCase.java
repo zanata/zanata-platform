@@ -21,11 +21,8 @@
 
 package org.zanata.client.integraion;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.apache.commons.codec.Charsets;
@@ -36,23 +33,17 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.MockServerRule;
+import org.zanata.client.MockitoServerRule;
 import org.zanata.client.TestProjectGenerator;
 import org.zanata.client.commands.ConfigurableProjectOptions;
-import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.pull.RawPullCommand;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.rest.dto.resource.TextFlowTarget;
-import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,7 +60,7 @@ public class PushPullFileProjectITCase {
     private static final Logger log = LoggerFactory
             .getLogger(PushPullGettextITCase.class);
     @Rule
-    public MockServerRule mockServerRule = new MockServerRule();
+    public MockitoServerRule mockitoServerRule = new MockitoServerRule();
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -78,18 +69,18 @@ public class PushPullFileProjectITCase {
 
     @Before
     public void setUp() {
-        ConfigurableProjectOptions pullOpts = mockServerRule.getPullOpts();
+        ConfigurableProjectOptions pullOpts = mockitoServerRule.getPullOpts();
         pullOpts.getLocaleMapList().add(new LocaleMapping("zh-CN"));
         pullOpts.setProjectType("file");
 
-        ConfigurableProjectOptions pushOpts = mockServerRule.getPushOpts();
+        ConfigurableProjectOptions pushOpts = mockitoServerRule.getPushOpts();
         pushOpts.getLocaleMapList().add(new LocaleMapping("zh-CN"));
         pushOpts.setProjectType("file");
     }
 
     @Test
     public void pushFileTypeProject() throws Exception {
-        PushOptionsImpl opts = mockServerRule.getPushOpts();
+        PushOptionsImpl opts = mockitoServerRule.getPushOpts();
         opts.setPushType("both");
         File baseDir =
                 testProjectGenerator.getProjectBaseDir(ProjectType.File);
@@ -98,23 +89,23 @@ public class PushPullFileProjectITCase {
         opts.setSrcDir(new File(baseDir, "src"));
         opts.setTransDir(baseDir);
 
-        RawPushCommand pushCommand = mockServerRule.createRawPushCommand();
+        RawPushCommand pushCommand = mockitoServerRule.createRawPushCommand();
 
         pushCommand.run();
 
-        mockServerRule.verifyPushRawFileSource(2);
-        assertThat(mockServerRule.getDocIdCaptor().getAllValues(),
+        mockitoServerRule.verifyPushRawFileSource(2);
+        assertThat(mockitoServerRule.getDocIdCaptor().getAllValues(),
                 contains("test-ods.ods", "test-odt.odt"));
 
-        mockServerRule.verifyPushRawFileTranslation(1);
-        assertThat(mockServerRule.getDocIdCaptor().getValue(),
+        mockitoServerRule.verifyPushRawFileTranslation(1);
+        assertThat(mockitoServerRule.getDocIdCaptor().getValue(),
                 equalTo("test-odt.odt"));
 
     }
 
     @Test
     public void pushFileProjectUsingFileMapping() throws Exception {
-        PushOptionsImpl opts = mockServerRule.getPushOpts();
+        PushOptionsImpl opts = mockitoServerRule.getPushOpts();
         opts.setPushType("trans");
         File baseDir =
                 testProjectGenerator.getProjectBaseDir(ProjectType.File);
@@ -125,18 +116,18 @@ public class PushPullFileProjectITCase {
         opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(
                 "{locale}/{path}/{filename}.{extension}")));
 
-        RawPushCommand pushCommand = mockServerRule.createRawPushCommand();
+        RawPushCommand pushCommand = mockitoServerRule.createRawPushCommand();
 
         pushCommand.run();
 
-        mockServerRule.verifyPushRawFileTranslation(1);
-        assertThat(mockServerRule.getDocIdCaptor().getValue(),
+        mockitoServerRule.verifyPushRawFileTranslation(1);
+        assertThat(mockitoServerRule.getDocIdCaptor().getValue(),
                 equalTo("test-odt.odt"));
     }
 
     @Test
     public void pullFileProject() throws Exception {
-        PullOptionsImpl opts = mockServerRule.getPullOpts();
+        PullOptionsImpl opts = mockitoServerRule.getPullOpts();
         opts.setPullType("both");
         File pullBaseDir = tempFolder.newFolder("file-pull-test");
         opts.setSrcDir(pullBaseDir);
@@ -151,7 +142,7 @@ public class PushPullFileProjectITCase {
                 Lists.newArrayList(new ResourceMeta("test-ods.ods"),
                         new ResourceMeta("test-odt.odt"));
 
-        RawPullCommand pullCommand = mockServerRule.createRawPullCommand(
+        RawPullCommand pullCommand = mockitoServerRule.createRawPullCommand(
                 remoteDocList, sourceFileStream, transFileStream);
 
         pullCommand.run();
@@ -164,7 +155,7 @@ public class PushPullFileProjectITCase {
 
     @Test
     public void pullFileProjectUsingFileMapping() throws Exception {
-        PullOptionsImpl opts = mockServerRule.getPullOpts();
+        PullOptionsImpl opts = mockitoServerRule.getPullOpts();
         opts.setPullType("trans");
         File pullBaseDir = tempFolder.newFolder("file-pull-test");
         opts.setSrcDir(pullBaseDir);
@@ -184,7 +175,7 @@ public class PushPullFileProjectITCase {
                 Lists.newArrayList(new ResourceMeta("test-ods.ods"),
                         new ResourceMeta("test-odt.odt"));
 
-        RawPullCommand pullCommand = mockServerRule.createRawPullCommand(
+        RawPullCommand pullCommand = mockitoServerRule.createRawPullCommand(
                 remoteDocList, sourceFileStream, transFileStream);
 
         pullCommand.run();

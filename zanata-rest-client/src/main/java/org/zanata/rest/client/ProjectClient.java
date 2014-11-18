@@ -22,6 +22,7 @@
 package org.zanata.rest.client;
 
 import org.zanata.rest.dto.Project;
+import org.zanata.rest.service.ProjectResource;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -32,7 +33,7 @@ public class ProjectClient {
     private final RestClientFactory factory;
     private final String projectSlug;
 
-    public ProjectClient(RestClientFactory factory, String projectSlug) {
+    ProjectClient(RestClientFactory factory, String projectSlug) {
         this.factory = factory;
         this.projectSlug = projectSlug;
     }

@@ -36,9 +36,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
 
 import com.google.common.base.Throwables;
@@ -55,6 +57,7 @@ import com.sun.jersey.multipart.impl.MultiPartWriter;
 public class RestClientFactory {
     private static final Logger log =
             LoggerFactory.getLogger(RestClientFactory.class);
+    private String serverVersion;
     private String clientVersion;
     private VersionInfo clientApiVersion;
 
@@ -119,6 +122,30 @@ public class RestClientFactory {
                 .get(VersionInfo.class);
     }
 
+    public void performVersionCheck() {
+        clientVersion = clientApiVersion.getVersionNo();
+        String clientScm = clientApiVersion.getScmDescribe();
+
+        VersionInfo serverVersionInfo = getServerVersionInfo();
+        serverVersion = serverVersionInfo.getVersionNo();
+        String serverScm = serverVersionInfo.getScmDescribe();
+        log.info("client API version: {}, server API version: {}",
+                clientVersion, serverVersion);
+        warnMismatchAPIVersion(clientScm, serverScm);
+    }
+
+    private void warnMismatchAPIVersion(String clientScm, String serverScm) {
+        if (!serverVersion.equals(clientVersion)) {
+            log.warn("client API version is {}, but server API version is {}",
+                    clientVersion, serverVersion);
+        } else if (serverVersion.contains(RestConstant.SNAPSHOT_VERSION)
+                && !serverScm.equalsIgnoreCase(clientScm)) {
+            log.warn(
+                    "client API SCM id is {}, but server API SCM id is {}",
+                    clientScm, serverScm);
+        }
+    }
+
     private URL getBaseUrl() {
         try {
             return new URL(fixBase(baseURI).toString() + getUrlPrefix());
@@ -158,6 +185,71 @@ public class RestClientFactory {
 
     protected Client getClient() {
         return client;
+    }
+
+    /**
+     * Compares a given version identifier with the server version.
+     *
+     * @param version
+     *            The version to against which to compare the server version.
+     * @return A positive integer if the server version is greater than the
+     *         given version. A negative integer if the server version is less
+     *         than the given version. 0 if both versions are the same.
+     */
+    public int compareToServerVersion(String version) {
+        DefaultArtifactVersion srvVersion =
+                new DefaultArtifactVersion(serverVersion);
+        DefaultArtifactVersion providedVersion =
+                new DefaultArtifactVersion(version);
+
+        return srvVersion.compareTo(providedVersion);
+    }
+
+    public AccountClient getAccountClient() {
+        return new AccountClient(this);
+    }
+
+    public AsyncProcessClient getAsyncProcessClient() {
+        return new AsyncProcessClient(this);
+    }
+
+    public CopyTransClient getCopyTransClient() {
+        return new CopyTransClient(this);
+    }
+
+    public FileResourceClient getFileResourceClient() {
+        return new FileResourceClient(this);
+    }
+
+    public GlossaryClient getGlossaryClient() {
+        return new GlossaryClient(this);
+    }
+
+    public ProjectClient getProjectClient(String projectSlug) {
+        return new ProjectClient(this, projectSlug);
+    }
+
+    public ProjectIterationClient getProjectIterationClient(String projectSlug,
+            String versionSlug) {
+        return new ProjectIterationClient(this, projectSlug, versionSlug);
+    }
+
+    public ProjectsClient getProjectsClient() {
+        return new ProjectsClient(this);
+    }
+
+    public SourceDocResourceClient getSourceDocResourceClient(
+            String projectSlug, String versionSlug) {
+        return new SourceDocResourceClient(this, projectSlug, versionSlug);
+    }
+
+    public StatisticsResourceClient getStatisticsClient() {
+        return new StatisticsResourceClient(this);
+    }
+
+    public TransDocResourceClient getTransDocResourceClient(String projectSlug,
+            String versionSlug) {
+        return new TransDocResourceClient(this, projectSlug, versionSlug);
     }
 
     private static class AcceptAllX509TrustManager implements X509TrustManager {

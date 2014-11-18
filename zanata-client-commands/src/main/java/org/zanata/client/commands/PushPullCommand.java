@@ -35,7 +35,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.LocaleList;
@@ -43,10 +42,9 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.etag.ETagCache;
 import org.zanata.client.etag.ETagCacheReaderWriter;
 import org.zanata.client.exceptions.ConfigException;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.RestClientFactory;
+import org.zanata.rest.client.SourceDocResourceClient;
+import org.zanata.rest.client.TransDocResourceClient;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -64,35 +62,29 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
     protected static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
 
-    protected final ISourceDocResource sourceDocResource;
-    protected final ITranslatedDocResource translationResources;
-    protected URI uri;
     protected ETagCache eTagCache;
     private Marshaller marshaller;
     private String modulePrefix;
+    protected SourceDocResourceClient sourceDocResourceClient;
+    protected TransDocResourceClient transDocResourceClient;
 
-    public PushPullCommand(O opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory);
-        this.sourceDocResource = sourceDocResource;
-        this.translationResources = translationResources;
-        this.uri = uri;
+    public PushPullCommand(O opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
         this.modulePrefix =
                 opts.getEnableModules() ? getOpts().getCurrentModule()
                         + opts.getModuleSuffix() : "";
         this.loadETagCache();
-    }
-
-    private PushPullCommand(O opts, ZanataProxyFactory factory) {
-        this(opts, factory, factory.getSourceDocResource(opts.getProj(),
-                opts.getProjectVersion()), factory.getTranslatedDocResource(
-                opts.getProj(), opts.getProjectVersion()), factory
-                .getResourceURI(opts.getProj(), opts.getProjectVersion()));
+        sourceDocResourceClient =
+                getClientFactory().getSourceDocResourceClient(opts.getProj(),
+                        opts.getProjectVersion());
+        transDocResourceClient =
+                getClientFactory().getTransDocResourceClient(opts.getProj(),
+                        opts.getProjectVersion());
     }
 
     public PushPullCommand(O opts) {
-        this(opts, OptionsUtil.createRequestFactory(opts));
+        this(opts, OptionsUtil.createClientFactory(
+                opts));
     }
 
     protected void confirmWithUser(String message) throws IOException {
@@ -171,11 +163,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
     // TODO use a cache which will be accessible to all invocations
     protected List<ResourceMeta> getDocListForProjectIterationFromServer() {
-        ClientResponse<List<ResourceMeta>> getResponse =
-                sourceDocResource.get(null);
-        ClientUtility.checkResult(getResponse, uri);
-        List<ResourceMeta> remoteDocList = getResponse.getEntity();
-        return remoteDocList;
+        return sourceDocResourceClient.getResourceMeta(null);
     }
 
     /**

@@ -21,20 +21,21 @@
 
 package org.zanata.rest.client;
 
-import java.io.InputStream;
+import static org.zanata.rest.client.ClientUtil.resolvePath;
+
 import java.net.URI;
+
 import javax.ws.rs.core.MediaType;
 
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
+
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.multipart.FormDataMultiPart;
-
-import static org.zanata.rest.client.ClientUtil.arrayOf;
-import static org.zanata.rest.client.ClientUtil.getMethod;
 
 /**
  * @author Patrick Huang <a
@@ -45,7 +46,7 @@ public class FileResourceClient {
 
     private final URI baseUri;
 
-    public FileResourceClient(RestClientFactory restClientFactory) {
+    FileResourceClient(RestClientFactory restClientFactory) {
         this.factory = restClientFactory;
         baseUri = restClientFactory.getBaseUri();
 
@@ -129,41 +130,28 @@ public class FileResourceClient {
         return chunkUploadResponse;
     }
 
-    public InputStream downloadSourceFile(String projectSlug,
+    public ClientResponse downloadSourceFile(String projectSlug,
             String iterationSlug,
             String fileType, String docId) {
         WebResource webResource = factory.getClient().resource(baseUri);
-        URI uri =
-                webResource
-                        .getUriBuilder()
-                        .path(FileResource.SERVICE_PATH)
-                        .path(getMethod(FileResource.class,
-                                "downloadSourceFile",
-                                arrayOf(4, String.class)))
-                        .build(projectSlug, iterationSlug, fileType);
-        return webResource
-                .path(uri.getPath())
+        String path = resolvePath(webResource, FileResource.class,
+                "downloadSourceFile", projectSlug, iterationSlug, fileType);
+        return webResource.path(path)
                 .queryParam("docId", docId)
-                .get(InputStream.class);
+                .get(ClientResponse.class);
     }
 
-    public InputStream downloadTranslationFile(String projectSlug,
+    public ClientResponse downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileExtension,
             String docId) {
         WebResource webResource = factory.getClient().resource(baseUri);
-        URI uri =
-                webResource
-                        .getUriBuilder()
-                        .path(FileResource.SERVICE_PATH)
-                        .path(getMethod(FileResource.class,
-                                "downloadTranslationFile",
-                                arrayOf(5, String.class)))
-                        .build(projectSlug, iterationSlug, locale,
-                                fileExtension);
-        return webResource
-                .path(uri.getPath())
+        String path =
+                resolvePath(webResource, FileResource.class,
+                        "downloadTranslationFile",
+                        projectSlug, iterationSlug, locale, fileExtension);
+        return webResource.path(path)
                 .queryParam("docId", docId)
-                .get(InputStream.class);
+                .get(ClientResponse.class);
 
     }
 

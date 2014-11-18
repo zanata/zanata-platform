@@ -31,7 +31,7 @@ import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.pull.PullStrategy;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.RestClientFactory;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -73,11 +73,11 @@ class TransConfigPrompt {
         pullOptions.setProjectVersion(opts.getProjectVersion());
         pullOptions.setProjectType(opts.getProjectType());
         pullOptions.setLocaleMapList(opts.getLocaleMapList());
-        ZanataProxyFactory proxyFactory =
-                OptionsUtil.createRequestFactoryWithoutVersionCheck(opts);
-        pullCommand = new PullCommand(pullOptions, proxyFactory, null, null,
-                proxyFactory.getResourceURI(opts.getProj(),
-                        opts.getProjectVersion()));
+
+        RestClientFactory clientFactory =
+                OptionsUtil.createClientFactoryWithoutVersionCheck(opts);
+        pullCommand = new PullCommand(pullOptions,
+                clientFactory);
     }
 
     TransConfigPrompt promptUser() throws Exception {

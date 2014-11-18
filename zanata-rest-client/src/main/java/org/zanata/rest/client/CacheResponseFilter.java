@@ -36,7 +36,7 @@ import com.sun.jersey.api.client.filter.ClientFilter;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class CacheResponseFilter extends ClientFilter {
+class CacheResponseFilter extends ClientFilter {
     private Optional<ClientResponse> cachedClientResponse = Optional.absent();
 
     @Override

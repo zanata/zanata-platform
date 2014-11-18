@@ -36,7 +36,7 @@ public class AccountClient {
     private final RestClientFactory factory;
     private final URI baseUri;
 
-    public AccountClient(RestClientFactory factory) {
+    AccountClient(RestClientFactory factory) {
         this.factory = factory;
         this.baseUri = factory.getBaseUri();
     }

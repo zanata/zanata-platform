@@ -31,6 +31,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 import static org.zanata.rest.client.ClientUtil.asMultivaluedMap;
@@ -47,7 +48,7 @@ public class TransDocResourceClient {
     private final String projectVersion;
     private final URI baseUri;
 
-    public TransDocResourceClient(RestClientFactory factory, String project,
+    TransDocResourceClient(RestClientFactory factory, String project,
             String projectVersion) {
         this.factory = factory;
         this.project = project;
@@ -55,7 +56,7 @@ public class TransDocResourceClient {
         baseUri = factory.getBaseUri();
     }
 
-    public TranslationsResource getTranslations(
+    public ClientResponse getTranslations(
             @PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
@@ -68,7 +69,7 @@ public class TransDocResourceClient {
                 .queryParams(asMultivaluedMap("ext", extensions))
                 .queryParam("skeletons", String.valueOf(createSkeletons))
                 .header(HttpHeaders.IF_NONE_MATCH, eTag)
-                .get(TranslationsResource.class);
+                .get(ClientResponse.class);
     }
 
     private WebResource getBaseServiceResource(Client client) {

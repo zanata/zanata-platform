@@ -48,7 +48,7 @@ public class SourceDocResourceClient {
     private final String projectVersion;
     private final URI baseUri;
 
-    public SourceDocResourceClient(RestClientFactory factory, String project,
+    SourceDocResourceClient(RestClientFactory factory, String project,
             String projectVersion) {
         this.factory = factory;
         this.project = project;

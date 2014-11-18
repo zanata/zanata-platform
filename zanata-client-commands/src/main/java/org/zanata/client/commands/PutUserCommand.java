@@ -1,15 +1,12 @@
 package org.zanata.client.commands;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IAccountResource;
+import org.zanata.rest.client.AccountClient;
 import org.zanata.rest.dto.Account;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -31,19 +28,15 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
         account.setPasswordHash(getOpts().getUserPasswordHash());
         account.setApiKey(getOpts().getUserKey());
         account.setEnabled(!getOpts().isUserDisabled());
-        account.setRoles(new HashSet<String>(Arrays.asList(getOpts()
-                .getUserRoles().split(","))));
-        account.setTribes(new HashSet<String>(Arrays.asList(getOpts()
-                .getUserLangs().split(","))));
+        Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
+        account.setRoles(Sets.newHashSet(splitter.split(getOpts().getUserRoles())));
+        account.setTribes(
+                Sets.newHashSet(splitter.split(getOpts().getUserLangs())));
 
         log.debug("{}", account);
 
-        IAccountResource iterResource =
-                getRequestFactory().getAccount(getOpts().getUserUsername());
-        URI uri =
-                getRequestFactory().getAccountURI(getOpts().getUserUsername());
-        ClientResponse<?> response = iterResource.put(account);
-        ClientUtility.checkResult(response, uri);
+        getClientFactory().getAccountClient().put(
+                getOpts().getUserUsername(), account);
     }
 
 }

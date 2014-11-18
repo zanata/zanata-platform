@@ -28,6 +28,8 @@ import org.zanata.rest.service.CopyTransResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import static org.zanata.rest.client.ClientUtil.resolvePath;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -36,7 +38,7 @@ public class CopyTransClient implements CopyTransResource {
     private final RestClientFactory factory;
     private final URI baseUri;
 
-    public CopyTransClient(RestClientFactory factory) {
+    CopyTransClient(RestClientFactory factory) {
         this.factory = factory;
         baseUri = factory.getBaseUri();
     }
@@ -56,11 +58,11 @@ public class CopyTransClient implements CopyTransResource {
     private WebResource webResource(Client client, String projectSlug,
             String iterationSlug,
             String docId) {
-        return client.resource(baseUri)
-                .path(CopyTransResource.SERVICE_PATH)
-                .path("proj").path(projectSlug)
-                .path("iter").path(iterationSlug)
-                .path("doc").path(docId);
+        WebResource webResource = client.resource(baseUri);
+        String path =
+                resolvePath(webResource, CopyTransResource.class,
+                        "startCopyTrans", projectSlug, iterationSlug, docId);
+        return webResource.path(path);
     }
 
     @Override

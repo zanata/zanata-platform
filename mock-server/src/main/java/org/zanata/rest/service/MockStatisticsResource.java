@@ -24,11 +24,11 @@ package org.zanata.rest.service;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 
-import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
+import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 
@@ -73,8 +73,8 @@ public class MockStatisticsResource implements StatisticsResource {
         ContributionStatistics contributionStatistics =
                 new ContributionStatistics();
         LocaleStatistics localeStatistics = new LocaleStatistics();
-        localeStatistics.put(new LocaleId("zh"), new BaseTranslationCount(100,
-                90, 0, 100, 0));
+        localeStatistics.put(new LocaleId("zh"), new BaseContributionStatistic(
+                100, 90, 100, 0));
         contributionStatistics.put(username, localeStatistics);
         return contributionStatistics;
     }

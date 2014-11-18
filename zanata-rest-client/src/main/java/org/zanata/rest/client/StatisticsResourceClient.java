@@ -40,7 +40,7 @@ public class StatisticsResourceClient implements StatisticsResource {
     private final RestClientFactory factory;
     private final URI baseUri;
 
-    public StatisticsResourceClient(RestClientFactory factory) {
+    StatisticsResourceClient(RestClientFactory factory) {
         this.factory = factory;
         baseUri = factory.getBaseUri();
     }

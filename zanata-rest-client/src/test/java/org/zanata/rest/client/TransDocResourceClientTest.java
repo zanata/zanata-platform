@@ -50,7 +50,8 @@ public class TransDocResourceClientTest {
     public void testGetTranslations() {
         TranslationsResource translations =
                 client.getTranslations("test", LocaleId.DE,
-                        Sets.newHashSet("gettext", "comment"), true, "abc");
+                        Sets.newHashSet("gettext", "comment"), true, "abc")
+                        .getEntity(TranslationsResource.class);
 
         assertThat(translations.getTextFlowTargets(), Matchers.hasSize(1));
     }

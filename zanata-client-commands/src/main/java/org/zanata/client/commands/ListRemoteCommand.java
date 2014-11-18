@@ -20,14 +20,12 @@
  */
 package org.zanata.client.commands;
 
-import org.jboss.resteasy.client.ClientResponse;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.SourceDocResourceClient;
 import org.zanata.rest.dto.resource.ResourceMeta;
-
-import java.util.List;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -47,18 +45,14 @@ public class ListRemoteCommand extends
         log.info("Server: " + getOpts().getUrl());
         log.info("Project: " + getOpts().getProj());
         log.info("Version: " + getOpts().getProjectVersion());
-        ISourceDocResource sourceDocResource =
-                getRequestFactory().getSourceDocResource(getOpts().getProj(),
-                        getOpts().getProjectVersion());
-        ClientResponse<List<ResourceMeta>> response =
-                sourceDocResource.get(null);
-        ClientUtility.checkResult(
-                response,
-                getRequestFactory().getResourceURI(getOpts().getProj(),
-                        getOpts().getProjectVersion()));
-        List<ResourceMeta> list = response.getEntity();
+        SourceDocResourceClient client = getClientFactory()
+                .getSourceDocResourceClient(
+                        getOpts().getProj(), getOpts().getProjectVersion());
+
+        List<ResourceMeta> list = client.getResourceMeta(null);
+        ConsoleInteractor console = new ConsoleInteractorImpl();
         for (ResourceMeta doc : list) {
-            System.out.println(doc.getName());
+            console.printfln(doc.getName());
         }
     }
 

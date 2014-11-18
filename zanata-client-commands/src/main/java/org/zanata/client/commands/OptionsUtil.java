@@ -17,7 +17,7 @@ import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.util.VersionUtility;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
@@ -268,22 +268,6 @@ public class OptionsUtil {
         }
     }
 
-    /**
-     * Creates proxy factory that will perform an eager REST version check.
-     */
-    public static ZanataProxyFactory createRequestFactory(
-            ConfigurableOptions opts) {
-        try {
-            checkMandatoryOptsForRequestFactory(opts);
-            return new ZanataProxyFactory(opts.getUrl().toURI(),
-                    opts.getUsername(), opts.getKey(),
-                    VersionUtility.getAPIVersionInfo(), opts.getLogHttp(),
-                    opts.isDisableSSLCert());
-        } catch (URISyntaxException e) {
-            throw new ConfigException(e);
-        }
-    }
-
     private static void checkMandatoryOptsForRequestFactory(
             ConfigurableOptions opts) {
         if (opts.getUrl() == null) {
@@ -300,30 +284,52 @@ public class OptionsUtil {
         }
     }
 
-    /**
-     * Creates proxy factory that will NOT perform an eager REST version check.
-     * You can call
-     * org.zanata.rest.client.ZanataProxyFactory#performVersionCheck()
-     * afterwards.
-     */
-    public static ZanataProxyFactory createRequestFactoryWithoutVersionCheck(
-            ConfigurableProjectOptions opts) {
-        try {
-            checkMandatoryOptsForRequestFactory(opts);
-            return new ZanataProxyFactory(opts.getUrl().toURI(),
-                    opts.getUsername(), opts.getKey(),
-                    VersionUtility.getAPIVersionInfo(), opts.getLogHttp(),
-                    opts.isDisableSSLCert(), false);
-        } catch (URISyntaxException e) {
-            throw new ConfigException(e);
-        }
-    }
-
     public static String stripValidHolders(String rule) {
         String temp = rule;
         for (Placeholders placeholder : Placeholders.values()) {
             temp = temp.replace(placeholder.holder(), "");
         }
         return temp;
+    }
+
+    /**
+     * Creates rest client factory that will perform an eager REST version check.
+     */
+    public static <O extends ConfigurableOptions> RestClientFactory
+            createClientFactory(
+                    O opts) {
+        checkMandatoryOptsForRequestFactory(opts);
+        try {
+            RestClientFactory restClientFactory =
+                    new RestClientFactory(opts.getUrl().toURI(),
+                            opts.getUsername(), opts.getKey(),
+                            VersionUtility.getAPIVersionInfo(),
+                            opts.getLogHttp(),
+                            opts.isDisableSSLCert());
+            restClientFactory.performVersionCheck();
+            return restClientFactory;
+        } catch (URISyntaxException e) {
+            throw new ConfigException(e);
+        }
+    }
+
+    /**
+     * Creates rest client factory that will NOT perform an eager REST version
+     * check. You can call
+     * org.zanata.rest.client.RestClientFactory#performVersionCheck()
+     * afterwards.
+     */
+    public static <O extends ConfigurableOptions> RestClientFactory
+            createClientFactoryWithoutVersionCheck(
+                    O opts) {
+        checkMandatoryOptsForRequestFactory(opts);
+        try {
+            return new RestClientFactory(opts.getUrl().toURI(),
+                    opts.getUsername(), opts.getKey(),
+                    VersionUtility.getAPIVersionInfo(), opts.getLogHttp(),
+                    opts.isDisableSSLCert());
+        } catch (URISyntaxException e) {
+            throw new ConfigException(e);
+        }
     }
 }

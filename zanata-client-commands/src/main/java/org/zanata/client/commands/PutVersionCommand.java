@@ -1,12 +1,8 @@
 package org.zanata.client.commands;
 
-import java.net.URI;
-
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IProjectIterationResource;
+import org.zanata.rest.client.ProjectIterationClient;
 import org.zanata.rest.dto.ProjectIteration;
 
 /**
@@ -35,16 +31,12 @@ public class PutVersionCommand extends ConfigurableCommand<PutVersionOptions> {
         }
         log.debug("{}", version);
 
-        IProjectIterationResource iterResource =
-                getRequestFactory().getProjectIteration(
+        ProjectIterationClient client = getClientFactory()
+                .getProjectIterationClient(
                         getOpts().getVersionProject(),
                         getOpts().getVersionSlug());
-        URI uri =
-                getRequestFactory().getProjectIterationURI(
-                        getOpts().getVersionProject(),
-                        getOpts().getVersionSlug());
-        ClientResponse<?> response = iterResource.put(version);
-        ClientUtility.checkResult(response, uri);
+
+        client.put(version);
     }
 
 }

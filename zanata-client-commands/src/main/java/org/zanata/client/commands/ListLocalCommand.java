@@ -2,7 +2,6 @@ package org.zanata.client.commands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ZanataProxyFactory;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -14,13 +13,8 @@ public class ListLocalCommand extends
     private static final Logger log = LoggerFactory
             .getLogger(ListLocalCommand.class);
 
-    public ListLocalCommand(ConfigurableProjectOptions opts,
-            ZanataProxyFactory factory) {
-        super(opts, factory);
-    }
-
     public ListLocalCommand(ConfigurableProjectOptions opts) {
-        this(opts, null);
+        super(opts);
     }
 
     @Override

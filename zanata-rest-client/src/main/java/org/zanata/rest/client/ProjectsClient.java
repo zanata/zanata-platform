@@ -32,7 +32,7 @@ import com.sun.jersey.api.client.GenericType;
 public class ProjectsClient {
     private final RestClientFactory factory;
 
-    public ProjectsClient(RestClientFactory factory) {
+    ProjectsClient(RestClientFactory factory) {
         this.factory = factory;
     }
 

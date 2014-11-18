@@ -36,7 +36,7 @@ public class ProjectIterationClient {
     private final String versionSlug;
     private URI baseUri;
 
-    public ProjectIterationClient(RestClientFactory factory, String projectSlug, String versionSlug) {
+    ProjectIterationClient(RestClientFactory factory, String projectSlug, String versionSlug) {
         this.factory = factory;
         this.projectSlug = projectSlug;
         this.versionSlug = versionSlug;
