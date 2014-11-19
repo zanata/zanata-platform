@@ -87,6 +87,7 @@ public interface AsynchronousProcessResource {
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r")
     /* Same as SourceDocResourceService.SERVICE_PATH */
     @TypeHint(ProcessStatus.class)
+    @Deprecated
     public ProcessStatus startSourceDocCreation(
             @PathParam("id") String idNoSlash,
             @PathParam("projectSlug") String projectSlug,

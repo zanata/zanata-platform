@@ -58,7 +58,6 @@ public interface ProjectsResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
     // TODO Enunciate doesn't handle arrays/Collections
     // Ugly workaround:
     // http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
