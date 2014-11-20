@@ -51,14 +51,23 @@ public class TextFlowTargetHistoryDAO extends
      * HTextFlowTarget union HTextFlowTargetHistory tables
      * in a project-version, within given date range group by state and locale.
      *
-     * @param versionId
-     * @param personId
-     * @param from
-     * @param to
-     * @return list of [wordCount][contentState][localeId]
+     * HTextFlowTargetHistory:
+     * gets latest of all records translated from user in given version,
+     * locale and dateRange and its target is not translated by same person.
+     *
+     * HTextFlowTarget:
+     * gets all records translated from user in given version, locale and
+     * dateRange.
+     *
+     * @param versionId HProjectIteration identifier
+     * @param personId HPerson identifier
+     * @param from start of date range
+     * @param to end of date range
+     *
+     * @return list of Object[wordCount][contentState][localeId]
      */
     @NativeQuery
-    public List<Object[]> getUserTranslationHistoryInVersion(
+    public List<Object[]> getUserContributionStatisticInVersion(
             Long versionId, Long personId, Date from, Date to) {
 
         StringBuilder queryString = new StringBuilder();
@@ -72,8 +81,12 @@ public class TextFlowTargetHistoryDAO extends
                         .append("JOIN HTextFlow tf ON tf.id = tft.tf_id ")
                         .append("JOIN HDocument doc ON doc.id = tf.document_Id ")
                         .append("where doc.project_iteration_id =:versionId ")
+                        .append("and h.state <> 0 ")
                         .append("and h.translated_by_id =:personId ")
                         .append("and h.lastChanged between :from and :to ")
+                        .append("and tft.translated_by_id <> h.translated_by_id ")
+                        .append("and h.lastChanged = ")
+                            .append("(select max(lastChanged) from HTextFlowTargetHistory where h.target_id = target_id) ")
                         .append("union all ")
                         .append("select tft.state, tft.id, tft.translated_by_id, tf.wordCount, locale.localeId ")
                         .append("from HTextFlowTarget tft ")
@@ -81,8 +94,10 @@ public class TextFlowTargetHistoryDAO extends
                         .append("JOIN HTextFlow tf ON tf.id = tft.tf_id ")
                         .append("JOIN HDocument doc ON doc.id = tf.document_Id ")
                         .append("where doc.project_iteration_id =:versionId ")
+                        .append("and tft.state <> 0 ")
                         .append("and tft.translated_by_id =:personId ")
-                        .append("and tft.lastChanged between :from and :to) as target_history_union ")
+                        .append("and tft.lastChanged between :from and :to ")
+                        .append(") as target_history_union ")
                     .append("group by state, id, localeId, wordCount) as target_history_group ")
                 .append("group by state, localeId");
 
@@ -92,7 +107,7 @@ public class TextFlowTargetHistoryDAO extends
         query.setParameter("personId", personId);
         query.setTimestamp("from", from);
         query.setTimestamp("to", to);
-        query.setComment("textFlowTargetHistoryDAO.getUserTranslationHistoryInVersion");
+        query.setComment("textFlowTargetHistoryDAO.getUserContributionStatisticInVersion");
         return query.list();
     }
 

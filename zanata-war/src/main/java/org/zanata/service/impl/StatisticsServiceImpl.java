@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +35,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -57,6 +55,7 @@ import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 import org.zanata.rest.service.StatisticsResource;
@@ -351,7 +350,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         LocaleStatistics localeStatistics = new LocaleStatistics();
 
         List<Object[]> data =
-                textFlowTargetHistoryDAO.getUserTranslationHistoryInVersion(
+                textFlowTargetHistoryDAO.getUserContributionStatisticInVersion(
                         version.getId(), person.getId(), fromDate, toDate);
 
         for (Object[] entry : data) {
@@ -359,11 +358,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
             ContentState state = ContentState.values()[(int) entry[1]];
             LocaleId localeId = new LocaleId(entry[2].toString());
 
-            BaseTranslationCount stats;
+            BaseContributionStatistic stats;
             if (localeStatistics.containsKey(localeId)) {
                 stats = localeStatistics.get(localeId);
             } else {
-                stats = new BaseTranslationCount(0,0,0,0,0);
+                stats = new BaseContributionStatistic(0,0,0,0);
             }
             stats.set(state, count);
             localeStatistics.put(localeId, stats);
