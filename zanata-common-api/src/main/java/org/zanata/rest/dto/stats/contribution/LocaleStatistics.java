@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.LocaleId;
 
 /**
@@ -15,10 +14,10 @@ import org.zanata.common.LocaleId;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class LocaleStatistics implements Serializable,
-        Map<LocaleId, BaseTranslationCount> {
+        Map<LocaleId, BaseContributionStatistic> {
 
-    private Map<LocaleId, BaseTranslationCount> localeStatsMap =
-            new HashMap<LocaleId, BaseTranslationCount>();
+    private Map<LocaleId, BaseContributionStatistic> localeStatsMap =
+            new HashMap<LocaleId, BaseContributionStatistic>();
 
     @Override
     public int size() {
@@ -41,23 +40,23 @@ public class LocaleStatistics implements Serializable,
     }
 
     @Override
-    public BaseTranslationCount get(Object key) {
+    public BaseContributionStatistic get(Object key) {
         return localeStatsMap.get(key);
     }
 
     @Override
-    public BaseTranslationCount put(LocaleId key,
-            BaseTranslationCount value) {
+    public BaseContributionStatistic put(LocaleId key,
+        BaseContributionStatistic value) {
         return localeStatsMap.put(key, value);
     }
 
     @Override
-    public BaseTranslationCount remove(Object key) {
+    public BaseContributionStatistic remove(Object key) {
         return localeStatsMap.remove(key);
     }
 
     @Override
-    public void putAll(Map<? extends LocaleId, ? extends BaseTranslationCount> m) {
+    public void putAll(Map<? extends LocaleId, ? extends BaseContributionStatistic> m) {
         localeStatsMap.putAll(m);
     }
 
@@ -72,12 +71,12 @@ public class LocaleStatistics implements Serializable,
     }
 
     @Override
-    public Collection<BaseTranslationCount> values() {
+    public Collection<BaseContributionStatistic> values() {
         return localeStatsMap.values();
     }
 
     @Override
-    public Set<Entry<LocaleId, BaseTranslationCount>> entrySet() {
+    public Set<Entry<LocaleId, BaseContributionStatistic>> entrySet() {
         return localeStatsMap.entrySet();
     }
 

@@ -42,8 +42,8 @@ public class ContributionStatisticsTest {
     }
 
     private ContributionStatistics generateObject() {
-        BaseTranslationCount data =
-                new BaseTranslationCount(40, 20, 30, 10, 50);
+        BaseContributionStatistic data =
+                new BaseContributionStatistic(40, 20, 10, 50);
         LocaleStatistics localeStatistics = new LocaleStatistics();
         localeStatistics.put(LocaleId.DE, data);
 
