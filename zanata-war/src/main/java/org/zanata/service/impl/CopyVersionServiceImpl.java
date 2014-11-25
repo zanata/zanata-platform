@@ -81,7 +81,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     private ZanataIdentity identity;
 
     // Stop watch for textFlow and target copy process
-    private Stopwatch copyTfAndTftStopWatch = new Stopwatch();
+    private Stopwatch copyTfAndTftStopWatch = Stopwatch.createUnstarted();
 
     @Override
     public void copyVersion(@Nonnull String projectSlug,
@@ -102,7 +102,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             prepareCopyVersionHandle(version, taskHandleOpt.get());
         }
 
-        Stopwatch overallStopwatch = new Stopwatch().start();
+        Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("copy version start: copy {} to {}",
                 projectSlug + ":" + versionSlug, projectSlug + ":"
                         + newVersionSlug);

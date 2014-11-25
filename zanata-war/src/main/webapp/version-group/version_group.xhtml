@@ -79,7 +79,13 @@
   <a4j:param name="val2" assignTo="#{verSlug}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+<h:outputScript>
+  function refreshStatistics() {
+    setTimeout(refreshStatisticsData, 0);
+  }
+</h:outputScript>
+
+<a4j:jsFunction name="refreshStatisticsData" status="statistic-loader"
   action="#{versionGroupHomeAction.resetPageData}"
   render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size"/>
 
@@ -176,9 +182,9 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Projects']}
               </span>
-            <s:span styleClass="txt--neutral" id="projects-size">
+            <h:panelGroup id="projects-size" layout="inline" styleClass="txt--neutral">
               #{versionGroupHomeAction.getProjectIterations().size}
-            </s:span>
+            </h:panelGroup>
           </a>
         </li>
         <li>

@@ -37,8 +37,6 @@
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 
-    <guava.version>15.0</guava.version>
-
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
@@ -95,11 +93,6 @@
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.11.0</version>
-      </dependency>
-      <dependency>
-        <groupId>net.sourceforge.cssparser</groupId>
-        <artifactId>cssparser</artifactId>
-        <version>0.9.13</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

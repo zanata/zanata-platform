@@ -7,7 +7,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.transmemory.Title']}</ui:define>
@@ -125,7 +124,6 @@
               var="tm">
               <rich:column>
                 <f:facet name="header">#{msgs['jsf.transmemory.Id']}
-                  <richext:columnSorter/>
                 </f:facet>
                 <h:outputText value="#{tm.slug}"/>
               </rich:column>
@@ -141,7 +139,6 @@
               </rich:column>
               <rich:column>
                 <f:facet name="header">#{msgs['jsf.CreationDate']}
-                  <richext:columnSorter/>
                 </f:facet>
                 <h:outputText value="#{tm.creationDate}">
                   <f:convertDateTime type="date" dateStyle="default"/>

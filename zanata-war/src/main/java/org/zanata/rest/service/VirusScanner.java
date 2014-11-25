@@ -144,7 +144,7 @@ public class VirusScanner {
     }
 
     private void doScan(File file, String documentName) {
-        Stopwatch stop = new Stopwatch().start();
+        Stopwatch stop = Stopwatch.createStarted();
         CommandLine cmdLine = buildCommandLine(file);
         ByteArrayOutputStream scannerOutput = new ByteArrayOutputStream();
         Executor executor = buildExecutor(scannerOutput);

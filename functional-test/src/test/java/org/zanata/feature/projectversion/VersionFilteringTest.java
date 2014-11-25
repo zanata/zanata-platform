@@ -91,6 +91,7 @@ public class VersionFilteringTest extends ZanataTestCase {
 
         assertVersions(projectVersionsPage, 1, new String[]{"bravo"});
 
+        projectVersionsPage.waitForPageSilence();
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .enterVersionSearch("charlie")
@@ -98,6 +99,7 @@ public class VersionFilteringTest extends ZanataTestCase {
 
         assertVersions(projectVersionsPage, 0, new String[]{});
 
+        projectVersionsPage.waitForPageSilence();
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .waitForDisplayedVersions(2);

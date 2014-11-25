@@ -47,7 +47,7 @@ public class EditHomeContentPage extends BasePage {
         log.info("Enter homepage code\n{}", text);
         // Switch to the CKEditor frame
         getDriver().switchTo().frame(waitForWebElement(By
-                .id("cke_contents_homeContentForm:homeContent:inp"))
+                .id("cke_homeContentForm:homeContent:inp"))
                 .findElement(By.tagName("iframe")));
         waitForWebElement(By.tagName("body")).sendKeys(text);
         // Switch back!

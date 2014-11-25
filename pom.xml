@@ -24,8 +24,8 @@
     <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
-    <guava.version>14.0.1</guava.version>
-    <gwt.version>2.5.1</gwt.version>
+    <guava.version>18.0</guava.version>
+    <gwt.version>2.6.1</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
@@ -39,7 +39,8 @@
     <zanata.client.version>3.3.1</zanata.client.version>
     <zanata.common.version>3.4.0</zanata.common.version>
 
-    <richfaces.version>4.3.7.Final</richfaces.version>
+    <richfaces.version>4.5.0.Final</richfaces.version>
+
     <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
@@ -126,10 +127,8 @@
       <!-- make sure the richfaces version is not provided by the seam bom -->
       <dependency>
         <groupId>org.richfaces</groupId>
-        <artifactId>richfaces-bom</artifactId>
+        <artifactId>richfaces</artifactId>
         <version>${richfaces.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
       </dependency>
 
 
@@ -555,6 +554,12 @@
             <artifactId>build-log4j</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.cssparser</groupId>
+        <artifactId>cssparser</artifactId>
+        <version>0.9.14</version>
       </dependency>
 
       <dependency>

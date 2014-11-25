@@ -23,12 +23,14 @@ package org.zanata.workflow;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Charsets;
@@ -39,8 +41,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -143,15 +143,19 @@ public class ClientWorkFlow {
         }
     }
 
-    public static List<String> getOutput(Process process) throws IOException {
-        final InputStream inputStream = process.getInputStream();
-
-        return CharStreams.readLines(CharStreams.newReaderSupplier(
-                new InputSupplier<InputStream>() {
-                    @Override
-                    public InputStream getInput() throws IOException {
-                        return inputStream;
-                    }
-                }, Charsets.UTF_8));
+    /**
+     * Returns process's output as a list of strings; closes all I/O streams.
+     * @param process
+     * @return
+     * @throws IOException
+     */
+    private static List<String> getOutput(Process process) throws IOException {
+        try (
+                InputStream in = process.getInputStream();
+                InputStream ignored = process.getErrorStream();
+                OutputStream ignored2 = process.getOutputStream();
+        ) {
+            return IOUtils.readLines(in, Charsets.UTF_8);
+        }
     }
 }

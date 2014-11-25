@@ -162,6 +162,8 @@
         </configuration>
       </plugin>
 
+
+
       <plugin>
         <groupId>com.ning.maven.plugins</groupId>
         <artifactId>maven-duplicate-finder-plugin</artifactId>
@@ -1498,19 +1500,9 @@
     </dependency>
 
     <!-- Richfaces -->
-
     <dependency>
-      <groupId>org.richfaces.ui</groupId>
-      <artifactId>richfaces-components-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.richfaces.ui</groupId>
-      <artifactId>richfaces-components-ui</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.richfaces.core</groupId>
-      <artifactId>richfaces-core-impl</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.richfaces</groupId>
+      <artifactId>richfaces</artifactId>
     </dependency>
 
     <dependency>
