@@ -22,6 +22,8 @@ package org.zanata.page.administration;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -31,8 +33,11 @@ import org.zanata.util.Checkbox;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Patrick Huang <a
@@ -54,7 +59,9 @@ public class ManageLanguageTeamMemberPage extends BasePage {
 
     public static final int USERNAME_COLUMN = 0;
     public static final int SEARCH_RESULT_PERSON_COLUMN = 0;
-    public static final int ISTRANSLATOR_COLUMN = 2;
+    public static final int IS_TRANSLATOR_COLUMN = 2;
+    public static final int IS_REVIEWER_COLUMN = 3;
+    public static final int IS_COORDINATOR_COLUMN = 4;
 
     public ManageLanguageTeamMemberPage(WebDriver driver) {
         super(driver);
@@ -100,7 +107,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
     }
 
     public ManageLanguageTeamMemberPage searchPersonAndAddToTeam(
-            final String personName) {
+            final String personName, TeamPermission... permissions) {
         log.info("Enter username search {}", personName);
         // Wait for the search field under the add user panel
         waitForWebElement(waitForElementExists(addUserPanel), addUserSearchInput)
@@ -114,11 +121,18 @@ public class ManageLanguageTeamMemberPage extends BasePage {
         final String personUsername = firstRow.getCellContents()
                 .get(SEARCH_RESULT_PERSON_COLUMN);
         log.info("Username to be added: {}", personUsername);
-        log.info("Set checked as translator");
-        Checkbox.of(firstRow.getCells()
-                .get(ISTRANSLATOR_COLUMN)
-                .findElement(By.tagName("input")))
-                .check();
+        // if permissions is empty, default add as translator
+        Set<TeamPermission> permissionToAdd = Sets.newHashSet(permissions);
+        permissionToAdd.add(TeamPermission.Translator);
+
+        for (TeamPermission permission : permissionToAdd) {
+            log.info("Set checked as {}", permission.name());
+            Checkbox.of(tryGetFirstRowInSearchPersonResult(personName)
+                    .getCells()
+                    .get(permission.columnIndex)
+                    .findElement(By.tagName("input")))
+                    .check();
+        }
         log.info("Click Add Selected");
         waitForWebElement(addSelectedButton).click();
         log.info("Click Close");
@@ -162,5 +176,15 @@ public class ManageLanguageTeamMemberPage extends BasePage {
                 return usernameColumn.contains(personUsername);
             }
         });
+    }
+
+    public static enum TeamPermission {
+        Translator(IS_TRANSLATOR_COLUMN), Reviewer(IS_REVIEWER_COLUMN), Coordinator(IS_COORDINATOR_COLUMN);
+        private final int columnIndex;
+
+        TeamPermission(int columnIndex) {
+            this.columnIndex = columnIndex;
+        }
+
     }
 }
