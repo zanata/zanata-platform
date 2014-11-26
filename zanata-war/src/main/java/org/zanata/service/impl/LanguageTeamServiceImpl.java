@@ -118,6 +118,17 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
             localeMemberDAO.makeTransient(membership);
             lang.getMembers().remove(membership);
             localeMemberDAO.flush();
+            if (Events.exists()) {
+                HPerson doneByPerson = authenticatedAccount.getPerson();
+                Events.instance()
+                        .raiseTransactionSuccessEvent(
+                                LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED,
+                                new LanguageTeamPermissionChangedEvent(
+                                        currentPerson, lang.getLocaleId(),
+                                        doneByPerson)
+                                        .updatingPermissions(membership, false,
+                                                false, false));
+            }
             return true;
         }
 

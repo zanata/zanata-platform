@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
@@ -53,6 +54,36 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
         return this.oldPermission(oldMembership.isTranslator(),
                 oldMembership.isReviewer(), oldMembership.isCoordinator())
                 .newPermission(isTranslator, isReviewer, isCoordinator);
+    }
+
+    public LanguageTeamPermissionChangedEvent changedTranslatorPermission(
+            HLocaleMember localeMember) {
+        return this.oldPermission(!localeMember.isTranslator(),
+                localeMember.isReviewer(),
+                localeMember.isCoordinator())
+                .newPermission(localeMember.isTranslator(),
+                        localeMember.isReviewer(),
+                        localeMember.isCoordinator());
+    }
+
+    public LanguageTeamPermissionChangedEvent changedReviewerPermission(
+            HLocaleMember localeMember) {
+        return this.oldPermission(localeMember.isTranslator(),
+                !localeMember.isReviewer(),
+                localeMember.isCoordinator())
+                .newPermission(localeMember.isTranslator(),
+                        localeMember.isReviewer(),
+                        localeMember.isCoordinator());
+    }
+
+    public LanguageTeamPermissionChangedEvent changedCoordinatorPermission(
+            HLocaleMember localeMember) {
+        return this.oldPermission(localeMember.isTranslator(),
+                localeMember.isReviewer(),
+                !localeMember.isCoordinator())
+                .newPermission(localeMember.isTranslator(),
+                        localeMember.isReviewer(),
+                        localeMember.isCoordinator());
     }
 
     private LanguageTeamPermissionChangedEvent oldPermission(

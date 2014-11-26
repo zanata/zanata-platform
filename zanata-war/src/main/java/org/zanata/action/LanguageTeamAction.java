@@ -42,12 +42,15 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
+
+import static org.zanata.events.LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
@@ -139,7 +142,6 @@ public class LanguageTeamAction implements Serializable {
             languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
                     this.language, authenticatedAccount.getPerson().getId(),
                     true, true, true);
-            Events.instance().raiseEvent("personJoinedTribe");
             log.info("{} joined tribe {}",
                     authenticatedAccount.getUsername(), this.language);
             // FIXME use localizable string
@@ -160,7 +162,6 @@ public class LanguageTeamAction implements Serializable {
         }
         languageTeamServiceImpl.leaveLanguageTeam(this.language,
                 authenticatedAccount.getPerson().getId());
-        Events.instance().raiseEvent("personLeftTribe");
         log.info("{} left tribe {}", authenticatedAccount.getUsername(),
                 this.language);
         // FIXME use localizable string
@@ -170,47 +171,69 @@ public class LanguageTeamAction implements Serializable {
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamCoordinator(HLocaleMember member) {
-        this.localeDAO.makePersistent(getLocale());
-        this.localeDAO.flush();
-        if (member.isCoordinator()) {
-            FacesMessages.instance().add(
-                    "{0} has been made a Team Coordinator",
-                    member.getPerson().getAccount().getUsername());
-        } else {
-            // TODO i18n
-            FacesMessages.instance().add(
-                    "{0} has been removed as Team Coordinator",
-                    member.getPerson().getAccount().getUsername());
+        savePermission(member, "Team Coordinator", member.isCoordinator());
+        if (Events.exists()) {
+            HPerson doneByPerson = authenticatedAccount.getPerson();
+            LanguageTeamPermissionChangedEvent changedEvent =
+                    new LanguageTeamPermissionChangedEvent(
+                            member.getPerson(), getLocale().getLocaleId(),
+                            doneByPerson)
+                            .changedCoordinatorPermission(member);
+            Events.instance()
+                    .raiseTransactionSuccessEvent(
+                            LANGUAGE_TEAM_PERMISSION_CHANGED,
+                            changedEvent);
         }
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamReviewer(HLocaleMember member) {
-        this.localeDAO.makePersistent(getLocale());
-        this.localeDAO.flush();
-        if (member.isReviewer()) {
-            FacesMessages.instance().add("{0} has been made a Team Reviewer",
-                    member.getPerson().getAccount().getUsername());
-        } else {
-            // TODO i18n
-            FacesMessages.instance().add(
-                    "{0} has been removed from as Team Reviewer",
-                    member.getPerson().getAccount().getUsername());
+        savePermission(member, "Team Reviewer", member.isReviewer());
+        if (Events.exists()) {
+            HPerson doneByPerson = authenticatedAccount.getPerson();
+            LanguageTeamPermissionChangedEvent changedEvent =
+                    new LanguageTeamPermissionChangedEvent(
+                            member.getPerson(), getLocale().getLocaleId(),
+                            doneByPerson)
+                            .changedReviewerPermission(member);
+            Events.instance()
+                    .raiseTransactionSuccessEvent(
+                            LANGUAGE_TEAM_PERMISSION_CHANGED,
+                            changedEvent);
         }
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamTranslator(HLocaleMember member) {
+        savePermission(member, "Team Translator", member.isTranslator());
+        if (Events.exists()) {
+            HPerson doneByPerson = authenticatedAccount.getPerson();
+            LanguageTeamPermissionChangedEvent changedEvent =
+                    new LanguageTeamPermissionChangedEvent(
+                            member.getPerson(), getLocale().getLocaleId(),
+                            doneByPerson)
+                            .changedTranslatorPermission(member);
+            Events.instance()
+                    .raiseTransactionSuccessEvent(
+                            LANGUAGE_TEAM_PERMISSION_CHANGED,
+                            changedEvent);
+        }
+    }
+
+    private void savePermission(HLocaleMember member, String permissionDesc,
+            boolean isPermissionGranted) {
         this.localeDAO.makePersistent(getLocale());
         this.localeDAO.flush();
-        if (member.isReviewer()) {
-            FacesMessages.instance().add("{0} has been made a Team Translator",
-                    member.getPerson().getAccount().getUsername());
+        HPerson person = member.getPerson();
+        if (isPermissionGranted) {
+            FacesMessages.instance().add(
+                    "{0} has been made a " + permissionDesc,
+                    person.getAccount().getUsername());
         } else {
             // TODO i18n
             FacesMessages.instance().add(
-                    "{0} has been removed from as Team Translator",
-                    member.getPerson().getAccount().getUsername());
+                    "{0} has been removed as " + permissionDesc,
+                    person.getAccount().getUsername());
         }
     }
 
