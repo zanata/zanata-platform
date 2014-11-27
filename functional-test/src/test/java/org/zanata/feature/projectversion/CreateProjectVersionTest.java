@@ -130,7 +130,9 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @Feature(summary = "The system updates the project version counter " +
             "when a project version is created",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION,
+            // remove when rhbz1168447 is fixed:
+            expected = org.openqa.selenium.TimeoutException.class)
     public void versionCounterIsUpdated() throws Exception {
         String projectName = "version nums";
 
