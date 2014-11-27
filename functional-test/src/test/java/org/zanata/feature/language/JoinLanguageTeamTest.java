@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.language;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
@@ -39,8 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Feature(summary = "The administrator can add a member to a language team",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)

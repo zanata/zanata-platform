@@ -21,7 +21,6 @@
 package org.zanata.feature.document;
 
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -48,8 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class SubtitleDocumentTypeTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =

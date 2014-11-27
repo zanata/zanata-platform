@@ -27,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import static org.zanata.util.SampleDataResourceClient.*;
 
 /**
+ * To ensure test isolation, this rule should be used as
+ * @org.junit.Rule, never as @org.junit.ClassRule.
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */

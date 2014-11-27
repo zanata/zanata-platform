@@ -21,7 +21,7 @@
 
 package org.zanata.feature.projectversion;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
@@ -44,8 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class CreateProjectVersionTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Feature(summary = "The administrator can create a project version",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136517)
