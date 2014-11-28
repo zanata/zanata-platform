@@ -52,24 +52,22 @@ public class CacheContainerProducer {
 
     @Create
     public void initialize() {
-        getCacheContainer();
+        try {
+            container =
+                    ServiceLocator.instance().getJndiComponent(
+                            CACHE_CONTAINER_NAME,
+                            CacheContainer.class);
+        } catch (NamingException e) {
+            String msg = "A cache container with name " +
+                    "'" + CACHE_CONTAINER_NAME + "' " +
+                    "has not been configured.";
+            log.warn(msg);
+            throw new RuntimeException(msg, e);
+        }
     }
 
     @Unwrap
-    public synchronized CacheContainer getCacheContainer() {
-        if(container == null) {
-            try {
-                return ServiceLocator.instance().getJndiComponent(CACHE_CONTAINER_NAME,
-                        CacheContainer.class);
-            }
-            catch (NamingException e) {
-                String msg = "A cache container with name " +
-                        "'" + CACHE_CONTAINER_NAME + "' " +
-                        "has not been configured.";
-                log.warn(msg);
-                throw new RuntimeException(msg, e);
-            }
-        }
+    public CacheContainer getCacheContainer() {
         return container;
     }
 }
