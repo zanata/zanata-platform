@@ -5,8 +5,10 @@ package org.zanata.util;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -132,9 +134,8 @@ public class DateUtil {
      * @return
      */
     public static Date getStartOfDay(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).dayOfWeek().roundFloorCopy();
-        return truncateMonth.toDate();
+        DateTime dateTime = new DateTime(actionTime);
+        return dateTime.withTimeAtStartOfDay().toDate();
     }
 
     /**
@@ -145,10 +146,9 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheDay(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).dayOfWeek().roundCeilingCopy()
-                        .minusMillis(1);
-        return truncateMonth.toDate();
+        DateTime endOfTheDay = new DateTime(actionTime).plusDays(1)
+                .withTimeAtStartOfDay().minusMillis(1);
+        return endOfTheDay.toDate();
     }
 
     /**
@@ -201,5 +201,34 @@ public class DateUtil {
                 new DateTime(actionTime).monthOfYear().roundCeilingCopy()
                         .minusMillis(1);
         return truncateMonth.toDate();
+    }
+
+    /**
+     * Convert String to {@link java.util.Date} with given pattern
+     *
+     * @param date
+     * @param pattern
+     * @throws IllegalArgumentException
+     */
+    public static Date getDate(String date, String pattern)
+            throws IllegalArgumentException {
+        DateTimeFormatter formatter =
+                DateTimeFormat.forPattern(pattern);
+        return formatter.parseDateTime(date).toDate();
+    }
+
+    /**
+     * Check if date difference is within given days.
+     *
+     * @param from
+     * @param to
+     * @param days
+     */
+    public static boolean isDatesInRange(Date from, Date to, int days) {
+        DateTime fromDate = new DateTime(from);
+        DateTime toDate = new DateTime(to);
+
+        Days d = Days.daysBetween(fromDate, toDate);
+        return d.getDays() <= days;
     }
 }

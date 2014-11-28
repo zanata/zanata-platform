@@ -1,3 +1,23 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.page.groups;
 
 import com.google.common.base.Predicate;
@@ -5,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -22,48 +41,43 @@ public class VersionGroupsPage extends BasePage {
     public static final int GROUP_TIMESTAMP_COLUMN = 2;
     public static final int GROUP_STATUS_COLUMN = 3;
 
-    @FindBy(id = "groupForm:groupTable")
-    private WebElement groupTable;
-
-    @FindBy(className = "infomsg.icon-info-circle-2")
-    private WebElement infomsg;
+    private By groupTable = By.id("groupForm:groupTable");
+    private By infomsg = By.className("infomsg.icon-info-circle-2");
+    private By createGroupButton = By.id("group-create");
+    private By toggleObsolete = By.id("groupForm:showObsolete");
+    private By obsoleteLink = By.className("obsolete_link");
 
     public VersionGroupsPage(WebDriver driver) {
         super(driver);
     }
 
     public List<String> getGroupNames() {
-        By by = By.id("groupForm:groupTable");
-        return WebElementUtil.getColumnContents(getDriver(), by,
+        return WebElementUtil.getColumnContents(getDriver(), groupTable,
                 GROUP_NAME_COLUMN);
     }
 
     public CreateVersionGroupPage createNewGroup() {
         log.info("Click New Group button");
-        WebElement createLink =
-                getDriver().findElement(By.id("group-create"));
-        createLink.click();
+        waitForWebElement(createGroupButton).click();
         return new CreateVersionGroupPage(getDriver());
     }
 
     public VersionGroupPage goToGroup(String groupName) {
         log.info("Click group {}", groupName);
-        groupTable.findElement(By.linkText(groupName)).click();
+        waitForWebElement(groupTable).findElement(By.linkText(groupName)).click();
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupsPage toggleObsolete(final boolean show) {
-        WebElement showObsolete =
-                getDriver().findElement(By.id("groupForm:showObsolete"));
+        WebElement showObsolete = waitForWebElement(toggleObsolete);
         if (show != showObsolete.isSelected()) {
             showObsolete.click();
         }
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                WebElement table =
-                        input.findElement(By.id("groupForm:groupTable"));
-                return table.findElements(By.className("obsolete_link"))
+                return waitForWebElement(groupTable)
+                        .findElements(obsoleteLink)
                         .isEmpty() == !show;
             }
         });
@@ -72,10 +86,8 @@ public class VersionGroupsPage extends BasePage {
 
     public String getInfoMessage() {
         log.info("Test info msg");
-        log.info(getDriver().findElement(
-                By.className("infomsg.icon-info-circle-2")).getText());
-        return getDriver().findElement(
-                By.className("infomsg.icon-info-circle-2")).getText();
+        log.info(waitForWebElement(infomsg).getText());
+        return waitForWebElement(infomsg).getText();
     }
 
 }

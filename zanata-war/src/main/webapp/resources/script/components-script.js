@@ -10,28 +10,6 @@ jQuery(document).ready(function() {
   registerUrlModifiers();
 });
 
-var globalMessageTimer;
-
-// automatically clear global message after 5 seconds
-function startGlobalMessageTimer() {
-  if (typeof zanata == 'undefined') {
-    jQuery('#messages .message--global').addClass('is-active');
-  } else {
-    zanata.messages.activate('#messages .message--global');
-  }
-
-  //stop previous timeout counter
-  clearTimeout(globalMessageTimer);
-
-  globalMessageTimer = setTimeout(function() {
-    if (typeof zanata == 'undefined') {
-      jQuery('#messages .message--global').removeClass('is-active');
-    } else {
-      zanata.messages.deactivate('#messages .message--global');
-    }
-  }, 5000);
-}
-
 function refreshTooltip(wrapperId) {
   jQuery('#' + wrapperId).find('[title]').each(function() {
     zanata.tooltip.init(this);

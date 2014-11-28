@@ -20,26 +20,34 @@
  */
 package org.zanata.service.impl;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.TextFlowTargetHistoryDAO;
+import org.zanata.exception.InvalidDateParamException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
@@ -47,6 +55,9 @@ import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
+import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
+import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.ZPathService;
 import org.zanata.service.TranslationStateCache;
@@ -65,6 +76,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
 @Name("statisticsServiceImpl")
 @Path(StatisticsResource.SERVICE_PATH)
 @Scope(ScopeType.STATELESS)
+@Slf4j
 public class StatisticsServiceImpl implements StatisticsResource {
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -73,13 +85,21 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private DocumentDAO documentDAO;
 
     @In
+    private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
+
+    @In
     private LocaleServiceImpl localeServiceImpl;
 
     @In
     private ZPathService zPathService;
 
     @In
+    private PersonDAO personDAO;
+
+    @In
     private TranslationStateCache translationStateCacheImpl;
+
+    private static final int MAX_STATS_DAYS = 365;
 
     // TODO Need to refactor this method to get Message statistic by default.
     // This is to be consistance with UI which uses message stats, and for
@@ -265,6 +285,93 @@ public class StatisticsServiceImpl implements StatisticsResource {
             }
         }
         return docStatistics;
+    }
+
+    /**
+     * Get contribution statistic (translations) from project-version within
+     * given date range.
+     *
+     * Throws NoSuchEntityException if:
+     * - project/version not found or is obsolete,
+     * - user not found
+     *
+     * Throws InvalidDateParamException if:
+     * - dateRangeParam is in wrong format,
+     * - date range is over MAX_STATS_DAYS
+     *
+     * @param projectSlug
+     *            project identifier
+     * @param versionSlug
+     *            version identifier
+     * @param username
+     *            username of contributor
+     * @param dateRangeParam
+     *            from..to (yyyy-mm-dd..yyyy-mm-dd),
+     *            date range maximum: 365 days
+     */
+    @Override
+    public ContributionStatistics getContributionStatistics(String projectSlug,
+            String versionSlug, String username, String dateRangeParam) {
+
+        HProjectIteration version =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        if (version == null || version.getStatus() == EntityStatus.OBSOLETE ||
+                version.getProject().getStatus() == EntityStatus.OBSOLETE) {
+            throw new NoSuchEntityException(projectSlug + "/" + versionSlug);
+        }
+
+        HPerson person = personDAO.findByUsername(username);
+        if (person == null) {
+            throw new NoSuchEntityException(username);
+        }
+
+        String[] dateRange = dateRangeParam.split("\\.\\.");
+        if (dateRange.length != 2) {
+            throw new InvalidDateParamException(dateRangeParam);
+        }
+
+        Date fromDate, toDate;
+
+        try {
+            fromDate = DateUtil.getDate(dateRange[0], DATE_FORMAT);
+            toDate = DateUtil.getDate(dateRange[1], DATE_FORMAT);
+
+            fromDate = DateUtil.getStartOfDay(fromDate);
+            toDate = DateUtil.getEndOfTheDay(toDate);
+
+            if (fromDate.after(toDate) || !DateUtil.isDatesInRange(fromDate,
+                    toDate, MAX_STATS_DAYS)) {
+                throw new InvalidDateParamException(dateRangeParam);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new InvalidDateParamException(dateRangeParam);
+        }
+
+        LocaleStatistics localeStatistics = new LocaleStatistics();
+
+        List<Object[]> data =
+                textFlowTargetHistoryDAO.getUserContributionStatisticInVersion(
+                        version.getId(), person.getId(), fromDate, toDate);
+
+        for (Object[] entry : data) {
+            int count = ((BigDecimal) entry[0]).intValue();
+            ContentState state = ContentState.values()[(int) entry[1]];
+            LocaleId localeId = new LocaleId(entry[2].toString());
+
+            BaseContributionStatistic stats;
+            if (localeStatistics.containsKey(localeId)) {
+                stats = localeStatistics.get(localeId);
+            } else {
+                stats = new BaseContributionStatistic(0,0,0,0);
+            }
+            stats.set(state, count);
+            localeStatistics.put(localeId, stats);
+        }
+
+        ContributionStatistics result = new ContributionStatistics();
+        result.put(username, localeStatistics);
+
+        return result;
     }
 
     private TranslationStatistics getWordsStats(TransUnitWords wordCount,

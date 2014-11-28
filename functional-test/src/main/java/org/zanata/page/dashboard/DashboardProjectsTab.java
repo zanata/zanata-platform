@@ -26,7 +26,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.CreateProjectPage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,27 +34,23 @@ import java.util.List;
 @Slf4j
 public class DashboardProjectsTab extends DashboardBasePage {
 
+    private By maintainedProjectsList = By.id("maintainedProjects");
+    private By createProjectLink = By.id("create-project-link");
+
     public DashboardProjectsTab(WebDriver driver) {
         super(driver);
     }
 
     public List<WebElement> getMaintainedProjectList() {
         log.info("Query maintained projects list");
-        WebElement listWrapper =
-                getDriver().findElement(By.id("maintainedProjects"))
-                        .findElement(By.tagName("ul"));
-
-        if (listWrapper != null) {
-            return listWrapper.findElements(By.xpath("./li"));
-        }
-        return new ArrayList<WebElement>();
+        return waitForWebElement(maintainedProjectsList)
+                .findElement(By.tagName("ul"))
+                .findElements(By.xpath("./li"));
     }
 
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
-        WebElement createProjLink =
-                getDriver().findElement(By.id("create-project-link"));
-        createProjLink.click();
+        waitForWebElement(createProjectLink).click();
         return new CreateProjectPage(getDriver());
     }
 }

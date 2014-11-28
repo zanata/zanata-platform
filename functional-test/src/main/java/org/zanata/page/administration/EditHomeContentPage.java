@@ -36,11 +36,8 @@ import org.zanata.page.utility.HomePage;
 @Slf4j
 public class EditHomeContentPage extends BasePage {
 
-    @FindBy(id = "homeContentForm:update")
-    private WebElement updateButton;
-
-    @FindBy(id = "homeContentForm:cancel")
-    private WebElement cancelButton;
+    private By updateButton = By.id("homeContentForm:update");
+    private By cancelButton = By.id("homeContentForm:cancel");
 
     public EditHomeContentPage(final WebDriver driver) {
         super(driver);
@@ -49,23 +46,10 @@ public class EditHomeContentPage extends BasePage {
     public EditHomeContentPage enterText(String text) {
         log.info("Enter homepage code\n{}", text);
         // Switch to the CKEditor frame
-        getDriver().switchTo().frame(waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.id("cke_contents_homeContentForm:homeContent:inp"))
-                        .findElement(By.tagName("iframe"));
-            }
-        }));
-
-        WebElement textEdit = waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                System.out.println(getDriver().findElements(By.tagName("body")).size());
-                return getDriver().findElement(By.tagName("body"));
-            }
-        });
-        textEdit.sendKeys(text);
+        getDriver().switchTo().frame(waitForWebElement(By
+                .id("cke_homeContentForm:homeContent:inp"))
+                .findElement(By.tagName("iframe")));
+        waitForWebElement(By.tagName("body")).sendKeys(text);
         // Switch back!
         getDriver().switchTo().defaultContent();
         return new EditHomeContentPage(getDriver());
@@ -73,13 +57,13 @@ public class EditHomeContentPage extends BasePage {
 
     public HomePage update() {
         log.info("Click Update");
-        updateButton.click();
+        waitForWebElement(updateButton).click();
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
         log.info("Click Cancel");
-        cancelButton.click();
+        waitForWebElement(cancelButton).click();
         return new HomePage(getDriver());
     }
 }

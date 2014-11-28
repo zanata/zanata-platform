@@ -35,6 +35,12 @@
     <param-value>classic</param-value>
   </context-param>
 
+  <!-- We already implemented custom filter controls, so disable built-ins -->
+  <context-param>
+    <param-name>org.richfaces.builtin.filter.enabled</param-name>
+    <param-value>false</param-value>
+  </context-param>
+
   <!-- Suppress spurious stylesheets -->
 
   <context-param>

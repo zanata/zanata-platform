@@ -21,7 +21,6 @@
 
 package org.zanata.page.projects;
 
-import com.google.common.base.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,18 +31,14 @@ import org.openqa.selenium.WebDriver;
 @Slf4j
 public class ProjectAboutPage extends ProjectBasePage {
 
+    private By aboutText = By.id("project-about");
+
     public ProjectAboutPage(WebDriver driver) {
         super(driver);
     }
 
     public String getAboutText() {
         log.info("Query About content");
-        return waitForAMoment().until(new Function<WebDriver, String>() {
-            @Override
-            public String apply(WebDriver driver) {
-                return getDriver()
-                        .findElement(By.id("project-about")).getText();
-            }
-        });
+        return waitForWebElement(aboutText).getText();
     }
 }

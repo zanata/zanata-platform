@@ -21,7 +21,7 @@
 package org.zanata.feature.document;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
@@ -29,15 +29,16 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.projectversion.VersionLanguagesPage;
-import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -51,24 +52,35 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @RunWith(Theories.class)
-public class DocTypeUploadTest extends ZanataTestCase {
+@Category(DetailedTest.class)
+public class FileTypeUploadTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @ClassRule
     public static CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
+        new ZanataRestCaller().createProjectAndVersion("doctype-test",
+                "doctype-upload", "File");
         new LoginWorkFlow().signIn("admin", "admin");
-        new ProjectWorkFlow().createNewProjectVersion(
-                "about fedora", "doctype-upload", "File")
-                .logout();
     }
 
     private static String testString = "Test text 1";
+    private static String htmlString = "<html><title>"+testString+"</title>"+
+            "<body/> </html>";
+    @DataPoint
+    public static File TXT_FILE = new TestFileGenerator()
+            .generateTestFileWithContent( "testtxtfile", ".txt", testString);
+
+    @DataPoint
+    public static File DTD_FILE = new TestFileGenerator()
+            .generateTestFileWithContent(
+                    "testdtdfile", ".dtd",
+                    "<!ENTITY firstField \"" + testString + "\">");
 
     @DataPoint
     public static File SRT_FILE = new TestFileGenerator()
@@ -98,16 +110,46 @@ public class DocTypeUploadTest extends ZanataTestCase {
                     "00:04:35.03,00:04:38.82" +
                     sep() + testString);
 
+    @DataPoint
+    public static File HTM_FILE = new TestFileGenerator()
+            .generateTestFileWithContent("testhtmfile", ".htm", htmlString);
+
+    @DataPoint
+    public static File HTML_FILE = new TestFileGenerator()
+            .generateTestFileWithContent("testhtmlfile", ".html", htmlString);
+
+    @DataPoint
+    public static File IDML_FILE = new TestFileGenerator()
+            .openTestFile("upload-idml.idml");
+
+    @DataPoint
+    public static File ODT_FILE = new TestFileGenerator()
+            .openTestFile("upload-odt.odt");
+
+    @DataPoint
+    public static File ODS_FILE = new TestFileGenerator()
+            .openTestFile("upload-ods.ods");
+
+    @DataPoint
+    public static File ODG_FILE = new TestFileGenerator()
+            .openTestFile("upload-odg.odg");
+
+    @DataPoint
+    public static File ODP_FILE = new TestFileGenerator()
+            .openTestFile("upload-odp.odp");
+
     @Theory
     @Category(BasicAcceptanceTest.class)
-    public void uploadFile(File testFile) throws Exception {
+    @Feature(bugzilla = 980670,
+            summary = "The administrator can upload raw files for translation",
+            tcmsTestCaseIds = { 377743 },
+            tcmsTestPlanIds = { 5316 } )
+    public void uploadFileTypeDocument(File testFile) throws Exception {
         String testFileName = testFile.getName();
         log.info("[uploadFile] "+testFileName);
 
-        VersionDocumentsPage versionDocumentsPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        VersionDocumentsPage versionDocumentsPage = new ProjectWorkFlow()
+                .goToProjectByName("doctype-test")
                 .gotoVersion("doctype-upload")
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()

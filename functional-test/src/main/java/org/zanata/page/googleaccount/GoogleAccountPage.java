@@ -23,8 +23,6 @@ package org.zanata.page.googleaccount;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.AbstractPage;
 
 /**
@@ -33,17 +31,13 @@ import org.zanata.page.AbstractPage;
  */
 @Slf4j
 public class GoogleAccountPage extends AbstractPage {
-    @FindBy(id = "Email")
-    private WebElement emailField;
 
-    @FindBy(id = "reauthEmail")
-    private WebElement emailLabelField;
-
-    @FindBy(id = "Passwd")
-    private WebElement passwordField;
-
-    @FindBy(id = "signIn")
-    private WebElement signInButton;
+    private By emailField = By.id("Email");
+    private By emailLabelField = By.id("reauthEmail");
+    private By passwordField = By.id("Passwd");
+    private By signInButton = By.id("signIn");
+    private By signInDifferent = By.linkText("Sign in with a different account");
+    private By profileImage = By.id("profile-img");
 
     public GoogleAccountPage(WebDriver driver) {
         super(driver);
@@ -51,41 +45,41 @@ public class GoogleAccountPage extends AbstractPage {
 
     public GoogleAccountPage enterGoogleEmail(String email) {
         log.info("Enter email {}", email);
-        emailField.sendKeys(email);
+        waitForWebElement(emailField).sendKeys(email);
         return new GoogleAccountPage(getDriver());
     }
 
     public GoogleAccountPage enterGooglePassword(String password) {
         log.info("Enter password {}", password);
-        passwordField.sendKeys(password);
+        waitForWebElement(passwordField).sendKeys(password);
         return new GoogleAccountPage(getDriver());
     }
 
     public GooglePermissionsPage clickSignIn() {
         log.info("Click account Sign In");
-        signInButton.click();
+        waitForWebElement(signInButton).click();
         return new GooglePermissionsPage(getDriver());
     }
 
     public GoogleManagePermissionsPage clickPermissionsSignIn() {
         log.info("Click account management Sign In");
-        signInButton.click();
+        waitForWebElement(signInButton).click();
         return new GoogleManagePermissionsPage(getDriver());
     }
 
     public String rememberedUser() {
         log.info("Query remembered user email");
-        return emailLabelField.getText();
+        return waitForWebElement(emailLabelField).getText();
     }
 
     public boolean hasRememberedAuthentication() {
         log.info("Query is user remembered");
-        return emailLabelField.isDisplayed();
+        return getDriver().findElements(emailLabelField).size() > 0;
     }
 
     public GoogleAccountPage removeSavedAuthentication() {
         log.info("Click Sign in with different account");
-        getDriver().findElement(By.linkText("Sign in with a different account")).click();
+        waitForWebElement(signInDifferent).click();
         return new GoogleAccountPage(getDriver());
     }
 
@@ -98,6 +92,6 @@ public class GoogleAccountPage extends AbstractPage {
      */
     public boolean isTheOldGoogleSite() {
         log.info("Query is the old Google site displayed");
-        return getDriver().findElements(By.id("profile-img")).size() < 1;
+        return getDriver().findElements(profileImage).size() < 1;
     }
 }

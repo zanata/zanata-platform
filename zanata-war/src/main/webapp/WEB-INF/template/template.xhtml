@@ -18,7 +18,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
-    <title><ui:insert name="page_title"/></title>
+    <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
 
     <meta name="description" content=""/>
     <meta name="author" content=""/>
@@ -38,10 +38,33 @@
     <script src="js/vendor/selectivizr-min.js"></script>
     <![endif]-->
 
-    <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
     <link type="text/css" rel="stylesheet"
       href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
     <ui:insert name="head"/>
+
+    <script type="application/javascript">
+      var globalMessageTimer;
+
+      // automatically clear global message after 5 seconds
+      function startGlobalMessageTimer() {
+        if (typeof zanata == 'undefined') {
+          jQuery('#messages .message--global').addClass('is-active');
+        } else {
+          zanata.messages.activate('#messages .message--global');
+        }
+
+        //stop previous timeout counter
+        clearTimeout(globalMessageTimer);
+
+        globalMessageTimer = setTimeout(function() {
+          if (typeof zanata == 'undefined') {
+            jQuery('#messages .message--global').removeClass('is-active');
+          } else {
+            zanata.messages.deactivate('#messages .message--global');
+          }
+        }, 5000);
+      }
+    </script>
   </h:head>
 
   <h:body styleClass="new-zanata">

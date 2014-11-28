@@ -47,7 +47,6 @@ import org.zanata.common.DocumentType;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.google.common.io.InputSupplier;
 
 @Slf4j
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
@@ -265,12 +264,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
     private void writeStreamToFile(final InputStream stream, File file)
             throws IOException {
-        InputSupplier<InputStream> input = new InputSupplier<InputStream>() {
-            public InputStream getInput() throws IOException {
-                return stream;
-            }
-        };
-        Files.copy(input, file);
+        Files.asByteSink(file).writeFrom(stream);
     }
 
     private void changeFileIdFromOldToNew(String oldFileId, String newFileId)

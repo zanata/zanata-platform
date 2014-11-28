@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -43,8 +42,8 @@ import java.util.List;
 @Slf4j
 public class VersionLanguagesTab extends VersionBasePage {
 
-    @FindBy(id = "languageAutocomplete-autocomplete__input")
-    private WebElement addNewLanguageField;
+    private By addNewLanguageField = By.id("languageAutocomplete-autocomplete__input");
+    private By languagesSettingForm = By.id("settings-languages-form");
 
     public VersionLanguagesTab(WebDriver driver) {
         super(driver);
@@ -57,8 +56,8 @@ public class VersionLanguagesTab extends VersionBasePage {
      */
     public VersionLanguagesTab clickInheritCheckbox() {
         log.info("Click Inherit check box");
-        getDriver().findElement(By.id("settings-languages-form"))
-                .findElement(By.className("form__checkbox"))
+        waitForWebElement(waitForWebElement(languagesSettingForm),
+                By.className("form__checkbox"))
                 .click();
         return new VersionLanguagesTab(getDriver());
     }
@@ -68,8 +67,7 @@ public class VersionLanguagesTab extends VersionBasePage {
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                return getDriver()
-                        .findElement(By.id("settings-languages-form"))
+                return waitForWebElement(languagesSettingForm)
                         .findElement(By.className("list--slat"))
                         .isDisplayed();
             }
@@ -84,29 +82,30 @@ public class VersionLanguagesTab extends VersionBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales list");
-        List<String> rows =Lists.transform(getEnabledLocaleListElement(),
+        return Lists.transform(getEnabledLocaleListElement(),
                 new Function<WebElement, String>() {
                     @Override
                     public String apply(WebElement li) {
                         return li.getText();
                     }
                 });
-        return rows;
     }
 
     private List<WebElement> getEnabledLocaleListElement() {
-        return getDriver().findElement(By.id("settings-languages-form"))
+        return waitForWebElement(languagesSettingForm)
                 .findElements(By.xpath(".//ul/li[@class='reveal--list-item']"));
     }
 
-    public void waitForLanguagesContains(String language) {
+    public VersionLanguagesTab waitForLanguagesContains(String language) {
         log.info("Wait for languages contains {}", language);
         waitForLanguageEntryExpected(language, true);
+        return new VersionLanguagesTab(getDriver());
     }
 
-    public void waitForLanguagesNotContains(String language) {
+    public VersionLanguagesTab waitForLanguagesNotContains(String language) {
         log.info("Wait for languages does not contain {}", language);
         waitForLanguageEntryExpected(language, false);
+        return new VersionLanguagesTab(getDriver());
     }
 
     private void waitForLanguageEntryExpected(final String language,
@@ -165,6 +164,7 @@ public class VersionLanguagesTab extends VersionBasePage {
 
                 for (WebElement searchResult : searchResults) {
                     if (searchResult.getText().contains(localeId)) {
+                        slightPause();
                         searchResult.click();
                         return true;
                     }

@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.security;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -33,7 +32,6 @@ import org.zanata.page.account.ResetPasswordPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.RetryRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -75,7 +73,7 @@ public class SecurityTest extends ZanataTestCase {
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
-                .waitForFieldErrors())
+                .expectError("Login failed"))
                 .contains("Login failed")
                 .as("Log in error message is shown");
     }
@@ -139,7 +137,7 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("b")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.waitForErrors())
+        assertThat(resetPasswordPage.expectError("not a well-formed email address"))
                 .contains("not a well-formed email address")
                 .as("Invalid email error is displayed");
 
@@ -163,7 +161,7 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.waitForErrors())
+        assertThat(resetPasswordPage.expectError("may not be empty"))
                 .contains("may not be empty")
                 .as("Empty email error is displayed");
 

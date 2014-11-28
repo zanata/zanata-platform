@@ -25,10 +25,7 @@ import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,23 +38,11 @@ public class ManageUserAccountPage extends BasePage {
 
     public static String PASSWORD_ERROR = "Passwords do not match";
 
-    @FindBy(id = "userdetailForm:passwordField:password")
-    private WebElement passwordField;
-
-    @FindBy(id = "userdetailForm:passwordConfirmField:confirm")
-    private WebElement passwordConfirmField;
-
-    @FindBy(id = "userdetailForm:enabledField:enabled")
-    private WebElement enabledField;
-
-    @FindBy(id = "userdetailForm:userdetailSave")
-    private WebElement saveButton;
-
-    @FindBy(id = "userdetailForm:userdetailCancel")
-    private WebElement cancelButton;
-
-    // username field will trigger ajax call and become stale
-    private By usernameBy = By.id("userdetailForm:usernameField:username");
+    private By passwordField = By.id("userdetailForm:passwordField:password");
+    private By passwordConfirmField = By.id("userdetailForm:passwordConfirmField:confirm");
+    private By enabledField = By.id("userdetailForm:enabledField:enabled");
+    private By saveButton = By.id("userdetailForm:userdetailSave");
+    private By cancelButton = By.id("userdetailForm:userdetailCancel");
 
     private Map<String, String> roleMap;
 
@@ -73,54 +58,50 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        passwordField.sendKeys(password);
+        waitForWebElement(passwordField).sendKeys(password);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage enterConfirmPassword(String confirmPassword) {
         log.info("Enter confirm password {}", confirmPassword);
-        passwordConfirmField.sendKeys(confirmPassword);
+        waitForWebElement(passwordConfirmField).sendKeys(confirmPassword);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickEnabled() {
         log.info("Click Enabled");
-        enabledField.click();
+        waitForWebElement(enabledField).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        WebElement roleBox =
-                getDriver().findElement(
-                        By.id("userdetailForm:rolesField:roles:".concat(roleMap
-                                .get(role))));
-        roleBox.click();
+        waitForWebElement(By.id("userdetailForm:rolesField:roles:"
+                .concat(roleMap.get(role)))).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
-        return getDriver().findElement(
-                By.id("userdetailForm:rolesField:roles:".concat(roleMap
-                        .get(role)))).isSelected();
+        return waitForWebElement(By.id("userdetailForm:rolesField:roles:"
+                .concat(roleMap.get(role)))).isSelected();
     }
 
     public ManageUserPage saveUser() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new ManageUserPage(getDriver());
     }
 
     public ManageUserAccountPage saveUserExpectFailure() {
         log.info("Click Save");
-        saveButton.click();
+        waitForWebElement(saveButton).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
-        cancelButton.click();
+        waitForWebElement(cancelButton).click();
         return new ManageUserPage(getDriver());
     }
 

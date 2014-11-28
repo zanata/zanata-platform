@@ -20,12 +20,15 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import com.google.common.collect.Lists;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
@@ -35,14 +38,20 @@ import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
+import org.zanata.common.ContentState;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.DocumentMilestoneEvent;
+import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.DocumentUploadedEvent;
+import org.zanata.i18n.Messages;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.WebHook;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
@@ -52,6 +61,10 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
+import org.zanata.ui.model.statistic.WordStatistic;
+
+import com.google.common.annotations.VisibleForTesting;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -63,8 +76,9 @@ import org.zanata.service.VersionStateCache;
 @Name("documentServiceImpl")
 @Scope(ScopeType.STATELESS)
 @ContainsAsyncMethods
+@Slf4j
 public class DocumentServiceImpl implements DocumentService {
-    @In
+    @In(required = false)
     private ZanataIdentity identity;
 
     @In
@@ -93,9 +107,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private ApplicationConfiguration applicationConfiguration;
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
+            required = false)
     private HAccount authenticatedAccount;
 
+    @In
+    private Messages msgs;
 
     @Override
     @Transactional
@@ -124,7 +142,8 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Async
     @Transactional
-    public Future<HDocument> saveDocumentAsync(String projectSlug, String iterationSlug,
+    public Future<HDocument> saveDocumentAsync(String projectSlug,
+            String iterationSlug,
             Resource sourceDoc, Set<String> extensions, boolean copyTrans,
             boolean lock, AsyncTaskHandle<HDocument> handle) {
         // TODO Use the pased in handle
@@ -180,7 +199,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         long actorId = authenticatedAccount.getPerson().getId();
         if (changed) {
-            if( Events.exists() ) {
+            if (Events.exists()) {
                 Events.instance().raiseTransactionSuccessEvent(
                         DocumentUploadedEvent.EVENT_NAME,
                         new DocumentUploadedEvent(actorId, document.getId(),
@@ -207,6 +226,80 @@ public class DocumentServiceImpl implements DocumentService {
         clearStatsCacheForUpdatedDocument(document);
     }
 
+    @Observer(DocumentStatisticUpdatedEvent.EVENT_NAME)
+    public void documentStatisticUpdated(DocumentStatisticUpdatedEvent event) {
+        processWebHookDocumentMilestoneEvent(event,
+                ContentState.TRANSLATED_STATES,
+                msgs.format("jsf.webhook.response.state", DOC_EVENT_MILESTONE,
+                        ContentState.Translated), DOC_EVENT_MILESTONE);
+
+        processWebHookDocumentMilestoneEvent(event,
+                Lists.newArrayList(ContentState.Approved),
+                msgs.format("jsf.webhook.response.state", DOC_EVENT_MILESTONE,
+                        ContentState.Approved), DOC_EVENT_MILESTONE);
+    }
+
+    private void processWebHookDocumentMilestoneEvent(
+            DocumentStatisticUpdatedEvent event,
+            Collection<ContentState> contentStates, String message,
+            int percentMilestone) {
+
+        boolean shouldPublish =
+                hasContentStateReachedMilestone(event.getOldStats(),
+                        event.getNewStats(), contentStates, percentMilestone);
+
+        if (shouldPublish) {
+            HProjectIteration version =
+                    projectIterationDAO.findById(event.getProjectIterationId());
+            HProject project = version.getProject();
+
+            if (!project.getWebHooks().isEmpty()) {
+                HDocument document = documentDAO.getById(event.getDocumentId());
+                DocumentMilestoneEvent milestoneEvent =
+                        new DocumentMilestoneEvent(project.getSlug(),
+                                version.getSlug(), document.getDocId(),
+                                event.getLocaleId(), message);
+                for (WebHook webHook : project.getWebHooks()) {
+                    publishDocumentMilestoneEvent(webHook, milestoneEvent);
+                }
+            }
+        }
+    }
+
+    public void publishDocumentMilestoneEvent(WebHook webHook,
+            DocumentMilestoneEvent milestoneEvent) {
+        WebHooksPublisher.publish(webHook.getUrl(), milestoneEvent);
+        log.info("firing webhook: {}:{}:{}:{}",
+                webHook.getUrl(), milestoneEvent.getProject(),
+                milestoneEvent.getVersion(), milestoneEvent.getDocId());
+    }
+
+    /**
+     * Check if contentStates in statistic has reached given
+     * milestone(percentage) and not equals to contentStates in previous
+     * statistic
+     *
+     * @param oldStats
+     * @param newStats
+     * @param contentStates
+     * @param percentMilestone
+     */
+    private boolean hasContentStateReachedMilestone(WordStatistic oldStats,
+            WordStatistic newStats, Collection<ContentState> contentStates,
+            int percentMilestone) {
+        int oldStateCount = 0, newStateCount = 0;
+        double percent = 0;
+
+        for (ContentState contentState : contentStates) {
+            oldStateCount += oldStats.get(contentState);
+            newStateCount += newStats.get(contentState);
+            percent += newStats.getPercentage(contentState);
+        }
+
+        return oldStateCount != newStateCount &&
+                Double.compare(percent, percentMilestone) == 0;
+    }
+
     /**
      * Invoke the copy trans function for a document.
      *
@@ -220,8 +313,17 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void clearStatsCacheForUpdatedDocument(HDocument document) {
-        versionStateCacheImpl.clearVersionStatsCache(document.getProjectIteration()
+        versionStateCacheImpl.clearVersionStatsCache(document
+                .getProjectIteration()
                 .getId());
         translationStateCacheImpl.clearDocumentStatistics(document.getId());
+    }
+
+    @VisibleForTesting
+    public void init(ProjectIterationDAO projectIterationDAO,
+            DocumentDAO documentDAO, Messages msgs) {
+        this.projectIterationDAO = projectIterationDAO;
+        this.documentDAO = documentDAO;
+        this.msgs = msgs;
     }
 }

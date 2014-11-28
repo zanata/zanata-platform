@@ -185,7 +185,7 @@ public class ValidationServiceImpl implements ValidationService {
     public boolean runDocValidations(Long hDocId,
             List<ValidationId> validationIds, LocaleId localeId) {
         log.debug("Start runDocValidations {}", hDocId);
-        Stopwatch stopwatch = new Stopwatch().start();
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         HDocument hDoc = documentDAO.findById(hDocId, false);
         boolean hasError = documentHasWarningOrError(hDoc, validationIds, localeId);
@@ -197,7 +197,7 @@ public class ValidationServiceImpl implements ValidationService {
     public boolean runDocValidationsWithServerRules(HDocument hDoc,
             LocaleId localeId) {
         log.debug("Start runDocValidationsWithServerRules {}", hDoc.getId());
-        Stopwatch stopwatch = new Stopwatch().start();
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         List<ValidationId> validationIds =
                 getValidationIds(hDoc.getProjectIteration(), State.Warning,
@@ -229,7 +229,7 @@ public class ValidationServiceImpl implements ValidationService {
             List<HTextFlow> textFlows, List<ValidationId> validationIds,
             LocaleId localeId, int startIndex, int maxSize) {
         log.debug("Start filter {} textFlows", textFlows.size());
-        Stopwatch stopwatch = new Stopwatch().start();
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         List<HTextFlow> result = new ArrayList<HTextFlow>();
 

@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
@@ -41,17 +40,15 @@ public class ManageLanguagePage extends BasePage {
     public static final int LOCALE_COLUMN = 0;
     public static final int ENABLED_COLUMN = 3;
 
-    @FindBy(id = "languageForm:threads")
-    private WebElement languageTable;
-
-    private By languageTableBy = By.id("languageForm:threads");
+    private By languageTable = By.id("languageForm:threads");
+    private By addLanguageButton = By.linkText("Add New Language");
 
     public ManageLanguagePage(WebDriver driver) {
         super(driver);
     }
 
     public AddLanguagePage addNewLanguage() {
-        getDriver().findElement(By.linkText("Add New Language")).click();
+        waitForWebElement(addLanguageButton).click();
         return new AddLanguagePage(getDriver());
     }
 
@@ -115,7 +112,7 @@ public class ManageLanguagePage extends BasePage {
             getDriver().switchTo().alert().accept();
         }
 
-        return this;
+        return new ManageLanguagePage(getDriver());
     }
 
     public boolean languageIsEnabled(String localeId) {
@@ -126,7 +123,7 @@ public class ManageLanguagePage extends BasePage {
 
     public List<String> getLanguageLocales() {
         log.info("Query list of languages");
-        return WebElementUtil.getColumnContents(getDriver(), languageTableBy,
+        return WebElementUtil.getColumnContents(getDriver(), languageTable,
                 LOCALE_COLUMN);
     }
 }

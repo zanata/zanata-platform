@@ -24,6 +24,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.ibm.icu.util.ULocale;
+
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -173,7 +175,7 @@ public class LanguageManagerAction implements Serializable {
         this.languageNameValidationMessage = null; // reset
         this.languageNameWarningMessage = null; // reset
 
-        if (language.length() > LENGTH_LIMIT) {
+        if (StringUtils.isEmpty(language) || language.length() > LENGTH_LIMIT) {
             this.uLocale = null;
             this.languageNameValidationMessage =
                     msgs.get("jsf.language.validation.Invalid");

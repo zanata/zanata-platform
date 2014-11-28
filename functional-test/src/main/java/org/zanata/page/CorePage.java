@@ -49,8 +49,7 @@ import com.google.common.collect.Lists;
 @Slf4j
 public class CorePage extends AbstractPage {
 
-    @FindBy(id = "home")
-    private WebElement homeLink;
+    private By homeLink = By.id("home");
 
     public CorePage(WebDriver driver) {
         super(driver);
@@ -63,7 +62,7 @@ public class CorePage extends AbstractPage {
     public HomePage goToHomePage() {
         log.info("Click Zanata home icon");
         scrollToTop();
-        homeLink.click();
+        waitForWebElement(homeLink).click();
         return new HomePage(getDriver());
     }
 
@@ -93,7 +92,7 @@ public class CorePage extends AbstractPage {
 
         List<String> newError =
                 WebElementUtil.elementsToText(getDriver(),
-                        By.xpath("//div[@class='message--danger']"));
+                        By.className("message--danger"));
 
         List<String> allErrors = Lists.newArrayList();
         allErrors.addAll(oldError);
@@ -120,10 +119,26 @@ public class CorePage extends AbstractPage {
         return getErrors();
     }
 
+    /**
+     * Wait until an expected error is visible
+     *
+     * @param expected The expected error string
+     * @return The full list of visible errors
+     */
+    public List<String> expectError(final String expected) {
+        log.info("Expect error {}", expected);
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getErrors().contains(expected);
+            }
+        });
+        return getErrors();
+    }
+
     public String getNotificationMessage() {
         log.info("Query notification message");
-        List<WebElement> messages =
-                getDriver().findElement(By.id("messages"))
+        List<WebElement> messages = waitForElementExists(By.id("messages"))
                         .findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
@@ -143,28 +158,6 @@ public class CorePage extends AbstractPage {
                 return notifications.contains(notification);
             }
         });
-    }
-
-    public List<String> expectFieldError(final String expected) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return waitForFieldErrors().contains(expected);
-            }
-        });
-        return getFieldErrors();
-    }
-
-    public List<String> waitForErrors() {
-        log.info("Query page errors list");
-        waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(
-                        By.xpath("//span[@class='errors']"));
-            }
-        });
-        return getErrors();
     }
 
     public void assertNoCriticalErrors() {
@@ -198,28 +191,6 @@ public class CorePage extends AbstractPage {
         } else {
             log.warn("Unable to focus page container");
         }
-    }
-
-    public List<String> waitForFieldErrors() {
-        log.info("Query field errors");
-        waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver driver) {
-                return getDriver().findElement(By.className("message--danger"));
-            }
-        });
-        return getFieldErrors();
-    }
-
-    public List<String> getFieldErrors() {
-        log.info("Query field errors");
-        List<String> errorList = new ArrayList<String>();
-        List<WebElement> errorObjects =
-                getDriver().findElements(By.className("message--danger"));
-        for (WebElement element : errorObjects) {
-            errorList.add(element.getText().trim());
-        }
-        return errorList;
     }
 
     /* The system sometimes moves too fast for the Ajax pages, so provide a

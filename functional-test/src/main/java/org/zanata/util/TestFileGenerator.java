@@ -238,9 +238,11 @@ public class TestFileGenerator {
     }
 
     public File openTestFile(String filename) {
-        URL url = Thread.currentThread().getContextClassLoader()
-                .getResource(filename);
-        File testFile = new File(url.getPath());
+        File testFile;
+        URL url = Thread.currentThread()
+                .getContextClassLoader().getResource(filename);
+        Preconditions.checkNotNull(url, "File %s url is null", filename);
+        testFile = new File(url.getPath());
         Preconditions.checkArgument(testFile.exists(), "%s not found", testFile);
         return testFile;
     }

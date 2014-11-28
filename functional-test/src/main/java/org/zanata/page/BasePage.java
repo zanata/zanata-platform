@@ -328,7 +328,7 @@ public class BasePage extends CorePage {
     }
 
     public void clickElement(By findby) {
-        scrollIntoView(getDriver().findElement(findby));
-        getDriver().findElement(findby).click();
+        scrollIntoView(waitForWebElement(findby));
+        waitForWebElement(findby).click();
     }
 }

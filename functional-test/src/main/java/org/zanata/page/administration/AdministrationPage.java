@@ -27,6 +27,10 @@ import org.zanata.page.BasePage;
 
 @Slf4j
 public class AdministrationPage extends BasePage {
+
+    private final By CONFIGURE_SERVER_LINK = By
+            .id("Admin_Server_configuration_home");
+
     private final By MANAGE_LANGUAGE_LINK = By
             .id("Admin_Manage_languages_home");
 
@@ -41,6 +45,12 @@ public class AdministrationPage extends BasePage {
 
     public AdministrationPage(WebDriver driver) {
         super(driver);
+    }
+
+    public ServerConfigurationPage goToServerConfigPage() {
+        log.info("Click Server Configuration");
+        clickLinkAfterAnimation(CONFIGURE_SERVER_LINK);
+        return new ServerConfigurationPage(getDriver());
     }
 
     public ManageLanguagePage goToManageLanguagePage() {

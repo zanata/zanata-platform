@@ -7,7 +7,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Projects']}</ui:define>
@@ -111,7 +110,6 @@
             value="#{projectAction.projectPagedListDataModel}" var="project">
             <rich:column width="270px" sortBy="#{project.name}">
               <f:facet name="header">#{msgs['jsf.ProjectName']}
-                <richext:columnSorter/>
               </f:facet>
 
               <s:link id="project" styleClass="table_link"
@@ -138,8 +136,7 @@
               <h:outputText value="#{project.description}"/>
             </rich:column>
             <rich:column sortBy="#{project.creationDate}" width="auto">
-              <f:facet name="header">#{msgs['jsf.CreationDate']}
-                <richext:columnSorter/></f:facet>
+              <f:facet name="header">#{msgs['jsf.CreationDate']}</f:facet>
               <h:outputText value="#{project.creationDate}">
                 <f:convertDateTime type="date" dateStyle="default"/>
               </h:outputText>
@@ -147,8 +144,7 @@
 
             <rich:column styleClass="centered" width="60px"
               sortBy="#{project.status}">
-              <f:facet name="header">#{msgs['jsf.Status']}
-                <richext:columnSorter/></f:facet>
+              <f:facet name="header">#{msgs['jsf.Status']}</f:facet>
               <h:outputText value="#{msgs[project.status.messageKey]}"/>
             </rich:column>
           </rich:dataTable>

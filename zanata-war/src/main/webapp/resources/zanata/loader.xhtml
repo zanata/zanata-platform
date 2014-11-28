@@ -20,12 +20,15 @@
   <composite:attribute name="jsHandle" type="java.lang.Boolean"
     shortDescription="display handle by javascript, zanata.loader.activate or zanata.loader.deactivate, 'js-loader'"
     default="false"/>
+
+  <composite:attribute name="visible" type="java.lang.Boolean"
+    shortDescription="display loader" default="true"/>
 </composite:interface>
 
 <composite:implementation>
 
   <div id="#{cc.attrs.id}"
-    class="#{cc.attrs.type} #{cc.attrs.jsHandle ? 'js-loader' : 'is-active '} #{cc.attrs.layout eq 'inline' ? 'loader--inline ' : ''}">
+    class="#{cc.attrs.type} #{cc.attrs.jsHandle ? 'js-loader' : ''} #{cc.attrs.layout eq 'inline' ? 'loader--inline' : ''} #{cc.attrs.visible ? 'is-active' : ''}">
     <span class="loader__spinner">
       <span></span><span></span><span></span>
     </span>

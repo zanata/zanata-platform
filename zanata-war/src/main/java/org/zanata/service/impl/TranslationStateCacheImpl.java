@@ -38,7 +38,6 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
@@ -184,11 +183,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         }
     }
 
-    /**
-     * This method contains all logic to be run immediately after a Text Flow
-     * Target has been successfully translated.
-     */
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Override
     public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
         DocumentLocaleKey key =

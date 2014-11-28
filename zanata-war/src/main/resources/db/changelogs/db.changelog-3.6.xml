@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="sflaniga@redhat.com">
+    <comment>Break circular reference between HTextFlow and HPotEntryData</comment>
+    <dropForeignKeyConstraint baseTableName="HPotEntryData" constraintName="FK17A648CFCCAD9D19"/>
+    <dropColumn tableName="HPotEntryData" columnName="tf_id" />
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Create WebHook table</comment>
+
+    <createTable tableName="WebHook">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="projectId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="url" type="longtext">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName = "WebHook"
+      baseColumnNames = "projectId" constraintName = "FK_WebHook_HProject"
+      referencedTableName = "HProject" referencedColumnNames = "id"/>
+  </changeSet>
+
+</databaseChangeLog>

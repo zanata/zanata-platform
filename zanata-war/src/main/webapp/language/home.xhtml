@@ -6,7 +6,6 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:richext="http://java.sun.com/jsf/composite/richext"
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Languages']}</ui:define>
@@ -24,15 +23,14 @@
       <rich:dataTable id="latestTribes"
         value="#{supportedLanguageAction.supportedLanguages}" var="language">
         <rich:column sortBy="#{language.localeId.id}">
-          <f:facet name="header">#{msgs['jsf.Language']}
-            <richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Language']}</f:facet>
           <s:link view="/language/language.xhtml" propagation="none"
             value="#{language.localeId.id}" styleClass="table_link">
             <f:param name="id" value="#{language.localeId.id}"/>
           </s:link>
         </rich:column>
         <rich:column sortBy="#{language.retrieveDisplayName()}">
-          <f:facet name="header">#{msgs['jsf.Name']}<richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Name']}</f:facet>
           #{language.retrieveDisplayName()}
         </rich:column>
         <rich:column>
@@ -40,8 +38,7 @@
           #{language.retrieveNativeName()}
         </rich:column>
         <rich:column sortBy="#{language.members.size}" styleClass="centered">
-          <f:facet name="header">#{msgs['jsf.Members']}
-            <richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Members']}</f:facet>
           #{language.members.size}
         </rich:column>
       </rich:dataTable>

@@ -92,6 +92,7 @@ public class DashboardTest extends ZanataTestCase {
 
     private boolean activityListExpands() throws Exception {
         DashboardActivityTab activityTab = dashboard.gotoActivityTab();
+        assertThat(activityTab.isMoreActivity());
         assertThat(activityTab.getMyActivityList()).isNotEmpty();
         return activityTab.clickMoreActivity();
     }
@@ -132,6 +133,6 @@ public class DashboardTest extends ZanataTestCase {
         CreateProjectPage createProjectPage =
             dashboard.gotoProjectsTab().clickOnCreateProjectLink();
         assertThat(createProjectPage.getTitle())
-                .isEqualTo("Projects - New Project");
+                .contains("New Project");
     }
 }

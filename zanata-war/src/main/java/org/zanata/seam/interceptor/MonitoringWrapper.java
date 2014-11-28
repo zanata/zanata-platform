@@ -53,7 +53,7 @@ public class MonitoringWrapper extends MonitoringFilter {
                     if (identity == null || !identity.isLoggedIn()) {
                         String signInUrl =
                                 httpRequest.getContextPath()
-                                        + "/account/sign_form";
+                                        + "/account/sign_in";
                         httpResponse.sendRedirect(signInUrl);
                     } else if (!identity.hasRole("admin")) {
                         httpResponse.sendError(

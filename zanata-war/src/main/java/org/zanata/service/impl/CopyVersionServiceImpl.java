@@ -35,6 +35,7 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.util.JPACopier;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -80,31 +81,31 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     private ZanataIdentity identity;
 
     // Stop watch for textFlow and target copy process
-    private Stopwatch copyTfAndTftStopWatch = new Stopwatch();
+    private Stopwatch copyTfAndTftStopWatch = Stopwatch.createUnstarted();
 
     @Override
     public void copyVersion(@Nonnull String projectSlug,
             @Nonnull String versionSlug, @Nonnull String newVersionSlug,
-            CopyVersionTaskHandle handle) {
+            @Nullable CopyVersionTaskHandle handle) {
         Optional<CopyVersionTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
-
-        if( taskHandleOpt.isPresent() ) {
-            prepareCopyVersionHandle(version, taskHandleOpt.get());
-        }
-
-        Stopwatch overallStopwatch = new Stopwatch().start();
-        log.info("copy version start: copy {} to {}",
-                projectSlug + ":" + versionSlug, projectSlug + ":"
-                        + newVersionSlug);
 
         if (version == null) {
             log.error("Cannot find project iteration of {}:{}", projectSlug,
                     versionSlug);
             return;
         }
+
+        if( taskHandleOpt.isPresent() ) {
+            prepareCopyVersionHandle(version, taskHandleOpt.get());
+        }
+
+        Stopwatch overallStopwatch = Stopwatch.createStarted();
+        log.info("copy version start: copy {} to {}",
+                projectSlug + ":" + versionSlug, projectSlug + ":"
+                        + newVersionSlug);
 
         // Copy of HProjectIteration
         HProjectIteration newVersion =
@@ -158,8 +159,8 @@ public class CopyVersionServiceImpl implements CopyVersionService {
         return AsyncTaskResult.taskResult();
     }
 
-    private void prepareCopyVersionHandle(HProjectIteration originalVersion,
-            CopyVersionTaskHandle handle) {
+    private void prepareCopyVersionHandle(@Nonnull HProjectIteration originalVersion,
+            @Nonnull CopyVersionTaskHandle handle) {
         handle.setTriggeredBy(identity.getAccountUsername());
         int totalDocCount =
                 getTotalDocCount(originalVersion.getProject().getSlug(),

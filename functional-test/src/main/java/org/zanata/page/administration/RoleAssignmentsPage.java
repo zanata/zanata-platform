@@ -1,3 +1,23 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.page.administration;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +36,16 @@ import java.util.List;
 @Slf4j
 public class RoleAssignmentsPage extends BasePage {
 
+    private By newRuleButton = By.linkText("New Rule");
+    private By roleTable = By.tagName("table");
+
     public RoleAssignmentsPage(WebDriver driver) {
         super(driver);
     }
 
     public EditRoleAssignmentPage clickCreateNew() {
         log.info("Click Create New");
-        getDriver().findElement(By.linkText("New Rule")).click();
+        waitForWebElement(newRuleButton).click();
         return new EditRoleAssignmentPage(getDriver());
     }
 
@@ -30,7 +53,7 @@ public class RoleAssignmentsPage extends BasePage {
         log.info("Query role rules");
         List<String> names = new ArrayList<String>();
         List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
-                By.tagName("table"));
+                roleTable);
         for (TableRow tableRow : tableRows) {
             names.add(tableRow.getCells().get(1).getText());
         }

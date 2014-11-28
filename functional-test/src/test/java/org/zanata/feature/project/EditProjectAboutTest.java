@@ -30,6 +30,7 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectAboutPage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -49,6 +50,9 @@ public class EditProjectAboutTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addAboutPageDetails() throws Exception {
+        new ZanataRestCaller().createProjectAndVersion(
+                "aboutpagetest", "aboutpagetest", "file");
+
         String aboutText = "This is my about text for AF";
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -57,7 +61,7 @@ public class EditProjectAboutTest extends ZanataTestCase {
                 .as("Admin is logged in");
 
         ProjectAboutTab projectAboutTab = new ProjectWorkFlow()
-                .createNewSimpleProject("aboutpagetest", "aboutpagetest")
+                .goToProjectByName("aboutpagetest")
                 .gotoSettingsTab()
                 .gotoSettingsAboutTab();
 

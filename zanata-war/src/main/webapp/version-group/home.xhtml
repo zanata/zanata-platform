@@ -7,7 +7,6 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:richext="http://java.sun.com/jsf/composite/richext"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="../WEB-INF/template/template_2x.xhtml">
 
@@ -24,14 +23,6 @@
   </ui:define>
 
   <ui:define name="center_content">
-
-    <script type="text/javascript">
-      function focusNameFilterInput() {
-        #{rich:element('name_filter_input')}
-      .
-        focus();
-      }
-    </script>
 
     <f:facet name="header">#{msgs['jsf.Groups']}</f:facet>
 
@@ -68,8 +59,7 @@
               <br/>
               <h:inputText value="#{versionGroupAction.groupNameFilter}"
                 id="name_filter_input" styleClass="filter_input">
-                <a4j:ajax event="keyup" render="groupTable"
-                  oncomplete="focusNameFilterInput()">
+                <a4j:ajax event="keyup" render="groupTable@body">
                   <a4j:attachQueue ignoreDupResponses="true"
                     requestDelay="700"/>
                 </a4j:ajax>
@@ -96,8 +86,7 @@
           #{group.description}
         </rich:column>
         <rich:column sortBy="#{group.creationDate}">
-          <f:facet name="header">#{msgs['jsf.CreationDate']}
-            <richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.CreationDate']}</f:facet>
           <h:outputText value="#{group.creationDate}">
             <f:convertDateTime type="date" dateStyle="default"/>
           </h:outputText>
@@ -105,8 +94,7 @@
 
         <rich:column styleClass="centered" width="60px" sortBy="#{group.status}"
           filterMethod="#{versionGroupAction.filterGroupByStatus}">
-          <f:facet name="header">#{msgs['jsf.Status']}
-            <richext:columnSorter/></f:facet>
+          <f:facet name="header">#{msgs['jsf.Status']}</f:facet>
           <h:outputText value="#{msgs[group.status.messageKey]}"/>
         </rich:column>
 

@@ -21,11 +21,7 @@
 
 package org.zanata.util;
 
-import java.util.Set;
-
 import org.junit.rules.ExternalResource;
-import org.zanata.common.LocaleId;
-import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.zanata.util.SampleDataResourceClient.*;

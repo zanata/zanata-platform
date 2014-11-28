@@ -40,7 +40,7 @@ public class VirusScannerTest {
 
     @BeforeClass
     private void checkDisabled() {
-        if (virusScanner.isDisabled()) {
+        if (VirusScanner.isDisabled()) {
             throw new SkipException("virusScanner is DISABLED");
         }
     }
@@ -81,7 +81,7 @@ public class VirusScannerTest {
     }
 
     private void virusNotFound(String msg) {
-        if (virusScanner.isScannerSet()) {
+        if (VirusScanner.isScannerSet()) {
             Assert.fail(msg);
         } else {
             throw new SkipException(

@@ -86,12 +86,13 @@
     project_iteration_id="3" revision="1" obsolete="0"
     last_modified_by_id="1" poHeader_id="1" />
 
+  <HPotEntryData id="1" context="context" comment_id="1" />
+
   <HTextFlow id="1" document_id="1" resId="tf1" revision="1" pos="0"
     obsolete="0" plural="true" wordCount="11" comment_id="1"
     contentHash="5eb63bbbe01eeed093cb22bb8f5acdc3" content0="hello world"
+    potEntryData_id="1"
     content1="hello world1" />
-
-  <HPotEntryData id="1" context="context" comment_id="1" tf_id="1" />
 
   <HTextFlow id="2" document_id="1" resId="tf2" revision="1" pos="1"
     obsolete="0" plural="false" wordCount="11"

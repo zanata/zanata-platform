@@ -64,8 +64,9 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeNewPassword("newpassword")
                 .clickUpdatePasswordButton();
         dashboard.expectNotification(DashboardAccountTab.PASSWORD_UPDATE_SUCCESS);
+        dashboard.logout();
 
-        assertThat(dashboard.logout().hasLoggedIn()).isFalse()
+        assertThat(new BasicWorkFlow().goToHome().hasLoggedIn()).isFalse()
                 .as("User is logged out");
 
         DashboardBasePage dashboardPage = new LoginWorkFlow()
@@ -88,7 +89,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeNewPassword("somenewpassword")
                 .clickUpdatePasswordButton();
 
-        assertThat(dashboardAccountTab.getFieldErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.INCORRECT_OLD_PASSWORD_ERROR)
                 .as("The old password incorrect error is shown");
     }
@@ -104,7 +105,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .gotoSettingsAccountTab()
                 .clickUpdatePasswordButton();
 
-        assertThat(dashboardAccountTab.getFieldErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.FIELD_EMPTY_ERROR)
                 .as("Empty password message displayed");
     }
@@ -124,7 +125,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeNewPassword(tooShort)
                 .clickUpdatePasswordButton();
 
-        assertThat(dashboardAccountTab.getFieldErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
                 .as("Incorrect password length message displayed");
 
@@ -132,7 +133,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .typeNewPassword(tooLong)
                 .clickUpdatePasswordButton();
 
-        assertThat(dashboardAccountTab.getFieldErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
                 .as("Incorrect password length message displayed");
     }

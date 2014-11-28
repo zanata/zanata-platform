@@ -23,8 +23,6 @@ package org.zanata.page.dashboard.dashboardsettings;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
@@ -34,11 +32,8 @@ import org.zanata.page.dashboard.DashboardBasePage;
 @Slf4j
 public class DashboardProfileTab extends DashboardBasePage {
 
-    @FindBy(id = "profileForm:nameField:accountName")
-    private WebElement accountNameField;
-
-    @FindBy(id = "updateProfileButton")
-    private WebElement updateProfileButton;
+    private By accountNameField = By.id("profileForm:nameField:accountName");
+    private By updateProfileButton = By.id("updateProfileButton");
 
     public DashboardProfileTab(WebDriver driver) {
         super(driver);
@@ -46,21 +41,21 @@ public class DashboardProfileTab extends DashboardBasePage {
 
     public String getUsername() {
         log.info("Query user name");
-        return getDriver().findElement(By.id("profileForm"))
+        return waitForWebElement(By.id("profileForm"))
                 .findElement(By.className("l--push-bottom-0"))
                 .getText();
     }
 
     public DashboardProfileTab enterName(String name) {
         log.info("Enter name {}", name);
-        accountNameField.clear();
-        accountNameField.sendKeys(name);
-        return this;
+        waitForWebElement(accountNameField).clear();
+        waitForWebElement(accountNameField).sendKeys(name);
+        return new DashboardProfileTab(getDriver());
     }
 
     public DashboardProfileTab clickUpdateProfileButton() {
         log.info("Click Update");
-        updateProfileButton.click();
-        return this;
+        waitForWebElement(updateProfileButton).click();
+        return new DashboardProfileTab(getDriver());
     }
 }

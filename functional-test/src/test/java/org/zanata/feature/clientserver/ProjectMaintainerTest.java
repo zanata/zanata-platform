@@ -1,3 +1,23 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.feature.clientserver;
 
 import com.google.common.base.Joiner;
@@ -13,6 +33,8 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
@@ -76,7 +98,8 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // translator creates the project and become maintainer
         ZanataRestCaller restCaller =
                 new ZanataRestCaller("translator",
-                        "d83882201764f7d339e97c4b087f0806");
+                        PropertiesHolder.getProperty(
+                                Constants.zanataTranslatorKey.value()));
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
                 client.callWithTimeout(projectRootPath,
@@ -127,9 +150,9 @@ public class ProjectMaintainerTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136564)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void projectMaintainerPullTest() throws IOException {
-        ZanataRestCaller restCaller =
-                new ZanataRestCaller("translator",
-                        "d83882201764f7d339e97c4b087f0806");
+        ZanataRestCaller restCaller = new ZanataRestCaller("translator",
+                PropertiesHolder
+                        .getProperty(Constants.zanataTranslatorKey.value()));
         File workDir = Files.createTempDir();
         String projectSlug = "pull-test";
         String iterationSlug = "master";

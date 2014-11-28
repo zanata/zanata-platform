@@ -1,3 +1,23 @@
+/*
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * @author tags. See the copyright.txt file in the distribution for a full
+ * listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
+ */
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
@@ -19,19 +39,25 @@ import org.zanata.util.WebElementUtil;
  */
 @Slf4j
 public class ManageSearchPage extends BasePage {
-    private static final int SELECT_ALL_COLUMN = 0;
-    private By classesTableBy = By.id("form:classList");
-    private By abortButtonBy = By.id("form:cancel");
 
+    private static final int SELECT_ALL_COLUMN = 0;
+
+    private By classesTable = By.id("form:classList");
+    private By abortButton = By.id("form:cancel");
+    private By selectAllButton = By.id("form:selectAll");
+    private By performButton = By.id("form:reindex");
+    private By cancelButton = By.id("form:cancel");
+    private By noOpsLabel = By.id("noOperationsRunning");
+    private By abortedLabel = By.id("aborted");
+    private By completedLabel = By.id("completed");
 
     public ManageSearchPage(WebDriver driver) {
         super(driver);
     }
 
-
     public ManageSearchPage selectAllActionsFor(String clazz) {
-        List<TableRow> tableRows =
-            WebElementUtil.getTableRows(getDriver(), classesTableBy);
+        List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
+                waitForWebElement(classesTable));
         for (TableRow tableRow : tableRows) {
             if (tableRow.getCellContents().contains(clazz)) {
                 WebElement allActionsChkBox =
@@ -40,12 +66,12 @@ public class ManageSearchPage extends BasePage {
             }
         }
 
-        return this;
+        return new ManageSearchPage(getDriver());
     }
 
     public ManageSearchPage clickSelectAll() {
         log.info("Click Select All");
-        getDriver().findElement(By.id("form:selectAll")).click();
+        waitForWebElement(selectAllButton).click();
         // It seems that if the Select All and Perform buttons are clicked too
         // quickly in succession, the operation will fail
         try {
@@ -59,7 +85,7 @@ public class ManageSearchPage extends BasePage {
     public boolean allActionsSelected() {
         log.info("Query all actions selected");
         List<TableRow> tableRows =
-                WebElementUtil.getTableRows(getDriver(), classesTableBy);
+                WebElementUtil.getTableRows(getDriver(), classesTable);
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
             for (int i = 2; i <= 4; i++) {
@@ -74,12 +100,12 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
-        getDriver().findElement(By.id("form:reindex")).click();
+        waitForWebElement(performButton).click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 // The Abort button will display
-                return input.findElement(By.id("form:cancel")).isDisplayed();
+                return waitForWebElement(cancelButton).isDisplayed();
             }
         });
         return new ManageSearchPage(getDriver());
@@ -91,7 +117,7 @@ public class ManageSearchPage extends BasePage {
             @Override
             public boolean apply(WebDriver input) {
                 // once the button re-appears, it means the reindex is done.
-                return input.findElement(By.id("form:reindex")).isDisplayed();
+                return waitForWebElement(performButton).isDisplayed();
             }
         });
         return new ManageSearchPage(getDriver());
@@ -99,24 +125,24 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage abort() {
         log.info("Click Abort");
-        getDriver().findElement(abortButtonBy).click();
+        waitForWebElement(abortButton).click();
         return new ManageSearchPage(getDriver());
     }
 
 
     public boolean noOperationsRunningIsDisplayed() {
         log.info("Query No Operations");
-        return getDriver().findElement(By.id("noOperationsRunning")).isDisplayed();
+        return waitForWebElement(noOpsLabel).isDisplayed();
     }
 
     public boolean completedIsDisplayed() {
         log.info("Query is action completed");
-        return getDriver().findElement(By.id("completed")).isDisplayed();
+        return waitForWebElement(completedLabel).isDisplayed();
     }
 
     public boolean abortedIsDisplayed() {
         log.info("Query is action aborted");
-        return getDriver().findElement(By.id("aborted")).isDisplayed();
+        return waitForWebElement(abortedLabel).isDisplayed();
     }
 
 }

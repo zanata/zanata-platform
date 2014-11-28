@@ -55,7 +55,6 @@ public class HPotEntryData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private HTextFlow textFlow;
     private String context;
     @Deprecated
     // use HTextFlow.comment
@@ -73,12 +72,6 @@ public class HPotEntryData implements Serializable {
         this.id = id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "tf_id", /* nullable=false, */unique = true)
-    @NaturalId
-    public HTextFlow getTextFlow() {
-        return textFlow;
-    }
 
     public String getContext() {
         return context;

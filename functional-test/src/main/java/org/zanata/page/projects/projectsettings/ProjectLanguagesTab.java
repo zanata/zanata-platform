@@ -28,10 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -43,8 +43,8 @@ import java.util.List;
 @Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
 
-    @FindBy(id = "languageAutocomplete-autocomplete__input")
-    private WebElement addNewLanguageField;
+    private By addNewLanguageField = By.id("languageAutocomplete-autocomplete__input");
+    private By settingsLanguagesForm = By.id("settings-languages-form");
 
     public ProjectLanguagesTab(WebDriver driver) {
         super(driver);
@@ -57,18 +57,27 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales");
-        List<String> rows = Lists.transform(getEnabledLocaleListElement(),
+        return Lists.transform(getEnabledLocaleListElement(),
                 new Function<WebElement, String>() {
                         @Override
                         public String apply(WebElement li) {
                             return li.getText();
                         }
                 });
-        return rows;
+    }
+
+    public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getEnabledLocaleList().size() == count;
+            }
+        });
+        return new ProjectLanguagesTab(getDriver());
     }
 
     private List<WebElement> getEnabledLocaleListElement() {
-        return getDriver().findElement(By.id("settings-languages-form"))
+        return waitForWebElement(settingsLanguagesForm)
                 .findElement(By.className("list--slat"))
                 .findElements(By.className("reveal--list-item"));
     }
@@ -78,8 +87,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                return getDriver()
-                        .findElement(By.id("settings-languages-form"))
+                return driver.findElement(settingsLanguagesForm)
                         .findElement(By.className("list--slat"))
                         .isDisplayed();
             }

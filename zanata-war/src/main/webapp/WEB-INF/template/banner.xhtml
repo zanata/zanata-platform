@@ -155,7 +155,7 @@
         #{msgs['jsf.Login']}
       </h:outputLink>
 
-      <h:form rendered="#{applicationConfigurationAction.singleOpenId}">
+      <h:form rendered="#{applicationConfigurationAction.singleOpenId}" styleClass="bx--inline">
         <h:commandLink id="openid_single_signin_link"
           action="#{loginAction.getLoginPageRedirect()}"
           propagation="none" styleClass="l--push-left-half button--primary">

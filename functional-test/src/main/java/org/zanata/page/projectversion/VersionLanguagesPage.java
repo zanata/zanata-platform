@@ -28,7 +28,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.webtrans.EditorPage;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,77 +43,71 @@ public class VersionLanguagesPage extends VersionBasePage {
         super(driver);
     }
 
+    private By languageList = By.id("languages-language_list");
+    private By languageItemTitle = By.className("list__item__meta");
+    private By languageItemStats = By.className("stats__figure");
+    private By languageDocumentList = By.id("languages-document_list");
+    private By documentListItem = By.className("list__item--actionable");
+    private By documentListItemTitle = By.className("list__title");
+
     private List<WebElement> getLanguageTabLocaleList() {
-        WebElement languageList =
-                waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForWebElement(languageList).findElements(By.tagName("li"));
+    }
+
+    private List<WebElement> getLanguageTabDocumentList() {
+        log.info("Query documents list");
+        return waitForWebElement(languageDocumentList)
+                .findElement(By.className("list--stats"))
+                .findElements(documentListItem);
+    }
+
+    public VersionLanguagesPage clickLocale(final String locale) {
+        log.info("Click locale {}", locale);
+        WebElement listItem = waitForAMoment()
+                .until(new Function<WebDriver, WebElement>() {
                     @Override
                     public WebElement apply(WebDriver input) {
-                        return getDriver().findElement(
-                                By.id("languages-language_list"));
+                        for (WebElement localeRow : getLanguageTabLocaleList()) {
+                            WebElement link = localeRow
+                                    .findElement(By.xpath(".//a")); // Top <a>
+                            if (link.findElement(languageItemTitle)
+                                    .getText().equals(locale)) {
+                                return link;
+                            }
+                        }
+                        return null;
                     }
                 });
-        return languageList.findElements(By.tagName("li"));
+        clickLinkAfterAnimation(listItem);
+        return new VersionLanguagesPage(getDriver());
+    }
+
+    public EditorPage clickDocument(final String docName) {
+        log.info("Click document {}", docName);
+        WebElement document = waitForAMoment()
+                .until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver input) {
+                        for (WebElement document : getLanguageTabDocumentList()) {
+                            if (waitForElementExists(document,
+                                    documentListItemTitle)
+                                    .getText().equals(docName)) {
+                                return document
+                                        .findElement(documentListItemTitle);
+                            }
+                        }
+                        return null;
+                    }
+                });
+        clickLinkAfterAnimation(document);
+        return new EditorPage(getDriver());
     }
 
     public EditorPage translate(final String locale, final String docName) {
         log.info("Click on {} : {} to begin translation", locale, docName);
-        gotoLanguageTab();
-        return refreshPageUntil(this, new Function<WebDriver, EditorPage>() {
-            @Override
-            public EditorPage apply(WebDriver driver) {
-                List<WebElement> localeList = getLanguageTabLocaleList();
-                for (WebElement localeRow : localeList) {
-                    WebElement link = localeRow.findElement(By.xpath(".//a"));
-                    if (link.findElement(By.className("list__item"))
-                            .findElement(By.className("list__item__info"))
-                            .findElement(By.className("list__item__meta"))
-                            .getText().equals(locale)) {
-                        clickLinkAfterAnimation(link);
-
-                        List<WebElement> documentList =
-                                getVersionTabDocumentList();
-                        for (int i = 0; i < documentList.size(); i++) {
-                            WebElement document = documentList.get(i);
-                            if (document
-                                    .findElement(
-                                            By.xpath(".//a/div/div/h3[@class='list__title']"))
-                                    .getText().equals(docName)) {
-
-                                clickLinkAfterAnimation(document.findElement(By
-                                        .id(i + ":" + "link-translate-options")));
-
-                                clickLinkAfterAnimation(document
-                                        .findElement(
-                                                By.id(i
-                                                        + ":"
-                                                        + "link-translate-online"))
-                                        .findElement(By.tagName("a")));
-
-                                return new EditorPage(getDriver());
-                            }
-                        }
-                    }
-                }
-                throw new IllegalArgumentException("can not translate locale: "
-                        + locale);
-            }
-        });
-    }
-
-    private List<WebElement> getVersionTabDocumentList() {
-        log.info("Query documents list");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(
-                                By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']"))
-                        .isDisplayed();
-            }
-        });
-        return getDriver()
-                .findElements(
-                        By.xpath("//form[@id='languages-document_list']/ul[@class='list--stats']/li"));
+        return gotoLanguageTab()
+                .clickLocale(locale)
+                .clickDocument(docName);
     }
 
     public String getStatisticsForLocale(final String localeId) {
@@ -128,14 +121,11 @@ public class VersionLanguagesPage extends VersionBasePage {
 
                 List<WebElement> localeList = getLanguageTabLocaleList();
                 for (WebElement locale : localeList) {
-                    if (locale
-                            .findElement(
-                                    By.xpath(".//a/div/div/span[@class='list__item__meta']"))
-                            .getText().equals(localeId)) {
-                        figure =
-                                locale.findElement(
-                                        By.xpath(".//a/div/div[2]/span/span[@class='stats__figure']"))
-                                        .getText();
+                    if (locale.findElement(languageItemTitle)
+                            .getText()
+                            .equals(localeId)) {
+                        figure = locale.findElement(languageItemStats)
+                                .getText();
                         break;
                     }
                 }

@@ -39,19 +39,19 @@ public class ProjectTranslationTab extends ProjectBasePage {
 
     private Map validationNames = getValidationMapping();
 
+    private By validationsList =
+            By.id("settings-translation-form:validation-list");
+
     public ProjectTranslationTab(WebDriver driver) {
         super(driver);
     }
 
     public boolean isValidationLevel(String optionName, String level) {
         log.info("Query is {} validation level {}", optionName, level);
-        String optionElementID = validationNames
+        final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
-
-        return getDriver()
-                .findElement(By.id(optionElementID))
-                .getAttribute("checked")
-                .equals("true");
+        WebElement option = waitForElementExists(By.id(optionElementID));
+        return option.getAttribute("checked").equals("true");
     }
 
     public ProjectTranslationTab setValidationLevel(String optionName,
@@ -60,8 +60,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
 
-        WebElement option =  getDriver().findElement(
-                By.id("settings-translation-form:validation-list"))
+        WebElement option =  waitForWebElement(validationsList)
                 .findElement(By.id(optionElementID));
 
         ((JavascriptExecutor) getDriver())

@@ -1,6 +1,6 @@
 package org.zanata.util;
 
-import org.zanata.common.AbstractTranslationCount;
+import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.ContentState;
 import org.zanata.common.TransUnitWords;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -13,7 +13,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 public class StatisticsUtil {
 
     public static int calculateUntranslated(Long totalCount,
-            AbstractTranslationCount translationCount) {
+        BaseTranslationCount translationCount) {
         return totalCount.intValue()
                 - translationCount.get(ContentState.Translated)
                 - translationCount.get(ContentState.NeedReview)
@@ -24,6 +24,18 @@ public class StatisticsUtil {
     public static double getRemainingHours(WordStatistic wordsStatistic) {
         return getRemainingHours(wordsStatistic.getUntranslated(),
                 wordsStatistic.getNeedReview() + wordsStatistic.getRejected());
+    }
+
+    public static WordStatistic copyWordStatistic(WordStatistic from) {
+        if (from == null) {
+            return null;
+        }
+        WordStatistic copy =
+            new WordStatistic(from.getApproved(), from.getNeedReview(),
+                from.getUntranslated(), from.getTranslated(),
+                from.getRejected());
+        copy.setRemainingHours(from.getRemainingHours());
+        return copy;
     }
 
     public static double getRemainingHours(

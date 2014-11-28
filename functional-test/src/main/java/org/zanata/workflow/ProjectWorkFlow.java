@@ -138,7 +138,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         if (driver.findElements(By.id("create-version-form:copy-from-version"))
                 .size() > 0) {
             createVersionPage = createVersionPage
-                    .clickCopyFromVersion()
+                    .disableCopyFromVersion()
                     .selectProjectType(versionType);
         }
         return createVersionPage.inputVersionId(versionID).saveVersion();

@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.projects.ProjectBasePage;
 
 import java.util.HashMap;
@@ -39,23 +38,17 @@ import java.util.Map;
 @Slf4j
 public class ProjectGeneralTab extends ProjectBasePage {
 
-    @FindBy(id = "settings-general-form:slugField")
-    private WebElement projectIdField;
-
-    @FindBy(id = "settings-general-form:nameField:name")
-    private WebElement projectNameField;
-
-    @FindBy(id = "settings-general-form:descriptionField:description")
-    private WebElement descriptionField;
-
-    @FindBy(id = "project-types")
-    private WebElement projectTypeList;
-
-    @FindBy(id = "settings-general-form:homePageField:homePage")
-    private WebElement homepageField;
-
-    @FindBy(id = "settings-general-form:repoField:repo")
-    private WebElement repoField;
+    private By projectIdField = By.id("settings-general-form:slugField");
+    private By projectNameField = By.id("settings-general-form:nameField:name");
+    private By descriptionField = By.id("settings-general-form:descriptionField:description");
+    private By projectTypeList = By.id("project-types");
+    private By homepageField = By.id("settings-general-form:homePageField:homePage");
+    private By repoField = By.id("settings-general-form:repoField:repo");
+    private By archiveButton = By.id("settings-general-form:button-archive-project");
+    private By unarchiveButton = By.id("settings-general-form:button-unarchive-project");
+    private By lockProjectButton = By.id("settings-general-form:button-lock-project");
+    private By unlockProjectButton = By.id("settings-general-form:button-unlock-project");
+    private By updateButton = By.id("settings-general-form:button-update-settings");
 
     public ProjectGeneralTab(WebDriver driver) {
         super(driver);
@@ -67,7 +60,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return project ID string
      */
     public String getProjectId() {
-        return projectIdField.getAttribute("value");
+        return waitForWebElement(projectIdField).getAttribute("value");
     }
 
     /**
@@ -78,8 +71,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
-        projectNameField.clear();
-        projectNameField.sendKeys(projectName);
+        waitForWebElement(projectNameField).clear();
+        waitForWebElement(projectNameField).sendKeys(projectName);
         defocus();
         return new ProjectGeneralTab(getDriver());
     }
@@ -91,8 +84,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
-        descriptionField.clear();
-        descriptionField.sendKeys(projectDescription);
+        waitForWebElement(descriptionField).clear();
+        waitForWebElement(descriptionField).sendKeys(projectDescription);
         defocus();
         return new ProjectGeneralTab(getDriver());
     }
@@ -133,8 +126,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
     // Return a map of project type to div container
     private Map<String, WebElement> getProjectTypes() {
         Map<String, WebElement> types = new HashMap<String, WebElement>();
-        for (WebElement projectTypeRow
-                : projectTypeList.findElements(By.tagName("li"))) {
+        for (WebElement projectTypeRow : waitForWebElement(projectTypeList)
+                .findElements(By.tagName("li"))) {
             String label = projectTypeRow.findElement(By.tagName("label"))
                     .getText();
             String meta = projectTypeRow.findElement(By.className("txt--meta"))
@@ -152,9 +145,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public boolean isArchiveButtonAvailable() {
         log.info("Query is Archive button displayed");
-        return getDriver().findElements(
-                By.id("settings-general-form:button-archive-project"))
-                .size() > 0;
+        return getDriver().findElements(archiveButton).size() > 0;
     }
 
     /**
@@ -163,7 +154,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab archiveProject() {
         log.info("Click Archive this project");
-        clickElement(By.id("settings-general-form:button-archive-project"));
+        clickElement(archiveButton);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -173,7 +164,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab unarchiveProject() {
         log.info("Click Unarchive this project");
-        clickElement(By.id("settings-general-form:button-unarchive-project"));
+        clickElement(unarchiveButton);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -183,7 +174,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab lockProject() {
         log.info("Click Make this project read only");
-        clickElement(By.id("settings-general-form:button-lock-project"));
+        clickElement(lockProjectButton);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -193,7 +184,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab unlockProject() {
         log.info("Click Make this project writable");
-        clickElement(By.id("settings-general-form:button-unlock-project"));
+        clickElement(unlockProjectButton);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -204,8 +195,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterHomePage(String homepage) {
         log.info("Enter home page {}", homepage);
-        homepageField.clear();
-        homepageField.sendKeys(homepage);
+        waitForWebElement(homepageField).clear();
+        waitForWebElement(homepageField).sendKeys(homepage);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -216,8 +207,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterRepository(String repo) {
         log.info("Enter repository {}", repo);
-        repoField.clear();
-        repoField.sendKeys(repo);
+        waitForWebElement(repoField).clear();
+        waitForWebElement(repoField).sendKeys(repo);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -227,14 +218,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab updateProject() {
         log.info("Click Update general settings");
-        scrollIntoView(updateButton());
-        clickAndCheckErrors(updateButton());
+        scrollIntoView(waitForWebElement(updateButton));
+        clickAndCheckErrors(waitForWebElement(updateButton));
         return new ProjectGeneralTab(getDriver());
     }
-
-    private WebElement updateButton() {
-        return getDriver().findElement(
-                By.id("settings-general-form:button-update-settings"));
-    }
-
 }

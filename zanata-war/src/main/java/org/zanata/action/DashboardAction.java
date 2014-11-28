@@ -127,7 +127,8 @@ public class DashboardAction implements Serializable {
     }
 
     private int countUserMaintainedProjects() {
-        return authenticatedAccount.getPerson().getMaintainerProjects().size();
+        return projectDAO.getMaintainedProjectCount(
+                authenticatedAccount.getPerson(), null);
     }
 
     private List<HProject> fetchUserMaintainedProjects() {

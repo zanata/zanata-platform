@@ -22,9 +22,8 @@ package org.zanata.page.dashboard.dashboardsettings;
 
 import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
@@ -33,14 +32,9 @@ import org.zanata.page.dashboard.DashboardBasePage;
 @Slf4j
 public class DashboardClientTab extends DashboardBasePage {
 
-    @FindBy(id = "generateKeyButton")
-    private WebElement generateApiKeyButton;
-
-    @FindBy(id = "apiKey")
-    private WebElement apiKeyLabel;
-
-    @FindBy(id = "config")
-    private WebElement configurationTextArea;
+    private By generateApiKeyButton = By.id("generateKeyButton");
+    private By apiKeyLabel = By.id("apiKey");
+    private By configurationTextArea = By.id("config");
 
     public DashboardClientTab(WebDriver driver) {
         super(driver);
@@ -48,19 +42,19 @@ public class DashboardClientTab extends DashboardBasePage {
 
     public DashboardClientTab pressApiKeyGenerateButton() {
         log.info("Press Generate API Key");
-        generateApiKeyButton.click();
+        waitForWebElement(generateApiKeyButton).click();
         getDriver().switchTo().alert().accept();
         return new DashboardClientTab(getDriver());
     }
 
     public String getApiKey() {
         log.info("Query API Key");
-        return apiKeyLabel.getAttribute("value");
+        return waitForWebElement(apiKeyLabel).getAttribute("value");
     }
 
     public String getConfigurationDetails() {
         log.info("Query configuration details");
-        return configurationTextArea.getText();
+        return waitForWebElement(configurationTextArea).getText();
     }
 
     public void waitForApiKeyChanged(final String current) {

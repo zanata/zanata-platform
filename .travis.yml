@@ -1,9 +1,19 @@
 language: java
-install: true
-script: mvn test -Dgwt.validateOnly -Darquillian.jboss.home=/dev/null
+
+# http://docs.travis-ci.com/user/languages/java/#Dependency-Management
+# http://docs.travis-ci.com/user/build-timeouts/#Build-times-out-because-no-output-was-received
+# Installing the dependencies here saves many log lines (Travis limit is 10000)
+install: travis_wait mvn clean verify -Dmaven.main.skip -Dmaven.test.skip -Dgwt.compiler.skip --quiet
+
+script: |
+  mvn test \
+    --batch-mode \
+    --settings .travis-settings.xml \
+    -Darquillian.jboss.home=/dev/null \
+    -Dgwt.validateOnly \
+    -DstaticAnalysis
 
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
   - oraclejdk8

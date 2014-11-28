@@ -41,7 +41,9 @@ import org.zanata.model.HTextFlowHistory;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.po.HPotEntryData;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -80,8 +82,10 @@ public class ZanataEntities {
                 HTextFlowTarget.class,
                 HTextFlowHistory.class,
                 HTextFlow.class);
+        builder.add(HPotEntryData.class);
         // documents
         builder.add(HDocumentHistory.class, HDocument.class);
+        builder.add(HPoHeader.class);
         // locales
         builder.add(HLocaleMember.class, HLocale.class);
         builder.add(HIterationGroup.class);

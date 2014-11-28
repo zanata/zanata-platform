@@ -57,7 +57,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .goToProjects()
                 .goToProject("about fedora")
                 .clickCreateVersionLink()
-                .clickCopyFromVersion()
+                .disableCopyFromVersion()
                 .inputVersionId("my-aboutfedora-version")
                 .saveVersion();
 
@@ -96,15 +96,16 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .inputVersionId("-A");
         createVersionPage.defocus();
 
-        assertThat(createVersionPage.getErrors())
+        assertThat(createVersionPage.expectError(
+                    CreateVersionPage.VALIDATION_ERROR))
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("B-");
         createVersionPage.defocus();
-        createVersionPage = createVersionPage.waitForNumErrors(1);
 
-        assertThat(createVersionPage.getErrors())
+        assertThat(createVersionPage.expectError(
+                    CreateVersionPage.VALIDATION_ERROR))
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 
@@ -112,7 +113,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         createVersionPage.defocus();
         createVersionPage = createVersionPage.waitForNumErrors(1);
 
-        assertThat(createVersionPage.getErrors())
+        assertThat(createVersionPage.expectError(
+                    CreateVersionPage.VALIDATION_ERROR))
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 

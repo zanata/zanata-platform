@@ -22,7 +22,6 @@ package org.zanata.feature.account;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
@@ -35,7 +34,6 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.page.utility.HomePage;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
@@ -190,7 +188,7 @@ public class InvalidEmailAddressTest extends ZanataTestCase {
                 .enterEmail(emailAddress.toString())
                 .registerFailure();
 
-        assertThat(registerPage.waitForFieldErrors())
+        assertThat(registerPage.expectError(RegisterPage.MALFORMED_EMAIL_ERROR))
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email formation error is displayed");
     }

@@ -20,7 +20,30 @@
   function getUserRoleId() {
     return "[id='#{rich:clientId('user-roles')}']";
   }
+
+  function onPayloadInputKeyDown(input, event) {
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        if(jQuery(input).val()) {
+          addWebhook(jQuery(input).val());
+        }
+        return false;
+      }
+  }
+
+  function onRemoveWebHook(ele) {
+    jQuery(ele).children('i').addClass('is-hidden');
+    zanata.loader.activate(jQuery(ele).children('#loader'));
+  }
 </script>
+
+<a4j:jsFunction name="addWebhook"
+  onbegin="zanata.loader.activate('#add-url-loader')"
+  oncomplete="zanata.loader.deactivate('#add-url-loader');"
+  action="#{projectHome.addWebHook(url)}"
+  render="settings-webhooks-list">
+  <a4j:param name="val1" assignTo="#{url}"/>
+</a4j:jsFunction>
 
 <a4j:jsFunction name="bindValidationValue"
   action="#{projectHome.updateValidationOption(name, state)}"
@@ -82,6 +105,14 @@
       class="js-url-mod" data-content="#settings-permissions">
       <i class="i i--users"></i>
       <span class="is-hidden--m-l-down">#{msgs['jsf.Permissions']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-webhooks_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/webhooks"
+      class="js-url-mod" data-content="#settings-webhooks">
+      <i class="i i--source"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.project.WebHooks']}</span>
     </a>
   </li>
   <li>
@@ -435,6 +466,49 @@
     </s:div>
   </h:form>
 </li>
+<li id="settings-webhooks" class="js-tabs-content">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+      #{msgs['jsf.project.WebHooks']}
+  </h2>
+  <h:form  id="settings-webhooks-list" onclick="return false">
+    <ul class="list--slat list--highlight l--push-top-half">
+      <ui:repeat value="#{projectHome.instance.webHooks}" var="webhook">
+        <li class="list-item">
+            #{webhook.url}
+            <a4j:commandLink onbegin="onRemoveWebHook(this)"
+              action="#{projectHome.removeWebHook(webhook)}"
+              styleClass="l--float-right txt--danger"
+              render="settings-webhooks-list">
+              <i class="i--large i--remove"></i>
+              <zanata:loader layout="inline" type="loader--small"
+                jsHandle="true" id="loader" visible="false"/>
+            </a4j:commandLink>
+        </li>
+      </ui:repeat>
+      <zanata:loader id="add-url-loader" type="loader--large" visible="false"/>
+      <li class="list--highlight__item--none">
+        <label for="payloadUrlInput">
+          #{msgs['jsf.project.AddWebhook']}
+        </label>
+
+        <div class="form--inline">
+          <input type="text" id="payloadUrlInput" autocomplete="off"
+            placeholder="#{msgs['jsf.project.PayloadURL']}"
+            onkeydown="onPayloadInputKeyDown(this, event)"
+            class="form--inline__input"/>
+
+          <div class="form--inline__suffix">
+            <button class="form--inline__addon button--primary"
+              onclick="addWebhook(jQuery('#payloadUrlInput').val())">
+              #{msgs['jsf.project.AddWebhook']}
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </h:form>
+</li>
+
 <li id="settings-about" class="js-tabs-content">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
     #{msgs['jsf.project.About']}

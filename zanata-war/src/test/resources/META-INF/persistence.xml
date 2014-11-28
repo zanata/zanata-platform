@@ -58,6 +58,7 @@
     <class>org.zanata.model.tm.TransMemoryUnit</class>
     <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
     <class>org.zanata.model.tm.TransMemory</class>
+    <class>org.zanata.model.WebHook</class>
 
     <properties>
       <property name="hibernate.show_sql" value="false" />

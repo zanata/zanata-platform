@@ -88,12 +88,7 @@ public class AbstractPage {
      */
     public void waitForPage(List<By> elementBys) {
         for (final By by : elementBys) {
-            waitForAMoment().until(new Function<WebDriver, WebElement>() {
-                @Override
-                public WebElement apply(WebDriver driver) {
-                    return getDriver().findElement(by);
-                }
-            });
+            waitForElementExists(by);
         }
     }
 
@@ -191,5 +186,85 @@ public class AbstractPage {
                 return ajaxCalls + jQueryCalls == 0;
             }
         });
+    }
+
+    /**
+     * Wait for an element to be visible, and return it
+     * @param elementBy WebDriver By locator
+     * @return target WebElement
+     */
+    public WebElement waitForWebElement(final By elementBy) {
+        waitForPageSilence();
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                WebElement targetElement = waitForElementExists(elementBy);
+                if (!elementIsReady(targetElement)) {
+                    throw new NoSuchElementException("Waiting for element");
+                }
+                return targetElement;
+            }
+        });
+    }
+
+    /**
+     * Wait for a child element to be visible, and return it
+     * @param parentElement parent element of target
+     * @param elementBy WebDriver By locator
+     * @return target WebElement
+     */
+    public WebElement waitForWebElement(final WebElement parentElement,
+                                        final By elementBy) {
+        waitForPageSilence();
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                WebElement targetElement = waitForElementExists(parentElement,
+                        elementBy);
+                if (!elementIsReady(targetElement)) {
+                    throw new NoSuchElementException("Waiting for element");
+                }
+                return targetElement;
+            }
+        });
+    }
+
+    /**
+     * Wait for an element to exist on the page, and return it.
+     * Generally used for situations where checking on the state of an element,
+     * e.g isVisible, rather than clicking on it or getting its text.
+     * @param elementBy WebDriver By locator
+     * @return target WebElement
+     */
+    public WebElement waitForElementExists(final By elementBy) {
+        waitForPageSilence();
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return getDriver().findElement(elementBy);
+            }
+        });
+    }
+
+    /**
+     * Wait for a child element to exist on the page, and return it.
+     * Generally used for situations where checking on the state of an element,
+     * e.g isVisible, rather than clicking on it or getting its text.
+     * @param elementBy WebDriver By locator
+     * @return target WebElement
+     */
+    public WebElement waitForElementExists(final WebElement parentElement,
+                                           final By elementBy) {
+        waitForPageSilence();
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                return parentElement.findElement(elementBy);
+            }
+        });
+    }
+
+    private boolean elementIsReady(WebElement targetElement) {
+        return targetElement.isDisplayed() && targetElement.isEnabled();
     }
 }

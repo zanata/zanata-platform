@@ -102,7 +102,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         document = documentDAO.findById(document.getId());
 
         // heuristic optimization
-        Stopwatch stopwatch = new Stopwatch().start();
+        Stopwatch stopwatch = Stopwatch.createStarted();
         boolean hasTranslationToCopy = true;
         if (options.getDocIdMismatchAction() ==
                 HCopyTransOptions.ConditionRuleAction.REJECT) {

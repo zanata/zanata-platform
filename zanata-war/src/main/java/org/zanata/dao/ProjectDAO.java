@@ -406,6 +406,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         .createQuery(
                                 "from HProject p " +
                                 "where :maintainer in elements(p.maintainers) " +
+                                "and p.status <> " +
+                                "'" + EntityStatus.OBSOLETE.getInitial() + "' " +
                                 "and (p.name like :filter " +
                                     "or p.slug like :filter) " +
                                 "order by p.name")
@@ -423,6 +425,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         .createQuery(
                                 "select count(p) from HProject p " +
                                 "where :maintainer in elements(p.maintainers) " +
+                                "and p.status <> " +
+                                "'" + EntityStatus.OBSOLETE.getInitial() + "' " +
                                 "and (p.name like :filter " +
                                     "or p.slug like :filter) "
                         )

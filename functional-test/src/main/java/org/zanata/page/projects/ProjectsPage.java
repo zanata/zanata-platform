@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -35,11 +34,15 @@ import java.util.List;
 
 @Slf4j
 public class ProjectsPage extends BasePage {
-    public static final int PROJECT_NAME_COLUMN = 0;
-    @FindBy(id = "main_body_content")
-    private WebElement mainContentDiv;
 
-    private By projectTableBy = By.id("main_content:form:projectList");
+    public static final int PROJECT_NAME_COLUMN = 0;
+
+    private By createProjectButton = By.id("createProjectLink");
+    private By mainContentDiv = By.id("main_body_content");
+    private By projectTable = By.id("main_content:form:projectList");
+    private By activeCheckBox = By.xpath("//*[@data-original-title='Filter active projects']");
+    private By readOnlyCheckBox = By.xpath("//*[@data-original-title='Filter read-only projects']");
+    private By obsoleteCheckBox = By.xpath("//*[@data-original-title='Filter obsolete projects']");
 
     public ProjectsPage(final WebDriver driver) {
         super(driver);
@@ -47,14 +50,7 @@ public class ProjectsPage extends BasePage {
 
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
-        WebElement createProjectActionLink =
-                waitForAMoment().until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver driver) {
-                        return driver.findElement(By.id("createProjectLink"));
-                    }
-                });
-        createProjectActionLink.click();
+        waitForWebElement(createProjectButton).click();
         return new CreateProjectPage(getDriver());
     }
 
@@ -64,9 +60,9 @@ public class ProjectsPage extends BasePage {
         return refreshPageUntil(this, new Function<WebDriver, ProjectVersionsPage>() {
             @Override
             public ProjectVersionsPage apply(WebDriver input) {
-                WebElement table = input.findElement(projectTableBy);
+                WebElement table = input.findElement(projectTable);
                 log.info("current projects: {}", WebElementUtil
-                        .getColumnContents(input, projectTableBy,
+                        .getColumnContents(input, projectTable,
                                 PROJECT_NAME_COLUMN));
                 WebElement link = table.findElement(By.linkText(projectName));
                 link.click();
@@ -77,11 +73,12 @@ public class ProjectsPage extends BasePage {
 
     public List<String> getProjectNamesOnCurrentPage() {
         log.info("Query Projects list");
-        if (mainContentDiv.getText().contains("No project exists")) {
+        if (waitForWebElement(mainContentDiv)
+                .getText().contains("No project exists")) {
             return Collections.emptyList();
         }
 
-        return WebElementUtil.getColumnContents(getDriver(), projectTableBy,
+        return WebElementUtil.getColumnContents(getDriver(), projectTable,
                 PROJECT_NAME_COLUMN);
     }
 
@@ -106,8 +103,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setActiveFilterEnabled(boolean enabled) {
         log.info("Click to set Active filter enabled to {}", enabled);
-        WebElement activeCheckbox = getDriver()
-                .findElement(By.xpath("//*[@data-original-title='Filter active projects']"));
+        WebElement activeCheckbox = waitForWebElement(activeCheckBox);
         if (activeCheckbox.isSelected() != enabled) {
             activeCheckbox.click();
         }
@@ -116,8 +112,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setReadOnlyFilterEnabled(final boolean enabled) {
         log.info("Click to set Read-only filter enabled to {}", enabled);
-        WebElement readOnlyCheckbox = getDriver().findElement(
-                By.xpath("//*[@data-original-title='Filter read-only projects']"));
+        WebElement readOnlyCheckbox = waitForWebElement(readOnlyCheckBox);
         if (readOnlyCheckbox.isSelected() != enabled) {
             readOnlyCheckbox.click();
         }
@@ -126,10 +121,9 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setObsoleteFilterEnabled(boolean enabled) {
         log.info("Click to set Obsolete filter enabled to {}", enabled);
-        WebElement readOnlyCheckbox = getDriver().findElement(
-                By.xpath("//*[@data-original-title='Filter obsolete projects']"));
-        if (readOnlyCheckbox.isSelected() != enabled) {
-            readOnlyCheckbox.click();
+        WebElement obsoleteCheckbox = waitForWebElement(obsoleteCheckBox);
+        if (obsoleteCheckbox.isSelected() != enabled) {
+            obsoleteCheckbox.click();
         }
         return new ProjectsPage(getDriver());
     }

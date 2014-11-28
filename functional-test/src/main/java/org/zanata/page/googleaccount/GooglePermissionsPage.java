@@ -34,6 +34,9 @@ import com.google.common.base.Function;
  */
 @Slf4j
 public class GooglePermissionsPage extends AbstractPage {
+
+    private By approveAccessButton = By.id("submit_approve_access");
+
     public GooglePermissionsPage(WebDriver driver) {
         super(driver);
     }
@@ -43,11 +46,11 @@ public class GooglePermissionsPage extends AbstractPage {
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                return getDriver().findElement(By.id("submit_approve_access"))
+                return getDriver().findElement(approveAccessButton)
                         .isEnabled();
             }
         });
-        getDriver().findElement(By.id("submit_approve_access")).click();
+        waitForWebElement(approveAccessButton).click();
         return new EditProfilePage(getDriver());
     }
 }
