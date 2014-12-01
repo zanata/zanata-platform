@@ -76,6 +76,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
     </dependency>
@@ -153,20 +157,18 @@
         <groupId>com.ning.maven.plugins</groupId>
         <artifactId>maven-duplicate-finder-plugin</artifactId>
         <configuration>
-          <exceptions>
-            <exception>
-              <!-- from jetty dependencies we have a couple about.html -->
-              <resourcePatterns>
-                <resourcePattern>about.html</resourcePattern>
-              </resourcePatterns>
-            </exception>
-          </exceptions>
-          <skip>true</skip>
+          <ignoredResources>
+            <!-- from jetty dependencies we have a couple about.html -->
+            <ignoredResource>about.html</ignoredResource>
+            </ignoredResources>
         </configuration>
       </plugin>
     </plugins>
   </build>
 </project>
+
+
+
 
 
 
