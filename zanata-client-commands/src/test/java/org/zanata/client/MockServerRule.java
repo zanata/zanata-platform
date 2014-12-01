@@ -77,7 +77,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class MockitoServerRule extends ExternalResource {
+public class MockServerRule extends ExternalResource {
     // async process statuses
     private String mockProcessId = "MockServerRuleProcess";
     private ProcessStatus finished = new ProcessStatus();
@@ -116,7 +116,7 @@ public class MockitoServerRule extends ExternalResource {
     @Mock
     private FileResourceClient fileResourceClient;
 
-    public MockitoServerRule() {
+    public MockServerRule() {
         MockitoAnnotations.initMocks(this);
         // async process statuses
         running.setUrl(mockProcessId);
@@ -163,8 +163,8 @@ public class MockitoServerRule extends ExternalResource {
      * successful. You should verify push afterwards and make assertion on
      * all/some of the captor captured values.
      *
-     * @see MockitoServerRule#verifyPushSource()
-     * @see MockitoServerRule#verifyPushTranslation()
+     * @see MockServerRule#verifyPushSource()
+     * @see MockServerRule#verifyPushTranslation()
      * @return push command
      */
     public PushCommand createPushCommand() {
@@ -281,8 +281,8 @@ public class MockitoServerRule extends ExternalResource {
      * Creates a raw file push command that will interact with mock REST proxy factory.
      * File service resource is stubbed to always return successful result.
      *
-     * @see MockitoServerRule#verifyPushRawFileSource(int)
-     * @see MockitoServerRule#verifyPushRawFileTranslation(int)
+     * @see MockServerRule#verifyPushRawFileSource(int)
+     * @see MockServerRule#verifyPushRawFileTranslation(int)
      * @return raw push command
      */
     public RawPushCommand createRawPushCommand() {
@@ -367,3 +367,4 @@ public class MockitoServerRule extends ExternalResource {
         return new RawPullCommand(pullOpts, fileResourceClient, clientFactory);
     }
 }
+

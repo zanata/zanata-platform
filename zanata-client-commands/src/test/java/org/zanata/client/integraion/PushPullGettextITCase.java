@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.MockitoServerRule;
+import org.zanata.client.MockServerRule;
 import org.zanata.client.TestProjectGenerator;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.pull.PullCommand;
@@ -41,7 +41,7 @@ public class PushPullGettextITCase {
     private static final Logger log = LoggerFactory
             .getLogger(PushPullGettextITCase.class);
     @Rule
-    public MockitoServerRule mockitoServerRule = new MockitoServerRule();
+    public MockServerRule mockServerRule = new MockServerRule();
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -50,18 +50,18 @@ public class PushPullGettextITCase {
 
     @Before
     public void setUp() {
-        ConfigurableProjectOptions pullOpts = mockitoServerRule.getPullOpts();
+        ConfigurableProjectOptions pullOpts = mockServerRule.getPullOpts();
         pullOpts.getLocaleMapList().add(new LocaleMapping("zh-CN"));
         pullOpts.setProjectType("gettext");
 
-        ConfigurableProjectOptions pushOpts = mockitoServerRule.getPushOpts();
+        ConfigurableProjectOptions pushOpts = mockServerRule.getPushOpts();
         pushOpts.getLocaleMapList().add(new LocaleMapping("zh-CN"));
         pushOpts.setProjectType("gettext");
     }
 
     @Test
     public void pushGettextProject() throws Exception {
-        PushOptionsImpl opts = mockitoServerRule.getPushOpts();
+        PushOptionsImpl opts = mockServerRule.getPushOpts();
         opts.setPushType("both");
         File baseDir =
                 testProjectGenerator.getProjectBaseDir(ProjectType.Gettext);
@@ -69,31 +69,31 @@ public class PushPullGettextITCase {
         opts.setSrcDir(new File(baseDir, "po"));
         opts.setTransDir(new File(baseDir, "po"));
 
-        PushCommand pushCommand = mockitoServerRule.createPushCommand();
+        PushCommand pushCommand = mockServerRule.createPushCommand();
 
         pushCommand.run();
 
-        mockitoServerRule.verifyPushSource();
-        String docId = mockitoServerRule.getDocIdCaptor().getValue();
+        mockServerRule.verifyPushSource();
+        String docId = mockServerRule.getDocIdCaptor().getValue();
         assertThat(docId, equalTo("tar"));
-        assertThat(mockitoServerRule.getExtensionCaptor().getValue(),
+        assertThat(mockServerRule.getExtensionCaptor().getValue(),
                 Matchers.<Set> equalTo(new StringSet("gettext;comment")));
 
-        Resource resource = mockitoServerRule.getResourceCaptor().getValue();
+        Resource resource = mockServerRule.getResourceCaptor().getValue();
         assertThat(resource.getTextFlows(), hasSize(2));
 
-        mockitoServerRule.verifyPushTranslation();
-        LocaleId localeId = mockitoServerRule.getLocaleIdCaptor().getValue();
+        mockServerRule.verifyPushTranslation();
+        LocaleId localeId = mockServerRule.getLocaleIdCaptor().getValue();
         assertThat(localeId, equalTo(new LocaleId("zh-CN")));
 
         TranslationsResource transResource =
-                mockitoServerRule.getTransResourceCaptor().getValue();
+                mockServerRule.getTransResourceCaptor().getValue();
         assertThat(transResource.getTextFlowTargets(), hasSize(2));
     }
 
     @Test
     public void pushGettextProjectUsingFileMapping() throws Exception {
-        PushOptionsImpl opts = mockitoServerRule.getPushOpts();
+        PushOptionsImpl opts = mockServerRule.getPushOpts();
         opts.setPushType("trans");
         File baseDir =
                 testProjectGenerator.getProjectBaseDir(ProjectType.Gettext);
@@ -103,22 +103,22 @@ public class PushPullGettextITCase {
         opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(
                 "{path}/{locale_with_underscore}.po")));
 
-        PushCommand pushCommand = mockitoServerRule.createPushCommand();
+        PushCommand pushCommand = mockServerRule.createPushCommand();
 
         pushCommand.run();
 
-        mockitoServerRule.verifyPushTranslation();
-        LocaleId localeId = mockitoServerRule.getLocaleIdCaptor().getValue();
+        mockServerRule.verifyPushTranslation();
+        LocaleId localeId = mockServerRule.getLocaleIdCaptor().getValue();
         assertThat(localeId, equalTo(new LocaleId("zh-CN")));
 
         TranslationsResource transResource =
-                mockitoServerRule.getTransResourceCaptor().getValue();
+                mockServerRule.getTransResourceCaptor().getValue();
         assertThat(transResource.getTextFlowTargets(), hasSize(2));
     }
 
     @Test
     public void pullGettextProject() throws Exception {
-        PullOptionsImpl opts = mockitoServerRule.getPullOpts();
+        PullOptionsImpl opts = mockServerRule.getPullOpts();
         opts.setPullType("both");
         File pullBaseDir = tempFolder.newFolder("gettext-pull-test");
         opts.setSrcDir(pullBaseDir);
@@ -133,7 +133,7 @@ public class PushPullGettextITCase {
         target.setContents("hello world translated");
         transResourceOnServer.getTextFlowTargets().add(target);
 
-        PullCommand pullCommand = mockitoServerRule.createPullCommand(
+        PullCommand pullCommand = mockServerRule.createPullCommand(
                 Lists.newArrayList(new ResourceMeta("tar")), resourceOnServer,
                 transResourceOnServer);
 
@@ -145,7 +145,7 @@ public class PushPullGettextITCase {
 
     @Test
     public void pullGettextProjectUsingFileMapping() throws Exception {
-        PullOptionsImpl opts = mockitoServerRule.getPullOpts();
+        PullOptionsImpl opts = mockServerRule.getPullOpts();
         opts.setPullType("trans");
         File pullBaseDir = tempFolder.newFolder("gettext-pull-test");
         opts.setSrcDir(pullBaseDir);
@@ -163,7 +163,7 @@ public class PushPullGettextITCase {
         target.setContents("hello world translated");
         transResourceOnServer.getTextFlowTargets().add(target);
 
-        PullCommand pullCommand = mockitoServerRule.createPullCommand(
+        PullCommand pullCommand = mockServerRule.createPullCommand(
                 Lists.newArrayList(new ResourceMeta("tar")), resourceOnServer,
                 transResourceOnServer);
 
@@ -175,3 +175,4 @@ public class PushPullGettextITCase {
     }
 
 }
+
