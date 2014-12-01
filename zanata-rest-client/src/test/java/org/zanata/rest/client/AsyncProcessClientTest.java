@@ -80,3 +80,4 @@ public class AsyncProcessClientTest {
                 ProcessStatus.ProcessStatusCode.Finished));
     }
 }
+

@@ -39,12 +39,12 @@ public class GlossaryDeleteCommand extends
         ConfigurableCommand<GlossaryDeleteOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(GlossaryDeleteCommand.class);
-    private final GlossaryClient client;
+    private final GlossaryClient glossaryClient;
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts,
             RestClientFactory clientFactory) {
         super(opts, clientFactory);
-        client = getClientFactory().getGlossaryClient();
+        glossaryClient = getClientFactory().getGlossaryClient();
     }
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts) {
@@ -59,12 +59,13 @@ public class GlossaryDeleteCommand extends
         log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
 
         if (getOpts().getAllGlossary()) {
-            client.deleteAll();
+            glossaryClient.deleteAll();
         } else if (!StringUtils.isEmpty(getOpts().getlang())) {
-            client.delete(new LocaleId(getOpts()
+            glossaryClient.delete(new LocaleId(getOpts()
                     .getlang()));
         } else {
             throw new RuntimeException("Option 'zanata.lang' is required.");
         }
     }
 }
+

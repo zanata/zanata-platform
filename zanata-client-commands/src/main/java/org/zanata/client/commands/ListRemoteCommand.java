@@ -50,10 +50,10 @@ public class ListRemoteCommand extends
                         getOpts().getProj(), getOpts().getProjectVersion());
 
         List<ResourceMeta> list = client.getResourceMeta(null);
-        ConsoleInteractor console = new ConsoleInteractorImpl();
         for (ResourceMeta doc : list) {
-            console.printfln(doc.getName());
+            System.out.println(doc.getName());
         }
     }
 
 }
+

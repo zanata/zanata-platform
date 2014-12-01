@@ -58,3 +58,4 @@ public class GlossaryClientTest {
         MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 }
+

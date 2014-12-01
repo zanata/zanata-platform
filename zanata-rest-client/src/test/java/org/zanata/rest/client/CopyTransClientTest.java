@@ -55,3 +55,4 @@ public class CopyTransClientTest {
         assertThat(copyTransStatus.isInProgress(), Matchers.is(false));
     }
 }
+

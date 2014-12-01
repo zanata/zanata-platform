@@ -77,3 +77,4 @@ public class SourceDocResourceClientTest {
         assertThat(result, Matchers.isEmptyOrNullString());
     }
 }
+

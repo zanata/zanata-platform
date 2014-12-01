@@ -56,3 +56,4 @@ public class AccountClientTest {
         MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 }
+

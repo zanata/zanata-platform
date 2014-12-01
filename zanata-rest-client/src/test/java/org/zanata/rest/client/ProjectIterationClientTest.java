@@ -62,3 +62,4 @@ public class ProjectIterationClientTest {
         assertThat(config, Matchers.containsString("<project>"));
     }
 }
+

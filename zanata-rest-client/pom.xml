@@ -133,6 +133,12 @@
       <artifactId>guava</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -140,7 +146,6 @@
       <plugin>
         <groupId>com.ning.maven.plugins</groupId>
         <artifactId>maven-duplicate-finder-plugin</artifactId>
-        <version>1.0.7</version>
         <configuration>
           <checkTestClasspath>false</checkTestClasspath>
         </configuration>
@@ -149,3 +154,4 @@
   </build>
 
 </project>
+
