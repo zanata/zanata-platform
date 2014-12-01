@@ -388,8 +388,8 @@
                 <exclude>org.slf4j:slf4j-jcl</exclude>
 
                 <!-- use resteasy-jaxrs instead of these: -->
+                <!-- client could use jersey -->
                 <exclude>javax.ws.rs:jsr311-api</exclude>
-                <exclude>com.sun.jersey:jersey-core</exclude>
 
                 <!-- use org.opensymphony.quartz:quartz -->
                 <exclude>quartz:quartz</exclude>
