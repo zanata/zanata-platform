@@ -29,7 +29,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import com.google.common.collect.Sets;
 
@@ -37,13 +37,14 @@ import static org.junit.Assert.*;
 
 public class AsyncProcessClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
     private AsyncProcessClient client;
 
     @Before
     public void setUp() throws Exception {
         client = new AsyncProcessClient(MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri()));
+                .createClientFactory(stubbingServerRule.getServerBaseUri()));
     }
 
     @Test
@@ -80,4 +81,5 @@ public class AsyncProcessClientTest {
                 ProcessStatus.ProcessStatusCode.Finished));
     }
 }
+
 

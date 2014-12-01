@@ -26,19 +26,20 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.CopyTransStatus;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import static org.junit.Assert.*;
 
 public class CopyTransClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
     private CopyTransClient client;
 
     @Before
     public void setUp() throws Exception {
         client = new CopyTransClient(MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri()));
+                .createClientFactory(stubbingServerRule.getServerBaseUri()));
     }
 
     @Test
@@ -55,4 +56,5 @@ public class CopyTransClientTest {
         assertThat(copyTransStatus.isInProgress(), Matchers.is(false));
     }
 }
+
 

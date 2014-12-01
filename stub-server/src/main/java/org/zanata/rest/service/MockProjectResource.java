@@ -21,26 +21,37 @@
 
 package org.zanata.rest.service;
 
-import java.util.Set;
-
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
-import com.google.common.base.Preconditions;
+import org.zanata.common.ProjectType;
+import org.zanata.rest.dto.Project;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-class MockResourceUtil {
-    static void validateExtensions(Set<String> extensions) {
-        Preconditions.checkArgument(extensions == null || extensions.isEmpty()
-               || extensions.contains("gettext")
-                || extensions.contains("comment"));
+@Path(ProjectResource.SERVICE_PATH)
+public class MockProjectResource implements ProjectResource {
+    @Context
+    UriInfo uriInfo;
+
+    @Override
+    public Response head() {
+        return MockResourceUtil.notUsedByClient();
     }
 
-    static <T> T notUsedByClient() {
-        throw new UnsupportedOperationException("Not being used by client");
+    @Override
+    public Response get() {
+        return Response.ok(new Project("about-fedora", "About Fedora",
+                ProjectType.Podir.name().toLowerCase())).build();
     }
 
-
+    @Override
+    public Response put(Project project) {
+        return Response.created(uriInfo.getRequestUri()).build();
+    }
 }
+

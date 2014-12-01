@@ -23,48 +23,44 @@ package org.zanata.rest.service;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.Glossary;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(ProjectIterationResource.SERVICE_PATH)
-public class MockProjectIterationResource implements ProjectIterationResource {
+@Path(GlossaryResource.SERVICE_PATH)
+public class MockGlossaryResource implements GlossaryResource {
     @Context
     UriInfo uriInfo;
 
     @Override
-    public Response head() {
+    public Response getEntries() {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response get() {
-        return Response.ok(new ProjectIteration("master")).build();
+    public Response get(LocaleId locale) {
+        return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response put(ProjectIteration project) {
-        return Response.created(uriInfo.getRequestUri()).build();
+    public Response put(Glossary messageBody) {
+        return Response.created(uriInfo.getAbsolutePath()).build();
     }
 
     @Override
-    public Response sampleConfiguration() {
-        String config =
-                new StringBuilder()
-                        .append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n")
-                        .append("<config xmlns=\"http://zanata.org/namespace/config/\">\n")
-                        .append("  <url>")
-                        .append(uriInfo.getBaseUri())
-                        .append("</url>\n")
-                        .append("  <project>about-fedora</project>\n")
-                        .append("  <project-version>master</project-version>\n")
-                        .append("</config>").toString();
-        return Response.ok(config, MediaType.TEXT_PLAIN_TYPE).build();
+    public Response deleteGlossary(LocaleId locale) {
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response deleteGlossaries() {
+        return Response.ok().build();
     }
 }
+

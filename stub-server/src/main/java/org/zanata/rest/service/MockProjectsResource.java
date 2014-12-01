@@ -21,45 +21,32 @@
 
 package org.zanata.rest.service;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import static org.zanata.common.ProjectType.Podir;
 
-import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+
+import org.zanata.rest.dto.Project;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(GlossaryResource.SERVICE_PATH)
-public class MockGlossaryResource implements GlossaryResource {
-    @Context
-    UriInfo uriInfo;
+@Path(ProjectsResource.SERVICE_PATH)
+public class MockProjectsResource implements ProjectsResource {
+
+    private static final Project[] PROJECTS = new Project[] {
+            new Project("about-fedora", "About Fedora",
+                    Podir.name().toLowerCase())
+    };
 
     @Override
-    public Response getEntries() {
-        return MockResourceUtil.notUsedByClient();
-    }
-
-    @Override
-    public Response get(LocaleId locale) {
-        return MockResourceUtil.notUsedByClient();
-    }
-
-    @Override
-    public Response put(Glossary messageBody) {
-        return Response.created(uriInfo.getAbsolutePath()).build();
-    }
-
-    @Override
-    public Response deleteGlossary(LocaleId locale) {
-        return Response.ok().build();
-    }
-
-    @Override
-    public Response deleteGlossaries() {
-        return Response.ok().build();
+    public Response get() {
+        GenericEntity<Project[]> genericEntity =
+                new GenericEntity<Project[]>(PROJECTS) {
+                };
+        return Response.ok(genericEntity).build();
     }
 }
+

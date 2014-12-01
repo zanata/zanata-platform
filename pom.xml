@@ -219,11 +219,12 @@
   </dependencies>
 
   <modules>
-    <module>mock-server</module>
+    <module>stub-server</module>
     <module>zanata-cli</module>
     <module>zanata-client-commands</module>
     <module>zanata-maven-plugin</module>
     <module>zanata-rest-client</module>
   </modules>
 </project>
+
 

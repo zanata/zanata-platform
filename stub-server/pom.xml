@@ -9,8 +9,8 @@
     <artifactId>client</artifactId>
     <version>3.6.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mock-server</artifactId>
-  <name>mock-server</name>
+  <artifactId>stub-server</artifactId>
+  <name>stub-server</name>
 
   <!-- Should be the same as zanata-client/pom.xml -->
   <scm>
@@ -167,5 +167,6 @@
     </plugins>
   </build>
 </project>
+
 
 

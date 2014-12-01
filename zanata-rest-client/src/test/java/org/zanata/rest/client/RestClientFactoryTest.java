@@ -26,17 +26,17 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 public class RestClientFactoryTest {
 
     @Rule
-    public MockServerRule mockServerRule = new MockServerRule();
+    public StubbingServerRule stubbingServerRule = new StubbingServerRule();
 
     @Test
     public void testGetVersion() {
         VersionInfo serverVersionInfo = MockServerTestUtil.createClientFactory(
-                mockServerRule.getServerBaseUri())
+                stubbingServerRule.getServerBaseUri())
                 .getServerVersionInfo();
 
         MatcherAssert.assertThat(serverVersionInfo.getVersionNo(),
@@ -44,4 +44,5 @@ public class RestClientFactoryTest {
     }
 
 }
+
 

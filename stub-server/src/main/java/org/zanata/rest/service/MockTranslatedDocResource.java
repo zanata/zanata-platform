@@ -62,3 +62,4 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
         return Response.ok().build();
     }
 }
+

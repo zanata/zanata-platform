@@ -21,31 +21,35 @@
 
 package org.zanata.rest.service;
 
-import static org.zanata.common.ProjectType.Podir;
+import java.util.Set;
+import javax.ws.rs.core.Application;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-
-import org.zanata.rest.dto.Project;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(ProjectsResource.SERVICE_PATH)
-public class MockProjectsResource implements ProjectsResource {
-
-    private static final Project[] PROJECTS = new Project[] {
-            new Project("about-fedora", "About Fedora",
-                    Podir.name().toLowerCase())
-    };
+public class MockResourcesApplication extends Application {
+    private static final ImmutableSet<Class<?>> services = ImmutableSet
+            .of(
+                    MockVersionResource.class,
+                    MockSourceDocResource.class,
+                    MockTranslatedDocResource.class,
+                    MockStatisticsResource.class,
+                    MockFileResource.class,
+                    MockProjectsResource.class,
+                    MockProjectIterationResource.class,
+                    MockProjectResource.class,
+                    MockGlossaryResource.class,
+                    MockCopyTransResource.class,
+                    MockAccountResource.class,
+                    MockAsynchronousProcessResource.class
+            );
 
     @Override
-    public Response get() {
-        GenericEntity<Project[]> genericEntity =
-                new GenericEntity<Project[]>(PROJECTS) {
-                };
-        return Response.ok(genericEntity).build();
+    public Set<Class<?>> getClasses() {
+        return services;
     }
 }
+

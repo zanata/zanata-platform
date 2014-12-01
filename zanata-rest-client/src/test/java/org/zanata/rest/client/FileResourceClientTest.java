@@ -45,7 +45,7 @@ import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import static org.junit.Assert.*;
 
@@ -55,12 +55,13 @@ public class FileResourceClientTest {
     private FileResourceClient client;
 
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
 
     @Before
     public void setUp() throws URISyntaxException {
         RestClientFactory restClientFactory = MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri());
+                .createClientFactory(stubbingServerRule.getServerBaseUri());
         client = new FileResourceClient(restClientFactory);
     }
 
@@ -168,4 +169,5 @@ public class FileResourceClientTest {
     }
 
 }
+
 

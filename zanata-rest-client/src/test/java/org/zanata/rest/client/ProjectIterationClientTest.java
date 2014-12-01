@@ -26,19 +26,20 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.ProjectIteration;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import static org.junit.Assert.*;
 
 public class ProjectIterationClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
     private ProjectIterationClient client;
 
     @Before
     public void setUp() throws Exception {
         client = new ProjectIterationClient(MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri()),
+                .createClientFactory(stubbingServerRule.getServerBaseUri()),
                 "about-fedora", "master");
     }
 
@@ -62,4 +63,5 @@ public class ProjectIterationClientTest {
         assertThat(config, Matchers.containsString("<project>"));
     }
 }
+
 

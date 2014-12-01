@@ -22,33 +22,26 @@
 package org.zanata.rest.service;
 
 import java.util.Set;
-import javax.ws.rs.core.Application;
 
-import com.google.common.collect.ImmutableSet;
+import javax.ws.rs.core.Response;
+
+import com.google.common.base.Preconditions;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class MockResourcesApplication extends Application {
-    private static final ImmutableSet<Class<?>> services = ImmutableSet
-            .of(
-                    MockVersionResource.class,
-                    MockSourceDocResource.class,
-                    MockTranslatedDocResource.class,
-                    MockStatisticsResource.class,
-                    MockFileResource.class,
-                    MockProjectsResource.class,
-                    MockProjectIterationResource.class,
-                    MockProjectResource.class,
-                    MockGlossaryResource.class,
-                    MockCopyTransResource.class,
-                    MockAccountResource.class,
-                    MockAsynchronousProcessResource.class
-            );
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        return services;
+class MockResourceUtil {
+    static void validateExtensions(Set<String> extensions) {
+        Preconditions.checkArgument(extensions == null || extensions.isEmpty()
+               || extensions.contains("gettext")
+                || extensions.contains("comment"));
     }
+
+    static <T> T notUsedByClient() {
+        throw new UnsupportedOperationException("Not being used by client");
+    }
+
+
 }
+

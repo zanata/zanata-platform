@@ -27,7 +27,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import com.google.common.collect.Sets;
 
@@ -35,14 +35,15 @@ import static org.junit.Assert.*;
 
 public class TransDocResourceClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
 
     private TransDocResourceClient client;
 
     @Before
     public void setUp() {
         client = new TransDocResourceClient(
-                MockServerTestUtil.createClientFactory(mockServerRule.getServerBaseUri()), "about-fedora",
+                MockServerTestUtil.createClientFactory(stubbingServerRule.getServerBaseUri()), "about-fedora",
                 "master");
     }
 
@@ -57,4 +58,5 @@ public class TransDocResourceClientTest {
     }
 
 }
+
 

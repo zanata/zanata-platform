@@ -22,30 +22,32 @@
 package org.zanata.rest.service;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
-import org.zanata.rest.dto.CopyTransStatus;
+import org.zanata.rest.dto.Account;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(CopyTransResource.SERVICE_PATH)
-public class MockCopyTransResource implements CopyTransResource {
+@Path(AccountResource.SERVICE_PATH)
+public class MockAccountResource implements AccountResource {
+    @Context
+    UriInfo uriInfo;
+    private Account account =
+            new Account("admin@zanata.org", "Administrator", "admin",
+                    "guesswhat");
+
     @Override
-    public CopyTransStatus startCopyTrans(String projectSlug,
-            String iterationSlug, String docId) {
-        CopyTransStatus copyTransStatus = new CopyTransStatus();
-        copyTransStatus.setInProgress(true);
-        copyTransStatus.setPercentageComplete(50);
-        return copyTransStatus;
+    public Response get() {
+        return Response.ok(account).build();
     }
 
     @Override
-    public CopyTransStatus getCopyTransStatus(String projectSlug,
-            String iterationSlug, String docId) {
-        CopyTransStatus copyTransStatus = new CopyTransStatus();
-        copyTransStatus.setInProgress(false);
-        copyTransStatus.setPercentageComplete(100);
-        return copyTransStatus;
+    public Response put(Account account) {
+        return Response.created(uriInfo.getRequestUri()).build();
     }
 }
+

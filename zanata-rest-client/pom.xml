@@ -21,7 +21,7 @@
 
   <dependencies>
     <dependency>
-      <!-- mock server needs this to appear before jersey-core (mainly for IDE) -->
+      <!-- stub server needs this to appear before jersey-core (mainly for IDE) -->
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
       <scope>test</scope>
@@ -37,7 +37,7 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>mock-server</artifactId>
+      <artifactId>stub-server</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
@@ -154,4 +154,5 @@
   </build>
 
 </project>
+
 

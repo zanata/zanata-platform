@@ -79,3 +79,4 @@ public class MockStatisticsResource implements StatisticsResource {
         return contributionStatistics;
     }
 }
+

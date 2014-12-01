@@ -32,12 +32,13 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 import com.google.common.collect.Sets;
 
 public class SourceDocResourceClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
 
     private SourceDocResourceClient client;
 
@@ -45,7 +46,8 @@ public class SourceDocResourceClientTest {
     public void setUp() throws URISyntaxException {
         client =
                 new SourceDocResourceClient(
-                        MockServerTestUtil.createClientFactory(mockServerRule.getServerBaseUri()), "about-fedora",
+                        MockServerTestUtil.createClientFactory(
+                                stubbingServerRule.getServerBaseUri()), "about-fedora",
                         "master");
     }
 
@@ -77,4 +79,5 @@ public class SourceDocResourceClientTest {
         assertThat(result, Matchers.isEmptyOrNullString());
     }
 }
+
 

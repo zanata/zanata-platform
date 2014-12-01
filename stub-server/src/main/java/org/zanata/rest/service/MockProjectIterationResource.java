@@ -23,18 +23,18 @@ package org.zanata.rest.service;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.ProjectIteration;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(ProjectResource.SERVICE_PATH)
-public class MockProjectResource implements ProjectResource {
+@Path(ProjectIterationResource.SERVICE_PATH)
+public class MockProjectIterationResource implements ProjectIterationResource {
     @Context
     UriInfo uriInfo;
 
@@ -45,12 +45,27 @@ public class MockProjectResource implements ProjectResource {
 
     @Override
     public Response get() {
-        return Response.ok(new Project("about-fedora", "About Fedora",
-                ProjectType.Podir.name().toLowerCase())).build();
+        return Response.ok(new ProjectIteration("master")).build();
     }
 
     @Override
-    public Response put(Project project) {
+    public Response put(ProjectIteration project) {
         return Response.created(uriInfo.getRequestUri()).build();
     }
+
+    @Override
+    public Response sampleConfiguration() {
+        String config =
+                new StringBuilder()
+                        .append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n")
+                        .append("<config xmlns=\"http://zanata.org/namespace/config/\">\n")
+                        .append("  <url>")
+                        .append(uriInfo.getBaseUri())
+                        .append("</url>\n")
+                        .append("  <project>about-fedora</project>\n")
+                        .append("  <project-version>master</project-version>\n")
+                        .append("</config>").toString();
+        return Response.ok(config, MediaType.TEXT_PLAIN_TYPE).build();
+    }
 }
+

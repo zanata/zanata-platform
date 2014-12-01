@@ -40,10 +40,10 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class MockServerRule implements TestRule {
+public class StubbingServerRule implements TestRule {
     private static Server server;
 
-    public MockServerRule() {
+    public StubbingServerRule() {
         startServerIfRequired();
     }
 
@@ -78,3 +78,4 @@ public class MockServerRule implements TestRule {
         return server.getURI();
     }
 }
+

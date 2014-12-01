@@ -26,17 +26,18 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 public class GlossaryClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
     private GlossaryClient client;
 
     @Before
     public void setUp() throws Exception {
         client = new GlossaryClient(MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri()));
+                .createClientFactory(stubbingServerRule.getServerBaseUri()));
     }
 
     @Test
@@ -58,4 +59,5 @@ public class GlossaryClientTest {
         MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 }
+
 

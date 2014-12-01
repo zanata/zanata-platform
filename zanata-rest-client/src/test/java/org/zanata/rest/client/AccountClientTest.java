@@ -26,19 +26,20 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.Account;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 import static org.junit.Assert.*;
 
 public class AccountClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
     private AccountClient client;
 
     @Before
     public void setUp() throws Exception {
         client = new AccountClient(MockServerTestUtil
-                .createClientFactory(mockServerRule.getServerBaseUri()));
+                .createClientFactory(stubbingServerRule.getServerBaseUri()));
 
     }
 
@@ -56,4 +57,5 @@ public class AccountClientTest {
         MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 }
+
 

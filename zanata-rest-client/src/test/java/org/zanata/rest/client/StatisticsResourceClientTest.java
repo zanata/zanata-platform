@@ -31,11 +31,12 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
-import org.zanata.rest.service.MockServerRule;
+import org.zanata.rest.service.StubbingServerRule;
 
 public class StatisticsResourceClientTest {
     @ClassRule
-    public static MockServerRule mockServerRule = new MockServerRule();
+    public static StubbingServerRule
+            stubbingServerRule = new StubbingServerRule();
 
     private StatisticsResourceClient client;
 
@@ -43,7 +44,8 @@ public class StatisticsResourceClientTest {
     public void setUp() throws URISyntaxException {
         client =
                 new StatisticsResourceClient(
-                        MockServerTestUtil.createClientFactory(mockServerRule.getServerBaseUri()));
+                        MockServerTestUtil.createClientFactory(
+                                stubbingServerRule.getServerBaseUri()));
     }
 
     @Test
@@ -76,4 +78,5 @@ public class StatisticsResourceClientTest {
     }
 
 }
+
 
