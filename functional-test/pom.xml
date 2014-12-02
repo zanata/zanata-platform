@@ -458,7 +458,7 @@
             <configuration>
               <classifier>mysql.classifier</classifier>
               <port>${mysql.port}</port>
-              <data>${project.build.directory}/mdb</data>
+              <data>${mysql.data}</data>
             </configuration>
             <executions>
               <execution>
@@ -670,7 +670,48 @@
         <targetPath>${project.build.directory}/feature-inventory</targetPath>
       </testResource>
     </testResources>
+
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <delete>true</delete>
+              </properties>
+              <source>${project.basedir}/etc/mysql-data.groovy</source>
+            </configuration>
+          </execution>
+          <execution>
+            <id>initialize</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <delete>false</delete>
+              </properties>
+              <source>${project.basedir}/etc/mysql-data.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
