@@ -6,13 +6,13 @@ extraArgs=
 while getopts "nhd:" opt; do
   case ${opt} in
     n)
-      echo ">> -n specified. Will NOT run maven goal 'clean'" >&2
+      echo ">> -n specified. Will NOT run maven goal 'clean'." >&2
       clean=''
       ;;
     h)
-      echo ">> run this script at zanata server module base dir to prepare a functional test war and start cargo in waiting mode" >&2
-      echo ">>>> -n if you don't want to run maven clean goal" >&2
-      echo ">>>> -d <extra maven arguments, e.g. '-Dwebdriver.type=firefox -Dsmtp.port=25'> if you don't want to pass in extra arguments when running functional test" >&2
+      echo ">> run this script to prepare a functional test war and start cargo in waiting mode" >&2
+      echo ">>>> -n if you don't want to run maven clean goal. Useful when you have run functional-test-db.snapshot.sh." >&2
+      echo ">>>> -d <extra maven arguments, e.g. '-Dwebdriver.type=firefox -Dsmtp.port=25'> if you want to pass in extra arguments when running functional test" >&2
       exit 0;
       ;;
     d)

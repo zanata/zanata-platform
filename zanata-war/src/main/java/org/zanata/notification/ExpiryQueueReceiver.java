@@ -25,17 +25,9 @@ import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
+import org.jboss.seam.annotations.Name;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.Name;
-
-/**
- * Consumer of Dead Letter Queue (all unsuccessful message will be dropped into
- * the DLQ and handled here).
- *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(
                 propertyName = "destinationType",
@@ -43,21 +35,24 @@ import org.jboss.seam.annotations.Name;
         ),
         @ActivationConfigProperty(
                 propertyName = "destination",
-                propertyValue = "jms/queue/DLQ"
+                propertyValue = "jms/queue/ExpiryQueue"
         ),
         @ActivationConfigProperty(
                 propertyName = "maxSession",
                 propertyValue = "1")
 })
-@Name("deadLetterQueueReceiver")
+/**
+ * Consumer for JMS ExpiryQueue.
+ *
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+@Name("expiryQueueReceiver")
 @Slf4j
-public class DeadLetterQueueReceiver implements MessageListener {
-
+public class ExpiryQueueReceiver implements MessageListener {
     @Override
     public void onMessage(Message message) {
-        // right now we just log the content of the message
-        log.error("dead message: {}", MessageUnwrapper.unwrap(message));
+        log.warn("JMS message expired: {}", MessageUnwrapper.unwrap(message));
     }
-
 }
 

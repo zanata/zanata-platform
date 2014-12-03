@@ -43,6 +43,7 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
@@ -76,6 +77,9 @@ public class LanguageTeamAction implements Serializable {
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
+    @In
+    private Messages msgs;
+
     @Getter
     @Setter
     private String language;
@@ -87,7 +91,7 @@ public class LanguageTeamAction implements Serializable {
 
     public List<SelectablePerson> getSearchResults() {
         if (searchResults == null) {
-            searchResults = new ArrayList<SelectablePerson>();
+            searchResults = new ArrayList<>();
         }
 
         return searchResults;
@@ -144,10 +148,8 @@ public class LanguageTeamAction implements Serializable {
                     true, true, true);
             log.info("{} joined tribe {}",
                     authenticatedAccount.getUsername(), this.language);
-            // FIXME use localizable string
-            FacesMessages.instance().add(
-                    "You are now a member of the {0} language team",
-                    getLocale().retrieveNativeName());
+            FacesMessages.instance().add(msgs.format("jsf.MemberOfTeam",
+                    getLocale().retrieveNativeName()));
         } catch (Exception e) {
             FacesMessages.instance().add(Severity.ERROR, e.getMessage());
         }
@@ -164,14 +166,13 @@ public class LanguageTeamAction implements Serializable {
                 authenticatedAccount.getPerson().getId());
         log.info("{} left tribe {}", authenticatedAccount.getUsername(),
                 this.language);
-        // FIXME use localizable string
-        FacesMessages.instance().add("You have left the {0} language team",
-                getLocale().retrieveNativeName());
+        FacesMessages.instance().add(msgs.format("jsf.LeftTeam",
+                getLocale().retrieveNativeName()));
     }
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamCoordinator(HLocaleMember member) {
-        savePermission(member, "Team Coordinator", member.isCoordinator());
+        savePermission(member, msgs.get("jsf.Translator"), member.isCoordinator());
         if (Events.exists()) {
             HPerson doneByPerson = authenticatedAccount.getPerson();
             LanguageTeamPermissionChangedEvent changedEvent =
@@ -188,7 +189,7 @@ public class LanguageTeamAction implements Serializable {
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamReviewer(HLocaleMember member) {
-        savePermission(member, "Team Reviewer", member.isReviewer());
+        savePermission(member, msgs.get("jsf.Reviewer"), member.isReviewer());
         if (Events.exists()) {
             HPerson doneByPerson = authenticatedAccount.getPerson();
             LanguageTeamPermissionChangedEvent changedEvent =
@@ -205,7 +206,7 @@ public class LanguageTeamAction implements Serializable {
 
     @Restrict("#{s:hasPermission(languageTeamAction.locale, 'manage-language-team')}")
     public void saveTeamTranslator(HLocaleMember member) {
-        savePermission(member, "Team Translator", member.isTranslator());
+        savePermission(member, msgs.get("jsf.Translator"), member.isTranslator());
         if (Events.exists()) {
             HPerson doneByPerson = authenticatedAccount.getPerson();
             LanguageTeamPermissionChangedEvent changedEvent =
@@ -227,13 +228,12 @@ public class LanguageTeamAction implements Serializable {
         HPerson person = member.getPerson();
         if (isPermissionGranted) {
             FacesMessages.instance().add(
-                    "{0} has been made a " + permissionDesc,
-                    person.getAccount().getUsername());
+                    msgs.format("jsf.AddedAPermission",
+                    person.getAccount().getUsername(), permissionDesc));
         } else {
-            // TODO i18n
             FacesMessages.instance().add(
-                    "{0} has been removed as " + permissionDesc,
-                    person.getAccount().getUsername());
+                    msgs.format("jsf.RemovedAPermission",
+                    person.getAccount().getUsername(), permissionDesc));
         }
     }
 
@@ -275,7 +275,7 @@ public class LanguageTeamAction implements Serializable {
                 this.personDAO.findAllContainingName(this.searchTerm);
         for (HPerson person : results) {
             HLocaleMember localeMember = getLocaleMember(person.getId());
-            boolean isMember = localeMember == null ? false : true;
+            boolean isMember = localeMember != null;
             boolean isReviewer = false;
             boolean isTranslator = false;
             boolean isCoordinator = false;
@@ -341,3 +341,4 @@ public class LanguageTeamAction implements Serializable {
     }
 
 }
+

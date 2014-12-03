@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.Checkbox;
 import org.zanata.util.TableRow;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 /**
  * @author Patrick Huang <a
@@ -125,13 +127,21 @@ public class ManageLanguageTeamMemberPage extends BasePage {
         Set<TeamPermission> permissionToAdd = Sets.newHashSet(permissions);
         permissionToAdd.add(TeamPermission.Translator);
 
-        for (TeamPermission permission : permissionToAdd) {
+        for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            Checkbox.of(tryGetFirstRowInSearchPersonResult(personName)
-                    .getCells()
-                    .get(permission.columnIndex)
-                    .findElement(By.tagName("input")))
-                    .check();
+            waitForAMoment().until(new Predicate<WebDriver>() {
+                @Override
+                public boolean apply(@Nullable WebDriver webDriver) {
+                    TableRow tableRow =
+                            tryGetFirstRowInSearchPersonResult(personName);
+                    WebElement input =
+                            tableRow.getCells().get(permission.columnIndex)
+                                    .findElement(By.tagName("input"));
+                    Checkbox checkbox = Checkbox.of(input);
+                    checkbox.check();
+                    return checkbox.checked();
+                }
+            });
         }
         log.info("Click Add Selected");
         waitForWebElement(addSelectedButton).click();
@@ -188,3 +198,4 @@ public class ManageLanguageTeamMemberPage extends BasePage {
 
     }
 }
+

@@ -37,7 +37,10 @@ import org.zanata.i18n.Messages;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * We can only have application or stateless scope beans in here.
+ * Handles language team permissions change JMS message. This will build and
+ * send out an email to the person affected.
+ * N.B. We can only have application or
+ * stateless scope beans in here.
  *
  * @see EmailQueueMessageReceiver
  * @author Patrick Huang <a
@@ -80,3 +83,4 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     }
 
 }
+

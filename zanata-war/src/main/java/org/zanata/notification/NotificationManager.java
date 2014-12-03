@@ -39,6 +39,12 @@ import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
 
+/**
+ * Centralized place to handle all events that needs to send out notifications.
+ *
+ * @author Patrick Huang <a
+ *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
 @Name("notificationManager")
 @Scope(ScopeType.APPLICATION)
 @Startup
@@ -46,6 +52,7 @@ import com.google.common.base.Throwables;
 public class NotificationManager implements Serializable {
     private static final long serialVersionUID = -1L;
 
+    // JMS EmailQueue Producer.
     @In
     private QueueSender mailQueueSender;
 
@@ -53,7 +60,8 @@ public class NotificationManager implements Serializable {
     private QueueSession queueSession;
 
     @Observer(LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED)
-    public void onLanguageTeamPermissionChanged(
+    public
+            void onLanguageTeamPermissionChanged(
                     final LanguageTeamPermissionChangedEvent event) {
         try {
             ObjectMessage message =
@@ -61,13 +69,20 @@ public class NotificationManager implements Serializable {
             message.setObjectProperty(MessagePropertiesKey.objectType.name(),
                     event.getClass().getCanonicalName());
             mailQueueSender.send(message);
-        }
-        catch (JMSException e) {
+        } catch (JMSException e) {
             throw Throwables.propagate(e);
         }
     }
 
+    /*
+     * we use this as property key in the JMS message to denote what type of
+     * message/event this is and the queue consumer can base on this value to
+     * find appropriate handler to handle the message payload.
+     *
+     * @seeorg.zanata.notification.EmailQueueMessageReceiver
+     */
     static enum MessagePropertiesKey {
         objectType
     }
 }
+

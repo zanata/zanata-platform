@@ -44,6 +44,11 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
 
 /**
+ * JMS EmailsQueue consumer. It will base on
+ * org.zanata.notification.NotificationManager.MessagePropertiesKey#objectType
+ * value to find a message payload handler. The objectType value is normally the
+ * canonical name of the event class.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -65,8 +70,7 @@ public class EmailQueueMessageReceiver implements MessageListener {
             .emptyMap();
 
     @In("languageTeamPermissionChangeJmsMessagePayloadHandler")
-    private LanguageTeamPermissionChangeJmsMessagePayloadHandler
-            languageTeamHandler;
+    private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
 
     @Override
     public void onMessage(Message message) {
@@ -98,13 +102,15 @@ public class EmailQueueMessageReceiver implements MessageListener {
     public Map<String, JmsMessagePayloadHandler> getHandlers() {
         if (handlers.isEmpty()) {
             synchronized (this) {
-                handlers =
-                        ImmutableMap
-                                .<String, JmsMessagePayloadHandler> builder()
-                                .put(LanguageTeamPermissionChangedEvent.class
-                                                .getCanonicalName(),
-                                        languageTeamHandler)
-                                .build();
+                if (handlers.isEmpty()) {
+                    handlers =
+                            ImmutableMap
+                                    .<String, JmsMessagePayloadHandler> builder()
+                                    .put(LanguageTeamPermissionChangedEvent.class
+                                            .getCanonicalName(),
+                                            languageTeamHandler)
+                                    .build();
+                }
             }
             log.info("email queue payload handlers: {}", handlers);
         }
@@ -115,3 +121,4 @@ public class EmailQueueMessageReceiver implements MessageListener {
         void handle(Serializable data);
     }
 }
+

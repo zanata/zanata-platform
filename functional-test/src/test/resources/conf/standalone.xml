@@ -243,18 +243,9 @@
         <journal-file-size>102400</journal-file-size>
         <journal-min-files>2</journal-min-files>
         <connectors>
-          <netty-connector name="netty" socket-binding="messaging"/>
-          <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
-            <param key="batch-delay" value="50"/>
-          </netty-connector>
           <in-vm-connector name="in-vm" server-id="0"/>
         </connectors>
         <acceptors>
-          <netty-acceptor name="netty" socket-binding="messaging"/>
-          <netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
-            <param key="batch-delay" value="50"/>
-            <param key="direct-deliver" value="false"/>
-          </netty-acceptor>
           <in-vm-acceptor name="in-vm" server-id="0"/>
         </acceptors>
         <security-settings>
@@ -286,20 +277,10 @@
               <entry name="java:/ConnectionFactory"/>
             </entries>
           </connection-factory>
-          <!-- if we want to enable remote access to the queue
-          <connection-factory name="RemoteConnectionFactory">
-            <connectors>
-              <connector-ref connector-name="netty"/>
-            </connectors>
-            <entries>
-              <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
-            </entries>
-          </connection-factory>
-          -->
           <pooled-connection-factory name="hornetq-ra">
             <transaction mode="xa"/>
             <connectors>
-              <connector-ref connector-name="netty"/>
+              <connector-ref connector-name="in-vm"/>
             </connectors>
             <entries>
               <entry name="java:/JmsXA"/>
@@ -312,18 +293,14 @@
             <entry name="jms/queue/MailsQueue"/>
             <durable>true</durable>
           </jms-queue>
+          <jms-queue name="ExpiryQueue">
+            <entry name="jms/queue/ExpiryQueue"/>
+            <durable>true</durable>
+          </jms-queue>
           <jms-queue name="DLQ">
             <entry name="jms/queue/DLQ"/>
             <durable>true</durable>
           </jms-queue>
-          <!-- if we want to enable remote access to the queue
-          <jms-queue name="TestQueue">
-            <entry name="java:jboss/exported/jms/queue/TestQueue" />
-          </jms-queue>
-          -->
-          <!--<jms-topic name="MetricsTopic">
-            <entry name="java:jboss/topic/MetricsTopic"/>
-          </jms-topic>-->
         </jms-destinations>
       </hornetq-server>
     </subsystem>
@@ -458,9 +435,6 @@
       port="${jboss.http.port,env.JBOSS_HTTP_PORT:8180}" />
     <socket-binding name="https"
       port="${jboss.https.port,env.JBOSS_HTTPS_PORT:8543}" />
-    <socket-binding name="messaging" port="${jboss.messaging.port,env.JBOSS_MESSAGING_PORT:5445}"/>
-    <socket-binding name="messaging-group" port="0" multicast-address="${jboss.messaging.group.address:231.7.7.7}" multicast-port="${jboss.messaging.group.port:9876}"/>
-    <socket-binding name="messaging-throughput" port="${jboss.messaging.throughput.port,env.JBOSS_MESSAGING_THROUGHPUT_PORT:5455}"/>
     <socket-binding name="osgi-http" interface="management"
       port="${jboss.osgi.port,env.JBOSS_OSGI_PORT:8190}" />
     <socket-binding name="remoting"
@@ -474,3 +448,4 @@
     </outbound-socket-binding>
   </socket-binding-group>
 </server>
+

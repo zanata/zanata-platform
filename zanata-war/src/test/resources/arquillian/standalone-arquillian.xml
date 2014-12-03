@@ -239,18 +239,9 @@
         <journal-file-size>102400</journal-file-size>
         <journal-min-files>2</journal-min-files>
         <connectors>
-          <netty-connector name="netty" socket-binding="messaging"/>
-          <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
-            <param key="batch-delay" value="50"/>
-          </netty-connector>
           <in-vm-connector name="in-vm" server-id="0"/>
         </connectors>
         <acceptors>
-          <netty-acceptor name="netty" socket-binding="messaging"/>
-          <netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
-            <param key="batch-delay" value="50"/>
-            <param key="direct-deliver" value="false"/>
-          </netty-acceptor>
           <in-vm-acceptor name="in-vm" server-id="0"/>
         </acceptors>
         <security-settings>
@@ -285,7 +276,7 @@
           <pooled-connection-factory name="hornetq-ra">
             <transaction mode="xa"/>
             <connectors>
-              <connector-ref connector-name="netty"/>
+              <connector-ref connector-name="in-vm"/>
             </connectors>
             <entries>
               <entry name="java:/JmsXA"/>
@@ -296,6 +287,10 @@
         <jms-destinations>
           <jms-queue name="MailsQueue">
             <entry name="jms/queue/MailsQueue"/>
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="ExpiryQueue">
+            <entry name="jms/queue/ExpiryQueue"/>
             <durable>true</durable>
           </jms-queue>
           <jms-queue name="DLQ">
@@ -468,3 +463,4 @@
   </socket-binding-group>
 
 </server>
+
