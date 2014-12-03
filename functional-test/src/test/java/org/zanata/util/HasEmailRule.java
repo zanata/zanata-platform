@@ -54,7 +54,9 @@ public class HasEmailRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                wiser.start();
+                if (!wiser.getServer().isRunning()) {
+                    wiser.start();
+                }
                 try {
                     base.evaluate();
                 } finally {
@@ -125,3 +127,4 @@ public class HasEmailRule implements TestRule {
         }
     }
 }
+
