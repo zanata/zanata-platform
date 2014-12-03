@@ -14,6 +14,7 @@
     <extension module="org.jboss.as.jsf"/>
     <extension module="org.jboss.as.logging"/>
     <extension module="org.jboss.as.mail"/>
+    <extension module="org.jboss.as.messaging"/>
     <extension module="org.jboss.as.naming"/>
     <extension module="org.jboss.as.pojo"/>
     <extension module="org.jboss.as.remoting"/>
@@ -191,6 +192,10 @@
         <stateful default-access-timeout="5000" cache-ref="simple" passivation-disabled-cache-ref="simple"/>
         <singleton default-access-timeout="5000"/>
       </session-bean>
+      <mdb>
+        <resource-adapter-ref resource-adapter-name="hornetq-ra"/>
+        <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+      </mdb>
       <pools>
         <bean-instance-pools>
           <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
@@ -435,6 +440,86 @@
       </endpoint-config>
       <client-config name="Standard-Client-Config"/>
     </subsystem>
+    <subsystem xmlns="urn:jboss:domain:messaging:2.0">
+      <hornetq-server>
+        <persistence-enabled>true</persistence-enabled>
+        <security-enabled>false</security-enabled>
+        <journal-type>NIO</journal-type>
+        <journal-min-files>2</journal-min-files>
+
+        <connectors>
+          <in-vm-connector name="in-vm" server-id="0" />
+        </connectors>
+
+        <acceptors>
+          <in-vm-acceptor name="in-vm" server-id="0" />
+        </acceptors>
+
+        <security-settings>
+          <security-setting match="#">
+            <permission type="send" roles="guest" />
+            <permission type="consume" roles="guest" />
+            <permission type="createNonDurableQueue" roles="guest" />
+            <permission type="deleteNonDurableQueue" roles="guest" />
+          </security-setting>
+        </security-settings>
+
+        <address-settings>
+          <address-setting match="#">
+            <dead-letter-address>jms.queue.DLQ</dead-letter-address>
+            <expiry-address>jms.queue.ExpiryQueue</expiry-address>
+            <expiry-delay>-1</expiry-delay>
+            <redelivery-delay>5000</redelivery-delay>
+            <max-delivery-attempts>3</max-delivery-attempts>
+            <max-size-bytes>10485760</max-size-bytes>
+            <page-size-bytes>2097152</page-size-bytes>
+            <page-max-cache-size>5</page-max-cache-size>
+            <address-full-policy>PAGE</address-full-policy>
+            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+            <last-value-queue>false</last-value-queue>
+            <redistribution-delay>5000</redistribution-delay>
+            <send-to-dla-on-no-route>false</send-to-dla-on-no-route>
+          </address-setting>
+        </address-settings>
+
+        <jms-connection-factories>
+          <connection-factory name="InVmConnectionFactory">
+            <connectors>
+              <connector-ref connector-name="in-vm" />
+            </connectors>
+            <entries>
+              <entry name="java:/ConnectionFactory" />
+            </entries>
+          </connection-factory>
+          <pooled-connection-factory name="hornetq-ra">
+            <min-pool-size>2</min-pool-size>
+            <max-pool-size>10</max-pool-size>
+            <connectors>
+              <connector-ref connector-name="in-vm" />
+            </connectors>
+            <entries>
+              <entry name="java:/JmsXA" />
+              <entry name="java:jboss/DefaultJMSConnectionFactory" />
+            </entries>
+          </pooled-connection-factory>
+        </jms-connection-factories>
+
+        <jms-destinations>
+          <jms-queue name="ExpiryQueue">
+            <entry name="java:/jms/queue/ExpiryQueue" />
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="DLQ">
+            <entry name="java:/jms/queue/DLQ" />
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="MailsQueue">
+            <entry name="java:/jms/queue/MailsQueue" />
+            <durable>true</durable>
+          </jms-queue>
+        </jms-destinations>
+      </hornetq-server>
+    </subsystem>
   </profile>
 
   <interfaces>
@@ -473,3 +558,4 @@
   </socket-binding-group>
 
 </server>
+
