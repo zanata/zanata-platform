@@ -76,7 +76,8 @@ public class GlossaryCSVReaderTest {
         List<String> commentHeaders = new ArrayList<String>();
         commentHeaders.add("description1");
         commentHeaders.add("description2");
-        commentHeaders.add("description3"); // this will be ignored
+        // this will be ignored
+        commentHeaders.add("description3");
 
         GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
 
