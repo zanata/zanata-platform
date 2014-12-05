@@ -21,8 +21,6 @@
 
 package org.zanata.rest.client;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,9 +30,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
@@ -42,48 +38,6 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ClientUtil {
-
-    /**
-     * Resolve a REST resource path to a method.
-     *
-     * @param webResource
-     *            web resource
-     * @param resourceInterface
-     *            Zanata REST api interface
-     * @param methodName
-     *            the method name we want to call which is annotated by @Path
-     * @param pathParams
-     *            path param values
-     * @param <T>
-     *            interface type
-     * @return resolved path
-     */
-    static <T> String resolvePath(WebResource webResource,
-            Class<T> resourceInterface, String methodName,
-            Object... pathParams) {
-        try {
-            // Zanata API always define SERVICE_PATH field
-            Field servicePathField = resourceInterface.getField("SERVICE_PATH");
-            String servicePath = servicePathField.get(null).toString();
-            Method method = getMethod(resourceInterface, methodName);
-            return webResource.getUriBuilder().path(servicePath).path(method)
-                    .build(pathParams).getPath();
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw Throwables.propagate(e);
-        }
-    }
-
-    private static <T> Method getMethod(Class<T> resourceClass,
-            String methodName) {
-        Method[] methods = resourceClass.getDeclaredMethods();
-        for (Method method : methods) {
-            if (method.getName().equals(methodName)) {
-                return method;
-            }
-        }
-        throw new IllegalArgumentException(methodName + " not found in "
-                + resourceClass);
-    }
 
     static MultivaluedMap<String, String> asMultivaluedMap(
             String paramKey, Iterable<String> values) {

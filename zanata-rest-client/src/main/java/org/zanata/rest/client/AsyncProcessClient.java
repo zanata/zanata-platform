@@ -24,7 +24,6 @@ package org.zanata.rest.client;
 import java.net.URI;
 import java.util.Set;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.core.UriBuilder;
 
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
@@ -33,8 +32,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
-
-import static org.zanata.rest.client.ClientUtil.resolvePath;
 
 /**
  * @author Patrick Huang <a
@@ -64,13 +61,12 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
         Client client = factory.getClient();
         CacheResponseFilter filter = new CacheResponseFilter();
         client.addFilter(filter);
-        WebResource webResource = client.resource(baseUri);
-        String path =
-                resolvePath(webResource, AsynchronousProcessResource.class,
-                        "startSourceDocCreationOrUpdate", projectSlug,
-                        iterationSlug, idNoSlash);
-
-        webResource.path(path)
+        WebResource webResource = client.resource(baseUri)
+                .path(AsynchronousProcessResource.SERVICE_PATH)
+                .path("projects").path("p").path(projectSlug)
+                .path("iterations").path("i").path(iterationSlug)
+                .path("r").path(idNoSlash);
+        webResource
                 .queryParams(ClientUtil.asMultivaluedMap("ext", extensions))
                 .queryParam("copyTrans", String.valueOf(copytrans))
                 .put(resource);
@@ -86,12 +82,13 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
         Client client = factory.getClient();
         CacheResponseFilter filter = new CacheResponseFilter();
         client.addFilter(filter);
-        WebResource webResource = client.resource(baseUri);
-        String path =
-                resolvePath(webResource, AsynchronousProcessResource.class,
-                        "startTranslatedDocCreationOrUpdate", projectSlug,
-                        iterationSlug, idNoSlash, locale);
-        webResource.path(path)
+        WebResource webResource = client.resource(baseUri)
+                .path(AsynchronousProcessResource.SERVICE_PATH)
+                .path("projects").path("p").path(projectSlug)
+                .path("iterations").path("i").path(iterationSlug)
+                .path("r").path(idNoSlash)
+                .path("translations").path(locale.toString());
+        webResource
                 .queryParams(ClientUtil.asMultivaluedMap("ext", extensions))
                 .queryParam("merge", merge)
                 .put(translatedDoc);

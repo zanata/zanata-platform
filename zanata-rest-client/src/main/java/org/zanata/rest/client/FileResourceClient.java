@@ -21,8 +21,6 @@
 
 package org.zanata.rest.client;
 
-import static org.zanata.rest.client.ClientUtil.resolvePath;
-
 import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
@@ -133,26 +131,20 @@ public class FileResourceClient {
     public ClientResponse downloadSourceFile(String projectSlug,
             String iterationSlug,
             String fileType, String docId) {
-        WebResource webResource = factory.getClient().resource(baseUri);
-        String path = resolvePath(webResource, FileResource.class,
-                "downloadSourceFile", projectSlug, iterationSlug, fileType);
-        return webResource.path(path)
-                .queryParam("docId", docId)
-                .get(ClientResponse.class);
+        WebResource webResource = factory.getClient().resource(baseUri)
+                .path(FileResource.SERVICE_PATH).path("source")
+                .path(projectSlug).path(iterationSlug).path(fileType);
+        return webResource.queryParam("docId", docId).get(ClientResponse.class);
     }
 
     public ClientResponse downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileExtension,
             String docId) {
-        WebResource webResource = factory.getClient().resource(baseUri);
-        String path =
-                resolvePath(webResource, FileResource.class,
-                        "downloadTranslationFile",
-                        projectSlug, iterationSlug, locale, fileExtension);
-        return webResource.path(path)
-                .queryParam("docId", docId)
-                .get(ClientResponse.class);
-
+        WebResource webResource = factory.getClient().resource(baseUri)
+                .path(FileResource.SERVICE_PATH).path("translation")
+                .path(projectSlug).path(iterationSlug).path(locale)
+                .path(fileExtension);
+        return webResource.queryParam("docId", docId).get(ClientResponse.class);
     }
 
     private static <T> FormDataMultiPart addBodyPartIfPresent(
