@@ -73,8 +73,7 @@ public class DTOUtil {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return (T)mapper.readValue(json, clazz);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             log.error("fromJSONToObject failed", e);
             return null;
