@@ -28,10 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import net.sf.ehcache.CacheManager;
-
 import org.dbunit.operation.DatabaseOperation;
-import org.infinispan.manager.CacheContainer;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
