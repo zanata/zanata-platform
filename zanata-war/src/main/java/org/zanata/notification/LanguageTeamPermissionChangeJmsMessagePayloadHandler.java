@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
@@ -58,6 +59,9 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     @In
     private Messages msgs;
 
+    @In
+    private ApplicationConfiguration applicationConfiguration;
+
     @Override
     public void handle(Serializable data) {
         if (!(data instanceof LanguageTeamPermissionChangedEvent)) {
@@ -69,12 +73,20 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
                 LanguageTeamPermissionChangedEvent.class.cast(data);
         log.debug("language team permission change data:{}", changedEvent);
 
+        if (!changedEvent.hasPermissionsChanged()) {
+            // permission didn't really changed
+            return;
+        }
+
         String receivedReason =
                 msgs.format("jsf.email.languageteam.permission.ReceivedReason",
                         changedEvent.getLanguage());
+        String contactTeamCoordinatorLink =
+                applicationConfiguration.getServerPath() +
+                        "/language/contact/" + changedEvent.getLanguage();
         LanguageTeamPermissionChangeEmailStrategy emailStrategy =
                 new LanguageTeamPermissionChangeEmailStrategy(
-                        changedEvent, msgs);
+                        changedEvent, msgs, contactTeamCoordinatorLink);
         InternetAddress to =
                 Addresses.getAddress(changedEvent.getEmail(),
                         changedEvent.getName());
@@ -83,4 +95,6 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     }
 
 }
+
+
 

@@ -29,7 +29,6 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
     private final String name;
     private final String email;
     private final String changedByName;
-    private final String changedByEmail;
     private List<Boolean> oldPermission = ImmutableList.of(false, false, false);
     private List<Boolean> newPermission = ImmutableList.of(false, false, false);
 
@@ -39,7 +38,6 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
         email = person.getEmail();
         this.language = language;
         changedByName = doneByPerson.getName();
-        changedByEmail = doneByPerson.getEmail();
     }
 
     public LanguageTeamPermissionChangedEvent joiningTheTeam(
@@ -100,12 +98,18 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
         return this;
     }
 
-    public int numOfGrantedOldPermissions() {
-        return Iterables.frequency(oldPermission, Boolean.TRUE);
+    // when user has no roles assigned or was not part of the team
+    public boolean hasNoOldPermissions() {
+        return Iterables.frequency(oldPermission, Boolean.TRUE) == 0;
     }
 
-    public int numOfGrantedNewPermissions() {
-        return Iterables.frequency(newPermission, Boolean.TRUE);
+    // when user has no roles assigned or is removed from the team
+    public boolean hasNoNewPermissions() {
+        return Iterables.frequency(newPermission, Boolean.TRUE) == 0;
+    }
+
+    public boolean hasPermissionsChanged() {
+        return !oldPermission.equals(newPermission);
     }
 
     public boolean translatorPermissionOf(List<Boolean> permissionList) {
@@ -125,11 +129,9 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
         return permissionList.get(permission.ordinal());
     }
 
-    public boolean isPermissionChanged() {
-        return !oldPermission.equals(newPermission);
-    }
-
     private static enum Permission {
         translator, reviewer, coordinator
     }
 }
+
+

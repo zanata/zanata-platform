@@ -5,7 +5,6 @@ import javax.mail.internet.InternetAddress;
 
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
     private final LanguageTeamPermissionChangedEvent changedEvent;
     private final Messages msgs;
+    private final String contactCoordinatorLink;
 
     @Override
     public String getSubject(Messages msgs) {
@@ -31,20 +31,13 @@ public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public Optional<InternetAddress[]> getReplyToAddress() {
-        return Optional.of(Addresses.getReplyTo(
-                changedEvent.getChangedByEmail(),
-                changedEvent.getChangedByName()));
-    }
-
-    @Override
     public PersistentMap<String, Object> makeContext(
             PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
         PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         List<String> oldPermissions = Lists.newArrayList();
-        if (changedEvent.numOfGrantedOldPermissions() == 0) {
+        if (changedEvent.hasNoOldPermissions()) {
             oldPermissions
                     .add(
                     msgs.get("jsf.email.languageteam.permission.old.notInTeam"));
@@ -54,7 +47,7 @@ public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
         }
 
         List<String> newPermissions = Lists.newArrayList();
-        if (changedEvent.numOfGrantedNewPermissions() == 0) {
+        if (changedEvent.hasNoNewPermissions()) {
             newPermissions.add(msgs
                     .get("jsf.email.languageteam.permission.new.notInTeam"));
         } else {
@@ -65,9 +58,9 @@ public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
         return context
                 .insert("language", changedEvent.getLanguage())
                 .insert("changedByName", changedEvent.getChangedByName())
-                .insert("changedByEmail", changedEvent.getChangedByEmail())
                 .insert("oldPermissions", oldPermissions)
                 .insert("newPermissions", newPermissions)
+                .insert("contactCoordinatorLink", contactCoordinatorLink)
                 .insert("toName", toAddresses[0].getPersonal());
     }
 
@@ -91,3 +84,6 @@ public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
         }
     }
 }
+
+
+

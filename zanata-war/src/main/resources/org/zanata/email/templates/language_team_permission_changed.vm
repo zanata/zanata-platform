@@ -1,6 +1,6 @@
 <p>$msgs.format("jsf.email.languageteam.permission.DearName", $toName)</p>
 
-<p>$msgs.format("jsf.email.languageteam.permission.Changed", $changedByName, $changedByEmail, $language)</p>
+<p>$msgs.format("jsf.email.languageteam.permission.Changed", $changedByName, $language)</p>
 
 <p>$msgs.get("jsf.email.languageteam.permission.old.prefix")</p>
 <ul>
@@ -15,3 +15,5 @@
     <li>$permission</li>
   #end
 </ul>
+
+<p>$msgs.format("jsf.email.languageteam.permission.howToReply", $contactCoordinatorLink)</p>

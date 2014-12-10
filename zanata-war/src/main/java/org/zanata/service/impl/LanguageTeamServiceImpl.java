@@ -100,7 +100,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
         }
         localeMemberDAO.makePersistent(localeMember);
         localeMemberDAO.flush();
-        if (Events.exists() && permissionChangedEvent.isPermissionChanged()) {
+        if (Events.exists()) {
             Events.instance().raiseTransactionSuccessEvent(
                     LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED,
                     permissionChangedEvent);
@@ -141,3 +141,5 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
                 .isEmpty();
     }
 }
+
+
