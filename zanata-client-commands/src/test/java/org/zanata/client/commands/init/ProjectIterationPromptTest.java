@@ -1,9 +1,12 @@
 package org.zanata.client.commands.init;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 
 import org.hamcrest.Matchers;
-import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,39 +16,32 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.client.commands.MockConsoleInteractor;
 import org.zanata.common.EntityStatus;
-import org.zanata.rest.client.IProjectIterationResource;
-import org.zanata.rest.client.IProjectResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ProjectClient;
+import org.zanata.rest.client.ProjectIterationClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.collect.Lists;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public class ProjectIterationPromptTest {
     private ProjectIterationPrompt prompt;
     private InitOptionsImpl opts;
-    @Mock
-    private ZanataProxyFactory requestFactory;
-    @Mock
-    private IProjectIterationResource iterationResource;
-    @Mock
-    private ClientResponse response;
+
     @Captor
     private ArgumentCaptor<ProjectIteration> iterationCaptor;
     @Mock
-    private IProjectResource projectResource;
+    private RestClientFactory clientFactory;
+    @Mock
+    private ProjectIterationClient projectIterationClient;
+    @Mock
+    private ProjectClient projectClient;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         opts = new InitOptionsImpl();
         prompt = null;
-
     }
 
     @Test
@@ -62,19 +58,19 @@ public class ProjectIterationPromptTest {
         opts.setProj(projectId);
         opts.setProjectType(projectType);
 
-        when(requestFactory.getProject(projectId))
-                .thenReturn(projectResource);
-        when(projectResource.get()).thenReturn(response);
-        when(response.getEntity(Project.class)).thenReturn(project);
-
+        when(clientFactory.getProjectClient(opts.getProj()))
+                .thenReturn(projectClient);
+        when(projectClient.get()).thenReturn(project);
+        when(clientFactory.getProjectIterationClient(opts.getProj(), "4.8.2"))
+                .thenReturn(projectIterationClient);
         // we want to select the second active version
         ConsoleInteractor console =
                 MockConsoleInteractor.predefineAnswers("2");
-        prompt = new ProjectIterationPrompt(console, opts, requestFactory);
+        prompt = new ProjectIterationPrompt(console, opts, clientFactory);
 
         prompt.selectVersion();
 
-        verify(projectResource).get();
+        verify(projectClient).get();
         assertThat(opts.getProjectVersion(), Matchers.equalTo("4.8.2"));
     }
 
@@ -94,17 +90,13 @@ public class ProjectIterationPromptTest {
         opts.setProjectType(projectType);
         ConsoleInteractor console =
                 MockConsoleInteractor.predefineAnswers(versionId);
-        prompt = new ProjectIterationPrompt(console, opts, requestFactory);
-
-        when(requestFactory.getProjectIteration(projectId, versionId))
-                .thenReturn(iterationResource);
-        when(iterationResource.put(iterationCaptor.capture())).thenReturn(
-                response);
-        when(response.getStatus()).thenReturn(201);
+        prompt = new ProjectIterationPrompt(console, opts, clientFactory);
+        when(clientFactory.getProjectIterationClient(opts.getProj(), versionId))
+                .thenReturn(projectIterationClient);
 
         prompt.createNewVersion();
 
-        verify(iterationResource).put(iterationCaptor.capture());
+        verify(projectIterationClient).put(iterationCaptor.capture());
         ProjectIteration iteration = iterationCaptor.getValue();
         assertThat(iteration.getId(), Matchers.equalTo(versionId));
         assertThat(iteration.getProjectType(), Matchers.equalTo(projectType));

@@ -2,17 +2,14 @@ package org.zanata.client.commands.init;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.zanata.client.commands.HTTPMockContainer.Builder.readFromClasspath;
+import static org.zanata.client.TestUtils.readFromClasspath;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,15 +17,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerServer;
-import org.simpleframework.transport.connect.SocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConsoleInteractor;
-import org.zanata.client.commands.HTTPMockContainer;
 import org.zanata.client.commands.Messages;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ProjectIterationClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.VersionInfo;
 
 import com.google.common.base.Charsets;
@@ -46,53 +40,25 @@ public class InitCommandTest {
 
     private InitCommand command;
     private InitOptionsImpl opts;
-    private SocketConnection connection;
     @Mock
     private ConsoleInteractor console;
     @Mock
-    private ZanataProxyFactory requestFactory;
+    private RestClientFactory clientFactory;
+    @Mock
+    private ProjectIterationClient projectIterationClient;
 
     @Before
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
         opts = new InitOptionsImpl();
-        command = new InitCommand(opts, console, null);
-    }
-
-    @After
-    public void cleanUp() throws IOException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    private void startMockServer(Container container) throws IOException {
-        ContainerServer server = new ContainerServer(container);
-        connection = new SocketConnection(server);
-        InetSocketAddress address = (InetSocketAddress) connection
-                .connect(new InetSocketAddress(0));
-        int port = address.getPort();
-
-        opts.setUrl(URI.create("http://localhost:" + port).toURL());
-        opts.setUsername("admin");
-        opts.setKey("abcde");
-        opts.setLogHttp(false);
+        command = new InitCommand(opts, console, clientFactory);
     }
 
     @Test
     public void willDownloadProjectConfigFromServer() throws IOException {
-        String configContent =
-                readFromClasspath("serverresponse/projectConfig.xml");
-        HTTPMockContainer container =
-                HTTPMockContainer.Builder
-                        .builder()
-                        .onPathReturnOk(
-                                Matchers.endsWith("/version"),
-                                readFromClasspath("serverresponse/version.xml"))
-                        .onPathReturnOk(
-                                Matchers.endsWith("/config"),
-                                configContent).build();
-        startMockServer(container);
+        when(clientFactory.getProjectIterationClient("gcc", "master")).thenReturn(projectIterationClient);
+        when(projectIterationClient.sampleConfiguration()).thenReturn(
+                readFromClasspath("serverresponse/projectConfig.xml"));
 
         File configFileDest = new File(tempFolder.getRoot(), "zanata.xml");
         command.downloadZanataXml("gcc", "master", configFileDest);
@@ -100,7 +66,7 @@ public class InitCommandTest {
         assertThat(configFileDest.exists(), Matchers.is(true));
         List<String> lines = FileUtils.readLines(configFileDest, Charsets.UTF_8);
         String content = Joiner.on("\n").join(lines);
-        assertThat(content, Matchers.equalTo(configContent));
+        assertThat(content, Matchers.containsString("<project>"));
         assertThat(opts.getProjectConfig(), Matchers.equalTo(configFileDest));
     }
 
@@ -130,9 +96,9 @@ public class InitCommandTest {
         expectException.expectMessage(Matchers.equalTo(Messages
                 ._("server.incompatible")));
 
-        when(requestFactory.getServerVersionInfo()).thenReturn(
+        when(clientFactory.getServerVersionInfo()).thenReturn(
                 new VersionInfo("3.3.1", "unknown", "unknown"));
-        command = new InitCommand(opts, console, requestFactory);
+        command = new InitCommand(opts, console, clientFactory);
 
         command.ensureServerVersion();
     }

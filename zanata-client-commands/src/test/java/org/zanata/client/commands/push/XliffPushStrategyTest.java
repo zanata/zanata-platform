@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.client.TestUtils;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -34,8 +35,8 @@ public class XliffPushStrategyTest {
     private ImmutableList<String> include;
     private ImmutableList<String> exclude;
 
-    private final File sourceDir = new File("src/test/resources/xliffDir");
-    private final File sourceDir2 = new File("src/test/resources/xliffDir2");
+    private final File sourceDir = TestUtils.fileFromClasspath("xliffDir");
+    private final File sourceDir2 = TestUtils.fileFromClasspath("xliffDir2");
 
     private static final String sourceLocale = "en-US";
 

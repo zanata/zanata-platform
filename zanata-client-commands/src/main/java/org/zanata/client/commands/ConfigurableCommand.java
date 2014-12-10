@@ -30,7 +30,7 @@ import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.config.CommandHook;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.RestClientFactory;
 
 /**
  * Base class for commands which supports configuration by the user's zanata.ini
@@ -41,19 +41,18 @@ import org.zanata.rest.client.ZanataProxyFactory;
 public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         implements ZanataCommand {
     private final O opts;
-    private ZanataProxyFactory requestFactory;
+    private RestClientFactory clientFactory;
     private boolean deprecated;
     private String deprecationMessage;
 
     private static final Logger log = LoggerFactory
             .getLogger(ConfigurableCommand.class);
 
-    public ConfigurableCommand(O opts, ZanataProxyFactory factory) {
+    public ConfigurableCommand(O opts, RestClientFactory clientFactory) {
         this.opts = opts;
-        if (factory != null)
-            this.requestFactory = factory;
-        else
-            this.requestFactory = OptionsUtil.createRequestFactory(opts);
+        this.clientFactory =
+                clientFactory == null ? OptionsUtil.createClientFactory(opts)
+                        : clientFactory;
     }
 
     public ConfigurableCommand(O opts) {
@@ -77,8 +76,8 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         return opts;
     }
 
-    public ZanataProxyFactory getRequestFactory() {
-        return requestFactory;
+    public RestClientFactory getClientFactory() {
+        return clientFactory;
     }
 
     @Override

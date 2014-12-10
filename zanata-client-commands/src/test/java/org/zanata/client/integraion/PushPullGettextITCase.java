@@ -1,7 +1,6 @@
 package org.zanata.client.integraion;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 import org.hamcrest.Matchers;
@@ -176,3 +175,4 @@ public class PushPullGettextITCase {
     }
 
 }
+

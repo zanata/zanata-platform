@@ -21,11 +21,8 @@
 
 package org.zanata.client.integraion;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.apache.commons.codec.Charsets;
@@ -39,20 +36,14 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.MockServerRule;
 import org.zanata.client.TestProjectGenerator;
 import org.zanata.client.commands.ConfigurableProjectOptions;
-import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.pull.RawPullCommand;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.rest.dto.resource.TextFlowTarget;
-import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -193,3 +184,4 @@ public class PushPullFileProjectITCase {
         assertThat(new File(pullBaseDir, "ods/zh_CN/test-ods.ods").exists(), is(true));
     }
 }
+

@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>20</version>
+    <version>21-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -35,9 +35,10 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>3.4.1</zanata.api.version>
+    <zanata.api.version>3.6.0-SNAPSHOT</zanata.api.version>
     <zanata.common.version>3.3.0</zanata.common.version>
     <resteasy.version>3.0.1.Final</resteasy.version>
+    <jersey.version>1.17.1</jersey.version>
   </properties>
 
   <build>
@@ -72,6 +73,22 @@
           <exclusion>
             <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -202,9 +219,12 @@
   </dependencies>
 
   <modules>
+    <module>stub-server</module>
     <module>zanata-cli</module>
     <module>zanata-client-commands</module>
     <module>zanata-maven-plugin</module>
     <module>zanata-rest-client</module>
   </modules>
 </project>
+
+

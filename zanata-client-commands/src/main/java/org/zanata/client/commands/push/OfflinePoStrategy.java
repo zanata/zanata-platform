@@ -22,16 +22,13 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
-import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.adapter.po.PoReader2;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
+import org.zanata.rest.client.SourceDocResourceClient;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
@@ -42,15 +39,12 @@ import org.zanata.rest.dto.resource.ResourceMeta;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 public class OfflinePoStrategy extends GettextDirStrategy {
-    private final ISourceDocResource sourceDocResource;
-    private final PoReader2 poReader;
+    private SourceDocResourceClient client;
+    private final PoReader2 poReader = new PoReader2(true);
 
-    private final URI uri;
 
-    public OfflinePoStrategy(ISourceDocResource sourceDocResource, URI uri) {
-        this.sourceDocResource = sourceDocResource;
-        this.uri = uri;
-        poReader = new PoReader2(true);
+    public OfflinePoStrategy(SourceDocResourceClient client) {
+        this.client = client;
     }
 
     @Override
@@ -72,10 +66,7 @@ public class OfflinePoStrategy extends GettextDirStrategy {
             ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
-        ClientResponse<List<ResourceMeta>> getResponse =
-                sourceDocResource.get(null);
-        ClientUtility.checkResult(getResponse, uri);
-        List<ResourceMeta> remoteDocList = getResponse.getEntity();
+        List<ResourceMeta> remoteDocList = client.getResourceMeta(null);
         Set<String> localDocNames = new HashSet<String>();
         for (ResourceMeta doc : remoteDocList) {
             localDocNames.add(doc.getName());

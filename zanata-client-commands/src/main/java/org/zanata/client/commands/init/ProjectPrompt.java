@@ -20,15 +20,23 @@
  */
 package org.zanata.client.commands.init;
 
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
+import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl;
+import static org.zanata.client.commands.Messages._;
+
 import java.util.Collections;
 import java.util.List;
 
-import org.jboss.resteasy.client.ClientResponse;
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ProjectClient;
+import org.zanata.rest.client.ProjectsClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -37,13 +45,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
-import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
-import static org.zanata.client.commands.ConsoleInteractorImpl.*;
-import static org.zanata.client.commands.Messages._;
-import static org.zanata.client.commands.StringUtil.indent;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * @author Patrick Huang
@@ -54,18 +56,18 @@ class ProjectPrompt {
     private final InitOptions opts;
     private final ProjectIterationPrompt
             projectIterationPrompt;
-    private final ZanataProxyFactory proxyFactory;
+    private final RestClientFactory clientFactory;
     // state variables
     private List<Project> allProjects = Collections.emptyList();
     private List<Project> filteredProjects = Collections.emptyList();
 
     ProjectPrompt(ConsoleInteractor consoleInteractor, InitOptions opts,
-            ZanataProxyFactory proxyFactory,
-            ProjectIterationPrompt projectIterationPrompt) {
+            ProjectIterationPrompt projectIterationPrompt,
+            RestClientFactory clientFactory) {
         this.consoleInteractor = consoleInteractor;
         this.opts = opts;
-        this.proxyFactory = proxyFactory;
         this.projectIterationPrompt = projectIterationPrompt;
+        this.clientFactory = clientFactory;
     }
 
     /**
@@ -159,8 +161,7 @@ class ProjectPrompt {
             // TODO add optional query param to search projects (limit return
             // values)
             Project[] projectsArray =
-                    proxyFactory.getProjectsResource().get()
-                            .getEntity(Project[].class);
+                    clientFactory.getProjectsClient().getProjects();
             allProjects = ImmutableList.copyOf(Iterables
                     .filter(Lists.newArrayList(projectsArray),
                             new Predicate<Project>() {
@@ -197,13 +198,16 @@ class ProjectPrompt {
         String projectType =
                 consoleInteractor.expectAnswerWithRetry(
                         AnswerValidatorImpl.expect(projectTypeList));
-        ClientResponse response = proxyFactory.getProject(projectId)
-                .put(new Project(projectId, projectName, projectType));
-        if (response.getStatus() >= 399) {
-            InitCommand.offerRetryOnServerError(response, consoleInteractor);
-            createNewProject();
+        ProjectClient projectClient = clientFactory.getProjectClient(projectId);
+        Project project = new Project(projectId, projectName, projectType);
+        try {
+            projectClient.put(project);
+        } catch (UniformInterfaceException e) {
+            if (e.getResponse().getStatus() >= 399) {
+                InitCommand.offerRetryOnServerError(e, consoleInteractor);
+                createNewProject();
+            }
         }
-        response.releaseConnection();
         consoleInteractor.printfln(Confirmation, _("project.created"));
         opts.setProj(projectId);
         opts.setProjectType(projectType);

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -27,13 +24,13 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.RestUtil;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ClientUtil;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
+
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * @author Sean Flanigan <a
@@ -62,10 +59,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         super(opts);
     }
 
-    public PullCommand(PullOptions opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
+    public PullCommand(PullOptions opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
     }
 
     public PullStrategy createStrategy(PullOptions opts)
@@ -219,11 +214,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         RestUtil.convertToDocumentURIId(qualifiedDocName);
                 boolean createSkeletons = getOpts().getCreateSkeletons();
                 if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons) {
-                    ClientResponse<Resource> resourceResponse =
-                            sourceDocResource.getResource(docUri,
-                                    strat.getExtensions());
-                    ClientUtility.checkResult(resourceResponse, uri);
-                    doc = resourceResponse.getEntity();
+                    doc = sourceDocResourceClient.getResource(docUri,
+                            strat.getExtensions());
                     doc.setName(localDocName);
                 }
                 if (pullSrc) {
@@ -253,32 +245,28 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                             }
                         }
 
-                        ClientResponse<TranslationsResource> transResponse =
-                                translationResources.getTranslations(docUri,
+                        ClientResponse transResponse =
+                                transDocResourceClient.getTranslations(docUri,
                                         locale, strat.getExtensions(),
                                         createSkeletons, eTag);
 
                         // ignore 404 (no translation yet for specified
                         // document)
-                        if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND) {
+                        if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
                             if (!createSkeletons) {
                                 log.info(
                                         "No translations found in locale {} for document {}",
                                         locale, localDocName);
-                                // We need to release connection.
-                                // see
-                                // http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
-                                transResponse.releaseConnection();
                             } else {
                                 // Write the skeleton
                                 writeTargetDoc(strat, localDocName, locMapping,
                                     doc, null,
-                                    transResponse.getResponseHeaders()
+                                    transResponse.getHeaders()
                                         .getFirst(HttpHeaders.ETAG));
                             }
                         }
                         // 304 NOT MODIFIED (the document can stay the same)
-                        else if (transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED) {
+                        else if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_MODIFIED) {
                             log.info(
                                     "No changes in translations for locale {} and document {}",
                                     locale, localDocName);
@@ -291,26 +279,26 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                             if (!fileChecksum.equals(eTagCacheEntry
                                     .getLocalFileMD5())) {
                                 transResponse =
-                                        translationResources.getTranslations(
+                                        transDocResourceClient.getTranslations(
                                                 docUri, locale,
                                                 strat.getExtensions(),
                                                 createSkeletons, null);
-                                ClientUtility.checkResult(transResponse, uri);
+                                ClientUtil.checkResult(transResponse);
                                 // rewrite the target document
                                 writeTargetDoc(strat, localDocName, locMapping,
-                                    doc, transResponse.getEntity(),
-                                    transResponse.getResponseHeaders()
+                                    doc, transResponse.getEntity(TranslationsResource.class),
+                                    transResponse.getHeaders()
                                         .getFirst(HttpHeaders.ETAG));
                             }
                         } else {
-                            ClientUtility.checkResult(transResponse, uri);
+                            ClientUtil.checkResult(transResponse);
                             TranslationsResource targetDoc =
-                                transResponse.getEntity();
+                                transResponse.getEntity(TranslationsResource.class);
 
                             // Write the target document
                             writeTargetDoc(strat, localDocName, locMapping,
                                     doc, targetDoc,
-                                    transResponse.getResponseHeaders()
+                                    transResponse.getHeaders()
                                             .getFirst(HttpHeaders.ETAG));
                         }
                     }

@@ -2,7 +2,9 @@ package org.zanata.client;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
@@ -11,13 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IProjectIterationResource;
-import org.zanata.rest.client.IProjectResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ProjectClient;
+import org.zanata.rest.client.ProjectIterationClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -91,8 +94,8 @@ public class TestProjectGenerator {
         opts.setUrl(new URI(instance.getUrl()).toURL());
         opts.setUsername(instance.getUsername());
         opts.setKey(instance.getKey());
-        ZanataProxyFactory requestFactory =
-                OptionsUtil.createRequestFactory(opts);
+
+        RestClientFactory clientFactory = OptionsUtil.createClientFactory(opts);
 
         Project projectDTO = createProjectDTO(projectRootMap.get(projectType));
         String projectSlug = projectDTO.getId();
@@ -100,14 +103,9 @@ public class TestProjectGenerator {
         String iterationSlug = iteration.getId();
 
         // create project and version
-        IProjectResource projectResource =
-                requestFactory.getProject(projectSlug);
-        ClientUtility.checkResultAndReleaseConnection(
-                projectResource.put(projectDTO));
-        IProjectIterationResource iterationResource =
-                requestFactory.getProjectIteration(projectSlug, iterationSlug);
-        ClientUtility.checkResultAndReleaseConnection(
-                iterationResource.put(iteration));
+        clientFactory.getProjectClient(projectSlug).put(projectDTO);
+        clientFactory.getProjectIterationClient(projectSlug, iterationSlug)
+                .put(iteration);
     }
 
     /**
@@ -159,6 +157,15 @@ public class TestProjectGenerator {
 
         public String getUrl() {
             return url;
+        }
+
+        public URL getURL() {
+            try {
+                return new URI(url).toURL();
+            }
+            catch (MalformedURLException | URISyntaxException e) {
+                throw Throwables.propagate(e);
+            }
         }
 
         public String getUsername() {

@@ -5,6 +5,7 @@ import java.net.URL;
 import org.apache.commons.configuration.HierarchicalINIConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.junit.Test;
+import org.zanata.client.TestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,8 +13,8 @@ public class ConfigUtilTest {
     @Test
     public void testReadUser() throws Exception {
         HierarchicalINIConfiguration config =
-                new HierarchicalINIConfiguration(
-                        "src/test/resources/zanata.ini");
+                new HierarchicalINIConfiguration(TestUtils.fileFromClasspath(
+                        "zanata.ini").getAbsolutePath());
         SubnodeConfiguration servers = config.getSection("servers");
         String url = "https://translate.jboss.org/";
         String username = "joe";

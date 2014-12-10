@@ -2,7 +2,6 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,11 +14,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.client.ClientResponseFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
@@ -32,21 +27,17 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.AsyncProcessClient;
+import org.zanata.rest.client.CopyTransClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.AsynchronousProcessResource;
-import org.zanata.rest.service.CopyTransResource;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * @author Sean Flanigan <a
@@ -62,8 +53,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     private static final Map<String, AbstractPushStrategy> strategies =
             new HashMap<String, AbstractPushStrategy>();
 
-    private CopyTransResource copyTransResource;
-    private AsynchronousProcessResource asyncProcessResource;
+    private CopyTransClient copyTransClient;
+    private AsyncProcessClient asyncProcessClient;
 
     public static interface TranslationResourcesVisitor {
         void visit(LocaleMapping locale, TranslationsResource targetDoc);
@@ -79,24 +70,26 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         strategies.put(PROJECT_TYPE_XML, new XmlStrategy());
         strategies.put(
                 PROJECT_TYPE_OFFLINE_PO,
-                new OfflinePoStrategy(getRequestFactory().getSourceDocResource(
-                        getOpts().getProj(), getOpts().getProjectVersion()),
-                        uri));
+                new OfflinePoStrategy(getClientFactory()
+                        .getSourceDocResourceClient(getOpts().getProj(),
+                                getOpts()
+                .getProjectVersion())));
     }
 
     public PushCommand(PushOptions opts) {
         super(opts);
-        copyTransResource = getRequestFactory().getCopyTransResource();
-        asyncProcessResource =
-                getRequestFactory().getAsynchronousProcessResource();
+        copyTransClient = getClientFactory().getCopyTransClient();
+        asyncProcessClient = getClientFactory().getAsyncProcessClient();
     }
 
-    public PushCommand(PushOptions opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
-        copyTransResource = factory.getCopyTransResource();
-        asyncProcessResource = factory.getAsynchronousProcessResource();
+    public PushCommand(PushOptions opts,
+            CopyTransClient copyTransClient,
+            AsyncProcessClient asyncProcessClient,
+            RestClientFactory clientFactory) {
+        super(opts,
+                clientFactory);
+        this.copyTransClient = copyTransClient;
+        this.asyncProcessClient = asyncProcessClient;
     }
 
     public AbstractPushStrategy getStrategy(PushOptions pushOptions) {
@@ -504,7 +497,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             // is deprecated.
             // see PushCommand.copyTransForDocument
             ProcessStatus status =
-                    asyncProcessResource.startSourceDocCreationOrUpdate(docUri,
+                    asyncProcessClient.startSourceDocCreationOrUpdate(docUri,
                             getOpts().getProj(), getOpts().getProjectVersion(),
                             srcDoc, extensions, false);
 
@@ -533,7 +526,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 case NotAccepted:
                     // try to submit the process again
                     status =
-                            asyncProcessResource
+                            asyncProcessClient
                                     .startSourceDocCreationOrUpdate(docUri,
                                             getOpts().getProj(), getOpts()
                                                     .getProjectVersion(),
@@ -544,7 +537,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 }
 
                 wait(POLL_PERIOD); // Wait before retrying
-                status = asyncProcessResource.getProcessStatus(status.getUrl());
+                status = asyncProcessClient.getProcessStatus(status.getUrl());
             }
 
             ConsoleUtils.endProgressFeedback();
@@ -620,7 +613,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             ConsoleUtils.startProgressFeedback();
 
             ProcessStatus status =
-                    asyncProcessResource.startTranslatedDocCreationOrUpdate(
+                    asyncProcessClient.startTranslatedDocCreationOrUpdate(
                             docUri, getOpts().getProj(), getOpts()
                                     .getProjectVersion(),
                             new LocaleId(locale.getLocale()), targetDoc,
@@ -652,7 +645,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 case NotAccepted:
                     // try to submit the process again
                     status =
-                            asyncProcessResource
+                            asyncProcessClient
                                     .startTranslatedDocCreationOrUpdate(docUri,
                                             getOpts().getProj(), getOpts()
                                                     .getProjectVersion(),
@@ -665,7 +658,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 }
 
                 wait(POLL_PERIOD); // Wait before retrying
-                status = asyncProcessResource.getProcessStatus(status.getUrl());
+                status = asyncProcessClient.getProcessStatus(status.getUrl());
             }
             ConsoleUtils.endProgressFeedback();
 
@@ -688,10 +681,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         if (!getOpts().isDryRun()) {
             log.info("deleting resource {} from server", qualifiedDocName);
             String docUri = RestUtil.convertToDocumentURIId(qualifiedDocName);
-            ClientResponse<String> deleteResponse =
-                    sourceDocResource.deleteResource(docUri);
-            ClientUtility.checkResult(deleteResponse, uri);
-            deleteResponse.releaseConnection();
+            sourceDocResourceClient.deleteResource(docUri);
         } else {
             log.info(
                     "deleting resource {} from server (skipped due to dry run)",
@@ -706,7 +696,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         }
         log.info("Running Copy Trans for " + docName);
         try {
-            this.copyTransResource.startCopyTrans(getOpts().getProj(),
+            this.copyTransClient.startCopyTrans(getOpts().getProj(),
                     getOpts().getProjectVersion(), docName);
         } catch (Exception ex) {
             log.warn("Could not start Copy Trans for above document. Proceeding");
@@ -716,12 +706,12 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
         try {
             copyTransStatus =
-                    this.copyTransResource.getCopyTransStatus(getOpts()
+                    this.copyTransClient.getCopyTransStatus(getOpts()
                             .getProj(), getOpts().getProjectVersion(), docName);
-        } catch (ClientResponseFailure failure) {
+        } catch (UniformInterfaceException failure) {
             // 404 - Probably because of an old server
-            if (failure.getResponse().getResponseStatus() == Response.Status.NOT_FOUND) {
-                if (getRequestFactory()
+            if (failure.getResponse().getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
+                if (getClientFactory()
                         .compareToServerVersion("1.8.0-SNAPSHOT") < 0) {
                     log.warn("Copy Trans not started (Incompatible server version.)");
                     return;
@@ -735,8 +725,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             } else {
                 throw new RuntimeException(
                         "Problem invoking copy trans: [Server response code:"
-                                + failure.getResponse().getResponseStatus()
-                                        .getStatusCode() + "]");
+                                + failure.getResponse().getStatus() + "]");
             }
         }
         ConsoleUtils.startProgressFeedback();
@@ -750,7 +739,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             ConsoleUtils.setProgressFeedbackMessage(copyTransStatus
                     .getPercentageComplete() + "%");
             copyTransStatus =
-                    this.copyTransResource.getCopyTransStatus(getOpts()
+                    this.copyTransClient.getCopyTransStatus(getOpts()
                             .getProj(), getOpts().getProjectVersion(), docName);
         }
         ConsoleUtils.endProgressFeedback();

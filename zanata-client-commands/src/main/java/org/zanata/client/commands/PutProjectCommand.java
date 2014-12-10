@@ -1,16 +1,8 @@
 package org.zanata.client.commands;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import javax.xml.bind.JAXBException;
-
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IProjectResource;
+import org.zanata.rest.client.ProjectClient;
 import org.zanata.rest.dto.Project;
 
 /**
@@ -26,8 +18,7 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
     }
 
     @Override
-    public void run() throws JAXBException, URISyntaxException, IOException,
-            Exception {
+    public void run() throws Exception {
         Project project = new Project();
         project.setId(getOpts().getProjectSlug());
         project.setName(getOpts().getProjectName());
@@ -45,11 +36,8 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
         log.debug("{}", project);
 
         // send project to rest api
-        IProjectResource projResource =
-                getRequestFactory().getProject(getOpts().getProjectSlug());
-        URI uri = getRequestFactory().getProjectURI(getOpts().getProjectSlug());
-
-        ClientResponse<?> response = projResource.put(project);
-        ClientUtility.checkResult(response, uri);
+        ProjectClient client = getClientFactory().getProjectClient(
+                getOpts().getProjectSlug());
+        client.put(project);
     }
 }

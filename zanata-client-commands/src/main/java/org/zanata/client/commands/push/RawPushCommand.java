@@ -27,20 +27,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.google.common.collect.ImmutableList;
 import org.apache.commons.codec.binary.Hex;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -51,11 +46,11 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.client.IFileResource;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.FileResourceClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.ChunkUploadResponse;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Command to send files directly to the server without parsing on the client.
@@ -68,18 +63,16 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PushCommand.class);
 
-    protected final IFileResource fileResource;
+    private FileResourceClient client;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
-        this.fileResource = getRequestFactory().getFileResource();
+        client = getClientFactory().getFileResourceClient();
     }
 
-    public RawPushCommand(PushOptions opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
-        this.fileResource = factory.getFileResource();
+    public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
+        client = getClientFactory().getFileResourceClient();
     }
 
     @Override
@@ -107,9 +100,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         ImmutableList.Builder<String> builder = ImmutableList.builder();
 
-        ClientResponse<String> response = fileResource.acceptedFileTypes();
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        StringSet serverAcceptedTypes = new StringSet(response.getEntity());
+        StringSet serverAcceptedTypes = client.acceptedFileTypes();
         for (String type : getOpts().getFileTypes()) {
             if (serverAcceptedTypes.contains(type)) {
                 builder.add(type);
@@ -303,16 +295,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     DocumentFileUploadForm uploadForm =
                             generateUploadForm(true, true, fileType, md5hash,
                                     docFile.length(), fileStream);
-                    ClientResponse<ChunkUploadResponse> response =
-                            uploadDocumentPart(docId, locale, uploadForm);
-                    checkChunkUploadStatus(response);
+                    uploadDocumentPart(docId, locale, uploadForm);
                 }
             } else {
                 try (StreamChunker chunker = new StreamChunker(docFile,
                         getOpts().getChunkSize())) {
                     log.info("    transmitting file [{}] as {} chunks",
                             docFile.getAbsolutePath(), chunker.totalChunks());
-                    ClientResponse<ChunkUploadResponse> uploadResponse;
+                    ChunkUploadResponse uploadResponse;
                     DocumentFileUploadForm uploadForm;
                     Long uploadId = null;
 
@@ -332,9 +322,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                         }
                         uploadResponse =
                                 uploadDocumentPart(docId, locale, uploadForm);
-                        checkChunkUploadStatus(uploadResponse);
                         if (isFirst) {
-                            uploadId = uploadResponse.getEntity().getUploadId();
+                            uploadId = uploadResponse.getUploadId();
                             if (uploadId == null) {
                                 throw new RuntimeException(
                                         "server did not return upload id");
@@ -345,15 +334,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void checkChunkUploadStatus(
-            ClientResponse<ChunkUploadResponse> uploadResponse) {
-        if (uploadResponse.getStatus() >= 300) {
-            throw new RuntimeException("Server returned error status: "
-                    + uploadResponse.getStatus() + ". Error message: "
-                    + uploadResponse.getEntity().getErrorMessage());
         }
     }
 
@@ -370,21 +350,21 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         return uploadForm;
     }
 
-    private ClientResponse<ChunkUploadResponse> uploadDocumentPart(
+    private ChunkUploadResponse uploadDocumentPart(
             String docName, String locale, DocumentFileUploadForm uploadForm) {
         ConsoleUtils.startProgressFeedback();
-        ClientResponse<ChunkUploadResponse> response;
+        ChunkUploadResponse response;
         if (locale == null) {
             response =
-                    fileResource.uploadSourceFile(getOpts().getProj(),
+                    client.uploadSourceFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), docName, uploadForm);
         } else {
             response =
-                    fileResource.uploadTranslationFile(getOpts().getProj(),
+                    client.uploadTranslationFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), locale, docName,
                             getOpts().getMergeType(), uploadForm);
         }
-        log.debug("response from server: {}", response.getEntity());
+        log.debug("response from server: {}", response);
         ConsoleUtils.endProgressFeedback();
         return response;
     }
