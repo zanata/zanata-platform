@@ -34,6 +34,13 @@ public class MediaTypes {
     public static final String APPLICATION_ZANATA_PROJECT_JSON =
             APPLICATION_ZANATA_PROJECT + JSON;
 
+    public static final String APPLICATION_ZANATA_PROJECT_LOCALES =
+            APPLICATION_ZANATA_PROJECT + ".locales";
+    public static final String APPLICATION_ZANATA_PROJECT_LOCALES_XML =
+            APPLICATION_ZANATA_PROJECT_LOCALES + XML;
+    public static final String APPLICATION_ZANATA_PROJECT_LOCALES_JSON =
+            APPLICATION_ZANATA_PROJECT_LOCALES + JSON;
+
     public static final String APPLICATION_ZANATA_PROJECTS =
             APPLICATION_VND_ZANATA + ".projects";
     public static final String APPLICATION_ZANATA_PROJECTS_XML =
