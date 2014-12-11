@@ -23,6 +23,8 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 
+import javax.ws.rs.core.MediaType;
+
 import org.zanata.rest.dto.ProjectIteration;
 import com.sun.jersey.api.client.WebResource;
 
@@ -55,10 +57,11 @@ public class ProjectIterationClient {
     }
 
     public void put(ProjectIteration projectVersion) {
-        webResource().put(projectVersion);
+        webResource().accept(MediaType.WILDCARD_TYPE).put(projectVersion);
     }
 
     public String sampleConfiguration() {
         return webResource().path("config").get(String.class);
     }
 }
+
