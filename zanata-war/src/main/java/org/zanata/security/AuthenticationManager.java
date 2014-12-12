@@ -33,12 +33,15 @@ import org.jboss.seam.faces.FacesMessages;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
+import org.zanata.events.LoginCompleted;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.event.Observes;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -54,13 +57,6 @@ import org.zanata.util.ServiceLocator;
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 public class AuthenticationManager {
-    /*
-     * Event used to signal a successful login using the authentication manager.
-     * It is a complement to the events in the Identity class.
-     */
-    public static final String EVENT_LOGIN_COMPLETED =
-            "org.zanata.security.event.loginCompleted";
-
     @In
     private ZanataIdentity identity;
 
@@ -106,7 +102,7 @@ public class AuthenticationManager {
 
         String result = identity.login(authenticationType);
         if (isLoggedIn(result)) {
-            this.onLoginCompleted(authenticationType);
+            this.onLoginCompleted(new LoginCompleted(authenticationType));
         }
 
         return result;
@@ -160,7 +156,7 @@ public class AuthenticationManager {
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {
                 spNegoIdentity.login();
-                this.onLoginCompleted(AuthenticationType.KERBEROS);
+                this.onLoginCompleted(new LoginCompleted(AuthenticationType.KERBEROS));
             }
         }
     }
@@ -276,8 +272,9 @@ public class AuthenticationManager {
      * @param authType
      *            Authentication type that was used to login.
      */
-    @Observer(EVENT_LOGIN_COMPLETED)
-    public void onLoginCompleted(AuthenticationType authType) {
+    @Observer(LoginCompleted.EVENT_NAME)
+    public void onLoginCompleted(@Observes LoginCompleted payload) {
+        AuthenticationType authType = payload.getAuthType();
         identity.setPreAuthenticated(true);
         if (isExternalLogin() && !isNewUser() && isAccountEnabledAndActivated()) {
             applyAuthentication();

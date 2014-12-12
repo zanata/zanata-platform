@@ -44,7 +44,7 @@ import java.util.Collection;
 public class DocumentMilestoneEvent extends JSONType {
 
     public static final String EVENT_NAME =
-        "org.zanata.event.DocumentMilestoneEvent";
+        "org.zanata.events.DocumentMilestoneEvent";
 
     private String project;
     private String version;

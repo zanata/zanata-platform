@@ -65,6 +65,9 @@ import org.zanata.ui.model.statistic.WordStatistic;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.Event;
+
+import javax.enterprise.event.Observes;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -114,6 +117,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private Messages msgs;
+
+    @In("event")
+    private Event<DocumentUploadedEvent> documentUploadedEvent;
 
     @Override
     @Transactional
@@ -199,12 +205,8 @@ public class DocumentServiceImpl implements DocumentService {
 
         long actorId = authenticatedAccount.getPerson().getId();
         if (changed) {
-            if (Events.exists()) {
-                Events.instance().raiseTransactionSuccessEvent(
-                        DocumentUploadedEvent.EVENT_NAME,
-                        new DocumentUploadedEvent(actorId, document.getId(),
-                                true, hLocale.getLocaleId()));
-            }
+            documentUploadedEvent.fireAfterSuccess(new DocumentUploadedEvent(
+                    actorId, document.getId(), true, hLocale.getLocaleId()));
             clearStatsCacheForUpdatedDocument(document);
         }
 
@@ -227,7 +229,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Observer(DocumentStatisticUpdatedEvent.EVENT_NAME)
-    public void documentStatisticUpdated(DocumentStatisticUpdatedEvent event) {
+    public void documentStatisticUpdated(@Observes DocumentStatisticUpdatedEvent event) {
         processWebHookDocumentMilestoneEvent(event,
                 ContentState.TRANSLATED_STATES,
                 msgs.format("jsf.webhook.response.state", DOC_EVENT_MILESTONE,

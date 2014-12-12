@@ -47,6 +47,9 @@ import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -92,7 +95,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Override
-    public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
+    public void textFlowStateUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         VersionLocaleKey key =
                 new VersionLocaleKey(event.getProjectIterationId(),
                         event.getLocaleId());

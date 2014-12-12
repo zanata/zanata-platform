@@ -12,7 +12,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.ContentState;
@@ -24,6 +23,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -45,6 +45,8 @@ import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.event.Observes;
 
 /**
  * Entity event listener for HTextFlowTarget.
@@ -72,6 +74,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     @In
     private ServiceLocator serviceLocator;
 
+    @In("event")
+    private Event<TextFlowTargetUpdatedEvent>
+            textFlowTargetUpdatedEvent;
+
     /**
      * Event raised by Text flow target update initiator containing update
      * context.
@@ -79,7 +85,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
      * @param event
      */
     @Observer(TextFlowTargetUpdateContextEvent.EVENT_NAME)
-    public static void updateContext(TextFlowTargetUpdateContextEvent event) {
+    public static void updateContext(@Observes TextFlowTargetUpdateContextEvent event) {
         updateContext
                 .put(new CacheKey(event.getTransUnitId(), event.getLocaleId()),
                         new CacheValue(event.getEditorClientId(), event
@@ -172,12 +178,9 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                             "unknown", -1),
                             TransUnitUpdated.UpdateType.NonEditorSave);
         }
-        if (Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetUpdatedEvent.EVENT_NAME,
-                    new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
-                            target.getId(), updated));
-        }
+        textFlowTargetUpdatedEvent.fireAfterSuccess(
+                new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
+                        target.getId(), updated));
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

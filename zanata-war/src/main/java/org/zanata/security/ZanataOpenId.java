@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
+import org.zanata.events.LoginCompleted;
 import org.zanata.model.HAccount;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
@@ -62,6 +63,7 @@ import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
+import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
 @Name("org.jboss.seam.security.zanataOpenId")
@@ -85,6 +87,9 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     @In
     private AccountDAO accountDAO;
+
+    @In("event")
+    private Event<LoginCompleted> loginCompletedEvent;
 
     private String id;
     private OpenIdAuthenticationResult authResult;
@@ -238,14 +243,14 @@ public class ZanataOpenId implements OpenIdAuthCallback {
     }
 
     private void loginImmediate() {
-        if (loginImmediately() && Events.exists()) {
-            Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
-                    identity);
+        if (loginImmediately()) {
+            if (Events.exists()) {
+                Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
+                        identity);
+            }
             // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
             // AuthenticationType.OPENID);
-            Events.instance().raiseEvent(
-                    AuthenticationManager.EVENT_LOGIN_COMPLETED,
-                    AuthenticationType.OPENID);
+            loginCompletedEvent.fire(new LoginCompleted(AuthenticationType.OPENID));
         }
     }
 

@@ -21,16 +21,15 @@
 
 package org.zanata.events;
 
-import lombok.Data;
-
+import lombok.Value;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.ui.model.statistic.WordStatistic;
 
-@Data
+@Value
 public final class DocumentStatisticUpdatedEvent {
     public static final String EVENT_NAME =
-            "org.zanata.event.DocumentStatisticUpdated";
+            "org.zanata.events.DocumentStatisticUpdatedEvent";
 
     private final WordStatistic oldStats;
     private final WordStatistic newStats;

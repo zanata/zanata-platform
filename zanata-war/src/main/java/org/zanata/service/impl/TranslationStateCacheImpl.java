@@ -175,6 +175,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         }
     }
 
+    // TODO why not @Observe the event directly?
     @Override
     public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
         DocumentLocaleKey key =

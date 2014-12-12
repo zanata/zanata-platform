@@ -44,7 +44,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
@@ -53,6 +52,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.WebHookDAO;
+import org.zanata.events.ProjectIterationUpdate;
+import org.zanata.events.ProjectUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -71,6 +72,7 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -106,6 +108,12 @@ public class ProjectHome extends SlugHome<HProject> {
 
     @In
     private EntityManager entityManager;
+
+    @In("event")
+    private Event<ProjectUpdate> projectUpdateEvent;
+
+    @In("event")
+    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     @In
     private Messages msgs;
@@ -329,7 +337,7 @@ public class ProjectHome extends SlugHome<HProject> {
                         validationAction.getState().name());
             }
             retValue = super.persist();
-            Events.instance().raiseEvent("projectAdded");
+            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         }
         return retValue;
     }
@@ -391,8 +399,7 @@ public class ProjectHome extends SlugHome<HProject> {
                 if (version.getStatus() == EntityStatus.ACTIVE) {
                     version.setStatus(EntityStatus.READONLY);
                     entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                    projectIterationUpdateEvent.fire(new ProjectIterationUpdate(version));
                 }
             }
         } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -401,8 +408,8 @@ public class ProjectHome extends SlugHome<HProject> {
                 if (version.getStatus() != EntityStatus.OBSOLETE) {
                     version.setStatus(EntityStatus.OBSOLETE);
                     entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                    projectIterationUpdateEvent.fire(
+                            new ProjectIterationUpdate(version));
                 }
             }
         }

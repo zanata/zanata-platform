@@ -41,6 +41,9 @@ import com.google.common.cache.CacheBuilder;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -57,7 +60,7 @@ public class TransUnitUpdateHelper {
             .softValues().maximumSize(100).build();
 
     @Observer(TextFlowTargetUpdatedEvent.EVENT_NAME)
-    public void onTargetUpdatedSuccessful(TextFlowTargetUpdatedEvent event) {
+    public void onTargetUpdatedSuccessful(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetUpdatedEvent event) {
         TransUnitUpdated transUnitUpdated = event.getTransUnitUpdated();
         event.getWorkspace().publish(transUnitUpdated);
         TransUnit transUnit = transUnitUpdated.getUpdateInfo().getTransUnit();

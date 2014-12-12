@@ -34,8 +34,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.events.LanguageDisabled;
+import org.zanata.events.LanguageEnabled;
+import org.zanata.util.Event;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
@@ -53,6 +55,14 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
     private LocaleDAO localeDAO;
 
     private List<HLocale> allLanguages;
+
+    @In("event")
+    private Event<LanguageEnabled> languageEnabledEvent;
+
+    @In("event")
+    private Event<LanguageDisabled> languageDisabledEvent;
+
+
 
     @Getter
     private SortingType LanguageSortingList = new SortingType(
@@ -72,7 +82,7 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
         localeDAO.makePersistent(locale);
         localeDAO.flush();
 
-        Events.instance().raiseEvent("enableLanguage");
+        languageEnabledEvent.fire(new LanguageEnabled(locale.getLocaleId()));
     }
 
     @Restrict("#{s:hasRole('admin')}")
@@ -81,7 +91,7 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
         localeDAO.makePersistent(locale);
         localeDAO.flush();
 
-        Events.instance().raiseEvent("disableLanguage");
+        languageDisabledEvent.fire(new LanguageDisabled(locale.getLocaleId()));
     }
 
     @Restrict("#{s:hasRole('admin')}")

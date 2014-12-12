@@ -36,13 +36,13 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesMessages;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -53,6 +53,7 @@ import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.Event;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -72,9 +73,6 @@ import java.util.Map;
 public class VersionHome extends SlugHome<HProjectIteration> {
 
     private static final long serialVersionUID = 1L;
-
-    public static final String PROJECT_ITERATION_UPDATE =
-            "project.iteration.update";
 
     @Getter
     @Setter
@@ -107,6 +105,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     @In
     private CopyVersionManager copyVersionManager;
+
+    @In("event")
+    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
@@ -405,7 +406,8 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
         String state = super.update();
-        Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
+        projectIterationUpdateEvent.fire(
+                new ProjectIterationUpdate(getInstance()));
         return state;
     }
 

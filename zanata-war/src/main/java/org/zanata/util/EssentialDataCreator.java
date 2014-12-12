@@ -15,7 +15,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -36,10 +35,6 @@ import org.zanata.model.HLocale;
 @Slf4j
 @Install(false)
 public class EssentialDataCreator {
-
-    // You can listen to this event during startup
-    public static final String ESSENTIAL_DATA_CREATED_EVENT =
-            "EssentialDataCreator.complete";
 
     @In
     private EntityManager entityManager;
@@ -138,7 +133,6 @@ public class EssentialDataCreator {
 
             prepared = true;
         }
-        Events.instance().raiseEvent(ESSENTIAL_DATA_CREATED_EVENT);
     }
 
 }

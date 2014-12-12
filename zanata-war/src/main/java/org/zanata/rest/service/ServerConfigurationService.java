@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
@@ -25,20 +24,19 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.ApplicationConfigurationDAO;
+import org.zanata.events.ConfigurationChanged;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Configuration;
 import org.zanata.rest.dto.Link;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.Event;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -65,6 +63,9 @@ public class ServerConfigurationService {
     private MediaType accept;
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
+
+    @In("event")
+    private Event<ConfigurationChanged> zanataConfigurationChangedEvent;
 
     /**
      * Retrieves all existing server configurations.
@@ -164,7 +165,7 @@ public class ServerConfigurationService {
      * @param applicationConfigurationDAO
      *            dao
      */
-    public static void persistApplicationConfig(String key,
+    public void persistApplicationConfig(String key,
             @Nullable HApplicationConfiguration appConfig, String newValue,
             ApplicationConfigurationDAO applicationConfigurationDAO) {
         if (appConfig != null) {
@@ -177,11 +178,7 @@ public class ServerConfigurationService {
             appConfig = new HApplicationConfiguration(key, newValue);
             applicationConfigurationDAO.makePersistent(appConfig);
         }
-
-        if (Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED, key);
-        }
+        zanataConfigurationChangedEvent.fireAfterSuccess(new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {

@@ -39,6 +39,7 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
+import org.zanata.events.Logout;
 import org.zanata.model.HAccount;
 import org.zanata.security.permission.MultiTargetList;
 import org.zanata.util.ServiceLocator;
@@ -55,8 +56,6 @@ public class ZanataIdentity extends Identity {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
 
-    public static final String USER_LOGOUT_EVENT = "user.logout";
-    public static final String USER_ENTER_WORKSPACE = "user.enter";
     public static final String JAAS_DEFAULT = "default";
 
     private static final long serialVersionUID = -5488977241602567930L;
@@ -107,8 +106,8 @@ public class ZanataIdentity extends Identity {
     @Observer("org.jboss.seam.preDestroyContext.SESSION")
     public void logout() {
         if (Events.exists() && getCredentials() != null) {
-            Events.instance().raiseEvent(USER_LOGOUT_EVENT,
-                    getCredentials().getUsername());
+            Events.instance().raiseEvent(Logout.EVENT_NAME,
+                    new Logout(getCredentials().getUsername()));
         }
         super.logout();
     }

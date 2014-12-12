@@ -64,6 +64,9 @@ public class ServerConfigurationBean implements Serializable {
     @In
     private ApplicationConfiguration applicationConfiguration;
 
+    @In
+    private ServerConfigurationService serverConfigurationResource;
+
     @Url(canEndInSlash = true)
     @Getter
     @Setter
@@ -252,7 +255,7 @@ public class ServerConfigurationBean implements Serializable {
                 applicationConfigurationDAO
                         .findByKey(property.getKey());
         try {
-            ServerConfigurationService.persistApplicationConfig(
+            serverConfigurationResource.persistApplicationConfig(
                     property.getKey(),
                     registerUrlValue, property.get(), applicationConfigurationDAO);
         } catch (IllegalAccessException e) {

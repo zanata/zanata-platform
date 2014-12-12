@@ -367,6 +367,8 @@ class CopyTransWork extends Work<Integer> {
          * to an 'after Transaction' events), there is no big performance gain
          * and makes the code easier to read and navigate.
          */
+        // TODO how was this not causing duplicate events?  Is this bypassing TranslationServiceImpl?
+        // FIXME other observers may not be notified
         HDocument document = target.getTextFlow().getDocument();
         TextFlowTargetStateEvent updateEvent =
                 new TextFlowTargetStateEvent(null, document

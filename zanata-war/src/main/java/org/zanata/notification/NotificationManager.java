@@ -22,6 +22,7 @@ package org.zanata.notification;
 
 import java.io.Serializable;
 
+import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
@@ -59,10 +60,10 @@ public class NotificationManager implements Serializable {
     @In
     private QueueSession queueSession;
 
-    @Observer(LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED)
+    @Observer(LanguageTeamPermissionChangedEvent.EVENT_NAME)
     public
             void onLanguageTeamPermissionChanged(
-                    final LanguageTeamPermissionChangedEvent event) {
+                    final @Observes LanguageTeamPermissionChangedEvent event) {
         try {
             ObjectMessage message =
                     queueSession.createObjectMessage(event);
