@@ -21,6 +21,8 @@
 
 package org.zanata.rest.client;
 
+import javax.ws.rs.core.MediaType;
+
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ProjectResource;
 import com.sun.jersey.api.client.WebResource;
@@ -50,6 +52,7 @@ public class ProjectClient {
     }
 
     public void put(Project project) {
-        webResource().put(project);
+        webResource().accept(MediaType.WILDCARD_TYPE).put(project);
     }
 }
+
