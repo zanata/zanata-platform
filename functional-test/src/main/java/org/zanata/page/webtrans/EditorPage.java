@@ -401,10 +401,9 @@ public class EditorPage extends BasePage {
      */
     public boolean isValidationOptionSelected(Validations validation) {
         log.info("Query is validation option {} selected", validation);
-        return waitForWebElement(By.xpath("//*[@title='" +
-                        getValidationTitle(validation) + "']"))
-                .findElement(By.tagName("input"))
-                .isSelected();
+        return waitForElementExists(waitForElementExists(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']")),
+                By.tagName("input")).isSelected();
     }
 
     /**
@@ -415,10 +414,9 @@ public class EditorPage extends BasePage {
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
         log.info("Click validation checkbox {}", validation);
-        waitForElementExists(By.xpath("//*[@title='" +
-                getValidationTitle(validation) + "']"))
-                .findElement(By.tagName("input"))
-                .click();
+        waitForWebElement(waitForElementExists(By.xpath("//*[@title='" +
+                getValidationTitle(validation) + "']")),
+                By.tagName("input")).click();
         return new EditorPage(getDriver());
     }
 

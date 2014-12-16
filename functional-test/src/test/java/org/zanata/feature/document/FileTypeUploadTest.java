@@ -21,20 +21,17 @@
 package org.zanata.feature.document;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
-import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
@@ -55,23 +52,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class FileTypeUploadTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @ClassRule
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @ClassRule
-    public static CleanDocumentStorageRule documentStorageRule =
-            new CleanDocumentStorageRule();
+    public static CleanDocumentStorageRule documentStorageRule;
 
-    @Before
-    public void before() {
+    @BeforeClass
+    public static void beforeClass() {
+        documentStorageRule = new CleanDocumentStorageRule();
         new ZanataRestCaller().createProjectAndVersion("doctype-test",
                 "doctype-upload", "File");
-        new LoginWorkFlow().signIn("admin", "admin");
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     private static String testString = "Test text 1";
     private static String htmlString = "<html><title>"+testString+"</title>"+
             "<body/> </html>";
+
     @DataPoint
     public static File TXT_FILE = new TestFileGenerator()
             .generateTestFileWithContent( "testtxtfile", ".txt", testString);
@@ -139,7 +139,6 @@ public class FileTypeUploadTest extends ZanataTestCase {
             .openTestFile("upload-odp.odp");
 
     @Theory
-    @Category(BasicAcceptanceTest.class)
     @Feature(bugzilla = 980670,
             summary = "The administrator can upload raw files for translation",
             tcmsTestCaseIds = { 377743 },
@@ -159,16 +158,8 @@ public class FileTypeUploadTest extends ZanataTestCase {
                 .clickUploadDone()
                 .gotoDocumentTab();
 
-        assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
+        assertThat(versionDocumentsPage.waitForSourceDocsContains(testFileName))
                 .as("Document shows in table");
-
-        EditorPage editorPage = versionDocumentsPage
-                .gotoLanguageTab()
-                .translate("pl", testFileName);
-
-        assertThat(editorPage.getMessageSourceAtRowIndex(0))
-                .isEqualTo(testString)
-                .as("The translation source is correct");
     }
 
     private static String sep() {

@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.project;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -27,8 +29,11 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 /**
@@ -37,18 +42,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class EditWebHooksTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
 
     @Feature(summary = "The maintainer can add WebHooks for a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addWebHook() throws Exception {
         String testUrl = "http://www.example.com";
-        ProjectWebHooksTab projectWebHooksTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
                 .enterUrl(testUrl)
@@ -64,10 +78,8 @@ public class EditWebHooksTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeWebHook() throws Exception {
         String testUrl = "http://www.example.com";
-        ProjectWebHooksTab projectWebHooksTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
                 .enterUrl(testUrl)

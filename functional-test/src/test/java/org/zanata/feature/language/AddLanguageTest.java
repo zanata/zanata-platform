@@ -24,6 +24,8 @@ package org.zanata.feature.language;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,7 +34,9 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,8 +48,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class AddLanguageTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
 
     @Feature(summary = "The administrator can add a language to Zanata",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181709)
@@ -53,9 +68,8 @@ public class AddLanguageTest extends ZanataTestCase {
     public void addLanguageAsEnabled() throws Exception {
         String language = "Goa'uld";
         String languageDisplayName = "goa'uld[Goa'uld]";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
+        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
+                .goToHome()
                 .goToAdministration()
                 .goToManageLanguagePage();
 
@@ -96,8 +110,8 @@ public class AddLanguageTest extends ZanataTestCase {
     public void addLanguageAsDisabled() throws Exception {
         String language = "Klingon";
         String languageDisplayName = "klingon[Klingon]";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
+        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
+                .goToHome()
                 .goToHomePage()
                 .goToAdministration()
                 .goToManageLanguagePage();
@@ -137,9 +151,8 @@ public class AddLanguageTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addKnownLanguage() throws Exception {
         String language = "ru-RU";
-        ManageLanguagePage manageLanguagePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
+        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
+                .goToHome()
                 .goToAdministration()
                 .goToManageLanguagePage();
 

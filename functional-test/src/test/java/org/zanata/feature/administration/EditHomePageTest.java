@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.administration;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -28,6 +30,8 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,22 +43,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class EditHomePageTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
 
     @Feature(summary = "The administrator can edit the home screen in " +
             "WYSIWYG mode",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editPageContent() throws Exception {
-        HomePage homePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
+        HomePage homePage = new BasicWorkFlow()
+                .goToHome()
                 .goToEditPageContent()
-                .enterText("Test")
+                .enterText("WYSIWYGTest")
                 .update();
 
-        assertThat(homePage.getMainBodyContent()).isEqualTo("Test")
+        assertThat(homePage.getMainBodyContent()).isEqualTo("WYSIWYGTest")
                 .as("Homepage text has been updated");
     }
 
@@ -63,14 +77,13 @@ public class EditHomePageTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editPageCode() throws Exception {
-        HomePage homePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToHomePage()
+        HomePage homePage = new BasicWorkFlow()
+                .goToHome()
                 .goToEditPageCode()
-                .enterText("<b>Test</b>")
+                .enterText("<b>HTMLTest</b>")
                 .update();
 
-        assertThat(homePage.getMainBodyContent()).isEqualTo("Test")
+        assertThat(homePage.getMainBodyContent()).isEqualTo("HTMLTest")
                 .as("Homepage text has been updated");
     }
 }

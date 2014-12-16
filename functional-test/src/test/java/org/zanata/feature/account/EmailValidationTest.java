@@ -21,12 +21,16 @@
 package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.RegisterPage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,22 +41,46 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @Category(DetailedTest.class)
-public class UsernameValidationTest extends ZanataTestCase {
+public class EmailValidationTest extends ZanataTestCase {
 
-    @Feature(summary = "The user must enter acceptable username characters" +
-            "to register",
+    private RegisterPage registerPage;
+
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
+    @BeforeClass
+    public static void setUp() {
+        // Ensure no login
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+    }
+
+    @Before
+    public void before() {
+        registerPage = new BasicWorkFlow().goToHome().goToRegistration();
+    }
+
+    @Feature(summary = "The system will allow acceptable forms of an " +
+            "email address for registration",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void usernameCharacterValidation() throws Exception {
-        RegisterPage registerPage = new BasicWorkFlow()
-                .goToHome()
-                .goToRegistration()
-                .enterUserName("user|name");
-        registerPage.defocus();
+    @Test
+    public void validEmailAcceptance() throws Exception {
+        registerPage = registerPage.enterEmail("me@mydomain.com")
+                .enterName("Sam I Am"); // Shift to other field
 
-        assertThat(registerPage.expectError(
-                    RegisterPage.USERNAME_VALIDATION_ERROR))
-                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
-                .as("Username validation errors are shown");
+        assertThat(registerPage.getErrors())
+                .as("Email validation errors are not shown")
+                .isEmpty();
+    }
+
+    @Feature(summary = "The user must enter a valid email address to " +
+            "register with Zanata",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void invalidEmailRejection() throws Exception {
+        registerPage = registerPage.enterEmail("plaintext").registerFailure();
+
+        assertThat(registerPage.expectError(RegisterPage.MALFORMED_EMAIL_ERROR))
+                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
+                .as("The email formation error is displayed");
     }
 }

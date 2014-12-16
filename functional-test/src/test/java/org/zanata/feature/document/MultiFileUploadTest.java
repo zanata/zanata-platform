@@ -24,6 +24,8 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,6 +34,7 @@ import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
@@ -50,6 +53,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -57,16 +63,19 @@ public class MultiFileUploadTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
-    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        new LoginWorkFlow().signIn("admin", "admin");
+    }
+
     @Before
     public void before() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        zanataRestCaller = new ZanataRestCaller();
-        zanataRestCaller.createProjectAndVersion("multi-upload", "multi-upload",
-            "file");
+        new ZanataRestCaller().createProjectAndVersion("multi-upload",
+                "multi-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
                 .getDocumentStoragePath()
                 .concat(File.separator)
@@ -76,7 +85,6 @@ public class MultiFileUploadTest extends ZanataTestCase {
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
-        new LoginWorkFlow().signIn("admin", "admin");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

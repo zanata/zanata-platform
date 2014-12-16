@@ -45,9 +45,6 @@ public class ZanataTestCase {
     public final static int MAX_LONG_TEST_DURATION = 300000;
 
     @Rule
-    public RetryRule retryRule = new RetryRule(1);
-
-    @Rule
     public TestName testName = new TestName();
 
     /*

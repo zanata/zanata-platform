@@ -23,6 +23,8 @@ package org.zanata.feature.editor;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -56,14 +58,14 @@ public class TranslateHTMLTest extends ZanataTestCase {
     @Rule
     public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @ClassRule
+    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Rule
-    public CleanDocumentStorageRule documentStorageRule =
+    @ClassRule
+    public static CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
-    private ZanataRestCaller zanataRestCaller;
+    private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 
     @DataPoint
@@ -71,16 +73,17 @@ public class TranslateHTMLTest extends ZanataTestCase {
     @DataPoint
     public static String TEST_html = "html";
 
-    @Before
-    public void before() {
-        zanataRestCaller = new ZanataRestCaller();
+    @BeforeClass
+    public static void beforeClass() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
                 "",
                 new File(CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator)).exists());
-        new LoginWorkFlow().signIn("admin", "admin");
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
     }
 
     @Feature(summary = "The user can translate HyperText Markup Language files",

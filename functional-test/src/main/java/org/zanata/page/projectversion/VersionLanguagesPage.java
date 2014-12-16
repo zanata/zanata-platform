@@ -22,9 +22,11 @@ package org.zanata.page.projectversion;
 
 import java.util.List;
 
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.zanata.page.BasePage;
 import org.zanata.page.webtrans.EditorPage;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -63,22 +65,25 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public VersionLanguagesPage clickLocale(final String locale) {
         log.info("Click locale {}", locale);
-        WebElement listItem = waitForAMoment()
-                .until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver input) {
-                        for (WebElement localeRow : getLanguageTabLocaleList()) {
-                            WebElement link = localeRow
-                                    .findElement(By.xpath(".//a")); // Top <a>
-                            if (link.findElement(languageItemTitle)
-                                    .getText().equals(locale)) {
-                                return link;
-                            }
-                        }
-                        return null;
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                new BasePage(getDriver()).waitForPageSilence();
+                for (WebElement localeRow : getLanguageTabLocaleList()) {
+                    WebElement link = localeRow
+                            .findElement(By.xpath(".//a")); // Top <a>
+                    if (link.findElement(languageItemTitle)
+                            .getText().equals(locale)) {
+                        slightPause(); // Clicking too fast can often confuse
+                                       // the button
+                        clickLinkAfterAnimation(link);
+                        return true;
                     }
-                });
-        clickLinkAfterAnimation(listItem);
+                }
+                return false;
+            }
+        });
+
         return new VersionLanguagesPage(getDriver());
     }
 

@@ -21,6 +21,8 @@
 package org.zanata.feature.administration;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +32,9 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.ManageSearchPage;
 import org.zanata.page.dashboard.DashboardBasePage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,14 +42,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ManageSearchTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private DashboardBasePage dashboardPage;
 
+    @BeforeClass
+    public static void beforeClass() {
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
+
     @Before
     public void before() {
-        dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
+        dashboardPage = new BasicWorkFlow().goToDashboard();
     }
 
     @Feature(summary = "The administrator can clear and regenerate all of the " +

@@ -327,6 +327,11 @@ public class BasePage extends CorePage {
                 "return arguments[0].innerHTML;", webElement);
     }
 
+
+    public boolean isValid() {
+        return (getDriver().findElements(By.id("home"))).size() > 0;
+    }
+
     public void clickElement(By findby) {
         scrollIntoView(waitForWebElement(findby));
         waitForWebElement(findby).click();

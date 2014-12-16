@@ -74,30 +74,8 @@ public class SampleProjectProfile {
     private HPerson admin;
 
     public void deleteExceptEssentialData() {
-        EntityCleaner.deleteAll(entityManager, Lists.<Class>newArrayList(
-                TransMemoryUnitVariant.class, TransMemoryUnit.class,
-                TransMemory.class,
-                Activity.class,
-                // glossary
-                HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
-                // tex flows and targets
-                HPoTargetHeader.class, HTextFlowTargetHistory.class,
-                HTextFlowTarget.class, HTextFlow.class,
-                // documents
-                HDocumentHistory.class, HDocument.class,
-                // locales
-                HLocaleMember.class, HLocale.class,
-                // version group
-                HIterationGroup.class,
-                // project
-                HProjectIteration.class, HProject.class,
-                // account
-                HAccountActivationKey.class, HPersonEmailValidationKey.class,
-                HAccountResetPasswordKey.class, HCredentials.class,
-                HPerson.class, HAccount.class,
-                // account role
-                HRoleAssignmentRule.class
-        ));
+        EntityCleaner.deleteAll(entityManager, ZanataEntities
+                .entitiesForRemoval());
         enUSLocale =
                 forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
                         HLocale.class);

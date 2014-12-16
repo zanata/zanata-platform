@@ -21,6 +21,8 @@
 
 package org.zanata.feature.projectversion;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,6 +33,7 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -44,18 +47,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class CreateProjectVersionTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
 
     @Feature(summary = "The administrator can create a project version",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136517)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createASimpleProjectVersion() throws Exception {
-        VersionLanguagesPage versionLanguagesPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .clickCreateVersionLink()
                 .disableCopyFromVersion()
                 .inputVersionId("my-aboutfedora-version")
@@ -70,10 +81,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idFieldMustNotBeEmpty() throws Exception {
-        CreateVersionPage createVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        CreateVersionPage createVersionPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .clickCreateVersionLink()
                 .inputVersionId("");
         createVersionPage.defocus();
@@ -88,10 +97,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idStartsAndEndsWithAlphanumeric() throws Exception {
-        CreateVersionPage createVersionPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        CreateVersionPage createVersionPage = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .clickCreateVersionLink()
                 .inputVersionId("-A");
         createVersionPage.defocus();
@@ -135,13 +142,6 @@ public class CreateProjectVersionTest extends ZanataTestCase {
             expected = org.openqa.selenium.TimeoutException.class)
     public void versionCounterIsUpdated() throws Exception {
         String projectName = "version nums";
-
-        assertThat(new LoginWorkFlow()
-                .signIn("translator", "translator")
-                .loggedInAs())
-                .isEqualTo("translator")
-                .as("Login as translator");
-
         assertThat(new ProjectWorkFlow()
                 .createNewSimpleProject("version-nums", projectName)
                 .getProjectName())
