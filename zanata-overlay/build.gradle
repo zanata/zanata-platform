@@ -1,0 +1,103 @@
+defaultTasks 'package'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtime "mysql:mysql-connector-java:5.1.34"
+    runtime "org.codehaus.groovy:groovy-all:2.1.5"
+}
+
+final def BUILD_DIR = "target"
+
+task 'package'(dependsOn: 'copyToLib') << {
+    def distros = findAvailableDistros()
+    def zanataVersion = readProjectVersion()
+
+    distros.each { distro ->
+        def distroName = "zanata-$zanataVersion-$distro"
+        def distroDir = "$BUILD_DIR/$distroName"
+        // Make a build directory fro the distribution
+        ant.mkdir(dir: distroDir)
+        // Copy the common files for all distributions
+        ant.copy(todir: distroDir) {
+            fileset(dir: "common")
+        }
+        // Make sure executable files have the right permissions
+        ant.chmod(dir: "$distroDir/", perm: "ug+x", includes: "**/*.sh")
+        // Copy specific distribution files
+        ant.copy(todir: distroDir) {
+            fileset(dir: "distros/$distro")
+        }
+        // Copy extra needed files
+        ant.copy(todir: "$distroDir/standalone/deployments") {
+            fileset(dir: "$BUILD_DIR/deps") {
+                include(name: "mysql-connector-java-*.jar")
+            }
+            globmapper(from: "mysql-connector-java-*.jar",
+                to: "mysql-connector-java.jar")
+        }
+        ant.copy(todir: "$distroDir/bin/zanata-installer") {
+            fileset(dir: "$BUILD_DIR/deps") {
+                include(name: "groovy-all-*.jar")
+            }
+        }
+        // Download remote dependencies
+        downloadRemoteDeps(distro, distroDir)
+        // Replace templates
+        replaceTemplates(distroDir, zanataVersion)
+        // Zip it up
+        ant.zip(destfile: "$BUILD_DIR/${distroName}.zip", basedir: distroDir)
+        // Cleanup
+        //ant.delete(dir: "$BUILD_DIR/deps")
+        ant.delete(dir: distroDir)
+    }
+}
+
+task copyToLib(type: Copy) {
+    into "$BUILD_DIR/deps"
+    from configurations.runtime
+}
+
+List findAvailableDistros() {
+    new File("distros").listFiles()
+        .findAll { !it.name.startsWith(".") && it.isDirectory() }
+        .collect { it.name }
+}
+
+String readProjectVersion() {
+    (new groovy.util.XmlParser()).parse(new File("../pom.xml")).version.text()
+}
+
+def replaceTemplates(String distroDir, String zanataVersion) {
+    def engine = new groovy.text.SimpleTemplateEngine()
+    def templateFile = new File(distroDir,
+        "bin/zanata-installer/installer.properties")
+    def template = engine.createTemplate(templateFile)
+    def result = template.make(['version': zanataVersion])
+    templateFile.newWriter() << result
+}
+
+def downloadRemoteDeps(String distro, String distroDir) {
+    def config = new groovy.util.ConfigSlurper().
+        parse(new File('config/remote-deps.groovy').toURL())
+    config."$distro"?.each { depName, value ->
+        def dep = config."$distro"."$depName"
+        def destFile = new File("$distroDir/${dep.toFile}")
+        download(dep.url, destFile)
+        if (dep.extract) {
+            ant.unzip(src: "${destFile.absolutePath}",
+                dest: "${destFile.parent}")
+            ant.delete(file: "${destFile.absolutePath}")
+        }
+    }
+}
+
+def download(String url, File destFile) {
+    def file = new FileOutputStream(destFile)
+    def out = new BufferedOutputStream(file)
+    out << new URL(url).openStream()
+    out.close()
+}

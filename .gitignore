@@ -64,3 +64,6 @@ bin/
 *.tmp
 /tmp*
 *.bak
+
+# Gradle files
+.gradle/
