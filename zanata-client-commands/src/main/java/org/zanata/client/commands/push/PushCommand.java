@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,13 +41,13 @@ import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
 import org.zanata.rest.service.CopyTransResource;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableMap;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  * @author Sean Flanigan <a
@@ -399,7 +400,15 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                 public void visit(LocaleMapping locale,
                                         TranslationsResource targetDoc) {
                                     debug(targetDoc);
-
+                                    stripUntranslatedEntriesIfMergeTypeIsNotImport(getOpts(),
+                                            targetDoc);
+                                    if (targetDoc.getTextFlowTargets()
+                                            .isEmpty()) {
+                                        log.debug(
+                                                "Skip translation file {}({}) since it has no translation in it",
+                                                localDocName, locale);
+                                        return;
+                                    }
                                     pushTargetDocToServer(docUri, locale,
                                             qualifiedDocName, targetDoc,
                                             extensions);
@@ -436,6 +445,30 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             }
         }
         deleteSourceDocsFromServer(obsoleteDocs);
+    }
+
+    private static void stripUntranslatedEntriesIfMergeTypeIsNotImport(
+            PushOptions opts, TranslationsResource translationResources) {
+        String mergeType = opts.getMergeType();
+        if (!MergeType.IMPORT.name().equalsIgnoreCase(mergeType)) {
+            List<TextFlowTarget> originalTargets =
+                    translationResources.getTextFlowTargets();
+            Collection<TextFlowTarget> untranslatedEntries = Collections2
+                    .filter(originalTargets,
+                            new Predicate<TextFlowTarget>() {
+                                @Override
+                                public boolean apply(
+                                        TextFlowTarget input) {
+                                    return input == null ||
+                                            input.getState().isUntranslated();
+                                }
+                            });
+            log.debug(
+                    "Remove {} untranslated entries from the payload since merge type is NOT import ({})",
+                    untranslatedEntries.size(), mergeType);
+            translationResources.getTextFlowTargets()
+                    .removeAll(untranslatedEntries);
+        }
     }
 
     /**

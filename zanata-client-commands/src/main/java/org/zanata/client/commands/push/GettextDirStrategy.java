@@ -22,23 +22,16 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConsoleInteractorImpl;
-import org.zanata.client.commands.FileMappingRuleHandler;
-import org.zanata.client.commands.QualifiedSrcDocName;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.UnqualifiedSrcDocName;
-import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.common.ProjectType;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Throwables;
+
 import com.google.common.collect.Lists;
 
 public class GettextDirStrategy extends AbstractGettextPushStrategy {
@@ -46,7 +39,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
             .getLogger(GettextDirStrategy.class);
 
     @Override
-    List<LocaleMapping> findLocales() {
+    List<LocaleMapping> findLocales(String srcDocName) {
 
         List<LocaleMapping> localesFoundOnDisk = Lists.newArrayList();
 
@@ -56,9 +49,8 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
             return localesFoundOnDisk;
         }
 
-        Set<String> srcDocNames = getSrcDocNames();
         for (LocaleMapping loc : localeListInConfig) {
-            if (hasTranslationFileForLocale(loc, srcDocNames)) {
+            if (hasTranslationFileForLocale(loc, srcDocName)) {
                 localesFoundOnDisk.add(loc);
             } else {
                 log.warn(
@@ -74,24 +66,14 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
                             .getPushType());
         }
 
-        return localeListInConfig;
-    }
-
-    @VisibleForTesting
-    protected void setLocalSrcDocNames(Set<String> srcDocNames) {
-        super.localSrcDocNames = srcDocNames;
+        return localesFoundOnDisk;
     }
 
     private boolean hasTranslationFileForLocale(LocaleMapping loc,
-            Set<String> srcDocNames) {
-        for (String srcDocName : srcDocNames) {
-            File transFile = new TransFileResolver(getOpts()).getTransFile(
-                    UnqualifiedSrcDocName.from(srcDocName), loc);
-            if (transFile.exists()) {
-                return true;
-            }
-        }
-        return false;
+            String srcDocName) {
+        File transFile = new TransFileResolver(getOpts()).getTransFile(
+                UnqualifiedSrcDocName.from(srcDocName), loc);
+        return transFile.exists();
     }
 
     @Override

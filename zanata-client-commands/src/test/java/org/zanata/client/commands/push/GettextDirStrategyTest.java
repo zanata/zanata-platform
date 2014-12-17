@@ -24,7 +24,6 @@ package org.zanata.client.commands.push;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -39,7 +38,6 @@ import com.google.common.collect.Sets;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class GettextDirStrategyTest {
@@ -99,8 +97,6 @@ public class GettextDirStrategyTest {
     // rhbz1174516
     @Test
     public void willWorkOnNonStandardTranslationDir() throws IOException {
-        // Given: source document as "foo/message.pot"
-        strategy.setLocalSrcDocNames(Sets.newHashSet("foo/message"));
         opts.setPushType("trans");
         opts.setFileMappingRules(newArrayList(
                 new FileMappingRule(null,
@@ -119,7 +115,7 @@ public class GettextDirStrategyTest {
         tempFileRule
                 .createTransFileRelativeToTransDir("manfoo/zh_Hans/message.po");
 
-        List<LocaleMapping> locales = strategy.findLocales();
+        List<LocaleMapping> locales = strategy.findLocales("foo/message");
 
         assertThat(locales, Matchers.containsInAnyOrder(deMapping, zhMapping));
     }

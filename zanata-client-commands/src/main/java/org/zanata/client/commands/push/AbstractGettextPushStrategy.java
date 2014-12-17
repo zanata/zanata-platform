@@ -100,11 +100,13 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
 
     /**
      * Try to find locales based on translation files found on local file
-     * system.
+     * system. It will be called for each source document in a loop.
      *
      * @return a list of locale mapping that potentially has translation files
+     * @param srcDocName
+     *            source document name
      */
-    abstract Collection<LocaleMapping> findLocales();
+    abstract Collection<LocaleMapping> findLocales(String srcDocName);
 
     protected File getTransFile(LocaleMapping locale, String docName) {
         File transFile = new TransFileResolver(getOpts()).getTransFile(
@@ -128,10 +130,10 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public void visitTranslationResources(String docName, Resource srcDoc,
+    public void visitTranslationResources(String srcDocName, Resource srcDoc,
             TranslationResourcesVisitor callback) throws IOException {
-        for (LocaleMapping locale : findLocales()) {
-            File transFile = getTransFile(locale, docName);
+        for (LocaleMapping locale : findLocales(srcDocName)) {
+            File transFile = getTransFile(locale, srcDocName);
             if (transFile.canRead()) {
                 try (BufferedInputStream bis = new BufferedInputStream(
                         new FileInputStream(transFile))) {

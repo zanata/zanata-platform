@@ -22,7 +22,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
             .getLogger(GettextPushStrategy.class);
 
     @Override
-    List<LocaleMapping> findLocales() {
+    List<LocaleMapping> findLocales(String srcDocName) {
         // find all .po basenames in this dir and subdirs
         Collection<File> transFilesOnDisk =
                 listFiles(getOpts().getTransDir(), new String[] { "po" }, true);
@@ -34,17 +34,15 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
             return Collections.emptyList();
         }
 
-        for (String srcDocName : getSrcDocNames()) {
-            final UnqualifiedSrcDocName unqualifiedSrcDocName =
-                    UnqualifiedSrcDocName.from(srcDocName);
-            List<File> transFilesDestinations =
-                    Lists.transform(localeListInConfig,
-                            new LocaleMappingToTransFile(unqualifiedSrcDocName,
-                                    getOpts()));
-            // we remove all the ones that WILL be mapped and treated as
-            // translation files
-            transFilesOnDisk.removeAll(transFilesDestinations);
-        }
+        final UnqualifiedSrcDocName unqualifiedSrcDocName =
+                UnqualifiedSrcDocName.from(srcDocName);
+        List<File> transFilesDestinations =
+                Lists.transform(localeListInConfig,
+                        new LocaleMappingToTransFile(unqualifiedSrcDocName,
+                                getOpts()));
+        // we remove all the ones that WILL be mapped and treated as
+        // translation files
+        transFilesOnDisk.removeAll(transFilesDestinations);
         // for all remaining po files we give a warning
         for (File transFile : transFilesOnDisk) {
             log.warn(
