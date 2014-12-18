@@ -29,13 +29,13 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
+import org.zanata.ui.faces.FacesMessages;
 
 /**
  * This action handles new user profile creation.
@@ -52,6 +52,10 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @In
     private EmailService emailServiceImpl;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
     @In
     Messages msgs;
 
@@ -103,7 +107,7 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
         String message =
                 emailServiceImpl.sendActivationEmail(this.name, this.email, key);
         identity.unAuthenticate();
-        FacesMessages.instance().add(message);
+        facesMessages.addGlobal(message);
     }
 
     public void cancel() {

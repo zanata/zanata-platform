@@ -35,8 +35,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
@@ -51,7 +49,9 @@ import org.zanata.ui.InMemoryListFilter;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.ui.faces.FacesMessages;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
@@ -74,6 +74,9 @@ public class UserAction extends
 
     @In
     private EntityManager entityManager;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private Messages msgs;
@@ -118,9 +121,9 @@ public class UserAction extends
             entityManager.flush();
         } catch (PersistenceException e) {
             if (e.getCause() instanceof ConstraintViolationException) {
-                FacesMessages.instance()
-                        .add(StatusMessage.Severity.ERROR, msgs.get(
-                            "jsf.UserManager.delete.constraintViolation.error"));
+                facesMessages
+                        .addFromResourceBundle(SEVERITY_ERROR,
+                                "jsf.UserManager.delete.constraintViolation.error");
             }
         }
     }
@@ -160,7 +163,7 @@ public class UserAction extends
                         newUsername);
                 usernameChanged = true;
             } else {
-                FacesMessages.instance().addToControl("username",
+                facesMessages.addToControl("username",
                         msgs.format("jsf.UsernameNotAvailable",
                                 getUsername()));
                 setUsername(originalUsername); // reset the username field
@@ -174,7 +177,7 @@ public class UserAction extends
             String email = getEmail(newUsername);
             String message = emailServiceImpl.sendUsernameChangedEmail(
                     email, newUsername);
-            FacesMessages.instance().add(message);
+            facesMessages.addGlobal(message);
         }
         return saveResult;
     }

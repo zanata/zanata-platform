@@ -15,8 +15,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage.Severity;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
@@ -27,6 +25,7 @@ import org.zanata.rest.dto.Glossary;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 import com.google.common.collect.Lists;
 
@@ -34,6 +33,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("glossaryAction")
 @Scope(ScopeType.PAGE)
@@ -52,6 +53,9 @@ public class GlossaryAction implements Serializable {
 
     @In
     private Messages msgs;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @Getter
     private GlossaryFileUploadHelper glossaryFileUpload =
@@ -83,8 +87,8 @@ public class GlossaryAction implements Serializable {
                     glossaryDAO.deleteAllEntries(new LocaleId(localeId));
             log.info("Glossary deleted (" + localeId + "): " + rowCount);
         }
-        FacesMessages.instance().add(Severity.INFO,
-                msgs.format("jsf.Glossary.deleted", rowCount, localeId));
+        facesMessages.addGlobal(msgs.format("jsf.Glossary.deleted", rowCount,
+                localeId));
         return FacesContext.getCurrentInstance().getViewRoot().getViewId();
     }
 
@@ -103,14 +107,13 @@ public class GlossaryAction implements Serializable {
             for (Glossary glossary : glossaries) {
                 glossaryFileServiceImpl.saveGlossary(glossary);
             }
-            FacesMessages.instance().add(Severity.INFO,
-                    "Glossary file {0} uploaded.",
+            facesMessages.addGlobal("Glossary file {0} uploaded.",
                     this.glossaryFileUpload.getFileName());
         } catch (ZanataServiceException e) {
-            FacesMessages.instance().add(Severity.ERROR, e.getMessage(),
+            facesMessages.addGlobal(SEVERITY_ERROR, e.getMessage(),
                     this.glossaryFileUpload.getFileName());
         } catch (ConstraintViolationException e) {
-            FacesMessages.instance().add(Severity.ERROR, "Invalid arguments");
+            facesMessages.addGlobal(SEVERITY_ERROR, "Invalid arguments");
         }
 
         // NB This needs to be done as for some reason seam is losing the

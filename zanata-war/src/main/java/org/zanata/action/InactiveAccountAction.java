@@ -10,7 +10,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -23,6 +22,7 @@ import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
+import org.zanata.ui.faces.FacesMessages;
 
 @Name("inactiveAccountAction")
 @Scope(ScopeType.PAGE)
@@ -41,6 +41,9 @@ public class InactiveAccountAction implements Serializable {
 
     @In
     private ZanataOpenId zanataOpenId;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private CredentialsDAO credentialsDAO;
@@ -78,7 +81,7 @@ public class InactiveAccountAction implements Serializable {
                         account.getPerson().getName(),
                         account.getPerson().getEmail(),
                         account.getAccountActivationKey().getKeyHash());
-        FacesMessages.instance().add(message);
+        facesMessages.addGlobal(message);
     }
 
     @Transactional
@@ -91,7 +94,7 @@ public class InactiveAccountAction implements Serializable {
             personDAO.flush();
 
             account.getPerson().setEmail(email);
-            FacesMessages.instance().add("Email updated.");
+            facesMessages.addGlobal("Email updated.");
 
             sendActivationEmail();
             return "home";
@@ -101,7 +104,7 @@ public class InactiveAccountAction implements Serializable {
 
     private boolean validateEmail(String email) {
         if (StringUtils.isEmpty(email)) {
-            FacesMessages.instance().addToControl("email",
+            facesMessages.addToControl("email",
                     "#{msgs['javax.faces.component.UIInput.REQUIRED']}");
             return false;
         }
@@ -109,7 +112,7 @@ public class InactiveAccountAction implements Serializable {
         HPerson person = personDAO.findByEmail(email);
 
         if (person != null && !person.getAccount().equals(account)) {
-            FacesMessages.instance().addToControl("email",
+            facesMessages.addToControl("email",
                     "This email address is already taken");
             return false;
         }

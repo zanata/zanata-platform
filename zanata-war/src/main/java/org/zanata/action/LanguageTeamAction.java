@@ -34,8 +34,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -51,7 +49,10 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.Event;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("languageTeamAction")
 @Scope(ScopeType.PAGE)
@@ -79,6 +80,9 @@ public class LanguageTeamAction implements Serializable {
 
     @In
     private Messages msgs;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In("event")
     private Event<JoinedLanguageTeam> joinLanguageTeamEvent;
@@ -158,10 +162,10 @@ public class LanguageTeamAction implements Serializable {
             joinLanguageTeamEvent.fire(new JoinedLanguageTeam(authenticatedAccount.getUsername(), new LocaleId(language)));
             log.info("{} joined tribe {}",
                     authenticatedAccount.getUsername(), this.language);
-            FacesMessages.instance().add(msgs.format("jsf.MemberOfTeam",
+            facesMessages.addGlobal(msgs.format("jsf.MemberOfTeam",
                     getLocale().retrieveNativeName()));
         } catch (Exception e) {
-            FacesMessages.instance().add(Severity.ERROR, e.getMessage());
+            facesMessages.addGlobal(SEVERITY_ERROR, e.getMessage());
         }
     }
 
@@ -177,7 +181,7 @@ public class LanguageTeamAction implements Serializable {
         leaveLanguageTeamEvent.fire(new LeftLanguageTeam(authenticatedAccount.getUsername(), new LocaleId(language)));
         log.info("{} left tribe {}", authenticatedAccount.getUsername(),
                 this.language);
-        FacesMessages.instance().add(msgs.format("jsf.LeftTeam",
+        facesMessages.addGlobal(msgs.format("jsf.LeftTeam",
                 getLocale().retrieveNativeName()));
     }
 
@@ -223,11 +227,11 @@ public class LanguageTeamAction implements Serializable {
         this.localeDAO.flush();
         HPerson person = member.getPerson();
         if (isPermissionGranted) {
-            FacesMessages.instance().add(
+            facesMessages.addGlobal(
                     msgs.format("jsf.AddedAPermission",
                     person.getAccount().getUsername(), permissionDesc));
         } else {
-            FacesMessages.instance().add(
+            facesMessages.addGlobal(
                     msgs.format("jsf.RemovedAPermission",
                             person.getAccount().getUsername(), permissionDesc));
         }

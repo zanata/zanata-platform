@@ -20,8 +20,6 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.Identity;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
@@ -41,6 +38,9 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.service.impl.EmailChangeService;
+import org.zanata.ui.faces.FacesMessages;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("validateEmail")
 @Slf4j
@@ -53,6 +53,9 @@ public class ValidateEmailAction implements Serializable {
 
     @In
     Identity identity;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     EmailChangeService emailChangeService;
@@ -84,7 +87,7 @@ public class ValidateEmailAction implements Serializable {
                 personDAO.makePersistent(person);
                 personDAO.flush();
                 emailChangeService.removeEntry(entry);
-                FacesMessages.instance().add(
+                facesMessages.addGlobal(
                         "You have successfully changed your email account.");
                 log.info("update email address to {}  successfully",
                         entry.getEmail());
@@ -100,7 +103,7 @@ public class ValidateEmailAction implements Serializable {
     private String checkExpiryDate(Date createdDate) {
         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
             log.info("Creation date expired:" + createdDate);
-            FacesMessages.instance().add(ERROR,
+            facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
             return "/profile/edit.xhtml";
         }

@@ -14,12 +14,12 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
+import org.zanata.ui.faces.FacesMessages;
 
 @Name("passwordResetRequest")
 @NoArgsConstructor
@@ -28,6 +28,8 @@ import org.zanata.service.UserAccountService;
 public class PasswordResetRequestAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
     @In
     private AccountDAO accountDAO;
     @In
@@ -73,13 +75,13 @@ public class PasswordResetRequestAction implements Serializable {
                 userAccountServiceImpl.requestPasswordReset(account);
 
         if (key == null) {
-            FacesMessages.instance().add("No such account found");
+            facesMessages.addGlobal("No such account found");
             return null;
         } else {
             String message =
                     emailServiceImpl.sendPasswordResetEmail(account.getPerson(),
                             key.getKeyHash());
-            FacesMessages.instance().add(message);
+            facesMessages.addGlobal(message);
             return "/home.xhtml";
         }
 

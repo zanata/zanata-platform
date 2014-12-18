@@ -30,19 +30,22 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.ui.faces.FacesMessages;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private AccountActivationKeyDAO accountActivationKeyDAO;
@@ -102,9 +105,9 @@ public class ActivateAction implements Serializable {
 
         accountActivationKeyDAO.makeTransient(key);
 
-        FacesMessages
-                .instance()
-                .add("Your account was successfully activated. You can now sign in.");
+        facesMessages
+                .addGlobal(
+                "Your account was successfully activated. You can now sign in.");
 
         return "/account/login.xhtml";
     }

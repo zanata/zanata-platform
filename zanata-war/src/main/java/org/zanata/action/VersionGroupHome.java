@@ -35,7 +35,6 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
@@ -54,6 +53,7 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.Predicate;
@@ -77,6 +77,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private SlugEntityService slugEntityServiceImpl;
@@ -120,7 +123,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     public boolean validateSlug(String slug, String componentId) {
         if (!isSlugAvailable(slug)) {
-            FacesMessages.instance().addToControl(componentId,
+            facesMessages.addToControl(componentId,
                     "This Group ID is not available");
             return false;
         }

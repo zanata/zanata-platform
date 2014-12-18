@@ -20,22 +20,16 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
-import static org.jboss.seam.international.StatusMessage.Severity.INFO;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
-import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
-import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,14 +42,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -72,10 +64,14 @@ import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.service.EmailService;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.impl.EmailChangeService;
-
-import com.google.common.collect.Lists;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ServiceLocator;
+
+import com.google.common.collect.Lists;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 
 /**
  * This is an action class that should eventually replace the
@@ -110,6 +106,9 @@ public class UserSettingsAction {
 
     @In
     private LanguageTeamService languageTeamServiceImpl;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private Messages msgs;
@@ -154,7 +153,7 @@ public class UserSettingsAction {
 
     public void updateEmail() {
         if(!isEmailAddressValid(emailAddress)) {
-            FacesMessages.instance().addToControl("email",
+            facesMessages.addToControl("email",
                     "This email address is already taken");
             return;
         }
@@ -170,7 +169,7 @@ public class UserSettingsAction {
             String message =
                     emailServiceImpl.sendEmailValidationEmail(this.accountName,
                             this.emailAddress, activationKey);
-            FacesMessages.instance().add(message);
+            facesMessages.addGlobal(message);
         }
     }
 
@@ -184,7 +183,7 @@ public class UserSettingsAction {
         if (isPasswordSet()
                 && !identityManager.authenticate(
                 authenticatedAccount.getUsername(), oldPassword)) {
-            FacesMessages.instance().addToControl("oldPassword",
+            facesMessages.addToControl("oldPassword",
                     "Old password is incorrect, please check and try again.");
             return;
         }
@@ -196,7 +195,7 @@ public class UserSettingsAction {
             }
         }.addRole("admin").run();
 
-        FacesMessages.instance().add(
+        facesMessages.addGlobal(
                 "Your password has been successfully changed.");
     }
 
@@ -324,8 +323,8 @@ public class UserSettingsAction {
         // TODO When more fields are added, we'll need a better solution
         authenticatedAccount.getPerson().setName(accountName);
         personDAO.makePersistent(person);
-        FacesMessages.instance().add(
-                msgs.get("jsf.dashboard.settings.profileUpdated.message"));
+        facesMessages.addFromResourceBundle(SEVERITY_INFO,
+                "jsf.dashboard.settings.profileUpdated.message");
     }
 
     // TODO Cache this
@@ -341,7 +340,7 @@ public class UserSettingsAction {
     public void leaveLanguageTeam(String localeId) {
         languageTeamServiceImpl.leaveLanguageTeam(localeId,
                 authenticatedAccount.getPerson().getId());
-        FacesMessages.instance().add(
+        facesMessages.addGlobal(
                 msgs.format("jsf.dashboard.settings.leaveLangTeam.message",
                         localeId));
     }
@@ -370,23 +369,22 @@ public class UserSettingsAction {
                 CredentialsDAO credentialsDAO =
                         ServiceLocator.instance().getInstance(
                                 CredentialsDAO.class);
+                FacesMessages facesMessages =
+                        ServiceLocator.instance().getInstance(
+                                FacesMessages.class);
 
                 Conversation.instance().begin(true, false); // (To retain
                 // messages)
-                FacesMessages.instance().clear();
+                facesMessages.clear();
 
                 if (credentialsDAO.findByUser(result.getAuthenticatedId()) != null) {
-                    FacesMessages.instance().add(ERROR,
-                            "jsf.identities.invalid.Duplicate", null,
-                            "Duplicate identity",
+                    facesMessages.addGlobal(SEVERITY_ERROR,
                             "This Identity is already in use.");
                 } else {
                     em.persist(this.newCredentials);
-                    FacesMessages
-                            .instance()
-                            .add(INFO, "jsf.identities.IdentityAdded", null,
-                                    "Identity Added",
-                                    "Your new identity has been added to this account.");
+                    facesMessages
+                            .addGlobal(
+                            "Your new identity has been added to this account.");
                 }
             }
         }

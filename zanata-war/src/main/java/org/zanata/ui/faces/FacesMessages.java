@@ -31,6 +31,8 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Interpolator;
+import org.zanata.i18n.Messages;
+import org.zanata.util.ServiceLocator;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -104,6 +106,59 @@ public class FacesMessages {
     public void addToControl(String id, String messageTemplate,
             final Object... params) {
         addToControl(id, SEVERITY_INFO, null, messageTemplate, params);
+    }
+
+    /**
+     * Adds a global message with the default severity (info).
+     *
+     * @param messageTemplate
+     *            The message template string (not a key).
+     * @param params
+     *            The parameters to be interpolated into the template.
+     */
+    public void addGlobal(String messageTemplate, final Object... params) {
+        addToControl(null, SEVERITY_INFO, null, messageTemplate, params);
+    }
+
+    /**
+     * Adds a global message with the default severity (info).
+     *
+     * @param severity
+     *            Message severity
+     * @param messageTemplate
+     *            The message template string (not a key).
+     * @param params
+     *            The parameters to be interpolated into the template.
+     */
+    public void addGlobal(Severity severity, String messageTemplate,
+            final Object... params) {
+        addToControl(null, severity, null, messageTemplate, params);
+    }
+
+    /**
+     * Adds a global message from the configured resource bundle.
+     * @param severity Message severity.
+     * @param key Resource bundle message key.
+     * @param params The parameters to be interpolated into the message.
+     */
+    public void addFromResourceBundle(Severity severity, String key,
+            final Object... params) {
+        Messages messages =
+                ServiceLocator.instance().getInstance(Messages.class);
+        String formatedMssg = messages.format(key, params);
+        addGlobal(severity, formatedMssg, params);
+    }
+
+    /**
+     * Clears all messages from the faces context.
+     */
+    public void clear() {
+        Iterator<FacesMessage> it =
+                FacesContext.getCurrentInstance().getMessages();
+        while (it.hasNext()) {
+            it.remove();
+            it.next();
+        }
     }
 
     /**
