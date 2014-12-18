@@ -18,13 +18,13 @@ public class UserTest {
     @Test
     public void testJsonOutput() throws IOException {
         String json =
-            "{\n" + "    \"username\" : \"_username\",\n" + "    \"email\" : \"test@test.com\",\n " +
+            "{\n" + "    \"username\" : \"_username\",\n" + "    \"email\" : \"test@example.com\",\n " +
                 "\"name\" : \"testUser\",\n   \"gravatarHash\" : \"hash\"" +
                 "\n}";
 
         User user= om.readValue(json, User.class);
 
-        User expected = new User("_username", "test@test.com", "testUser", "hash");
+        User expected = new User("_username", "test@example.com", "testUser", "hash");
 
         assertEquals(user, expected);
     }
