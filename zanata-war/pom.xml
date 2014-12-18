@@ -36,6 +36,9 @@
 
     <groovy.version>2.1.5</groovy.version>
     <zanata.web.assets.version>6</zanata.web.assets.version>
+
+    <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
+    <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
   </properties>
 
   <build>
@@ -209,9 +212,9 @@
           <execution>
             <phase>prepare-package</phase>
             <configuration>
-              <tasks>
+              <target>
                 <mkdir dir="${project.build.directory}/zanata" />
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -642,8 +645,7 @@
       <id>explode</id>
       <activation>
         <property>
-          <name>env</name>
-          <value>dev</value>
+          <name>explode</name>
         </property>
       </activation>
       <properties>
@@ -658,7 +660,8 @@
               <execution>
                 <phase>package</phase>
                 <configuration>
-                  <tasks>
+                  <target if="explode">
+                    <delete file="${as7.dodeploy.marker}" />
                     <touch file="${as7.skip.deploy.marker}" />
                     <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                     <copy todir="${jboss.home}/standalone/deployments/zanata.war">
@@ -666,7 +669,7 @@
                     </copy>
                     <delete file="${as7.skip.deploy.marker}" />
                     <touch file="${as7.dodeploy.marker}" />
-                  </tasks>
+                  </target>
                 </configuration>
                 <goals>
                   <goal>run</goal>
@@ -683,8 +686,7 @@
       If you change xhtml or similar which does not require a redeployment, you can use this profile. -->
       <activation>
         <property>
-          <name>env</name>
-          <value>dev</value>
+          <name>replacestatic</name>
         </property>
       </activation>
       <properties>
@@ -698,14 +700,14 @@
               <execution>
                 <phase>package</phase>
                 <configuration>
-                  <tasks>
+                  <target>
                     <touch file="${as7.skip.deploy.marker}" />
                     <delete dir="${jboss.home}/standalone/deployments/zanata.war" />
                     <copy todir="${jboss.home}/standalone/deployments/zanata.war">
                       <fileset dir="${project.build.directory}/zanata" />
                     </copy>
                     <delete file="${as7.skip.deploy.marker}" />
-                  </tasks>
+                  </target>
                 </configuration>
                 <goals>
                   <goal>run</goal>
