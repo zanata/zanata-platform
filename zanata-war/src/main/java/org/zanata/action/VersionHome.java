@@ -36,7 +36,6 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -52,6 +51,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.Event;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -81,6 +81,9 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Getter
     @Setter
     private String projectSlug;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -292,7 +295,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
 
     public boolean validateSlug(String slug, String componentId) {
         if (!isSlugAvailable(slug)) {
-            FacesMessages.instance().addToControl(componentId,
+            facesMessages.addToControl(componentId,
                     "This Version ID has been used in this project");
             return false;
         }
