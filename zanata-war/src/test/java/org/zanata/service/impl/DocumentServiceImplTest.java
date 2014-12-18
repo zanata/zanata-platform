@@ -89,8 +89,8 @@ public class DocumentServiceImplTest {
         HDocument document = Mockito.mock(HDocument.class);
 
         webHooks = Lists.newArrayList();
-        webHooks.add(new WebHook(project, "http://test.com"));
-        webHooks.add(new WebHook(project, "http://test1.com"));
+        webHooks.add(new WebHook(project, "http://test.example.com"));
+        webHooks.add(new WebHook(project, "http://test1.example.com"));
 
         when(projectIterationDAO.findById(versionId)).thenReturn(version);
         when(version.getProject()).thenReturn(project);

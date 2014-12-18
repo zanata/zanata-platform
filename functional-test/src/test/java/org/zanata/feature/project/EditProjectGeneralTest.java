@@ -197,7 +197,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .enterHomePage("http://www.example.com")
-                .enterRepository("http://www.test.com")
+                .enterRepository("http://git.example.com")
                 .updateProject()
                 .goToProjects()
                 .goToProject("about fedora");
@@ -207,7 +207,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The homepage is correct");
 
         assertThat(projectVersionsPage.getGitUrl())
-                .isEqualTo("http://www.test.com")
+                .isEqualTo("http://git.example.com")
                 .as("The git url is correct");
     }
 }

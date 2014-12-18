@@ -65,7 +65,7 @@ public class RegisterTest extends ZanataTestCase {
 
         // Conflicting fields - must be set for each test function to avoid
         // "not available" errors
-        fields.put("email", "test@test.com");
+        fields.put("email", "test@example.com");
         fields.put("username", "testusername");
         fields.put("name", "test");
         fields.put("password", "testpassword");
@@ -98,7 +98,7 @@ public class RegisterTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() throws Exception {
-        fields.put("email", "length.test@test.com");
+        fields.put("email", "length.test@example.com");
         RegisterPage registerPage = homePage.goToRegistration();
 
         fields.put("username", "bo");
