@@ -24,6 +24,16 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static javax.faces.application.FacesMessage.Severity;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Install;
@@ -33,12 +43,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Interpolator;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
@@ -54,6 +58,29 @@ import java.util.List;
 @AutoCreate
 @BypassInterceptors
 public class FacesMessages {
+
+    private final List<FacesMessage> globalMessages = new ArrayList<>();
+    private final Map<String, List<FacesMessage>> keyedMessages =
+            new HashMap<>();
+
+    /**
+     * Called to transfer messages from FacesMessages to JSF
+     */
+    public void beforeRenderResponse() {
+        for (FacesMessage message : globalMessages) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    message);
+        }
+        for (Map.Entry<String, List<FacesMessage>> entry : keyedMessages
+                .entrySet()) {
+            for (FacesMessage message : entry.getValue()) {
+                String clientId = getClientId(entry.getKey());
+                FacesContext.getCurrentInstance().addMessage(clientId,
+                        message);
+            }
+        }
+        clear();
+    }
 
     /**
      * Calculate the JSF client ID from the provided widget ID
@@ -93,14 +120,28 @@ public class FacesMessages {
      */
     void addToControl(String id, Severity severity, String key,
             String messageTemplate, final Object... params) {
-        String clientId = getClientId(id);
-
         // NB This needs to change when migrating out of Seam
         String interpolatedMessage =
                 Interpolator.instance().interpolate(messageTemplate, params);
+        FacesMessage jsfMssg =
+                new FacesMessage(severity, interpolatedMessage, null);
 
-        FacesContext.getCurrentInstance().addMessage(clientId,
-                new FacesMessage(severity, interpolatedMessage, null));
+        if(id == null) {
+            // Global message
+            globalMessages.add(jsfMssg);
+        } else {
+            // Control specific message
+            String clientId = getClientId(id);
+
+            if (keyedMessages.containsKey(clientId)) {
+                keyedMessages.get(clientId).add(jsfMssg);
+            } else {
+                List<FacesMessage> list = new ArrayList<>();
+                list.add(jsfMssg);
+                keyedMessages.put(clientId, list);
+            }
+        }
+
     }
 
     public void addToControl(String id, String messageTemplate,
@@ -153,12 +194,8 @@ public class FacesMessages {
      * Clears all messages from the faces context.
      */
     public void clear() {
-        Iterator<FacesMessage> it =
-                FacesContext.getCurrentInstance().getMessages();
-        while (it.hasNext()) {
-            it.remove();
-            it.next();
-        }
+        keyedMessages.clear();
+        globalMessages.clear();
     }
 
     /**
