@@ -72,8 +72,7 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
                 .isTrue();
         WiserMessage emailMessage = hasEmailRule.getMessages().get(0);
         assertThat(getEmailContent(emailMessage))
-                .contains(
-                        "Administrator(admin@example.com) has changed your permissions");
+                .contains("Administrator has changed your permissions");
     }
 }
 
