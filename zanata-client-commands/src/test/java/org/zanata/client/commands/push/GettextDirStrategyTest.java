@@ -23,6 +23,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -33,10 +34,10 @@ import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
 import static org.zanata.client.TestUtils.createAndAddLocaleMapping;
 
 public class GettextDirStrategyTest {
@@ -91,6 +92,32 @@ public class GettextDirStrategyTest {
         File zhTransFile = strategy.getTransFile(zhMapping, "foo/message");
         assertThat(zhTransFile, Matchers.equalTo(new File(tempFileRule
                 .getTransDir(), "zh-Hans/foo/message.po")));
+    }
+
+    // rhbz1174516
+    @Test
+    public void willWorkOnNonStandardTranslationDir() throws IOException {
+        opts.setPushType("trans");
+        opts.setFileMappingRules(newArrayList(
+                new FileMappingRule(null,
+                        "man{path}/{locale_with_underscore}/{filename}.po")));
+        strategy.setPushOptions(opts);
+
+        LocaleMapping deMapping = createAndAddLocaleMapping("de",
+                Optional.<String>absent(), opts);
+        LocaleMapping zhMapping =
+                createAndAddLocaleMapping("zh-CN",
+                        Optional.of("zh-Hans"),
+                        opts);
+
+        // create some trans files
+        tempFileRule.createTransFileRelativeToTransDir("manfoo/de/message.po");
+        tempFileRule
+                .createTransFileRelativeToTransDir("manfoo/zh_Hans/message.po");
+
+        List<LocaleMapping> locales = strategy.findLocales("foo/message");
+
+        assertThat(locales, Matchers.containsInAnyOrder(deMapping, zhMapping));
     }
 
 }
