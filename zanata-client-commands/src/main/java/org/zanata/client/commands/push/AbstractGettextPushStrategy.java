@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
@@ -45,6 +46,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     private PoReader2 poReader = new PoReader2();
+    protected Set<String> localSrcDocNames;
 
     public AbstractGettextPushStrategy() {
         super(new StringSet("comment;gettext"), ".pot");
@@ -63,7 +65,10 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
             ImmutableList<String> excludes, boolean useDefaultExclude,
             boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
-        Set<String> localDocNames = new HashSet<String>();
+        if (localSrcDocNames != null) {
+            return localSrcDocNames;
+        }
+        localSrcDocNames = new HashSet<>();
 
         // populate localDocNames by looking in pot directory, ignore
         // excludeLocale option
@@ -73,14 +78,35 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
 
         for (String potName : srcFiles) {
             String docName = removeExtension(potName);
-            localDocNames.add(docName);
+            localSrcDocNames.add(docName);
         }
         checkSrcFileNames(getOpts().getProjectType(), srcFiles,
                 getOpts().isInteractiveMode());
-        return localDocNames;
+        return localSrcDocNames;
     }
 
-    abstract Collection<LocaleMapping> findLocales();
+    protected Set<String> getSrcDocNames() {
+        try {
+            return findDocNames(getOpts().getSrcDir(),
+                    getOpts().getIncludes(),
+                    getOpts().getExcludes(),
+                    getOpts().getDefaultExcludes(),
+                    getOpts().getCaseSensitive(),
+                    getOpts().getExcludeLocaleFilenames());
+        } catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    /**
+     * Try to find locales based on translation files found on local file
+     * system. It will be called for each source document in a loop.
+     *
+     * @return a list of locale mapping that potentially has translation files
+     * @param srcDocName
+     *            source document name
+     */
+    abstract Collection<LocaleMapping> findLocales(String srcDocName);
 
     protected File getTransFile(LocaleMapping locale, String docName) {
         File transFile = new TransFileResolver(getOpts()).getTransFile(
@@ -104,10 +130,10 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public void visitTranslationResources(String docName, Resource srcDoc,
+    public void visitTranslationResources(String srcDocName, Resource srcDoc,
             TranslationResourcesVisitor callback) throws IOException {
-        for (LocaleMapping locale : findLocales()) {
-            File transFile = getTransFile(locale, docName);
+        for (LocaleMapping locale : findLocales(srcDocName)) {
+            File transFile = getTransFile(locale, srcDocName);
             if (transFile.canRead()) {
                 try (BufferedInputStream bis = new BufferedInputStream(
                         new FileInputStream(transFile))) {

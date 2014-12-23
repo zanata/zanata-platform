@@ -27,35 +27,53 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConsoleInteractorImpl;
-import org.zanata.client.commands.gettext.PublicanUtil;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
+
+import com.google.common.collect.Lists;
 
 public class GettextDirStrategy extends AbstractGettextPushStrategy {
     private static final Logger log = LoggerFactory
             .getLogger(GettextDirStrategy.class);
 
     @Override
-    List<LocaleMapping> findLocales() {
-        List<LocaleMapping> locales;
-        if (getOpts().getLocaleMapList() != null) {
-            locales =
-                    PublicanUtil.findLocales(getOpts().getTransDir(), getOpts()
-                            .getLocaleMapList());
-            if (locales.size() == 0) {
-                log.warn("'pushType' is set to '" + getOpts().getPushType()
-                        + "', but none of the configured locale "
-                        + "directories was found (check zanata.xml)");
-            }
-        } else {
-            locales = PublicanUtil.findLocales(getOpts().getTransDir());
-            if (locales.size() == 0) {
-                log.warn("'pushType' is set to '\" + getOpts().getPushType() + \"', but no locale directories were found");
+    List<LocaleMapping> findLocales(String srcDocName) {
+
+        List<LocaleMapping> localesFoundOnDisk = Lists.newArrayList();
+
+        LocaleList localeListInConfig = getOpts().getLocaleMapList();
+        if (localeListInConfig == null || localeListInConfig.isEmpty()) {
+            log.warn("No locale list in configuration (check zanata.xml)");
+            return localesFoundOnDisk;
+        }
+
+        for (LocaleMapping loc : localeListInConfig) {
+            if (hasTranslationFileForLocale(loc, srcDocName)) {
+                localesFoundOnDisk.add(loc);
             } else {
-                log.info("'pushType' is set to '\" + getOpts().getPushType() + \"', but no locales specified in configuration: "
-                        + "importing " + locales.size() + " directories");
+                log.warn(
+                        "configured locale {} not found; no translation file (local mapping {}) exist",
+                        loc.getLocale(), loc.getLocalLocale());
             }
         }
-        return locales;
+
+        if (localesFoundOnDisk.size() == 0) {
+            log.warn(
+                    "'pushType' is set to '{}', but none of the configured locale "
+                            + "files was found (check zanata.xml)", getOpts()
+                            .getPushType());
+        }
+
+        return localesFoundOnDisk;
+    }
+
+    private boolean hasTranslationFileForLocale(LocaleMapping loc,
+            String srcDocName) {
+        File transFile = new TransFileResolver(getOpts()).getTransFile(
+                UnqualifiedSrcDocName.from(srcDocName), loc);
+        return transFile.exists();
     }
 
     @Override

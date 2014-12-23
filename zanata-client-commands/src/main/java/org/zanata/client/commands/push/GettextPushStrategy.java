@@ -1,19 +1,20 @@
 package org.zanata.client.commands.push;
 
-import static com.google.common.collect.Sets.newTreeSet;
 import static org.apache.commons.io.FileUtils.listFiles;
-import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 public class GettextPushStrategy extends AbstractGettextPushStrategy {
@@ -21,34 +22,51 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
             .getLogger(GettextPushStrategy.class);
 
     @Override
-    List<LocaleMapping> findLocales() {
+    List<LocaleMapping> findLocales(String srcDocName) {
         // find all .po basenames in this dir and subdirs
-        final LocaleList localeList = getOpts().getLocaleMapList();
-        Collection<File> files =
+        Collection<File> transFilesOnDisk =
                 listFiles(getOpts().getTransDir(), new String[] { "po" }, true);
-        Set<String> localeNames = newTreeSet();
-        for (File f : files) {
-            String localeName = removeExtension(f.getName());
-            localeNames.add(localeName);
+
+        final LocaleList localeListInConfig = getOpts().getLocaleMapList();
+
+        if (localeListInConfig == null || localeListInConfig.isEmpty()) {
+            log.warn("No locale list in configuration (check zanata.xml)");
+            return Collections.emptyList();
         }
-        List<LocaleMapping> locales = Lists.newArrayList();
-        for (String localeName : localeNames) {
-            LocaleMapping localLocale;
-            if (localeList != null) {
-                localLocale = localeList.findByLocalLocaleOrJavaLocale(
-                        localeName);
-                if (localLocale == null) {
-                    log.warn(
-                            "Skipping locale {}; no locale entry found in zanata.xml",
-                            localeName);
-                    continue;
-                }
-            } else {
-                localLocale = new LocaleMapping(localeName);
-            }
-            locales.add(localLocale);
+
+        final UnqualifiedSrcDocName unqualifiedSrcDocName =
+                UnqualifiedSrcDocName.from(srcDocName);
+        List<File> transFilesDestinations =
+                Lists.transform(localeListInConfig,
+                        new LocaleMappingToTransFile(unqualifiedSrcDocName,
+                                getOpts()));
+        // we remove all the ones that WILL be mapped and treated as
+        // translation files
+        transFilesOnDisk.removeAll(transFilesDestinations);
+        // for all remaining po files we give a warning
+        for (File transFile : transFilesOnDisk) {
+            log.warn(
+                    "Skipping file {}; no locale entry found in zanata.xml",
+                    transFile);
         }
-        return locales;
+        return localeListInConfig;
     }
 
+    private static class LocaleMappingToTransFile implements
+            Function<LocaleMapping, File> {
+        private final UnqualifiedSrcDocName unqualifiedSrcDocName;
+        private TransFileResolver transFileResolver;
+
+        public LocaleMappingToTransFile(
+                UnqualifiedSrcDocName unqualifiedSrcDocName, PushOptions opts) {
+            this.unqualifiedSrcDocName = unqualifiedSrcDocName;
+            transFileResolver = new TransFileResolver(opts);
+        }
+
+        @Override
+        public File apply(LocaleMapping localeMapping) {
+            return transFileResolver.getTransFile(unqualifiedSrcDocName,
+                    localeMapping);
+        }
+    }
 }
