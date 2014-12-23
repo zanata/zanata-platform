@@ -70,7 +70,8 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     private UserConfigHandler userConfigHandler;
 
     public InitCommand(InitOptions opts) {
-        super(opts);
+        // we don't have all mandatory information yet (server URL etc)
+        super(opts, new RestClientFactory() {});
         console = new ConsoleInteractorImpl();
         projectConfigHandler =
                 new ProjectConfigHandler(console, getOpts());
@@ -92,6 +93,8 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     protected void run() throws Exception {
         // Search for zanata.ini
         userConfigHandler.verifyUserConfig();
+
+        setClientFactory(OptionsUtil.createClientFactory(getOpts()));
 
         ensureServerVersion();
 

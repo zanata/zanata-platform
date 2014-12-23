@@ -55,6 +55,12 @@ public class InitCommandTest {
     }
 
     @Test
+    public void createCommandWithoutMandatoryOptionsWillNotCauseException() {
+        // we don't have server url etc yet
+        command = new InitCommand(opts);
+    }
+
+    @Test
     public void willDownloadProjectConfigFromServer() throws IOException {
         when(clientFactory.getProjectIterationClient("gcc", "master")).thenReturn(projectIterationClient);
         when(projectIterationClient.sampleConfiguration()).thenReturn(

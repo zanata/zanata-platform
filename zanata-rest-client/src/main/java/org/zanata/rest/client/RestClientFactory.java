@@ -64,6 +64,10 @@ public class RestClientFactory {
     private Client client;
     private URI baseURI;
 
+    // for use by InitCommand
+    protected RestClientFactory() {
+    }
+
     public RestClientFactory(URI base, String username, String apiKey,
             VersionInfo clientApiVersion, boolean logHttp,
             boolean sslCertDisabled) {
@@ -79,6 +83,7 @@ public class RestClientFactory {
         client = Client.create(clientConfig);
         client.addFilter(
                 new ApiKeyHeaderFilter(username, apiKey, clientVersion));
+        client.addFilter(new AcceptTypeFilter());
         client.addFilter(new TraceDebugFilter(logHttp));
     }
 

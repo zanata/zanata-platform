@@ -21,36 +21,29 @@
 
 package org.zanata.rest.client;
 
-import org.zanata.rest.dto.Project;
+import javax.ws.rs.core.MultivaluedMap;
 
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.ClientRequest;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
+ * This adds a generic Accept header to all request. It is a workaround for
+ * RESTEasy 2 service. Clients requiring specific Accpet type can override it.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ProjectClient {
-    private final RestClientFactory factory;
-    private final String projectSlug;
-
-    ProjectClient(RestClientFactory factory, String projectSlug) {
-        this.factory = factory;
-        this.projectSlug = projectSlug;
-    }
-
-    public Project get() {
-        return webResource()
-                .get(Project.class);
-    }
-
-    private WebResource webResource() {
-        return factory.getClient()
-                .resource(factory.getBaseUri())
-                .path("projects").path("p").path(projectSlug);
-    }
-
-    public void put(Project project) {
-        webResource().put(project);
+public class AcceptTypeFilter extends ClientFilter {
+    @Override
+    public ClientResponse handle(ClientRequest cr)
+            throws ClientHandlerException {
+        MultivaluedMap<String, Object> headers = cr.getHeaders();
+        // make sure we have at least one Accept header otherwise jersey will
+        // insert an "Accept: text/html, image/gif, image/jpeg, *" which breaks
+        // RESTEasy 2
+        headers.add("Accept", "application/*");
+        return getNext().handle(cr);
     }
 }
-

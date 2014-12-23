@@ -80,6 +80,10 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         return clientFactory;
     }
 
+    protected final void setClientFactory(RestClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
+
     @Override
     public boolean isDeprecated() {
         return deprecated;
