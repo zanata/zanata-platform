@@ -27,6 +27,7 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
 import static javax.faces.event.PhaseId.ANY_PHASE;
+import static javax.faces.event.PhaseId.RENDER_RESPONSE;
 
 /**
  * Phase listener that transfers messages from our own custom FacesMessages
@@ -45,8 +46,12 @@ public class FacesMessagesPhaseListener implements PhaseListener {
 
     @Override
     public void beforePhase(PhaseEvent event) {
-        ServiceLocator.instance().getInstance(FacesMessages.class)
-                .beforeRenderResponse();
+        if ( event.getPhaseId() == RENDER_RESPONSE ) {
+            if(!event.getFacesContext().getResponseComplete()) {
+                ServiceLocator.instance().getInstance(FacesMessages.class)
+                        .beforeRenderResponse();
+            }
+        }
     }
 
     @Override

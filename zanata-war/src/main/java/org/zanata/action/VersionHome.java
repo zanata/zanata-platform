@@ -50,10 +50,12 @@ import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
+import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.Event;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -532,7 +534,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         protected Collection<HLocale> getLocales() {
             if (StringUtils.isNotEmpty(projectSlug)
                     && StringUtils.isNotEmpty(slug)) {
-                return localeServiceImpl
+                LocaleService localeService =
+                        ServiceLocator.instance().getInstance(
+                                LocaleServiceImpl.class);
+                return localeService
                         .getSupportedLanguageByProjectIteration(projectSlug,
                                 slug);
             }
@@ -547,7 +552,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
-            HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
+            LocaleService localeService =
+                    ServiceLocator.instance().getInstance(
+                            LocaleServiceImpl.class);
+            HLocale locale = localeService.getByLocaleId(getSelectedItem());
 
             getInstance().getCustomizedLocales().add(locale);
 
