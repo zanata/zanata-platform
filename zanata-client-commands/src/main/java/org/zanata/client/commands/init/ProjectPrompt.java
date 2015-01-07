@@ -60,6 +60,9 @@ class ProjectPrompt {
     // state variables
     private List<Project> allProjects = Collections.emptyList();
     private List<Project> filteredProjects = Collections.emptyList();
+    public static final List<String> PROJECT_TYPE_LIST =
+            Lists.transform(Lists.newArrayList(ProjectType.values()),
+                    new ProjectTypeToStringFunction());
 
     ProjectPrompt(ConsoleInteractor consoleInteractor, InitOptions opts,
             ProjectIterationPrompt projectIterationPrompt,
@@ -190,14 +193,11 @@ class ProjectPrompt {
         String projectId = consoleInteractor.expectAnyAnswer();
         consoleInteractor.printfln(Question, _("project.name.prompt"));
         String projectName = consoleInteractor.expectAnyAnswer();
-        List<String> projectTypeList =
-                Lists.transform(Lists.newArrayList(ProjectType.values()),
-                        new ProjectTypeToStringFunction());
-        String projectTypes = Joiner.on(", ").join(projectTypeList);
+        String projectTypes = Joiner.on(", ").join(PROJECT_TYPE_LIST);
         consoleInteractor.printfln(Question, _("project.type.prompt"), projectTypes);
         String projectType =
                 consoleInteractor.expectAnswerWithRetry(
-                        AnswerValidatorImpl.expect(projectTypeList));
+                        AnswerValidatorImpl.expect(PROJECT_TYPE_LIST));
         ProjectClient projectClient = clientFactory.getProjectClient(projectId);
         Project project = new Project(projectId, projectName, projectType);
         try {
