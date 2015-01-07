@@ -56,6 +56,7 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.*;
 import org.zanata.util.HashUtil;
+import org.zanata.util.RawRestTestUtils;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.UpdateTransUnitHandler;
@@ -1173,8 +1174,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         // Clear Po Headers since Zanata will generate custom ones
         ResourceTestUtil.clearPoTargetHeaders(actualDoc, expectedDoc);
 
-        assertThat(actualDoc.toString(),
-                Matchers.equalTo(expectedDoc.toString()));
+        assertThat(RawRestTestUtils.jaxbMarhsal(actualDoc),
+                Matchers.equalTo(RawRestTestUtils.jaxbMarhsal(expectedDoc)));
     }
 
     private Resource createSourceDoc(String name, boolean withTextFlow) {

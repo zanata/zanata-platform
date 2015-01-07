@@ -840,7 +840,7 @@ public class TranslationServiceImpl implements TranslationService {
                             actorId = hPerson.getId();
                         } else {
                             hTarget.setTranslator(null);
-                            hTarget.setLastModifiedBy(null);
+                            hTarget.setLastModifiedBy(authenticatedAccount.getPerson());
                             actorId = null;
                         }
                         textFlowTargetDAO.makePersistent(hTarget);

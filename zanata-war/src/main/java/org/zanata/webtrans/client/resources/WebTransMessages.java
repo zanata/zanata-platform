@@ -545,4 +545,7 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Try the new alpha editor")
     String newEditorMessage();
+
+    @DefaultMessage("Anonymous")
+    String anonymousUser();
 }
