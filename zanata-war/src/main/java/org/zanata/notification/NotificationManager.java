@@ -85,4 +85,3 @@ public class NotificationManager implements Serializable {
         objectType
     }
 }
-

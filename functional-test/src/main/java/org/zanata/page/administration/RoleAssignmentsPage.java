@@ -37,7 +37,7 @@ import java.util.List;
 public class RoleAssignmentsPage extends BasePage {
 
     private By newRuleButton = By.linkText("New Rule");
-    private By roleTable = By.tagName("table");
+    private By roleTable = By.className("list--stats");
 
     public RoleAssignmentsPage(WebDriver driver) {
         super(driver);
@@ -51,12 +51,12 @@ public class RoleAssignmentsPage extends BasePage {
 
     public List<String> getRulesByPattern() {
         log.info("Query role rules");
-        List<String> names = new ArrayList<String>();
-        List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
+        List<String> ret = new ArrayList<>();
+        List<String> names = WebElementUtil.elementsToText(getDriver(),
                 roleTable);
-        for (TableRow tableRow : tableRows) {
-            names.add(tableRow.getCells().get(1).getText());
+        for (String name : names) {
+            ret.add(name.substring(name.lastIndexOf(':')+1).trim());
         }
-        return names;
+        return ret;
     }
 }

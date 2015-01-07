@@ -21,60 +21,133 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import lombok.Getter;
+
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.core.Events;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
+import org.zanata.ui.InMemoryListFilter;
 
 @Name("languageSearchAction")
 @Scope(ScopeType.PAGE)
-@Restrict("#{s:hasRole('admin')}")
-public class LanguageSearchAction implements Serializable {
+public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
+        Serializable {
     private static final long serialVersionUID = 1L;
     @In
     private LocaleService localeServiceImpl;
+
     @In
     private LocaleDAO localeDAO;
-    @DataModel
-    List<HLocale> allLanguages;
-    @DataModelSelection
-    HLocale selectedLanguage;
 
-    public void loadSupportedLanguage() {
-        allLanguages = localeServiceImpl.getAllLocales();
-    }
+    private List<HLocale> allLanguages;
 
-    public HLocale getSelectedLanguage() {
-        return selectedLanguage;
-    }
+    @Getter
+    private SortingType LanguageSortingList = new SortingType(
+            Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.LOCALE_ID));
+
+    private final LanguageComparator languageComparator =
+            new LanguageComparator(getLanguageSortingList());
 
     public String manageMembers(String locale) {
         return "";
     }
 
-    public void selectedLocaleChanged() {
-        selectedLanguage = localeDAO.makePersistent(selectedLanguage);
+    @Restrict("#{s:hasRole('admin')}")
+    public void enable(HLocale locale) {
+        locale.setActive(true);
+        localeDAO.makePersistent(locale);
+        localeDAO.flush();
+
+        Events.instance().raiseEvent("enableLanguage");
+    }
+
+    @Restrict("#{s:hasRole('admin')}")
+    public void disable(HLocale locale) {
+        locale.setActive(false);
+        localeDAO.makePersistent(locale);
+        localeDAO.flush();
+
+        Events.instance().raiseEvent("disableLanguage");
+    }
+
+    @Restrict("#{s:hasRole('admin')}")
+    public void enableByDefault(HLocale locale) {
+        locale.setEnabledByDefault(true);
+        localeDAO.makePersistent(locale);
         localeDAO.flush();
     }
 
-    public void selectedLocaleActivatedOrDeactivated() {
-        selectedLanguage = localeDAO.makePersistent(selectedLanguage);
+    @Restrict("#{s:hasRole('admin')}")
+    public void disableByDefault(HLocale locale) {
+        locale.setEnabledByDefault(false);
+        localeDAO.makePersistent(locale);
         localeDAO.flush();
+    }
 
-        if (selectedLanguage.isActive()) {
-            Events.instance().raiseEvent("enableLanguage");
-        } else {
-            Events.instance().raiseEvent("disableLanguage");
+    /**
+     * Sort language list
+     */
+    public void sortLanguageList() {
+        Collections.sort(allLanguages, languageComparator);
+        this.reset();
+    }
+
+    @Override
+    protected List<HLocale> fetchAll() {
+        if (allLanguages == null) {
+            allLanguages = localeServiceImpl.getAllLocales();
+        }
+        return allLanguages;
+    }
+
+    @Override
+    protected boolean include(HLocale elem, String filter) {
+        return StringUtils.containsIgnoreCase(elem.retrieveDisplayName(),
+                filter)
+                || StringUtils.containsIgnoreCase(elem.getLocaleId().getId(),
+                        filter);
+    }
+
+    // sort by name or locale id
+    private class LanguageComparator implements Comparator<HLocale> {
+        private SortingType sortingType;
+
+        public LanguageComparator(SortingType sortingType) {
+            this.sortingType = sortingType;
+        }
+
+        @Override
+        public int compare(HLocale o1, HLocale o2) {
+            SortingType.SortOption selectedSortOption =
+                    sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
+                HLocale temp = o1;
+                o1 = o2;
+                o2 = temp;
+            }
+
+            if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
+                return o1.retrieveDisplayName().compareTo(
+                        o2.retrieveDisplayName());
+            } else {
+                return o1.getLocaleId().getId().compareTo(
+                        o2.getLocaleId().getId());
+            }
         }
     }
-
 }

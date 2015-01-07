@@ -23,31 +23,33 @@ package org.zanata.action;
 import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import javax.faces.event.ValueChangeEvent;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.framework.EntityHome;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
-import org.zanata.service.SlugEntityService;
+
+import com.google.common.collect.Lists;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -57,16 +59,15 @@ import org.zanata.service.SlugEntityService;
  */
 @Name("translationMemoryAction")
 @Restrict("#{s:hasRole('admin')}")
+@Scope(ScopeType.PAGE)
 @Slf4j
-public class TranslationMemoryAction extends EntityHome<TransMemory> {
+public class TranslationMemoryAction implements Serializable {
+
     @In
     private TransMemoryDAO transMemoryDAO;
 
     @In
     private TranslationMemoryResourceService translationMemoryResource;
-
-    @In
-    private SlugEntityService slugEntityServiceImpl;
 
     @In
     private AsyncTaskHandleManager asyncTaskHandleManager;
@@ -80,6 +81,14 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
     @Out(scope = ScopeType.PAGE, required = false)
     private Future lastTaskResult;
 
+    @Getter
+    private SortingType tmSortingList = new SortingType(
+            Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
+                    SortingType.SortOption.CREATED_DATE));
+
+    private final TMComparator tmComparator =
+            new TMComparator(getTmSortingList());
+
     /**
      * Stores the last process error, but only for the duration of the event.
      */
@@ -92,22 +101,11 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
         return transMemoryList;
     }
 
-    public void verifySlugAvailable(ValueChangeEvent e) {
-        String slug = (String) e.getNewValue();
-        validateSlug(slug, e.getComponent().getId());
-    }
-
-    public boolean validateSlug(String slug, String componentId) {
-        if (!slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class)) {
-            FacesMessages.instance().addToControl(componentId,
-                    "This Id is not available");
-            return false;
-        }
-        return true;
+    public void sortTMList() {
+        Collections.sort(transMemoryList, tmComparator);
     }
 
     public void clearTransMemory(final String transMemorySlug) {
-        String name = "TranslationMemoryAction.clearTransMemory: "+transMemorySlug;
         AsyncTaskHandle handle = new AsyncTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle,
                 new ClearTransMemoryProcessKey(transMemorySlug));
@@ -177,12 +175,16 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
 
     public boolean isTablePollEnabled() {
         // Poll is enabled only when there is something being cleared
-        for (TransMemory tm : transMemoryList) {
+        for (TransMemory tm : getAllTranslationMemories()) {
             if (isTransMemoryBeingCleared(tm.getSlug())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isTranslationMemoryEmpty(String tmSlug) {
+        return getTranslationMemorySize(tmSlug) <= 0;
     }
 
     public long getTranslationMemorySize(String tmSlug) {
@@ -192,16 +194,6 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
     public String cancel() {
         // Navigation logic in pages.xml
         return "cancel";
-    }
-
-    @Override
-    @Transactional
-    public String persist() {
-        if (!validateSlug(getInstance().getSlug(), "slug")) {
-            return null;
-        }
-
-        return super.persist();
     }
 
     /**
@@ -214,5 +206,31 @@ public class TranslationMemoryAction extends EntityHome<TransMemory> {
     @EqualsAndHashCode
     private class ClearTransMemoryProcessKey implements Serializable {
         private String slug;
+    }
+
+    private class TMComparator implements Comparator<TransMemory> {
+        private SortingType sortingType;
+
+        public TMComparator(SortingType sortingType) {
+            this.sortingType = sortingType;
+        }
+
+        @Override
+        public int compare(TransMemory o1, TransMemory o2) {
+            SortingType.SortOption selectedSortOption =
+                    sortingType.getSelectedSortOption();
+
+            if (!selectedSortOption.isAscending()) {
+                TransMemory temp = o1;
+                o1 = o2;
+                o2 = temp;
+            }
+
+            if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
+                return o1.getSlug().compareToIgnoreCase(o2.getSlug());
+            } else {
+                return o1.getCreationDate().compareTo(o2.getCreationDate());
+            }
+        }
     }
 }

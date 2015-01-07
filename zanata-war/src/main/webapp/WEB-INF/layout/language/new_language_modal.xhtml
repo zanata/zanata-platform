@@ -1,0 +1,158 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich"
+  class="modal" id="newLanguageDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script type="text/javascript">
+    function replaceUnderscores() {
+      var langName = getInputVal();
+      langName = langName.replace('_', '-');
+      setInputVal(langName);
+      replaceUnderscoresServer(langName);
+    }
+
+    function validate() {
+      validateLangName(getInputVal());
+    }
+
+    function getInputVal() {
+      return jQuery("#localeAutocomplete-autocomplete__input").val();
+    }
+
+    function setInputVal(value) {
+      jQuery("#localeAutocomplete-autocomplete__input").val(value);
+    }
+  </script>
+
+  <style type="text/css" scoped="scoped">
+    .checkbox label {
+      padding-right: 0.40625em;
+    }
+
+    .checkbox input[type=checkbox] {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      margin-bottom: 0.20625em;
+    }
+  </style>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">#{msgs['jsf.CreateSupportedLanguage']}</h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="resetValue()">
+        <i class="i i--huge i--cancel"></i></button>
+    </header>
+
+    <h:form id="addLanguageForm" styleClass="l--push-bottom-0">
+      <a4j:jsFunction name="validateLangName"
+        action="#{languageManagerAction.updateLanguage(language)}"
+        render="output,localeNameMsgs,save-button">
+        <a4j:param name="val1" assignTo="#{language}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="replaceUnderscoresServer"
+        render="output,localeNameMsgs,save-button"
+        action="#{languageManagerAction.replaceUnderscore(language)}">
+        <a4j:param name="val1" assignTo="#{language}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="resetValue" onbegin="setInputVal('')"
+        render="output,localeNameMsgs,save-button"
+        action="#{languageManagerAction.resetValue()}">
+      </a4j:jsFunction>
+
+      <div class="modal__content l--pad-all-quarter">
+        <label
+          for="#{rich:clientId('localeAutocomplete')}-autocomplete__input">
+          #{msgs['jsf.Language']}
+        </label>
+
+        <zanata:autocomplete
+          actionBean="#{languageManagerAction}"
+          id="localeAutocomplete"
+          minlength="1"
+          fetchValue="#{result.localeId}"
+          displayText="#{result.localeId}"
+          render="output,localeNameMsgs"
+          onRenderResultComplete="validate()"
+          placeholder="#{msgs['jsf.language.search.placeholder']}">
+
+          #{result.localeId}<span
+          class="txt--understated l--push-left-quarter">#{result.retrieveDisplayName()}</span>
+
+        </zanata:autocomplete>
+
+        <s:div id="localeNameMsgs" styleClass="txt--warning">
+          <h:outputText
+            value="#{languageManagerAction.languageNameValidationMessage}"
+            rendered="#{not languageManagerAction.getQuery().contains('_')}"
+            styleClass="txt--danger"/>
+          <h:panelGroup
+            rendered="#{languageManagerAction.getQuery().contains('_')}">
+            #{msgs['jsf.language.validation.Underscores']}
+            <a href="#"
+              onclick="replaceUnderscores();">#{msgs['jsf.language.validation.ReplaceUnderscores']}</a>
+          </h:panelGroup>
+          <h:outputText
+            value="#{languageManagerAction.languageNameWarningMessage}"
+            rendered="#{languageManagerAction.languageNameWarningMessage != null}"
+            styleClass="txt--warning"/>
+        </s:div>
+
+        <div class="form__item l--push-top-half checkbox">
+          <h:outputLabel
+            for="enabled">#{msgs['jsf.EnabledByDefault']}</h:outputLabel>
+          <h:selectBooleanCheckbox id="enabled"
+            value="#{languageManagerAction.enabledByDefault}"/>
+        </div>
+
+        <s:div id="output" styleClass="txt--mini l--push-v-half">
+          <div class="l--push-top-half">
+            #{msgs['jsf.CountryCode']}<span
+            class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.country}</span>
+          </div>
+          <div class="l--push-top-half">
+            #{msgs['jsf.Name']}<span
+            class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.displayName}</span>
+          </div>
+          <div class="l--push-top-half">
+            #{msgs['jsf.LanguageCode']}<span
+            class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.language}</span>
+          </div>
+          <div class="l--push-top-half">
+            #{msgs['jsf.Variant']}<span
+            class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.variant}</span>
+          </div>
+          <div class="l--push-top-half">
+            #{msgs['jsf.NativeName']}<span
+            class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.getDisplayName(languageManagerAction.ULocale)}</span>
+          </div>
+        </s:div>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="g--tight">
+          <div class="g__item w--2-3"/>
+          <div class="g__item w--1-3 txt--align-right">
+            <button id="cancel" onclick="resetValue();return false;"
+              class="cancel button--link l--push-right-half" data-dismiss="modal">
+              #{msgs['jsf.Cancel']}
+            </button>
+
+            <h:commandButton value="#{msgs['jsf.Save']}" id="save-button"
+              disabled="#{languageManagerAction.getQuery().contains('_')}"
+              action="#{languageManagerAction.save}"
+              styleClass="button--primary"/>
+          </div>
+        </div>
+      </footer>
+    </h:form>
+  </div>
+</div>

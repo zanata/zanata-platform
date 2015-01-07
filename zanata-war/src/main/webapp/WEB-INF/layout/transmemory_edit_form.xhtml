@@ -1,55 +1,44 @@
-<h:form id="tmForm"
+<ui:composition
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
-  >
+  xmlns:a4j="http://richfaces.org/a4j">
 
-  <s:token allowMultiplePosts="true"/>
-  <rich:panel>
-    <s:decorate id="slugField" template="edit.xhtml" enclose="true">
-      <ui:define
-        name="label">#{msgs['jsf.transmemory.TransMemoryId']}</ui:define>
+  <div class="l--push-top-half form__item">
+    <h:outputLabel for="slug">#{msgs['jsf.transmemory.TransMemoryId']}
+      <span class="txt--meta"><i class="i i--info"
+        title="#{msgs['jsf.transmemory.TransMemoryIdExample']}"></i>
+      </span>
+    </h:outputLabel>
+    <s:decorate id="slugField" template="field.xhtml" enclose="true">
       <h:inputText id="slug" required="true"
-        value="#{translationMemoryAction.instance.slug}"
-        valueChangeListener="#{translationMemoryAction.verifySlugAvailable}">
+        value="#{translationMemoryHome.instance.slug}"
+        valueChangeListener="#{translationMemoryHome.verifySlugAvailable}">
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
       </h:inputText>
-
-      <s:span styleClass="icon-info-circle-2 input_help" id="slugHelp">
-        <rich:tooltip>
-          <em><code>#{msgs['jsf.transmemory.TransMemoryIdExample']}</code></em>
-        </rich:tooltip>
-      </s:span>
     </s:decorate>
-
-    <s:decorate id="descriptionField" template="edit.xhtml">
-      <ui:define name="label">#{msgs['jsf.Description']}</ui:define>
-      <h:inputTextarea id="description" required="false"
-        value="#{translationMemoryAction.instance.description}"
-        style="width: 260px;"/>
-    </s:decorate>
-
-    <div style="clear:both"></div>
-
-  </rich:panel>
-
-  <div class="actionButtons">
-    <h:commandButton id="save"
-      value="#{msgs['jsf.Save']}"
-      action="#{translationMemoryAction.persist}"
-      rendered="#{!translationMemoryAction.managed}"/>
-    <h:commandButton id="update"
-      value="#{msgs['jsf.Update']}"
-      action="#{translationMemoryAction.update}"
-      rendered="#{translationMemoryAction.managed}"/>
-    <s:button id="cancel"
-      value="#{msgs['jsf.Cancel']}"
-      propagation="none"
-      action="#{translationMemoryAction.cancel}"/>
   </div>
 
-</h:form>
+  <div class="l--push-top-half form__item">
+    <h:outputLabel for="description">#{msgs['jsf.Description']}</h:outputLabel>
+    <s:decorate id="descriptionField" template="field.xhtml" enclose="true">
+      <h:inputTextarea id="description" required="false"
+        value="#{translationMemoryHome.instance.description}"/>
+    </s:decorate>
+  </div>
+
+  <div class="l--push-top-1">
+    <h:commandButton id="save"
+      value="#{msgs['jsf.Save']}"
+      action="#{translationMemoryHome.persist}"
+      rendered="#{!translationMemoryHome.managed}"
+      styleClass="button--primary button--full"/>
+    <h:commandButton id="update"
+      value="#{msgs['jsf.Update']}"
+      action="#{translationMemoryHome.update}"
+      rendered="#{translationMemoryHome.managed}"
+      styleClass="button--primary button--full"/>
+  </div>
+
+</ui:composition>

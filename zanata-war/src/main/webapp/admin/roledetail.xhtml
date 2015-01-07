@@ -3,52 +3,75 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
-<ui:composition template="../WEB-INF/template/template_2x.xhtml">
+<ui:composition template="../WEB-INF/template/template.xhtml">
+
+  <ui:define name="head">
+    <style type="text/css">
+      .groups label {
+        padding-left: 0.40625em;
+      }
+
+      .groups input[type=checkbox] {
+        width: 1em;
+        height: 1em;
+        vertical-align: middle;
+        margin-bottom: 0.20625em;
+      }
+    </style>
+  </ui:define>
 
   <ui:define
     name="page_title">#{roleAction.role} - #{msgs['jsf.RoleDetails']}</ui:define>
   <ui:define name="center_content">
-    <h:form>
-      <s:token allowMultiplePosts="true"/>
-      <rich:panel>
-        <f:facet name="header">#{msgs['jsf.RoleDetails']}</f:facet>
+    <div class="g--centered">
+      <div class="g__item w--1-3-m w--3-8-l w--1-3 l--push-bottom-1">
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none">
+            #{msgs['jsf.Administration']}
+          </s:link>
+          <i class="i i--arrow-right"></i>
+          <s:link view="/admin/rolemanager.xhtml" propagation="none">
+            #{msgs['jsf.ManageRoles']}
+          </s:link>
+        </p>
 
-        <s:decorate id="roleField" template="../WEB-INF/layout/edit.xhtml"
-          enclose="true">
-          <ui:define name="label">#{msgs['jsf.Role']}</ui:define>
-          <h:inputText id="role" value="#{roleAction.role}"
-            readonly="#{identityManager.userExists(roleAction.role)}"
-            required="true">
-            <a4j:ajax event="blur" render="roleField"/>
-          </h:inputText>
-        </s:decorate>
+        <h1 class="l--push-all-0">#{msgs['jsf.RoleDetails']}</h1>
 
-        <s:decorate id="groupsField" template="../WEB-INF/layout/edit.xhtml">
-          <ui:define name="label">#{msgs['jsf.MemberOf']}</ui:define>
-          <h:selectManyCheckbox id="groups" value="#{roleAction.groups}"
-            layout="pageDirection">
-            <s:selectItems value="#{identityManager.listRoles()}" var="role"
-              label="#{role}"/>
-          </h:selectManyCheckbox>
-        </s:decorate>
+        <h:form>
+          <s:token allowMultiplePosts="true"/>
 
-        <div style="clear:both"/>
+          <div class="form__item l--push-top-1">
+            <h:outputLabel for="role">#{msgs['jsf.Role']}</h:outputLabel>
+            <s:decorate id="roleField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+              <h:inputText id="role" value="#{roleAction.role}"
+                readonly="#{identityManager.userExists(roleAction.role)}"
+                required="true">
+                <a4j:ajax event="blur" render="roleField" execute="@this"/>
+              </h:inputText>
+            </s:decorate>
+          </div>
 
-        <div class="actionButtons">
+          <div class="form__item l--push-top-1">
+            <h:outputLabel>#{msgs['jsf.MemberOf']}</h:outputLabel>
+            <s:decorate id="groupsField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+              <h:selectManyCheckbox id="groups" value="#{roleAction.groups}"
+                layout="pageDirection" styleClass="groups">
+                <s:selectItems value="#{identityManager.listRoles()}" var="role"
+                  label="#{role}"/>
+              </h:selectManyCheckbox>
+            </s:decorate>
+          </div>
+
           <h:commandButton value="#{msgs['jsf.Save']}"
-            action="#{roleAction.save}"/>
+            action="#{roleAction.save}" styleClass="button button--primary"/>
           <s:button view="/admin/rolemanager.xhtml"
-            value="#{msgs['jsf.Cancel']}" propagation="end"/>
-        </div>
-
-      </rich:panel>
-    </h:form>
-
+            value="#{msgs['jsf.Cancel']}" propagation="end" styleClass="button button--link l--push-left-half"/>
+        </h:form>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

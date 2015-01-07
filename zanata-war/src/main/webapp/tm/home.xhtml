@@ -7,210 +7,315 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  template="../WEB-INF/template/template.xhtml">
 
-  <ui:define name="page_title">#{msgs['jsf.transmemory.Title']}</ui:define>
+<ui:define name="page_title">#{msgs['jsf.transmemory.Title']}</ui:define>
 
-  <ui:define name="head">
-    <a4j:jsFunction name="refreshDataTable" render="tmList"/>
-    <script type="text/javascript">
-      function showUploadPanel(tmSlug) {
-        var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
-        jQuery("#uploadFileForm").attr("action", formAction);
-        jQuery("#uploadProgress").html("");
-        #{rich:component("uploadFilePanel")}
-      .
-        show();
-        return false;
-      }
+<ui:define name="head">
+  <a4j:jsFunction name="refreshDataTable" render="tmList"/>
+  <script type="text/javascript">
+    function showUploadPanel(tmSlug) {
+      var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
+      jQuery("#uploadFileForm").attr("action", formAction);
+      jQuery("#uploadProgress #message").html("");
+      jQuery("#uploadProgress").hide();
+      zanata.modal.show('#uploadFileDialog');
+      return false;
+    }
 
-      function hideUploadPanel() {
-        #{rich:component("uploadFilePanel")}
-      .
-        hide();
-      }
+    function hideUploadPanel() {
+      zanata.modal.hide('#uploadFileDialog');
+    }
 
-      function confirmClearTm() {
-        return confirm("#{msgs['jsf.transmemory.ConfirmClearTM']}");
-      }
+    function confirmClearTm() {
+      return confirm("#{msgs['jsf.transmemory.ConfirmClearTM']}");
+    }
 
-      function confirmDeleteTm() {
-        return confirm("#{msgs['jsf.transmemory.ConfirmDeleteTM']}");
-      }
+    function confirmDeleteTm() {
+      return confirm("#{msgs['jsf.transmemory.ConfirmDeleteTM']}");
+    }
 
-      function confirmExport() {
-        return confirm("#{msgs['jsf.transmemory.ConfirmExport']}");
-      }
+    function confirmExport() {
+      return confirm("#{msgs['jsf.transmemory.ConfirmExport']}");
+    }
 
-      function submitUpload() {
-        disableUploadDialog();
-        var uploadForm = jQuery("#uploadFileForm");
-        // Only HTML 5
-        var req = new XMLHttpRequest();
-        req.open("POST", uploadForm.attr("action"), true);
-        req.setRequestHeader("Content-Type", "*/*");
-        req.upload.addEventListener("progress", function (evt) {
-            if (evt.lengthComputable) {
-              var percentComplete = (evt.loaded / evt.total) * 100;
-              jQuery("#uploadProgress").html("Uploading... " +
-                Math.round(percentComplete * 100) / 100 + "%");
-            }
-          },
-          false);
-        req.onreadystatechange = function () {
-          if (req.readyState != 4) {
-            return;
+    function submitUpload() {
+      disableUploadDialog();
+      var uploadForm = jQuery("#uploadFileForm");
+      // Only HTML 5
+      var req = new XMLHttpRequest();
+      req.open("POST", uploadForm.attr("action"), true);
+      req.setRequestHeader("Content-Type", "*/*");
+      req.upload.addEventListener("progress", function (evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = (evt.loaded / evt.total) * 100;
+            jQuery("#uploadProgress #message").html(
+              Math.round(percentComplete * 100) / 100 + "%");
           }
-          if (req.status == 503) {
-            alert("There was an error uploading the file: " + req.responseText +
-              " (" + req.status + ")");
-          } else if (req.status != 200) {
-            alert("There was an error uploading the file: " + req.statusText +
-              " (" + req.status + ")");
-          } else {
-            alert("Successfully imported the file");
-          }
-          resetUploadDialog();
-          refreshDataTable();
-        };
-        var file = uploadForm.find("input[name = 'uploadedFile']")[0].files[0];
-        req.send(file);
-        return false;
-      }
+        },
+        false);
+      req.onreadystatechange = function () {
+        if (req.readyState != 4) {
+          return;
+        }
+        if (req.status == 503) {
+          alert("There was an error uploading the file: " + req.responseText +
+            " (" + req.status + ")");
+        } else if (req.status != 200) {
+          alert("There was an error uploading the file: " + req.statusText +
+            " (" + req.status + ")");
+        } else {
+          alert("Successfully imported the file");
+        }
+        resetUploadDialog();
+        refreshDataTable();
+      };
+      var file = uploadForm.find("input[name = 'uploadedFile']")[0].files[0];
+      req.send(file);
+      return false;
+    }
 
-      function resetUploadDialog() {
-        jQuery("[name='uploadBtn']").show();
-        jQuery("[name='cancelBtn']").show();
-        jQuery("[name='uploadedFile']").prop('disabled', false);
-        hideUploadPanel();
-        jQuery("#uploadProgress").html("");
-      }
+    function resetUploadDialog() {
+      jQuery("[name='uploadBtn']").show();
+      jQuery("[name='cancelBtn']").show();
+      jQuery("[name='uploadedFile']").prop('disabled', false);
+      hideUploadPanel();
+      jQuery("#uploadProgress").hide();
+      jQuery("#uploadProgress #message").html("");
+    }
 
-      function disableUploadDialog() {
-        jQuery("#uploadProgress").html("Uploading...");
-        jQuery("[name='uploadBtn']").hide();
-        jQuery("[name='cancelBtn']").hide();
-        jQuery("[name='uploadedFile']").prop('disabled', true);
-      }
-    </script>
-  </ui:define>
+    function disableUploadDialog() {
+      jQuery("#uploadProgress").show();
+      jQuery("#uploadProgress #message").html("");
+      jQuery("[name='uploadBtn']").hide();
+      jQuery("[name='cancelBtn']").hide();
+      jQuery("[name='uploadedFile']").prop('disabled', true);
+    }
+  </script>
+  <h:form styleClass="l--push-bottom-0" id="processResultForm">
+    <a4j:poll id="processResultPoll" interval="3000"
+      render="processResultPoll,processResult"
+      enabled="#{translationMemoryAction.processErrorPollEnabled}"/>
+  </h:form>
 
-  <ui:define name="right_content">
-    <rich:panel id="loggedIn">
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link id="createTmLink" styleClass="action_link"
-        value="#{msgs['jsf.transmemory.CreateNew']}"
-        view="/tm/create.xhtml"
-        propagation="none"/>
-    </rich:panel>
-  </ui:define>
+</ui:define>
 
-  <ui:define name="center_content">
-    <s:decorate id="main_content">
-      <s:fragment
-        rendered="#{translationMemoryAction.allTranslationMemories.size() eq 0}">
-        <h:outputText value="#{msgs['jsf.transmemory.NoTransMemories']}"/>
-      </s:fragment>
+<ui:define name="center_content">
+  <div class="g--centered">
+    <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
+      <p class="txt--meta l--push-all-0">
+        <s:link view="/admin/home.xhtml" propagation="none"
+          value="#{msgs['jsf.Administration']}"/>
+      </p>
 
-      <s:fragment
-        rendered="#{translationMemoryAction.allTranslationMemories.size() > 0}">
-        <h:form id="form">
-          <s:div id="processResult">
-            #{translationMemoryAction.processError}
-          </s:div>
-          <s:div id="tmList">
-            <rich:dataTable id="tmTable"
-              value="#{translationMemoryAction.allTranslationMemories}"
-              var="tm">
-              <rich:column>
-                <f:facet name="header">#{msgs['jsf.transmemory.Id']}
-                </f:facet>
-                <h:outputText value="#{tm.slug}"/>
-              </rich:column>
-              <rich:column>
-                <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
-                <h:outputText value="#{tm.description}"/>
-              </rich:column>
-              <rich:column>
-                <f:facet
-                  name="header">#{msgs['jsf.transmemory.NoOfEntries']}</f:facet>
-                <h:outputText
-                  value="#{translationMemoryAction.getTranslationMemorySize(tm.slug)}"/>
-              </rich:column>
-              <rich:column>
-                <f:facet name="header">#{msgs['jsf.CreationDate']}
-                </f:facet>
-                <h:outputText value="#{tm.creationDate}">
-                  <f:convertDateTime type="date" dateStyle="default"/>
-                </h:outputText>
-              </rich:column>
-              <rich:column style="text-align: center">
-                <f:facet
-                  name="header">#{msgs['jsf.transmemory.Import']}</f:facet>
-                <a href="#" onclick="return showUploadPanel('#{tm.slug}')">
-                  <span class="icon-upload icon"
-                    title="#{msgs['jsf.transmemory.Import.Title']}"/>
-                </a>
-              </rich:column>
-              <rich:column style="text-align: center">
-                <f:facet
-                  name="header">#{msgs['jsf.transmemory.Export']}</f:facet>
-                <a href="#{request.contextPath}/rest/tm/#{tm.slug}"
-                  onclick="return confirmExport()">
-                  <span class="icon-download icon"
-                    title="#{msgs['jsf.transmemory.Export.Title']}"/>
-                </a>
-              </rich:column>
-              <rich:column style="text-align: center">
-                <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-                <s:fragment
-                  rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
-                  <a4j:commandButton value="#{msgs['jsf.Clear']}"
-                    action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
-                    render="tmListPoll,tmList,processResult,processResultPoll"
-                    onclick="return confirmClearTm()"/>
-                  <h:commandButton value="#{msgs['jsf.Delete']}"
-                    action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
-                    onclick="return confirmDeleteTm()"
-                    disabled="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
-                    title="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug) ? msgs['jsf.transmemory.Delete.Title'] : ''}"/>
-                </s:fragment>
-                <s:fragment
-                  rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
-                  #{msgs['jsf.transmemory.Clearing.Message']}
-                </s:fragment>
-              </rich:column>
-            </rich:dataTable>
-          </s:div>
-
-        </h:form>
-        <h:form>
-          <a4j:poll id="tmListPoll" interval="3000"
-            render="tmListPoll,tmList,processResultPoll,processResult"
-            enabled="#{translationMemoryAction.tablePollEnabled}"/>
-          <a4j:poll id="processResultPoll" interval="3000"
-            render="processResultPoll,processResult"
-            enabled="#{translationMemoryAction.processErrorPollEnabled}"/>
-        </h:form>
-      </s:fragment>
-    </s:decorate>
-
-    <rich:popupPanel id="uploadFilePanel"
-      autosized="true">
-      <form id="uploadFileForm" action="/" method="post">
-        <input type="file" name="uploadedFile"/>
-
-        <div>
-          <input type="button" name="uploadBtn"
-            value="#{msgs['jsf.transmemory.Import']}"
-            onclick="submitUpload()"/>
-          <input type="button" name="cancelBtn"
-            value="#{msgs['jsf.Cancel']}" onclick="hideUploadPanel()"/>
+      <h1 class="l--push-all-0">#{msgs['jsf.transmemory.Title']}</h1>
+      <div class="panel l--push-top-1">
+        <div class="panel__header">
+          <div class="panel__header__actions">
+            <zanata:sortlist id="tm_sorting"
+              sortAction="#{translationMemoryAction.sortTMList()}"
+              oncomplete="refreshTooltip('#{rich:clientId('tmList')}')"
+              render="tmList"
+              sortingList="#{translationMemoryAction.tmSortingList}"
+              onbegin="clearHTML('#{rich:clientId('tmList')}')"
+              status="tmLoader"/>
+            <div
+              class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+              <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                id="moreActions"
+                title="#{msgs['jsf.tooltip.MoreActions']}"><i
+                class="i i--ellipsis"></i>
+              </a>
+              <ul class="dropdown__content js-dropdown__content"
+                role="content" aria-labelledby="dropdownContent">
+                <li>
+                  <s:link id="createTmLink" styleClass="i__item--right"
+                    value="#{msgs['jsf.transmemory.CreateNew']}"
+                    view="/tm/create.xhtml" propagation="none">
+                    <i class="i i--plus i__item__icon"></i>
+                  </s:link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <h2 class="panel__heading">#{msgs['jsf.transmemory.Title']}</h2>
         </div>
-      </form>
-      <div id="uploadProgress"></div>
-    </rich:popupPanel>
 
-  </ui:define>
+        <a4j:status name="tmLoader">
+          <f:facet name="start"><zanata:loader/></f:facet>
+        </a4j:status>
+
+        <h:form styleClass="l--push-bottom-0" id="tmList">
+          <s:div styleClass="l--pad-all-half"
+            rendered="#{empty translationMemoryAction.allTranslationMemories}">
+            <p class="txt--meta">#{msgs['jsf.transmemory.NoTransMemories']}</p>
+            <p>
+              <s:link styleClass="button--primary" propagation="none"
+                value="#{msgs['jsf.transmemory.CreateNew']}"
+                view="/tm/create.xhtml">
+                <i class="i i--plus i__item__icon"></i>
+              </s:link>
+            </p>
+          </s:div>
+
+          <s:div rendered="#{not empty translationMemoryAction.allTranslationMemories}">
+            <s:div id="processResult">
+              <s:span styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
+                #{translationMemoryAction.processError}
+              </s:span>
+            </s:div>
+
+            <ul class="list--stats">
+              <ui:repeat value="#{translationMemoryAction.allTranslationMemories}"
+                var="tm">
+                <li class="list__item--actionable">
+
+                  <div class="list__item__action">
+                    <s:div
+                      styleClass="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown" id="options">
+                      <a href="#" title="Options"
+                        class="dropdown__toggle js-dropdown__toggle txt--meta">
+                        <span class="is-invisible">Options</span>
+                      </a>
+                      <ul class="dropdown__content js-dropdown__content">
+                        <li>
+                          <a href="#" class="i__item--right"
+                            title="#{msgs['jsf.transmemory.Import.Title']}"
+                            onclick="return showUploadPanel('#{tm.slug}')">
+                            #{msgs['jsf.transmemory.Import']}
+                            <i class="i i--import i__item__icon"></i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#{request.contextPath}/rest/tm/#{tm.slug}"
+                            class="i__item--right"
+                            title="#{msgs['jsf.transmemory.Export.Title']}"
+                            onclick="return confirmExport()">
+                            #{msgs['jsf.transmemory.Export']}
+                            <i class="i i--export i__item__icon"></i>
+                          </a>
+                        </li>
+
+                        <li>
+                          <s:fragment rendered="#{translationMemoryAction.isTranslationMemoryEmpty(tm.slug) or translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                            <a href="#" title="#{msgs['jsf.transmemory.Clear.Title']}"
+                              class="i__item--right txt--danger" disabled="true">
+                              #{msgs['jsf.Clear']}
+                              <i class="i i--remove i__item__icon"></i>
+                            </a>
+                          </s:fragment>
+
+                          <a4j:commandLink value="#{msgs['jsf.Clear']}"
+                            rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug) and not translationMemoryAction.isTranslationMemoryEmpty(tm.slug)}"
+                            action="#{translationMemoryAction.clearTransMemory(tm.slug)}"
+                            render="tm-status"
+                            onclick="return confirmClearTm()"
+                            styleClass="i__item--right txt--danger">
+                            <i class="i i--remove i__item__icon"></i>
+                          </a4j:commandLink>
+                        </li>
+
+                        <li>
+                          <s:fragment rendered="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}">
+                            <a href="#" title="#{msgs['jsf.transmemory.Delete.Title']}"
+                              class="i__item--right txt--danger" disabled="true">
+                              #{msgs['jsf.Delete']}
+                              <i class="i i--remove i__item__icon"></i>
+                            </a>
+                          </s:fragment>
+
+                          <h:commandLink value="#{msgs['jsf.Delete']}" rendered="#{not translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
+                            action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
+                            onclick="return confirmDeleteTm()"
+                            styleClass="i__item--right txt--danger">
+                            <i class="i i--remove i__item__icon"></i>
+                          </h:commandLink>
+                        </li>
+                      </ul>
+                    </s:div>
+                  </div>
+                  <div>
+                    <div class="list__item__content">
+                      <div class="list__item__info">
+                        <h3 class="list__title">
+                          #{tm.slug}
+                          <s:span styleClass="badge l--push-left-quarter" id="tm-size"
+                            title="#{msgs['jsf.transmemory.NoOfEntries']}">
+                            #{translationMemoryAction.getTranslationMemorySize(tm.slug)}
+                          </s:span>
+                        </h3>
+                        <span class="list__item__meta">#{tm.description}</span>
+                      </div>
+                      <s:div styleClass="list__item__stats txt--mini" id="tm-status">
+                        <a4j:poll interval="3000" limitRender="true"
+                          render="processResultPoll, tm-size, tm-status, options"
+                          enabled="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}"/>
+
+                        <s:fragment rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                          <span>#{msgs['jsf.transmemory.Clearing.Message']}</span>
+                          <zanata:loader type="loader--small" layout="inline"/>
+                        </s:fragment>
+                        <s:fragment rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                          <s:span styleClass="txt--understated">
+                            #{msgs['jsf.transmemory.createdOn']}
+                              <span class="stats__unit">
+                                 <h:outputText value="#{tm.creationDate}">
+                                   <f:convertDateTime type="date" dateStyle="default"/>
+                                 </h:outputText>
+                              </span>
+                          </s:span>
+                        </s:fragment>
+                      </s:div>
+                    </div>
+                  </div>
+                </li>
+              </ui:repeat>
+            </ul>
+          </s:div>
+        </h:form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="uploadFileDialog" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal__dialog l--constrain-medium">
+      <header class="modal__header">
+        <h2 class="modal__title">#{msgs['jsf.transmemory.Import.Header']}</h2>
+        <button type="button"
+          class="modal__close button--link"
+          data-dismiss="modal">
+          <i class="i i--huge i--cancel"></i></button>
+      </header>
+
+      <form id="uploadFileForm" action="/" method="post" class="l--push-bottom-0">
+        <div class="modal__content l--pad-h-1 l--pad-v-half">
+          <input type="file" name="uploadedFile"/>
+        </div>
+
+        <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+          <div class="g--tight">
+            <div class="g__item w--2-3"/>
+            <div class="g__item w--1-3 txt--align-right">
+              <input type="button" name="cancelBtn" value="#{msgs['jsf.Cancel']}"
+                class="cancel button button--link l--push-right-half" data-dismiss="modal">
+              </input>
+
+              <input type="button" name="uploadBtn" class="button button--primary"
+                value="#{msgs['jsf.transmemory.Import']}"
+                onclick="submitUpload()"/>
+
+              <div id="uploadProgress">
+                <zanata:loader type="loader--small" layout="inline"/>
+                <span id="message" class="txt--understated"></span>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </form>
+    </div>
+  </div>
+</ui:define>
 
 </ui:composition>

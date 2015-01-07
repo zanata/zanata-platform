@@ -6,42 +6,104 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
-  template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  template="../WEB-INF/template/template.xhtml"
+  xmlns:a4j="http://richfaces.org/a4j">
 
   <ui:define name="page_title">#{msgs['jsf.Languages']}</ui:define>
-  <ui:define name="right_content">
-    <rich:panel rendered="#{identity.loggedIn and s:hasRole('admin')}">
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
-        view="/admin/supportedlanguagedetail.xhtml"
-        value="#{msgs['jsf.CreateSupportedLanguage']}"/>
-    </rich:panel>
-  </ui:define>
 
   <ui:define name="center_content">
-    <h:form id="tribesForm">
-      <rich:dataTable id="latestTribes"
-        value="#{supportedLanguageAction.supportedLanguages}" var="language">
-        <rich:column sortBy="#{language.localeId.id}">
-          <f:facet name="header">#{msgs['jsf.Language']}</f:facet>
-          <s:link view="/language/language.xhtml" propagation="none"
-            value="#{language.localeId.id}" styleClass="table_link">
-            <f:param name="id" value="#{language.localeId.id}"/>
-          </s:link>
-        </rich:column>
-        <rich:column sortBy="#{language.retrieveDisplayName()}">
-          <f:facet name="header">#{msgs['jsf.Name']}</f:facet>
-          #{language.retrieveDisplayName()}
-        </rich:column>
-        <rich:column>
-          <f:facet name="header">#{msgs['jsf.NativeName']}</f:facet>
-          #{language.retrieveNativeName()}
-        </rich:column>
-        <rich:column sortBy="#{language.members.size}" styleClass="centered">
-          <f:facet name="header">#{msgs['jsf.Members']}</f:facet>
-          #{language.members.size}
-        </rich:column>
-      </rich:dataTable>
-    </h:form>
+    <div class="g--centered">
+      <div class="g__item w--1-s w--1-2 l--push-bottom-half">
+        <h1 class="l--push-all-0">#{msgs['jsf.Languages']}</h1>
+
+        <div class="panel l--push-top-1">
+          <div class="panel__header">
+            <div class="panel__header__actions">
+              <zanata:sortlist id="language-sorting"
+                sortAction="#{supportedLanguageAction.sortLanguageList()}"
+                render="languageForm, languageSearch-pager, languageSearch-page-info, languageSearchBottom-pager, languageSearchBottom-page-info"
+                sortingList="#{supportedLanguageAction.languageSortingList}"
+                onbegin="clearHTML('#{rich:clientId('languageForm')}')"
+                status="languageLoader"/>
+
+
+              <s:div rendered="#{identity.loggedIn and s:hasRole('admin')}"
+                styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
+                id="more-actions">
+                <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                  title="#{msgs['jsf.tooltip.MoreActions']}"><i
+                  class="i i--ellipsis"></i>
+                </a>
+                <ul class="dropdown__content js-dropdown__content" role="content"
+                  aria-labelledby="dropdownContent">
+                  <li>
+                    <a href="#" class="i__item--right"
+                      data-toggle="modal" onclick="return false;"
+                      data-target="#newLanguageDialog">
+                      #{msgs['jsf.CreateSupportedLanguage']}
+                      <i class="i i--plus i__item__icon"></i>
+                    </a>
+                  </li>
+                </ul>
+              </s:div>
+            </div>
+            <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
+          </div>
+
+          <div class="panel__sub-header js-reveal">
+            <zanata:list-filter status="languageLoader"
+              listId="languageForm"
+              render="languageForm, languageSearchBottom-pager, languageSearchBottom-page-info"
+              id="languageSearch" iconClass="i--language"
+              placeholder="#{msgs['jsf.language.search.placeholder']}"
+              actionBean="#{supportedLanguageAction}"/>
+          </div>
+
+          <a4j:status name="languageLoader">
+            <f:facet name="start">
+              <zanata:loader/>
+            </f:facet>
+          </a4j:status>
+
+          <h:form id="languageForm" styleClass="l--push-bottom-0">
+            <ul class="list--stats">
+              <ui:repeat value="#{supportedLanguageAction.currentPage}" var="language">
+                <li class="l--pad-all-quarter">
+                  <s:link view="/language/language.xhtml" propagation="none">
+                    <f:param name="id" value="#{language.localeId.id}"/>
+
+                    <div class="list__item__content">
+                      <div class="list__item__info">
+                        <h3 class="list__title">
+                          #{language.retrieveDisplayName()}
+                          <span class="txt--meta l--push-left-quarter l--push-right-half" title="#{msgs['jsf.TeamMembers']}">
+                            <i class="i i--users"></i> #{language.members.size}
+                          </span>
+                        </h3>
+                        <span class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
+                      </div>
+                    </div>
+                  </s:link>
+                </li>
+              </ui:repeat>
+            </ul>
+          </h:form>
+        </div>
+        <div class="panel__sub-header js-reveal">
+          <zanata:list-filter status="languageLoader"
+            listId="languageForm"
+            render="languageForm, languageSearch-pager, languageSearch-page-info"
+            id="languageSearchBottom" iconClass="i--language"
+            placeholder="#{msgs['jsf.language.search.placeholder']}"
+            actionBean="#{supportedLanguageAction}"/>
+        </div>
+      </div>
+    </div>
+
+    <s:fragment rendered="#{identity.loggedIn and s:hasRole('admin')}">
+      <ui:include src="../WEB-INF/layout/language/new_language_modal.xhtml"/>
+    </s:fragment>
+
   </ui:define>
 </ui:composition>

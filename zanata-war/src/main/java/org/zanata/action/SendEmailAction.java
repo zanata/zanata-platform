@@ -322,5 +322,3 @@ public class SendEmailAction implements Serializable {
         return send();
     }
 }
-
-

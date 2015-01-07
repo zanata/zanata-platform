@@ -88,9 +88,9 @@ public class AddLanguagePage extends BasePage {
         });
         for (WebElement item : getDriver().findElements(By.className("prop"))) {
             map.put(item.findElements(By.tagName("span"))
-                    .get(NAME_COLUMN).getText(),
-                item.findElements(By.tagName("span"))
-                    .get(VALUE_COLUMN).getText());
+                            .get(NAME_COLUMN).getText(),
+                    item.findElements(By.tagName("span"))
+                            .get(VALUE_COLUMN).getText());
         }
         return map;
     }

@@ -36,6 +36,10 @@ public class TableRow {
         this.row = row;
     }
 
+    public List<WebElement> getHeaders() {
+        return row.findElements(By.xpath(".//th"));
+    }
+
     public List<WebElement> getCells() {
         return row.findElements(By.xpath(".//td"));
     }

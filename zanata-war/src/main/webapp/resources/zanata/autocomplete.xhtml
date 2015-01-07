@@ -43,11 +43,17 @@
   <composite:attribute name="oncomplete"
     shortDescription="The client-side script method to be called after the DOM is updated"/>
 
+  <composite:attribute name="onRenderResultComplete"
+    shortDescription="The client-side script method to be called after suggestions results"/>
+
   <composite:attribute name="inputClass"
     shortDescription="CSS class for input field"/>
 
   <composite:attribute name="onSelectStatus"
     shortDescription="Name of the a4j:status component to activate when selecting an item from the suggestion list"/>
+
+  <composite:attribute name="displayText"
+    shortDescription="Text to display in input field." default=""/>
 
 </composite:interface>
 
@@ -59,7 +65,8 @@
     render="#{cc.attrs.id}-result"
     limitRender="true"
     onbegin="#{cc.attrs.id}ShowLoader()"
-    oncomplete="#{cc.attrs.id}HideLoader(); registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
+    oncomplete="#{cc.attrs.id}HideLoader(); #{cc.attrs.onRenderResultComplete};
+    registerMouseEvent('#{cc.attrs.id}', #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
     <a4j:param name="val" assignTo="#{cc.attrs.actionBean.query}"/>
   </a4j:jsFunction>
 
@@ -130,6 +137,7 @@
             <li class="js-autocomplete__result autocomplete__result">
               <h:inputHidden value="#{cc.attrs.fetchValue}"/>
               <composite:insertChildren/>
+              <input type="hidden" value="#{cc.attrs.displayText}"/>
             </li>
           </ui:repeat>
         </ul>

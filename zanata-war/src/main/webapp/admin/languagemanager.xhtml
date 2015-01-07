@@ -5,101 +5,193 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template.xhtml"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:rich="http://richfaces.org/rich">
 
   <ui:define name="page_title">#{msgs['jsf.ManageLanguage']}</ui:define>
-  <ui:define name="right_content">
-    <rich:panel>
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
-        view="/admin/supportedlanguagedetail.xhtml"
-        value="#{msgs['jsf.CreateSupportedLanguage']}"/>
-    </rich:panel>
-  </ui:define>
 
   <ui:define name="center_content">
     <script type="text/javascript">
-      function confirmDelete() {
-        return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisLanguageThisActionCannotBeUndone']}");
-      }
-      function confirmEnabledChange(checkbox) {
-        var mssg = "#{msgs['jsf.AreYouSureYouWishToDisableThisLanguage']}"
-        if (checkbox.checked) {
-          mssg = "#{msgs['jsf.AreYouSureYouWishToEnableThisLanguage']}"
-        }
 
-        confirmed = confirm(mssg)
-        if (!confirmed) {
-          checkbox.checked = !checkbox.checked
-        }
-        return confirmed
+      function confirmEnable() {
+        return confirm("#{msgs['jsf.AreYouSureYouWishToEnableThisLanguage']}");
       }
-      function confirmEnabledByDefaultChange(checkbox) {
-        var mssg = "#{msgs['jsf.language.manager.DisableByDefaultConfirmation']}"
-        if (checkbox.checked) {
-          mssg =
-            "#{msgs['jsf.language.manager.EnableByDefaultConfirmation']}"
-        }
 
-        confirmed = confirm(mssg)
-        if (!confirmed) {
-          checkbox.checked = !checkbox.checked
-        }
-        return confirmed
+      function confirmDisable() {
+        return confirm("#{msgs['jsf.AreYouSureYouWishToDisableThisLanguage']}");
+      }
+
+      function confirmEnableByDefault() {
+        return confirm("#{msgs['jsf.language.manager.EnableByDefaultConfirmation']}");
+      }
+
+      function confirmDisableByDefault() {
+        return confirm("#{msgs['jsf.language.manager.DisableByDefaultConfirmation']}");
       }
     </script>
-    <h:form id="languageForm">
-      <s:token allowMultiplePosts="true"/>
-      <rich:dataTable id="threads" value="#{allLanguages}"
-        var="language">
 
-        <rich:column sortBy="#{language.localeId.id}"
-          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.Language']}</f:facet>
-          #{language.localeId.id}
-        </rich:column>
-        <rich:column sortBy="#{language.retrieveDisplayName()}"
-          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.Name']}</f:facet>
-          #{language.retrieveDisplayName()}
-        </rich:column>
-        <rich:column
-          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.NativeName']}</f:facet>
-          #{language.retrieveNativeName()}
-        </rich:column>
-        <rich:column width="50"
-          styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.EnabledByDefault']}</f:facet>
-          <h:selectBooleanCheckbox value="#{language.enabledByDefault}">
-            <a4j:ajax event="click"
-              onbeforesubmit="if(!confirmEnabledByDefaultChange(this)){ return false; }"
-              render="threads"
-              listener="#{languageSearchAction.selectedLocaleChanged}"/>
-          </h:selectBooleanCheckbox>
-        </rich:column>
-        <rich:column
-          styleClass="centered #{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.Active']}</f:facet>
-          <h:selectBooleanCheckbox value="#{language.active}">
-            <a4j:ajax event="click"
-              onbeforesubmit="if(!confirmEnabledChange(this)){ return false; }"
-              render="threads"
-              listener="#{languageSearchAction.selectedLocaleActivatedOrDeactivated}"/>
-          </h:selectBooleanCheckbox>
-        </rich:column>
-        <rich:column
-          styleClass="#{!language.active ? 'disabled_lang_row' : ''}">
-          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-          <h:commandButton value="#{msgs['jsf.TeamMembers']}"
-            action="#{languageSearchAction.manageMembers(language.localeId.id)}">
-            <f:param name="id" value="#{language.localeId.id}"/>
-          </h:commandButton>
-        </rich:column>
-      </rich:dataTable>
-    </h:form>
+    <div class="g--centered">
+      <div class="g__item w--1-s w--1-2 l--push-bottom-half">
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none"
+            value="#{msgs['jsf.Administration']}"/>
+        </p>
+
+        <h1 class="l--push-all-0">#{msgs['jsf.ManageLanguage']}</h1>
+
+        <div class="panel l--push-top-1">
+          <div class="panel__header">
+            <div class="panel__header__actions">
+              <zanata:sortlist id="language-sorting"
+                sortAction="#{languageSearchAction.sortLanguageList()}"
+                render="languageForm, languageSearch-pager, languageSearch-page-info, languageSearchBottom-pager, languageSearchBottom-page-info"
+                sortingList="#{languageSearchAction.languageSortingList}"
+                onbegin="clearHTML('#{rich:clientId('languageForm')}')"
+                status="languageLoader"/>
+
+              <div
+                class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
+                id="more-actions">
+                <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                  title="#{msgs['jsf.tooltip.MoreActions']}"><i
+                  class="i i--ellipsis"></i></a>
+                <ul class="dropdown__content js-dropdown__content" role="content"
+                  aria-labelledby="dropdownContent">
+                  <li>
+                    <a href="#" class="i__item--right"
+                      data-toggle="modal" onclick="return false;"
+                      data-target="#newLanguageDialog">
+                      #{msgs['jsf.CreateSupportedLanguage']}
+                      <i class="i i--plus i__item__icon"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
+          </div>
+
+
+          <div class="panel__sub-header js-reveal">
+            <zanata:list-filter status="languageLoader"
+              listId="languageForm"
+              render="languageForm, languageSearchBottom-pager, languageSearchBottom-page-info"
+              id="languageSearch" iconClass="i--language"
+              placeholder="#{msgs['jsf.language.search.placeholder']}"
+              actionBean="#{languageSearchAction}"/>
+          </div>
+
+          <a4j:status name="languageLoader">
+            <f:facet name="start">
+              <zanata:loader/>
+            </f:facet>
+          </a4j:status>
+
+          <h:form id="languageForm" styleClass="l--push-bottom-0">
+            <ul class="list--stats">
+              <ui:repeat value="#{languageSearchAction.currentPage}" var="language">
+                <li class="list__item--actionable">
+                  <div class="list__item__action">
+                    <div
+                      class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                      <a href="#" title="Options"
+                        class="dropdown__toggle js-dropdown__toggle txt--meta">
+                        <span class="is-invisible">Options</span>
+                      </a>
+                      <ul class="dropdown__content js-dropdown__content">
+                        <s:fragment rendered="#{language.active}">
+                          <li>
+                            <a4j:commandLink onclick="if(!confirmDisable()){ return false; }"
+                              action="#{languageSearchAction.disable(language)}"
+                              render="languageForm" styleClass="i__item--right txt--danger">
+                              #{msgs['jsf.language.disable']}
+                              <i class="i i--lock i__item__icon"></i>
+                            </a4j:commandLink>
+                          </li>
+                        </s:fragment>
+
+                        <s:fragment rendered="#{not language.active}">
+                          <li>
+                            <a4j:commandLink onclick="if(!confirmEnable()){ return false; }"
+                              action="#{languageSearchAction.enable(language)}"
+                              render="languageForm" styleClass="i__item--right">
+                              #{msgs['jsf.language.enable']}
+                              <i class="i i--unlock i__item__icon"></i>
+                            </a4j:commandLink>
+                          </li>
+                        </s:fragment>
+
+                        <s:fragment rendered="#{language.enabledByDefault}">
+                          <li>
+                            <a4j:commandLink onclick="if(!confirmDisableByDefault()){ return false; }"
+                              action="#{languageSearchAction.disableByDefault(language)}"
+                              render="languageForm" styleClass="i__item--right txt--danger">
+                              #{msgs['jsf.language.disableByDefault']}
+                              <i class="i i--cancel i__item__icon"></i>
+                            </a4j:commandLink>
+                          </li>
+                        </s:fragment>
+
+                        <s:fragment rendered="#{not language.enabledByDefault}">
+                          <li>
+                            <a4j:commandLink onclick="if(!confirmEnableByDefault()){ return false; }"
+                              action="#{languageSearchAction.enableByDefault(language)}"
+                              render="languageForm" styleClass="i__item--right">
+                              #{msgs['jsf.language.enableByDefault']}
+                              <i class="i i--unlock i__item__icon"></i>
+                            </a4j:commandLink>
+                          </li>
+                        </s:fragment>
+                      </ul>
+                    </div>
+                  </div>
+
+
+                  <h:commandLink
+                    action="#{languageSearchAction.manageMembers(language.localeId.id)}">
+                    <f:param name="id" value="#{language.localeId.id}"/>
+
+                    <div class="list__item__content">
+                      <div class="list__item__info">
+                        <h3 class="list__title">
+                          <span
+                            class="#{language.active and language.enabledByDefault  ? '' : 'txt--danger'}">
+                            <s:fragment
+                              rendered="#{not language.active}">
+                              <i class="i i--lock" title="#{msgs['jsf.language.disabled.tooltip']}"></i>
+                            </s:fragment>
+                            <s:fragment
+                              rendered="#{not language.enabledByDefault}">
+                              <i class="i i--cancel" title="#{msgs['jsf.language.disabledByDefault.tooltip']}"></i>
+                            </s:fragment>
+                            #{language.retrieveDisplayName()}
+                          </span>
+                          <span class="txt--meta l--push-left-quarter l--push-right-half" title="#{msgs['jsf.TeamMembers']}">
+                            <i class="i i--users"></i> #{language.members.size}
+                          </span>
+                        </h3>
+                        <span class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
+                      </div>
+                    </div>
+                  </h:commandLink>
+                </li>
+              </ui:repeat>
+            </ul>
+          </h:form>
+         </div>
+        <div class="panel__sub-header js-reveal">
+          <zanata:list-filter status="languageLoader"
+            listId="languageForm"
+            render="languageForm, languageSearch-pager, languageSearch-page-info"
+            id="languageSearchBottom" iconClass="i--language"
+            placeholder="#{msgs['jsf.language.search.placeholder']}"
+            actionBean="#{languageSearchAction}"/>
+        </div>
+      </div>
+    </div>
+
+    <ui:include src="../WEB-INF/layout/language/new_language_modal.xhtml"/>
   </ui:define>
-
 </ui:composition>

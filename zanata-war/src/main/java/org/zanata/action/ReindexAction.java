@@ -1,6 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -29,8 +30,10 @@ import com.google.common.base.Optional;
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
+
     @In
-    SearchIndexManager searchIndexManager;
+    private SearchIndexManager searchIndexManager;
 
     public List<ReindexClassOptions> getClasses() {
         return searchIndexManager.getReindexOptions();
@@ -133,6 +136,17 @@ public class ReindexAction implements Serializable {
             return 0;
         } else {
             return searchIndexManager.getProcessHandle().getCurrentProgress();
+        }
+    }
+
+    public String getProgressPercentage() {
+        if (searchIndexManager.getProcessHandle() == null) {
+            return "0";
+        } else {
+            double completedPercent =
+                    (double) getReindexProgress() / (double) getReindexCount()
+                            * 100;
+            return PERCENT_FORMAT.format(completedPercent);
         }
     }
 

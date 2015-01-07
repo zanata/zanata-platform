@@ -133,5 +133,3 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
         translator, reviewer, coordinator
     }
 }
-
-

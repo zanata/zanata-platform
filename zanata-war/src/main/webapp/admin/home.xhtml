@@ -40,14 +40,11 @@
           <s:link id="Admin_Manage_roles_home"
             view="/admin/rolemanager.xhtml" propagation="none"
             styleClass="bg--pop-high bg--highest--hover bx--block">
-            <div class="media l--pad-h-half l--pad-v-quarter">
-              <div class="media__item--left">
-                <h:graphicImage
-                  value="../images/crystal_project/_48x48/apps/personal.png"/>
-              </div>
-              <div class="media-body l--pad-top-quarter">
-                <span class="zeta">#{msgs['jsf.ManageRoles']}</span>
-              </div>
+            <div class="l--pad-all-half">
+              <i class="i i--user gamma"></i>
+              <span class="l--pad-left-1 zeta">
+                #{msgs['jsf.ManageRoles']}
+              </span>
             </div>
           </s:link>
         </li>
@@ -58,9 +55,9 @@
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--language gamma"></i>
-            <span class="l--pad-left-1 zeta">
-              #{msgs['jsf.ManageLanguage']}
-            </span>
+              <span class="l--pad-left-1 zeta">
+                #{msgs['jsf.ManageLanguage']}
+              </span>
             </div>
           </s:link>
         </li>
@@ -71,25 +68,9 @@
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--search gamma"></i>
-            <span class="l--pad-left-1 zeta">
-              #{msgs['jsf.ManageSearch']}
-            </span>
-            </div>
-          </s:link>
-        </li>
-
-        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Manage_stats_home"
-            view="/admin/stats.xhtml" propagation="none"
-            styleClass="bg--pop-high bg--highest--hover bx--block">
-            <div class="media l--pad-h-half l--pad-v-quarter">
-              <div class="media__item--left">
-                <h:graphicImage
-                  value="../images/crystal_project/_48x48/apps/kchart.png"/>
-              </div>
-              <div class="media-body l--pad-top-quarter">
-                <span class="zeta">#{msgs['jsf.OverallStatistics']}</span>
-              </div>
+              <span class="l--pad-left-1 zeta">
+                #{msgs['jsf.ManageSearch']}
+              </span>
             </div>
           </s:link>
         </li>
@@ -111,37 +92,6 @@
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Monitoring_home"
-            view="/admin/monitoring" propagation="none"
-            styleClass="bg--pop-high bg--highest--hover bx--block">
-            <div class="media l--pad-h-half l--pad-v-quarter">
-              <div class="media__item--left">
-                <h:graphicImage value="../images/javamelody.png"/>
-              </div>
-              <div class="media-body l--pad-top-quarter">
-                <span class="zeta">#{msgs['jsf.ServerMonitoring']}</span>
-              </div>
-            </div>
-          </s:link>
-        </li>
-
-        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Process_Management_home"
-            view="/admin/processmanager.xhtml" propagation="none"
-            styleClass="bg--pop-high bg--highest--hover bx--block">
-            <div class="media l--pad-h-half l--pad-v-quarter">
-              <div class="media__item--left">
-                <h:graphicImage
-                  value="../images/crystal_project/_48x48/apps/ksysv.png"/>
-              </div>
-              <div class="media-body l--pad-top-quarter">
-                <span class="zeta">#{msgs['jsf.ProcessManager']}</span>
-              </div>
-            </div>
-          </s:link>
-        </li>
-
-        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
           <s:link id="Translation_Memory_home"
             view="/tm/home.xhtml" propagation="none"
             styleClass="bg--pop-high bg--highest--hover bx--block">
@@ -156,6 +106,51 @@
             </div>
           </s:link>
         </li>
+
+        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
+          <s:link id="Process_Management_home"
+            view="/admin/processmanager.xhtml" propagation="none"
+            styleClass="bg--pop-high bg--highest--hover bx--block">
+            <div class="l--pad-all-half">
+              <i class="i i--clock gamma"></i>
+              <span class="l--pad-left-1 zeta">
+                #{msgs['jsf.ProcessManager']}
+              </span>
+            </div>
+          </s:link>
+        </li>
+
+        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
+          <s:link id="Admin_Manage_stats_home"
+            view="/admin/stats.xhtml" propagation="none"
+            styleClass="bg--pop-high bg--highest--hover bx--block">
+            <div class="media l--pad-h-half l--pad-v-quarter">
+              <div class="media__item--left">
+                <h:graphicImage
+                  value="../images/crystal_project/_48x48/apps/kchart.png"/>
+              </div>
+              <div class="media-body l--pad-top-quarter">
+                <span class="zeta">#{msgs['jsf.OverallStatistics']}</span>
+              </div>
+            </div>
+          </s:link>
+        </li>
+
+        <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
+          <s:link id="Admin_Monitoring_home"
+            view="/admin/monitoring" propagation="none"
+            styleClass="bg--pop-high bg--highest--hover bx--block">
+            <div class="media l--pad-h-half l--pad-v-quarter">
+              <div class="media__item--left">
+                <h:graphicImage value="../images/javamelody.png"/>
+              </div>
+              <div class="media-body l--pad-top-quarter">
+                <span class="zeta">#{msgs['jsf.ServerMonitoring']}</span>
+              </div>
+            </div>
+          </s:link>
+        </li>
+
       </ul>
   </ui:define>
 </ui:composition>

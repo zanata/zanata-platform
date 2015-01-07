@@ -83,7 +83,6 @@ public class IndexingServiceImpl implements IndexingService {
                 if (!handle.isCancelled()
                         && indexingOptions.get(clazz).isPurge()) {
                     log.info("purging index for {}", clazz);
-                    // currentClass = clazz;
                     session.purgeAll(clazz);
                     handle.increaseProgress(1);
                 }

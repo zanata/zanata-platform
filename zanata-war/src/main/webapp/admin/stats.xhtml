@@ -3,40 +3,74 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:h="http://java.sun.com/jsf/html"
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Statistics']}</ui:define>
   <ui:define name="center_content">
+
+    <h:form styleClass="l--push-bottom-0">
+      <a4j:jsFunction name="documentReady"
+        action="#{adminStatsAction.setDocumentReady(true)}"/>
+
+      <a4j:jsFunction name="loadUsers" render="userStats"/>
+      <a4j:jsFunction name="loadProjects" render="projectStats"/>
+      <a4j:jsFunction name="loadVersions" render="versionStats"/>
+      <a4j:jsFunction name="loadDocuments" render="documentStats"/>
+      <a4j:jsFunction name="loadTextFlows" render="textFlowStats"/>
+      <a4j:jsFunction name="loadTranslations" render="translationStats"/>
+    </h:form>
+
+    <script type="text/javascript">
+      jQuery(document).ready(function () {
+        documentReady();
+        loadUsers();
+        loadProjects();
+        loadVersions();
+        loadDocuments();
+        loadTextFlows();
+        loadTranslations();
+      });
+    </script>
+
     <div class="g--centered">
       <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
-        <s:link view="/admin/home.xhtml" propagation="none">
-          <p class="txt--meta l--push-all-0">
-            #{msgs['jsf.Administration']}</p>
-        </s:link>
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none">
+              #{msgs['jsf.Administration']}
+          </s:link>
+        </p>
 
         <h1 class="l--push-all-0">#{msgs['jsf.Statistics']}</h1>
-        <ul class="list--slat l--push-top-half">
-          <li>
-            <div class="l--pad-v-quarter epsilon">
-              <i class="i i--users delta l--push-right-quarter"></i>
-              <span>
-                #{msgs['jsf.TotalTranslators']} <span class="badge">#{adminStatsAction.totalTranslator}</span>
-              </span>
+        <s:div styleClass="panel l--pad-all-half l--push-v-half"  id="userStats">
+          <i class="i i--users delta l--push-right-quarter"></i>
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+              <zanata:loader layout="inline"/>
+          </s:fragment>
 
-              <span class="l--push-h-quarter">
-                #{msgs['jsf.TotalReviewers']} <span class="badge">#{adminStatsAction.totalReviewer}</span>
-              </span>
-            </div>
-          </li>
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            #{msgs['jsf.TotalTranslators']} <span class="badge">#{adminStatsAction.totalTranslator}</span>
 
-          <li>
-            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
-              <i class="i i--project delta l--push-right-quarter"></i>
-              <span>
-                #{msgs['jsf.TotalProjects']} <span class="badge">#{adminStatsAction.totalProjectCount}</span>
-              </span>
-            </div>
-            <div>
+            <span class="l--push-h-quarter">
+              #{msgs['jsf.TotalReviewers']} <span class="badge">#{adminStatsAction.totalReviewer}</span>
+            </span>
+          </s:fragment>
+        </s:div>
+
+        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="projectStats">
+          <i class="i i--project delta l--push-right-quarter"></i>
+          #{msgs['jsf.TotalProjects']}
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+            <zanata:loader layout="inline"/>
+          </s:fragment>
+
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            <span class="badge">#{adminStatsAction.totalProjectCount}</span>
+
+            <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
                 #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveProjectCount}</span>
               </span>
@@ -49,15 +83,20 @@
                 #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectCount}</span>
               </span>
             </div>
-          </li>
+          </s:fragment>
+        </s:div>
 
 
-          <li>
-            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
-              <i class="i i--version delta l--push-right-quarter"></i>
-              <span>#{msgs['jsf.Versions']} <span class="badge">#{adminStatsAction.totalProjectIterCount}</span></span>
-            </div>
-            <div>
+        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="versionStats">
+          <i class="i i--version delta l--push-right-quarter"></i>
+          #{msgs['jsf.Versions']}
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+            <zanata:loader layout="inline"/>
+          </s:fragment>
+
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            <span class="badge">#{adminStatsAction.totalProjectIterCount}</span>
+            <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
                 #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveProjectIterCount}</span>
               </span>
@@ -70,14 +109,19 @@
                 #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectIterCount}</span>
               </span>
             </div>
-          </li>
+          </s:fragment>
+        </s:div>
 
-          <li>
-            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
-              <i class="i i--document delta l--push-right-quarter"></i>
-              <span>#{msgs['jsf.TotalDocuments']} <span class="badge">#{adminStatsAction.totalDocuments}</span></span>
-            </div>
-            <div>
+        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="documentStats">
+          <i class="i i--document delta l--push-right-quarter"></i>
+          #{msgs['jsf.TotalDocuments']}
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+            <zanata:loader layout="inline"/>
+          </s:fragment>
+
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            <span class="badge">#{adminStatsAction.totalDocuments}</span>
+            <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
                 #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveDocuments}</span>
               </span>
@@ -86,14 +130,20 @@
                 #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteDocuments}</span>
               </span>
             </div>
-          </li>
+          </s:fragment>
+        </s:div>
 
-          <li>
-            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
-              <i class="i i--translate delta l--push-right-quarter"></i>
-              <span>#{msgs['jsf.TotalTextFlows']} <span class="badge">#{adminStatsAction.totalTextFlows}</span></span>
-            </div>
-            <div>
+        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="textFlowStats">
+          <i class="i i--translate delta l--push-right-quarter"></i>
+          #{msgs['jsf.TotalTextFlows']}
+
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+            <zanata:loader layout="inline"/>
+          </s:fragment>
+
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            <span class="badge">#{adminStatsAction.totalTextFlows}</span>
+            <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
                 #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveTextFlows}</span>
               </span>
@@ -102,14 +152,19 @@
                 #{msgs['jsf.Obsolete']} <span class="badge--danger">#{adminStatsAction.totalObsoleteTextFlows}</span>
               </span>
             </div>
-          </li>
+          </s:fragment>
+        </s:div>
 
-          <li>
-            <div class="l--pad-top-half l--pad-bottom-quarter epsilon epsilon">
-              <i class="i i--translate delta l--push-right-quarter"></i>
-              <span>#{msgs['jsf.TotalTextFlowTargets']} <span class="badge">#{adminStatsAction.totalTextFlowTargets}</span></span>
-            </div>
-            <div>
+        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="translationStats">
+          <i class="i i--translate delta l--push-right-quarter"></i>
+          #{msgs['jsf.TotalTextFlowTargets']}
+          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+            <zanata:loader layout="inline"/>
+          </s:fragment>
+
+          <s:fragment rendered="#{adminStatsAction.documentReady}">
+            <span class="badge">#{adminStatsAction.totalTextFlowTargets}</span>
+            <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
                 #{msgs['jsf.Active']} <span class="badge--success">#{adminStatsAction.totalActiveTextFlowTargets}</span>
               </span>
@@ -120,20 +175,20 @@
             </div>
 
             <div class="l--push-top-half">
-              <span class="l--push-h-quarter txt--meta">
+              <div class="l--push-all-quarter txt--meta">
                 #{msgs['jsf.ApprovedOrTranslated']} <span class="badge--success">#{adminStatsAction.totalApprovedOrTranslatedTextFlowTargets}</span>
-              </span>
+              </div>
 
-              <span class="l--push-h-quarter txt--meta">
+              <div class="l--push-all-quarter txt--meta">
                 #{msgs['jsf.RejectedOrFuzzy']} <span class="badge--unsure">#{adminStatsAction.totalRejectedOrFuzzyTextFlowTargets}</span>
-              </span>
+              </div>
 
-              <span class="l--push-h-quarter txt--meta">
+              <div class="l--push-all-quarter txt--meta">
                 #{msgs['jsf.Untranslated']} <span class="badge">#{adminStatsAction.totalUntranslatedTextFlowTargets}</span>
-              </span>
+              </div>
             </div>
-          </li>
-        </ul>
+          </s:fragment>
+        </s:div>
       </div>
     </div>
 

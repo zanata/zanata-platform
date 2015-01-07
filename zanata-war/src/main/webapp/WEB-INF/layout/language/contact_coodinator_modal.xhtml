@@ -1,0 +1,88 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:rich="http://richfaces.org/rich"
+  class="modal" id="contactCoordinatorDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script>
+    $(document).ready(function() {
+      document.getElementById('#{rich:clientId('emailType')}').value = '#{emailType}';
+      document.getElementById('#{rich:clientId('id')}').value = '#{id}';
+    });
+
+    function cancelEmail() {
+      document.getElementById('#{rich:clientId('emailType')}').value = '';
+      document.getElementById('#{rich:clientId('id')}').value = '';
+      document.getElementById('#{rich:clientId('subject')}').value = '';
+      document.getElementById('#{rich:clientId('message')}').value = '';
+      return false;
+    }
+  </script>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">
+        #{msgs.format('jsf.email.ContactCoordinatorTitle',id)}
+      </h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="cancelEmail();return false;">
+        <i class="i i--huge i--cancel"></i>
+      </button>
+    </header>
+
+    <h:form id="contactCoordinatorForm" styleClass="l--push-bottom-0">
+      <h:inputHidden id="emailType" value="#{sendEmail.emailType}" />
+      <h:inputHidden id="id" value="#{sendEmail.language}" />
+
+      <div class="modal__content l--pad-all-quarter">
+        <div class="l--push-top-half form__item">
+          <div class="txt--understated">
+            #{msgs['jsf.email.ReplyAddress']} <span class="txt--meta  l--push-right-quarter">
+          #{msgs['jsf.email.ReplyAddress.description']}</span>
+            #{sendEmail.replyEmail}
+          </div>
+        </div>
+
+        <div class="l--push-top-half form__item">
+          <h:outputLabel for="subject">
+            #{msgs['jsf.email.Subject']}
+          </h:outputLabel>
+          <s:decorate id="subjectField" template="../field.xhtml">
+            <h:inputText id="subject" value="#{sendEmail.subject}"
+              required="true"/>
+          </s:decorate>
+        </div>
+
+
+        <div class="l--push-top-half form__item">
+          <h:outputLabel for="message">
+            #{msgs['jsf.email.MessageBody']}
+          </h:outputLabel>
+          <s:decorate id="messageField" template="../field.xhtml">
+            <h:inputTextarea id="message" value="#{sendEmail.htmlMessage}"
+              required="true"/>
+          </s:decorate>
+        </div>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="g--tight">
+          <div class="g__item w--2-3"/>
+          <div class="g__item w--1-3 txt--align-right">
+            <button id="cancel" onclick="cancelEmail();return false;"
+              class="cancel button--link l--push-right-half"
+              data-dismiss="modal">
+              #{msgs['jsf.Cancel']}
+            </button>
+
+            <h:commandButton id="send" styleClass="button--primary"
+              action="#{sendEmail.send}" value="#{msgs['jsf.email.Send']}"/>
+          </div>
+        </div>
+      </footer>
+    </h:form>
+  </div>
+
+</div>

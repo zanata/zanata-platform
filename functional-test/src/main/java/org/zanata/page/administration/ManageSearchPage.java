@@ -42,11 +42,11 @@ public class ManageSearchPage extends BasePage {
 
     private static final int SELECT_ALL_COLUMN = 0;
 
-    private By classesTable = By.id("form:classList");
+    private By classesTable = By.id("form:actions");
     private By abortButton = By.id("form:cancel");
     private By selectAllButton = By.id("form:selectAll");
     private By performButton = By.id("form:reindex");
-    private By cancelButton = By.id("form:cancel");
+    private By cancelButton = By.linkText("Abort");
     private By noOpsLabel = By.id("noOperationsRunning");
     private By abortedLabel = By.id("aborted");
     private By completedLabel = By.id("completed");
@@ -84,12 +84,13 @@ public class ManageSearchPage extends BasePage {
 
     public boolean allActionsSelected() {
         log.info("Query all actions selected");
-        List<TableRow> tableRows =
-                WebElementUtil.getTableRows(getDriver(), classesTable);
+        List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
+                waitForWebElement(waitForElementExists(classesTable),
+                        By.tagName("table")));
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
-            for (int i = 2; i <= 4; i++) {
-                WebElement checkBox = tableRow.getCells().get(i).findElement(By.tagName("input"));
+            for (int i = 1; i <= 3; i++) {
+                WebElement checkBox = tableRow.getHeaders().get(i).findElement(By.tagName("input"));
                 if (!Checkbox.of(checkBox).checked()) {
                     return false;
                 }

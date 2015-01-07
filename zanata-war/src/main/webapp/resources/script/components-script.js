@@ -146,7 +146,8 @@ function onSelectItem(row, selectItemAction, selectItemFunction) {
   if (selectItemFunction) {
     selectItemFunction(row);
   }
-  jQuery(row).parent().parent().parent().children("input").first().val("");
+  jQuery(row).parent().parent().parent().children("input").first().val(
+    jQuery(row).children("input").eq(1).val());
   jQuery(row).parent().remove();
 }
 

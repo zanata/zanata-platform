@@ -95,6 +95,3 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     }
 
 }
-
-
-

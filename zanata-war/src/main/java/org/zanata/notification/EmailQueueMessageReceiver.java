@@ -121,4 +121,3 @@ public class EmailQueueMessageReceiver implements MessageListener {
         void handle(Serializable data);
     }
 }
-

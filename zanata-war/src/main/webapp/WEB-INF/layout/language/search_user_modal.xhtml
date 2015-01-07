@@ -1,0 +1,124 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:rich="http://richfaces.org/rich"
+  class="modal" id="searchUserDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script type="text/javascript">
+    function submitSearchOnEnter(e) {
+      if (e.keyCode == 13) {
+        #{rich:element('searchBtn')}.click();
+        return false;
+      }
+    }
+  </script>
+
+  <a4j:jsFunction name="clearSearch"
+    action="#{languageTeamAction.clearSearchResult}" render="searchResults"/>
+
+  <a4j:jsFunction name="addSelected"
+    action="#{languageTeamAction.addSelected}" render="searchResults, memberPanel, members-count"
+    oncomplete="jQuery('#cancel').click();zanata.modal.hide('#searchUserDialog')"/>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">#{msgs['jsf.FindUsersToAdd']}</h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="clearSearch()">
+        <i class="i i--huge i--cancel"></i></button>
+    </header>
+
+    <div class="modal__content l--pad-all-quarter">
+      <h:form id="searchForm">
+          <div class="form--inline">
+            <h:inputText value="#{languageTeamAction.searchTerm}" id="searchField"
+              onkeydown="return submitSearchOnEnter(event);"
+              styleClass="form--inline__input">
+              <rich:placeholder value="#{msgs['jsf.SearchUsers']}" styleClass="txt--neutral" />
+            </h:inputText>
+            <div class="form--inline__suffix">
+              <a4j:commandButton id="searchBtn"
+                value="#{msgs['jsf.Search']}"
+                styleClass="form--inline__addon button--primary"
+                action="#{languageTeamAction.searchForTeamMembers}"
+                render="searchResults"
+                status="searchStatus"/>
+            </div>
+          </div>
+      </h:form>
+      <a4j:status name="searchStatus">
+        <f:facet name="start">
+          <zanata:loader/>
+        </f:facet>
+      </a4j:status>
+
+      <h:form id="resultForm" styleClass="l--push-bottom-0">
+        <a4j:outputPanel id="searchResults" layout="block"
+          style="overflow:auto;max-height:320px">
+          <h:outputText id="noResultsMessage"
+            rendered="#{empty languageTeamAction.searchResults}"
+            value="No results to display."/>
+
+          <s:fragment rendered="#{not empty languageTeamAction.searchResults}">
+            <ul class="list--slat">
+              <ui:repeat value="#{languageTeamAction.searchResults}"
+                var="selectablePerson">
+                <li class="#{selectablePerson.selected ? 'txt--mini' : 'txt--meta'}">
+                  <div class="bx--inline-block w--3-5">
+                    #{selectablePerson.person.name} [#{selectablePerson.person.account.username}]
+                  </div>
+                  <div class="bx--inline-block txt--align-right">
+                    <ul class="list--horizontal">
+                      <li>
+                        #{msgs['jsf.Translator']}
+                        <h:selectBooleanCheckbox value="#{selectablePerson.translator}">
+                          <a4j:ajax event="change" render="searchResults"/>
+                        </h:selectBooleanCheckbox>
+                      </li>
+                      <li>
+                        #{msgs['jsf.Reviewer']}
+                        <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}">
+                          <a4j:ajax event="change" render="searchResults"/>
+                        </h:selectBooleanCheckbox>
+                      </li>
+                      <li>
+                        #{msgs['jsf.Coordinator']}
+                        <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}">
+                          <a4j:ajax event="change" render="searchResults"/>
+                        </h:selectBooleanCheckbox>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ui:repeat>
+            </ul>
+          </s:fragment>
+        </a4j:outputPanel>
+      </h:form>
+    </div>
+
+
+    <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+      <div class="g--tight">
+        <div class="g__item w--2-3"/>
+        <div class="g__item w--1-3 txt--align-right">
+          <button id="cancel" onclick="clearSearch()"
+            class="cancel button--link l--push-right-half" data-dismiss="modal">
+            #{msgs['jsf.Cancel']}
+          </button>
+          <button id="addSelectedBtn" class="button--primary"
+            onclick="addSelected()">
+            #{msgs['jsf.AddSelected']}
+          </button>
+        </div>
+      </div>
+
+    </footer>
+  </div>
+</div>

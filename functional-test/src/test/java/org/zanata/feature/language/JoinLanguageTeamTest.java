@@ -75,4 +75,3 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
                 .contains("Administrator has changed your permissions");
     }
 }
-

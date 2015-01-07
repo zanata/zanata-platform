@@ -30,6 +30,7 @@ import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,21 +39,25 @@ import java.util.List;
  */
 @Slf4j
 public class TranslationMemoryPage extends BasePage {
-    private static final int ID_COLUMN = 0;
-    private static final int DESCRIPTION_COLUMN = 1;
-    private static final int ENTRIES_COLUMN = 2;
-    private static final int IMPORT_COLUMN = 4;
-    private static final int EXPORT_COLUMN = 5;
-    private static final int ACTIONS_COLUMN = 6;
 
     public static final String ID_UNAVAILABLE = "This Id is not available";
     public static final String UPLOAD_ERROR =
             "There was an error uploading the file";
+    public static final String NO_MEMORIES =
+            "No Translation Memories have been created.";
 
+    private By listItemCount = By.className("badge");
+    private By listItemDescription = By.className("list__item__meta");
+    private By dropDownMenu = By.id("moreActions");
     private By createTmLink = By.id("createTmLink");
-    private By tmList = By.id("main_content:form:tmTable");
+    private By tmList = By.id("tmList");
     private By filenameInput = By.name("uploadedFile");
     private By uploadButton = By.name("uploadBtn");
+    private By listDropDownMenu = By.className("dropdown__toggle");
+    private By listImportButton = By.linkText("Import");
+    private By listExportButton = By.linkText("Export");
+    private By listClearButton = By.linkText("Clear");
+    private By listDeleteButton = By.linkText("Delete");
 
     public TranslationMemoryPage(WebDriver driver) {
         super(driver);
@@ -60,14 +65,20 @@ public class TranslationMemoryPage extends BasePage {
 
     public TranslationMemoryEditPage clickCreateNew() {
         log.info("Click Create New");
-        waitForWebElement(createTmLink).click();
+        waitForWebElement(dropDownMenu).click();
+        clickLinkAfterAnimation(createTmLink);
         return new TranslationMemoryEditPage(getDriver());
+    }
+
+    public TranslationMemoryPage clickOptions(String tmName) {
+        log.info("Click Options dropdown for {}", tmName);
+        waitForWebElement(findRowByTMName(tmName), listDropDownMenu).click();
+        return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickImport(String tmName) {
         log.info("Click Import");
-        findRowByTMName(tmName).getCells().get(IMPORT_COLUMN)
-                .findElement(By.tagName("a")).click();
+        waitForWebElement(findRowByTMName(tmName), listImportButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 
@@ -92,25 +103,29 @@ public class TranslationMemoryPage extends BasePage {
 
     public TranslationMemoryPage clickClearTMAndAccept(String tmName) {
         log.info("Click and accept Clear {}", tmName);
-        clickTMAction(tmName, 0).accept();
+        waitForWebElement(findRowByTMName(tmName), listClearButton).click();
+        switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
         log.info("Click and Cancel Clear {}", tmName);
-        clickTMAction(tmName, 0).dismiss();
+        waitForWebElement(findRowByTMName(tmName), listClearButton).click();
+        switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndAccept(String tmName) {
         log.info("Click and accept Delete {}", tmName);
-        clickTMAction(tmName, 1).accept();
+        waitForWebElement(findRowByTMName(tmName), listDeleteButton).click();
+        switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
         log.info("Click and cancel Delete {}", tmName);
-        clickTMAction(tmName, 1).dismiss();
+        waitForWebElement(findRowByTMName(tmName), listDeleteButton).click();
+        switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
@@ -122,19 +137,21 @@ public class TranslationMemoryPage extends BasePage {
 
     public List<String> getListedTranslationMemorys() {
         log.info("Query translation memory names");
-        return WebElementUtil.getColumnContents(getDriver(), tmList,
-                ID_COLUMN);
+        List<String> names = new ArrayList<>();
+        for (WebElement listElement : getTMList()) {
+            names.add(getListEntryName(listElement));
+        }
+        return names;
     }
 
     public String getDescription(String tmName) {
         log.info("Query description {}", tmName);
-        return findRowByTMName(tmName).getCells().get(DESCRIPTION_COLUMN)
-                .getText();
+        return getListEntryDescription(findRowByTMName(tmName));
     }
 
     public String getNumberOfEntries(String tmName) {
         log.info("Query number of entries {}", tmName);
-        return findRowByTMName(tmName).getCells().get(ENTRIES_COLUMN).getText();
+        return getListEntryCount(findRowByTMName(tmName));
     }
 
     public String waitForExpectedNumberOfEntries(final String tmName,
@@ -151,40 +168,58 @@ public class TranslationMemoryPage extends BasePage {
 
     public boolean canDelete(String tmName) {
         log.info("Query can delete {}", tmName);
-        return findRowByTMName(tmName).getCells().get(ACTIONS_COLUMN)
-                .findElements(By.tagName("input")).get(1).isEnabled();
+        String disabled = waitForWebElement(
+                findRowByTMName(tmName), listDeleteButton)
+                .getAttribute("disabled");
+
+        return null == disabled || disabled.equals("false");
     }
 
     /*
+     * Check to see if the TM list is empty
+     */
+    private boolean noTmsCreated() {
+        for (WebElement element : waitForWebElement(tmList)
+                .findElements(By.tagName("p"))) {
+            if (element.getText().equals(NO_MEMORIES)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /*
      * Get a row from the TM table that corresponds with tmName
      */
-    private TableRow findRowByTMName(final String tmName) {
-        return waitForAMoment().until(new Function<WebDriver, TableRow>() {
-            @Override
-            public TableRow apply(WebDriver driver) {
-                List<TableRow> tableRows = WebElementUtil
-                        .getTableRows(getDriver(), tmList);
-                Optional<TableRow> matchedRow =
-                        Iterables.tryFind(tableRows, new Predicate<TableRow>() {
-                            @Override
-                            public boolean apply(TableRow input) {
-                                List<String> cellContents = input
-                                        .getCellContents();
-                                String localeCell = cellContents.get(ID_COLUMN)
-                                        .trim();
-                                return localeCell.equalsIgnoreCase(tmName);
-                            }
-                        });
-
-                // Keep looking for the TM entry until timeout
-                return matchedRow.isPresent() ? matchedRow.get() : null;
+    private WebElement findRowByTMName(final String tmName) {
+        for (WebElement listElement : getTMList()) {
+            if (getListEntryName(listElement).equals(tmName)) {
+                return listElement;
             }
-        });
+        }
+        return null;
     }
 
-    private Alert clickTMAction(String tmName, int position) {
-        findRowByTMName(tmName).getCells().get(ACTIONS_COLUMN)
-                .findElements(By.tagName("input")).get(position).click();
-        return switchToAlert();
+    private List<WebElement> getTMList() {
+        if (noTmsCreated()) {
+            log.info("TM list is empty");
+            return new ArrayList<>();
+        }
+        return waitForWebElement(waitForWebElement(tmList),
+                By.className("list--stats"))
+                .findElements(By.className("list__item--actionable"));
+    }
+
+    private String getListEntryName(WebElement listElement) {
+        String title = listElement.findElement(By.tagName("h3")).getText().trim();
+        return title.substring(0, title.lastIndexOf(getListEntryCount(listElement))).trim();
+    }
+
+    private String getListEntryDescription(WebElement listElement) {
+        return waitForWebElement(listElement, listItemDescription).getText();
+    }
+
+    private String getListEntryCount(WebElement listElement) {
+        return listElement.findElement(By.tagName("h3"))
+                .findElement(listItemCount).getText();
     }
 }

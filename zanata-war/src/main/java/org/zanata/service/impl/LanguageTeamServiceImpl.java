@@ -141,5 +141,3 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
                 .isEmpty();
     }
 }
-
-

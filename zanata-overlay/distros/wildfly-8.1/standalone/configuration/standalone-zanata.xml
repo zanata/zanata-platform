@@ -161,12 +161,12 @@
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </pool>
                     <security>
-                       	<user-name>root</user-name>
+                        <user-name>root</user-name>
                     </security>
                     <statement>
                         <track-statements>NOWARN</track-statements>
                     </statement>
-               	</datasource>
+                </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>

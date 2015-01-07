@@ -81,7 +81,7 @@ public class ManageLanguagePage extends BasePage {
                                         new Predicate<TableRow>() {
                                             @Override
                                             public boolean
-                                                    apply(TableRow input) {
+                                            apply(TableRow input) {
                                                 List<String> cellContents =
                                                         input.getCellContents();
                                                 String localeCell =

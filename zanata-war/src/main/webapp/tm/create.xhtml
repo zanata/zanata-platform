@@ -3,16 +3,32 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template.xhtml">
 
   <ui:define
     name="page_title">#{msgs['jsf.transmemory.title.New']}</ui:define>
+
   <ui:define name="center_content">
-    <ui:include src="../WEB-INF/layout/transmemory_edit_form.xhtml"/>
+    <div class="g--centered">
+      <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none">
+            #{msgs['jsf.Administration']}
+          </s:link>
+          <i class="i i--arrow-right"></i>
+          <s:link view="/tm/home.xhtml" propagation="none">
+            #{msgs['jsf.transmemory.Title']}
+          </s:link>
+        </p>
+
+        <h1 class="l--push-all-0">#{msgs['jsf.transmemory.title.New']}</h1>
+        <h:form id="tmForm">
+          <s:token allowMultiplePosts="true"/>
+          <ui:include src="../WEB-INF/layout/transmemory_edit_form.xhtml"/>
+        </h:form>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

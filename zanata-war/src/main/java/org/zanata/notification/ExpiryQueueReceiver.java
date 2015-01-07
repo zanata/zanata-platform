@@ -55,4 +55,3 @@ public class ExpiryQueueReceiver implements MessageListener {
         log.warn("JMS message expired: {}", MessageUnwrapper.unwrap(message));
     }
 }
-

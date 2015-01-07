@@ -54,8 +54,7 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
                 .clickCreateNew()
                 .enterIdentityPattern(".+ransla.+")
                 .selectRole("admin")
-                .saveRoleAssignment()
-                .cancelEditRoleAssignment();
+                .saveRoleAssignment();
 
         assertThat(roleAssignmentsPage.getRulesByPattern())
                 .contains(".+ransla.+")

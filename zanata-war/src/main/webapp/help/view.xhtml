@@ -5,28 +5,59 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
-  template="/WEB-INF/template/template_2x.xhtml">
+  template="/WEB-INF/template/template.xhtml">
+
+  <ui:remove>
+    <!-- should this be project-help-content? -->
+  </ui:remove>
+
 
   <ui:define name="page_title">#{msgs['jsf.Help']}</ui:define>
   <ui:define name="center_content">
-    <ui:remove>
-      <!-- should this be project-help-content? -->
-    </ui:remove>
-    <s:formattedText id="project-home-content"
-      value="#{applicationConfiguration.helpContent}"></s:formattedText>
+    <div class="g--centered">
+      <div class="g__item w--2-3 l--push-bottom-half">
+        <div class="panel l--push-top-1">
+          <div class="panel__header">
+            <s:div styleClass="panel__header__actions"
+              rendered="#{identity.loggedIn}">
+              <div
+                class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+                <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                  title="#{msgs['jsf.tooltip.MoreActions']}"><i
+                  class="i i--ellipsis"></i>
+                </a>
+                <ul class="dropdown__content js-dropdown__content"
+                  role="content" aria-labelledby="dropdownContent">
+                  <li>
+                    <s:link styleClass="i__item--right"
+                      value="#{msgs['jsf.EditHelpPageContent']}"
+                      view="/help/edit_help_content.xhtml" propagation="none"
+                      rendered="#{s:hasRole('admin')}">
+                      <i class="i i--edit i__item__icon"></i>
+                    </s:link>
+                  </li>
+                  <li>
+                    <a href="#" class="i__item--right"
+                      data-toggle="modal" data-target="#contactAdminDialog">
+                      #{msgs['jsf.ContactAdmin']}
+                      <i class="i i--plus i__item__icon"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <ui:include src="../WEB-INF/layout/admin/contact_admin_modal.xhtml">
+                <ui:param name="emailType" value="contact_admin"/>
+              </ui:include>
+            </s:div>
+            <h2 class="panel__heading">#{msgs['jsf.Help']}</h2>
+          </div>
+
+          <div class="l--pad-all-half">
+            <s:formattedText id="project-home-content"
+              value="#{applicationConfiguration.helpContent}"></s:formattedText>
+          </div>
+        </div>
+      </div>
+    </div>
   </ui:define>
-
-  <ui:define name="right_content">
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
-        value="#{msgs['jsf.EditHelpPageContent']}"
-        view="/help/edit_help_content.xhtml" propagation="none"
-        rendered="#{s:hasRole('admin')}"></s:link>
-      <s:link styleClass="action_link" value="#{msgs['jsf.ContactAdmin']}"
-        view="/help/contact_admin.xhtml" propagation="none"/>
-    </rich:panel>
-
-  </ui:define>
-
 </ui:composition>

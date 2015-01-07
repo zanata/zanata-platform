@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -37,18 +35,16 @@ public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    EntityManagerFactory entityManagerFactory;
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @In
-    AsyncTaskHandleManager asyncTaskHandleManager;
-
-    @In
-    IndexingService indexingServiceImpl;
+    private IndexingService indexingServiceImpl;
 
     // we use a list to ensure predictable order
     private final List<Class<?>> indexables = new ArrayList<Class<?>>();
     private final LinkedHashMap<Class<?>, ReindexClassOptions> indexingOptions =
             new LinkedHashMap<Class<?>, ReindexClassOptions>();
+
     private Class<?> currentClass;
 
     private AsyncTaskHandle<Void> handle;
@@ -111,6 +107,8 @@ public class SearchIndexManager implements Serializable {
         return handle;
     }
 
+    //TODO: current class is not implemented now, should be getting the value
+    // from indexingServiceImpl
     public String getCurrentClassName() {
         if (currentClass == null) {
             return "none";
