@@ -72,11 +72,13 @@ public class ProjectIterationPromptTest {
 
         verify(projectClient).get();
         assertThat(opts.getProjectVersion(), Matchers.equalTo("4.8.2"));
+        assertThat(opts.getProjectType(), Matchers.equalTo("gettext"));
     }
 
     private static ProjectIteration newIteration(String id, EntityStatus status) {
         ProjectIteration iteration = new ProjectIteration(id);
         iteration.setStatus(status);
+        iteration.setProjectType("gettext");
         return iteration;
     }
 

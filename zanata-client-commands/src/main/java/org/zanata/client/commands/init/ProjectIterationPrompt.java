@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands.init;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
@@ -29,6 +30,7 @@ import static org.zanata.client.commands.Messages._;
 import java.util.List;
 
 import org.zanata.client.commands.ConsoleInteractor;
+import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.common.EntityStatus;
 import org.zanata.rest.client.ProjectClient;
 import org.zanata.rest.client.ProjectIterationClient;
@@ -37,7 +39,9 @@ import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -93,11 +97,28 @@ class ProjectIterationPrompt {
         consoleInteractor.printf(Question, _("select.version.prompt"));
         String selection =
                 consoleInteractor.expectAnswerWithRetry(expect(versionIndexes));
-        String versionId =
-                Iterables.get(activeIterations,
-                        (Integer.valueOf(selection) - 1))
-                        .getId();
+        ProjectIteration projectIteration = Iterables.get(activeIterations,
+                (Integer.valueOf(selection) - 1));
+        String versionId = projectIteration.getId();
         opts.setProjectVersion(versionId);
+        opts.setProjectType(resolveProjectType(project, projectIteration));
+    }
+
+    private String resolveProjectType(Project project,
+            ProjectIteration projectIteration) {
+        if (!isNullOrEmpty(projectIteration.getProjectType())) {
+            return projectIteration.getProjectType().toLowerCase();
+        } else if (!isNullOrEmpty(project.getDefaultType())) {
+            return project.getDefaultType().toLowerCase();
+        } else {
+            String projectTypes =
+                    Joiner.on(", ").join(ProjectPrompt.PROJECT_TYPE_LIST);
+            consoleInteractor.printfln(Question, _("project.type.prompt"),
+                    projectTypes);
+            return consoleInteractor.expectAnswerWithRetry(
+                    ConsoleInteractorImpl.AnswerValidatorImpl
+                            .expect(ProjectPrompt.PROJECT_TYPE_LIST));
+        }
     }
 
     @VisibleForTesting

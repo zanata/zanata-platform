@@ -55,6 +55,7 @@ public class FileResourceClient {
                 .resource(baseUri)
                 .path(FileResource.SERVICE_PATH)
                 .path("accepted_types")
+                .accept(MediaType.TEXT_PLAIN_TYPE)
                 .get(String.class);
         return new StringSet(types);
     }
