@@ -846,7 +846,7 @@ public class ResourceUtils {
         HTextFlowTarget lastTranslated = null;
 
         for (HTextFlowTarget trans : translations) {
-            if (trans.getLastModifiedBy() != null
+            if (trans.getTranslator() != null
                     && trans.getLastChanged().after(lastUpdate)) {
                 lastTranslated = trans;
                 lastUpdate = trans.getLastChanged();
@@ -872,21 +872,21 @@ public class ResourceUtils {
         String lastTranslator = this.getHeaderLastTranslator(headerEntries);
 
         if (lastTranslated != null) {
-            HPerson lastModifiedBy = lastTranslated.getLastModifiedBy();
+            HPerson lastTranslatedBy = lastTranslated.getTranslator();
             Date lastModifiedDate = lastTranslated.getLastChanged();
 
             // Last translated target is more recent than the Revision Date on
             // the
             // Header
-            if (lastModifiedBy != null && lastModifiedDate != null
+            if (lastTranslatedBy != null && lastModifiedDate != null
                     && lastModifiedDate.after(headerRevisionDate)) {
                 lastTranslator =
-                        lastModifiedBy.getName() + " <"
-                                + lastModifiedBy.getEmail() + ">";
-            } else if (lastModifiedBy != null && lastModifiedDate == null) {
+                        lastTranslatedBy.getName() + " <"
+                                + lastTranslatedBy.getEmail() + ">";
+            } else if (lastTranslatedBy != null && lastModifiedDate == null) {
                 lastTranslator =
-                        lastModifiedBy.getName() + " <"
-                                + lastModifiedBy.getEmail() + ">";
+                        lastTranslatedBy.getName() + " <"
+                                + lastTranslatedBy.getEmail() + ">";
             }
         }
 
@@ -1265,7 +1265,7 @@ public class ResourceUtils {
         to.setState(mapContentState(apiVersion, from.getState()));
         to.setRevision(from.getVersionNum());
         to.setTextFlowRevision(from.getTextFlowRevision());
-        HPerson translator = from.getLastModifiedBy();
+        HPerson translator = from.getTranslator();
         if (translator != null) {
             to.setTranslator(new Person(translator.getEmail(), translator
                     .getName()));
