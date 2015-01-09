@@ -257,6 +257,11 @@ public class RestClientFactory {
         return new TransDocResourceClient(this, projectSlug, versionSlug);
     }
 
+    public ProjectIterationLocalesClient getProjectLocalesClient(
+            String projectSlug, String versionSlug) {
+        return new ProjectIterationLocalesClient(this, projectSlug, versionSlug);
+    }
+
     private static class AcceptAllX509TrustManager implements X509TrustManager {
         public X509Certificate[] getAcceptedIssuers() {
             return null;

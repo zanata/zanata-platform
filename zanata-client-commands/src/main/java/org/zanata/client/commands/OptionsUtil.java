@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,14 +16,19 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.ConfigUtil;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleList;
+import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
+import org.zanata.rest.client.ProjectIterationLocalesClient;
 import org.zanata.rest.client.RestClientFactory;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.util.VersionUtility;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
@@ -42,6 +48,7 @@ public class OptionsUtil {
      */
     public static void applyConfigFiles(ConfigurableOptions opts)
             throws ConfigurationException, JAXBException {
+        boolean shouldFetchLocalesFromServer = false;
         if (opts instanceof ConfigurableProjectOptions) {
             ConfigurableProjectOptions projOpts =
                     (ConfigurableProjectOptions) opts;
@@ -59,6 +66,15 @@ public class OptionsUtil {
                     // zanata.ini,
                     // so we apply it first
                     applyProjectConfig(projOpts, projectConfig);
+                    boolean localesDefinedInFile =
+                            projectConfig.getLocales() != null
+                                    && !projectConfig.getLocales().isEmpty();
+                    if (localesDefinedInFile) {
+                        ConsoleInteractorImpl console = new ConsoleInteractorImpl();
+                        console.printfln(Warning, _("locales.in.config.deprecated"));
+                    } else {
+                        shouldFetchLocalesFromServer = true;
+                    }
                 } else {
                     log.warn("Project config file '{}' not found; ignoring.",
                             projectConfigFile);
@@ -77,6 +93,34 @@ public class OptionsUtil {
                         opts.getUserConfig());
             }
         }
+        // we have to wait until user config has been applied
+        if (shouldFetchLocalesFromServer) {
+            ConfigurableProjectOptions projectOptions =
+                    (ConfigurableProjectOptions) opts;
+            LocaleList localeMappings = fetchLocalesFromServer(projectOptions);
+            projectOptions.setLocaleMapList(localeMappings);
+        }
+    }
+
+    private static LocaleList fetchLocalesFromServer(
+            ConfigurableProjectOptions projectOpts) {
+        LocaleList localeList = new LocaleList();
+        ProjectIterationLocalesClient projectIterationLocalesClient =
+                createClientFactoryWithoutVersionCheck(projectOpts)
+                        .getProjectLocalesClient(projectOpts.getProj(),
+                                projectOpts.getProjectVersion());
+        List<LocaleMapping> localeMappings =
+                Lists.transform(projectIterationLocalesClient.getLocales(),
+                        new Function<LocaleDetails, LocaleMapping>() {
+                            @Override
+                            public LocaleMapping apply(LocaleDetails input) {
+                                return input == null ? null : new LocaleMapping(
+                                        input.getLocaleId().getId(),
+                                        input.getAlias());
+                            }
+                        });
+        localeList.addAll(localeMappings);
+        return localeList;
     }
 
     /**
@@ -101,8 +145,8 @@ public class OptionsUtil {
         }
         applySrcDirAndTransDirFromProjectConfig(opts, config);
         applyIncludesAndExcludesFromProjectConfig(opts, config);
-        LocaleList locales = config.getLocales();
-        opts.setLocaleMapList(locales);
+        LocaleList localesInFile = config.getLocales();
+        opts.setLocaleMapList(localesInFile);
 
         if (opts.getCommandHooks().isEmpty() && config.getHooks() != null) {
             opts.setCommandHooks(config.getHooks());

@@ -170,13 +170,15 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
      * Filters the project's list of locales
      *
      * @param projectLocales
-     *            locales defined by the project's zanata.xml
+     *            locales defined by the project on the server or in zanata.xml
+     *            (only for backward compatibility)
      * @param locales
      *            locales requested by the user (eg Maven param, command line
      *            option)
      * @return the filtered list of locales
      * @throws ConfigException
-     *             if one of the locales was not found in zanata.xml
+     *             if one of the requested locales was not found on the server
+     *             or in zanata.xml (only for backward compatibility)
      */
     public static LocaleList getLocaleMapList(LocaleList projectLocales,
             String[] locales) {
@@ -200,7 +202,8 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
                 if (!foundLocale) {
                     throw new ConfigException("Specified locale '" + locale
-                            + "' was not found in zanata.xml!");
+                            + "' was not found! Available locales: "
+                            + projectLocales);
                 }
             }
             return effectiveLocales;

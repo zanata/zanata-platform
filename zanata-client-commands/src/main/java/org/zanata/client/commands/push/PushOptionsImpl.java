@@ -94,7 +94,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     @Option(aliases = { "-l" }, name = "--locales",
             metaVar = "LOCALE1,LOCALE2,...",
             usage = "Locales to push to the server.\n"
-                    + "By default all locales in zanata.xml will be pushed.")
+                    + "By default all locales configured will be pushed.")
     public void setLocales(String locales) {
         this.locales = locales.split(",");
     }
