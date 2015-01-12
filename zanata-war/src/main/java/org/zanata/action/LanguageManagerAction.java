@@ -77,10 +77,6 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
 
     @Getter
     @Setter
-    private String language;
-
-    @Getter
-    @Setter
     private ULocale uLocale;
 
     @Getter
@@ -104,26 +100,26 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     public void updateLanguage(String language) {
         if (!StringUtils.isEmpty(language)) {
             uLocale = new ULocale(language);
-            isLanguageNameValid(language);
+            isLanguageNameValid();
         } else {
             uLocale = null;
         }
     }
 
     public String save() {
-        if (!isLanguageNameValid(language)) {
+        if (!isLanguageNameValid()) {
             return null; // not success
         }
-        LocaleId locale = new LocaleId(language);
+        LocaleId locale = new LocaleId(getQuery());
         localeServiceImpl.save(locale, enabledByDefault);
         return "success";
     }
 
-    public boolean isLanguageNameValid(String language) {
+    public boolean isLanguageNameValid() {
         languageNameValidationMessage = null; // reset
         languageNameWarningMessage = null; // reset
 
-        if (StringUtils.isEmpty(language) || language.length() > LENGTH_LIMIT) {
+        if (StringUtils.isEmpty(getQuery()) || getQuery().length() > LENGTH_LIMIT) {
             uLocale = null;
             languageNameValidationMessage =
                     msgs.get("jsf.language.validation.Invalid");
@@ -137,7 +133,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         // Check that locale Id is syntactically valid
         LocaleId localeId;
         try {
-            localeId = new LocaleId(language);
+            localeId = new LocaleId(getQuery());
         } catch (IllegalArgumentException iaex) {
             languageNameValidationMessage =
                     msgs.get("jsf.language.validation.Invalid");
@@ -201,19 +197,16 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         if (StringUtils.isEmpty(getSelectedItem())) {
             return;
         }
-        language = getSelectedItem();
-        updateLanguage(language);
+        updateLanguage(getSelectedItem());
     }
 
     public void replaceUnderscore(String language) {
-        this.language = language;
         setQuery(language);
         updateLanguage(language);
     }
 
     public void resetValue() {
         setQuery("");
-        language = null;
         uLocale = null;
         languageNameValidationMessage = null; // reset
         languageNameWarningMessage = null; // reset
