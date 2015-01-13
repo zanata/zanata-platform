@@ -207,6 +207,7 @@ public class TranslationServiceImpl implements TranslationService {
                     log.warn(validationMessage);
                     result.isSuccess = false;
                     result.errorMessage = validationMessage;
+                    results.add(result);
                     continue;
                 }
             }
