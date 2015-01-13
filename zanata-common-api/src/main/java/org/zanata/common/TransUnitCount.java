@@ -51,6 +51,7 @@ public final class TransUnitCount extends BaseTranslationCount {
 
     public int hashCode() {
         assert false : "hashCode not designed";
-        return 42; // any arbitrary constant will do
+        // any arbitrary constant will do
+        return 42;
     }
 }
