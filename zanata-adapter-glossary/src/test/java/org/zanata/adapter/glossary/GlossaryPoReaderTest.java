@@ -41,14 +41,12 @@ import static org.hamcrest.Matchers.equalTo;
  *
  **/
 public class GlossaryPoReaderTest {
+    // 578 glossary entries
     private final File sourceFile = new File(
-            "src/test/resources/glossary/fuel_hi.po"); // 578
-                                                       // glossary
-                                                       // entries
+            "src/test/resources/glossary/fuel_hi.po");
+    // 2645 glossary entries
     private final File sourceFile2 = new File(
-            "src/test/resources/glossary/compendium-zh_TW.po"); // 2645
-                                                                // glossary
-                                                                // entries
+            "src/test/resources/glossary/compendium-zh_TW.po");
 
     private static final int sourceSize1 = 578;
     private static final int sourceSize2 = 2645;

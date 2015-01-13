@@ -272,8 +272,8 @@ public class PoWriter2 {
             if (poTargetHeader != null) {
                 copyToHeaderFields(hf, poTargetHeader.getEntries());
                 headerMessage = hf.unwrap();
-                headerMessage.setFuzzy(false); // By default, header message
-                                               // unwraps as fuzzy, so avoid it
+                // By default, header message unwraps as fuzzy, so avoid it
+                headerMessage.setFuzzy(false);
                 copyCommentsToHeader(poTargetHeader, headerMessage);
                 nPlurals = extractNPlurals(poTargetHeader);
             }

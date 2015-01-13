@@ -87,7 +87,8 @@ public class XliffWriter extends XliffCommon {
                 writeTransUnitTarget(writer, target);
             }
             writeTransUnitContext(writer, textFlow);
-            writer.writeEndElement();// end trans-unit tag
+            // end trans-unit tag
+            writer.writeEndElement();
         }
     }
 
@@ -101,7 +102,8 @@ public class XliffWriter extends XliffCommon {
                             + textFlow.getId());
         }
         writer.writeCharacters(contents.get(0));
-        writer.writeEndElement();// end source tag
+        // end source tag
+        writer.writeEndElement();
     }
 
     private static void writeTransUnitTarget(IndentingXMLStreamWriter writer,
@@ -114,7 +116,8 @@ public class XliffWriter extends XliffCommon {
                             + target.getResId());
         }
         writer.writeCharacters(contents.get(0));
-        writer.writeEndElement();// end target tag
+        // end target tag
+        writer.writeEndElement();
     }
 
     private static void writeTransUnitContext(IndentingXMLStreamWriter writer,
@@ -150,10 +153,12 @@ public class XliffWriter extends XliffCommon {
                     writer.writeStartElement(ELE_CONTEXT);
                     writer.writeAttribute(ATTRI_CONTEXT_TYPE, val[0]);
                     writer.writeCharacters(val[1]);
-                    writer.writeEndElement();// end context
+                    // end context
+                    writer.writeEndElement();
                 }
 
-                writer.writeEndElement();// end context-group
+                // end context-group
+                writer.writeEndElement();
             }
         }
     }
@@ -191,9 +196,12 @@ public class XliffWriter extends XliffCommon {
                         }
                         writeTransUnits(writer, doc, targetDoc, createSkeletons);
 
-                        writer.writeEndElement(); // end body tag
-                        writer.writeEndElement(); // end file tag
-                        writer.writeEndDocument(); // end Xliff tag
+                        // end body tag
+                        writer.writeEndElement();
+                        // end file tag
+                        writer.writeEndElement();
+                        // end xliff tag
+                        writer.writeEndDocument();
                         writer.flush();
                     } finally {
                         writer.close();

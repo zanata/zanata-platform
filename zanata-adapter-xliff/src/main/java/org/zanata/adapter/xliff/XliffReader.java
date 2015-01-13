@@ -123,10 +123,8 @@ public class XliffReader extends XliffCommon {
         }
 
         try {
-            xmlif.setProperty(XMLInputFactory.IS_COALESCING, true); // decode
-                                                                    // entities
-                                                                    // into one
-                                                                    // string
+            // decode entities into one string
+            xmlif.setProperty(XMLInputFactory.IS_COALESCING, true);
 
             InputSource inputSource =
                     new InputSource(new FileInputStream(file));
@@ -263,17 +261,21 @@ public class XliffReader extends XliffCommon {
         String contextGroup = getAttributeValue(xmlr, ATTRI_NAME);
 
         while (xmlr.hasNext() && !endContextGroup) {
-            xmlr.next();// move to context tag
+            // move to context tag
+            xmlr.next();
             if (isEndElement(xmlr, ELE_CONTEXT_GROUP))
                 endContextGroup = true;
             else {
                 if (isStartElement(xmlr, ELE_CONTEXT)) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(contextGroup);// context-group
+                    // context-group
+                    sb.append(contextGroup);
                     sb.append(DELIMITER);
-                    sb.append(getAttributeValue(xmlr, ATTRI_CONTEXT_TYPE));// context-type
+                    // context-type
+                    sb.append(getAttributeValue(xmlr, ATTRI_CONTEXT_TYPE));
                     sb.append(DELIMITER);
-                    sb.append(getElementValue(xmlr, ELE_CONTEXT, null));// value
+                    // value
+                    sb.append(getElementValue(xmlr, ELE_CONTEXT, null));
                     contextList.add(new SimpleComment(sb.toString()));
                 }
             }
@@ -300,7 +302,8 @@ public class XliffReader extends XliffCommon {
         }
 
         while (keepReading) {
-            if (reader.hasText()) { // if the value in element is text
+            // if the value in element is text
+            if (reader.hasText()) {
                 contents.append(reader.getText());
             } else {
                 // if value in element is a xml element; invalid text
