@@ -58,8 +58,10 @@ public class ContactAdminTest extends ZanataTestCase {
     public void testContactAdmin() {
         DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");
-        ContactAdminFormPage contactAdminFormPage =
-                dashboard.goToHelp().clickContactAdmin();
+        ContactAdminFormPage contactAdminFormPage = dashboard
+                .goToHelp()
+                .clickMoreActions()
+                .clickContactAdmin();
 
         HelpPage helpPage = contactAdminFormPage
                 .inputSubject("hello admin")

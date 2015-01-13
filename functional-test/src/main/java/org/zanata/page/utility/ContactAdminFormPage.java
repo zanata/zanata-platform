@@ -50,10 +50,7 @@ public class ContactAdminFormPage extends BasePage {
 
     public ContactAdminFormPage inputMessage(String message) {
         log.info("Enter message {}", message);
-        WebElementUtil.setRichTextEditorContent(
-                getDriver(),
-                waitForWebElement(messageField),
-                message);
+        waitForWebElement(messageField).sendKeys(message);
         return new ContactAdminFormPage(getDriver());
     }
 

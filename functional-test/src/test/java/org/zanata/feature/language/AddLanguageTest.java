@@ -78,8 +78,9 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         manageLanguagePage = manageLanguagePage
+                .clickMoreActions()
                 .addNewLanguage()
-                .inputLanguage(language)
+                .enterSearchLanguage(language)
                 .saveLanguage();
 
         assertThat(manageLanguagePage.getLanguageLocales())
@@ -121,8 +122,9 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         manageLanguagePage = manageLanguagePage
+                .clickMoreActions()
                 .addNewLanguage()
-                .inputLanguage(language)
+                .enterSearchLanguage(language)
                 .disableLanguageByDefault()
                 .saveLanguage();
 
@@ -161,8 +163,10 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         AddLanguagePage addLanguagePage = manageLanguagePage
+                .clickMoreActions()
                 .addNewLanguage()
-                .inputLanguage("ru-RU");
+                .enterSearchLanguage("ru-RU")
+                .selectSearchLanguage("ru-RU");
 
         Map<String, String> languageInfo = addLanguagePage.getLanguageDetails();
 

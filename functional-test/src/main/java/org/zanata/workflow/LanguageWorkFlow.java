@@ -46,10 +46,14 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow {
         List<String> locales = manageLanguagePage.getLanguageLocales();
         if (locales.contains(localeId)) {
             log.warn("{} has already been added, enabling by default", localeId);
-            return manageLanguagePage.enableLanguageByDefault(localeId);
+            return manageLanguagePage.clickOptions(localeId)
+                    .enableLanguageByDefault(localeId);
         }
         // continue to add the new language
-        return manageLanguagePage.addNewLanguage().enableLanguageByDefault()
-                .inputLanguage(localeId).saveLanguage();
+        return manageLanguagePage.clickMoreActions()
+                .addNewLanguage()
+                .enableLanguageByDefault()
+                .enterSearchLanguage(localeId)
+                .saveLanguage();
     }
 }

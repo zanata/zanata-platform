@@ -32,6 +32,7 @@ import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -40,14 +41,24 @@ public class ManageLanguagePage extends BasePage {
     public static final int LOCALE_COLUMN = 0;
     public static final int ENABLED_COLUMN = 3;
 
-    private By languageTable = By.id("languageForm:threads");
+    private By languageTable = By.id("languageForm");
     private By addLanguageButton = By.linkText("Add New Language");
+    private By moreActions = By.id("more-actions");
+    private By enableByDefault = By.linkText("Enable by default");
+    private By disableByDefault = By.linkText("Disable by default");
 
     public ManageLanguagePage(WebDriver driver) {
         super(driver);
     }
 
+    public ManageLanguagePage clickMoreActions() {
+        log.info("Click More Actions dropdown");
+        waitForWebElement(moreActions).click();
+        return new ManageLanguagePage(getDriver());
+    }
+
     public AddLanguagePage addNewLanguage() {
+        log.info("Click Add New Language");
         waitForWebElement(addLanguageButton).click();
         return new AddLanguagePage(getDriver());
     }
@@ -55,75 +66,75 @@ public class ManageLanguagePage extends BasePage {
     public ManageLanguageTeamMemberPage manageTeamMembersFor(
             final String localeId) {
         log.info("Click team {}", localeId);
-        TableRow matchedRow = findRowByLocale(localeId);
-
-        log.debug("for locale [{}] found table row: {}", localeId, matchedRow);
-        List<WebElement> cells = matchedRow.getCells();
-        int teamMemberCellIndex = cells.size() - 1;
-        WebElement teamMemberCell = cells.get(teamMemberCellIndex);
-        WebElement teamMemberButton =
-                teamMemberCell.findElement(By
-                        .xpath(".//input[@value='Team Members']"));
-        teamMemberButton.click();
+        findRowByLocale(localeId).click();
         return new ManageLanguageTeamMemberPage(getDriver());
     }
 
-    private TableRow findRowByLocale(final String localeId) {
-        TableRow matchedRow =
-                waitForAMoment().until(new Function<WebDriver, TableRow>() {
-                    @Override
-                    public TableRow apply(WebDriver driver) {
-                        List<TableRow> tableRows =
-                                WebElementUtil.getTableRows(getDriver(),
-                                        languageTable);
-                        Optional<TableRow> matchedRow =
-                                Iterables.tryFind(tableRows,
-                                        new Predicate<TableRow>() {
-                                            @Override
-                                            public boolean
-                                            apply(TableRow input) {
-                                                List<String> cellContents =
-                                                        input.getCellContents();
-                                                String localeCell =
-                                                        cellContents.get(
-                                                                LOCALE_COLUMN)
-                                                                .trim();
-                                                return localeCell
-                                                        .equalsIgnoreCase(localeId);
-                                            }
-                                        });
-
-                        // we keep looking for the locale until timeout
-                        return matchedRow.isPresent() ? matchedRow.get() : null;
-                    }
-                });
-        return matchedRow;
+    public ManageLanguagePage clickOptions(String localeId) {
+        findRowByLocale(localeId).findElement(By.className("dropdown__toggle"))
+                .click();
+        return new ManageLanguagePage(getDriver());
     }
 
     public ManageLanguagePage enableLanguageByDefault(String localeId) {
         log.info("Click to enable {}", localeId);
-        TableRow matchedRow = findRowByLocale(localeId);
-
-        WebElement enabledCell = matchedRow.getCells().get(ENABLED_COLUMN);
-        WebElement enabledCheckbox =
-                enabledCell.findElement(By.tagName("input"));
-        if (!enabledCheckbox.isSelected()) {
-            enabledCheckbox.click();
-            getDriver().switchTo().alert().accept();
-        }
-
+        findRowByLocale(localeId).findElement(enableByDefault).click();
+        switchToAlert().accept();
         return new ManageLanguagePage(getDriver());
     }
 
     public boolean languageIsEnabled(String localeId) {
         log.info("Query is language enabled {}", localeId);
-        return findRowByLocale(localeId).getCells().get(ENABLED_COLUMN)
-                .findElement(By.tagName("input")).isSelected();
+        return findRowByLocale(localeId)
+                .findElements(By.className("i--cancel"))
+                .size() > 0;
     }
 
     public List<String> getLanguageLocales() {
         log.info("Query list of languages");
-        return WebElementUtil.getColumnContents(getDriver(), languageTable,
-                LOCALE_COLUMN);
+        return getNames();
     }
+
+    private String getShortLocale(WebElement row) {
+        String locale = getListEntryLocale(row);
+        return locale.substring(0, locale.indexOf('[')).trim();
+    }
+
+    private WebElement findRowByLocale(final String localeId) {
+        for (WebElement row : getRows()) {
+            if (getShortLocale(row).equals(localeId)) {
+                return row;
+            }
+        }
+        throw new RuntimeException("Did not find locale "+localeId);
+    }
+
+    private List<WebElement> getRows() {
+        return waitForWebElement(waitForElementExists(By.id("languageForm")),
+                By.className("list--stats"))
+                .findElements(By.className("list__item--actionable"));
+    }
+
+    private List<String> getNames() {
+        List<String> names = new ArrayList<>();
+        for (WebElement listItem : getRows()) {
+            names.add(getShortLocale(listItem));
+        }
+        return names;
+    }
+
+    private String getListEntryName(WebElement listElement) {
+        String listTitle = listElement.findElement(By.className("list__title"))
+                .getText();
+        return listTitle.substring(0, listTitle.lastIndexOf(getListEntryUsers(listElement))).trim();
+    }
+
+    private String getListEntryLocale(WebElement listElement) {
+        return listElement.findElement(By.className("list__item__meta")).getText().trim();
+    }
+
+    private String getListEntryUsers(WebElement listElement) {
+        return listElement.findElement(By.className("list__title"))
+                .findElement(By.className("txt--meta")).getText().trim();
+     }
 }

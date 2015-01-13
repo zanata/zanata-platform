@@ -59,6 +59,7 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
                 .goToAdministration()
                 .goToManageLanguagePage()
                 .manageTeamMembersFor("pl")
+                .clickMoreActions()
                 .clickAddTeamMember()
                 .searchPersonAndAddToTeam("translator",
                         ManageLanguageTeamMemberPage.TeamPermission.Translator,

@@ -56,6 +56,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
                 .signIn("translator", "translator")
                 .goToLanguages()
                 .selectLanguage("fr")
+                .clickMoreActions()
                 .clickContactCoordinatorsButton()
                 .enterSubject("contact test")
                 .enterMessage("I love Zanata")
