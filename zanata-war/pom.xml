@@ -1709,6 +1709,19 @@
       <version>${lucene.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>3.2.1</version>
+      <!-- We only need the class DefaultArtifactVersion -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!-- Solr dependencies -->
     <dependency>
       <groupId>org.apache.solr</groupId>
