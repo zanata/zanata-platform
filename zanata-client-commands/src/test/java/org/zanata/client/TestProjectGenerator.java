@@ -162,8 +162,7 @@ public class TestProjectGenerator {
         public URL getURL() {
             try {
                 return new URI(url).toURL();
-            }
-            catch (MalformedURLException | URISyntaxException e) {
+            } catch (MalformedURLException | URISyntaxException e) {
                 throw Throwables.propagate(e);
             }
         }
