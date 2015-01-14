@@ -48,7 +48,8 @@ public abstract class TimeCachedFilter extends Filter {
     /**
      * Expiry time for docIdSet as a Java timestamp (ms)
      */
-    private long expiryTime = Long.MIN_VALUE; // force fetch on first use
+    // force fetch on first use
+    private long expiryTime = Long.MIN_VALUE;
     private final long validityPeriodInMs;
 
     public TimeCachedFilter(long validityPeriodInMs) {

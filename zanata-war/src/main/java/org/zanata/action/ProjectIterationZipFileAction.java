@@ -57,8 +57,7 @@ public class ProjectIterationZipFileAction implements Serializable {
             translationArchiveServiceImpl.startBuildingTranslationFileArchive(
                     projectSlug, versionSlug, localeId, Identity.instance()
                             .getCredentials().getUsername(), zipFilePrepHandle);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

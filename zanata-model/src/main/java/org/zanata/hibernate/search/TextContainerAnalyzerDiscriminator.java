@@ -83,9 +83,8 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator {
         if (langCode.equalsIgnoreCase("zh") || langCode.equalsIgnoreCase("ja")
                 || langCode.equalsIgnoreCase("ko")) {
             return "UnigramAnalyzer";
-        }
-        // All other languages
-        else {
+        } else {
+            // All other languages
             return "StandardAnalyzer";
         }
     }

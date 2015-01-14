@@ -78,7 +78,7 @@ public class TestFixture {
     }
 
     public static HTextFlow makeApprovedHTextFlow(long id, HLocale targetLocale) {
-        return makeHTextFlow(id, new HLocale(LocaleId.EN_US),targetLocale, ContentState.Approved,
+        return makeHTextFlow(id, new HLocale(LocaleId.EN_US), targetLocale, ContentState.Approved,
                 "pot/message.pot", "versionSlug", "projectSlug");
     }
 

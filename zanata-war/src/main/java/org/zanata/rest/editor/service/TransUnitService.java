@@ -77,8 +77,7 @@ public class TransUnitService implements TransUnitResource {
             if (result.length < 2 || result[1] == null) {
                 tu = transUnitUtils.buildTransUnitFull(textFlow, null,
                         locale.getLocaleId());
-            }
-            else {
+            } else {
                 HTextFlowTarget textFlowTarget = (HTextFlowTarget) result[1];
                 tu = transUnitUtils.buildTransUnitFull(textFlow,
                         textFlowTarget, locale.getLocaleId());

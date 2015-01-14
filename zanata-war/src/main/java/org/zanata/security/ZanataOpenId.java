@@ -309,9 +309,8 @@ public class ZanataOpenId implements OpenIdAuthCallback {
                 Identity.instance().acceptExternallyAuthenticatedPrincipal(
                         (new OpenIdPrincipal(result.getAuthenticatedId())));
                 this.loginImmediate();
-            }
-            // If the user hasn't been registered yet
-            else if (authenticatedAccount == null) {
+            } else if (authenticatedAccount == null) {
+                // If the user hasn't been registered yet
                 credentials.setUsername(result.getAuthenticatedId()); // this is
                                                                       // the
                                                                       // full

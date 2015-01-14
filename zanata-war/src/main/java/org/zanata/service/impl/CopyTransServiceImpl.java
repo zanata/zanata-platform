@@ -147,7 +147,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         }
 
         // If there have been any changes to the document stats, reset them
-        if( numCopied > 0 ) {
+        if (numCopied > 0) {
             translationStateCacheImpl.clearDocumentStatistics(document.getId(),
                     targetLocale.getLocaleId());
         }
@@ -211,7 +211,7 @@ public class CopyTransServiceImpl implements CopyTransService {
 
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
-        if( taskHandleOpt.isPresent() ) {
+        if (taskHandleOpt.isPresent()) {
             prepareCopyTransHandle(document, taskHandleOpt.get());
         }
 
@@ -269,7 +269,7 @@ public class CopyTransServiceImpl implements CopyTransService {
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
 
-        if( taskHandleOpt.isPresent() ) {
+        if (taskHandleOpt.isPresent()) {
             prepareCopyTransHandle(iteration, taskHandleOpt.get());
         }
 
@@ -295,18 +295,18 @@ public class CopyTransServiceImpl implements CopyTransService {
         }
     }
 
-    private void prepareCopyTransHandle( HProjectIteration iteration, CopyTransTaskHandle handle ) {
-        if( !handle.isPrepared() ) {
+    private void prepareCopyTransHandle(HProjectIteration iteration, CopyTransTaskHandle handle) {
+        if (!handle.isPrepared()) {
             // TODO Progress should be handle as long
-            handle.setMaxProgress( (int)getMaxProgress(iteration) );
+            handle.setMaxProgress((int) getMaxProgress(iteration));
             handle.setPrepared();
         }
     }
 
-    private void prepareCopyTransHandle( HDocument document, CopyTransTaskHandle handle ) {
-        if( !handle.isPrepared() ) {
+    private void prepareCopyTransHandle(HDocument document, CopyTransTaskHandle handle) {
+        if (!handle.isPrepared()) {
             // TODO Progress should be handle as long
-            handle.setMaxProgress( (int)getMaxProgress(document) );
+            handle.setMaxProgress((int) getMaxProgress(document));
             handle.setPrepared();
         }
     }

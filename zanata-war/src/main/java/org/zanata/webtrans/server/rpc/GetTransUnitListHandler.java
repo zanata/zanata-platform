@@ -186,9 +186,8 @@ public class GetTransUnitListHandler extends
                                 hLocale.getLocaleId(), offset,
                                 action.getCount());
             }
-        }
-        // has status and other search field filter
-        else {
+        } else {
+            // has status and other search field filter
             log.debug("Fetch TransUnits filtered by status and/or search: {}",
                     constraints);
             if (!hasValidationFilter(action)) {
@@ -196,9 +195,8 @@ public class GetTransUnitListHandler extends
                         textFlowDAO.getTextFlowByDocumentIdWithConstraints(
                                 action.getDocumentId(), hLocale, constraints,
                                 offset, action.getCount());
-            }
-            // has validation filter
-            else {
+            } else {
+                // has validation filter
                 textFlows =
                         textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(
                                 action.getDocumentId(), hLocale, constraints);

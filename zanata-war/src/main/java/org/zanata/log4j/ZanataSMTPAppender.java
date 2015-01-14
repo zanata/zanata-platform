@@ -91,9 +91,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
             errorHandler.error("Could not parse address [" + addressStr + "].",
                     e, ErrorCode.ADDRESS_PARSE_FAILURE);
             return null;
-        }
-
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             errorHandler.error("Could not parse address [" + addressStr + "].",
                     e, ErrorCode.ADDRESS_PARSE_FAILURE);
             return null;

@@ -356,9 +356,8 @@ public class SeamAutowire {
                         throw e;
                     }
                 }
-            }
-            // Logs
-            else if (accessor.getAnnotation(Logger.class) != null) {
+            } else if (accessor.getAnnotation(Logger.class) != null) {
+                // Logs
                 throw new RuntimeException("Please use Slf4j, not Seam Logger");
             }
         }

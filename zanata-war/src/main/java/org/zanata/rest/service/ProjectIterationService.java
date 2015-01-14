@@ -166,14 +166,12 @@ public class ProjectIterationService implements ProjectIterationResource {
         if (hProject == null) {
             return Response.status(Status.NOT_FOUND)
                     .entity("Project '" + projectSlug + "' not found.").build();
-        }
-        // Project is Obsolete
-        else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
+        } else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
+            // Project is Obsolete
             return Response.status(Status.NOT_FOUND)
                     .entity("Project '" + projectSlug + "' not found.").build();
-        }
-        // Project is ReadOnly
-        else if (Objects.equal(hProject.getStatus(), READONLY)) {
+        } else if (Objects.equal(hProject.getStatus(), READONLY)) {
+            // Project is ReadOnly
             return Response.status(Status.FORBIDDEN)
                     .entity("Project '" + projectSlug + "' is read-only.")
                     .build();
@@ -202,16 +200,14 @@ public class ProjectIterationService implements ProjectIterationResource {
 
             response = Response.created(uri.getAbsolutePath());
             changed = true;
-        }
-        // Iteration is Obsolete
-        else if (Objects.equal(hProjectIteration.getStatus(), OBSOLETE)) {
+        } else if (Objects.equal(hProjectIteration.getStatus(), OBSOLETE)) {
+            // Iteration is Obsolete
             return Response
                     .status(Status.FORBIDDEN)
                     .entity("Project Iiteration '" + projectSlug + ":"
                             + iterationSlug + "' is obsolete.").build();
-        }
-        // Iteration is ReadOnly
-        else if (Objects.equal(hProjectIteration.getStatus(), READONLY)) {
+        } else if (Objects.equal(hProjectIteration.getStatus(), READONLY)) {
+            // Iteration is ReadOnly
             return Response
                     .status(Status.FORBIDDEN)
                     .entity("Project Iteration '" + projectSlug + ":"

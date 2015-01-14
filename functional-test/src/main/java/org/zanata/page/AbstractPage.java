@@ -98,8 +98,7 @@ public class AbstractPage {
             public Alert apply(WebDriver driver) {
                 try {
                     return getDriver().switchTo().alert();
-                }
-                catch (NoAlertPresentException noAlertPresent) {
+                } catch (NoAlertPresentException noAlertPresent) {
                     return null;
                 }
             }
@@ -141,8 +140,7 @@ public class AbstractPage {
                                 new Description.NullDescription());
                     }
                     return matcher.matches(result);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     log.warn("exception", e);
                     return false;
                 }
@@ -167,8 +165,7 @@ public class AbstractPage {
                                     .executeScript("return jQuery.active")
                                     .toString()
                     );
-                }
-                catch (WebDriverException jCall) {
+                } catch (WebDriverException jCall) {
                     jQueryCalls = 0;
                 }
 
@@ -179,8 +176,7 @@ public class AbstractPage {
                                             "return Ajax.activeRequestCount")
                                     .toString()
                     );
-                }
-                catch (WebDriverException jCall) {
+                } catch (WebDriverException jCall) {
                     ajaxCalls = 0;
                 }
                 return ajaxCalls + jQueryCalls == 0;

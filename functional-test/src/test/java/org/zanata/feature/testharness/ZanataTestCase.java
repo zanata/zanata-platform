@@ -73,7 +73,7 @@ public class ZanataTestCase {
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
                 .appendLiteral("Finished "
-                        .concat(getTestDescription()).concat(" in " ))
+                        .concat(getTestDescription()).concat(" in "))
                 .printZeroAlways()
                 .appendMinutes()
                 .appendSuffix(" minutes, ")

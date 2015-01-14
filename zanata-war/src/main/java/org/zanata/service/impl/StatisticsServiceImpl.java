@@ -362,7 +362,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             if (localeStatistics.containsKey(localeId)) {
                 stats = localeStatistics.get(localeId);
             } else {
-                stats = new BaseContributionStatistic(0,0,0,0);
+                stats = new BaseContributionStatistic(0, 0, 0, 0);
             }
             stats.set(state, count);
             localeStatistics.put(localeId, stats);

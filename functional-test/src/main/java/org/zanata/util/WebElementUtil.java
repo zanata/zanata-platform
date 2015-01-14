@@ -168,8 +168,7 @@ public class WebElementUtil {
                         WebElement table;
                         try {
                             table = input.findElement(by);
-                        }
-                        catch (NoSuchElementException noElement) {
+                        } catch (NoSuchElementException noElement) {
                             // Some pages don't show a table, if there's no
                             // items to show
                             return Collections.emptyList();

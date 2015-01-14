@@ -218,16 +218,13 @@ public class UserSettingsAction {
      * google, yahoo, fedora, openid for everything else
      */
     public String getCredentialsType(HCredentials credentials) {
-        if( new GoogleOpenIdProvider().accepts(credentials.getUser()) ) {
+        if (new GoogleOpenIdProvider().accepts(credentials.getUser())) {
             return "google";
-        }
-        else if( new FedoraOpenIdProvider().accepts(credentials.getUser()) ) {
+        } else if (new FedoraOpenIdProvider().accepts(credentials.getUser())) {
             return "fedora";
-        }
-        else if( new YahooOpenIdProvider().accepts(credentials.getUser()) ) {
+        } else if (new YahooOpenIdProvider().accepts(credentials.getUser())) {
             return "yahoo";
-        }
-        else {
+        } else {
             return "openid";
         }
     }
@@ -261,11 +258,10 @@ public class UserSettingsAction {
                 OpenIdProviderType.valueOf(providerTypeStr);
         HOpenIdCredentials newCreds = new HOpenIdCredentials();
         newCreds.setAccount(authenticatedAccount);
-        if( providerType == OpenIdProviderType.Generic ) {
+        if (providerType == OpenIdProviderType.Generic) {
             authenticationManager.openIdAuthenticate(openId, providerType,
                     new CredentialsCreationCallback(newCreds));
-        }
-        else {
+        } else {
             authenticationManager.openIdAuthenticate(providerType,
                     new CredentialsCreationCallback(newCreds));
         }
@@ -323,10 +319,10 @@ public class UserSettingsAction {
     public void updateProfile() {
         HPerson person =
                 personDAO.findById(authenticatedAccount.getPerson().getId());
-        person.setName( accountName );
+        person.setName(accountName);
         // Update the injected object as well.
         // TODO When more fields are added, we'll need a better solution
-        authenticatedAccount.getPerson().setName( accountName );
+        authenticatedAccount.getPerson().setName(accountName);
         personDAO.makePersistent(person);
         FacesMessages.instance().add(
                 msgs.get("jsf.dashboard.settings.profileUpdated.message"));

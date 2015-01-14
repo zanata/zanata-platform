@@ -190,23 +190,23 @@ public class VersionGroupPage extends BasePage {
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
         final WebElement languagesTab = waitForWebElement(By.id("languages"));
-        waitForAMoment().until( new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
             }
-        } );
+        });
         return languagesTab.getAttribute("class").contains("is-active");
     }
 
     public Boolean isProjectsTabActive() {
         final WebElement languagesTab = waitForElementExists(By.id("projects"));
-        waitForAMoment().until( new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
             }
-        } );
+        });
         return languagesTab.getAttribute("class").contains("is-active");
     }
 

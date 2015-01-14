@@ -55,8 +55,7 @@ public class ForceLoadClass {
     static {
         try {
             Class.forName(SeamAutowire.class.getCanonicalName());
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw Throwables.propagate(e);
         }
     }

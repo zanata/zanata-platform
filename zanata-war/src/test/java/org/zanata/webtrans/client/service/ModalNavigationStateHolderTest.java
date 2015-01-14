@@ -44,7 +44,7 @@ public class ModalNavigationStateHolderTest {
         TestFixture.makeTransUnit(9, ContentState.New),
         TestFixture.makeTransUnit(10, ContentState.NeedReview)
     );
-    private Map<TransUnitId,ContentState> transIdStateMap;
+    private Map<TransUnitId, ContentState> transIdStateMap;
     private List<TransUnitId> idIndexList;
     private UserConfigHolder configHolder;
     // @formatter:on

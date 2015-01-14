@@ -195,14 +195,13 @@ public class DashboardAction implements Serializable {
 
     public String getLastTranslatorMessage(HProject project) {
         HPerson lastTrans = projectDAO.getLastTranslator(project);
-        if( lastTrans != null ) {
+        if (lastTrans != null) {
             String username = lastTrans.getName();
-            if(username == null || username.trim().isEmpty()) {
-                if( lastTrans.getAccount() != null ) {
+            if (username == null || username.trim().isEmpty()) {
+                if (lastTrans.getAccount() != null) {
                     username = lastTrans.getAccount().getUsername();
                 }
-            }
-            else {
+            } else {
                 username = lastTrans.getName();
             }
             return msgs

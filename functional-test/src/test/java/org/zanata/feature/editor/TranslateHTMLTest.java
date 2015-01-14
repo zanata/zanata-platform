@@ -93,11 +93,11 @@ public class TranslateHTMLTest extends ZanataTestCase {
         File testfile = testFileGenerator.generateTestFileWithContent(
                 "basichtml", "." + extension,
                 "<html><body>Line One<p>Line Two<p>Line Three</body></html>");
-        zanataRestCaller.createProjectAndVersion(extension+"-translate",
+        zanataRestCaller.createProjectAndVersion(extension + "-translate",
                 extension, "file");
 
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName(extension+"-translate")
+                .goToProjectByName(extension + "-translate")
                 .gotoVersion(extension)
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()

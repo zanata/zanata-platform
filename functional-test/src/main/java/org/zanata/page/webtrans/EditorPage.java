@@ -512,7 +512,7 @@ public class EditorPage extends BasePage {
                     return getTranslationHistoryList().get(entry)
                             .findElement(By.linkText("Compare"))
                             .isDisplayed();
-                } catch(IndexOutOfBoundsException ioobe) {
+                } catch (IndexOutOfBoundsException ioobe) {
                     return false;
                 }
             }

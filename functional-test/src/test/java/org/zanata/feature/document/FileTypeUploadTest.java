@@ -69,12 +69,12 @@ public class FileTypeUploadTest extends ZanataTestCase {
     }
 
     private static String testString = "Test text 1";
-    private static String htmlString = "<html><title>"+testString+"</title>"+
-            "<body/> </html>";
+    private static String htmlString = "<html><title>" + testString +
+            "</title>" + "<body/> </html>";
 
     @DataPoint
     public static File TXT_FILE = new TestFileGenerator()
-            .generateTestFileWithContent( "testtxtfile", ".txt", testString);
+            .generateTestFileWithContent("testtxtfile", ".txt", testString);
 
     @DataPoint
     public static File DTD_FILE = new TestFileGenerator()
@@ -142,10 +142,10 @@ public class FileTypeUploadTest extends ZanataTestCase {
     @Feature(bugzilla = 980670,
             summary = "The administrator can upload raw files for translation",
             tcmsTestCaseIds = { 377743 },
-            tcmsTestPlanIds = { 5316 } )
+            tcmsTestPlanIds = { 5316 })
     public void uploadFileTypeDocument(File testFile) throws Exception {
         String testFileName = testFile.getName();
-        log.info("[uploadFile] "+testFileName);
+        log.info("[uploadFile] " + testFileName);
 
         VersionDocumentsPage versionDocumentsPage = new ProjectWorkFlow()
                 .goToProjectByName("doctype-test")

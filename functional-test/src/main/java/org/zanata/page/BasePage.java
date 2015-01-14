@@ -314,7 +314,7 @@ public class BasePage extends CorePage {
                         tab.click();
                         clicked = true;
                     }
-                } catch(WebDriverException wde) {
+                } catch (WebDriverException wde) {
                     return false;
                 }
                 return clicked;

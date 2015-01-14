@@ -102,7 +102,7 @@ public class TranslationArchiveServiceImpl implements
         Optional<AsyncTaskHandle<String>> handleOpt =
                 Optional.fromNullable(handle);
 
-        if( handleOpt.isPresent() ) {
+        if (handleOpt.isPresent()) {
             prepareHandle(handleOpt.get(), projectSlug, iterationSlug);
         }
         boolean isPoProject = isPoProject(projectSlug, iterationSlug);
@@ -166,7 +166,7 @@ public class TranslationArchiveServiceImpl implements
             poWriter.writePo(zipOutput, "UTF-8", res, translationResource);
             zipOutput.closeEntry();
 
-            if( handleOpt.isPresent() ) {
+            if (handleOpt.isPresent()) {
                 handleOpt.get().increaseProgress(1);
             }
         }

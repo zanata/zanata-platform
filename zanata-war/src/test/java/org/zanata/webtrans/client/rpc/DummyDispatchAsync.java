@@ -114,9 +114,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
                     (AsyncCallback<GetGlossaryDetailsResult>) callback;
             Scheduler.get().scheduleDeferred(
                     new DummyGetGlossaryDetailsCommand(_action, _callback));
-        }
-
-        else if (action instanceof NoOpResult) {
+        } else if (action instanceof NoOpResult) {
             final NoOpResult _action = (NoOpResult) action;
             AsyncCallback<NoOpResult> _callback =
                     (AsyncCallback<NoOpResult>) callback;
@@ -144,7 +142,6 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
             Scheduler.get().scheduleDeferred(
                     new DummyGetDownloadAllFilesProgressCommand(_action,
                             _callback));
-        }
 
         // else if (action instanceof GetTransUnitsNavigation)
         // {
@@ -155,7 +152,7 @@ public class DummyDispatchAsync extends SeamDispatchAsync {
         // Scheduler.get().scheduleDeferred(new
         // DummyGetTransUnitsNavigationCommand(_action, _callback));
         // }
-        else {
+        } else {
             Log.warn("DummyDispatchAsync: ignoring action of "
                     + action.getClass());
             // callback.onFailure(new RuntimeException());

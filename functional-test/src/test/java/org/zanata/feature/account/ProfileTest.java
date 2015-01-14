@@ -64,7 +64,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The correct api key is present");
 
         assertThat(dashboardClientTab.getConfigurationDetails())
-                .contains("localhost.url="+serverUrl)
+                .contains("localhost.url=" + serverUrl)
                 .as("The configuration url is correct");
 
         assertThat(dashboardClientTab.getConfigurationDetails())

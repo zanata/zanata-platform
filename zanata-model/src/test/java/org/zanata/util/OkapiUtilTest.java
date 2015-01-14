@@ -27,10 +27,12 @@ public class OkapiUtilTest {
 
         "<filename class=\"directory\">/var/lib/ricci</filename>",
 
-        "https://cdn.redhat.com", // NB okapi says 2, but looks like 4. perhaps
+        // NB okapi says 2, but looks like 4. perhaps
         // something.ext counts as one word?
+        "https://cdn.redhat.com",
 
-        "/etc/rhsm/rhsm.conf", // NB okapi says 3, but looks like 4
+        // NB okapi says 3, but looks like 4
+        "/etc/rhsm/rhsm.conf",
     };
     // @formatter:on
     // These counts represent the expected word counts for the strings listed

@@ -201,8 +201,7 @@ public class TestFileGenerator {
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(object, output);
-        }
-        catch (JAXBException e) {
+        } catch (JAXBException e) {
             throw Throwables.propagate(e);
         }
     }
@@ -230,7 +229,7 @@ public class TestFileGenerator {
         private String projectVersion;
         @XmlElement(name = "project-type", namespace = ZanataXml.NS)
         private String projectType;
-        @XmlElementWrapper(name="locales", namespace = ZanataXml.NS)
+        @XmlElementWrapper(name = "locales", namespace = ZanataXml.NS)
         @XmlElements(
                 @XmlElement(name = "locale", namespace = ZanataXml.NS)
         )

@@ -50,8 +50,7 @@ public class AddUsersRule extends ExternalResource {
     protected void after() {
         try {
             deleteExceptEssentialData();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw Throwables.propagate(e);
         }
     }

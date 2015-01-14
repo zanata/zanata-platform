@@ -94,10 +94,10 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
     public void translateBasicOpenOfficeFile(String extension) {
         File testfile = testFileGenerator
                 .openTestFile("test-" + extension + "." + extension);
-        zanataRestCaller.createProjectAndVersion(extension+"-translate",
+        zanataRestCaller.createProjectAndVersion(extension + "-translate",
                 extension, "file");
         EditorPage editorPage = new ProjectWorkFlow()
-                .goToProjectByName(extension+"-translate")
+                .goToProjectByName(extension + "-translate")
                 .gotoVersion(extension)
                 .gotoSettingsTab()
                 .gotoSettingsDocumentsTab()

@@ -121,15 +121,13 @@ public class ProjectService implements ProjectResource {
             identity.checkPermission(hProject, "insert");
 
             response = Response.created(uri.getAbsolutePath());
-        }
-        // Project is obsolete
-        else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
+        } else if (Objects.equal(hProject.getStatus(), OBSOLETE)) {
+            // Project is obsolete
             return Response.status(Status.FORBIDDEN)
                     .entity("Project '" + projectSlug + "' is obsolete.")
                     .build();
-        }
-        // Project is ReadOnly
-        else if (Objects.equal(hProject.getStatus(), READONLY)) {
+        } else if (Objects.equal(hProject.getStatus(), READONLY)) {
+            // Project is ReadOnly
             return Response.status(Status.FORBIDDEN)
                     .entity("Project '" + projectSlug + "' is read-only.")
                     .build();

@@ -132,7 +132,7 @@ public class VersionGroupTest extends ZanataTestCase {
     public void groupDescriptionFieldSize() throws Exception {
         String groupID = "verifyDescriptionFieldSizeID";
         String groupName = "verifyDescriptionFieldSizeName";
-        String groupDescription ="This text is to test that the description " +
+        String groupDescription = "This text is to test that the description " +
                 "field takes no more than exactly 100 characters - actually.";
 
         assumeTrue("Description length is greater than 100 characters",

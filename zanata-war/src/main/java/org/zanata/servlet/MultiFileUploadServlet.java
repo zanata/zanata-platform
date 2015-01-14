@@ -272,7 +272,8 @@ public class MultiFileUploadServlet extends HttpServlet {
         }
 
         private List<FileItem> getRequestItems() throws FileUploadException {
-            List<FileItem> items;// Create a factory for disk-based file items
+            // Create a factory for disk-based file items
+            List<FileItem> items;
             FileItemFactory factory = new DiskFileItemFactory();
             ServletFileUpload uploadHandler = new ServletFileUpload(factory);
             items = uploadHandler.parseRequest(request);

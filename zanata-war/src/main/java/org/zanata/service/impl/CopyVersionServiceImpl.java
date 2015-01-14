@@ -98,7 +98,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             return;
         }
 
-        if( taskHandleOpt.isPresent() ) {
+        if (taskHandleOpt.isPresent()) {
             prepareCopyVersionHandle(version, taskHandleOpt.get());
         }
 

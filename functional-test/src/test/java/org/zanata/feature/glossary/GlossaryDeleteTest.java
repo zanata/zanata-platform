@@ -57,11 +57,11 @@ public class GlossaryDeleteTest extends ZanataTestCase {
     private String userConfigPath;
     private String basicUserConfigPath;
 
-    private String pushCommand = "mvn --batch-mode zanata:glossary-push "+
-            "-Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv "+
+    private String pushCommand = "mvn --batch-mode zanata:glossary-push " +
+            "-Dglossary.lang=hi -Dzanata.glossaryFile=compendium.csv " +
             "-Dzanata.userConfig=";
 
-    private String deleteCommand = "mvn --batch-mode zanata:glossary-delete "+
+    private String deleteCommand = "mvn --batch-mode zanata:glossary-delete " +
             "-Dzanata.lang=hi -Dzanata.userConfig=";
 
     @Before

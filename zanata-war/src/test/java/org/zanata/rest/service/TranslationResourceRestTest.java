@@ -259,8 +259,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
         doGetandAssertThatResourceListContainsNItems(1);
 
         ClientResponse<Resource> resourceGetResponse =
-                sourceDocResource.getResource(docUri, null);// new
-        // StringSet(PoHeader.ID));
+                sourceDocResource.getResource(docUri, null);
+        // , new StringSet(PoHeader.ID));
         assertThat(resourceGetResponse.getResponseStatus(), is(Status.OK));
         Resource gotSr = resourceGetResponse.getEntity();
         assertThat(gotSr.getTextFlows().size(), is(1));
@@ -1030,26 +1030,13 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                         .getOrRegisterWorkspace(any(WorkspaceId.class)))
                 .thenReturn(transWorkspace);
 
-        seamAutowire.use(JpaIdentityStore.AUTHENTICATED_USER, translator); // use
-                                                                           // a
-                                                                           // given
-                                                                           // authenticated
-                                                                           // account
+        // use a given authenticated account
+        seamAutowire.use(JpaIdentityStore.AUTHENTICATED_USER, translator);
+
+        // TODO because translationService component has already been created
+        // in prepareResource and has a wrong HAccount injected
         seamAutowire.use("translationServiceImpl",
-                seamAutowire.autowire(TranslationServiceImpl.class));// TODO
-                                                                     // because
-                                                                     // translationService
-                                                                     // component
-                                                                     // has
-                                                                     // already
-                                                                     // been
-                                                                     // created
-                                                                     // in
-                                                                     // prepareResource
-                                                                     // and have
-                                                                     // a wrong
-                                                                     // HAccount
-                                                                     // injected
+                seamAutowire.autowire(TranslationServiceImpl.class));
 
         UpdateTransUnitHandler transUnitHandler =
                 seamAutowire.autowire(UpdateTransUnitHandler.class);
@@ -1066,7 +1053,8 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                         .setString(1, docId).setString(2, iterationSlug)
                         .setString(3, projectSlug).uniqueResult();
         Long textFlowId = hTextFlow.getId();
-        int versionNum = 0; // no previous translation
+        // no previous translation
+        int versionNum = 0;
 
         // Translate using webtrans
         UpdateType updateType = UpdateType.WebEditorSave;

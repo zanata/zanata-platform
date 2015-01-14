@@ -66,7 +66,7 @@ public class HTMLDocumentTypeTest extends ZanataTestCase {
     @Feature(bugzilla = 980670,
             summary = "Maintainer can upload a HTML file for translation",
             tcmsTestCaseIds = { 377837 },
-            tcmsTestPlanIds = { 5316 } )
+            tcmsTestPlanIds = { 5316 })
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void uploadHTMLFileAsMaintainer() throws Exception {
         File htmlfile = testFileGenerator.generateTestFileWithContent(

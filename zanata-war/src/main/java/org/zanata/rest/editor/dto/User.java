@@ -1,7 +1,8 @@
 package org.zanata.rest.editor.dto;
 
 import java.io.Serializable;
-import java.lang.String;import java.util.HashSet;
+import java.lang.String;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;

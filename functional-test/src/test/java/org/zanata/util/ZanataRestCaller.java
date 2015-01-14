@@ -219,8 +219,7 @@ public class ZanataRestCaller {
                 Thread.sleep(1000);
                 log.debug("copyTrans completion: {}", copyTransStatus.getPercentageComplete());
                 copyTransStatus = resource.getCopyTransStatus(projectSlug, iterationSlug, docId);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw Throwables.propagate(e);
             }
         }
@@ -249,8 +248,7 @@ public class ZanataRestCaller {
             while (copyTransStatus.isInProgress()) {
                 try {
                     Thread.sleep(1000);
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     throw Throwables.propagate(e);
                 }
                 copyTransStatus = copyTransResource.getCopyTransStatus(projectSlug, iterationSlug, sourceResource.getName());
@@ -273,8 +271,7 @@ public class ZanataRestCaller {
                     processStatus.getMessages());
             try {
                 Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw Throwables.propagate(e);
             }
             processStatus = resource.getProcessStatus(processId);

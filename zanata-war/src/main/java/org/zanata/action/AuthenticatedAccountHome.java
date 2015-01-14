@@ -49,7 +49,7 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount> {
 
     @Override
     public Object getId() {
-        if( authenticatedAccount == null ) {
+        if (authenticatedAccount == null) {
             return null;
         }
         return authenticatedAccount.getId();

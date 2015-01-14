@@ -75,7 +75,7 @@ public class VersionDocumentsTab extends VersionBasePage {
         waitForWebElement(cancelUploadButton).click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
-            public boolean apply( WebDriver input) {
+            public boolean apply(WebDriver input) {
                 return !getDriver().findElement(By.id("file-upload-component"))
                         .isDisplayed();
             }
@@ -88,7 +88,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab enterFilePath(String filePath) {
         log.info("Enter file path {}", filePath);
         // Make the hidden input element slightly not hidden
-        ((JavascriptExecutor)getDriver())
+        ((JavascriptExecutor) getDriver())
                 .executeScript("arguments[0].style.visibility = 'visible'; " +
                         "arguments[0].style.height = '1px'; " +
                         "arguments[0].style.width = '1px'; " +
@@ -113,7 +113,7 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
-        for(String documentLabel : waitForAMoment()
+        for (String documentLabel : waitForAMoment()
                 .until(new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(WebDriver input) {
