@@ -88,7 +88,8 @@ public class ProjectPromptTest {
         // Given: user input
         ConsoleInteractor console =
                 MockConsoleInteractor.predefineAnswers(
-                        "99", // part of project name
+                        // part of project name
+                        "99",
                         "1");
         prompt =
                 new ProjectPrompt(console, opts,

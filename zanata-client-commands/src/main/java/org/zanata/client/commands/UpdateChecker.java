@@ -188,8 +188,7 @@ public class UpdateChecker {
             props.setProperty(LAST_CHECKED, today);
             props.store(new BufferedWriter(new FileWriterWithEncoding(
                     updateMarker, Charsets.UTF_8)), null);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.warn("failed to load file {}", updateMarker);
         }
     }

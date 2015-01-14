@@ -132,6 +132,6 @@ public class OptionsUtilTest {
 
         OptionsUtil.checkPotentialMistakesInRules(opts, console);
 
-        verify(console).printfln(Warning, _("invalid.rule"),rule);
+        verify(console).printfln(Warning, _("invalid.rule"), rule);
     }
 }

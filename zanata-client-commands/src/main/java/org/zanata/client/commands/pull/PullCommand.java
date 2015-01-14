@@ -264,9 +264,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                     transResponse.getHeaders()
                                         .getFirst(HttpHeaders.ETAG));
                             }
-                        }
-                        // 304 NOT MODIFIED (the document can stay the same)
-                        else if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_MODIFIED) {
+                        } else if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_MODIFIED) {
+                            // 304 NOT MODIFIED (the document can stay the same)
                             log.info(
                                     "No changes in translations for locale {} and document {}",
                                     locale, localDocName);
@@ -309,7 +308,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
             } catch (RuntimeException e) {
                 String message =
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                                 + "    To retry from the last document, please set the following option(s):\n\n"
                                 + "        ";
                 if (getOpts().getEnableModules()) {

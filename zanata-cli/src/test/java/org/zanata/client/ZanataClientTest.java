@@ -28,7 +28,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  *
  */
 @PrepareForTest(SubCommandHandler2.class)
-@PowerMockIgnore({"com.sun.*", "org.apache.log4j.*", "org.xml.*", "javax.xml.*"})
+@PowerMockIgnore({ "com.sun.*", "org.apache.log4j.*", "org.xml.*", "javax.xml.*" })
 @RunWith(PowerMockRunner.class)
 public class ZanataClientTest {
     @Rule

@@ -212,7 +212,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                 }
             } catch (IOException | RuntimeException e) {
                 log.error(
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                         + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(qualifiedDocName));
                 throw new RuntimeException(e.getMessage(), e);

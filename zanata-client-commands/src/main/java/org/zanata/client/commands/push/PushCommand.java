@@ -420,7 +420,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 }
             } catch (Exception e) {
                 String message =
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                                 + "    To retry from the last document, please set the following option(s):\n\n"
                                 + "        ";
                 if (getOpts().getEnableModules()) {
@@ -572,7 +572,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     break;
                 }
 
-                wait(POLL_PERIOD); // Wait before retrying
+                // Wait before retrying
+                wait(POLL_PERIOD);
                 status = asyncProcessClient.getProcessStatus(status.getUrl());
             }
 
@@ -693,7 +694,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     break;
                 }
 
-                wait(POLL_PERIOD); // Wait before retrying
+                // Wait before retrying
+                wait(POLL_PERIOD);
                 status = asyncProcessClient.getProcessStatus(status.getUrl());
             }
             ConsoleUtils.endProgressFeedback();

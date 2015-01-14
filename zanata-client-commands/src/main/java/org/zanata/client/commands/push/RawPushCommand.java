@@ -172,11 +172,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     + "': existing translations on server may be overwritten/deleted");
 
             if (getOpts().getPushType() == PushPullType.Both) {
-                confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n"); // ,
-                                                                                                             // and
-                                                                                                             // delete
-                                                                                                             // obsolete
-                                                                                                             // documents.\n");
+                confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n");
+                // , and delete obsolete documents.\n");
             } else if (getOpts().getPushType() == PushPullType.Trans) {
                 confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
             }
@@ -229,7 +226,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                 }
             } catch (IOException | RuntimeException e) {
                 log.error(
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                         + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(localDocName));
                 throw new RuntimeException(e.getMessage(), e);

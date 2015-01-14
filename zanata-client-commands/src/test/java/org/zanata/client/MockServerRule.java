@@ -151,8 +151,7 @@ public class MockServerRule extends ExternalResource {
             URI uri = new URI("http://localhost:8888/zanata");
             opts.setUrl(uri.toURL());
             return uri;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw Throwables.propagate(e);
         }
     }

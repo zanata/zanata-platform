@@ -176,8 +176,7 @@ class SourceConfigPrompt {
                             Option.class).usage()
                     // the usage text is not very well formatted (contains new line)
                     .replaceAll(System.getProperty("line.separator"), " ");
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             log.error("can not find method: {} on class {}", methodName, optionsClass);
             return methodName;
         }

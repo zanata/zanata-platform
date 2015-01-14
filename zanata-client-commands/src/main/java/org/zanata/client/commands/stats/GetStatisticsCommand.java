@@ -90,9 +90,8 @@ public class GetStatisticsCommand extends
                             .getProjectVersion(),
                             getOpts().getIncludeDetails(), getOpts()
                                     .getIncludeWordLevelStats(), localeListArg);
-        }
-        // Otherwise, stats for the single document
-        else {
+        } else {
+            // Otherwise, stats for the single document
             containerStats =
                     client
                             .getStatistics(getOpts().getProj(), getOpts()

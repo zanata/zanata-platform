@@ -49,7 +49,7 @@ public class HTTPMockContainer implements Container {
 
             body.println(responseContent);
             body.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
