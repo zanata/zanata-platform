@@ -33,6 +33,40 @@
         value="warning"/>
     </module>
 -->
+
+    <module name="MethodParamPad"/>
+
+    <!-- TODO enable, pending https://github.com/checkstyle/checkstyle/issues/300 -->
+    <!--<module name="NeedBraces"/>-->
+
+    <module name="ParenPad"/>
+
+    <!--
+      Right brace on the same line as the next token, eg:
+      <code>
+        } catch (IOException e)
+      </code>
+
+      or:
+      <code>
+        } else if (someFlag) {
+      </code>
+    -->
+    <module name="RightCurly">
+      <property name="option" value="same"/>
+    </module>
+
+    <module name="TrailingComment"/>
+
+    <module name="WhitespaceAfter"/>
+
+    <module name="WhitespaceAround">
+      <property name="allowEmptyConstructors" value = "true" />
+      <property name="allowEmptyMethods" value = "true" />
+      <property name="allowEmptyTypes" value = "true" />
+      <property name="allowEmptyLoops" value = "true" />
+      <property name="ignoreEnhancedForColon" value = "true" />
+    </module>
   </module>
 
   <!-- Miscellaneous other checks.                   -->
@@ -42,6 +76,10 @@
     <property name="minimum" value="0" />
     <property name="maximum" value="0" />
     <property name="message" value="Line has trailing spaces." />
+  </module>
+
+  <module name="UniqueProperties">
+    <property name="fileExtensions" value="properties" />
   </module>
 
 </module>

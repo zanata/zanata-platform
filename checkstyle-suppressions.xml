@@ -5,15 +5,21 @@
   "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-  <suppress checks=".*" files=".*(compressed.*\.js|min\.js|\.js\.map|\.yml|\.patch)" />
-  <suppress checks=".*" files=".*(\.eot|\.gif|\.ico|\.png|\.ttf|\.woff|\.svg)" />
+  <suppress checks=".*" files="(compressed.*\.js|min\.js|\.js\.map|\.yml|\.patch)$" />
+  <suppress checks=".*" files="(\.eot|\.gif|\.ico|\.png|\.ttf|\.woff|\.svg)$" />
+  <suppress checks=".*" files="(\.orig|~)$" />
+  <suppress checks=".*" files="/gwt-unitCache-" />
   <!-- Zanata-SPA files -->
-  <suppress checks=".*" files=".*/src/main/webapp/app/.*(\.json|locales|\.js|\.css)" />
+  <suppress checks=".*" files="/src/main/webapp/app/.*(\.json|locales|\.js|\.css)$" />
   <!-- Ignore old Liquibase changelogs -->
-  <suppress checks=".*" files=".*db\.changelog-(1\..a?|2\..|3\.[01])\.xml" />
-  <suppress checks=".*" files=".*db/.*_baseline\.sql" />
-  <suppress checks="FileTabCharacter|RegexpSingleline" files=".*/LICENSE.*\.txt" />
-  <suppress checks="FileTabCharacter" files=".*/src/test/.*\.(xml|po|pot)" />
-  <suppress checks="JavadocMethodCheck|JavadocTypeCheck" files=".*\.java" />
-  <suppress checks="MagicNumberCheck" files=".*Test\.java" />
+  <suppress checks=".*" files="db\.changelog-(1\..a?|2\..|3\.[01])\.xml$" />
+  <suppress checks=".*" files="db/.*_baseline\.sql$" />
+  <suppress checks="FileTabCharacter|RegexpSingleline" files="/LICENSE.*\.txt$" />
+  <suppress checks="FileTabCharacter" files="/src/test/.*\.(xml|po|pot)$" />
+  <suppress checks="JavadocMethodCheck|JavadocTypeCheck" files="\.java$" />
+  <suppress checks="MagicNumberCheck" files="Test\.java$" />
+  <!-- TODO fix violations and remove this: -->
+  <suppress checks="TrailingComment" files="/zanata-war/src/" />
+  <!-- TODO fix violations and remove this: -->
+  <suppress checks="WhitespaceAround" files="/zanata-war/src/" />
 </suppressions>
