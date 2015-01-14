@@ -152,7 +152,8 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage clickAddProjectVersionsButton() {
         log.info("Click Add Project Version");
-        waitForWebElement(waitForElementExists(projectForm), //parent
+        // parent
+        waitForWebElement(waitForElementExists(projectForm),
                 By.className("button--primary")).click();
         return new VersionGroupPage(getDriver());
     }

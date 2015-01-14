@@ -55,7 +55,7 @@ public class RoleAssignmentsPage extends BasePage {
         List<String> names = WebElementUtil.elementsToText(getDriver(),
                 roleTable);
         for (String name : names) {
-            ret.add(name.substring(name.lastIndexOf(':')+1).trim());
+            ret.add(name.substring(name.lastIndexOf(':') + 1).trim());
         }
         return ret;
     }

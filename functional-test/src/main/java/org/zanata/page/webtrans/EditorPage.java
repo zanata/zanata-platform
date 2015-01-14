@@ -459,7 +459,8 @@ public class EditorPage extends BasePage {
     private WebElement getTranslationTargetColumn() {
         return waitForWebElement(By.className("selected"))
                 .findElements(By.className("transUnitCol"))
-                .get(1); // Right column
+                // Right column
+                .get(1);
     }
 
     // Find the validation messages / errors box
@@ -581,7 +582,8 @@ public class EditorPage extends BasePage {
     private List<WebElement> getCompareTabEntries() {
         return getTranslationHistoryBox()
                 .findElements(By.className("gwt-TabLayoutPanelContent"))
-                .get(1) // Second tab
+                // Second tab
+                .get(1)
                 .findElements(By.className("textFlowEntry"));
     }
 

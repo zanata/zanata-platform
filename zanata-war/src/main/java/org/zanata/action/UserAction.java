@@ -119,7 +119,7 @@ public class UserAction extends
         } catch (PersistenceException e) {
             if (e.getCause() instanceof ConstraintViolationException) {
                 FacesMessages.instance()
-                        .add(StatusMessage.Severity.ERROR,msgs.get(
+                        .add(StatusMessage.Severity.ERROR, msgs.get(
                             "jsf.UserManager.delete.constraintViolation.error"));
             }
         }

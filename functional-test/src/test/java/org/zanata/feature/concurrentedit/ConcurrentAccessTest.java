@@ -71,7 +71,8 @@ public class ConcurrentAccessTest extends ZanataTestCase {
         ClientRequest clientRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + "c/max.concurrent.req.per.apikey");
-        clientRequest.body("text/plain", "6"); //Default
+        // Default
+        clientRequest.body("text/plain", "6");
         Response putResponse = clientRequest.put();
         assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(201);
     }

@@ -65,7 +65,8 @@ public class EmailValidationTest extends ZanataTestCase {
     @Test
     public void validEmailAcceptance() throws Exception {
         registerPage = registerPage.enterEmail("me@mydomain.com")
-                .enterName("Sam I Am"); // Shift to other field
+                // Shift to other field
+                .enterName("Sam I Am");
 
         assertThat(registerPage.getErrors())
                 .as("Email validation errors are not shown")

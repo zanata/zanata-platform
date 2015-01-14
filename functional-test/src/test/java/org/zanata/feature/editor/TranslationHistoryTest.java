@@ -66,7 +66,8 @@ public class TranslationHistoryTest extends ZanataTestCase {
     }
 
     @Test
-    @Ignore // fails intermittently
+    // fails intermittently
+    @Ignore
     public void compareTranslationHistory() {
         new LoginWorkFlow().signIn("admin", "admin");
         EditorPage editorPage = new ProjectWorkFlow()

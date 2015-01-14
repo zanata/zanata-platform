@@ -52,7 +52,7 @@ public class AsyncConfig {
 
     public int getThreadPoolSize() {
         try {
-            return new Integer( systemPropertyConfigStore.get(THREAD_POOL_SIZE) );
+            return new Integer(systemPropertyConfigStore.get(THREAD_POOL_SIZE));
         } catch (NumberFormatException e) {
             return 10; // Default value
         }

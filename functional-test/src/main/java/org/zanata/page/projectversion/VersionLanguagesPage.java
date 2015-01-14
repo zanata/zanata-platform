@@ -70,12 +70,14 @@ public class VersionLanguagesPage extends VersionBasePage {
             public boolean apply(WebDriver input) {
                 new BasePage(getDriver()).waitForPageSilence();
                 for (WebElement localeRow : getLanguageTabLocaleList()) {
+                    // Top <a>
                     WebElement link = localeRow
-                            .findElement(By.xpath(".//a")); // Top <a>
+                            .findElement(By.xpath(".//a"));
                     if (link.findElement(languageItemTitle)
                             .getText().equals(locale)) {
-                        slightPause(); // Clicking too fast can often confuse
-                                       // the button
+                        // Clicking too fast can often confuse
+                        // the button:
+                        slightPause();
                         clickLinkAfterAnimation(link);
                         return true;
                     }

@@ -94,10 +94,10 @@ public class CopyTransTuningTest {
         TranslationsResource translation4 =
                 buildTranslationResource(generateTextFlowTargets(
                 numOfTextFlows));
-        translations = new Pair[] { Pair.of(message1, translation1)/*,
-                Pair.of(message2, translation2),
-                Pair.of(message3, translation3),
-                Pair.of(message4, translation4)*/ };
+        translations = new Pair[] { Pair.of(message1, translation1) };
+                // , Pair.of(message2, translation2),
+                // Pair.of(message3, translation3),
+                // Pair.of(message4, translation4) };
     }
 
     private static TextFlow[] generateTextFlows(int numOfTextFlows) {

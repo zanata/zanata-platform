@@ -114,7 +114,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         translationMemoryEditPage = translationMemoryEditPage
                 .clickSaveAndExpectFailure();
 
-        translationMemoryEditPage.assertNoCriticalErrors(); // RHBZ-1010771
+        // RHBZ-1010771
+        translationMemoryEditPage.assertNoCriticalErrors();
 
         assertThat(translationMemoryEditPage.expectError(
                     TranslationMemoryPage.ID_UNAVAILABLE))
@@ -212,7 +213,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
             "translation memory entry",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore // fails intermittently
+    // fails intermittently
+    @Ignore
     public void clearTranslationMemory() throws Exception {
         String clearTMId = "cleartmtest";
         File importFile = testFileGenerator.openTestFile("test-tmx.xml");
@@ -267,7 +269,8 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
             "entry before it can be deleted",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore // fails intermittently
+    // fails intermittently
+    @Ignore
     public void mustClearBeforeDelete() throws Exception {
         String forceClear = "forcecleartodelete";
         File importFile = testFileGenerator.openTestFile("test-tmx.xml");
