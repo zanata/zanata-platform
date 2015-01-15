@@ -1,0 +1,19 @@
+site_name: Zanata Client
+docs_dir: docs
+repo_name: GitHub
+repo_url: http://www.github.com/zanata/zanata-client
+theme: readthedocs
+# theme_dir: For custom themes
+
+pages:
+- ['index.md', 'Home']
+- ['installation.md', 'User Guide', 'Installation']
+- ['configuration.md', 'User Guide', 'Configuration']
+- ['maven-plugin/installation.md', 'Maven Plugin', 'Installation']
+- ['maven-plugin/configuration.md', 'Maven Plugin', 'Configuration']
+- ['maven-plugin/commands.md', 'Maven Plugin', 'Commands']
+- ['commands/init.md', 'Commands']
+- ['commands/push.md', 'Commands']
+- ['commands/pull.md', 'Commands']
+
+copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.
