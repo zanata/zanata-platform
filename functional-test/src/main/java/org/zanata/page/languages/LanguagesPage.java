@@ -23,6 +23,7 @@ package org.zanata.page.languages;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
@@ -35,7 +36,7 @@ import java.util.List;
 @Slf4j
 public class LanguagesPage extends BasePage {
 
-    private By languagesList = By.id("tribesForm:latestTribes");
+    private By languagesList = By.id("languageForm");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
@@ -43,19 +44,32 @@ public class LanguagesPage extends BasePage {
 
     public LanguagePage selectLanguage(String language) {
         log.info("Select {} from the language list", language);
-        List<TableRow> tableRowList = WebElementUtil
-                .getTableRows(getDriver(), waitForWebElement(languagesList));
-        boolean clicked = false;
-        for (TableRow tableRow : tableRowList) {
-            if (tableRow.getCells().get(0).getText().equals(language)) {
-                tableRow.getCells().get(0).findElement(By.tagName("a")).click();
-                clicked = true;
-                break;
-            }
-        }
-        if (!clicked) {
-            throw new RuntimeException(language + " not found");
-        }
+        findRowByLocale(language).click();
         return new LanguagePage(getDriver());
     }
+
+    private WebElement findRowByLocale(final String localeId) {
+        for (WebElement row : getRows()) {
+            if (getShortLocale(row).equals(localeId)) {
+                return row;
+            }
+        }
+        throw new RuntimeException("Did not find locale "+localeId);
+    }
+
+    private String getShortLocale(WebElement row) {
+        String locale = getListEntryLocale(row);
+        return locale.substring(0, locale.indexOf('[')).trim();
+    }
+
+    private List<WebElement> getRows() {
+        return waitForWebElement(waitForElementExists(By.id("languageForm")),
+                By.className("list--stats"))
+                .findElements(By.tagName("li"));
+    }
+
+    private String getListEntryLocale(WebElement listElement) {
+        return listElement.findElement(By.className("list__item__meta")).getText().trim();
+    }
+
 }

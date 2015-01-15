@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
-import org.zanata.util.WebElementUtil;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -48,9 +47,7 @@ public class ContactTeamPage extends BasePage {
 
     public ContactTeamPage enterMessage(String message) {
         log.info("Enter message {}", message);
-        WebElementUtil.setRichTextEditorContent(getDriver(),
-                waitForWebElement(messageField),
-                message);
+        waitForWebElement(messageField).sendKeys(message);
         return new ContactTeamPage(getDriver());
     }
 

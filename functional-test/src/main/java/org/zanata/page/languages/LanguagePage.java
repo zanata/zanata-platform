@@ -33,9 +33,16 @@ public class LanguagePage extends BasePage {
 
     private By contactCoordinatorsButton =
             By.linkText("Contact Team Coordinators");
+    private By moreActions = By.className("dropdown__toggle");
 
     public LanguagePage(WebDriver driver) {
         super(driver);
+    }
+
+    public LanguagePage clickMoreActions() {
+        log.info("Click More Actions");
+        waitForWebElement(moreActions).click();
+        return new LanguagePage(getDriver());
     }
 
     public ContactTeamPage clickContactCoordinatorsButton() {

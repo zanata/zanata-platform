@@ -66,6 +66,7 @@ public class ManageSearchTest extends ZanataTestCase {
             "search indexes",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("RHBZ1180948 JBoss issue")
     public void regenerateSearchIndexes() throws Exception {
         ManageSearchPage manageSearchPage = dashboardPage
                 .goToAdministration()
