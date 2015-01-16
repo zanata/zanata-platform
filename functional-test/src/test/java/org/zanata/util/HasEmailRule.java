@@ -42,11 +42,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class HasEmailRule implements TestRule {
-    private final Wiser wiser = new Wiser();
+    private static final Wiser wiser;
 
-    public HasEmailRule() {
+    static {
         String port = PropertiesHolder.getProperty("smtp.port");
-        wiser.setPort(Integer.parseInt(port));
+        wiser = new Wiser(Integer.parseInt(port));
+        wiser.start();
+        // NB we never call wiser.stop() because we want the email
+        // server to stay running for all tests
     }
 
     @Override
@@ -54,14 +57,10 @@ public class HasEmailRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                if (!wiser.getServer().isRunning()) {
-                    wiser.start();
-                }
                 try {
                     base.evaluate();
                 } finally {
                     wiser.getMessages().clear();
-                    wiser.stop();
                 }
             }
         };
