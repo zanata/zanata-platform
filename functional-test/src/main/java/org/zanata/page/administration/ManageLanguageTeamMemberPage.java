@@ -142,7 +142,7 @@ public class ManageLanguageTeamMemberPage extends BasePage {
         String fullname = listItem.findElements(
                 By.className("bx--inline-block"))
                 .get(0).getText();
-        return fullname.substring(fullname.indexOf('[')+1, fullname.indexOf(']'));
+        return fullname.substring(fullname.indexOf('[') + 1, fullname.indexOf(']'));
     }
 
     public ManageLanguageTeamMemberPage clickAddUserRoles(final String username, TeamPermission... permissions) {
