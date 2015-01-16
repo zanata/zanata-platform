@@ -106,7 +106,7 @@ public class ManageLanguagePage extends BasePage {
                 return row;
             }
         }
-        throw new RuntimeException("Did not find locale "+localeId);
+        throw new RuntimeException("Did not find locale " + localeId);
     }
 
     private List<WebElement> getRows() {

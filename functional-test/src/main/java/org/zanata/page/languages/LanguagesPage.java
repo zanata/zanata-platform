@@ -54,7 +54,7 @@ public class LanguagesPage extends BasePage {
                 return row;
             }
         }
-        throw new RuntimeException("Did not find locale "+localeId);
+        throw new RuntimeException("Did not find locale " + localeId);
     }
 
     private String getShortLocale(WebElement row) {
