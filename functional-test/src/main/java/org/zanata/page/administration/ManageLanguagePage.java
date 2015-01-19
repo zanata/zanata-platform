@@ -20,17 +20,11 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +40,7 @@ public class ManageLanguagePage extends BasePage {
     private By moreActions = By.id("more-actions");
     private By enableByDefault = By.linkText("Enable by default");
     private By disableByDefault = By.linkText("Disable by default");
+    private By disabledIcon = By.className("i--cancel");
 
     public ManageLanguagePage(WebDriver driver) {
         super(driver);
@@ -85,9 +80,14 @@ public class ManageLanguagePage extends BasePage {
 
     public boolean languageIsEnabled(String localeId) {
         log.info("Query is language enabled {}", localeId);
-        return findRowByLocale(localeId)
-                .findElements(By.className("i--cancel"))
-                .size() > 0;
+        // Search for visibility of the disabled icon
+        for (WebElement langDisabled : findRowByLocale(localeId)
+                .findElements(disabledIcon)) {
+            if (langDisabled.isDisplayed()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public List<String> getLanguageLocales() {

@@ -81,6 +81,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .clickMoreActions()
                 .addNewLanguage()
                 .enterSearchLanguage(language)
+                .waitForPluralsWarning()
                 .saveLanguage();
 
         assertThat(manageLanguagePage.getLanguageLocales())
@@ -125,6 +126,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .clickMoreActions()
                 .addNewLanguage()
                 .enterSearchLanguage(language)
+                .waitForPluralsWarning()
                 .disableLanguageByDefault()
                 .saveLanguage();
 
