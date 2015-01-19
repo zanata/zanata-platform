@@ -1006,7 +1006,7 @@
         <plugin>
           <groupId>com.jcabi</groupId>
           <artifactId>jcabi-mysql-maven-plugin</artifactId>
-          <version>0.4</version>
+          <version>0.9</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.gmaven</groupId>
