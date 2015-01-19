@@ -1,0 +1,32 @@
+site_name: Zanata Server
+docs_dir: docs
+repo_name: GitHub
+repo_url: http://www.github.com/zanata/zanata-server
+theme: readthedocs
+# theme_dir: For custom themes
+
+pages:
+- ['index.md', 'Home']
+
+# Configuration Guide
+- ['configuration/authentication.md', 'Configuration', 'Authentication']
+- ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
+- ['configuration/email.md', 'Configuration', 'Email']
+# - ['configuration/infinispan.md', 'Configuration', 'Caches']
+- ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
+- ['configuration/wildfly.md', 'Configuration', 'Wildfly']
+
+# User Guide
+- ['user-guide/translators-new-account.md', 'User Guide', 'Creating a new account']
+- ['user-guide/joining-a-language-team.md', 'User Guide', 'Joining a Language team']
+- ['user-guide/contributing-translations.md', 'User Guide', 'Contributing Translations']
+- ['user-guide/keyboard-shortcuts.md', 'User Guide', 'Keyboard Shortcuts']
+- ['user-guide/project-types.md', 'User Guide', 'Project Types']
+- ['user-guide/client-configuration.md', 'User Guide', 'Client Configuration']
+## Project
+- ['user-guide/projects/create-project.md', 'User Guide', 'Creating a Project']
+- ['user-guide/projects/project-settings.md', 'User Guide', 'Project settings']
+- ['user-guide/projects/create-version.md', 'User Guide', 'Creating a Version']
+- ['user-guide/projects/upload-strings.md', 'User Guide', 'Upload Strings']
+
+copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.
