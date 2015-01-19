@@ -81,13 +81,10 @@ public class TranslationData implements Serializable {
 
     @JsonIgnore
     public List<String> getContents() {
-        if (content != null) {
-            return Lists.newArrayList(content);
-        } else if (contents != null) {
-            return contents;
-        } else {
-            return Collections.emptyList();
+        if(contents == null && content == null) {
+            return Collections.<String>emptyList();
         }
+        return isPlural() ? contents : Lists.newArrayList(content);
     }
 
     @JsonIgnore
