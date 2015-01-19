@@ -39,6 +39,7 @@ public class AddLanguagePage extends BasePage {
     private By enabledByDefaultCheckbox = By.id("addLanguageForm:enabled");
     private By languageInfo = By.id("addLanguageForm:output");
     private By languageInfoItem = By.className("txt--meta");
+    private By pluralsWarning = By.id("addLanguageForm:localeNameMsgs");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
@@ -48,6 +49,8 @@ public class AddLanguagePage extends BasePage {
         log.info("Enter language {}", language);
         WebElementUtil.searchAutocomplete(getDriver(),
                 "localeAutocomplete", language);
+        // Pause for a moment, as quick actions can break here
+        slightPause();
         return new AddLanguagePage(getDriver());
     }
 
@@ -74,6 +77,13 @@ public class AddLanguagePage extends BasePage {
         });
         return new AddLanguagePage(getDriver());
     }
+
+    public AddLanguagePage waitForPluralsWarning() {
+        log.info("Expect plurals warning");
+        waitForWebElement(pluralsWarning);
+        return new AddLanguagePage(getDriver());
+    }
+
     public AddLanguagePage enableLanguageByDefault() {
         log.info("Click Enable by default");
         if (!waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
