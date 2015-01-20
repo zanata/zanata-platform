@@ -73,7 +73,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
         log.info("Enter project name {}", projectName);
         waitForWebElement(projectNameField).clear();
         waitForWebElement(projectNameField).sendKeys(projectName);
-        defocus();
+        defocus(projectNameField);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -86,7 +86,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
         log.info("Enter project description {}", projectDescription);
         waitForWebElement(descriptionField).clear();
         waitForWebElement(descriptionField).sendKeys(projectDescription);
-        defocus();
+        defocus(descriptionField);
         return new ProjectGeneralTab(getDriver());
     }
 

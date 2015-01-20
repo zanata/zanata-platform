@@ -196,6 +196,15 @@ public class CorePage extends AbstractPage {
         }
     }
 
+    /**
+     * Force the blur 'unfocus' process on a given element
+     */
+    public void defocus(By elementBy) {
+        log.info("Force unfocus");
+        WebElement element = getDriver().findElement(elementBy);
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()", element);
+    }
+
     /* The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
      */
