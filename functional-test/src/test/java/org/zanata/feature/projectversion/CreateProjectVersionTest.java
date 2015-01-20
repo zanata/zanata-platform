@@ -85,7 +85,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .goToProjectByName("about fedora")
                 .clickCreateVersionLink()
                 .inputVersionId("");
-        createVersionPage.defocus();
+        createVersionPage.defocus(createVersionPage.projectVersionID);
 
         assertThat(createVersionPage.getErrors())
                 .contains("value is required")
@@ -101,7 +101,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .goToProjectByName("about fedora")
                 .clickCreateVersionLink()
                 .inputVersionId("-A");
-        createVersionPage.defocus();
+        createVersionPage.defocus(createVersionPage.projectVersionID);
 
         assertThat(createVersionPage.expectError(
                     CreateVersionPage.VALIDATION_ERROR))
@@ -109,7 +109,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("B-");
-        createVersionPage.defocus();
+        createVersionPage.defocus(createVersionPage.projectVersionID);
 
         assertThat(createVersionPage.expectError(
                     CreateVersionPage.VALIDATION_ERROR))
@@ -117,7 +117,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("_C_");
-        createVersionPage.defocus();
+        createVersionPage.defocus(createVersionPage.projectVersionID);
         createVersionPage = createVersionPage.waitForNumErrors(1);
 
         assertThat(createVersionPage.expectError(
@@ -126,7 +126,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("A-B_C");
-        createVersionPage.defocus();
+        createVersionPage.defocus(createVersionPage.projectVersionID);
         createVersionPage = createVersionPage.waitForNumErrors(0);
 
         assertThat(createVersionPage.getErrors())
