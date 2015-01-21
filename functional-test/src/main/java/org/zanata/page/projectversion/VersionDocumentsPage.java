@@ -65,7 +65,7 @@ public class VersionDocumentsPage extends VersionBasePage {
             public List<String> apply(WebDriver input) {
                 List<String> fileNames = new ArrayList<String>();
                 for (WebElement element : getDocumentsTabDocumentList()) {
-                    fileNames.add(waitForWebElement(element,
+                    fileNames.add(element.findElement(
                             By.className("list__title"))
                             .getText());
                 }

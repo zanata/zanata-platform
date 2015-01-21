@@ -78,6 +78,7 @@ public class VersionBasePage extends BasePage {
     public VersionBasePage gotoSettingsTab() {
         log.info("Click Settings tab");
         slightPause();
+        waitForElementExists(By.id("settings"));
         clickWhenTabEnabled(waitForWebElement(By.id("settings_tab")));
         waitForWebElement(By.id("settings"));
         return new VersionBasePage(getDriver());
