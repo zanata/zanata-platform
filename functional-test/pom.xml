@@ -458,7 +458,7 @@
             <configuration>
               <classifier>mysql.classifier</classifier>
               <port>${mysql.port}</port>
-              <data>${mysql.data}</data>
+              <socket>${mysql.socket}</socket>
             </configuration>
             <executions>
               <execution>
@@ -693,7 +693,8 @@
               <properties>
                 <delete>true</delete>
               </properties>
-              <source>${project.basedir}/etc/mysql-data.groovy</source>
+              <!-- Sets property mysql.socket -->
+              <source>${project.basedir}/etc/mysql-socket.groovy</source>
             </configuration>
           </execution>
           <execution>
@@ -706,7 +707,8 @@
               <properties>
                 <delete>false</delete>
               </properties>
-              <source>${project.basedir}/etc/mysql-data.groovy</source>
+              <!-- Sets property mysql.socket -->
+              <source>${project.basedir}/etc/mysql-socket.groovy</source>
             </configuration>
           </execution>
         </executions>
