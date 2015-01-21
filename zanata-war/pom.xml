@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -995,11 +995,8 @@
                 </goals>
                 <configuration>
                   <target>
-                    <fail message="'arquillian.jboss.home' property must be set to run integration tests in this profile"
-                      unless="arquillian.jboss.home"/>
-                    <copy overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
-                      tofile="${arquillian.jboss.home}/standalone/configuration/standalone-arquillian.xml" />
+                    <fail message="'arquillian.jboss.home' property must be set to run integration tests in this profile" unless="arquillian.jboss.home" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml" tofile="${arquillian.jboss.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1151,25 +1148,12 @@
                 </goals>
                 <configuration>
                   <target>
-                    <copy
-                      overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
-                      tofile="${wildfly.home}/standalone/configuration/standalone.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${wildfly.home}/standalone/configuration/standalone.xml" />
                     <mkdir dir="${project.build.directory}/downloads/" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      usetimestamp="true" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      usetimestamp="true" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      dest="${wildfly.home}" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      dest="${wildfly.home}" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip/download" dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip" usetimestamp="true" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip/download" dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip" usetimestamp="true" />
+                    <unzip src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip" dest="${wildfly.home}" />
+                    <unzip src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip" dest="${wildfly.home}" />
                   </target>
                 </configuration>
               </execution>
