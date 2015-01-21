@@ -190,13 +190,14 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForWebElement(final By elementBy) {
+        log.info("Waiting for element ready {}", elementBy.toString());
         waitForPageSilence();
         return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(elementBy);
+                WebElement targetElement = getDriver().findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -211,14 +212,14 @@ public class AbstractPage {
      */
     public WebElement waitForWebElement(final WebElement parentElement,
                                         final By elementBy) {
+        log.info("Waiting for element ready {}", elementBy.toString());
         waitForPageSilence();
         return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(parentElement,
-                        elementBy);
+                WebElement targetElement = parentElement.findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -233,6 +234,7 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForElementExists(final By elementBy) {
+        log.info("Waiting for element exists {}", elementBy.toString());
         waitForPageSilence();
         return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
@@ -251,6 +253,7 @@ public class AbstractPage {
      */
     public WebElement waitForElementExists(final WebElement parentElement,
                                            final By elementBy) {
+        log.info("Waiting for element exists {}", elementBy.toString());
         waitForPageSilence();
         return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
