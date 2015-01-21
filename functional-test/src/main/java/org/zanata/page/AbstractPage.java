@@ -46,7 +46,33 @@ public class AbstractPage {
     private final WebDriver driver;
     private final FluentWait<WebDriver> ajaxWaitForSec;
 
+    static final String AJAX_COUNTER_SCRIPT = "(function(xhr) {\n" +
+            "  if (xhr.active === undefined) {\n" +
+            "    xhr.active = 0;\n" +
+            "    var pt = xhr.prototype;\n" +
+            "    pt._send = pt.send;\n" +
+            "    pt.send = function() {\n" +
+            "        XMLHttpRequest.active++;\n" +
+            "        this._onreadystatechange = this.onreadystatechange;\n" +
+            "        this.onreadystatechange = function(e) {\n" +
+            "            if ( this.readyState == 4 ) {\n" +
+            "                XMLHttpRequest.active--;\n" +
+            "            }\n" +
+            "            if ( this._onreadystatechange ) {\n" +
+            "                var fn = this._onreadystatechange.handleEvent || this._onreadystatechange;\n" +
+            "                fn.apply(this, arguments);\n" +
+            "            }\n" +
+            "        };\n" +
+            "        this._send.apply(this, arguments);\n" +
+            "    }\n" +
+            "  }\n" +
+            "})(XMLHttpRequest);\n";
+
     public AbstractPage(final WebDriver driver) {
+        // FIXME avoid cast
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        executor.executeScript(AJAX_COUNTER_SCRIPT);
+
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
@@ -158,28 +184,16 @@ public class AbstractPage {
             @Override
             public boolean apply(WebDriver input) {
                 int ajaxCalls;
-                int jQueryCalls;
-                try {
-                    jQueryCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript("return jQuery.active")
-                                    .toString()
-                    );
-                } catch (WebDriverException jCall) {
-                    jQueryCalls = 0;
-                }
-
                 try {
                     ajaxCalls = Integer.parseInt(
                             ((JavascriptExecutor) getDriver())
-                                    .executeScript(
-                                            "return Ajax.activeRequestCount")
+                                    .executeScript("return XMLHttpRequest.active")
                                     .toString()
                     );
                 } catch (WebDriverException jCall) {
                     ajaxCalls = 0;
                 }
-                return ajaxCalls + jQueryCalls == 0;
+                return ajaxCalls == 0;
             }
         });
     }
