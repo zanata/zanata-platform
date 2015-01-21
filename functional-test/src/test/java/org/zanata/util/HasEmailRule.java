@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.mail.internet.MimeMultipart;
 
+import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -41,29 +42,25 @@ import lombok.extern.slf4j.Slf4j;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class HasEmailRule implements TestRule {
-    private static final Wiser wiser;
+public class HasEmailRule extends ExternalResource {
+    private volatile static Wiser wiser;
 
-    static {
-        String port = PropertiesHolder.getProperty("smtp.port");
-        wiser = new Wiser(Integer.parseInt(port));
-        wiser.start();
-        // NB we never call wiser.stop() because we want the email
-        // server to stay running for all tests
+    @Override
+    protected void before() throws Throwable {
+        super.before();
+        if (HasEmailRule.wiser == null) {
+            String port = PropertiesHolder.getProperty("smtp.port");
+            HasEmailRule.wiser = new Wiser(Integer.parseInt(port));
+            HasEmailRule.wiser.start();
+            // NB we never call wiser.stop() because we want the email
+            // server to stay running for all tests in this VM
+        }
     }
 
     @Override
-    public Statement apply(final Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                try {
-                    base.evaluate();
-                } finally {
-                    wiser.getMessages().clear();
-                }
-            }
-        };
+    protected void after() {
+        wiser.getMessages().clear();
+        super.after();
     }
 
     public List<WiserMessage> getMessages() {
