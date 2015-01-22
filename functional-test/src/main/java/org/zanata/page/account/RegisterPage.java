@@ -62,13 +62,6 @@ public class RegisterPage extends CorePage {
 
     public RegisterPage(WebDriver driver) {
         super(driver);
-        List<By> elementBys = ImmutableList.<By> builder()
-                .add(nameField)
-                .add(emailField)
-                .add(usernameField)
-                .add(passwordField)
-                .add(signUpButton).build();
-        waitForPage(elementBys);
     }
 
     public RegisterPage enterName(String name) {
