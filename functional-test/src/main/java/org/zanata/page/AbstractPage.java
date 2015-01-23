@@ -33,6 +33,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
@@ -47,33 +48,7 @@ public class AbstractPage {
     private final WebDriver driver;
     private final FluentWait<WebDriver> ajaxWaitForSec;
 
-    static final String AJAX_COUNTER_SCRIPT = "(function(xhr) {\n" +
-            "  if (xhr.active === undefined) {\n" +
-            "    xhr.active = 0;\n" +
-            "    var pt = xhr.prototype;\n" +
-            "    pt._send = pt.send;\n" +
-            "    pt.send = function() {\n" +
-            "        XMLHttpRequest.active++;\n" +
-            "        this._onreadystatechange = this.onreadystatechange;\n" +
-            "        this.onreadystatechange = function(e) {\n" +
-            "            if ( this.readyState == 4 ) {\n" +
-            "                XMLHttpRequest.active--;\n" +
-            "            }\n" +
-            "            if ( this._onreadystatechange ) {\n" +
-            "                var fn = this._onreadystatechange.handleEvent || this._onreadystatechange;\n" +
-            "                fn.apply(this, arguments);\n" +
-            "            }\n" +
-            "        };\n" +
-            "        this._send.apply(this, arguments);\n" +
-            "    }\n" +
-            "  }\n" +
-            "})(XMLHttpRequest);\n";
-
     public AbstractPage(final WebDriver driver) {
-        // FIXME avoid cast
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript(AJAX_COUNTER_SCRIPT);
-
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
@@ -215,25 +190,41 @@ public class AbstractPage {
     }
 
     /**
-     * Wait for jQuery and Ajax calls to be 0
-     * If either are not defined, they can be assumed to be 0.
+     * Normally a page has no outstanding ajax requests when it has
+     * finished an operation, but some pages use long polling to
+     * "push" changes to the user, eg for the editor's event service.
+     * @return
+     */
+    protected int getExpectedBackgroundRequests() {
+        return 0;
+    }
+
+    /**
+     * Wait for any AJAX calls to return.
      */
     public void waitForPageSilence() {
-        // Wait for jQuery calls to be 0
+        // Wait for AJAX calls to be 0
         waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                int ajaxCalls;
-                try {
-                    ajaxCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript("return XMLHttpRequest.active")
-                                    .toString()
-                    );
-                } catch (WebDriverException jCall) {
-                    ajaxCalls = 0;
+                Long ajaxCalls = (Long) ((JavascriptExecutor) getDriver())
+                        .executeScript(
+                                "return XMLHttpRequest.active");
+                if (ajaxCalls == null) {
+                    if (log.isWarnEnabled()) {
+                        String url = getDriver().getCurrentUrl();
+                        String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
+                        log.warn("XMLHttpRequest.active is null.  URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                    }
+                    return true;
                 }
-                return ajaxCalls == 0;
+                if (ajaxCalls < 0) {
+                    throw new RuntimeException("XMLHttpRequest.active " +
+                            "is negative.  Please ensure that " +
+                            "AjaxCounterBean's script is run before " +
+                            "any AJAX requests.");
+                }
+                return ajaxCalls <= getExpectedBackgroundRequests();
             }
         });
     }

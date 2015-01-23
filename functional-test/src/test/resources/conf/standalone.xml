@@ -27,6 +27,7 @@
     <!--<extension module="org.jboss.as.weld" />-->
   </extensions>
   <system-properties>
+    <property name="zanata.countAjax" value="true" />
   </system-properties>
   <management>
     <security-realms>

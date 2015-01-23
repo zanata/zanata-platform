@@ -518,6 +518,9 @@
             <artifactId>cargo-maven2-plugin</artifactId>
             <configuration combine.self="append">
               <container>
+                <systemProperties>
+                  <zanata.countAjax>true</zanata.countAjax>
+                </systemProperties>
                 <!--if install from url-->
                 <zipUrlInstaller>
                   <url>${cargo.installation}</url>
