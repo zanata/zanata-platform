@@ -130,7 +130,7 @@ public class RegisterTest extends ZanataTestCase {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .enterUserName("admin");
-        registerPage.defocus();
+        registerPage.defocus(registerPage.usernameField);
 
         assertThat(registerPage.expectError(
                     RegisterPage.USERNAME_UNAVAILABLE_ERROR))

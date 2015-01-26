@@ -48,7 +48,7 @@ public class UsernameValidationTest extends ZanataTestCase {
                 .goToHome()
                 .goToRegistration()
                 .enterUserName("user|name");
-        registerPage.defocus();
+        registerPage.defocus(registerPage.usernameField);
 
         assertThat(registerPage.expectError(
                     RegisterPage.USERNAME_VALIDATION_ERROR))
