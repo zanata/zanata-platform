@@ -4,6 +4,9 @@
 .classpath
 .project
 .settings
-*.iml
 */bin/
 test-output/
+
+# idea
+*.idea/
+*.iml
