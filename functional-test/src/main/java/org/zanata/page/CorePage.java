@@ -53,6 +53,7 @@ public class CorePage extends AbstractPage {
 
     public CorePage(WebDriver driver) {
         super(driver);
+        assertNoCriticalErrors();
     }
 
     public String getTitle() {
@@ -159,18 +160,13 @@ public class CorePage extends AbstractPage {
     }
 
     public void assertNoCriticalErrors() {
-        log.info("Query critical errors");
-        List<WebElement> errors =
-                getDriver().findElements(By.id("errorMessage"));
+        List<WebElement> errors = getDriver()
+                .findElements(By.className("alert--danger"));
         if (errors.size() > 0) {
+            log.info("Error page displayed");
             throw new RuntimeException("Critical error: \n"
                     + errors.get(0).getText());
         }
-    }
-
-    public boolean hasNoCriticalErrors() {
-        log.info("Query critical errors");
-        return getDriver().findElements(By.id("errorMessage")).size() <= 0;
     }
 
     /**

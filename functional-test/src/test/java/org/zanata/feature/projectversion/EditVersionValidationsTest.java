@@ -77,8 +77,6 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         versionTranslationTab = versionTranslationTab
                 .setValidationLevel("Tab characters (\\t)", "Error");
 
-        assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
-
         versionTranslationTab = versionTranslationTab
                 .goToHomePage()
                 .goToProjects()
@@ -103,8 +101,6 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab()
                 .setValidationLevel("Tab characters (\\t)", "Error");
-
-        assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
         EditorPage editorPage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
@@ -140,8 +136,6 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab()
                 .setValidationLevel("Tab characters (\\t)", "Error");
-
-        assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
         EditorPage editorPage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
@@ -212,8 +206,6 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab()
                 .setValidationLevel("Tab characters (\\t)", "Off");
-
-        assumeTrue("RHBZ1017458", versionTranslationTab.hasNoCriticalErrors());
 
         EditorPage editorPage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
