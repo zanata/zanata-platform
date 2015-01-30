@@ -41,6 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Test(groups = { "jpa-tests" })
 public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest {
     private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
     private TextFlowTargetDAO textFlowTargetDAO;

@@ -6,13 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker annotation to mark methods that uses native query.
+ * Marker annotation to mark methods that will only work in certain database.
  */
 @Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE, ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.SOURCE)
-public @interface NativeQuery {
+public @interface DatabaseSpecific {
     /**
-     * Reason why it has to be native query.
+     * Reason why this is database specific
      */
     String value() default "";
 }

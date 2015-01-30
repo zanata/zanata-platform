@@ -32,6 +32,63 @@
     <customChange class="org.zanata.liquibase.custom.ChangePositionalResIdToContentHash" />
   </changeSet>
 
+  <changeSet id="2" author="pahuang@redhat.com">
+    <comment>Create User translation matrix table (aggregated matrix for each day) </comment>
+    <createTable tableName="UserTranslationMatrix">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="person_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="project_iteration_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="locale_id" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="wordCount" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="savedState" type="integer">
+        <constraints nullable="false" />
+      </column>
+      <column name="timeZoneOffset" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="savedDate" type="date">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName = "UserTranslationMatrix"
+      baseColumnNames = "project_iteration_id" constraintName = "FK_UserTranslationMatrix_HProjectIteration"
+      referencedTableName = "HProjectIteration" referencedColumnNames = "id"/>
+    <addForeignKeyConstraint baseTableName = "UserTranslationMatrix"
+      baseColumnNames = "locale_id" constraintName = "FK_UserTranslationMatrix_HLocale"
+      referencedTableName = "HLocale" referencedColumnNames = "id"/>
+    <addForeignKeyConstraint baseTableName = "UserTranslationMatrix"
+      baseColumnNames = "person_id" constraintName = "FK_UserTranslationMatrix_HPerson"
+      referencedTableName = "HPerson" referencedColumnNames = "id"/>
+    <createIndex tableName="UserTranslationMatrix" indexName="Idx_personId">
+      <column name="person_id"/>
+    </createIndex>
+    <createIndex tableName="UserTranslationMatrix" indexName="Idx_projectIterationId">
+      <column name="project_iteration_id"/>
+    </createIndex>
+    <createIndex tableName="UserTranslationMatrix" indexName="Idx_savedDate">
+      <column name="savedDate"/>
+      <column name="timeZoneOffset"/>
+    </createIndex>
+
+  </changeSet>
+  <changeSet id="3" author="pahuang@redhat.com">
+    <comment>add index for lastChanged column to HTextFlowTargetHistory table</comment>
+    <createIndex tableName="HTextFlowTargetHistory" indexName="Idx_lastChanged">
+      <column name="lastChanged"/>
+    </createIndex>
+  </changeSet>
+
   <changeSet id="3" author="aeng@redhat.com">
     <comment>Add revisionComment to HTextFlowTarget, HTextFlowTargetHistory</comment>
     <addColumn tableName="HTextFlowTarget">

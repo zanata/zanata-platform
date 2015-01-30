@@ -62,6 +62,11 @@ public class HTextFlowBuilder {
             hTextFlow.getTargets().put(targetLocale.getId(), target);
             target.setContents(targetContent);
             target.setLastModifiedBy(lastModifiedBy);
+            if (targetState == ContentState.Approved || targetState == ContentState.Approved) {
+                target.setReviewer(lastModifiedBy);
+            } else {
+                target.setTranslator(lastModifiedBy);
+            }
             if (lastModifiedDate != null) {
                 target.setLastChanged(lastModifiedDate.toDate());
             } else {

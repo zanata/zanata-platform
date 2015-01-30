@@ -20,6 +20,8 @@
  */
 package org.zanata.dao;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -29,8 +31,19 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.DateTime;
+import org.zanata.common.ContentState;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.UserTranslationMatrix;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+
+import static org.zanata.model.UserTranslationMatrix.TIMEZONE_OFFSET_INSTANCE;
 
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
@@ -159,4 +172,89 @@ public class TextFlowTargetHistoryDAO extends
         return count != 0;
     }
 
+    /**
+     * Query to get total wordCount of a person(translated_by_id or
+     * reviewed_by_id) from HTextFlowTarget union HTextFlowTargetHistory tables
+     * within given date range group by lastChangeDate (date portion only),
+     * project version, locale and state.
+     *
+     * HTextFlowTargetHistory: gets all records translated from user in any
+     * version, any locale and dateRange.
+     *
+     * HTextFlowTarget: gets all records translated from user in any version,
+     * any locale and dateRange.
+     *
+     * @param user
+     *            a HPerson person
+     * @param fromDate
+     *            date from
+     * @param toDate
+     *            date to
+     *
+     * @return a list of UserTranslationMatrix object
+     */
+    @NativeQuery("need to use union")
+    @DatabaseSpecific("uses mysql date() function. In test we can override stripTimeFromDateTimeFunction(String) below to workaround it.")
+    public List<UserTranslationMatrix> getUserTranslationMatrix(
+            HPerson user, DateTime fromDate, DateTime toDate) {
+        // @formatter:off
+        String queryHistory = "select history.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
+                "  from HTextFlowTargetHistory history " +
+                "    join HTextFlowTarget tft on tft.id = history.target_id " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
+                "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)";
+
+        String queryTarget = "select tft.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
+                "  from HTextFlowTarget tft " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
+                "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)";
+        // @formatter:on
+        String dateOfLastChanged = stripTimeFromDateTimeFunction("lastChanged");
+        String queryString =
+                "select " + dateOfLastChanged + ", iteration, locale, state, sum(wordCount)" +
+                        "  from (" +
+                        "  (" + queryHistory + ") union (" + queryTarget + ")" +
+                        "  ) as all_translation" +
+                        "  group by " + dateOfLastChanged + ", iteration, locale, state " +
+                        "  order by lastChanged, iteration, locale, state";
+        Query query = getSession().createSQLQuery(queryString)
+                .setParameter("user", user.getId())
+                .setTimestamp("fromDate", fromDate.toDate())
+                .setTimestamp("toDate", toDate.toDate());
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        ImmutableList.Builder<UserTranslationMatrix> builder =
+                ImmutableList.builder();
+        for (Object[] objects : result) {
+            Date savedDate = new DateTime(objects[0]).toDate();
+            HProjectIteration iteration =
+                    loadById(objects[1], HProjectIteration.class);
+            HLocale locale = loadById(objects[2], HLocale.class);
+            ContentState savedState = ContentState.values()[(int) objects[3]];
+            long wordCount =
+                    ((BigDecimal) objects[4]).toBigInteger().longValue();
+            UserTranslationMatrix matrix =
+                    new UserTranslationMatrix(user, iteration, locale,
+                            savedState, wordCount, savedDate);
+            builder.add(matrix);
+        }
+        return builder.build();
+    }
+
+    // This is so we can override it in test and be able to test it against h2
+    @VisibleForTesting
+    protected String stripTimeFromDateTimeFunction(String columnName) {
+        return "date(" + columnName + ")";
+    }
+
+    private <T> T loadById(Object object, Class<T> entityClass) {
+        return (T) getSession().byId(entityClass).load(
+                ((BigInteger) object).longValue());
+    }
 }
